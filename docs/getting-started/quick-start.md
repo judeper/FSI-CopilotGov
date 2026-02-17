@@ -36,7 +36,7 @@ You will need accounts with the following roles. A single Global Admin can perfo
 Verify you can sign in to each portal before starting:
 
 - [M365 Admin Center](https://admin.microsoft.com)
-- [Microsoft Purview compliance portal](https://compliance.microsoft.com)
+- [Microsoft Purview portal](https://purview.microsoft.com)
 - [Microsoft Entra admin center](https://entra.microsoft.com)
 - [SharePoint Admin Center](https://admin.microsoft.com/sharepoint)
 - [Teams Admin Center](https://admin.teams.microsoft.com)

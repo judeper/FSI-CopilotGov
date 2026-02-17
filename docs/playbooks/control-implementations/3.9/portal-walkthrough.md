@@ -6,7 +6,7 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 
 - **Role:** Compliance Administrator, Marketing Compliance Officer
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
-- **Access:** Microsoft Purview compliance portal, Microsoft 365 Admin Center
+- **Access:** Microsoft Purview portal, Microsoft 365 Admin Center
 
 ## Steps
 

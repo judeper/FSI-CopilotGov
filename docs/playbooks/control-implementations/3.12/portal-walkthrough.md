@@ -6,7 +6,7 @@ Step-by-step portal configuration for establishing evidence collection and audit
 
 - **Role:** Compliance Administrator, Audit Manager
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
-- **Access:** Microsoft Purview compliance portal, Compliance Manager
+- **Access:** Microsoft Purview portal, Compliance Manager
 
 ## Steps
 

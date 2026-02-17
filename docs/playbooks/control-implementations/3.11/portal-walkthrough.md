@@ -6,7 +6,7 @@ Step-by-step portal configuration for implementing record keeping controls that 
 
 - **Role:** Compliance Administrator, Records Management Administrator
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
-- **Access:** Microsoft Purview compliance portal
+- **Access:** Microsoft Purview portal
 
 ## Steps
 

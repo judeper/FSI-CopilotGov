@@ -6,7 +6,7 @@ Step-by-step portal configuration for enabling eDiscovery capabilities that cove
 
 - **Role:** eDiscovery Manager or eDiscovery Administrator
 - **License:** Microsoft 365 E5 or E5 eDiscovery add-on
-- **Access:** Microsoft Purview compliance portal
+- **Access:** Microsoft Purview portal
 
 ## Steps
 

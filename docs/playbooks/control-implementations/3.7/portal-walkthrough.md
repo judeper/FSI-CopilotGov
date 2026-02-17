@@ -6,7 +6,7 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 
 - **Role:** Compliance Administrator or Regulatory Reporting Officer
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
-- **Access:** Microsoft Purview compliance portal, Microsoft 365 Admin Center
+- **Access:** Microsoft Purview portal, Microsoft 365 Admin Center
 
 ## Steps
 

@@ -6,7 +6,7 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 
 - **Role:** Compliance Administrator, Supervisory Principal
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
-- **Access:** Microsoft Purview compliance portal, Microsoft 365 Admin Center
+- **Access:** Microsoft Purview portal, Microsoft 365 Admin Center
 
 ## Steps
 

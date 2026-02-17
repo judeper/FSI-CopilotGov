@@ -6,7 +6,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 - **Role:** Compliance Administrator, IT Risk Manager
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
-- **Access:** Microsoft Purview compliance portal, Compliance Manager
+- **Access:** Microsoft Purview portal, Compliance Manager
 
 ## Steps
 
