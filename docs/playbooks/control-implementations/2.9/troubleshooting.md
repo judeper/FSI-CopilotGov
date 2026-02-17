@@ -7,9 +7,9 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 ### Issue 1: Copilot Activities Not Appearing in Activity Log
 
 - **Symptoms:** Copilot interactions are not visible in the Defender for Cloud Apps activity log despite session policies being configured
-- **Root Cause:** Conditional Access App Control may not be fully configured for Office 365, or the session routing may not be active for the specific Copilot workload.
+- **Root Cause:** Conditional Access App Control may not be fully configured for Microsoft 365, or the session routing may not be active for the specific Copilot workload.
 - **Resolution:**
-  1. Verify Conditional Access App Control is enabled for Office 365 in Defender settings
+  1. Verify Conditional Access App Control is enabled for Microsoft 365 in Defender settings
   2. Check the Conditional Access policy routes traffic through Defender for Cloud Apps
   3. Verify the user's session was proxied (check for the MCAS proxy indicator in the browser)
   4. Allow 24 hours for activity data to appear in the log

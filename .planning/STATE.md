@@ -10,24 +10,24 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 2 of 6 (Global Naming Corrections)
-Plan: 0 of ? in current phase
-Status: Context gathered, ready to plan
-Last activity: 2026-02-17 — Phase 2 context gathered
+Plan: 1 of 5 in current phase (02-01 complete)
+Status: Executing — Plan 01 complete, Plan 02 next
+Last activity: 2026-02-17 — Completed 02-01 (Pillar 1 + 2 naming corrections)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 5% (1 of ~20 total plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 1
+- Average duration: 4 min
+- Total execution time: 4 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 02-global-naming-corrections | 1 | 4 min | 4 min |
 
 *Updated after each plan completion*
 
@@ -40,6 +40,7 @@ Progress: [░░░░░░░░░░] 0%
 - v1.1: Phase 2 scope expanded to full terminology audit (not just BizChat) — Microsoft Learn is canonical authority
 - v1.1: BizChat replacement is context-dependent — "Microsoft 365 Copilot Chat" (free/seeded) vs "Microsoft 365 Copilot" (licensed) — researcher must categorize each instance before replacement
 - v1.1: GLOB-03 (SAM licensing) assigned to Phase 5 alongside FWRK-03 — both touch license-requirements.md; P1-05 handles control 1.7 side in Phase 3
+- 02-01: All BizChat instances in Pillars 1-2 map to free/seeded experience — replaced with "Microsoft 365 Copilot Chat" throughout (not licensed "Microsoft 365 Copilot")
 
 ### Blockers/Concerns
 
@@ -52,5 +53,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-global-naming-corrections/02-CONTEXT.md
+Stopped at: Completed 02-01-PLAN.md (Pillar 1 + 2 naming corrections for GLOB-01/02)
+Resume file: .planning/phases/02-global-naming-corrections/02-02-PLAN.md

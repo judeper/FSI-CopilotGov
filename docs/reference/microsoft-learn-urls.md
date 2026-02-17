@@ -160,7 +160,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Topic | URL |
 |-------|-----|
 | Microsoft Sentinel overview | [https://learn.microsoft.com/en-us/azure/sentinel/overview](https://learn.microsoft.com/en-us/azure/sentinel/overview) |
-| Connect Office 365 data | [https://learn.microsoft.com/en-us/azure/sentinel/data-connectors/office-365](https://learn.microsoft.com/en-us/azure/sentinel/data-connectors/office-365) |
+| Connect Microsoft 365 data | [https://learn.microsoft.com/en-us/azure/sentinel/data-connectors/office-365](https://learn.microsoft.com/en-us/azure/sentinel/data-connectors/office-365) |
 | Create analytics rules | [https://learn.microsoft.com/en-us/azure/sentinel/detect-threats-custom](https://learn.microsoft.com/en-us/azure/sentinel/detect-threats-custom) |
 | Create workbooks | [https://learn.microsoft.com/en-us/azure/sentinel/monitor-your-data](https://learn.microsoft.com/en-us/azure/sentinel/monitor-your-data) |
 

@@ -16,9 +16,9 @@ Step-by-step portal configuration for deploying Microsoft Defender for Cloud App
 **Portal:** Microsoft Defender for Cloud Apps
 **Path:** Defender > Settings > Conditional Access App Control > Connected Apps
 
-Enable Conditional Access App Control for Office 365 applications. This allows Defender for Cloud Apps to proxy Copilot-related sessions and apply real-time controls.
+Enable Conditional Access App Control for Microsoft 365 applications. This allows Defender for Cloud Apps to proxy Copilot-related sessions and apply real-time controls.
 
-Verify Office 365 appears in the connected apps list with "Enabled" status.
+Verify Microsoft 365 appears in the connected apps list with "Enabled" status.
 
 ### Step 2: Create Session Policy for Copilot Monitoring
 
@@ -28,7 +28,7 @@ Verify Office 365 appears in the connected apps list with "Enabled" status.
 Create a session policy targeting Copilot interactions:
 - **Policy name:** "FSI Copilot Session Monitoring"
 - **Session control type:** Monitor all activities
-- **Filters:** App equals Office 365; Activity type includes file operations and content interactions
+- **Filters:** App equals Microsoft 365; Activity type includes file operations and content interactions
 - **Actions:** Log and alert on sensitive content activities
 
 ### Step 3: Configure Content Inspection for Copilot Sessions

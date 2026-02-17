@@ -43,7 +43,7 @@ Test cases and evidence collection procedures for Copilot usage analytics and ad
 - **Steps:**
   1. Run the department-level adoption report script.
   2. Manually verify 3 departments by cross-referencing user lists and activity.
-  3. Confirm department assignments match Azure AD department attributes.
+  3. Confirm department assignments match Entra ID department attributes.
   4. Verify totals sum correctly across all departments.
 - **Expected Result:** Department adoption data is accurately aggregated from individual user data.
 - **Evidence:** Department report with manual verification notes.

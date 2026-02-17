@@ -32,7 +32,7 @@ Common issues and resolution steps for supervisory controls over Copilot-assiste
   1. Audit the current supervisory hierarchy against the firm's registration database.
   2. Update group memberships for any misaligned users.
   3. Implement a monthly reconciliation process between HR systems and supervisory groups.
-  4. Configure Azure AD dynamic groups to auto-assign based on department and registration attributes.
+  4. Configure Entra ID dynamic groups to auto-assign based on department and registration attributes.
 
 ### Issue 4: Reg BI Documentation Gaps in Copilot-Drafted Recommendations
 

@@ -278,7 +278,7 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 
 | Portal | Shorthand |
 |--------|-----------|
-| Microsoft Purview compliance portal | Purview |
+| Microsoft Purview portal | Purview |
 | Microsoft Entra admin center | Entra |
 | Microsoft 365 admin center | M365 Admin |
 | SharePoint admin center | SharePoint Admin |

@@ -65,7 +65,7 @@ $appUsage | Export-Csv "CopilotUsageByApp_$(Get-Date -Format 'yyyyMMdd').csv" -N
 # Generate department-level Copilot adoption metrics
 $data = Import-Csv "CopilotUsageDetail_$(Get-Date -Format 'yyyyMMdd').csv"
 
-# Enrich with department data from Azure AD
+# Enrich with department data from Entra ID
 $enriched = $data | ForEach-Object {
     $user = Get-MgUser -UserId $_.'User Principal Name' -Property Department -ErrorAction SilentlyContinue
     [PSCustomObject]@{

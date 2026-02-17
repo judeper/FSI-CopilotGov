@@ -17,9 +17,9 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 ### Issue 2: Chargeback Allocations Do Not Match Finance Records
 
 - **Symptoms:** Department chargeback totals from the license report do not match what finance has budgeted or invoiced.
-- **Root Cause:** User department attributes in Azure AD may be outdated, or the chargeback calculation uses different rates.
+- **Root Cause:** User department attributes in Entra ID may be outdated, or the chargeback calculation uses different rates.
 - **Resolution:**
-  1. Audit Azure AD department attributes against HR records.
+  1. Audit Entra ID department attributes against HR records.
   2. Update stale department assignments for users who have moved teams.
   3. Align the per-user cost rate with the contracted license price.
   4. Reconcile the total license count with the Microsoft invoice.

@@ -19,7 +19,7 @@ Step-by-step portal configuration for implementing Conditional Access policies t
 Create a dedicated Conditional Access policy targeting Copilot workloads:
 - **Name:** "FSI Copilot Access — Compliant Device Required"
 - **Users:** Include Copilot deployment groups; exclude emergency access accounts
-- **Target resources:** Office 365 (covers all Copilot-enabled workloads)
+- **Target resources:** Microsoft 365 (covers all Copilot-enabled workloads)
 - **Conditions:** All client apps, any platform
 - **Grant:** Require device compliance AND require MFA
 

@@ -230,7 +230,7 @@ Admin portal navigation paths for every configuration referenced in the FSI Copi
 | Workbooks | Microsoft Sentinel > Workbooks | Workspace-specific URL |
 | Incidents | Microsoft Sentinel > Incidents | Workspace-specific URL |
 | Hunting queries | Microsoft Sentinel > Hunting | Workspace-specific URL |
-| Office 365 connector | Data connectors > Office 365 | Workspace-specific URL |
+| Microsoft 365 connector | Data connectors > Microsoft 365 | Workspace-specific URL |
 
 ---
 
