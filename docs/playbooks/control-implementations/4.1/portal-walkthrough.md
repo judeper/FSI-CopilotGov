@@ -26,7 +26,7 @@ Step-by-step portal configuration for managing Microsoft 365 Copilot administrat
 
 1. Review each Copilot feature and its current availability:
    - Copilot in Word, Excel, PowerPoint, Outlook, Teams
-   - Copilot Chat (formerly Business Chat)
+   - Microsoft 365 Copilot Chat
    - Copilot in Loop, OneNote, Whiteboard
 2. For each feature, set availability by group:
    - **Pilot group** — initial rollout users for testing
