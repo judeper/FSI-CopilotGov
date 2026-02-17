@@ -1,0 +1,470 @@
+site_name: FSI Copilot Governance Framework
+site_description: "Governance framework for Microsoft 365 Copilot in Financial Services"
+site_author: "FSI Copilot Governance Team"
+site_url: "https://judeper.github.io/FSI-CopilotGov/"
+copyright: "*FSI Copilot Governance Framework v1.0 - February 2026*"
+
+extra:
+  generator: false
+  footer: |
+    Built with care for the US Financial Services Microsoft Community
+    This framework does not constitute legal advice. See Disclaimer.
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.path
+    - search.suggest
+    - search.highlight
+    - toc.integrate
+  palette:
+    # Light mode
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search
+
+# Site-wide link validation (MkDocs 1.6+). CI runs `mkdocs build --strict`, so any warnings here will fail the build.
+validation:
+  nav:
+    omitted_files: warn
+    not_found: warn
+    absolute_links: warn
+  links:
+    not_found: warn
+    anchors: warn
+    absolute_links: warn
+
+# Exclude files that are intentionally not in navigation
+exclude_docs: |
+  images/
+  scripts/
+  templates/
+  controls/CONTROL-INDEX.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+      clickable_checkbox: false
+  - attr_list
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Disclaimer: disclaimer.md
+
+  - Getting Started:
+    - Quick Start: getting-started/quick-start.md
+    - Implementation Checklist: getting-started/checklist.md
+
+  - Framework:
+    - Overview: framework/index.md
+    - Executive Summary: framework/executive-summary.md
+    - Governance Fundamentals: framework/governance-fundamentals.md
+    - Copilot Architecture: framework/copilot-architecture.md
+    - Copilot Surfaces: framework/copilot-surfaces.md
+    - Regulatory Framework: framework/regulatory-framework.md
+    - Operating Model: framework/operating-model.md
+    - Adoption Roadmap: framework/adoption-roadmap.md
+    - Relationship to AgentGov: framework/relationship-to-agentgov.md
+
+  - Control Catalog:
+    - Control Index: controls/index.md
+    - Pillar 1 - Readiness & Assessment:
+      - Overview: controls/pillar-1-readiness/index.md
+      - 1.1 Copilot Readiness Assessment: controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md
+      - 1.2 Oversharing Detection (DSPM for AI): controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md
+      - 1.3 Restricted SharePoint Search: controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md
+      - 1.4 Semantic Index Governance: controls/pillar-1-readiness/1.4-semantic-index-governance.md
+      - 1.5 Sensitivity Label Taxonomy Review: controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md
+      - 1.6 Permission Model Audit: controls/pillar-1-readiness/1.6-permission-model-audit.md
+      - 1.7 SharePoint Advanced Management: controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md
+      - 1.8 Information Architecture Review: controls/pillar-1-readiness/1.8-information-architecture-review.md
+      - 1.9 License Planning: controls/pillar-1-readiness/1.9-license-planning.md
+      - 1.10 Vendor Risk Management: controls/pillar-1-readiness/1.10-vendor-risk-management.md
+      - 1.11 Change Management and Adoption: controls/pillar-1-readiness/1.11-change-management-adoption.md
+      - 1.12 Training and Awareness: controls/pillar-1-readiness/1.12-training-awareness.md
+      - 1.13 Extensibility Readiness: controls/pillar-1-readiness/1.13-extensibility-readiness.md
+    - Pillar 2 - Security & Protection:
+      - Overview: controls/pillar-2-security/index.md
+      - 2.1 DLP Policies for Copilot: controls/pillar-2-security/2.1-dlp-policies-for-copilot.md
+      - 2.2 Sensitivity Labels and Classification: controls/pillar-2-security/2.2-sensitivity-labels-classification.md
+      - 2.3 Conditional Access Policies: controls/pillar-2-security/2.3-conditional-access-policies.md
+      - 2.4 Information Barriers (Chinese Wall): controls/pillar-2-security/2.4-information-barriers.md
+      - 2.5 Data Minimization and Grounding Scope: controls/pillar-2-security/2.5-data-minimization-grounding-scope.md
+      - 2.6 Web Search Controls: controls/pillar-2-security/2.6-web-search-controls.md
+      - 2.7 Data Residency: controls/pillar-2-security/2.7-data-residency.md
+      - 2.8 Encryption: controls/pillar-2-security/2.8-encryption.md
+      - 2.9 Defender for Cloud Apps: controls/pillar-2-security/2.9-defender-cloud-apps.md
+      - 2.10 Insider Risk Detection: controls/pillar-2-security/2.10-insider-risk-detection.md
+      - 2.11 Copilot Pages Security: controls/pillar-2-security/2.11-copilot-pages-security.md
+      - 2.12 External Sharing Governance: controls/pillar-2-security/2.12-external-sharing-governance.md
+      - 2.13 Plugin and Connector Security: controls/pillar-2-security/2.13-plugin-connector-security.md
+      - 2.14 Declarative Agents Governance: controls/pillar-2-security/2.14-declarative-agents-governance.md
+      - 2.15 Network Security: controls/pillar-2-security/2.15-network-security.md
+    - Pillar 3 - Compliance & Audit:
+      - Overview: controls/pillar-3-compliance/index.md
+      - 3.1 Copilot Audit Logging: controls/pillar-3-compliance/3.1-copilot-audit-logging.md
+      - 3.2 Data Retention Policies: controls/pillar-3-compliance/3.2-data-retention-policies.md
+      - 3.3 eDiscovery for Copilot Content: controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md
+      - 3.4 Communication Compliance: controls/pillar-3-compliance/3.4-communication-compliance.md
+      - 3.5 FINRA 2210 Compliance: controls/pillar-3-compliance/3.5-finra-2210-compliance.md
+      - 3.6 Supervision and Oversight: controls/pillar-3-compliance/3.6-supervision-oversight.md
+      - 3.7 Regulatory Reporting: controls/pillar-3-compliance/3.7-regulatory-reporting.md
+      - 3.8 Model Risk Management: controls/pillar-3-compliance/3.8-model-risk-management.md
+      - 3.9 AI Disclosure and Transparency: controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md
+      - 3.10 SEC Reg S-P Privacy: controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md
+      - 3.11 Record Keeping: controls/pillar-3-compliance/3.11-record-keeping.md
+      - 3.12 Evidence Collection: controls/pillar-3-compliance/3.12-evidence-collection.md
+      - 3.13 FFIEC Alignment: controls/pillar-3-compliance/3.13-ffiec-alignment.md
+    - Pillar 4 - Operations & Monitoring:
+      - Overview: controls/pillar-4-operations/index.md
+      - 4.1 Admin Settings and Feature Management: controls/pillar-4-operations/4.1-admin-settings-feature-management.md
+      - 4.2 Teams Meetings Governance: controls/pillar-4-operations/4.2-teams-meetings-governance.md
+      - 4.3 Teams Phone and Queues: controls/pillar-4-operations/4.3-teams-phone-queues.md
+      - 4.4 Viva Suite Governance: controls/pillar-4-operations/4.4-viva-suite-governance.md
+      - 4.5 Usage Analytics: controls/pillar-4-operations/4.5-usage-analytics.md
+      - 4.6 Viva Insights Measurement: controls/pillar-4-operations/4.6-viva-insights-measurement.md
+      - 4.7 Feedback and Telemetry: controls/pillar-4-operations/4.7-feedback-telemetry.md
+      - 4.8 Cost Allocation: controls/pillar-4-operations/4.8-cost-allocation.md
+      - 4.9 Incident Reporting: controls/pillar-4-operations/4.9-incident-reporting.md
+      - 4.10 Business Continuity: controls/pillar-4-operations/4.10-business-continuity.md
+      - 4.11 Sentinel Integration: controls/pillar-4-operations/4.11-sentinel-integration.md
+      - 4.12 Change Management for Rollouts: controls/pillar-4-operations/4.12-change-management-rollouts.md
+      - 4.13 Extensibility Governance: controls/pillar-4-operations/4.13-extensibility-governance.md
+
+  - Playbooks:
+    - Overview: playbooks/index.md
+    - Control Implementations:
+      - Overview: playbooks/control-implementations/index.md
+      - Pillar 1 - Readiness & Assessment:
+        - 1.1 Copilot Readiness Assessment:
+          - Portal Walkthrough: playbooks/control-implementations/1.1/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.1/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.1/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.1/troubleshooting.md
+        - 1.2 Oversharing Detection:
+          - Portal Walkthrough: playbooks/control-implementations/1.2/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.2/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.2/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.2/troubleshooting.md
+        - 1.3 Restricted SharePoint Search:
+          - Portal Walkthrough: playbooks/control-implementations/1.3/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.3/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.3/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.3/troubleshooting.md
+        - 1.4 Semantic Index Governance:
+          - Portal Walkthrough: playbooks/control-implementations/1.4/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.4/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.4/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.4/troubleshooting.md
+        - 1.5 Sensitivity Label Taxonomy:
+          - Portal Walkthrough: playbooks/control-implementations/1.5/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.5/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.5/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.5/troubleshooting.md
+        - 1.6 Permission Model Audit:
+          - Portal Walkthrough: playbooks/control-implementations/1.6/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.6/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.6/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.6/troubleshooting.md
+        - 1.7 SharePoint Advanced Management:
+          - Portal Walkthrough: playbooks/control-implementations/1.7/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.7/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.7/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.7/troubleshooting.md
+        - 1.8 Information Architecture:
+          - Portal Walkthrough: playbooks/control-implementations/1.8/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.8/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.8/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.8/troubleshooting.md
+        - 1.9 License Planning:
+          - Portal Walkthrough: playbooks/control-implementations/1.9/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.9/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.9/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.9/troubleshooting.md
+        - 1.10 Vendor Risk Management:
+          - Portal Walkthrough: playbooks/control-implementations/1.10/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.10/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.10/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.10/troubleshooting.md
+        - 1.11 Change Management:
+          - Portal Walkthrough: playbooks/control-implementations/1.11/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.11/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.11/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.11/troubleshooting.md
+        - 1.12 Training and Awareness:
+          - Portal Walkthrough: playbooks/control-implementations/1.12/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.12/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.12/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.12/troubleshooting.md
+        - 1.13 Extensibility Readiness:
+          - Portal Walkthrough: playbooks/control-implementations/1.13/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.13/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.13/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.13/troubleshooting.md
+      - Pillar 2 - Security & Protection:
+        - 2.1 DLP Policies:
+          - Portal Walkthrough: playbooks/control-implementations/2.1/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.1/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.1/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.1/troubleshooting.md
+        - 2.2 Sensitivity Labels:
+          - Portal Walkthrough: playbooks/control-implementations/2.2/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.2/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.2/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.2/troubleshooting.md
+        - 2.3 Conditional Access:
+          - Portal Walkthrough: playbooks/control-implementations/2.3/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.3/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.3/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.3/troubleshooting.md
+        - 2.4 Information Barriers:
+          - Portal Walkthrough: playbooks/control-implementations/2.4/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.4/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.4/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.4/troubleshooting.md
+        - 2.5 Data Minimization:
+          - Portal Walkthrough: playbooks/control-implementations/2.5/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.5/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.5/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.5/troubleshooting.md
+        - 2.6 Web Search Controls:
+          - Portal Walkthrough: playbooks/control-implementations/2.6/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.6/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.6/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.6/troubleshooting.md
+        - 2.7 Data Residency:
+          - Portal Walkthrough: playbooks/control-implementations/2.7/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.7/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.7/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.7/troubleshooting.md
+        - 2.8 Encryption:
+          - Portal Walkthrough: playbooks/control-implementations/2.8/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.8/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.8/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.8/troubleshooting.md
+        - 2.9 Defender for Cloud Apps:
+          - Portal Walkthrough: playbooks/control-implementations/2.9/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.9/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.9/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.9/troubleshooting.md
+        - 2.10 Insider Risk Detection:
+          - Portal Walkthrough: playbooks/control-implementations/2.10/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.10/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.10/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.10/troubleshooting.md
+        - 2.11 Copilot Pages Security:
+          - Portal Walkthrough: playbooks/control-implementations/2.11/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.11/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.11/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.11/troubleshooting.md
+        - 2.12 External Sharing:
+          - Portal Walkthrough: playbooks/control-implementations/2.12/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.12/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.12/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.12/troubleshooting.md
+        - 2.13 Plugin and Connector Security:
+          - Portal Walkthrough: playbooks/control-implementations/2.13/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.13/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.13/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.13/troubleshooting.md
+        - 2.14 Declarative Agents:
+          - Portal Walkthrough: playbooks/control-implementations/2.14/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.14/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.14/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.14/troubleshooting.md
+        - 2.15 Network Security:
+          - Portal Walkthrough: playbooks/control-implementations/2.15/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.15/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.15/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.15/troubleshooting.md
+      - Pillar 3 - Compliance & Audit:
+        - 3.1 Audit Logging:
+          - Portal Walkthrough: playbooks/control-implementations/3.1/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.1/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.1/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.1/troubleshooting.md
+        - 3.2 Data Retention:
+          - Portal Walkthrough: playbooks/control-implementations/3.2/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.2/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.2/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.2/troubleshooting.md
+        - 3.3 eDiscovery:
+          - Portal Walkthrough: playbooks/control-implementations/3.3/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.3/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.3/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.3/troubleshooting.md
+        - 3.4 Communication Compliance:
+          - Portal Walkthrough: playbooks/control-implementations/3.4/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.4/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.4/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.4/troubleshooting.md
+        - 3.5 FINRA 2210:
+          - Portal Walkthrough: playbooks/control-implementations/3.5/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.5/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.5/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.5/troubleshooting.md
+        - 3.6 Supervision:
+          - Portal Walkthrough: playbooks/control-implementations/3.6/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.6/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.6/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.6/troubleshooting.md
+        - 3.7 Regulatory Reporting:
+          - Portal Walkthrough: playbooks/control-implementations/3.7/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.7/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.7/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.7/troubleshooting.md
+        - 3.8 Model Risk Management:
+          - Portal Walkthrough: playbooks/control-implementations/3.8/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.8/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.8/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.8/troubleshooting.md
+        - 3.9 AI Disclosure:
+          - Portal Walkthrough: playbooks/control-implementations/3.9/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.9/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.9/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.9/troubleshooting.md
+        - 3.10 SEC Reg S-P:
+          - Portal Walkthrough: playbooks/control-implementations/3.10/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.10/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.10/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.10/troubleshooting.md
+        - 3.11 Record Keeping:
+          - Portal Walkthrough: playbooks/control-implementations/3.11/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.11/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.11/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.11/troubleshooting.md
+        - 3.12 Evidence Collection:
+          - Portal Walkthrough: playbooks/control-implementations/3.12/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.12/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.12/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.12/troubleshooting.md
+        - 3.13 FFIEC Alignment:
+          - Portal Walkthrough: playbooks/control-implementations/3.13/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.13/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.13/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.13/troubleshooting.md
+      - Pillar 4 - Operations & Monitoring:
+        - 4.1 Admin Settings:
+          - Portal Walkthrough: playbooks/control-implementations/4.1/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.1/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.1/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.1/troubleshooting.md
+        - 4.2 Teams Meetings:
+          - Portal Walkthrough: playbooks/control-implementations/4.2/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.2/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.2/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.2/troubleshooting.md
+        - 4.3 Teams Phone and Queues:
+          - Portal Walkthrough: playbooks/control-implementations/4.3/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.3/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.3/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.3/troubleshooting.md
+        - 4.4 Viva Suite:
+          - Portal Walkthrough: playbooks/control-implementations/4.4/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.4/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.4/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.4/troubleshooting.md
+        - 4.5 Usage Analytics:
+          - Portal Walkthrough: playbooks/control-implementations/4.5/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.5/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.5/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.5/troubleshooting.md
+        - 4.6 Viva Insights:
+          - Portal Walkthrough: playbooks/control-implementations/4.6/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.6/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.6/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.6/troubleshooting.md
+        - 4.7 Feedback and Telemetry:
+          - Portal Walkthrough: playbooks/control-implementations/4.7/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.7/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.7/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.7/troubleshooting.md
+        - 4.8 Cost Allocation:
+          - Portal Walkthrough: playbooks/control-implementations/4.8/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.8/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.8/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.8/troubleshooting.md
+        - 4.9 Incident Reporting:
+          - Portal Walkthrough: playbooks/control-implementations/4.9/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.9/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.9/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.9/troubleshooting.md
+        - 4.10 Business Continuity:
+          - Portal Walkthrough: playbooks/control-implementations/4.10/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.10/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.10/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.10/troubleshooting.md
+        - 4.11 Sentinel Integration:
+          - Portal Walkthrough: playbooks/control-implementations/4.11/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.11/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.11/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.11/troubleshooting.md
+        - 4.12 Change Management:
+          - Portal Walkthrough: playbooks/control-implementations/4.12/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.12/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.12/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.12/troubleshooting.md
+        - 4.13 Extensibility Governance:
+          - Portal Walkthrough: playbooks/control-implementations/4.13/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.13/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.13/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.13/troubleshooting.md
+    - Getting Started:
+      - Phase 0 - Governance Setup: playbooks/getting-started/phase-0-governance-setup.md
+      - Phase 1 - Pilot Deployment: playbooks/getting-started/phase-1-pilot-deployment.md
+      - Phase 2 - Expansion: playbooks/getting-started/phase-2-expansion.md
+    - Governance Operations:
+      - Governance Operating Calendar: playbooks/governance-operations/governance-operating-calendar.md
+      - RACI Governance Template: playbooks/governance-operations/raci-governance-template.md
+      - Escalation Matrix: playbooks/governance-operations/escalation-matrix.md
+    - Compliance and Audit:
+      - Evidence Pack Assembly: playbooks/compliance-and-audit/evidence-pack-assembly.md
+      - Audit Readiness Checklist: playbooks/compliance-and-audit/audit-readiness-checklist.md
+      - Examination Response Guide: playbooks/compliance-and-audit/examination-response-guide.md
+    - Incident and Risk:
+      - AI Incident Response Playbook: playbooks/incident-and-risk/ai-incident-response-playbook.md
+      - AI Risk Assessment Template: playbooks/incident-and-risk/ai-risk-assessment-template.md
+      - Remediation Tracking: playbooks/incident-and-risk/remediation-tracking.md
+    - Regulatory Modules:
+      - Colorado AI Act Readiness: playbooks/regulatory-modules/colorado-ai-act-readiness.md
+
+  - Reference:
+    - Overview: reference/index.md
+    - Copilot Surfaces Matrix: reference/copilot-surfaces-matrix.md
+    - Copilot Admin Toggles: reference/copilot-admin-toggles.md
+    - Regulatory Mappings: reference/regulatory-mappings.md
+    - NIST AI RMF Crosswalk: reference/nist-ai-rmf-crosswalk.md
+    - License Requirements: reference/license-requirements.md
+    - Portal Paths: reference/portal-paths-quick-reference.md
+    - Microsoft Learn URLs: reference/microsoft-learn-urls.md
+    - Glossary: reference/glossary.md
+    - FAQ: reference/faq.md
+    - FSI Configuration Examples: reference/fsi-configuration-examples.md

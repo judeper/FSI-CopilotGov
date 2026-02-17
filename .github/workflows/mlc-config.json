@@ -1,0 +1,24 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^https://admin\\.microsoft\\.com"
+    },
+    {
+      "pattern": "^https://compliance\\.microsoft\\.com"
+    },
+    {
+      "pattern": "^https://security\\.microsoft\\.com"
+    },
+    {
+      "pattern": "^https://entra\\.microsoft\\.com"
+    },
+    {
+      "pattern": "^https://portal\\.azure\\.com"
+    }
+  ],
+  "timeout": "10s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "30s",
+  "aliveStatusCodes": [200, 206, 301, 302, 403]
+}

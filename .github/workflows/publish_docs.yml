@@ -1,0 +1,66 @@
+name: Publish Docs
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Block internal artifacts under docs/
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          forbidden=$(find docs/reference docs/controls -maxdepth 1 -type f \( -name '*.pdf' -o -name '*.txt' -o -name '*.json' \) -print 2>/dev/null || true)
+          if [[ -n "${forbidden}" ]]; then
+            echo "ERROR: Forbidden maintainer-only artifacts found under docs/reference or docs/controls (must be local-only):"
+            echo "${forbidden}"
+            exit 1
+          fi
+
+          for path in docs/HANDOFF.md docs/implementation-plan.md docs/getting-started/structure.md; do
+            if [[ -f "${path}" ]]; then
+              echo "ERROR: Maintainer-only doc must not exist under docs/: ${path}"
+              exit 1
+            fi
+          done
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+
+      - name: Install MkDocs and Material Theme
+        run: pip install mkdocs-material
+
+      - name: Validate Control Structure
+        run: python scripts/verify_controls.py
+
+      - name: Validate Language Rules
+        run: python scripts/verify_language_rules.py
+
+      - name: Validate Documentation
+        run: mkdocs build --strict
+
+      - name: Deploy to GitHub Pages
+        run: mkdocs gh-deploy --force
