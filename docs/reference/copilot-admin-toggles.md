@@ -37,7 +37,7 @@ Complete inventory of every admin toggle for Microsoft 365 Copilot, organized by
 | Toggle | Portal Path | Default | B | R | Reg | Impact |
 |--------|------------|---------|---|---|-----|--------|
 | Web search in Copilot | Settings > Microsoft 365 Copilot > Web search | On | Off | Off | Off | When On, Copilot can query Bing for additional grounding data. Regulated FSI environments should disable this to prevent external data retrieval and potential data leakage in queries. |
-| Web content in Copilot Chat responses | Settings > Microsoft 365 Copilot > Web search | On | Off | Off | Off | When On, Microsoft 365 Copilot Chat includes web-sourced information in responses. Disable to limit responses to organizational data only. |
+| Web content in Microsoft 365 Copilot Chat responses | Settings > Microsoft 365 Copilot > Web search | On | Off | Off | Off | When On, Microsoft 365 Copilot Chat includes web-sourced information in responses. Disable to limit responses to organizational data only. |
 
 ---
 

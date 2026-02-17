@@ -146,7 +146,7 @@ Organizations should adapt timelines and priorities based on their specific regu
 - [ ] Enable conditional access policies for Copilot users (if not already active) -- Control 2.4
 - [ ] Configure auto-labeling policies for common sensitive content -- Control 2.3
 - [ ] Review and address DLP policy alerts from pilot usage -- Control 2.1
-- [ ] For Regulated: Configure Restricted SharePoint Search for Copilot Chat -- Control 1.4
+- [ ] For Regulated: Configure Restricted SharePoint Search for Microsoft 365 Copilot Chat -- Control 1.4
 - [ ] Assess Copilot Pages usage and governance needs -- Control 4.8
 
 **Week 8: Monitoring and Assessment**

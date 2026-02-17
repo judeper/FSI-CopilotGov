@@ -57,7 +57,7 @@ Copilot respects existing Microsoft 365 permissions. If users have access to con
 1. Run a **SharePoint Advanced Management (SAM) oversharing report** to identify sites with broad access (e.g., "Everyone except external users" permissions)
 2. Review **OneDrive sharing defaults** to confirm they are set to "Specific people" rather than "Anyone" or "People in your organization"
 3. Audit **Microsoft 365 Groups with open membership** that grant unintended SharePoint site access
-4. Enable **Restricted SharePoint Search** during assessment if broad exposure is found — this limits Copilot Chat grounding to a curated list of up to 100 SharePoint sites while you remediate
+4. Enable **Restricted SharePoint Search** during assessment if broad exposure is found — this limits Microsoft 365 Copilot Chat grounding to a curated list of up to 100 SharePoint sites while you remediate
 
 **Key controls:**
 

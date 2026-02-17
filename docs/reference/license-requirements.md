@@ -27,7 +27,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | 1.1 | Oversharing Assessment (SAM reports) | -- | -- | -- | SharePoint Advanced Management | SAM is a separate add-on for both E3 and E5 |
 | 1.1 | Basic SharePoint sharing audit | Included | Included | -- | -- | Basic sharing reports available in SharePoint Admin Center |
 | 1.2 | SharePoint Permissions Review | Included | Included | -- | -- | Native SharePoint admin capabilities |
-| 1.3 | Restricted SharePoint Search | Included | Included | -- | -- | Available in SharePoint Admin Center; limits Copilot Chat grounding |
+| 1.3 | Restricted SharePoint Search | Included | Included | -- | -- | Available in SharePoint Admin Center; limits Microsoft 365 Copilot Chat grounding |
 | 1.4 | OneDrive Sharing Defaults | Included | Included | -- | -- | OneDrive admin settings |
 | 1.5 | M365 Groups Membership Audit | Included | Included | -- | -- | Available via Entra admin center and PowerShell |
 | 1.6 | Guest and External Access Review | Included | Included | -- | -- | Entra ID access reviews require Entra ID P2 (included in E5) |

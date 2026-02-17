@@ -31,7 +31,7 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 - **Resolution:**
   1. Allow 48 hours after the last activity before flagging as inactive.
   2. Cross-reference with the unified audit log for Copilot interaction events.
-  3. Verify the user is using Copilot in tracked applications (not just Copilot Chat in browser).
+  3. Verify the user is using Copilot in tracked applications (not just Microsoft 365 Copilot Chat in browser).
   4. Implement a grace period before license reallocation (e.g., 60 days instead of 30).
 
 ### Issue 4: License Reallocation Disrupting Active Users
