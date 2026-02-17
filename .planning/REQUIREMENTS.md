@@ -89,13 +89,49 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (To be populated during roadmap creation) | | |
+| GLOB-01 | Phase 2 | Pending |
+| GLOB-02 | Phase 2 | Pending |
+| GLOB-03 | Phase 5 | Pending |
+| P1-01 | Phase 3 | Pending |
+| P1-02 | Phase 3 | Pending |
+| P1-03 | Phase 3 | Pending |
+| P1-04 | Phase 3 | Pending |
+| P1-05 | Phase 3 | Pending |
+| P1-06 | Phase 3 | Pending |
+| P2-01 | Phase 3 | Pending |
+| P2-02 | Phase 3 | Pending |
+| P2-03 | Phase 3 | Pending |
+| P2-04 | Phase 3 | Pending |
+| P2-05 | Phase 3 | Pending |
+| P2-06 | Phase 3 | Pending |
+| P3-01 | Phase 4 | Pending |
+| P3-02 | Phase 4 | Pending |
+| P3-03 | Phase 4 | Pending |
+| P3-04 | Phase 4 | Pending |
+| P3-05 | Phase 4 | Pending |
+| P3-06 | Phase 4 | Pending |
+| P3-07 | Phase 4 | Pending |
+| P3-08 | Phase 4 | Pending |
+| P3-09 | Phase 4 | Pending |
+| P4-01 | Phase 4 | Pending |
+| P4-02 | Phase 4 | Pending |
+| P4-03 | Phase 4 | Pending |
+| P4-04 | Phase 4 | Pending |
+| FWRK-01 | Phase 5 | Pending |
+| FWRK-02 | Phase 5 | Pending |
+| FWRK-03 | Phase 5 | Pending |
+| FWRK-04 | Phase 5 | Pending |
+| FWRK-05 | Phase 5 | Pending |
+| PLAY-01 | Phase 6 | Pending |
+| PLAY-02 | Phase 6 | Pending |
+| PLAY-03 | Phase 6 | Pending |
+| PLAY-04 | Phase 6 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 34 total
-- Mapped to phases: 0
-- Unmapped: 34 ⚠️
+- Mapped to phases: 34
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-02-17*
-*Last updated: 2026-02-17 after initial definition*
+*Last updated: 2026-02-17 — traceability populated after roadmap creation*
