@@ -37,7 +37,7 @@ Plans:
   3. All affected files use "Microsoft 365 Copilot Chat" for the free/seeded experience and "Microsoft 365 Copilot" for the licensed experience, with correct shortened forms after first mention
   4. No documentation file contains "Azure Active Directory", "Azure AD" (standalone), "O365", "compliance.microsoft.com", "Microsoft Purview compliance portal", "Security & Compliance Center", or "Microsoft 365 Defender"
   5. MkDocs build completes without new broken reference warnings introduced by the renames
-**Plans**: 5 plans
+**Plans**: 6 plans
 
 Plans:
 - [x] 02-01-PLAN.md — Replace BizChat/M365 Chat in Pillar 1 + Pillar 2 controls (28 files) — COMPLETE 2026-02-17
@@ -45,6 +45,7 @@ Plans:
 - [x] 02-03-PLAN.md — Replace BizChat/M365 Chat in framework, reference, root, and getting-started files (17 files) — COMPLETE 2026-02-17
 - [x] 02-04-PLAN.md — Broader terminology audit: Azure AD, Office 365, Purview portal naming (~40 files) — COMPLETE 2026-02-17
 - [x] 02-05-PLAN.md — Verification pass + ROADMAP success criteria update — COMPLETE 2026-02-17
+- [ ] 02-06-PLAN.md — Gap closure: SC-3 shortened-form policy fixes (14 files)
 
 ### Phase 3: Pillar Updates — Readiness and Security
 **Goal**: Pillars 1 and 2 controls accurately reflect current Microsoft 365 Copilot platform capabilities, including new RBAC roles, DLP policy types, Conditional Access changes, and updated licensing
@@ -109,7 +110,7 @@ Plans: TBD
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
-| 2. Global Naming Corrections | 5/5 | Complete   | 2026-02-17 | 2026-02-17 |
+| 2. Global Naming Corrections | 5/6 | Gap closure | 2026-02-17 | - |
 | 3. Pillar Updates — Readiness and Security | v1.1 | 0/? | Not started | - |
 | 4. Pillar Updates — Compliance and Operations | v1.1 | 0/? | Not started | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |
