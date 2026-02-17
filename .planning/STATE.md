@@ -10,24 +10,24 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 2 of 6 (Global Naming Corrections)
-Plan: 1 of 5 in current phase (02-01 complete)
-Status: Executing — Plan 01 complete, Plan 02 next
-Last activity: 2026-02-17 — Completed 02-01 (Pillar 1 + 2 naming corrections)
+Plan: 3 of 5 in current phase (02-01, 02-02, 02-03 complete)
+Status: Executing — Plan 03 complete, Plan 04 next
+Last activity: 2026-02-17 — Completed 02-03 (framework, reference, root, getting-started naming corrections)
 
-Progress: [██░░░░░░░░] 5% (1 of ~20 total plans complete)
+Progress: [███░░░░░░░] 15% (3 of ~20 total plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 4 min
-- Total execution time: 4 min
+- Total plans completed: 3
+- Average duration: 5 min
+- Total execution time: 14 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 02-global-naming-corrections | 1 | 4 min | 4 min |
+| 02-global-naming-corrections | 3 | 14 min | ~5 min |
 
 *Updated after each plan completion*
 
@@ -41,6 +41,7 @@ Progress: [██░░░░░░░░] 5% (1 of ~20 total plans complete)
 - v1.1: BizChat replacement is context-dependent — "Microsoft 365 Copilot Chat" (free/seeded) vs "Microsoft 365 Copilot" (licensed) — researcher must categorize each instance before replacement
 - v1.1: GLOB-03 (SAM licensing) assigned to Phase 5 alongside FWRK-03 — both touch license-requirements.md; P1-05 handles control 1.7 side in Phase 3
 - 02-01: All BizChat instances in Pillars 1-2 map to free/seeded experience — replaced with "Microsoft 365 Copilot Chat" throughout (not licensed "Microsoft 365 Copilot")
+- [Phase 02-global-naming-corrections]: 02-03: All BizChat references in foundational docs map to 'Microsoft 365 Copilot Chat' (free/seeded experience); shortened form 'Copilot Chat' used after first mention per document, full name in headings
 
 ### Blockers/Concerns
 
@@ -53,5 +54,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 02-01-PLAN.md (Pillar 1 + 2 naming corrections for GLOB-01/02)
-Resume file: .planning/phases/02-global-naming-corrections/02-02-PLAN.md
+Stopped at: Completed 02-03-PLAN.md (framework, reference, root, getting-started naming corrections)
+Resume file: .planning/phases/02-global-naming-corrections/02-04-PLAN.md

@@ -9,8 +9,8 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 
 ### Global Corrections
 
-- [ ] **GLOB-01**: Replace "BizChat" with "Microsoft 365 Copilot Chat" across all 61 affected files (119 occurrences)
-- [ ] **GLOB-02**: Replace "M365 Chat" / "Microsoft 365 Chat" with "Microsoft 365 Copilot Chat" across 49 affected files
+- [x] **GLOB-01**: Replace "BizChat" with "Microsoft 365 Copilot Chat" across all 61 affected files (119 occurrences)
+- [x] **GLOB-02**: Replace "M365 Chat" / "Microsoft 365 Chat" with "Microsoft 365 Copilot Chat" across 49 affected files
 - [ ] **GLOB-03**: Correct SAM licensing in control 1.7 and license-requirements.md — SAM is included with Copilot licenses (currently states the opposite)
 
 ### Pillar 1 — Readiness
