@@ -31,7 +31,7 @@ Pre-deployment data hygiene, oversharing remediation, permissions review, and li
 |---|---|---------|-------|--------|-------|-------|
 | [ ] | 1.1 | Oversharing Assessment and Remediation | B | | | Run SAM oversharing report; remediate broad-access sites |
 | [ ] | 1.2 | SharePoint Permissions Review | B | | | Audit site-level and item-level permissions for excessive access |
-| [ ] | 1.3 | Restricted SharePoint Search Configuration | B | | | Enable RSS to limit BizChat grounding during remediation |
+| [ ] | 1.3 | Restricted SharePoint Search Configuration | B | | | Enable RSS to limit Copilot Chat grounding during remediation |
 | [ ] | 1.4 | OneDrive Sharing Defaults | B | | | Set default sharing to "Specific people" |
 | [ ] | 1.5 | Microsoft 365 Groups Membership Audit | R | | | Review open-membership groups granting site access |
 | [ ] | 1.6 | Guest and External Access Review | R | | | Audit B2B guest access to SharePoint and Teams |

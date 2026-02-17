@@ -219,13 +219,13 @@ See also: [Control 1.5 -- Sensitivity Label Taxonomy Review](../control-implemen
 
 1. **Review available Copilot toggles** for each M365 application:
     - Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner
-    - Business Chat (Microsoft 365 Chat / BizChat)
+    - Microsoft 365 Copilot Chat
     - Copilot Pages
     - Web search / web grounding
 
 2. **Determine which applications to enable for pilot:**
     - Start with lower-risk applications (Word, Excel, PowerPoint) for initial pilot
-    - Defer higher-risk applications (Business Chat, Copilot Pages) until DLP and information barrier controls are validated
+    - Defer higher-risk applications (Microsoft 365 Copilot Chat, Copilot Pages) until DLP and information barrier controls are validated
     - Disable web search grounding if external data sourcing is a compliance concern
 
 3. **Configure toggles according to governance committee decisions**

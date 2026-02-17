@@ -55,7 +55,7 @@ Microsoft 365 Copilot as it appears in:
 - **Communication:** Outlook, Teams (chat, meetings, phone, queues)
 - **Collaboration:** SharePoint, OneDrive, Planner, Stream
 - **Intelligence:** Viva (Insights, Engage, Learning, Pulse, Goals)
-- **AI-Native:** BizChat (Microsoft 365 Chat), Copilot Pages
+- **AI-Native:** Microsoft 365 Copilot Chat, Copilot Pages
 - **Extensibility:** Plugins, Graph connectors, declarative agents
 
 ---
