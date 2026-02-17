@@ -32,10 +32,11 @@ Plans:
 **Depends on**: Phase 1
 **Requirements**: GLOB-01, GLOB-02
 **Success Criteria** (what must be TRUE):
-  1. The string "BizChat" does not appear in any file in the repository
-  2. The strings "M365 Chat" and "Microsoft 365 Chat" do not appear in any file (except where quoting historical context)
-  3. All 110 affected files use "Microsoft 365 Copilot Chat" as the canonical product name
-  4. MkDocs build completes without new broken reference warnings introduced by the renames
+  1. The string "BizChat" does not appear in any documentation file (docs/ or README.md)
+  2. The strings "M365 Chat" and "Microsoft 365 Chat" (standalone, not as part of "Microsoft 365 Copilot Chat") do not appear in any documentation file
+  3. All affected files use "Microsoft 365 Copilot Chat" for the free/seeded experience and "Microsoft 365 Copilot" for the licensed experience, with correct shortened forms after first mention
+  4. No documentation file contains "Azure Active Directory", "Azure AD" (standalone), "O365", "compliance.microsoft.com", "Microsoft Purview compliance portal", "Security & Compliance Center", or "Microsoft 365 Defender"
+  5. MkDocs build completes without new broken reference warnings introduced by the renames
 **Plans**: 5 plans
 
 Plans:
@@ -43,7 +44,7 @@ Plans:
 - [x] 02-02-PLAN.md — Replace BizChat/M365 Chat in Pillar 3 + Pillar 4 controls (17 files) — COMPLETE 2026-02-17
 - [x] 02-03-PLAN.md — Replace BizChat/M365 Chat in framework, reference, root, and getting-started files (17 files) — COMPLETE 2026-02-17
 - [x] 02-04-PLAN.md — Broader terminology audit: Azure AD, Office 365, Purview portal naming (~40 files) — COMPLETE 2026-02-17
-- [ ] 02-05-PLAN.md — Verification pass + ROADMAP success criteria update
+- [x] 02-05-PLAN.md — Verification pass + ROADMAP success criteria update — COMPLETE 2026-02-17
 
 ### Phase 3: Pillar Updates — Readiness and Security
 **Goal**: Pillars 1 and 2 controls accurately reflect current Microsoft 365 Copilot platform capabilities, including new RBAC roles, DLP policy types, Conditional Access changes, and updated licensing
@@ -108,7 +109,7 @@ Plans: TBD
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
-| 2. Global Naming Corrections | 4/5 | In Progress|  | - |
+| 2. Global Naming Corrections | v1.1 | 5/5 | Complete | 2026-02-17 |
 | 3. Pillar Updates — Readiness and Security | v1.1 | 0/? | Not started | - |
 | 4. Pillar Updates — Compliance and Operations | v1.1 | 0/? | Not started | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |
