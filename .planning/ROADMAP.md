@@ -40,9 +40,9 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Replace BizChat/M365 Chat in Pillar 1 + Pillar 2 controls (28 files) — COMPLETE 2026-02-17
-- [ ] 02-02-PLAN.md — Replace BizChat/M365 Chat in Pillar 3 + Pillar 4 controls (17 files)
-- [ ] 02-03-PLAN.md — Replace BizChat/M365 Chat in framework, reference, root, and getting-started files (17 files)
-- [ ] 02-04-PLAN.md — Broader terminology audit: Azure AD, Office 365, Purview portal naming (~38 files)
+- [x] 02-02-PLAN.md — Replace BizChat/M365 Chat in Pillar 3 + Pillar 4 controls (17 files) — COMPLETE 2026-02-17
+- [x] 02-03-PLAN.md — Replace BizChat/M365 Chat in framework, reference, root, and getting-started files (17 files) — COMPLETE 2026-02-17
+- [x] 02-04-PLAN.md — Broader terminology audit: Azure AD, Office 365, Purview portal naming (~40 files) — COMPLETE 2026-02-17
 - [ ] 02-05-PLAN.md — Verification pass + ROADMAP success criteria update
 
 ### Phase 3: Pillar Updates — Readiness and Security
@@ -108,7 +108,7 @@ Plans: TBD
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
-| 2. Global Naming Corrections | 3/5 | In Progress|  | - |
+| 2. Global Naming Corrections | 4/5 | In Progress|  | - |
 | 3. Pillar Updates — Readiness and Security | v1.1 | 0/? | Not started | - |
 | 4. Pillar Updates — Compliance and Operations | v1.1 | 0/? | Not started | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |

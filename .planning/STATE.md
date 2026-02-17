@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 2 of 6 (Global Naming Corrections)
-Plan: 3 of 5 in current phase (02-01, 02-02, 02-03 complete)
-Status: Executing — Plan 03 complete, Plan 04 next
-Last activity: 2026-02-17 — Completed 02-02 (Pillar 3 + Pillar 4 naming corrections) and 02-03 (framework, reference, root docs)
+Plan: 4 of 5 in current phase (02-01, 02-02, 02-03, 02-04 complete)
+Status: Executing — Plan 04 complete, Plan 05 next
+Last activity: 2026-02-17 — Completed 02-04 (Azure AD, Office 365, compliance.microsoft.com, Purview portal name corrections)
 
-Progress: [███░░░░░░░] 15% (3 of ~20 total plans complete)
+Progress: [████░░░░░░] 20% (4 of ~20 total plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 5 min
-- Total execution time: 14 min
+- Total plans completed: 4
+- Average duration: 6 min
+- Total execution time: 26 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 02-global-naming-corrections | 3 | 14 min | ~5 min |
+| 02-global-naming-corrections | 4 | 26 min | ~6 min |
 
 *Updated after each plan completion*
-| Phase 02-global-naming-corrections P02 | 6 | 2 tasks | 17 files |
+| Phase 02-global-naming-corrections P04 | 12 | 2 tasks | 40 files |
 
 ## Accumulated Context
 
@@ -44,6 +44,8 @@ Progress: [███░░░░░░░] 15% (3 of ~20 total plans complete)
 - 02-01: All BizChat instances in Pillars 1-2 map to free/seeded experience — replaced with "Microsoft 365 Copilot Chat" throughout (not licensed "Microsoft 365 Copilot")
 - [Phase 02-global-naming-corrections]: 02-03: All BizChat references in foundational docs map to 'Microsoft 365 Copilot Chat' (free/seeded experience); shortened form 'Copilot Chat' used after first mention per document, full name in headings
 - [Phase 02-global-naming-corrections]: 02-02: All BizChat instances in Pillars 3 and 4 map to 'Microsoft 365 Copilot Chat' (free/seeded experience); full name in headers, 'Copilot Chat' shortened form in body text after first mention
+- [Phase 02-global-naming-corrections]: 02-04: Office 365 E3/E5 SKU names preserved; generic Office 365 platform refs replaced; PowerShell API literals preserved; Entra ID is canonical name; purview.microsoft.com is canonical Purview portal URL
+- [Phase 02-global-naming-corrections]: 02-04: Office 365 SKU names (E1/E3/E5) preserved; generic Office 365 platform refs replaced with Microsoft 365; PowerShell API literals preserved; purview.microsoft.com is canonical Purview portal URL
 
 ### Blockers/Concerns
 
@@ -56,5 +58,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 02-03-PLAN.md (framework, reference, root, getting-started naming corrections)
-Resume file: .planning/phases/02-global-naming-corrections/02-04-PLAN.md
+Stopped at: Completed 02-04-PLAN.md (Azure AD, Office 365, Purview portal corrections)
+Resume file: .planning/phases/02-global-naming-corrections/02-05-PLAN.md
