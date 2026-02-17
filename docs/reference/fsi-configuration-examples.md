@@ -63,7 +63,7 @@ Actions:
 Override: Allow with business justification (Confidential only)
 ```
 
-#### Policy 2: Block Copilot from surfacing MNPI-labeled content in BizChat
+#### Policy 2: Block Copilot from surfacing MNPI-labeled content in Microsoft 365 Copilot Chat
 
 ```
 Policy name: FSI-BD-DLP-002 - MNPI Content Protection

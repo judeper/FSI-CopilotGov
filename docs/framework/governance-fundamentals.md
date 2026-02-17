@@ -25,7 +25,7 @@ The FSI Copilot Governance Framework provides complete guidance for governing Mi
 This framework provides governance guidance for:
 
 - **Microsoft 365 Copilot** -- the AI assistant embedded across M365 applications
-- **BizChat (Microsoft 365 Chat)** -- the cross-application Copilot experience
+- **Microsoft 365 Copilot Chat** -- the cross-application Copilot experience
 - **Copilot Pages** -- AI-generated collaborative content surfaces
 - **Copilot in Teams** -- meeting transcription, recap, and chat assistance
 - **Copilot extensibility** -- plugins, Graph connectors, declarative agents from SharePoint

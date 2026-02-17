@@ -61,7 +61,7 @@ Feature-by-control applicability matrix showing which governance controls apply 
 
 | Copilot Surface | DLP | Sensitivity Labels | Conditional Access | Audit Logging | Retention | eDiscovery | Info Barriers | Comm Compliance | Admin Toggles |
 |----------------|-----|-------------------|-------------------|---------------|-----------|------------|--------------|----------------|---------------|
-| **BizChat** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported |
+| **Microsoft 365 Copilot Chat** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported |
 | **Copilot Pages** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | N/A | Supported |
 
 ### Extensibility

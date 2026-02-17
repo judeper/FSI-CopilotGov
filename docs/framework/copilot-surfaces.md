@@ -20,7 +20,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Communication** | Outlook, Teams | Customer communication drafting, meeting exposure | 3.4, 3.5, 3.6 |
 | **Collaboration** | SharePoint, OneDrive, Planner, Stream | Data discovery amplification, sharing | 1.1, 1.2, 4.8 |
 | **Intelligence** | Viva Insights, Viva Engage, Viva Learning, Viva Pulse, Viva Goals | Employee data analysis, behavioral insights | 3.10, 4.3 |
-| **AI-Native** | BizChat (M365 Chat), Copilot Pages | Cross-tenant data retrieval, new content surfaces | 1.4, 3.2, 4.8 |
+| **AI-Native** | Microsoft 365 Copilot Chat, Copilot Pages | Cross-tenant data retrieval, new content surfaces | 1.4, 3.2, 4.8 |
 | **Extensibility** | Plugins, Graph connectors, declarative agents | Extended data reach, external data flow | 2.8, 4.10 |
 
 ---
@@ -133,7 +133,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 | Attribute | Details |
 |-----------|---------|
-| **Copilot Capabilities** | Site search and summarization (via BizChat grounding), declarative agents from SharePoint sites |
+| **Copilot Capabilities** | Site search and summarization (via Copilot Chat grounding), declarative agents from SharePoint sites |
 | **Data Sources** | SharePoint sites, lists, document libraries (user's accessible content) |
 | **Governance Considerations** | SharePoint is the primary content repository for most organizations and the primary source of oversharing risk. Copilot's Semantic Index indexes all SharePoint content the user can access. Permissions inherited through site hierarchies create broad access patterns. Declarative agents from SharePoint extend Copilot capabilities with site-scoped knowledge. |
 | **Key Controls** | 1.1 (Oversharing assessment), 1.2 (Permissions remediation), 1.4 (Restricted SharePoint Search), 4.10 (Declarative agents), 2.2 (Sensitivity labels) |
@@ -218,24 +218,24 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 ## AI-Native Surfaces
 
-### BizChat (Microsoft 365 Chat)
+### Microsoft 365 Copilot Chat
 
 | Attribute | Details |
 |-----------|---------|
 | **Copilot Capabilities** | Cross-application conversational AI: ask questions about any M365 content, generate content, analyze data, summarize across sources |
 | **Data Sources** | **All M365 content accessible to the user** -- SharePoint, OneDrive, Exchange, Teams, Semantic Index, web search (if enabled) |
-| **Governance Considerations** | **Highest-risk surface for discovery amplification.** BizChat is the primary surface where Copilot searches across all of a user's M365 content simultaneously. A single prompt can surface documents from multiple SharePoint sites, emails, Teams chats, and meeting transcripts. This is where oversharing risk is most acute. Restricted SharePoint Search directly limits BizChat's grounding scope. |
+| **Governance Considerations** | **Highest-risk surface for discovery amplification.** Microsoft 365 Copilot Chat is the primary surface where Copilot searches across all of a user's M365 content simultaneously. A single prompt can surface documents from multiple SharePoint sites, emails, Teams chats, and meeting transcripts. This is where oversharing risk is most acute. Restricted SharePoint Search directly limits Copilot Chat's grounding scope. |
 | **Key Controls** | 1.1-1.4 (All oversharing controls), 1.4 (Restricted SharePoint Search), 2.7 (Web search controls), 3.1 (Audit logging), 3.2 (Retention) |
 
-!!! warning "BizChat and Restricted SharePoint Search"
-    For Regulated environments, **Restricted SharePoint Search (RSS)** is the primary mechanism for controlling which SharePoint sites BizChat uses for grounding. Without RSS, BizChat will ground responses using content from *any* SharePoint site the user can access. RSS limits grounding to an approved site list.
+!!! warning "Microsoft 365 Copilot Chat and Restricted SharePoint Search"
+    For Regulated environments, **Restricted SharePoint Search (RSS)** is the primary mechanism for controlling which SharePoint sites Copilot Chat uses for grounding. Without RSS, Copilot Chat will ground responses using content from *any* SharePoint site the user can access. RSS limits grounding to an approved site list.
 
 ### Copilot Pages
 
 | Attribute | Details |
 |-----------|---------|
 | **Copilot Capabilities** | Collaborative AI-generated content surface; users can promote Copilot responses to shareable Pages; real-time co-authoring with Copilot assistance |
-| **Data Sources** | User's M365 content (via BizChat), page content, collaborator inputs |
+| **Data Sources** | User's M365 content (via Copilot Chat), page content, collaborator inputs |
 | **Governance Considerations** | Pages create new content objects that may duplicate regulated data outside original governance boundaries. Pages are stored in OneDrive and may be shared broadly. Pages require sensitivity labeling, retention policies, and eDiscovery coverage. Pages represent a new data sprawl vector that did not exist before Copilot. |
 | **Key Controls** | 4.8 (Copilot Pages governance), 2.2 (Sensitivity labels), 3.2 (Retention), 3.3 (eDiscovery), 1.11 (Sharing governance) |
 
@@ -278,7 +278,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 | Tier | Risk Level | Surfaces | Governance Priority |
 |------|-----------|----------|-------------------|
-| **Tier 1 (Highest)** | High | BizChat, Outlook, Teams | Full governance at all levels |
+| **Tier 1 (Highest)** | High | Microsoft 365 Copilot Chat, Outlook, Teams | Full governance at all levels |
 | **Tier 2** | Medium-High | Word, Excel, PowerPoint, SharePoint, Copilot Pages | Sensitivity labels, DLP, audit |
 | **Tier 3** | Medium | OneNote, Loop, OneDrive, Stream, Plugins, Connectors | Standard governance, monitoring |
 | **Tier 4** | Lower | Whiteboard, Forms, Planner, Viva suite | Baseline governance, awareness |
@@ -287,7 +287,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 | Surface | Audit (3.1) | DLP (2.1) | Labels (2.2) | Retention (3.2) | Comm Compliance (3.4) | Oversharing (1.1) |
 |---------|-------------|-----------|---------------|-----------------|----------------------|-------------------|
-| BizChat | Required | Required | Required | Required | Recommended | **Critical** |
+| Copilot Chat | Required | Required | Required | Required | Recommended | **Critical** |
 | Outlook | Required | Required | Required | Required | **Required** | Required |
 | Teams | Required | Required | Required | Required | **Required** | Required |
 | Word | Required | Required | Required | Required | If client-facing | Required |

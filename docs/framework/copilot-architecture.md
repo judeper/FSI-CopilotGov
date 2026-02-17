@@ -131,7 +131,7 @@ The Semantic Index is a critical component for governance because it determines 
 | **No content exclusion by site** | Administrators cannot selectively exclude specific SharePoint sites from the Semantic Index (except via Restricted SharePoint Search) | Restricted SharePoint Search (Control 1.4) |
 
 !!! warning "Restricted SharePoint Search"
-    **Restricted SharePoint Search (RSS)** is the primary mechanism for limiting which SharePoint sites are included in Copilot's grounding for BizChat/M365 Chat. When enabled, only sites on the approved list are used for Copilot grounding in the BizChat experience. This is a critical control for Regulated environments. Note: RSS applies to BizChat grounding, not to Copilot within individual apps (e.g., Copilot in Word still accesses files the user has open or recently accessed).
+    **Restricted SharePoint Search (RSS)** is the primary mechanism for limiting which SharePoint sites are included in Copilot's grounding for Microsoft 365 Copilot Chat. When enabled, only sites on the approved list are used for Copilot grounding in the Copilot Chat experience. This is a critical control for Regulated environments. Note: RSS applies to Copilot Chat grounding, not to Copilot within individual apps (e.g., Copilot in Word still accesses files the user has open or recently accessed).
 
 ---
 
@@ -331,7 +331,7 @@ Copilot Pages is an AI-native content surface that allows users to collaborate o
 
 ### How Copilot Pages Work
 
-1. User generates content via Copilot (in BizChat or any M365 app)
+1. User generates content via Copilot (in Microsoft 365 Copilot Chat or any M365 app)
 2. User promotes the response to a "Page" for collaboration
 3. The Page is stored in the user's OneDrive (or a shared location)
 4. Other users can be invited to collaborate on the Page

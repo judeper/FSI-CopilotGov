@@ -8,7 +8,7 @@ Scope boundary between FSI-CopilotGov and FSI-AgentGov, and guidance on when to 
 
 Microsoft's AI ecosystem in Microsoft 365 spans two distinct categories:
 
-1. **Microsoft 365 Copilot** -- the AI assistant embedded in M365 applications (Word, Excel, Outlook, Teams, BizChat, etc.)
+1. **Microsoft 365 Copilot** -- the AI assistant embedded in M365 applications (Word, Excel, Outlook, Teams, Microsoft 365 Copilot Chat, etc.)
 2. **Copilot Studio / Agent Builder** -- the platform for building custom AI agents, declarative agents, and automated workflows
 
 Each category presents different governance challenges. The FSI governance framework is split across two companion repositories to provide focused, actionable guidance for each:
@@ -48,7 +48,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 | M365 Copilot in Word, Excel, PowerPoint, OneNote | Document-level AI assistance |
 | M365 Copilot in Outlook | Email drafting, summarization, coaching |
 | M365 Copilot in Teams | Chat summaries, meeting recaps, transcription |
-| BizChat (M365 Chat) | Cross-application Copilot |
+| Microsoft 365 Copilot Chat | Cross-application Copilot |
 | Copilot Pages | AI-generated collaborative content |
 | Copilot in Viva suite | Viva Insights, Engage, Learning, Pulse, Goals |
 | Copilot in Loop, Whiteboard, Forms, Planner, Stream | App-specific AI features |
@@ -84,7 +84,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 |  |  M365 Copilot in:          |  |  Custom agents:             |  |
 |  |  - Word, Excel, PPT        |  |  - Copilot Studio           |  |
 |  |  - Outlook, Teams          |  |  - Agent Builder            |  |
-|  |  - BizChat, Copilot Pages  |  |  - Power Platform           |  |
+|  |  - Copilot Chat, Copilot Pages  |  |  - Power Platform           |  |
 |  |  - Viva, Loop, etc.        |  |  - Agent 365 / Entra Agent  |  |
 |  |                             |  |                             |  |
 |  |  Extensibility:            |  |  Microsoft agents:          |  |
@@ -120,7 +120,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 | Configuring Copilot feature toggles (web search, per-app controls) | Copilot operational controls |
 | Implementing supervisory review for Copilot-drafted communications | FINRA 2210 / 3110 for Copilot |
 | Setting up communication compliance for Copilot-assisted emails | Copilot-specific compliance monitoring |
-| Governing Copilot Pages, BizChat, or Teams Copilot features | AI-native surface governance |
+| Governing Copilot Pages, Microsoft 365 Copilot Chat, or Teams Copilot features | AI-native surface governance |
 | Managing plugins and Graph connectors for Copilot | Copilot extensibility governance |
 | Building declarative agents from SharePoint (not Copilot Studio) | SharePoint-based custom Copilot experiences |
 
@@ -192,7 +192,7 @@ If your organization already uses FSI-AgentGov and is now deploying M365 Copilot
 | Oversharing assessment and remediation | Copilot amplifies oversharing; agents have scoped data access |
 | Copilot feature toggle management | Per-app controls, web search settings unique to Copilot |
 | Communication compliance for Copilot | Copilot-drafted emails require FINRA 2210 review |
-| Restricted SharePoint Search | Controls BizChat grounding scope; not applicable to agents |
+| Restricted SharePoint Search | Controls Copilot Chat grounding scope; not applicable to agents |
 | Copilot Pages governance | New content surface unique to Copilot |
 | Teams meeting/transcription governance | Copilot indexes meeting transcripts; agents do not |
 

@@ -47,7 +47,7 @@ Microsoft 365 Copilot interaction data is stored within the Microsoft 365 compli
 
 | Data Type | Storage Location | Retention |
 |-----------|-----------------|-----------|
-| **BizChat conversations** | User's Exchange Online mailbox (hidden folder) | Subject to Exchange retention policies |
+| **Microsoft 365 Copilot Chat conversations** | User's Exchange Online mailbox (hidden folder) | Subject to Exchange retention policies |
 | **Copilot in Teams chat** | Teams chat storage (Azure-based) | Subject to Teams retention policies |
 | **Copilot in Teams meetings** | Meeting transcript storage (Exchange/SharePoint) | Subject to meeting retention policies |
 | **Copilot in Outlook** | Exchange Online (within the email context) | Subject to Exchange retention policies |
@@ -101,7 +101,7 @@ Copilot interaction data is subject to the same Microsoft Purview retention poli
 
 | Copilot Context | Retention Governed By | Policy Location |
 |----------------|----------------------|-----------------|
-| BizChat | Exchange Online Copilot retention policy | Purview > Data lifecycle management > Retention policies > Copilot |
+| Microsoft 365 Copilot Chat | Exchange Online Copilot retention policy | Purview > Data lifecycle management > Retention policies > Copilot |
 | Teams chat | Teams chat retention policy | Purview > Data lifecycle management > Retention policies > Teams |
 | Teams meetings | Teams meeting/transcript retention policy | Purview > Data lifecycle management > Retention policies > Teams |
 | Outlook | Exchange Online retention policy | Purview > Data lifecycle management > Retention policies > Exchange |
@@ -160,7 +160,7 @@ These are companion frameworks that address different aspects of Microsoft 365 A
 
 **Which do you need?**
 
-- Deploying M365 Copilot (Word, Teams, Outlook, BizChat, etc.)? Start with FSI-CopilotGov.
+- Deploying M365 Copilot (Word, Teams, Outlook, Microsoft 365 Copilot Chat, etc.)? Start with FSI-CopilotGov.
 - Building custom agents in Copilot Studio or Agent Builder? Start with FSI-AgentGov.
 - Doing both? Use both frameworks independently — they are designed to complement each other.
 

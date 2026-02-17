@@ -12,11 +12,11 @@ Definitions of key terms, products, regulations, and concepts used throughout th
 ### Azure Information Protection (AIP)
 Microsoft's cloud-based solution for classifying and protecting documents and emails by applying labels. Sensitivity labels in Microsoft Purview are the successor to AIP labels; the underlying encryption and rights management capabilities remain.
 
-### BizChat (Microsoft 365 Chat)
-The standalone Microsoft 365 Copilot chat experience (accessed via microsoft365.com/chat or the Copilot app) that can query across all Microsoft 365 data a user has access to via the Microsoft Graph. BizChat grounds its responses in organizational data from Exchange, SharePoint, OneDrive, Teams, and other M365 services. Previously referred to as "Microsoft 365 Chat."
+### Microsoft 365 Copilot Chat
+The free Microsoft 365 Copilot chat experience (accessed via microsoft365.com/chat or the Microsoft 365 Copilot app) that can query across all Microsoft 365 data a user has access to via the Microsoft Graph. Copilot Chat grounds its responses in organizational data from Exchange, SharePoint, OneDrive, Teams, and other M365 services. Included with any Microsoft 365 subscription; does not require a per-user Copilot license. For the licensed experience with full work data grounding, see Microsoft 365 Copilot.
 
 ### Copilot Pages
-A collaborative AI-powered canvas created from BizChat responses. Users can convert a Copilot response into a Page for further editing and sharing. Pages are stored in the user's OneDrive and are subject to the same sharing, retention, and governance policies.
+A collaborative AI-powered canvas created from Microsoft 365 Copilot Chat responses. Users can convert a Copilot response into a Page for further editing and sharing. Pages are stored in the user's OneDrive and are subject to the same sharing, retention, and governance policies.
 
 ### Declarative Agents
 Custom Copilot agents defined through configuration (not code) that scope Copilot's behavior to specific data sources, instructions, and capabilities. Can be created in Copilot Studio, SharePoint, or Teams developer tools.
@@ -34,7 +34,7 @@ Microsoft's AI assistant embedded across Microsoft 365 applications. Copilot use
 A Cloud Access Security Broker (CASB) that provides visibility, control, and threat protection for cloud services including Microsoft 365. Used to create session policies that can monitor and control Copilot interactions in web sessions.
 
 ### Microsoft Entra ID
-Microsoft's cloud-based identity and access management service (formerly Azure Active Directory / Azure AD). Provides Conditional Access, identity protection, and access governance capabilities used to control who can access Copilot and under what conditions.
+Microsoft's cloud-based identity and access management service. Provides Conditional Access, identity protection, and access governance capabilities used to control who can access Copilot and under what conditions.
 
 ### Microsoft Graph
 The unified API and data model that connects Microsoft 365 services. Copilot uses the Microsoft Graph to access emails, files, chats, meetings, and other organizational data when generating responses. Users' existing permissions govern what Graph data Copilot can access.
@@ -49,7 +49,7 @@ Microsoft's cloud-native Security Information and Event Management (SIEM) and Se
 Extensions that allow Copilot to interact with external services and APIs during a conversation. Plugins can retrieve real-time data, perform actions, or connect to line-of-business applications. Each plugin requires governance review for data handling and security.
 
 ### Restricted SharePoint Search (RSS)
-A SharePoint Admin Center setting that limits BizChat's grounding to a curated list of up to 100 SharePoint sites. Useful during oversharing remediation or for environments requiring tight control over which content Copilot can access in BizChat.
+A SharePoint Admin Center setting that limits Copilot Chat's grounding to a curated list of up to 100 SharePoint sites. Useful during oversharing remediation or for environments requiring tight control over which content Copilot can access in Copilot Chat.
 
 ### Semantic Index
 Microsoft's AI-powered index that enhances Microsoft 365 search and Copilot grounding by understanding the meaning and relationships in organizational content. The Semantic Index processes content that users already have access to and respects existing permissions.

@@ -37,7 +37,7 @@ Complete inventory of every admin toggle for Microsoft 365 Copilot, organized by
 | Toggle | Portal Path | Default | B | R | Reg | Impact |
 |--------|------------|---------|---|---|-----|--------|
 | Web search in Copilot | Settings > Microsoft 365 Copilot > Web search | On | Off | Off | Off | When On, Copilot can query Bing for additional grounding data. Regulated FSI environments should disable this to prevent external data retrieval and potential data leakage in queries. |
-| Web content in BizChat responses | Settings > Microsoft 365 Copilot > Web search | On | Off | Off | Off | When On, BizChat includes web-sourced information in responses. Disable to limit responses to organizational data only. |
+| Web content in Copilot Chat responses | Settings > Microsoft 365 Copilot > Web search | On | Off | Off | Off | When On, Microsoft 365 Copilot Chat includes web-sourced information in responses. Disable to limit responses to organizational data only. |
 
 ---
 
@@ -86,7 +86,7 @@ Complete inventory of every admin toggle for Microsoft 365 Copilot, organized by
 
 | Toggle | Portal Path | Default | B | R | Reg | Impact |
 |--------|------------|---------|---|---|-----|--------|
-| Copilot Pages | Settings > Microsoft 365 Copilot > Copilot Pages | On | On | On | Review | When On, users can create Copilot Pages from BizChat responses. Pages are stored in the user's OneDrive. Review for Regulated to assess data residency and retention implications. |
+| Copilot Pages | Settings > Microsoft 365 Copilot > Copilot Pages | On | On | On | Review | When On, users can create Copilot Pages from Copilot Chat responses. Pages are stored in the user's OneDrive. Review for Regulated to assess data residency and retention implications. |
 | Copilot Pages sharing | Settings > Microsoft 365 Copilot > Copilot Pages | Anyone in org | Specific people | Specific people | Specific people | Default sharing scope for newly created Pages. Set to "Specific people" to prevent unintended oversharing. |
 
 ---
@@ -136,7 +136,7 @@ Complete inventory of every admin toggle for Microsoft 365 Copilot, organized by
 
 | Toggle | Portal Path | Default | B | R | Reg | Impact |
 |--------|------------|---------|---|---|-----|--------|
-| Restricted SharePoint Search | SharePoint Admin Center > Settings > Search > Restricted SharePoint Search | Off | Review | Off | Review | When On, limits BizChat grounding to a curated list of up to 100 SharePoint sites. Enable during oversharing remediation or for highly segmented environments. |
+| Restricted SharePoint Search | SharePoint Admin Center > Settings > Search > Restricted SharePoint Search | Off | Review | Off | Review | When On, limits Copilot Chat grounding to a curated list of up to 100 SharePoint sites. Enable during oversharing remediation or for highly segmented environments. |
 | SharePoint content access for Copilot | SharePoint Admin Center > Settings > Copilot | On | On | On | On | Global control for Copilot's ability to access SharePoint content. Permissions still apply. |
 
 ---
