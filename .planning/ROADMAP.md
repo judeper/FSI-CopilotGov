@@ -36,9 +36,14 @@ Plans:
   2. The strings "M365 Chat" and "Microsoft 365 Chat" do not appear in any file (except where quoting historical context)
   3. All 110 affected files use "Microsoft 365 Copilot Chat" as the canonical product name
   4. MkDocs build completes without new broken reference warnings introduced by the renames
-**Plans**: TBD
+**Plans**: 5 plans
 
-Plans: TBD
+Plans:
+- [ ] 02-01-PLAN.md — Replace BizChat/M365 Chat in Pillar 1 + Pillar 2 controls (28 files)
+- [ ] 02-02-PLAN.md — Replace BizChat/M365 Chat in Pillar 3 + Pillar 4 controls (17 files)
+- [ ] 02-03-PLAN.md — Replace BizChat/M365 Chat in framework, reference, root, and getting-started files (17 files)
+- [ ] 02-04-PLAN.md — Broader terminology audit: Azure AD, Office 365, Purview portal naming (~38 files)
+- [ ] 02-05-PLAN.md — Verification pass + ROADMAP success criteria update
 
 ### Phase 3: Pillar Updates — Readiness and Security
 **Goal**: Pillars 1 and 2 controls accurately reflect current Microsoft 365 Copilot platform capabilities, including new RBAC roles, DLP policy types, Conditional Access changes, and updated licensing
@@ -103,7 +108,7 @@ Plans: TBD
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
-| 2. Global Naming Corrections | v1.1 | 0/? | Not started | - |
+| 2. Global Naming Corrections | v1.1 | 0/5 | Planned | - |
 | 3. Pillar Updates — Readiness and Security | v1.1 | 0/? | Not started | - |
 | 4. Pillar Updates — Compliance and Operations | v1.1 | 0/? | Not started | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |
