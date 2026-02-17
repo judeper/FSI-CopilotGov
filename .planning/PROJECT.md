@@ -29,7 +29,13 @@ Financial institutions can deploy Microsoft 365 Copilot with confidence that eve
 
 <!-- Current scope. Building toward these in Review 01. -->
 
-(To be defined in this milestone)
+- [ ] Full quality review of all 54 controls and 216 playbooks
+- [ ] Verify accuracy against Microsoft Learn (portal paths, cmdlets, feature names)
+- [ ] Ensure internal consistency (terminology, formatting, structure)
+- [ ] Deepen FSI-specific substance where content is generic/templated
+- [ ] Strengthen regulatory citations across all regulators
+- [ ] Add cross-linking (related controls, prerequisites, see-also references)
+- [ ] Fix known broken links from MkDocs build
 
 ### Out of Scope
 
@@ -37,6 +43,17 @@ Financial institutions can deploy Microsoft 365 Copilot with confidence that eve
 - Legal advice — framework is informational, not legal/compliance counsel
 - Non-US regulatory frameworks — scoped to US FSI regulators only
 - Copilot Studio / Agent Builder governance — covered by companion FSI-AgentGov repo
+
+## Current Milestone: v1.1 Review 01
+
+**Goal:** Comprehensive quality, regulatory, and structural review of every control and playbook in the framework.
+
+**Target features:**
+- Quality audit of all 54 controls and 216 playbooks (accuracy, depth, consistency)
+- Microsoft Learn verification (portal paths, cmdlet names, feature availability)
+- Regulatory citation strengthening across FINRA, SEC, OCC, FFIEC, and banking regulators
+- Full cross-linking (related controls, prerequisites, see-also references)
+- Broken link resolution and MkDocs navigation improvements
 
 ## Context
 
@@ -66,4 +83,4 @@ Financial institutions can deploy Microsoft 365 Copilot with confidence that eve
 | CI language enforcement | Prevents promissory/guarantee language in regulatory docs | ✓ Good |
 
 ---
-*Last updated: 2026-02-17 after v1.0 initial commit*
+*Last updated: 2026-02-17 after milestone v1.1 Review 01 started*
