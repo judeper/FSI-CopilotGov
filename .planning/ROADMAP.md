@@ -57,9 +57,15 @@ Plans:
   3. Controls 2.1 through 2.10 each reflect their specified updates (dual DLP policy types, label groups, CA enforcement timeline, Information Barriers limitation, AI app catalog, Risky Agents)
   4. No control in Pillar 1 or Pillar 2 contains the now-corrected "BizChat" or "M365 Chat" strings (Phase 2 output validated)
   5. All three governance tiers (Baseline, Recommended, Regulated) are updated consistently within each changed control
-**Plans**: TBD
+**Plans**: 6 plans
 
-Plans: TBD
+Plans:
+- [ ] 03-01-PLAN.md — Update controls 1.1, 1.2, 1.3 (Optimization Assessment, DSPM unified, RCD/RSS) + playbooks + PnP fix for 1.2
+- [ ] 03-02-PLAN.md — Update controls 1.6, 1.7 (RBAC roles, SAM licensing rewrite, DAG, RAC) + playbooks + PnP fix for 1.6/1.8
+- [ ] 03-03-PLAN.md — Update controls 1.9, 2.4, 2.9 (Frontline SKUs, Channel Agent IB, AI app catalog) + playbooks
+- [ ] 03-04-PLAN.md — Update controls 2.1, 2.2 (dual DLP policy types, label groups, agent inheritance) + playbooks + PnP fix for 2.2
+- [ ] 03-05-PLAN.md — Update controls 2.3, 2.10 (CA enforcement, app ID fix, Risky Agents, IRM Triage Agent) + playbooks
+- [ ] 03-06-PLAN.md — Verification pass (SC-1 through SC-5) + opportunistic playbook review + MkDocs build check
 
 ### Phase 4: Pillar Updates — Compliance and Operations
 **Goal**: Pillars 3 and 4 controls accurately reflect current regulatory developments, expanded audit schemas, unified eDiscovery, agentic AI supervision requirements, and new billing models
@@ -111,7 +117,7 @@ Plans: TBD
 |-------|-----------|----------------|--------|-----------|
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
 | 2. Global Naming Corrections | 5/6 | Complete    | 2026-02-17 | - |
-| 3. Pillar Updates — Readiness and Security | v1.1 | 0/? | Not started | - |
+| 3. Pillar Updates — Readiness and Security | v1.1 | 0/6 | Planned | - |
 | 4. Pillar Updates — Compliance and Operations | v1.1 | 0/? | Not started | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |
 | 6. Playbook Updates and Cross-linking | v1.1 | 0/? | Not started | - |
