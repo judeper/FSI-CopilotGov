@@ -109,7 +109,7 @@ Plans: TBD
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
-| 2. Global Naming Corrections | v1.1 | 5/5 | Complete | 2026-02-17 |
+| 2. Global Naming Corrections | 5/5 | Complete   | 2026-02-17 | 2026-02-17 |
 | 3. Pillar Updates — Readiness and Security | v1.1 | 0/? | Not started | - |
 | 4. Pillar Updates — Compliance and Operations | v1.1 | 0/? | Not started | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |

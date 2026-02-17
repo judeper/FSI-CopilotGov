@@ -89,8 +89,8 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GLOB-01 | Phase 2 | Partial (02-01 complete: 28/~61 files; Plans 02-02, 02-03 complete remainder) |
-| GLOB-02 | Phase 2 | Partial (02-01 complete: 28/~49 files; Plans 02-02, 02-03 complete remainder) |
+| GLOB-01 | Phase 2 | Complete (02-01 through 02-05: all files corrected, zero BizChat remaining, verified 2026-02-17) |
+| GLOB-02 | Phase 2 | Complete (02-01 through 02-05: all files corrected, zero M365 Chat/Microsoft 365 Chat remaining, verified 2026-02-17) |
 | GLOB-03 | Phase 5 | Pending |
 | P1-01 | Phase 3 | Pending |
 | P1-02 | Phase 3 | Pending |
@@ -134,4 +134,4 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 
 ---
 *Requirements defined: 2026-02-17*
-*Last updated: 2026-02-17 — GLOB-01/02 marked partial after 02-01 execution (Pillars 1+2 complete)*
+*Last updated: 2026-02-17 — GLOB-01/02 marked Complete after 02-05 verification pass (zero deprecated terms across all docs/)*
