@@ -1,6 +1,6 @@
 # Control 3.3: eDiscovery for Copilot-Generated Content — PowerShell Setup
 
-Automation scripts for managing eDiscovery cases, searches, and holds that include Copilot-generated content.
+Automation scripts for managing eDiscovery cases, searches, and holds that include Copilot-generated content. The underlying PowerShell cmdlets (`New-ComplianceCase`, `New-ComplianceSearch`, `New-CaseHoldPolicy`) remain fully supported in the unified eDiscovery experience -- the portal consolidation does not affect cmdlet behavior.
 
 ## Prerequisites
 
@@ -21,6 +21,7 @@ Connect-IPPSSession -UserPrincipalName admin@contoso.com
 
 ```powershell
 # Create an eDiscovery (Premium) case for Copilot-related investigations
+# Cases created via PowerShell are accessible in the unified eDiscovery experience
 $caseName = "FSI-Copilot-Discovery-$(Get-Date -Format 'yyyyMMdd')"
 
 New-ComplianceCase `
@@ -46,7 +47,7 @@ New-ComplianceSearch `
     -Name $searchName `
     -ExchangeLocation $custodians `
     -SharePointLocation "https://contoso.sharepoint.com/sites/finance" `
-    -ContentMatchQuery "kind:microsoftcopilot AND date>=$startDate AND date<=$endDate" `
+    -ContentMatchQuery "kind:microsearch AND date>=$startDate AND date<=$endDate" `
     -Description "Search for Copilot interactions in FSI custodian mailboxes"
 
 # Start the search
@@ -71,12 +72,30 @@ New-CaseHoldPolicy `
 New-CaseHoldRule `
     -Name "$holdName-Rule" `
     -Policy $holdName `
-    -ContentMatchQuery "kind:microsoftcopilot"
+    -ContentMatchQuery "kind:microsearch"
 
 Write-Host "Custodian hold created for Copilot content" -ForegroundColor Green
 ```
 
-### Script 4: Export Search Results Report
+### Script 4: Verify Pre-Migration Cases Include Copilot Content Location
+
+```powershell
+# Check existing cases for presence of Copilot content location
+# Particularly important for cases created before May 2025 unified experience migration
+$allCases = Get-ComplianceCase | Where-Object { $_.Status -ne "Closed" }
+
+foreach ($case in $allCases) {
+    Write-Host "Case: $($case.Name) | Created: $($case.CreatedDateTime) | Type: $($case.CaseType)"
+
+    # For cases created before May 2025, flag for manual review in the portal
+    $migrationDate = [DateTime]"2025-05-01"
+    if ($case.CreatedDateTime -lt $migrationDate) {
+        Write-Host "  --> Pre-migration case: verify Copilot content location in portal" -ForegroundColor Yellow
+    }
+}
+```
+
+### Script 5: Export Search Results Report
 
 ```powershell
 # Check search status and export results summary
@@ -98,9 +117,10 @@ if ($searchStatus.Status -eq "Completed") {
 
 | Task | Frequency | Script |
 |------|-----------|--------|
-| Review active cases | Weekly | Manual review |
+| Review active cases | Weekly | Manual review + Script 4 for pre-migration check |
 | Hold status verification | Monthly | Script 3 (verify) |
 | Search readiness test | Quarterly | Script 2 (test query) |
+| Pre-migration case audit | One-time | Script 4 |
 
 ## Next Steps
 
