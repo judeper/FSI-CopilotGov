@@ -33,8 +33,8 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 
 ### Pillar 3 — Compliance
 
-- [ ] **P3-01**: Update 3.1 to add expanded audit schema (AgentId, AgentName, XPIA detection, JailbreakDetected, SensitivityLabelId), new RecordTypes (AgentAdminActivity, AgentSettingsAdminActivity), pay-as-you-go audit billing
-- [ ] **P3-02**: Update 3.2 to add restructured retention locations (Microsoft Copilot experiences, Enterprise AI Apps, Other AI Apps), priority cleanup for AI-generated assets, threaded summaries retention
+- [x] **P3-01**: Update 3.1 to add expanded audit schema (AgentId, AgentName, XPIA detection, JailbreakDetected, SensitivityLabelId), new RecordTypes (AgentAdminActivity, AgentSettingsAdminActivity), pay-as-you-go audit billing
+- [x] **P3-02**: Update 3.2 to add restructured retention locations (Microsoft Copilot experiences, Enterprise AI Apps, Other AI Apps), priority cleanup for AI-generated assets, threaded summaries retention
 - [x] **P3-03**: Update 3.3 to document unified eDiscovery experience migration (May 2025) and Feb 2026 UX simplification
 - [x] **P3-04**: Update 3.4 to add expanded Communication Compliance coverage (Security Copilot, Fabric Copilot, Copilot Studio) and IRM integration (CC indicators feeding insider risk)
 - [x] **P3-05**: Update 3.5 to add AI washing enforcement precedent (SEC v. Delphia/Global Predictions) and FINRA 2026 Oversight Report reference
@@ -104,8 +104,8 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 | P2-04 | Phase 3 | Complete |
 | P2-05 | Phase 3 | Complete |
 | P2-06 | Phase 3 | Complete |
-| P3-01 | Phase 4 | Pending |
-| P3-02 | Phase 4 | Pending |
+| P3-01 | Phase 4 | Complete |
+| P3-02 | Phase 4 | Complete |
 | P3-03 | Phase 4 | Complete |
 | P3-04 | Phase 4 | Complete |
 | P3-05 | Phase 4 | Complete |

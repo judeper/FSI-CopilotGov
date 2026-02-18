@@ -43,6 +43,7 @@ Progress: [████████████░] 65% (13 of ~20 total plans c
 | Phase 04-pillar-compliance-operations P05 | 8 | 2 tasks | 10 files |
 | Phase 04-pillar-compliance-operations P02 | 8 | 2 tasks | 10 files |
 | Phase 04-pillar-compliance-operations P03 | 9 | 2 tasks | 10 files |
+| Phase 04-pillar-compliance-operations P01 | 9 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,11 @@ Progress: [████████████░] 65% (13 of ~20 total plans c
 - [Phase 04-pillar-compliance-operations]: 04-03: SEC v. Delphia enforcement precedent placed in 'Why This Matters for FSI' section of 3.5 using !!! warning admonition; follow-up paragraph connects it to 2210(d)(1)(A) AI washing risk
 - [Phase 04-pillar-compliance-operations]: 04-03: Agentic AI supervision in 3.6 placed in dedicated section — Teams channel agents and declarative agents each require full paragraph treatment; full-chain telemetry documented as 4-step chain with tier guidance
 - [Phase 04-pillar-compliance-operations]: 04-03: Agent PowerShell scripts use RecordType CopilotInteraction with AgentId filter — Scripts 5 (all agents) and 6 (specific AgentId) provide complementary retrieval patterns for supervisory review
+- [Phase 04-pillar-compliance-operations]: 04-01: AgentId/FINRA 3110 mapping — AgentId is the supervisory anchor for agentic AI; maps agent invocations to approved use cases per FINRA Rule 3110 supervisory procedures
+- [Phase 04-pillar-compliance-operations]: 04-01: PAYG audit billing positioned at Regulated tier as E5 alternative — requires governance controls (budget caps, spend alerting, per-workload tracking); SEC Rule 17a-4(a) six-year retention is primary driver
+- [Phase 04-pillar-compliance-operations]: 04-01: Microsoft Copilot experiences is the primary retention location for M365 Copilot — Enterprise AI Apps and Other AI Apps noted for awareness only with explicit scope guardrail
+- [Phase 04-pillar-compliance-operations]: 04-01: Threaded summaries retained independently — source content deletion does not cascade to Copilot summary; both source location and Copilot experiences must be covered in retention policies and eDiscovery holds
+- [Phase 04-pillar-compliance-operations]: 04-01: Priority cleanup conservative posture — Regulated tier retains all Copilot-generated content per SEC Rule 17a-3(a)(17) broad communications coverage
 
 ### Blockers/Concerns
 
@@ -93,5 +99,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 04-03-PLAN.md (controls 3.5 SEC v. Delphia + FINRA 2026, control 3.6 agentic AI supervision + SEC 2026 exam focus; 10 files updated; P3-05 and P3-06 requirements satisfied)
-Resume file: .planning/phases/04-pillar-compliance-operations/04-03-SUMMARY.md
+Stopped at: Completed 04-01-PLAN.md (Control 3.1 expanded audit schema + PAYG billing; Control 3.2 restructured retention locations + threaded summaries; 10 files updated; P3-01 and P3-02 requirements satisfied)
+Resume file: .planning/phases/04-pillar-compliance-operations/04-01-SUMMARY.md
