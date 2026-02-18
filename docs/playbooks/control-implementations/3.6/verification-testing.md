@@ -47,6 +47,30 @@ Test cases and evidence collection procedures for validating supervisory control
 - **Expected Result:** All sampled recommendations contain required Reg BI elements and supervisory attestation.
 - **Evidence:** Sampled review records showing Reg BI element completeness.
 
+### Test 5: Agent Audit Trail Capture (FINRA 3110(a) Agent Supervision)
+
+- **Objective:** Verify that the audit trail correctly captures agent-specific interactions for supervisory review when a Teams channel agent or declarative agent is used
+- **Steps:**
+  1. Deploy a test Teams channel agent or use an existing declarative agent in a non-production channel.
+  2. Have a test registered representative interact with the agent (e.g., ask it to summarize account information or draft a communication).
+  3. Wait 15–30 minutes for audit events to propagate to the Purview audit log.
+  4. Run Script 5 (Agent Interaction Audit) from the PowerShell setup guide to retrieve agent-specific CopilotInteraction events.
+  5. Verify the returned records contain: `AgentId`, `AgentName`, the interacting user's identity, and the interaction timestamp.
+  6. Confirm the `XPIA` field is present and set to `false` for normal interactions (no cross-prompt injection attempt detected).
+- **Expected Result:** Agent interactions appear in the audit log with correct AgentId, AgentName, user identity, and timestamp. XPIA flag is captured. The records are exportable for supervisory review evidence.
+- **Evidence:** CSV export from Script 5 showing agent interaction records; Purview audit log screenshot showing CopilotInteraction records with AgentId populated.
+
+### Test 6: WSP Coverage Verification for Deployed Agents
+
+- **Objective:** Confirm that the firm's written supervisory procedures (WSPs) address every currently deployed Copilot agent
+- **Steps:**
+  1. Generate a list of deployed Teams channel agents and declarative agents from the Microsoft 365 Admin Center (Admin Center > Copilot > Agents).
+  2. Cross-reference each deployed agent against the agent inventory section of the firm's WSP Copilot addendum.
+  3. For any agent not listed in the WSP, flag as a gap requiring immediate documentation.
+  4. For listed agents, verify the WSP entry includes: agent scope, authorized actions, supervisory review cadence, and the person responsible for oversight.
+- **Expected Result:** All deployed agents are listed in the WSP with complete supervisory documentation. Zero undocumented agents are found.
+- **Evidence:** Agent inventory from Admin Center (screenshot or export) cross-referenced against WSP agent list; any gaps documented with remediation date.
+
 ## Evidence Collection
 
 | Evidence Item | Source | Format | Retention |
@@ -55,14 +79,17 @@ Test cases and evidence collection procedures for validating supervisory control
 | Pre-send hold records | Message trace | CSV | 7 years |
 | Supervisor ratio report | PowerShell | Text export | With control documentation |
 | Reg BI documentation samples | Review records | Redacted copies | 7 years |
+| Agent interaction audit records | Script 5 output | CSV export | 7 years |
+| WSP agent coverage gap report | Test 6 results | Document | With control documentation |
 
 ## Compliance Mapping
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FINRA 3110 | Supervisory system and WSP requirements | Supports compliance with supervisory review obligations for AI-assisted activities |
+| FINRA 3110(a) | Supervisory system must cover all tools used by associated persons, including agents | Agent audit trail capture and WSP coverage verification confirm agent supervision |
 | SEC Reg BI | Care, disclosure, and conflict obligations | Helps meet best-interest documentation requirements for recommendations |
-| FINRA 3120 | Supervisory control system testing | Supports annual testing of supervisory effectiveness |
+| FINRA 3120 | Supervisory control system testing | Supports annual testing of supervisory effectiveness including agent supervision |
 
 ## Next Steps
 

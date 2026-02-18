@@ -1,6 +1,6 @@
 # Control 3.6: Supervision and Oversight (FINRA 3110 / SEC Reg BI) — PowerShell Setup
 
-Automation scripts for managing supervisory review workflows, reporting, and compliance monitoring for Copilot-assisted activities.
+Automation scripts for managing supervisory review workflows, reporting, and compliance monitoring for Copilot-assisted activities, including agent-specific audit event retrieval for supervisory review of M365 Copilot agents.
 
 ## Prerequisites
 
@@ -121,6 +121,84 @@ $report | Export-Csv "RegBI_Review_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeIn
 Write-Host "Reg BI review report exported: $($report.Count) items" -ForegroundColor Green
 ```
 
+### Script 5: Search Agent-Specific Audit Events for Supervisory Review
+
+```powershell
+# Search CopilotInteraction audit events filtered by AgentId or AgentName
+# for supervisory review of Teams channel agents and declarative agents
+# Supports FINRA Rule 3110(a) agent supervision requirements
+
+$startDate = (Get-Date).AddDays(-30)
+$endDate = Get-Date
+
+# Search all CopilotInteraction records (RecordType 261 = CopilotInteraction)
+$copilotEvents = Search-UnifiedAuditLog `
+    -StartDate $startDate -EndDate $endDate `
+    -RecordType CopilotInteraction `
+    -ResultSize 5000
+
+# Filter for agent interactions — events where AgentId is present
+$agentInteractions = $copilotEvents | ForEach-Object {
+    $data = $_.AuditData | ConvertFrom-Json
+    if ($data.AgentId) {
+        [PSCustomObject]@{
+            Date       = $_.CreationDate
+            User       = $_.UserIds
+            AgentId    = $data.AgentId
+            AgentName  = $data.AgentName
+            XPIA       = $data.XPIA  # Cross-prompt injection attempt flag
+            EventData  = $data.CopilotEventData | ConvertTo-Json -Depth 3
+        }
+    }
+} | Where-Object { $_ -ne $null }
+
+Write-Host "Agent interactions found: $($agentInteractions.Count)" -ForegroundColor Cyan
+$agentInteractions | Format-Table Date, User, AgentName, XPIA -AutoSize
+
+$agentInteractions | Export-Csv "AgentInteractions_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+Write-Host "Agent audit events exported for supervisory review" -ForegroundColor Green
+```
+
+### Script 6: Search Agent Events by Specific Agent ID
+
+```powershell
+# Retrieve all audit events for a specific Copilot agent by AgentId
+# Use when reviewing a particular Teams channel agent or declarative agent
+# that has been flagged for supervisory follow-up
+
+param(
+    [Parameter(Mandatory=$true)]
+    [string]$TargetAgentId,
+    [int]$DaysBack = 30
+)
+
+$startDate = (Get-Date).AddDays(-$DaysBack)
+$endDate = Get-Date
+
+$allCopilotEvents = Search-UnifiedAuditLog `
+    -StartDate $startDate -EndDate $endDate `
+    -RecordType CopilotInteraction `
+    -ResultSize 5000
+
+$agentEvents = $allCopilotEvents | ForEach-Object {
+    $data = $_.AuditData | ConvertFrom-Json
+    if ($data.AgentId -eq $TargetAgentId) {
+        [PSCustomObject]@{
+            Date      = $_.CreationDate
+            User      = $_.UserIds
+            AgentId   = $data.AgentId
+            AgentName = $data.AgentName
+            XPIA      = $data.XPIA
+            RawData   = $_.AuditData
+        }
+    }
+} | Where-Object { $_ -ne $null }
+
+Write-Host "Events for agent '$TargetAgentId': $($agentEvents.Count)" -ForegroundColor Cyan
+$agentEvents | Export-Csv "AgentEvents_${TargetAgentId}_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+Write-Host "Agent-specific audit events exported" -ForegroundColor Green
+```
+
 ## Scheduled Tasks
 
 | Task | Frequency | Script |
@@ -129,6 +207,8 @@ Write-Host "Reg BI review report exported: $($report.Count) items" -ForegroundCo
 | Supervisor ratio audit | Monthly | Script 2 |
 | SLA compliance tracking | Weekly | Script 3 |
 | Reg BI documentation report | Monthly | Script 4 |
+| Agent interaction audit | Weekly | Script 5 |
+| Specific agent review | As needed | Script 6 |
 
 ## Next Steps
 

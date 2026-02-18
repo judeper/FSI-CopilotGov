@@ -57,6 +57,26 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
    - Escalation rate by policy
 2. Set up weekly email digests for supervisory principals.
 
+### Step 5: View Agent-Specific Audit Events for Supervisory Review
+
+**Portal:** Microsoft Purview portal
+**Path:** Solutions > Audit > New search
+
+Supervisory review of M365 Copilot agent interactions (Teams channel agents, declarative agents) requires searching for agent-specific audit events in the Purview audit log. These events are captured as `CopilotInteraction` records with agent-identifying fields.
+
+1. Navigate to **Microsoft Purview** > **Solutions** > **Audit** > **New search**.
+2. Set the date range to cover the supervisory review period.
+3. Under **Activities – friendly names**, search for **"Interacted with Copilot"** to capture `CopilotInteraction` records.
+4. Under **Users**, enter the registered representative whose agent interactions you are reviewing.
+5. Run the search and open individual records to inspect:
+   - **AgentId** — identifies the specific agent (Teams channel agent or declarative agent) that participated in the interaction
+   - **AgentName** — the display name of the agent, useful for correlating to the firm's agent inventory in the WSP
+   - **XPIA** — cross-prompt injection attempt flag; a value of `true` indicates the agent may have processed untrusted external content
+   - **CopilotEventData** — contains the prompt context and any grounding sources the agent accessed
+6. Export results using the **Export** button for retention as supervisory review evidence.
+
+**Note:** Agent interactions where the output was forwarded to a client (via email or document share) should be correlated with Communication Compliance records to confirm the output was reviewed before or after delivery per the firm's supervisory procedures.
+
 ## FSI Recommendations
 
 | Setting | Baseline | Recommended | Regulated |
@@ -65,12 +85,14 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 | Investment recommendation review | 25% | 100% | 100% |
 | Pre-send hold for Copilot advice | Off | Recommended | Required |
 | Supervisor-to-rep ratio | 1:100 | 1:50 | 1:25 |
+| Agent audit event review | Agent inventory only | Periodic sampling of agent interactions | Correlated agent-to-communication review |
 
 ## Regulatory Alignment
 
 - **FINRA Rule 3110** — Supports compliance with supervisory system and written supervisory procedure requirements
-- **SEC Reg BI** — Helps meet best-interest documentation, disclosure, and care obligations
+- **FINRA Rule 3110(a)** — Agent supervision: supervisory system must extend to Teams channel agents and declarative agents used by associated persons
 - **FINRA Rule 3120** — Supports supervisory control system testing requirements
+- **SEC Reg BI** — Helps meet best-interest documentation, disclosure, and care obligations
 
 ## Next Steps
 
