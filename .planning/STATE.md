@@ -45,6 +45,7 @@ Progress: [████████████████░] 80% (16 of ~20 t
 | Phase 04-pillar-compliance-operations P03 | 9 | 2 tasks | 10 files |
 | Phase 04-pillar-compliance-operations P01 | 9 | 2 tasks | 10 files |
 | Phase 04-pillar-compliance-operations P06 | 12 | 2 tasks | 10 files |
+| Phase 04-pillar-compliance-operations P04 | 18 | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,12 @@ Progress: [████████████████░] 80% (16 of ~20 t
 - [Phase 04-pillar-compliance-operations]: 04-06: Copilot Chat analytics documented as aggregation-only in Viva Insights — individual queries never visible; FFIEC IT Examination Handbook Section II.C anchors the monitoring expectation
 - [Phase 04-pillar-compliance-operations]: 04-06: Engage-to-Teams integration is net positive for compliance — dual-location policy coverage (Yammer + Teams) extends compliance perimeter automatically for regulated content
 - [Phase 04-pillar-compliance-operations]: 04-06: PAYG breakeven explicitly documented at 3,000 messages/user/month ($30 per-seat / $0.01 per message); SOX 404 and OCC Heightened Standards (12 CFR Part 30) cited for PAYG budget authorization controls; FFIEC Section II.D for cost-benefit analysis documentation
+- [Phase 04-pillar-compliance-operations]: 04-04: OCC Bulletin 2025-26 proportionality applies to all institution sizes; tier selection (Tier 1/2/3) follows actual usage scope and risk profile; documented rationale citing OCC Bulletin 2025-26 required for Tier 3 at community banks
+- [Phase 04-pillar-compliance-operations]: 04-04: Copilot SR 11-7 gray zone resolved as model inventory inclusion posture — industry consensus and 2023 Interagency AI Guidance support treating Copilot as a model subject to MRM at appropriate tier
+- [Phase 04-pillar-compliance-operations]: 04-04: Reg S-P 72-hour vendor notification (Rule 248.30(a)(3)) requires Microsoft MSRC notification for Copilot NPI incidents; notification precedes investigation completion; 72-hour clock starts at detection, not investigation end
+- [Phase 04-pillar-compliance-operations]: 04-04: SEC Rule 17a-4(f)(2)(ii)(A) audit-trail alternative offered alongside Option B (third-party WORM); Purview regulatory record labels + Preservation Lock + audit log coverage satisfies alternative; compliance counsel review required before relying on Option A
+- [Phase 04-pillar-compliance-operations]: 04-04: Unified narrative threading in 3.11 — 17a-4 audit-trail alternative, $2B+ off-channel enforcement context, and mobile Copilot recordkeeping woven into single cohesive narrative per Phase 4 locked decision; no separate subsections
+- [Phase 04-pillar-compliance-operations]: 04-04: Mobile Copilot Conditional Access cross-reference to Control 2.3 — detailed CA policy configuration lives in 2.3; 3.11 documents the requirement and mobile coverage gap risk
 
 ### Blockers/Concerns
 
@@ -103,5 +110,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 04-06-PLAN.md (Control 4.4 Viva Copilot Chat insights + Engage-to-Teams integration; Control 4.8 PAYG billing model + per-seat vs PAYG comparison + governance controls; 10 files updated; P4-03 and P4-04 requirements satisfied)
-Resume file: .planning/phases/04-pillar-compliance-operations/04-06-SUMMARY.md
+Stopped at: Completed 04-04-PLAN.md (Controls 3.8/3.10/3.11 with OCC Bulletin 2025-26 proportionality, Reg S-P 72-hour amendment, 17a-4 audit-trail alternative, off-channel enforcement, mobile recordkeeping; 15 files updated; P3-07/P3-08/P3-09 satisfied)
+Resume file: .planning/phases/04-pillar-compliance-operations/04-04-SUMMARY.md
