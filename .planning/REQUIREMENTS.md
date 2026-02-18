@@ -15,9 +15,9 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 
 ### Pillar 1 — Readiness
 
-- [ ] **P1-01**: Update 1.1 to add Optimization Assessment as pre-deployment requirement and Office update channel governance
-- [ ] **P1-02**: Update 1.2 to add DSPM unified experience (AI observability, item-level remediation, Purview Posture Agent, Shadow AI discovery)
-- [ ] **P1-03**: Update 1.3 to document RCD as complementary tool to RSS with comparison table and SAM licensing note
+- [x] **P1-01**: Update 1.1 to add Optimization Assessment as pre-deployment requirement and Office update channel governance
+- [x] **P1-02**: Update 1.2 to add DSPM unified experience (AI observability, item-level remediation, Purview Posture Agent, Shadow AI discovery)
+- [x] **P1-03**: Update 1.3 to document RCD as complementary tool to RSS with comparison table and SAM licensing note
 - [x] **P1-04**: Update 1.6 to add new RBAC roles (Purview Data Security AI Viewer, AI Content Viewer, AI Administrator from Entra)
 - [x] **P1-05**: Update 1.7 to correct SAM licensing and add Data Access Governance reports, Restricted Access Control
 - [x] **P1-06**: Update 1.9 to add Frontline (F1/F3) SKU availability and pay-as-you-go licensing option
@@ -92,9 +92,9 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 | GLOB-01 | Phase 2 | Complete (02-01 through 02-05: all files corrected, zero BizChat remaining, verified 2026-02-17) |
 | GLOB-02 | Phase 2 | Complete (02-01 through 02-05: all files corrected, zero M365 Chat/Microsoft 365 Chat remaining, verified 2026-02-17) |
 | GLOB-03 | Phase 5 | Pending |
-| P1-01 | Phase 3 | Pending |
-| P1-02 | Phase 3 | Pending |
-| P1-03 | Phase 3 | Pending |
+| P1-01 | Phase 3 | Complete |
+| P1-02 | Phase 3 | Complete |
+| P1-03 | Phase 3 | Complete |
 | P1-04 | Phase 3 | Complete |
 | P1-05 | Phase 3 | Complete |
 | P1-06 | Phase 3 | Complete |

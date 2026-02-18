@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 3 of 6 (Pillar Updates — Readiness and Security)
-Plan: 5 of 6 in current phase (03-01, 03-02, 03-03, 03-04, 03-05 complete)
-Status: Phase 3 in progress (5/6 plans complete — 03-01 through 03-05 done; 03-06 pending)
-Last activity: 2026-02-18 — Completed 03-04 (controls 2.1 + 2.2 updated; 10 files; dual DLP policy types, default policy simulation mode, Edge DLP, label groups migration, agent label inheritance, nested auto-labeling)
+Plan: 6 of 6 in current phase (03-01 through 03-05 previously complete; 03-01 SUMMARY now created)
+Status: Phase 3 in progress (5/6 plans with SUMMARYs — 03-06 pending)
+Last activity: 2026-02-18 — Completed 03-01 SUMMARY (controls 1.1, 1.2, 1.3 updated; 15 files; Optimization Assessment, unified DSPM experience, RCD+RSS comparison, PnP Entra app registration fix)
 
 Progress: [██████████░░] 55% (11 of ~20 total plans complete)
 
@@ -38,6 +38,7 @@ Progress: [██████████░░] 55% (11 of ~20 total plans comp
 | Phase 03-pillar-readiness-security P02 | 9 | 2 tasks | 11 files |
 | Phase 03-pillar-readiness-security P04 | 11 | 2 tasks | 10 files |
 | Phase 03-pillar-readiness-security P05 | 9 | 2 tasks | 10 files |
+| Phase 03-pillar-readiness-security P01 | 12 | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,8 @@ Progress: [██████████░░] 55% (11 of ~20 total plans comp
 - [Phase 03-pillar-readiness-security]: 03-04: Label groups terminology: 'parent labels migrating to label groups' (GA January 2026, MC1111778) not 'parent labels deprecated'; migration path via Purview > Information Protection > Labels > Migrate sensitivity label scheme
 - [Phase 03-pillar-readiness-security]: 03-04: Copilot Studio agents inherit highest sensitivity label from all knowledge sources — agents require label inheritance assessment as governance gate before activation
 - [Phase 03-pillar-readiness-security]: 03-04: SEC Reg S-P (17 CFR Section 248, amended Dec 3, 2025) citation applied specifically to SIT-based prompt blocking (Type 2) — customer information safeguards must cover AI interaction surfaces
+- [Phase 03-pillar-readiness-security]: 03-01: Unified DSPM documented with dual portal paths (Purview + MAC > Copilot > Overview > Security tab); item-level remediation at Regulated tier; Purview Posture Agent and Shadow AI discovery at Recommended tier
+- [Phase 03-pillar-readiness-security]: 03-01: RCD positioned as Baseline starting point for 1.3 (lower admin overhead), RSS+RCD combination at Regulated tier; SAM included with Copilot licenses at no additional cost; PnP multi-tenant app deleted Sep 9 2024 — custom registration mandatory
 
 ### Blockers/Concerns
 
