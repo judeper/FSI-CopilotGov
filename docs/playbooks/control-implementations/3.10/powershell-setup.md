@@ -1,6 +1,6 @@
 # Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information — PowerShell Setup
 
-Automation scripts for implementing and monitoring privacy controls for consumer financial information when using Copilot.
+Automation scripts for implementing and monitoring privacy controls for consumer financial information when using Copilot, including incident response automation for the 72-hour vendor notification requirement under SEC Rule 248.30(a)(3).
 
 ## Prerequisites
 
@@ -114,12 +114,70 @@ $scorecard = @(
     [PSCustomObject]@{Control="Information Barriers"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
     [PSCustomObject]@{Control="Sensitivity Labels"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
     [PSCustomObject]@{Control="Access Controls"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
-    [PSCustomObject]@{Control="Privacy Impact Assessment"; Status="Completed"; LastVerified=(Get-Date -Format "yyyy-MM-dd")}
+    [PSCustomObject]@{Control="Privacy Impact Assessment"; Status="Completed"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
+    [PSCustomObject]@{Control="Written IRP (Rule 248.30(a)(4))"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
+    [PSCustomObject]@{Control="72-Hour Vendor Notification Procedure (Rule 248.30(a)(3))"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")}
 )
 
 Write-Host "Reg S-P Privacy Control Scorecard:"
 $scorecard | Format-Table -AutoSize
 $scorecard | Export-Csv "RegSP_Scorecard_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+```
+
+### Script 5: Incident Response Timer and Notification Tracking (Rule 248.30(a)(3))
+
+```powershell
+# Track the 72-hour vendor notification window for Reg S-P compliance
+# Run this script when a Copilot NPI incident is detected
+
+param(
+    [Parameter(Mandatory=$true)]
+    [string]$IncidentDescription,
+
+    [Parameter(Mandatory=$true)]
+    [ValidateSet("Critical","High","Medium","Low")]
+    [string]$Severity,
+
+    [Parameter(Mandatory=$false)]
+    [datetime]$DetectionTime = (Get-Date)
+)
+
+$incidentId = "REGSP-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+$notificationDeadline72hr = $DetectionTime.AddHours(72)
+$notificationDeadline30day = $DetectionTime.AddDays(30)
+
+$incidentRecord = [PSCustomObject]@{
+    IncidentId            = $incidentId
+    DetectedAt            = $DetectionTime.ToString("yyyy-MM-dd HH:mm:ss UTC")
+    Severity              = $Severity
+    Description           = $IncidentDescription
+    InternalEscalationBy  = $DetectionTime.AddHours(4).ToString("yyyy-MM-dd HH:mm:ss UTC")
+    ExecutiveNotificationBy = $DetectionTime.AddHours(24).ToString("yyyy-MM-dd HH:mm:ss UTC")
+    VendorNotificationBy  = $notificationDeadline72hr.ToString("yyyy-MM-dd HH:mm:ss UTC")  # Rule 248.30(a)(3)
+    CustomerNotificationBy = $notificationDeadline30day.ToString("yyyy-MM-dd HH:mm:ss UTC")
+    VendorNotified        = "PENDING"
+    CustomerNotified      = "PENDING"
+}
+
+Write-Host "=== Reg S-P NPI Incident Tracker ===" -ForegroundColor Yellow
+Write-Host "Incident ID: $incidentId" -ForegroundColor Cyan
+Write-Host "Severity: $Severity" -ForegroundColor $(if ($Severity -eq "Critical") { "Red" } else { "Yellow" })
+Write-Host ""
+Write-Host "REQUIRED NOTIFICATION DEADLINES:"
+Write-Host "  Internal escalation:    $($incidentRecord.InternalEscalationBy)"
+Write-Host "  Executive notification: $($incidentRecord.ExecutiveNotificationBy)"
+Write-Host "  Microsoft notification: $($incidentRecord.VendorNotificationBy)  [Rule 248.30(a)(3) — 72-HOUR DEADLINE]" -ForegroundColor Red
+Write-Host "  Customer notification:  $($incidentRecord.CustomerNotificationBy)  [30-day deadline]"
+Write-Host ""
+Write-Host "Microsoft notification channel: Microsoft Security Response Center (msrc.microsoft.com)"
+
+$incidentRecord | Export-Csv "RegSP_Incident_$incidentId.csv" -NoTypeInformation
+Write-Host "`nIncident record saved to: RegSP_Incident_$incidentId.csv" -ForegroundColor Green
+```
+
+**Usage example:**
+```powershell
+.\Script5-IncidentTracker.ps1 -IncidentDescription "Copilot Chat surfaced client SSN to unauthorized advisor" -Severity "Critical"
 ```
 
 ## Scheduled Tasks
@@ -129,6 +187,7 @@ $scorecard | Export-Csv "RegSP_Scorecard_$(Get-Date -Format 'yyyyMMdd').csv" -No
 | DLP incident report | Weekly | Script 2 |
 | NPI location assessment | Quarterly | Script 3 |
 | Privacy control scorecard | Monthly | Script 4 |
+| Incident response timer | On-demand (at incident detection) | Script 5 |
 
 ## Next Steps
 

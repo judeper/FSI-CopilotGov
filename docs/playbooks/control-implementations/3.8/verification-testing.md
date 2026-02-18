@@ -6,16 +6,29 @@ Test cases and evidence collection procedures to validate alignment with OCC and
 
 ### Test 1: Model Inventory Completeness
 
-- **Objective:** Verify that the Copilot model inventory entry contains all OCC 2011-12 required fields
+- **Objective:** Verify that the Copilot model inventory entry contains all required fields appropriate to the institution's tier classification
 - **Steps:**
   1. Review the model inventory entry for Microsoft 365 Copilot.
   2. Verify all required fields are populated: model name, version, purpose, inputs, outputs, risk tier, owner, validation date.
-  3. Confirm the risk tier classification follows the firm's model tiering methodology.
+  3. Confirm the risk tier classification follows the firm's model tiering methodology and reflects actual Copilot usage scope (Tier 1/2/3 as appropriate).
   4. Verify the model card references Microsoft's published AI documentation.
-- **Expected Result:** Model inventory entry is complete with all required OCC 2011-12 fields populated.
-- **Evidence:** Model inventory entry export with all fields verified.
+  5. For community banks applying OCC Bulletin 2025-26 proportionality: verify the tier selection rationale documents usage scope, institution characteristics, and the OCC Bulletin 2025-26 citation.
+- **Expected Result:** Model inventory entry is complete with all required fields populated; tier classification is documented with supporting rationale.
+- **Evidence:** Model inventory entry export with all fields verified; proportionality rationale documentation if applicable.
 
-### Test 2: Performance Monitoring Effectiveness
+### Test 2: Proportionality Classification Verification
+
+- **Objective:** Verify that the Copilot model inventory entry includes a proportionality classification consistent with OCC Bulletin 2025-26 and that the tier reflects actual usage
+- **Steps:**
+  1. Review the model inventory entry for the risk tier and classification rationale.
+  2. Confirm the inventory entry documents one of: Tier 3 (limited-scope / internal productivity), Tier 2 (business decision support), or Tier 1 (client-facing / lending workflows).
+  3. Cross-reference the tier against the approved use-case register — if client-facing or lending uses are approved, Tier 3 should not be selected.
+  4. For Tier 3 classifications at community banks: verify OCC Bulletin 2025-26 is cited and the proportionality rationale is documented in writing.
+  5. Verify the tier classification has been reviewed and approved by the designated model owner or model risk committee.
+- **Expected Result:** Model inventory entry includes a proportionality classification with documented rationale; tier is consistent with actual usage scope.
+- **Evidence:** Model inventory entry with tier field and proportionality rationale; approved use-case register for cross-reference.
+
+### Test 3: Performance Monitoring Effectiveness
 
 - **Objective:** Confirm that model performance monitoring detects quality degradation
 - **Steps:**
@@ -26,7 +39,7 @@ Test cases and evidence collection procedures to validate alignment with OCC and
 - **Expected Result:** Performance monitoring is operational, baseline comparison is available, and alerts function correctly.
 - **Evidence:** Performance metrics report and alert policy configuration screenshots.
 
-### Test 3: Vendor Risk Documentation Currency
+### Test 4: Vendor Risk Documentation Currency
 
 - **Objective:** Validate that third-party risk documentation for Microsoft Copilot is current
 - **Steps:**
@@ -37,7 +50,7 @@ Test cases and evidence collection procedures to validate alignment with OCC and
 - **Expected Result:** All vendor risk documentation is current and on file.
 - **Evidence:** Document index showing file dates and review attestations.
 
-### Test 4: Model Validation Documentation
+### Test 5: Model Validation Documentation
 
 - **Objective:** Confirm that the Copilot model validation process is documented and current
 - **Steps:**
@@ -53,6 +66,7 @@ Test cases and evidence collection procedures to validate alignment with OCC and
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
 | Model inventory entry | MRM system | PDF/Export | Life of model + 5 years |
+| Proportionality rationale | MRM system | PDF/Document | Life of model + 5 years |
 | Performance metrics | PowerShell | CSV | 7 years |
 | Vendor risk documentation | Service Trust Portal | PDF | 7 years |
 | Validation report | MRM system | PDF | Life of model + 5 years |
@@ -61,7 +75,8 @@ Test cases and evidence collection procedures to validate alignment with OCC and
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| OCC 2011-12 | Model inventory and validation | Supports compliance with model risk management framework |
+| OCC Bulletin 2011-12 | Model inventory and validation | Supports compliance with model risk management framework |
+| OCC Bulletin 2025-26 | Proportionality for community banks | Provides documented rationale for simplified MRM approach |
 | SR 11-7 | Ongoing monitoring and outcome analysis | Helps meet supervisory expectations for model performance tracking |
 | OCC Third-Party Risk | Vendor risk assessment | Supports third-party risk management requirements for AI vendors |
 
