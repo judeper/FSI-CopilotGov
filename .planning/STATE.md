@@ -34,6 +34,7 @@ Progress: [████████░░] 45% (9 of ~20 total plans complete)
 | Phase 02-global-naming-corrections P05 | 5 | 2 tasks | 1 files |
 | Phase 02-global-naming-corrections P06 | 3 | 2 tasks | 14 files |
 | Phase 03-pillar-readiness-security P03 | 9 | 2 tasks | 13 files |
+| Phase 03-pillar-readiness-security P02 | 9 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -53,6 +54,8 @@ Progress: [████████░░] 45% (9 of ~20 total plans complete)
 - [Phase 02-global-naming-corrections]: 02-06: SC-3 gap closure — first bare "Copilot Chat" occurrence per file expanded to full name; "formerly Business Chat" removed silently; headings use full product name; 63 files all have correct ordering; Phase 2 5/5 success criteria achieved
 - [Phase 03-pillar-readiness-security]: 03-03: PAYG Copilot Chat documented as available to any user with appropriate base license (not F1/F3 specific); F1/F3 Copilot add-on documented without asserting feature parity with E3/E5
 - [Phase 03-pillar-readiness-security]: 03-03: Channel Agent IB limitation documented as a platform gap with 4 compensating controls; standard Copilot surfaces retain full IB enforcement; limitation must appear in supervisory procedures per SEC 10b-5 and FINRA 5280/2241/2242
+- [Phase 03-pillar-readiness-security]: 03-02: Three new DSPM for AI RBAC roles (AI Viewer, AI Content Viewer, AI Administrator) added to 1.6 as new subsection; SAM licensing corrected in 1.7 with full downstream logic rewrite; RAC documented alongside RCD as peer capability
+- [Phase 03-pillar-readiness-security]: 03-02: PnP PLAY-01 pattern established: Prerequisites section + Register-PnPEntraIDAppForInteractiveLogin + -ClientId on all Connect-PnPOnline calls
 
 ### Blockers/Concerns
 
@@ -65,5 +68,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 03-03-PLAN.md (controls 1.9, 2.4, 2.9 updated)
-Resume file: .planning/phases/03-pillar-readiness-security/03-03-SUMMARY.md
+Stopped at: Completed 03-02-PLAN.md (controls 1.6 and 1.7 updated, PnP fix applied to 1.6 and 1.8)
+Resume file: .planning/phases/03-pillar-readiness-security/03-02-SUMMARY.md
