@@ -10,7 +10,46 @@ Automation scripts for managing Conditional Access policies governing Copilot ac
 
 ## Scripts
 
-### Script 1: Export Conditional Access Policies
+### Script 1: Audit Copilot App ID in CA Policies
+
+```powershell
+# Verify the correct Enterprise Copilot Platform app ID in CA policies
+# Correct ID: fb8d773d-7ef8-4ec0-a117-179f88add510
+# Requires: Microsoft Graph SDK
+
+Import-Module Microsoft.Graph.Identity.SignIns
+Connect-MgGraph -Scopes "Policy.Read.All"
+
+$correctAppId = "fb8d773d-7ef8-4ec0-a117-179f88add510"
+$policies = Get-MgIdentityConditionalAccessPolicy -All
+
+Write-Host "=== CA Policies Referencing Copilot App ==="
+foreach ($policy in $policies) {
+    $includeApps = $policy.Conditions.Applications.IncludeApplications
+    $excludeApps = $policy.Conditions.Applications.ExcludeApplications
+
+    if ($includeApps -contains $correctAppId) {
+        Write-Host "[INCLUDE] $($policy.DisplayName) — State: $($policy.State)"
+    }
+    if ($excludeApps -contains $correctAppId) {
+        Write-Host "[EXCLUDE] $($policy.DisplayName) — State: $($policy.State)"
+        Write-Host "  WARNING: Copilot is EXCLUDED from this policy — review before March 2026 enforcement"
+    }
+}
+
+# Report policies with "All resources" + exclusions (March 2026 enforcement impact)
+Write-Host "`n=== Policies with 'All Resources' + Exclusions (March 2026 Impact) ==="
+foreach ($policy in $policies) {
+    $includesAll = $policy.Conditions.Applications.IncludeApplications -contains "All"
+    $hasExclusions = $policy.Conditions.Applications.ExcludeApplications.Count -gt 0
+    if ($includesAll -and $hasExclusions) {
+        Write-Host "REVIEW: $($policy.DisplayName)"
+        Write-Host "  Excluded apps: $($policy.Conditions.Applications.ExcludeApplications -join ', ')"
+    }
+}
+```
+
+### Script 2: Export Conditional Access Policies
 
 ```powershell
 # Export all Conditional Access policies for audit documentation
@@ -32,6 +71,7 @@ foreach ($policy in $policies) {
         SessionControls = if ($policy.SessionControls) { "Configured" } else { "None" }
         IncludeUsers   = ($policy.Conditions.Users.IncludeUsers -join ", ")
         IncludeApps    = ($policy.Conditions.Applications.IncludeApplications -join ", ")
+        ExcludeApps    = ($policy.Conditions.Applications.ExcludeApplications -join ", ")
     }
 }
 
@@ -40,7 +80,7 @@ $policyReport | Format-Table Name, State, GrantControls -AutoSize
 $policyReport | Export-Csv "ConditionalAccessPolicies_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 2: Copilot Sign-In Analysis
+### Script 3: Copilot Sign-In Analysis
 
 ```powershell
 # Analyze sign-in logs for Copilot-related access patterns
@@ -73,7 +113,7 @@ Write-Host "Non-compliant device sign-ins: $nonCompliant"
 $accessReport | Export-Csv "CopilotSignIns_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 3: Named Locations Configuration Audit
+### Script 4: Named Locations Configuration Audit
 
 ```powershell
 # Audit named locations used in Conditional Access policies
@@ -103,6 +143,7 @@ $locationReport | Export-Csv "NamedLocations_$(Get-Date -Format 'yyyyMMdd').csv"
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
+| Copilot App ID Audit | Quarterly | Verify correct app ID in all CA policies; check for Copilot exclusions |
 | Policy Export | Monthly | Document policy configurations for audit |
 | Sign-In Analysis | Weekly | Monitor Copilot access patterns and compliance |
 | Named Locations Audit | Quarterly | Verify location definitions are current |
