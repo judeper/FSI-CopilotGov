@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 3 of 6 complete (Pillar Updates — Readiness and Security) — advancing to Phase 4
-Plan: 6 of 6 in Phase 3 (all complete)
-Status: Phase 3 COMPLETE (6/6 plans with SUMMARYs)
-Last activity: 2026-02-18 — Completed 03-06 verification gate (all 5 SC pass; MkDocs clean; Phase 3 complete)
+Phase: 4 of 6 in progress (Pillar Updates — Compliance and Operations)
+Plan: 5 of 7 complete in Phase 4 (04-05 complete; 04-06, 04-07 remaining)
+Status: Phase 4 IN PROGRESS (2/7 plans with SUMMARYs)
+Last activity: 2026-02-18 — Completed 04-05 (Control 4.1 Copilot Control System branding + Control 4.2 Teams default change ACTION REQUIRED callout; SC-4 satisfied)
 
-Progress: [████████████░] 60% (12 of ~20 total plans complete)
+Progress: [████████████░] 65% (13 of ~20 total plans complete)
 
 ## Performance Metrics
 
@@ -40,6 +40,8 @@ Progress: [████████████░] 60% (12 of ~20 total plans c
 | Phase 03-pillar-readiness-security P05 | 9 | 2 tasks | 10 files |
 | Phase 03-pillar-readiness-security P01 | 12 | 2 tasks | 15 files |
 | Phase 03-pillar-readiness-security P06 | 5 | 2 tasks | 1 files |
+| Phase 04-pillar-compliance-operations P05 | 8 | 2 tasks | 10 files |
+| Phase 04-pillar-compliance-operations P02 | 8 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -70,6 +72,11 @@ Progress: [████████████░] 60% (12 of ~20 total plans c
 - [Phase 03-pillar-readiness-security]: 03-01: RCD positioned as Baseline starting point for 1.3 (lower admin overhead), RSS+RCD combination at Regulated tier; SAM included with Copilot licenses at no additional cost; PnP multi-tenant app deleted Sep 9 2024 — custom registration mandatory
 - [Phase 03-pillar-readiness-security]: 03-06: Wrong CA app ID in troubleshooting.md is intentional diagnostic reference — documents known transcription error for admin identification; all operational files use correct ID fb8d773d-7ef8-4ec0-a117-179f88add510
 - [Phase 03-pillar-readiness-security]: 03-06: Phase 3 all 5 success criteria pass; all 12 updated controls verified clean; MkDocs 11 pre-existing warnings stable with zero new warnings from Phase 3
+- [Phase 04-pillar-compliance-operations]: Copilot Control System branding in 4.1: 'formerly distributed controls' referenced once, then new name throughout — same pattern as Phase 2 terminology corrections
+- [Phase 04-pillar-compliance-operations]: Teams default change callout: \!\!\! danger ACTION REQUIRED with inline PowerShell in control doc; SEC 17a-4(b)(4), FINRA 4511, FINRA 3110(b)(4) cited per Phase 4 citation style
+- [Phase 04-pillar-compliance-operations]: 04-02: Unified eDiscovery presented as current state (May 2025 GA); pre-migration case gap documented inline; February 2026 UX simplification documented with 'as of' framing
+- [Phase 04-pillar-compliance-operations]: 04-02: IRM integration tier structure — Baseline (no IRM), Recommended (high-risk CC policies), Regulated (all policies with automated escalation workflows)
+- [Phase 04-pillar-compliance-operations]: 04-02: Scope guardrail for expanded CC surfaces — Security Copilot, Fabric Copilot, Copilot Studio mentioned for awareness only (one sentence + table row); no configuration guidance
 
 ### Blockers/Concerns
 
@@ -82,5 +89,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 03-06-PLAN.md (Phase 3 verification gate; all 5 SC pass; opportunistic scan clean; MkDocs clean; Phase 3 complete)
-Resume file: .planning/phases/03-pillar-readiness-security/03-06-SUMMARY.md
+Stopped at: Completed 04-05-PLAN.md (Control 4.1 Copilot Control System + MAC dashboard; Control 4.2 Teams default change ACTION REQUIRED callout with SEC/FINRA citations; SC-4 satisfied)
+Resume file: .planning/phases/04-pillar-compliance-operations/04-05-SUMMARY.md

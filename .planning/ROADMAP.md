@@ -125,6 +125,6 @@ Plans: TBD
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
 | 2. Global Naming Corrections | 5/6 | Complete    | 2026-02-17 | - |
 | 3. Pillar Updates — Readiness and Security | 6/6 | Complete    | 2026-02-18 | - |
-| 4. Pillar Updates — Compliance and Operations | v1.1 | 0/7 | Planned | - |
+| 4. Pillar Updates — Compliance and Operations | 2/7 | In Progress|  | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |
 | 6. Playbook Updates and Cross-linking | v1.1 | 0/? | Not started | - |
