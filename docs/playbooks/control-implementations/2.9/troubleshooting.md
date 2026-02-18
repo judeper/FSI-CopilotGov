@@ -45,6 +45,29 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
   3. Verify the session policy applies to the specific interaction type where data was missed
   4. Add custom inspection rules for organization-specific data patterns
 
+### Issue 5: Agent Threat Detection Alerts Not Appearing
+
+- **Symptoms:** Copilot agents are deployed but no agent-related alerts appear in Defender XDR; the Incidents & alerts view shows no agent incidents despite agent activity
+- **Root Cause:** Agent threat detection may require specific licensing (Defender for Office 365 P2 or Microsoft 365 Defender) and may need to be explicitly enabled for agent workloads. Agent coverage was added in September 2025 and may require feature updates in older tenants.
+- **Resolution:**
+  1. Verify the tenant has the required Defender XDR license tier for agent threat detection (included in M365 E5 Security or Defender for Office 365 P2)
+  2. Navigate to Defender portal > Settings > Microsoft Defender XDR and confirm unified XDR is enabled
+  3. Check that the agents are registered in Agent Registry (MAC > Copilot > Agents) — unregistered agents may not have threat detection coverage
+  4. Verify no filter is hiding agent incidents: in Incidents & alerts, clear all filters and search for recent agent-related events
+  5. Allow 24-48 hours after enabling detection — initial alert generation may be delayed
+  6. If alerts still do not appear after enabling: open a Microsoft support ticket referencing Defender XDR agent threat detection
+
+### Issue 6: Generative AI App Catalog Not Showing Discovered Apps
+
+- **Symptoms:** The Cloud app catalog Generative AI filter shows apps but no "discovered" usage data, or the catalog shows fewer apps than expected
+- **Root Cause:** Discovery data requires traffic analysis either through Microsoft Defender for Endpoint integration or manual log upload. Without endpoint agents or log upload configured, only the catalog (not discovery) will be visible.
+- **Resolution:**
+  1. Navigate to Defender portal > Cloud Apps > Settings > Cloud Discovery to check discovery configuration
+  2. If Microsoft Defender for Endpoint is deployed: verify the "Defender for Endpoint integration" toggle is enabled in Cloud Discovery settings — this enables automatic traffic analysis for discovery
+  3. If Defender for Endpoint is not deployed: configure manual log upload from proxy or firewall logs to enable discovery
+  4. Allow 24-48 hours after enabling discovery for initial data to appear
+  5. Verify the correct data source is connected: Defender portal > Cloud Apps > Cloud Discovery > Data sources
+
 ## Diagnostic Steps
 
 1. **Verify proxy routing:** Check browser URL for MCAS proxy indicators during Copilot use

@@ -54,18 +54,45 @@ Configure alerts for Copilot-related security events:
 
 ### Step 5: Configure Activity Logging
 
-**Portal:** Microsoft Defender for Cloud Apps
-**Path:** Defender > Investigate > Activity Log
+**Portal:** Microsoft Defender portal
+**Path:** Defender portal > Cloud Apps > Investigate > Activity Log
 
 Verify that Copilot-related activities appear in the activity log. Configure log retention and export settings for compliance documentation. Activity logs provide the evidence trail for regulatory examinations.
+
+### Step 6: Review Generative AI App Catalog
+
+**Portal:** Microsoft Defender portal
+**Path:** Defender portal > Cloud Apps > Cloud app catalog
+
+1. Navigate to the Cloud app catalog and select the **Generative AI** category filter to display the 1,000+ generative AI apps cataloged by Microsoft
+2. Review apps that appear in your organization's discovered traffic (shown with a "Discovered" indicator)
+3. Assess risk scores for any generative AI apps employees are using — high-risk apps may represent Shadow AI usage that exposes customer or financial data
+4. For high-risk apps: create an access policy to block the app or mark it as "Unsanctioned" to automatically generate a block script for deployment to your web proxy or firewall
+5. For sanctioned apps (including Microsoft 365 Copilot): mark as "Sanctioned" to exclude from Shadow AI alerts
+
+**Recommended governance workflow:**
+- Monthly: Review newly discovered generative AI apps and assess risk scores
+- Quarterly: Update the sanctioned/unsanctioned app list and review block policies
+
+### Step 7: Configure Agent Threat Detection
+
+**Portal:** Microsoft Defender portal (security.microsoft.com)
+**Path:** Defender portal > Settings > Endpoints > Detection rules OR Incidents & alerts
+
+1. Verify that agent-related detection rules are active for your Copilot agent deployments (Copilot Studio agents, SharePoint agents)
+2. Navigate to Incidents & alerts and filter for agent-related incidents to confirm detection is operational
+3. Configure custom detection rules for agent anomalies specific to your organization:
+   - Alerts when an agent accesses data outside its configured knowledge source scope
+   - Alerts when agent interaction volume significantly exceeds baseline
+4. Integrate agent threat alerts into your SIEM or Microsoft Sentinel workspace for correlation with user activity
 
 ## FSI Recommendations
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Enable session monitoring for Copilot interactions; configure basic alerting |
-| **Recommended** | Content inspection with DLP integration; real-time alerts for sensitive data; session recording |
-| **Regulated** | Full session control with content inspection, blocking capabilities, and comprehensive activity logging; integration with SIEM for correlation |
+| **Baseline** | Enable session monitoring for Copilot interactions; configure basic alerting; enable agent monitoring alerts in Defender XDR |
+| **Recommended** | Content inspection with DLP integration; real-time alerts for sensitive data; review generative AI app catalog monthly for Shadow AI governance; configure custom agent anomaly detection rules |
+| **Regulated** | Full session control with content inspection, blocking capabilities, and comprehensive activity logging; integration with SIEM for correlation; agent threat detection integrated into SOC playbooks with mandatory investigation SLAs; quarterly Shadow AI governance review with sanctioned/unsanctioned app list |
 
 ## Next Steps
 

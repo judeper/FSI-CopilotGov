@@ -47,6 +47,30 @@ Test cases and evidence collection for validating Information Barrier enforcemen
 - **Expected Result:** Exceptions work as configured with proper documentation
 - **Evidence:** Exception configuration and access verification
 
+### Test 5: Channel Agent IB Coverage Verification
+
+- **Objective:** Confirm Channel Agent deployments comply with the IB gap compensating controls
+- **Steps:**
+  1. Enumerate all active Channel Agent deployments: navigate to Microsoft 365 Admin Center > Copilot > Agents or Microsoft Teams Admin Center > Teams apps
+  2. For each Channel Agent, retrieve the channels where it is deployed
+  3. Review the membership of each channel where Channel Agent is deployed
+  4. Confirm no channel with an active Channel Agent has members from IB-separated segments
+  5. Verify the Channel Agent IB limitation is documented in the firm's supervisory procedures
+  6. If sensitivity labels are applied as a compensating control, confirm labeled content in IB-adjacent channels is not accessible via Channel Agent
+- **Expected Result:** No Channel Agent is deployed in a channel containing members from IB-separated segments; IB limitation is documented in supervisory procedures
+- **Evidence:** Channel Agent deployment list; channel membership review; supervisory procedure documentation
+
+### Test 6: IB Coverage Matrix Completeness
+
+- **Objective:** Verify the IB coverage matrix reflects the actual enforcement status of all Copilot surfaces
+- **Steps:**
+  1. For each Copilot surface in the control's coverage matrix, perform a functional test from a user in one IB segment to access content from a barrier-separated segment
+  2. Confirm Microsoft 365 Copilot Chat, Word, Excel, PowerPoint, Outlook, and Teams Copilot (meeting summaries) all enforce barriers as documented
+  3. Confirm Channel Agent does NOT enforce barriers (expected behavior per documented limitation)
+  4. Document test results against the coverage matrix
+- **Expected Result:** All standard Copilot surfaces enforce IB; Channel Agent gap is confirmed and documented
+- **Evidence:** Functional test results for each Copilot surface
+
 ## Evidence Collection
 
 | Evidence Item | Format | Storage Location | Retention |

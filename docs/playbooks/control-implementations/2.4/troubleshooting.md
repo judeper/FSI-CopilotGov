@@ -56,6 +56,29 @@ Common issues and resolution steps for Information Barriers.
   3. Monitor response times and establish performance baselines
   4. Contact Microsoft support if performance degradation is severe
 
+### Issue 6: Channel Agent Surfaces Cross-Barrier Content
+
+- **Symptoms:** Users report that a Channel Agent in Teams is returning content that should be restricted by Information Barriers; compliance team identifies Channel Agent responses that appear to include content from barrier-separated segments
+- **Root Cause:** This is a **documented platform limitation**: Information Barriers are not supported for Channel Agent in Teams. Channel Agent does not enforce IB policies and may return content from across barrier boundaries. This is not a misconfiguration — it is the expected behavior of Channel Agent.
+- **Resolution:**
+  1. **Do not attempt to resolve this through IB policy adjustments** — IB enforcement for Channel Agent is not currently supported and policy changes will not fix this behavior
+  2. **Immediately review the channel's membership** to determine whether IB-separated users are present in the channel where Channel Agent is deployed
+  3. If IB-separated users are present in the channel: **remove the Channel Agent from that channel** — it cannot be safely deployed in channels with mixed IB-segment membership
+  4. Redeploy Channel Agent only in channels with homogeneous IB-segment membership after auditing member segments
+  5. **Document this incident** in the firm's supervisory procedures and escalate to Compliance per SEC Rule 10b-5 and FINRA Rules 5280, 2241, 2242 requirements if cross-barrier content was accessed
+  6. As a compensating control: apply sensitivity labels to content in the channel to prevent Channel Agent from processing labeled materials; configure DSPM for AI monitoring to detect future cross-segment surfacing
+
+### Issue 7: Uncertainty About Which Copilot Surfaces Enforce IB
+
+- **Symptoms:** Compliance team is uncertain whether a specific Copilot surface (e.g., SharePoint Copilot, Loop Copilot) enforces Information Barriers, and functional testing results are ambiguous
+- **Root Cause:** IB enforcement scope across Copilot surfaces can be difficult to verify through testing alone, particularly when both segments have access to the same public/shared content.
+- **Resolution:**
+  1. Use test content that is exclusively accessible within one segment (e.g., a file stored in a segment-specific SharePoint library with no sharing outside the segment)
+  2. Test as a user from the barrier-separated segment and verify whether the content appears in Copilot responses
+  3. Consult the Microsoft Learn page "Information Barriers and Microsoft 365 Copilot" for the current authoritative surface coverage matrix
+  4. For Channel Agent specifically: IB enforcement is confirmed NOT supported — do not test hoping for enforcement; instead apply compensating controls as documented
+  5. If testing reveals a surface that should enforce IB is not doing so (and the surface is not Channel Agent): verify barrier policies are in Active/Applied state, allow 48 hours for propagation, then open a Microsoft support case referencing IB and the specific Copilot surface
+
 ## Diagnostic Steps
 
 1. **Check barrier status:** `Get-InformationBarrierPoliciesApplicationStatus`
