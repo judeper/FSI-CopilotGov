@@ -19,7 +19,7 @@ Test cases and evidence collection for validating the permission model audit and
 
 - **Objective:** Verify that access reviews are being completed on schedule
 - **Steps:**
-  1. Navigate to Entra ID > Identity Governance > Access Reviews
+  1. Navigate to Microsoft Entra admin center > Identity Governance > Access Reviews
   2. Review the status of all active and recent access reviews
   3. Verify completion rate exceeds 95% within the review period
   4. Check that denied access has been properly revoked
@@ -48,6 +48,19 @@ Test cases and evidence collection for validating the permission model audit and
 - **Expected Result:** All flagged sharing links on sensitive sites have been remediated
 - **Evidence:** Before and after sharing link inventory comparison
 
+### Test 5: DSPM for AI Role Assignments
+
+- **Objective:** Verify that DSPM for AI RBAC roles are assigned to appropriate personnel only
+- **Steps:**
+  1. Navigate to Microsoft Purview portal > Settings > Roles and scopes > Role groups
+  2. Open the "Purview Data Security AI Viewer" role group and verify member list matches the compliance team roster
+  3. Open the "Purview Data Security AI Content Viewer" role group and verify members have documented authorization to view prompt/response content
+  4. Navigate to Microsoft Entra admin center > Roles and administrators > AI Administrator
+  5. Verify only the designated Copilot governance lead is assigned
+  6. Cross-reference all three role memberships against the approved list in the governance documentation
+- **Expected Result:** All AI-prefixed roles assigned only to authorized personnel; no unauthorized assignments
+- **Evidence:** Role membership screenshots from Purview portal and Entra admin center
+
 ## Evidence Collection
 
 | Evidence Item | Format | Storage Location | Retention |
@@ -56,6 +69,7 @@ Test cases and evidence collection for validating the permission model audit and
 | Access review completion records | PDF | Compliance evidence repository | 7 years |
 | Group membership analysis | CSV | Compliance evidence repository | 7 years |
 | Sharing link remediation log | CSV | Compliance evidence repository | 7 years |
+| DSPM role assignment records | Screenshot/PDF | Compliance evidence repository | 7 years |
 
 ## Compliance Mapping
 
@@ -65,3 +79,4 @@ Test cases and evidence collection for validating the permission model audit and
 | SEC Regulation S-P | Access to customer information | Auditing permissions helps meet NPI access control obligations |
 | SOX Section 404 | Internal controls over access | Periodic permission reviews support compliance with internal control requirements |
 | NIST CSF | PR.AC-1 Identity and access management | Permission audits validate access control effectiveness |
+| FFIEC IT Handbook | Least privilege and separation of duties | DSPM role assignments enforce least-privilege access to AI governance data, with AI Content Viewer separated from AI Administrator |

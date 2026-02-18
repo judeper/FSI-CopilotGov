@@ -4,10 +4,33 @@ Automation scripts for comprehensive permission model auditing across Microsoft 
 
 ## Prerequisites
 
-- SharePoint Online Management Shell and PnP PowerShell
+### Required Modules
+
+- SharePoint Online Management Shell
+- PnP PowerShell (see custom app registration below)
 - Microsoft Graph PowerShell SDK
-- SharePoint Administrator and Global Reader roles
 - Exchange Online Management module for mailbox permissions
+
+### PnP PowerShell: Custom App Registration Required
+
+The shared multi-tenant PnP Management Shell Entra ID app was retired on September 9, 2024. All PnP PowerShell scripts now require a tenant-specific Entra ID app registration. Complete this one-time setup before running any PnP scripts in this playbook.
+
+```powershell
+# One-time setup: Register a tenant-specific app for PnP PowerShell
+Register-PnPEntraIDAppForInteractiveLogin `
+    -ApplicationName "PnP Governance Shell - [YourOrg]" `
+    -Tenant "yourorg.onmicrosoft.com" `
+    -SharePointDelegated `
+    -GraphDelegated `
+    -Interactive
+```
+
+Save the returned Client ID — you will need it for all `Connect-PnPOnline` calls in this playbook. Store the Client ID in your organization's secrets management system (e.g., Azure Key Vault) for team use.
+
+### Required Roles
+
+- SharePoint Administrator and Global Reader roles (for SPO and Graph scripts)
+- Exchange Administrator role (for Exchange scripts)
 
 ## Scripts
 
@@ -82,15 +105,16 @@ Write-Host "Found $($largeGroups.Count) groups with more than 50 members."
 
 ```powershell
 # Enumerate active sharing links across high-priority sites
-# Requires: PnP PowerShell
+# Requires: PnP PowerShell with custom app registration (see Prerequisites)
 
 Import-Module PnP.PowerShell
 
 $targetSites = Import-Csv "HighPrioritySites.csv"
 $sharingReport = @()
+$clientId = "<your-app-id>"  # Client ID from Register-PnPEntraIDAppForInteractiveLogin
 
 foreach ($site in $targetSites) {
-    Connect-PnPOnline -Url $site.Url -Interactive
+    Connect-PnPOnline -Url $site.Url -ClientId $clientId -Interactive
     $items = Get-PnPListItem -List "Documents" -PageSize 500
 
     foreach ($item in $items) {

@@ -4,9 +4,28 @@ Automation scripts for analyzing and documenting the Microsoft 365 information a
 
 ## Prerequisites
 
-- SharePoint Online Management Shell and PnP PowerShell
+### Required Modules
+
+- SharePoint Online Management Shell
+- PnP PowerShell (see custom app registration below)
 - Microsoft Graph PowerShell SDK
 - SharePoint Administrator role
+
+### PnP PowerShell: Custom App Registration Required
+
+The shared multi-tenant PnP Management Shell Entra ID app was retired on September 9, 2024. All PnP PowerShell scripts now require a tenant-specific Entra ID app registration. Complete this one-time setup before running any PnP scripts in this playbook.
+
+```powershell
+# One-time setup: Register a tenant-specific app for PnP PowerShell
+Register-PnPEntraIDAppForInteractiveLogin `
+    -ApplicationName "PnP Governance Shell - [YourOrg]" `
+    -Tenant "yourorg.onmicrosoft.com" `
+    -SharePointDelegated `
+    -GraphDelegated `
+    -Interactive
+```
+
+Save the returned Client ID — you will need it for all `Connect-PnPOnline` calls in this playbook. If you have already registered this app for another control (e.g., 1.6), you can use the same Client ID here.
 
 ## Scripts
 
@@ -81,15 +100,16 @@ $hubMap | Export-Csv "HubSiteMap_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInfo
 
 ```powershell
 # Analyze content type usage across sites
-# Requires: PnP PowerShell
+# Requires: PnP PowerShell with custom app registration (see Prerequisites)
 
 Import-Module PnP.PowerShell
 
 $targetSites = Import-Csv "SiteArchitecture.csv" | Select-Object -First 50
 $contentTypeReport = @()
+$clientId = "<your-app-id>"  # Client ID from Register-PnPEntraIDAppForInteractiveLogin
 
 foreach ($site in $targetSites) {
-    Connect-PnPOnline -Url $site.Url -Interactive
+    Connect-PnPOnline -Url $site.Url -ClientId $clientId -Interactive
     $contentTypes = Get-PnPContentType
 
     foreach ($ct in $contentTypes) {

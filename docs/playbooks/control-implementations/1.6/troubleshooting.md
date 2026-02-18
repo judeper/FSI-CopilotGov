@@ -54,6 +54,26 @@ Common issues and resolution steps for permission model auditing.
   3. Run a guest user audit: `Get-MgUser -Filter "userType eq 'Guest'"` and review against active engagements
   4. Remove stale guest access and block sign-in for departed external collaborators
 
+### Issue 6: PnP PowerShell Connection Failures
+
+- **Symptoms:** `Connect-PnPOnline` fails with "Application not found" or "AADSTS700016" errors
+- **Root Cause:** The shared multi-tenant PnP Management Shell app was deleted on September 9, 2024. Scripts that do not specify `-ClientId` with a tenant-specific app registration will fail.
+- **Resolution:**
+  1. Complete the one-time app registration described in the PowerShell Setup Prerequisites: `Register-PnPEntraIDAppForInteractiveLogin`
+  2. Add `-ClientId <your-app-id>` to all `Connect-PnPOnline` calls
+  3. Verify the app registration exists: Microsoft Entra admin center > App registrations > All applications > search for "PnP Governance Shell"
+  4. If the app registration was accidentally deleted, re-run `Register-PnPEntraIDAppForInteractiveLogin` to create a new one
+
+### Issue 7: DSPM Role Not Visible in Purview Portal
+
+- **Symptoms:** "Purview Data Security AI Viewer" or "Purview Data Security AI Content Viewer" role groups do not appear in Purview portal > Settings > Roles and scopes
+- **Root Cause:** These roles require Microsoft Purview with DSPM for AI enabled. The roles may not be visible if the tenant does not have an appropriate Purview license, or if DSPM for AI has not been activated.
+- **Resolution:**
+  1. Verify the tenant has Microsoft Purview enabled with appropriate licensing (E5 Compliance or Microsoft 365 E5)
+  2. Navigate to Microsoft Purview portal > Data Security Posture Management to verify DSPM for AI is accessible
+  3. If DSPM for AI is not yet enabled, work with your Microsoft account team to enable it
+  4. Note: The AI Administrator role is an Entra ID role (not a Purview role) and is managed separately in Microsoft Entra admin center > Roles and administrators
+
 ## Diagnostic Steps
 
 1. **Quick permission check:** Use the SharePoint Admin Center "Check access" feature for individual sites
@@ -69,6 +89,7 @@ Common issues and resolution steps for permission model auditing.
 | **Low** | Minor permission discrepancies on non-sensitive sites | IT Operations for review |
 | **Medium** | Access review non-completion or delayed auto-apply | Identity and Access Management team |
 | **High** | Unauthorized access to sensitive content discovered | Security Operations for investigation |
+| **High** | Unauthorized assignment to AI Content Viewer role discovered | Information Security and Compliance team — this role grants access to Copilot prompt/response content |
 | **Critical** | Widespread permission model failure across sensitive sites | CISO and governance committee immediately |
 
 ## Related Resources

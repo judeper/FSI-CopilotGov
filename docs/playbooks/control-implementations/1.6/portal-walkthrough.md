@@ -5,7 +5,7 @@ Step-by-step portal procedures for auditing the Microsoft 365 permission model t
 ## Prerequisites
 
 - SharePoint Administrator and Entra ID Administrator roles
-- Access to SharePoint Admin Center and Entra ID Admin Center
+- Access to SharePoint Admin Center, Microsoft Entra admin center, and Microsoft Purview portal
 - Microsoft 365 E5 or Entra ID P2 license for access reviews
 - Inventory of high-sensitivity SharePoint sites and Teams
 
@@ -26,7 +26,7 @@ Document any permissions that are broader than the business need warrants.
 
 ### Step 2: Audit Entra ID Group Memberships
 
-**Portal:** Entra ID Admin Center
+**Portal:** Microsoft Entra admin center
 **Path:** Entra ID > Groups > All Groups > [Select group] > Members
 
 Review membership of security groups and Microsoft 365 groups used for SharePoint and Teams access. Focus on groups that grant access to sensitive content:
@@ -36,7 +36,7 @@ Review membership of security groups and Microsoft 365 groups used for SharePoin
 
 ### Step 3: Configure Access Reviews
 
-**Portal:** Entra ID Admin Center
+**Portal:** Microsoft Entra admin center
 **Path:** Entra ID > Identity Governance > Access Reviews > New access review
 
 Create recurring access reviews for groups that control access to sensitive content. Configure:
@@ -55,21 +55,50 @@ Review tenant-level sharing settings and site-level overrides. For FSI environme
 - Identify sites with sharing capability set above the tenant default
 - Review active sharing links using the Sharing report
 
-### Step 5: Document Permission Audit Findings
+### Step 5: Assign DSPM for AI RBAC Roles
+
+Microsoft Purview introduces dedicated roles for AI governance oversight. Assign these as part of the permission model configuration to maintain least-privilege access to AI governance data.
+
+**Purview Data Security AI Viewer and AI Content Viewer:**
+
+**Portal:** Microsoft Purview portal
+**Path:** Purview portal > Settings > Roles and scopes > Role groups
+
+1. Search for "Purview Data Security AI Viewer" in the role groups list
+2. Select the role group and click **Edit**
+3. Add compliance team members who need read-only access to DSPM for AI dashboards and AI observability metrics
+4. Click **Save**
+
+Repeat for "Purview Data Security AI Content Viewer" — add only investigation team members authorized to view prompt and response content. This role grants access to actual prompt/response data; restrict to personnel with documented authorization.
+
+**AI Administrator (Microsoft Entra role):**
+
+**Portal:** Microsoft Entra admin center
+**Path:** Entra ID > Roles and administrators > AI Administrator
+
+1. Click **AI Administrator** in the roles list
+2. Click **Add assignments**
+3. Search for and select the Copilot governance lead (the person responsible for managing Copilot DLP policies and AI service authorizations)
+4. Click **Add**
+
+Verify assignment: The AI Administrator role grants full management of Copilot DLP policies in the Microsoft 365 Admin Center without requiring full Purview Compliance Administrator rights.
+
+### Step 6: Document Permission Audit Findings
 
 Compile a permission audit report including:
 - Count of sites with permissions broader than needed
 - Groups with excessive membership for their content access level
 - Sharing links requiring remediation
+- DSPM role assignments and authorized personnel list
 - Recommended remediation actions with priority and timeline
 
 ## FSI Recommendations
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Audit permissions on all sites containing sensitive data; remove "Everyone" access |
-| **Recommended** | Implement quarterly access reviews for all sensitive content groups; restrict tenant sharing to organization-only |
-| **Regulated** | Monthly access reviews with auto-remediation; zero "Everyone" or anonymous access on any site; formal sign-off on all permission exceptions |
+| **Baseline** | Audit permissions on all sites containing sensitive data; remove "Everyone" access; assign Purview Data Security AI Viewer to compliance team |
+| **Recommended** | Implement quarterly access reviews for all sensitive content groups; restrict tenant sharing to organization-only; assign AI Content Viewer to investigation team and AI Administrator to Copilot governance lead |
+| **Regulated** | Monthly access reviews with auto-remediation; zero "Everyone" or anonymous access on any site; formal sign-off on all permission exceptions; quarterly access review of all AI-prefixed role assignments; formal documentation of AI Content Viewer authorization |
 
 ## Next Steps
 
