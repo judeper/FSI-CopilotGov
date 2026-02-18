@@ -20,15 +20,15 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 - [ ] **P1-03**: Update 1.3 to document RCD as complementary tool to RSS with comparison table and SAM licensing note
 - [ ] **P1-04**: Update 1.6 to add new RBAC roles (Purview Data Security AI Viewer, AI Content Viewer, AI Administrator from Entra)
 - [ ] **P1-05**: Update 1.7 to correct SAM licensing and add Data Access Governance reports, Restricted Access Control
-- [ ] **P1-06**: Update 1.9 to add Frontline (F1/F3) SKU availability and pay-as-you-go licensing option
+- [x] **P1-06**: Update 1.9 to add Frontline (F1/F3) SKU availability and pay-as-you-go licensing option
 
 ### Pillar 2 — Security
 
 - [ ] **P2-01**: Update 2.1 to document two distinct DLP policy types (label-based + SIT-based prompt blocking), default DLP policy for Copilot, and Edge browser DLP
 - [ ] **P2-02**: Update 2.2 to add label groups replacing parent labels, Copilot Studio agent label inheritance, auto-labeling nested rule logic
 - [ ] **P2-03**: Update 2.3 to document CA "All resources" enforcement tightening (March 2026), verify Enterprise Copilot Platform app ID, add IRM-integrated dynamic blocking
-- [ ] **P2-04**: Update 2.4 to document Channel Agent in Teams NOT supporting Information Barriers with compensating controls
-- [ ] **P2-05**: Update 2.9 to add AI app catalog (400+ apps) and agent threat detection in XDR platform
+- [x] **P2-04**: Update 2.4 to document Channel Agent in Teams NOT supporting Information Barriers with compensating controls
+- [x] **P2-05**: Update 2.9 to add AI app catalog (400+ apps) and agent threat detection in XDR platform
 - [ ] **P2-06**: Update 2.10 to add Risky Agents policy template (auto-deployed), AI usage indicator category, data risk graphs, IRM Triage Agent
 
 ### Pillar 3 — Compliance
@@ -97,12 +97,12 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 | P1-03 | Phase 3 | Pending |
 | P1-04 | Phase 3 | Pending |
 | P1-05 | Phase 3 | Pending |
-| P1-06 | Phase 3 | Pending |
+| P1-06 | Phase 3 | Complete |
 | P2-01 | Phase 3 | Pending |
 | P2-02 | Phase 3 | Pending |
 | P2-03 | Phase 3 | Pending |
-| P2-04 | Phase 3 | Pending |
-| P2-05 | Phase 3 | Pending |
+| P2-04 | Phase 3 | Complete |
+| P2-05 | Phase 3 | Complete |
 | P2-06 | Phase 3 | Pending |
 | P3-01 | Phase 4 | Pending |
 | P3-02 | Phase 4 | Pending |

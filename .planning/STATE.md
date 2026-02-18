@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 3 of 6 (Pillar Updates — Readiness and Security)
-Plan: 0 of TBD in current phase (Phase 2 complete — 02-01 through 02-06 done)
-Status: Phase 2 complete (6/6 plans) — Ready to begin Phase 3
-Last activity: 2026-02-17 — Completed 02-06 (SC-3 gap closure; 14 files fixed; Phase 2 achieves 5/5 success criteria)
+Plan: 3 of 6 in current phase (03-01, 03-02, 03-03 complete)
+Status: Phase 3 in progress (3/6 plans complete — 03-01, 03-02, 03-03 done; 03-04, 03-05, 03-06 pending)
+Last activity: 2026-02-18 — Completed 03-03 (controls 1.9, 2.4, 2.9 updated; 13 files; Frontline/PAYG licensing, Channel Agent IB gap, AI app catalog 1,000+, Defender XDR agent threat detection)
 
-Progress: [██████░░░░] 30% (6 of ~20 total plans complete)
+Progress: [████████░░] 45% (9 of ~20 total plans complete)
 
 ## Performance Metrics
 
@@ -33,6 +33,7 @@ Progress: [██████░░░░] 30% (6 of ~20 total plans complete)
 | Phase 02-global-naming-corrections P04 | 12 | 2 tasks | 40 files |
 | Phase 02-global-naming-corrections P05 | 5 | 2 tasks | 1 files |
 | Phase 02-global-naming-corrections P06 | 3 | 2 tasks | 14 files |
+| Phase 03-pillar-readiness-security P03 | 9 | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -50,6 +51,8 @@ Progress: [██████░░░░] 30% (6 of ~20 total plans complete)
 - [Phase 02-global-naming-corrections]: 02-04: Office 365 SKU names (E1/E3/E5) preserved; generic Office 365 platform refs replaced with Microsoft 365; PowerShell API literals preserved; purview.microsoft.com is canonical Purview portal URL
 - [Phase 02-global-naming-corrections]: 02-05: Phase 2 success criteria updated from 4 to 5 criteria; dual-name mapping (M365 Copilot Chat free/seeded vs M365 Copilot licensed) and full terminology scope (Azure AD, O365, compliance.microsoft.com, etc.) now captured in ROADMAP.md
 - [Phase 02-global-naming-corrections]: 02-06: SC-3 gap closure — first bare "Copilot Chat" occurrence per file expanded to full name; "formerly Business Chat" removed silently; headings use full product name; 63 files all have correct ordering; Phase 2 5/5 success criteria achieved
+- [Phase 03-pillar-readiness-security]: 03-03: PAYG Copilot Chat documented as available to any user with appropriate base license (not F1/F3 specific); F1/F3 Copilot add-on documented without asserting feature parity with E3/E5
+- [Phase 03-pillar-readiness-security]: 03-03: Channel Agent IB limitation documented as a platform gap with 4 compensating controls; standard Copilot surfaces retain full IB enforcement; limitation must appear in supervisory procedures per SEC 10b-5 and FINRA 5280/2241/2242
 
 ### Blockers/Concerns
 
@@ -61,6 +64,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-pillar-readiness-security/03-CONTEXT.md
+Last session: 2026-02-18
+Stopped at: Completed 03-03-PLAN.md (controls 1.9, 2.4, 2.9 updated)
+Resume file: .planning/phases/03-pillar-readiness-security/03-03-SUMMARY.md
