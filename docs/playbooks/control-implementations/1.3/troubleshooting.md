@@ -1,18 +1,29 @@
-# Control 1.3: Restricted SharePoint Search Configuration — Troubleshooting
+# Control 1.3: Restricted SharePoint Search and Restricted Content Discovery — Troubleshooting
 
-Common issues and resolution steps for Restricted SharePoint Search configuration.
+Common issues and resolution steps for Restricted SharePoint Search (RSS) and Restricted Content Discovery (RCD) configuration.
 
 ## Common Issues
 
-### Issue 1: RSS Not Available in SharePoint Admin Center
+### Issue 1: RSS or RCD Not Available in SharePoint Admin Center
 
-- **Symptoms:** The Restricted SharePoint Search option does not appear under Settings > Search, or the PowerShell cmdlet returns "unrecognized cmdlet"
-- **Root Cause:** RSS requires SharePoint Advanced Management (SAM) licensing. Without SAM, the feature is not available. Additionally, older versions of the SPO Management Shell may not include RSS cmdlets.
+- **Symptoms:** The Restricted SharePoint Search option does not appear under Settings > Search, or `Set-SPOSite -RestrictContentOrgWideSearch` returns "unrecognized parameter" or "property not found"
+- **Root Cause:** Both RSS and RCD require SharePoint Advanced Management (SAM) licensing. SAM is included with Microsoft 365 Copilot licenses at no additional cost; tenants without Copilot licenses need the standalone SAM add-on. Older versions of the SPO Management Shell may not include RCD or RSS cmdlets.
 - **Resolution:**
-  1. Verify SharePoint Advanced Management is licensed and activated in the tenant
+  1. Verify SharePoint Advanced Management is licensed and activated in the tenant (check Microsoft 365 Admin Center > Billing > Licenses)
   2. Update the SharePoint Online Management Shell to the latest version: `Update-Module Microsoft.Online.SharePoint.PowerShell`
-  3. If SAM is licensed but RSS is not visible, check your tenant's release ring and allow 24-48 hours for feature propagation
+  3. If SAM is licensed but features are not visible, check your tenant's release ring and allow 24-48 hours for feature propagation
   4. Contact Microsoft support if the feature remains unavailable after licensing and module updates
+
+### Issue 1b: RCD-Enabled Site Content Still Appearing in Copilot
+
+- **Symptoms:** After enabling `RestrictContentOrgWideSearch` on a site, Copilot still surfaces content from that site
+- **Root Cause:** RCD configuration changes require time to propagate through the search index, similar to RSS changes. Additionally, content may be cached in Copilot's retrieval layer.
+- **Resolution:**
+  1. Wait 24 hours after enabling RCD before testing — changes may take up to 24 hours to propagate
+  2. Verify the setting was saved: `(Get-SPOSite -Identity <url>).RestrictContentOrgWideSearch` should return `True`
+  3. Clear the user's browser cache and sign out/in to Microsoft 365 before retesting
+  4. Note: RCD does not affect content already in Copilot's active context window — test with a fresh Copilot session
+  5. If RCD is not working after 48 hours, check service health for search indexing delays
 
 ### Issue 2: Allowed List Changes Not Reflected in Search Results
 

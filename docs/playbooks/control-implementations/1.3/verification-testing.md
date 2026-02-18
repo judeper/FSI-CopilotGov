@@ -1,6 +1,6 @@
-# Control 1.3: Restricted SharePoint Search Configuration — Verification & Testing
+# Control 1.3: Restricted SharePoint Search and Restricted Content Discovery — Verification & Testing
 
-Test cases and evidence collection for validating Restricted SharePoint Search configuration.
+Test cases and evidence collection for validating Restricted SharePoint Search (RSS) and Restricted Content Discovery (RCD) configuration.
 
 ## Test Cases
 
@@ -49,26 +49,41 @@ Test cases and evidence collection for validating Restricted SharePoint Search c
 - **Expected Result:** Copilot responses are grounded exclusively on allowed site content
 - **Evidence:** Copilot interaction logs showing referenced sources
 
-### Test 5: Change Control Verification
+### Test 5: Restricted Content Discovery (RCD) Functional Test
 
-- **Objective:** Verify that changes to the allowed list follow the documented change control process
+- **Objective:** Verify that RCD-enabled sites are excluded from Copilot discovery while remaining accessible to users
+- **Steps:**
+  1. Identify a SharePoint site where RCD has been enabled
+  2. As a standard user with Copilot license and read access to the site, ask Copilot a question about specific content from that site
+  3. Verify Copilot does not return content from the RCD-excluded site
+  4. Navigate directly to the site and confirm the user can still access it
+  5. Verify the content is accessible directly but not through Copilot
+- **Expected Result:** Copilot does not surface content from RCD-excluded sites, but users can still access the sites directly via SharePoint
+- **Evidence:** Copilot interaction log showing no results from RCD-excluded site; direct SharePoint access screenshot confirming user can still reach the site
+
+### Test 6: Change Control Verification
+
+- **Objective:** Verify that changes to the RSS allowed list and RCD configuration follow the documented change control process
 - **Steps:**
   1. Review audit logs for RSS configuration changes in the past 30 days
-  2. Cross-reference each change with approved change requests
-  3. Verify each addition or removal has governance committee approval documentation
-  4. Confirm no unauthorized changes have been made
-- **Expected Result:** All allowed list changes have corresponding approved change requests
-- **Evidence:** Audit log export with change request cross-reference
+  2. Run Script 7 (RCD Audit) to get current list of RCD-enabled sites
+  3. Cross-reference each RSS and RCD change with approved change requests
+  4. Verify each addition, removal, or RCD configuration change has governance committee approval documentation
+  5. Confirm no unauthorized changes have been made
+- **Expected Result:** All RSS allowed list changes and RCD configuration changes have corresponding approved change requests
+- **Evidence:** Audit log export with change request cross-reference; RCD audit CSV
 
 ## Evidence Collection
 
 | Evidence Item | Format | Storage Location | Retention |
 |--------------|--------|-----------------|-----------|
 | RSS mode verification | Screenshot/PowerShell output | Compliance evidence repository | 7 years |
-| Allowed list export with audit details | CSV | Compliance evidence repository | 7 years |
+| RSS allowed list export with audit details | CSV | Compliance evidence repository | 7 years |
+| RCD site configuration audit | CSV | Compliance evidence repository | 7 years |
 | Search restriction test results | PDF with screenshots | Compliance evidence repository | 7 years |
+| RCD functional test results | PDF with screenshots | Compliance evidence repository | 7 years |
 | Copilot grounding validation | PDF with interaction logs | Compliance evidence repository | 7 years |
-| Change control documentation | PDF | Governance document repository | 7 years |
+| Change control documentation (RSS and RCD) | PDF | Governance document repository | 7 years |
 
 ## Compliance Mapping
 
