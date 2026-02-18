@@ -1,6 +1,6 @@
 # Control 4.2: Copilot in Teams Meetings Governance — Portal Walkthrough
 
-Step-by-step portal configuration for governing Copilot capabilities in Microsoft Teams meetings, including transcription, summarization, and action item generation in financial services environments.
+Step-by-step portal configuration for governing Copilot capabilities in Microsoft Teams meetings, including transcription enforcement, summarization governance, and action item management in financial services environments.
 
 ## Prerequisites
 
@@ -10,31 +10,47 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 
 ## Steps
 
-### Step 1: Configure Meeting Transcription Policy
+### Step 1: Override the Teams Copilot Default Change (Critical)
 
 **Portal:** Microsoft Teams Admin Center
-**Path:** Meetings > Meeting policies
+**Path:** Meetings > Meeting Policies
+
+!!! danger "Effective March 2026, Microsoft changed the default Copilot Teams meeting policy from EnabledWithTranscript to Enabled. This step overrides that change for FSI compliance."
+
+1. Navigate to **Teams Admin Center > Meetings > Meeting Policies**.
+2. Select the meeting policy assigned to regulated users (e.g., "FSI-Regulated-Policy" or "Global").
+3. Locate the **Copilot** section within the policy settings.
+4. Verify the **Copilot** setting — if it shows "Enabled" (without transcript requirement), this must be changed.
+5. Set **Copilot** to **"On with transcript"** (corresponds to `EnabledWithTranscript` in PowerShell).
+6. Save the policy.
+7. Verify the change has propagated by checking the policy summary — the Copilot row should show "On with transcript."
+
+### Step 2: Configure Meeting Transcription Policy
+
+**Portal:** Microsoft Teams Admin Center
+**Path:** Meetings > Meeting Policies > Recording and transcription
 
 1. Navigate to the Meeting policies section.
 2. Edit or create a meeting policy for Copilot-enabled users.
 3. Under **Recording and transcription**:
-   - Set **Transcription** to On (required for Copilot meeting features)
+   - Set **Transcription** to On (required for Copilot meeting features under EnabledWithTranscript)
    - Set **Meeting recording** to On or per your firm's recording policy
    - Set **Recording expiration** to align with retention requirements
 4. Assign the policy to the appropriate user groups.
 
-### Step 2: Configure Copilot Meeting Settings
+### Step 3: Configure Copilot Meeting Settings
 
 **Portal:** Microsoft Teams Admin Center
-**Path:** Meetings > Meeting policies > Copilot
+**Path:** Meetings > Meeting Policies > Copilot
 
 1. Under the Copilot section of the meeting policy:
-   - Set **Copilot** to "On with transcript" or "On without transcript" based on compliance requirements
-   - For regulated meetings, recommend "On with transcript" to maintain full audit trail
+   - Set **Copilot** to "On with transcript" — this is the FSI-compliant configuration (EnabledWithTranscript)
+   - Do not use "On without transcript" for any user group with recordkeeping obligations
+   - For regulated meetings, "On with transcript" ensures that all Copilot-generated artifacts have a corresponding verbatim record
 2. Configure whether Copilot can be used during and/or after meetings.
 3. Set the default Copilot access for different meeting types (scheduled, ad hoc, channel meetings).
 
-### Step 3: Configure Sensitivity Labels for Meetings
+### Step 4: Configure Sensitivity Labels for Meetings
 
 **Portal:** Microsoft Purview Compliance Portal
 **Path:** Solutions > Information protection > Labels
@@ -46,10 +62,10 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
    - **Material Nonpublic Information:** Copilot disabled for MNPI meetings
 2. Publish the meeting labels to Copilot-licensed users.
 
-### Step 4: Configure Meeting Summary and Action Item Controls
+### Step 5: Configure Meeting Summary and Action Item Controls
 
 **Portal:** Microsoft Teams Admin Center
-**Path:** Meetings > Meeting policies > AI features
+**Path:** Meetings > Meeting Policies > AI features
 
 1. Configure AI-generated meeting notes and summary settings:
    - Enable or disable automatic meeting summaries
@@ -58,22 +74,34 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 2. Configure recap availability (Intelligent Recap for Teams Premium).
 3. Set retention policies for meeting summaries and transcripts.
 
+### Step 6: Verify Policy Assignment
+
+**Portal:** Microsoft Teams Admin Center
+**Path:** Users > Manage users
+
+1. Select a sample of users from regulated business units.
+2. For each user, verify the assigned Teams meeting policy shows "FSI-Regulated-Policy" (or the firm's named policy).
+3. Confirm the policy enforces "On with transcript" for Copilot.
+4. For users who should not have Copilot: confirm they have a restrictive meeting policy or no Copilot license.
+
 ## FSI Recommendations
 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
-| Meeting transcription | On | On (mandatory for compliance) | On (mandatory) |
-| Copilot in meetings | On with transcript | On with transcript | On with transcript |
-| MNPI meeting Copilot | Enabled | Disabled | Disabled |
-| Meeting summary retention | Default | 1 year | 7 years |
+| Copilot in meetings | EnabledWithTranscript | EnabledWithTranscript | EnabledWithTranscript |
+| Auto-transcription | On | On (mandatory for compliance) | On (mandatory) |
+| Auto-recording | Optional | On for scheduled meetings with clients | On for all regulated activities |
+| MNPI meeting Copilot | Disabled | Disabled | Disabled |
+| Meeting summary retention | Default | 3 years (FINRA/SEC) | 7 years (FINRA/SEC extended) |
 
 ## Regulatory Alignment
 
+- **SEC Rule 17a-4(b)(4)** — EnabledWithTranscript ensures verbatim transcript preservation alongside AI-generated summaries, meeting the 3-year readily accessible retention requirement
 - **FINRA Rule 3110** — Supports compliance with supervisory requirements for meeting documentation
-- **SEC Rule 17a-4** — Helps meet record retention for meeting records containing business communications
+- **FINRA Rule 4511** — Preserves the underlying record (transcript) that validates the AI-generated meeting artifacts
 - **MiFID II** — Supports meeting documentation requirements for firms with EU operations
 
 ## Next Steps
 
-- Proceed to [PowerShell Setup](powershell-setup.md) for Teams meeting policy automation
+- Proceed to [PowerShell Setup](powershell-setup.md) for Teams meeting policy automation and EnabledWithTranscript enforcement scripts
 - See [Verification & Testing](verification-testing.md) to validate meeting governance

@@ -1,21 +1,49 @@
 # Control 4.2: Copilot in Teams Meetings Governance — Verification & Testing
 
-Test cases and evidence collection procedures to validate Copilot governance in Teams meetings.
+Test cases and evidence collection procedures to validate Copilot governance in Teams meetings, including the critical test for EnabledWithTranscript enforcement following Microsoft's March 2026 default change.
 
 ## Test Cases
 
-### Test 1: Copilot Availability with Transcript
+### Test 1: EnabledWithTranscript Enforcement (Critical)
 
-- **Objective:** Verify Copilot is available in meetings only when transcription is active
+- **Objective:** Verify that Copilot cannot activate in meetings without transcription — confirming the March 2026 default change has been remediated
+- **Steps:**
+  1. Run the PowerShell audit script: `Get-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" | Select-Object CopilotWithoutTranscript`
+  2. Confirm the output shows `Disabled`.
+  3. In a test meeting with the regulated policy applied, start the meeting without enabling transcription.
+  4. Attempt to activate Copilot — Copilot should either be unavailable or prompt to enable transcription first.
+  5. Enable transcription and verify Copilot becomes available.
+  6. Check the Teams audit log to confirm that Copilot events are accompanied by corresponding transcription start events.
+- **Expected Result:** Copilot requires transcription to be active; `CopilotWithoutTranscript` returns `Disabled`; Copilot-generated artifacts have accompanying verbatim transcripts in storage.
+- **Evidence:** PowerShell output screenshot; meeting test screenshots showing Copilot availability states; audit log showing transcript and Copilot events paired.
+
+### Test 2: Audit Log Verification — Transcript and Copilot Event Pairing
+
+- **Objective:** Confirm that audit logs show transcript capture events alongside Copilot interaction events for every regulated meeting
+- **Steps:**
+  1. Conduct a test meeting with Copilot enabled and the FSI regulated policy in effect.
+  2. After the meeting, search the Unified Audit Log for the meeting's date range:
+     ```powershell
+     Search-UnifiedAuditLog -StartDate [date] -EndDate [date] -RecordType CopilotInteraction
+     Search-UnifiedAuditLog -StartDate [date] -EndDate [date] -Operations "MeetingTranscriptCreated", "TeamsTranscriptionStarted"
+     ```
+  3. Verify that Copilot interaction events for the meeting are accompanied by transcript creation events.
+  4. Document the correlation for the evidence package.
+- **Expected Result:** Transcript creation event in audit log accompanies every Copilot interaction event for regulated meetings.
+- **Evidence:** Exported audit log records showing paired transcript and Copilot events.
+
+### Test 3: Copilot Availability with Transcript
+
+- **Objective:** Verify Copilot is available in meetings when transcription is active
 - **Steps:**
   1. Schedule a Teams meeting with the FSI Copilot meeting policy applied.
-  2. Start the meeting without enabling transcription.
-  3. Verify Copilot is not available or prompts to enable transcription.
-  4. Enable transcription and verify Copilot becomes available.
-- **Expected Result:** Copilot requires transcription to be active, supporting the audit trail requirement.
-- **Evidence:** Screenshots showing Copilot availability state with and without transcription.
+  2. Start the meeting and enable transcription.
+  3. Verify Copilot is available and functioning (recap, notes, action items accessible).
+  4. Document the results for evidence.
+- **Expected Result:** Copilot available when transcription is active, supporting the audit trail requirement.
+- **Evidence:** Screenshots showing Copilot availability when transcription is enabled.
 
-### Test 2: MNPI Meeting Policy Enforcement
+### Test 4: MNPI Meeting Policy Enforcement
 
 - **Objective:** Confirm that Copilot is disabled for MNPI-designated meetings
 - **Steps:**
@@ -26,7 +54,7 @@ Test cases and evidence collection procedures to validate Copilot governance in 
 - **Expected Result:** All AI features are disabled in MNPI-policy meetings.
 - **Evidence:** Screenshot showing disabled AI features in the meeting interface.
 
-### Test 3: Meeting Summary Distribution Control
+### Test 5: Meeting Summary Distribution Control
 
 - **Objective:** Validate that meeting summaries are only distributed to authorized attendees
 - **Steps:**
@@ -37,7 +65,7 @@ Test cases and evidence collection procedures to validate Copilot governance in 
 - **Expected Result:** Meeting summaries are distributed only to authorized attendees per policy.
 - **Evidence:** Summary distribution list and access permissions documentation.
 
-### Test 4: Meeting Transcript Retention
+### Test 6: Meeting Transcript Retention
 
 - **Objective:** Verify that meeting transcripts are retained per the regulatory retention policy
 - **Steps:**
@@ -52,8 +80,10 @@ Test cases and evidence collection procedures to validate Copilot governance in 
 
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
+| CopilotWithoutTranscript=Disabled verification | PowerShell | Screenshot/export | With control documentation |
+| Audit log transcript + Copilot event pairing | Unified Audit Log | CSV export | Per retention policy |
 | Meeting policy configuration | Teams Admin Center | Screenshot | With control documentation |
-| Copilot availability test | Meeting interface | Screenshot | With control documentation |
+| Copilot availability test (with transcript) | Meeting interface | Screenshot | With control documentation |
 | MNPI policy test | Meeting interface | Screenshot | With control documentation |
 | Transcript retention proof | SharePoint/OneDrive | Screenshot | Per retention policy |
 
@@ -61,8 +91,9 @@ Test cases and evidence collection procedures to validate Copilot governance in 
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| FINRA 3110 | Meeting supervision and documentation | Supports compliance with supervisory review of meeting content |
-| SEC 17a-4 | Meeting record retention | Helps meet record retention for AI-generated meeting records |
+| SEC Rule 17a-4(b)(4) | 3-year preservation of business communications | EnabledWithTranscript ensures verbatim transcript paired with AI summaries; both retained per policy |
+| FINRA 3110(b)(4) | Supervisory review of communications | AI-generated meeting summaries reviewable through Communication Compliance |
+| FINRA 4511 | Books and records preservation | Meeting transcripts and Copilot artifacts retained under Exchange and OneDrive retention policies |
 | FFIEC | IT governance of AI features | Supports governance of AI-enabled collaboration tools |
 
 ## Next Steps

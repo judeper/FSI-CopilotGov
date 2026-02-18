@@ -1,6 +1,6 @@
 # Control 4.2: Copilot in Teams Meetings Governance — PowerShell Setup
 
-Automation scripts for configuring and managing Copilot governance in Microsoft Teams meetings.
+Automation scripts for configuring and managing Copilot governance in Microsoft Teams meetings, including the critical remediation for Microsoft's March 2026 EnabledWithTranscript default change.
 
 ## Prerequisites
 
@@ -20,35 +20,65 @@ Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
 
 ## Scripts
 
-### Script 1: Configure Teams Meeting Policy for Copilot
+### Script 1: Enforce EnabledWithTranscript (Critical Remediation)
+
+This script addresses the March 2026 Microsoft default change from `EnabledWithTranscript` to `Enabled`. Run this script immediately for any Teams environment where recordkeeping obligations apply.
 
 ```powershell
-# Create or update Teams meeting policy for Copilot-governed meetings
-$policyName = "FSI-Copilot-Meeting-Policy"
+# ============================================================
+# CRITICAL REMEDIATION: Teams Copilot Default Change (March 2026)
+# Microsoft changed default from EnabledWithTranscript to Enabled.
+# This script enforces EnabledWithTranscript for FSI compliance.
+# ============================================================
 
-# Check if policy exists
+Import-Module MicrosoftTeams
+Connect-MicrosoftTeams
+
+# Step 1: Audit current state of all meeting policies
+Write-Host "=== Current Meeting Policy Copilot Settings ===" -ForegroundColor Cyan
+$allPolicies = Get-CsTeamsMeetingPolicy
+foreach ($policy in $allPolicies) {
+    $copilotStatus = $policy.CopilotWithoutTranscript
+    $flagged = if ($copilotStatus -ne "Disabled") { " <-- ACTION REQUIRED" } else { "" }
+    Write-Host "Policy: $($policy.Identity) | CopilotWithoutTranscript: $copilotStatus$flagged"
+}
+
+# Step 2: Create or update FSI-Regulated-Policy
+$policyName = "FSI-Regulated-Policy"
 $existingPolicy = Get-CsTeamsMeetingPolicy -Identity $policyName -ErrorAction SilentlyContinue
 
 if (-not $existingPolicy) {
+    Write-Host "`nCreating new policy: $policyName" -ForegroundColor Yellow
     New-CsTeamsMeetingPolicy -Identity $policyName
+} else {
+    Write-Host "`nUpdating existing policy: $policyName" -ForegroundColor Yellow
 }
 
+# Enforce EnabledWithTranscript: Copilot cannot run without transcription
 Set-CsTeamsMeetingPolicy -Identity $policyName `
     -AllowTranscription $true `
     -AllowCloudRecording $true `
     -RecordingStorageMode "OneDriveForBusiness" `
-    -AllowMeetingCoach $true `
     -Copilot "EnabledWithTranscript" `
     -CopilotWithoutTranscript "Disabled"
 
-Write-Host "Meeting policy configured: $policyName" -ForegroundColor Green
+# Step 3: Verify the setting
+$verifyPolicy = Get-CsTeamsMeetingPolicy -Identity $policyName
+Write-Host "`n=== Verification ===" -ForegroundColor Cyan
+Write-Host "Policy: $policyName"
+Write-Host "CopilotWithoutTranscript: $($verifyPolicy.CopilotWithoutTranscript)"
+if ($verifyPolicy.CopilotWithoutTranscript -eq "Disabled") {
+    Write-Host "PASS: EnabledWithTranscript enforced — Copilot requires transcription." -ForegroundColor Green
+} else {
+    Write-Host "FAIL: CopilotWithoutTranscript is NOT Disabled. Review policy settings." -ForegroundColor Red
+}
 ```
 
-### Script 2: Assign Meeting Policy to Copilot Users
+### Script 2: Assign FSI-Regulated Meeting Policy to User Group
 
 ```powershell
-# Assign the Copilot meeting policy to licensed users
-$policyName = "FSI-Copilot-Meeting-Policy"
+# Assign the FSI meeting policy to Copilot-licensed users
+$policyName = "FSI-Regulated-Policy"
 $copilotGroupId = "copilot-users-group-id"
 
 $members = Get-MgGroupMember -GroupId $copilotGroupId -All
@@ -60,7 +90,7 @@ foreach ($member in $members) {
     $assignedCount++
 }
 
-Write-Host "Meeting policy assigned to $assignedCount users" -ForegroundColor Green
+Write-Host "Meeting policy '$policyName' assigned to $assignedCount users" -ForegroundColor Green
 ```
 
 ### Script 3: Create MNPI Meeting Policy (Copilot Disabled)
@@ -84,7 +114,50 @@ Set-CsTeamsMeetingPolicy -Identity $mnpiPolicyName `
 Write-Host "MNPI meeting policy created: $mnpiPolicyName (Copilot DISABLED)" -ForegroundColor Yellow
 ```
 
-### Script 4: Meeting Copilot Usage Report
+### Script 4: Verify EnabledWithTranscript Across All Policies (Compliance Audit)
+
+```powershell
+# Audit all Teams meeting policies for Copilot transcript enforcement compliance
+Write-Host "=== Teams Meeting Policy Copilot Audit ===" -ForegroundColor Cyan
+Write-Host "Date: $(Get-Date -Format 'yyyy-MM-dd HH:mm')`n"
+
+$allPolicies = Get-CsTeamsMeetingPolicy
+$compliant = @()
+$nonCompliant = @()
+
+foreach ($policy in $allPolicies) {
+    $status = [PSCustomObject]@{
+        PolicyName              = $policy.Identity
+        CopilotSetting          = $policy.Copilot
+        CopilotWithoutTranscript = $policy.CopilotWithoutTranscript
+        AllowTranscription      = $policy.AllowTranscription
+        Compliant               = ($policy.CopilotWithoutTranscript -eq "Disabled" -or $policy.Copilot -eq "Disabled")
+    }
+
+    if ($status.Compliant) {
+        $compliant += $status
+    } else {
+        $nonCompliant += $status
+    }
+}
+
+if ($nonCompliant.Count -gt 0) {
+    Write-Host "NON-COMPLIANT POLICIES (ACTION REQUIRED):" -ForegroundColor Red
+    $nonCompliant | Format-Table -AutoSize
+} else {
+    Write-Host "All meeting policies comply with EnabledWithTranscript requirement." -ForegroundColor Green
+}
+
+Write-Host "`nCompliant policies:" -ForegroundColor Green
+$compliant | Format-Table -AutoSize
+
+# Export audit results
+$allPolicies | Select-Object Identity, Copilot, CopilotWithoutTranscript, AllowTranscription |
+    Export-Csv "TeamsMeetingPolicyAudit_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+Write-Host "`nAudit exported to TeamsMeetingPolicyAudit_$(Get-Date -Format 'yyyyMMdd').csv"
+```
+
+### Script 5: Meeting Copilot Usage Report
 
 ```powershell
 # Report on Copilot usage in Teams meetings
@@ -112,8 +185,10 @@ $meetingEvents | Select-Object CreationDate, UserIds, Operations |
 
 | Task | Frequency | Script |
 |------|-----------|--------|
-| Policy assignment verification | Monthly | Script 2 (verify) |
-| Meeting Copilot usage report | Weekly | Script 4 |
+| EnabledWithTranscript remediation | Immediate (run once; re-run after policy changes) | Script 1 |
+| Policy assignment to user groups | As needed | Script 2 |
+| Compliance audit of all policies | Monthly | Script 4 |
+| Meeting Copilot usage report | Weekly | Script 5 |
 | MNPI policy review | Quarterly | Script 3 (verify) |
 
 ## Next Steps
