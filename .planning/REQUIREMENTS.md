@@ -47,8 +47,8 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 
 - [x] **P4-01**: Update 4.1 to add Copilot overview dashboard, Copilot Control System branding, portal consolidation into MAC, Copilot for Admins, Baseline Security Mode
 - [x] **P4-02**: Update 4.2 to document Teams Copilot default change from EnabledWithTranscript → Enabled (March 2026) with FSI recordkeeping impact analysis
-- [ ] **P4-03**: Update 4.4 to add expanded Viva Copilot Chat insights and Engage→Teams integration
-- [ ] **P4-04**: Update 4.8 to add pay-as-you-go billing model ($0.01/message) with governance controls and per-seat vs PAYG cost comparison
+- [x] **P4-03**: Update 4.4 to add expanded Viva Copilot Chat insights and Engage→Teams integration
+- [x] **P4-04**: Update 4.8 to add pay-as-you-go billing model ($0.01/message) with governance controls and per-seat vs PAYG cost comparison
 
 ### Framework & Reference
 
@@ -115,8 +115,8 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 | P3-09 | Phase 4 | Pending |
 | P4-01 | Phase 4 | Complete |
 | P4-02 | Phase 4 | Complete |
-| P4-03 | Phase 4 | Pending |
-| P4-04 | Phase 4 | Pending |
+| P4-03 | Phase 4 | Complete |
+| P4-04 | Phase 4 | Complete |
 | FWRK-01 | Phase 5 | Pending |
 | FWRK-02 | Phase 5 | Pending |
 | FWRK-03 | Phase 5 | Pending |

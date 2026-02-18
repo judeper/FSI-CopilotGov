@@ -79,12 +79,12 @@ Plans:
 **Plans**: 7 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Update controls 3.1, 3.2 (expanded audit schema, PAYG billing, restructured retention locations) + playbooks
-- [ ] 04-02-PLAN.md — Update controls 3.3, 3.4 (unified eDiscovery migration, Communication Compliance expansion, IRM integration) + playbooks
-- [ ] 04-03-PLAN.md — Update controls 3.5, 3.6 (SEC v. Delphia precedent, FINRA 2026 agentic supervision, SEC exam focus) + playbooks
-- [ ] 04-04-PLAN.md — Update controls 3.8, 3.10, 3.11 (OCC MRM proportionality, Reg S-P amendments, 17a-4 audit-trail alternative, off-channel enforcement) + playbooks
-- [ ] 04-05-PLAN.md — Update controls 4.1, 4.2 (Copilot Control System, Teams default change with FSI recordkeeping impact) + playbooks
-- [ ] 04-06-PLAN.md — Update controls 4.4, 4.8 (Viva Copilot Chat insights, PAYG billing model) + playbooks
+- [x] 04-01-PLAN.md — Update controls 3.1, 3.2 (expanded audit schema, PAYG billing, restructured retention locations) + playbooks — COMPLETE 2026-02-18
+- [x] 04-02-PLAN.md — Update controls 3.3, 3.4 (unified eDiscovery migration, Communication Compliance expansion, IRM integration) + playbooks — COMPLETE 2026-02-18
+- [x] 04-03-PLAN.md — Update controls 3.5, 3.6 (SEC v. Delphia precedent, FINRA 2026 agentic supervision, SEC exam focus) + playbooks — COMPLETE 2026-02-18
+- [x] 04-04-PLAN.md — Update controls 3.8, 3.10, 3.11 (OCC MRM proportionality, Reg S-P amendments, 17a-4 audit-trail alternative, off-channel enforcement) + playbooks — COMPLETE 2026-02-18
+- [x] 04-05-PLAN.md — Update controls 4.1, 4.2 (Copilot Control System, Teams default change with FSI recordkeeping impact) + playbooks — COMPLETE 2026-02-18
+- [x] 04-06-PLAN.md — Update controls 4.4, 4.8 (Viva Copilot Chat insights, PAYG billing model) + playbooks — COMPLETE 2026-02-18
 - [ ] 04-07-PLAN.md — Verification pass (SC-1 through SC-4) + opportunistic playbook review + MkDocs build check
 
 ### Phase 5: Framework and Reference Updates
@@ -125,6 +125,6 @@ Plans: TBD
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
 | 2. Global Naming Corrections | 5/6 | Complete    | 2026-02-17 | - |
 | 3. Pillar Updates — Readiness and Security | 6/6 | Complete    | 2026-02-18 | - |
-| 4. Pillar Updates — Compliance and Operations | 4/7 | In Progress|  | - |
+| 4. Pillar Updates — Compliance and Operations | 6/7 | In Progress|  | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |
 | 6. Playbook Updates and Cross-linking | v1.1 | 0/? | Not started | - |

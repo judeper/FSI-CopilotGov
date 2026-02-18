@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 4 of 6 in progress (Pillar Updates — Compliance and Operations)
-Plan: 3 of 7 complete in Phase 4 (04-01, 04-02, 04-03 complete; 04-04 through 04-07 remaining)
-Status: Phase 4 IN PROGRESS (3/7 plans with SUMMARYs)
-Last activity: 2026-02-18 — Completed 04-03 (Controls 3.5 FINRA 2210 + SEC v. Delphia enforcement precedent, Control 3.6 agentic AI supervision + SEC 2026 exam focus; P3-05 and P3-06 requirements satisfied)
+Plan: 6 of 7 complete in Phase 4 (04-01 through 04-06 complete; 04-07 remaining)
+Status: Phase 4 IN PROGRESS (6/7 plans with SUMMARYs)
+Last activity: 2026-02-18 — Completed 04-06 (Control 4.4 Viva Copilot Chat insights + Engage-to-Teams integration; Control 4.8 PAYG billing model + per-seat vs PAYG comparison + governance controls; P4-03 and P4-04 requirements satisfied)
 
-Progress: [████████████░] 65% (13 of ~20 total plans complete; Phase 4 plan 03 added)
+Progress: [████████████████░] 80% (16 of ~20 total plans complete)
 
 ## Performance Metrics
 
@@ -44,6 +44,7 @@ Progress: [████████████░] 65% (13 of ~20 total plans c
 | Phase 04-pillar-compliance-operations P02 | 8 | 2 tasks | 10 files |
 | Phase 04-pillar-compliance-operations P03 | 9 | 2 tasks | 10 files |
 | Phase 04-pillar-compliance-operations P01 | 9 | 2 tasks | 10 files |
+| Phase 04-pillar-compliance-operations P06 | 12 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,9 @@ Progress: [████████████░] 65% (13 of ~20 total plans c
 - [Phase 04-pillar-compliance-operations]: 04-01: Microsoft Copilot experiences is the primary retention location for M365 Copilot — Enterprise AI Apps and Other AI Apps noted for awareness only with explicit scope guardrail
 - [Phase 04-pillar-compliance-operations]: 04-01: Threaded summaries retained independently — source content deletion does not cascade to Copilot summary; both source location and Copilot experiences must be covered in retention policies and eDiscovery holds
 - [Phase 04-pillar-compliance-operations]: 04-01: Priority cleanup conservative posture — Regulated tier retains all Copilot-generated content per SEC Rule 17a-3(a)(17) broad communications coverage
+- [Phase 04-pillar-compliance-operations]: 04-06: Copilot Chat analytics documented as aggregation-only in Viva Insights — individual queries never visible; FFIEC IT Examination Handbook Section II.C anchors the monitoring expectation
+- [Phase 04-pillar-compliance-operations]: 04-06: Engage-to-Teams integration is net positive for compliance — dual-location policy coverage (Yammer + Teams) extends compliance perimeter automatically for regulated content
+- [Phase 04-pillar-compliance-operations]: 04-06: PAYG breakeven explicitly documented at 3,000 messages/user/month ($30 per-seat / $0.01 per message); SOX 404 and OCC Heightened Standards (12 CFR Part 30) cited for PAYG budget authorization controls; FFIEC Section II.D for cost-benefit analysis documentation
 
 ### Blockers/Concerns
 
@@ -99,5 +103,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 04-01-PLAN.md (Control 3.1 expanded audit schema + PAYG billing; Control 3.2 restructured retention locations + threaded summaries; 10 files updated; P3-01 and P3-02 requirements satisfied)
-Resume file: .planning/phases/04-pillar-compliance-operations/04-01-SUMMARY.md
+Stopped at: Completed 04-06-PLAN.md (Control 4.4 Viva Copilot Chat insights + Engage-to-Teams integration; Control 4.8 PAYG billing model + per-seat vs PAYG comparison + governance controls; 10 files updated; P4-03 and P4-04 requirements satisfied)
+Resume file: .planning/phases/04-pillar-compliance-operations/04-06-SUMMARY.md
