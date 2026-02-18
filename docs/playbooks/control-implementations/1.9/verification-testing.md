@@ -31,11 +31,34 @@ Test cases and evidence collection for validating Copilot license management.
 - **Objective:** Confirm all Copilot users have required prerequisite licenses
 - **Steps:**
   1. For a sample of 20 Copilot-licensed users, review their complete license stack
-  2. Verify each user has the required base license (M365 E3/E5)
+  2. Verify each user has the required base license (M365 E3/E5 for enterprise users; F1/F3 for Frontline users)
   3. Check for required add-on licenses based on governance controls (SAM, Compliance)
   4. Identify any users with incomplete license stacks
 - **Expected Result:** All Copilot users have complete prerequisite license stacks
 - **Evidence:** License stack audit for sample users
+
+### Test 5: Frontline User License Verification
+
+- **Objective:** Confirm Frontline (F1/F3) users receiving the Copilot add-on have appropriate base licenses and governance coverage
+- **Steps:**
+  1. Run PowerShell Script 4 to generate the Frontline Copilot status report
+  2. Verify all Frontline users with the Copilot add-on have a valid F1 or F3 base license
+  3. Confirm that information barrier, DLP, and sensitivity label policies are applied to Frontline Copilot users
+  4. Test Copilot access for a sample Frontline user to confirm the add-on is functional
+  5. Document any feature limitations observed for F1/F3 users vs. E3/E5 users
+- **Expected Result:** Frontline Copilot users have correct base licenses and governance coverage
+- **Evidence:** Frontline license report; sample Copilot access confirmation; governance policy scope documentation
+
+### Test 6: PAYG Copilot Chat Governance
+
+- **Objective:** Verify PAYG Copilot Chat is governed and tracked appropriately
+- **Steps:**
+  1. Confirm Azure Cost Management shows PAYG Copilot Chat usage data
+  2. Verify spend limits or budget alerts are configured in Azure Cost Management
+  3. Confirm that governance policies (DLP, sensitivity labels, information barriers) apply to PAYG users
+  4. Review PAYG user list against the governance policy scope to identify any coverage gaps
+- **Expected Result:** PAYG Copilot Chat spending is tracked, limited, and governed
+- **Evidence:** Azure Cost Management configuration; PAYG usage report; governance policy scope confirmation
 
 ### Test 4: License Reclamation Process
 

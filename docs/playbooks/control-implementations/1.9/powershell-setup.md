@@ -13,7 +13,7 @@ Automation scripts for managing M365 Copilot license assignments and utilization
 ### Script 1: License Inventory and Availability Report
 
 ```powershell
-# Generate comprehensive license inventory report
+# Generate comprehensive license inventory report including Frontline SKUs
 # Requires: Microsoft Graph SDK
 
 Import-Module Microsoft.Graph.Users
@@ -33,7 +33,8 @@ foreach ($sku in $subscribedSkus) {
 }
 
 Write-Host "=== License Inventory ==="
-$licenseReport | Where-Object { $_.SkuPartNumber -match "Copilot|SPE_E5|SPE_E3|AAD_PREMIUM" } |
+# Include Frontline (F1/F3) SKUs alongside E3/E5 and Copilot SKUs
+$licenseReport | Where-Object { $_.SkuPartNumber -match "Copilot|SPE_E5|SPE_E3|AAD_PREMIUM|FRONTLINE|M365_F1|M365_F3" } |
     Format-Table SkuPartNumber, Total, Assigned, Available -AutoSize
 
 $licenseReport | Export-Csv "LicenseInventory_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
@@ -104,13 +105,54 @@ Write-Host "Inactive (>30 days): $inactive"
 $utilizationReport | Export-Csv "CopilotUtilization_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
+### Script 4: Frontline License Assignment Report
+
+```powershell
+# Identify Frontline (F1/F3) users and their Copilot add-on status
+# Requires: Microsoft Graph SDK
+
+Import-Module Microsoft.Graph.Users
+Connect-MgGraph -Scopes "User.Read.All","Organization.Read.All"
+
+$allSkus = Get-MgSubscribedSku
+# Frontline base SKU patterns (F1: M365_F1, F3: M365_F3 or similar)
+$frontlineSkuIds = ($allSkus | Where-Object { $_.SkuPartNumber -match "M365_F1|M365_F3|FRONTLINE" }).SkuId
+$copilotSkuId    = ($allSkus | Where-Object { $_.SkuPartNumber -match "Microsoft_365_Copilot" }).SkuId
+
+$allUsers = Get-MgUser -All -Property "displayName,userPrincipalName,assignedLicenses,department"
+
+$frontlineReport = @()
+foreach ($user in $allUsers) {
+    $hasFrontline = ($user.AssignedLicenses.SkuId | Where-Object { $frontlineSkuIds -contains $_ }).Count -gt 0
+    $hasCopilot   = $copilotSkuId -and ($user.AssignedLicenses.SkuId -contains $copilotSkuId)
+
+    if ($hasFrontline) {
+        $frontlineReport += [PSCustomObject]@{
+            DisplayName     = $user.DisplayName
+            UPN             = $user.UserPrincipalName
+            Department      = $user.Department
+            HasFrontlineSKU = $hasFrontline
+            HasCopilotAddOn = $hasCopilot
+        }
+    }
+}
+
+Write-Host "=== Frontline Users Copilot Status ==="
+Write-Host "Frontline users total: $($frontlineReport.Count)"
+Write-Host "Frontline users with Copilot add-on: $(($frontlineReport | Where-Object HasCopilotAddOn).Count)"
+$frontlineReport | Format-Table DisplayName, Department, HasFrontlineSKU, HasCopilotAddOn -AutoSize
+$frontlineReport | Export-Csv "FrontlineCopilotStatus_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+```
+
 ## Scheduled Tasks
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
-| License Inventory | Monthly | Track license consumption and availability |
+| License Inventory | Monthly | Track license consumption and availability (including Frontline SKUs) |
 | Utilization Report | Monthly | Identify inactive users for license reclamation |
 | Assignment Verification | After each deployment wave | Confirm successful license assignments |
+| Frontline Copilot Report | Quarterly | Confirm Frontline add-on assignments are accurate and governance policies are applied |
+| PAYG Usage Review | Monthly | Review Azure Cost Management for PAYG Copilot Chat spend against budget limits |
 
 ## Next Steps
 

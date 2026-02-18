@@ -57,6 +57,28 @@ Common issues and resolution steps for Copilot license management.
   3. Cross-reference Copilot user lists with HR department data for cost allocation
   4. Implement a tagging system in the license management process for budget tracking
 
+### Issue 6: Frontline (F1/F3) Users Not Receiving Copilot Add-On
+
+- **Symptoms:** Frontline workers in the Copilot-Frontline-Users group do not receive the Copilot add-on, or receive an error during assignment
+- **Root Cause:** The Microsoft 365 Copilot add-on for Frontline may require verification that the user has a valid F1 or F3 base license. Service plan conflicts between the Copilot add-on and certain F1/F3 service plans can prevent assignment.
+- **Resolution:**
+  1. Verify the user has an active F1 or F3 base license assigned before the Copilot add-on
+  2. Navigate to Entra admin center > Groups > [Copilot-Frontline-Users] > Licenses to check for assignment errors
+  3. Review specific error messages — common: "Conflicting service plans" between Copilot and certain F1 service plan components
+  4. If service plan conflict: disable the conflicting service plan in the Copilot add-on assignment and reprocess
+  5. Confirm Copilot features are available for the user after successful assignment; document any feature limitations compared to E3/E5 users
+
+### Issue 7: PAYG Copilot Chat Unexpected Costs
+
+- **Symptoms:** Azure Cost Management shows higher-than-expected PAYG Copilot Chat charges; spend limit has been reached unexpectedly
+- **Root Cause:** PAYG usage is metered per message and can accumulate rapidly with high-volume users or if access is broader than intended.
+- **Resolution:**
+  1. Navigate to Azure portal > Cost Management > Budgets and verify spend alerts are configured for PAYG Copilot Chat
+  2. Review usage breakdown by user or resource in Azure Cost Management to identify high-volume users
+  3. For users with consistently high PAYG costs, evaluate whether a per-seat Copilot license is more cost-effective
+  4. If PAYG access was granted more broadly than intended, review PAYG access configuration in MAC and restrict to the intended user population
+  5. Set lower budget alert thresholds to receive earlier warning before spend limits are reached
+
 ## Diagnostic Steps
 
 1. **Check license status:** `Get-MgUser -UserId <upn> -Property AssignedLicenses`
