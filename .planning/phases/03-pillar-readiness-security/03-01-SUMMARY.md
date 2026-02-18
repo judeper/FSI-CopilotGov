@@ -88,7 +88,7 @@ Each task was committed atomically:
 1. **Task 1: Update controls 1.1 and 1.2 with playbook alignment** - `516b2a3` (feat)
 2. **Task 2: Update control 1.3 with RCD/RSS comparison and playbook alignment** - `3e56d3b` (feat)
 
-**Plan metadata:** TBD (docs: complete plan — committed after summary)
+**Plan metadata:** `579206d` (docs: complete plan)
 
 ## Files Created/Modified
 
@@ -136,3 +136,7 @@ None — no external service configuration required.
 ---
 *Phase: 03-pillar-readiness-security*
 *Completed: 2026-02-18*
+
+## Self-Check: PASSED
+
+All key files verified present. Both task commits (516b2a3, 3e56d3b) confirmed in git log. Requirements P1-01, P1-02, P1-03 marked complete in REQUIREMENTS.md.
