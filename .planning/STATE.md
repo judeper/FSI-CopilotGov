@@ -60,6 +60,10 @@ Progress: [██████████░░] 55% (11 of ~20 total plans comp
 - [Phase 03-pillar-readiness-security]: 03-05: Control 2.10 warrants new subsection for Risky Agents — 4 distinct capabilities each with 2+ paragraphs crosses the 3-paragraph new-subsection threshold
 - [Phase 03-pillar-readiness-security]: 03-05: IRM Triage Agent documented as requiring SR 11-7 model inventory entry — OCC Bulletin 2011-12 model risk management applies to AI decision-support tools
 - [Phase 03-pillar-readiness-security]: 03-05: Troubleshooting guide in 2.3 intentionally mentions wrong app ID in diagnostic context only — appropriate documentation for admins to identify and correct misconfigured policies
+- [Phase 03-pillar-readiness-security]: 03-04: DLP dual policy types are architecturally distinct — Type 1 (label-based) blocks at grounding/response phase; Type 2 (SIT-based) blocks at user prompt phase — must be configured as separate policies, cannot be merged
+- [Phase 03-pillar-readiness-security]: 03-04: Label groups terminology: 'parent labels migrating to label groups' (GA January 2026, MC1111778) not 'parent labels deprecated'; migration path via Purview > Information Protection > Labels > Migrate sensitivity label scheme
+- [Phase 03-pillar-readiness-security]: 03-04: Copilot Studio agents inherit highest sensitivity label from all knowledge sources — agents require label inheritance assessment as governance gate before activation
+- [Phase 03-pillar-readiness-security]: 03-04: SEC Reg S-P (17 CFR Section 248, amended Dec 3, 2025) citation applied specifically to SIT-based prompt blocking (Type 2) — customer information safeguards must cover AI interaction surfaces
 
 ### Blockers/Concerns
 
@@ -72,5 +76,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 03-05-PLAN.md (controls 2.3 and 2.10 updated; CA enforcement change, corrected app ID, IRM Adaptive Protection, Risky Agents, AI usage indicator, data risk graphs, IRM Triage Agent)
-Resume file: .planning/phases/03-pillar-readiness-security/03-05-SUMMARY.md
+Stopped at: Completed 03-04-PLAN.md (controls 2.1 + 2.2 updated; dual DLP policy types, label groups migration, agent label inheritance, nested auto-labeling, PnP registration fix)
+Resume file: .planning/phases/03-pillar-readiness-security/03-04-SUMMARY.md
