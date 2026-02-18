@@ -1,6 +1,6 @@
 # Control 3.4: Communication Compliance Monitoring — PowerShell Setup
 
-Automation scripts for deploying and managing communication compliance policies that monitor Copilot-assisted communications.
+Automation scripts for deploying and managing communication compliance policies that monitor Copilot-assisted communications, including reporting on IRM integration status and indicator flow.
 
 ## Prerequisites
 
@@ -90,7 +90,33 @@ Write-Host "Policy Match Trend Analysis:"
 $results | Format-Table -AutoSize
 ```
 
-### Script 4: Export Pending Review Items Summary
+### Script 4: Verify IRM Integration — Check for CC Indicators in IRM Audit Log
+
+```powershell
+# Verify that Communication Compliance violations are generating IRM risk indicators
+# This confirms the CC-to-IRM integration is functioning
+$startDate = (Get-Date).AddDays(-7)
+$endDate = Get-Date
+
+# Check for IRM risk events sourced from Communication Compliance
+$irmCcEvents = Search-UnifiedAuditLog `
+    -StartDate $startDate `
+    -EndDate $endDate `
+    -RecordType SecurityComplianceInsights `
+    -ResultSize 5000 |
+    Where-Object { $_.AuditData -like "*CommunicationCompliance*" }
+
+if ($irmCcEvents.Count -eq 0) {
+    Write-Host "WARNING: No CC-sourced IRM indicators found in the last 7 days." -ForegroundColor Yellow
+    Write-Host "Verify: (1) IRM integration is enabled in CC Settings, (2) CC policy matches have occurred, (3) allow up to 24 hours for propagation."
+} else {
+    Write-Host "IRM integration confirmed: $($irmCcEvents.Count) CC-sourced IRM events in the last 7 days." -ForegroundColor Green
+    $irmCcEvents | Select-Object CreationDate, UserIds, Operations |
+        Export-Csv "IRM-CC-Indicators_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+}
+```
+
+### Script 5: Export Pending Review Items Summary
 
 ```powershell
 # Identify the volume and age of pending review items
@@ -116,7 +142,8 @@ $pendingByUser | Export-Csv "PendingReviews_$(Get-Date -Format 'yyyyMMdd').csv" 
 |------|-----------|--------|
 | Compliance review report | Weekly | Script 2 |
 | Policy match volume monitoring | Daily | Script 3 |
-| Pending review items check | Daily | Script 4 |
+| IRM integration health check | Weekly | Script 4 |
+| Pending review items check | Daily | Script 5 |
 
 ## Next Steps
 
