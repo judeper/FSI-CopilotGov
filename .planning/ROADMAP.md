@@ -45,7 +45,7 @@ Plans:
 - [x] 02-03-PLAN.md — Replace BizChat/M365 Chat in framework, reference, root, and getting-started files (17 files) — COMPLETE 2026-02-17
 - [x] 02-04-PLAN.md — Broader terminology audit: Azure AD, Office 365, Purview portal naming (~40 files) — COMPLETE 2026-02-17
 - [x] 02-05-PLAN.md — Verification pass + ROADMAP success criteria update — COMPLETE 2026-02-17
-- [ ] 02-06-PLAN.md — Gap closure: SC-3 shortened-form policy fixes (14 files)
+- [x] 02-06-PLAN.md — Gap closure: SC-3 shortened-form policy fixes (14 files) — COMPLETE 2026-02-17
 
 ### Phase 3: Pillar Updates — Readiness and Security
 **Goal**: Pillars 1 and 2 controls accurately reflect current Microsoft 365 Copilot platform capabilities, including new RBAC roles, DLP policy types, Conditional Access changes, and updated licensing
@@ -60,11 +60,11 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Update controls 1.1, 1.2, 1.3 (Optimization Assessment, DSPM unified, RCD/RSS) + playbooks + PnP fix for 1.2
-- [ ] 03-02-PLAN.md — Update controls 1.6, 1.7 (RBAC roles, SAM licensing rewrite, DAG, RAC) + playbooks + PnP fix for 1.6/1.8
-- [ ] 03-03-PLAN.md — Update controls 1.9, 2.4, 2.9 (Frontline SKUs, Channel Agent IB, AI app catalog) + playbooks
-- [ ] 03-04-PLAN.md — Update controls 2.1, 2.2 (dual DLP policy types, label groups, agent inheritance) + playbooks + PnP fix for 2.2
-- [ ] 03-05-PLAN.md — Update controls 2.3, 2.10 (CA enforcement, app ID fix, Risky Agents, IRM Triage Agent) + playbooks
+- [x] 03-01-PLAN.md — Update controls 1.1, 1.2, 1.3 (Optimization Assessment, DSPM unified, RCD/RSS) + playbooks + PnP fix for 1.2
+- [x] 03-02-PLAN.md — Update controls 1.6, 1.7 (RBAC roles, SAM licensing rewrite, DAG, RAC) + playbooks + PnP fix for 1.6/1.8
+- [x] 03-03-PLAN.md — Update controls 1.9, 2.4, 2.9 (Frontline SKUs, Channel Agent IB, AI app catalog) + playbooks
+- [x] 03-04-PLAN.md — Update controls 2.1, 2.2 (dual DLP policy types, label groups, agent inheritance) + playbooks + PnP fix for 2.2
+- [x] 03-05-PLAN.md — Update controls 2.3, 2.10 (CA enforcement, app ID fix, Risky Agents, IRM Triage Agent) + playbooks
 - [ ] 03-06-PLAN.md — Verification pass (SC-1 through SC-5) + opportunistic playbook review + MkDocs build check
 
 ### Phase 4: Pillar Updates — Compliance and Operations
@@ -117,7 +117,7 @@ Plans: TBD
 |-------|-----------|----------------|--------|-----------|
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
 | 2. Global Naming Corrections | 5/6 | Complete    | 2026-02-17 | - |
-| 3. Pillar Updates — Readiness and Security | v1.1 | 0/6 | Planned | - |
+| 3. Pillar Updates — Readiness and Security | v1.1 | 5/6 | In Progress | - |
 | 4. Pillar Updates — Compliance and Operations | v1.1 | 0/? | Not started | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |
 | 6. Playbook Updates and Cross-linking | v1.1 | 0/? | Not started | - |
