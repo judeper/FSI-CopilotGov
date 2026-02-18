@@ -1,11 +1,11 @@
 # Control 4.1: Copilot Admin Settings and Feature Management — PowerShell Setup
 
-Automation scripts for managing Copilot administrative settings, feature controls, and license assignments.
+Automation scripts for managing Copilot Control System administrative settings, feature controls, and license assignments.
 
 ## Prerequisites
 
 - **Modules:** `Microsoft.Graph`, `ExchangeOnlineManagement`
-- **Permissions:** Global Administrator or Microsoft 365 Service Administrator
+- **Permissions:** Global Administrator, Copilot Administrator, or Microsoft 365 Service Administrator
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -13,6 +13,9 @@ Automation scripts for managing Copilot administrative settings, feature control
 ```powershell
 Import-Module Microsoft.Graph
 Connect-MgGraph -Scopes "Policy.ReadWrite.All", "User.ReadWrite.All", "Organization.ReadWrite.All"
+
+Import-Module ExchangeOnlineManagement
+Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
 ```
 
 ## Scripts
@@ -70,10 +73,7 @@ Write-Host "Copilot licenses assigned to $assignedCount new users" -ForegroundCo
 ### Script 3: Audit Copilot Configuration Changes
 
 ```powershell
-# Track administrative changes to Copilot settings
-Import-Module ExchangeOnlineManagement
-Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
-
+# Track administrative changes to Copilot Control System settings
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
 
@@ -82,7 +82,7 @@ $configChanges = Search-UnifiedAuditLog `
     -Operations "Set-CopilotPolicy", "Update-CopilotSettings" `
     -ResultSize 5000
 
-Write-Host "Copilot Configuration Changes (Last 30 Days): $($configChanges.Count)"
+Write-Host "Copilot Control System Configuration Changes (Last 30 Days): $($configChanges.Count)"
 $configChanges | Select-Object CreationDate, UserIds, Operations |
     Format-Table -AutoSize
 $configChanges | Export-Csv "CopilotConfigChanges_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
@@ -91,7 +91,7 @@ $configChanges | Export-Csv "CopilotConfigChanges_$(Get-Date -Format 'yyyyMMdd')
 ### Script 4: Feature Enablement Status Report
 
 ```powershell
-# Report on Copilot feature enablement across the tenant
+# Report on Copilot Control System feature enablement across the tenant
 $features = @(
     @{Feature="Copilot in Word"; Setting="WordCopilotEnabled"},
     @{Feature="Copilot in Excel"; Setting="ExcelCopilotEnabled"},
@@ -102,16 +102,47 @@ $features = @(
     @{Feature="Plugin Access"; Setting="PluginAccessEnabled"}
 )
 
-Write-Host "Copilot Feature Enablement Report:" -ForegroundColor Cyan
-Write-Host "Note: Verify settings in M365 Admin Center > Settings > Copilot"
-Write-Host "PowerShell cmdlets for Copilot policy management are being expanded by Microsoft."
+Write-Host "Copilot Control System Feature Enablement Report:" -ForegroundColor Cyan
+Write-Host "Note: Verify settings in M365 Admin Center > Copilot > Settings"
+Write-Host "PowerShell cmdlets for Copilot policy management continue to expand."
 $features | ForEach-Object {
     [PSCustomObject]@{
         Feature = $_.Feature
         Setting = $_.Setting
-        Status  = "Verify in Admin Center"
+        Status  = "Verify in Admin Center > Copilot"
     }
 } | Format-Table -AutoSize
+```
+
+### Script 5: Verify Baseline Security Mode Status
+
+```powershell
+# Report on Copilot Control System security configuration baseline
+# Baseline Security Mode settings are managed via the Admin Center; this script
+# validates the security posture by querying related DLP and CA policies.
+
+# Check if Conditional Access policies covering Copilot-licensed users are enabled
+$caPolicies = Get-MgIdentityConditionalAccessPolicy -All | Where-Object {
+    $_.State -eq "enabled" -and $_.DisplayName -like "*Copilot*"
+}
+
+Write-Host "Active Conditional Access Policies covering Copilot:" -ForegroundColor Cyan
+if ($caPolicies.Count -eq 0) {
+    Write-Host "WARNING: No Copilot-specific CA policies found. Verify Baseline Security Mode is enabled." -ForegroundColor Yellow
+} else {
+    $caPolicies | Select-Object DisplayName, State | Format-Table -AutoSize
+}
+
+# Report Copilot admin role assignments
+$copilotAdminRole = Get-MgDirectoryRole | Where-Object { $_.DisplayName -eq "Copilot Administrator" }
+if ($copilotAdminRole) {
+    $copilotAdmins = Get-MgDirectoryRoleMember -DirectoryRoleId $copilotAdminRole.Id
+    Write-Host "`nCopilot Administrator role assignments: $($copilotAdmins.Count)" -ForegroundColor Cyan
+    $copilotAdmins | ForEach-Object {
+        $user = Get-MgUser -UserId $_.Id -Property DisplayName, UserPrincipalName -ErrorAction SilentlyContinue
+        if ($user) { Write-Host "  - $($user.DisplayName) ($($user.UserPrincipalName))" }
+    }
+}
 ```
 
 ## Scheduled Tasks
@@ -122,8 +153,9 @@ $features | ForEach-Object {
 | Group-based license assignment | As needed | Script 2 |
 | Configuration change audit | Weekly | Script 3 |
 | Feature enablement review | Monthly | Script 4 |
+| Security baseline verification | Monthly | Script 5 |
 
 ## Next Steps
 
-- See [Verification & Testing](verification-testing.md) to validate Copilot settings
+- See [Verification & Testing](verification-testing.md) to validate Copilot Control System settings
 - See [Troubleshooting](troubleshooting.md) for configuration issues
