@@ -1,6 +1,6 @@
 # Control 2.1: DLP Policies for M365 Copilot Interactions — PowerShell Setup
 
-Automation scripts for managing DLP policies that protect Copilot interactions.
+Automation scripts for managing DLP policies that protect Copilot interactions. Control 2.1 requires two separate DLP policies — scripts are provided for both the label-based response blocking policy (Type 1) and the SIT-based prompt blocking policy (Type 2).
 
 ## Prerequisites
 
@@ -10,26 +10,58 @@ Automation scripts for managing DLP policies that protect Copilot interactions.
 
 ## Scripts
 
-### Script 1: Create Copilot DLP Policy
+### Script 1: Create Label-Based Response Blocking Policy (Type 1)
 
 ```powershell
-# Create a DLP policy targeting Copilot interactions for FSI sensitive data
+# Create DLP policy for label-based response blocking in Copilot
+# This policy blocks Copilot from surfacing Highly Confidential labeled content
 # Requires: Security & Compliance PowerShell
 
 Import-Module ExchangeOnlineManagement
 Connect-IPPSSession
 
-# Create the DLP policy
-New-DlpCompliancePolicy -Name "FSI Copilot DLP - Financial Data" `
-    -Comment "Protects sensitive financial data in Copilot interactions" `
+# Create the label-based DLP policy (Type 1)
+New-DlpCompliancePolicy -Name "FSI Copilot DLP - Label-Based Response Blocking" `
+    -Comment "Blocks Copilot from surfacing Highly Confidential and MNPI labeled content in responses" `
     -Mode "TestWithNotifications" `
-    -ExchangeLocation "All" `
-    -SharePointLocation "All" `
-    -OneDriveLocation "All"
+    -CopilotInteractionType "CopilotContent"
 
-# Create DLP rule for SSN detection
-New-DlpComplianceRule -Name "Block SSN in Copilot" `
-    -Policy "FSI Copilot DLP - Financial Data" `
+# Create DLP rule for Highly Confidential label
+New-DlpComplianceRule -Name "Block HC Label in Copilot Response" `
+    -Policy "FSI Copilot DLP - Label-Based Response Blocking" `
+    -ContentContainsSensitivityLabel @{
+        LabelName = "Highly Confidential"
+        IncludeSubLabels = $true
+    } `
+    -BlockAccess $true `
+    -NotifyUser "SiteAdmin","LastModifier" `
+    -GenerateIncidentReport "SiteAdmin" `
+    -IncidentReportContent "All"
+
+Write-Host "Type 1 (label-based) DLP policy created in test mode."
+Write-Host "Review matches before enabling enforcement."
+```
+
+### Script 2: Create SIT-Based Prompt Blocking Policy (Type 2)
+
+```powershell
+# Create DLP policy for SIT-based prompt blocking in Copilot
+# This policy blocks Copilot from processing prompts containing sensitive data
+# These two policy types cannot be merged - configure as a separate policy
+# Requires: Security & Compliance PowerShell
+
+Import-Module ExchangeOnlineManagement
+Connect-IPPSSession
+
+# Create the SIT-based prompt blocking policy (Type 2)
+New-DlpCompliancePolicy -Name "FSI Copilot DLP - SIT-Based Prompt Blocking" `
+    -Comment "Blocks Copilot from processing user prompts containing FSI-sensitive information types" `
+    -Mode "TestWithNotifications" `
+    -CopilotInteractionType "CopilotContent"
+
+# Create DLP rule for SSN detection in prompts
+New-DlpComplianceRule -Name "Block SSN in Copilot Prompt" `
+    -Policy "FSI Copilot DLP - SIT-Based Prompt Blocking" `
     -ContentContainsSensitiveInformation @{
         Name = "U.S. Social Security Number (SSN)"
         MinCount = 1
@@ -39,13 +71,38 @@ New-DlpComplianceRule -Name "Block SSN in Copilot" `
     -NotifyUser "SiteAdmin","LastModifier" `
     -NotifyUserType "NotSet"
 
-Write-Host "DLP policy created in test mode. Review matches before enabling enforcement."
+# Create DLP rule for credit card detection in prompts
+New-DlpComplianceRule -Name "Block Credit Card in Copilot Prompt" `
+    -Policy "FSI Copilot DLP - SIT-Based Prompt Blocking" `
+    -ContentContainsSensitiveInformation @{
+        Name = "Credit Card Number"
+        MinCount = 1
+        MinConfidence = 85
+    } `
+    -BlockAccess $true `
+    -NotifyUser "SiteAdmin","LastModifier" `
+    -NotifyUserType "NotSet"
+
+# Create DLP rule for ABA routing number detection in prompts
+New-DlpComplianceRule -Name "Block ABA Routing in Copilot Prompt" `
+    -Policy "FSI Copilot DLP - SIT-Based Prompt Blocking" `
+    -ContentContainsSensitiveInformation @{
+        Name = "ABA Routing Number"
+        MinCount = 1
+        MinConfidence = 85
+    } `
+    -BlockAccess $true `
+    -NotifyUser "SiteAdmin","LastModifier" `
+    -NotifyUserType "NotSet"
+
+Write-Host "Type 2 (SIT-based prompt blocking) DLP policy created in test mode."
+Write-Host "This is a separate policy from the label-based policy - both are required."
 ```
 
-### Script 2: DLP Policy Status and Match Report
+### Script 3: DLP Policy Status and Match Report
 
 ```powershell
-# Report on DLP policy matches for Copilot-related policies
+# Report on all Copilot DLP policies - includes both policy types
 # Requires: Security & Compliance PowerShell
 
 Import-Module ExchangeOnlineManagement
@@ -66,15 +123,22 @@ foreach ($policy in $policies) {
     }
 }
 
-Write-Host "=== Copilot DLP Policies ==="
+Write-Host "=== Copilot DLP Policies (Both Policy Types) ==="
 $policyReport | Format-Table PolicyName, Mode, Enabled, RuleCount -AutoSize
+
+# Verify both policy types exist
+$labelBasedExists = $policyReport | Where-Object PolicyName -match "Label-Based"
+$sitBasedExists = $policyReport | Where-Object PolicyName -match "SIT-Based|Prompt"
+if (-not $labelBasedExists) { Write-Warning "MISSING: Label-Based Response Blocking policy not found" }
+if (-not $sitBasedExists) { Write-Warning "MISSING: SIT-Based Prompt Blocking policy not found" }
+
 $policyReport | Export-Csv "CopilotDLPPolicies_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 3: DLP Incident Report Export
+### Script 4: DLP Incident Report Export
 
 ```powershell
-# Export DLP incident data for compliance review
+# Export DLP incident data for compliance review - covers both policy types
 # Requires: Security & Compliance PowerShell
 
 Import-Module ExchangeOnlineManagement
@@ -100,6 +164,13 @@ foreach ($incident in $incidents) {
 }
 
 Write-Host "DLP incidents in last 30 days: $($incidentReport.Count)"
+
+# Separate incidents by policy type for reporting
+$labelBasedIncidents = $incidentReport | Where-Object PolicyName -match "Label-Based"
+$sitBasedIncidents = $incidentReport | Where-Object PolicyName -match "SIT-Based|Prompt"
+Write-Host "  Label-based (Type 1) matches: $($labelBasedIncidents.Count)"
+Write-Host "  SIT-based prompt (Type 2) matches: $($sitBasedIncidents.Count)"
+
 $incidentReport | Export-Csv "DLPIncidents_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
@@ -107,11 +178,12 @@ $incidentReport | Export-Csv "DLPIncidents_$(Get-Date -Format 'yyyyMMdd').csv" -
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
-| Policy Status Check | Daily | Verify DLP policies remain active |
-| Incident Report | Weekly | Review DLP matches for false positives |
+| Policy Status Check | Daily | Verify both DLP policy types remain active |
+| Default Policy Review | Weekly (first 30 days) | Review simulation mode matches before enabling enforcement |
+| Incident Report | Weekly | Review DLP matches by policy type for false positives |
 | Policy Configuration Export | Monthly | Document policy settings for audit trail |
 
 ## Next Steps
 
-- See [Verification & Testing](verification-testing.md) to validate DLP effectiveness
-- See [Troubleshooting](troubleshooting.md) for DLP policy issues
+- See [Verification & Testing](verification-testing.md) to validate both DLP policy types
+- See [Troubleshooting](troubleshooting.md) for DLP policy issues, including guidance on why label-based and SIT-based policies cannot be combined
