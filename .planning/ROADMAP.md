@@ -65,7 +65,7 @@ Plans:
 - [x] 03-03-PLAN.md — Update controls 1.9, 2.4, 2.9 (Frontline SKUs, Channel Agent IB, AI app catalog) + playbooks
 - [x] 03-04-PLAN.md — Update controls 2.1, 2.2 (dual DLP policy types, label groups, agent inheritance) + playbooks + PnP fix for 2.2
 - [x] 03-05-PLAN.md — Update controls 2.3, 2.10 (CA enforcement, app ID fix, Risky Agents, IRM Triage Agent) + playbooks
-- [ ] 03-06-PLAN.md — Verification pass (SC-1 through SC-5) + opportunistic playbook review + MkDocs build check
+- [x] 03-06-PLAN.md — Verification pass (SC-1 through SC-5) + opportunistic playbook review + MkDocs build check — COMPLETE 2026-02-18
 
 ### Phase 4: Pillar Updates — Compliance and Operations
 **Goal**: Pillars 3 and 4 controls accurately reflect current regulatory developments, expanded audit schemas, unified eDiscovery, agentic AI supervision requirements, and new billing models
@@ -76,9 +76,16 @@ Plans:
   2. Controls 4.1 through 4.8 each reflect their specified updates (Copilot Control System, Teams default change with FSI recordkeeping impact, pay-as-you-go billing model)
   3. Every updated Pillar 3 control cites specific regulatory section numbers, not just regulator names
   4. The Teams Copilot default change (EnabledWithTranscript to Enabled, March 2026) is documented with explicit FSI recordkeeping compliance impact
-**Plans**: TBD
+**Plans**: 7 plans
 
-Plans: TBD
+Plans:
+- [ ] 04-01-PLAN.md — Update controls 3.1, 3.2 (expanded audit schema, PAYG billing, restructured retention locations) + playbooks
+- [ ] 04-02-PLAN.md — Update controls 3.3, 3.4 (unified eDiscovery migration, Communication Compliance expansion, IRM integration) + playbooks
+- [ ] 04-03-PLAN.md — Update controls 3.5, 3.6 (SEC v. Delphia precedent, FINRA 2026 agentic supervision, SEC exam focus) + playbooks
+- [ ] 04-04-PLAN.md — Update controls 3.8, 3.10, 3.11 (OCC MRM proportionality, Reg S-P amendments, 17a-4 audit-trail alternative, off-channel enforcement) + playbooks
+- [ ] 04-05-PLAN.md — Update controls 4.1, 4.2 (Copilot Control System, Teams default change with FSI recordkeeping impact) + playbooks
+- [ ] 04-06-PLAN.md — Update controls 4.4, 4.8 (Viva Copilot Chat insights, PAYG billing model) + playbooks
+- [ ] 04-07-PLAN.md — Verification pass (SC-1 through SC-4) + opportunistic playbook review + MkDocs build check
 
 ### Phase 5: Framework and Reference Updates
 **Goal**: Framework documents and reference materials reflect current regulatory landscape, correct licensing facts, verified Microsoft Learn URLs, and updated architecture terminology
@@ -118,6 +125,6 @@ Plans: TBD
 | 1. Initial Framework | v1.0 | 1/1 | Complete | 2026-02-17 |
 | 2. Global Naming Corrections | 5/6 | Complete    | 2026-02-17 | - |
 | 3. Pillar Updates — Readiness and Security | 6/6 | Complete    | 2026-02-18 | - |
-| 4. Pillar Updates — Compliance and Operations | v1.1 | 0/? | Not started | - |
+| 4. Pillar Updates — Compliance and Operations | v1.1 | 0/7 | Planned | - |
 | 5. Framework and Reference Updates | v1.1 | 0/? | Not started | - |
 | 6. Playbook Updates and Cross-linking | v1.1 | 0/? | Not started | - |
