@@ -44,6 +44,17 @@ Common issues and resolution steps for FINRA 2210 compliance monitoring of Copil
   3. Ensure CRM integration is providing accurate client classification data.
   4. Implement manual override capabilities for reviewers to correct misclassifications.
 
+### Issue 5: AI Washing Detection False Positives (Legitimate Copilot Capability Descriptions)
+
+- **Symptoms:** Compliant communications that legitimately describe what Copilot does — such as "Microsoft 365 Copilot assists our team in drafting communications" — are being flagged as AI washing violations.
+- **Root Cause:** AI washing keyword policies may be too broad, catching factual, balanced descriptions of Copilot's role alongside the unsubstantiated promotional claims the policy is intended to target. The distinction is between accurate, limited descriptions of AI assistance (compliant) and promissory or capability-exaggerating claims (non-compliant under FINRA Rule 2210(d)(1)(A) and the Investment Advisers Act Section 206).
+- **Resolution:**
+  1. Review the falsely flagged communications and identify the specific triggering phrases.
+  2. Add exclusion refinements for factual, balanced AI descriptions — for example, exclude phrases like "Copilot assists" or "AI helps draft" when not paired with outcome guarantees.
+  3. Narrow keyword patterns to focus on promissory or absolute language (e.g., "guarantees", "eliminates risk", "always", "certain to") rather than simply the presence of "AI" or "Copilot" terms.
+  4. Conduct quarterly review of AI washing detection accuracy using a labeled test set of 20+ communications — both compliant AI descriptions and genuinely non-compliant AI washing claims.
+  5. Document the refined keyword policy in the firm's written supervisory procedures so reviewers understand the distinction between acceptable AI transparency and prohibited AI washing.
+
 ## Diagnostic Steps
 
 1. **Check policy health:** Navigate to Communication compliance > Policies and verify status.

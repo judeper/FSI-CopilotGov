@@ -30,9 +30,12 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
    - Guaranteed returns, risk-free investments, assured performance
    - Promissory language: "will achieve", "certain to", "no possibility of loss"
    - Misleading comparisons or omissions of material facts
-2. Add sensitive information types for financial data (account numbers, trade confirmations).
-3. Enable the **Financial regulatory collusion** trainable classifier.
-4. Add custom keyword dictionaries for firm-specific prohibited terms.
+2. Add keyword conditions for AI washing — unsubstantiated AI capability claims that may violate FINRA Rule 2210(d)(1)(A) and the Investment Advisers Act Section 206 antifraud provisions (per SEC v. Delphia Inc. and Global Predictions Inc., March 2024):
+   - "our AI guarantees", "AI-powered returns", "AI eliminates risk"
+   - "our algorithms always", "AI ensures superior", "proven AI superiority"
+3. Add sensitive information types for financial data (account numbers, trade confirmations).
+4. Enable the **Financial regulatory collusion** trainable classifier.
+5. Add custom keyword dictionaries for firm-specific prohibited terms.
 
 ### Step 3: Configure Pre-Send Review Workflow
 
@@ -62,6 +65,7 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
 | Outbound review percentage | 10% | 50% | 100% |
 | Pre-send review for retail | Optional | Recommended | Required |
 | Prohibited language detection | Basic keywords | Custom dictionaries | Custom + classifiers |
+| AI washing detection | Awareness only | Keyword detection | Keyword + classifier |
 | Review SLA | 72 hours | 24 hours | 4 hours |
 
 ## Regulatory Alignment
@@ -69,6 +73,8 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
 - **FINRA Rule 2210** — Supports compliance with fair and balanced communication requirements
 - **FINRA Rule 2210(b)** — Helps meet content standards for accuracy and balance
 - **FINRA Rule 2210(c)** — Supports filing requirements for retail communications
+- **FINRA Rule 2210(d)(1)(A)** — Supports detection of misleading statements about AI capabilities in client-facing communications
+- **Investment Advisers Act Section 206** — Antifraud provisions apply to AI capability claims in communications (see SEC v. Delphia enforcement precedent)
 
 ## Next Steps
 

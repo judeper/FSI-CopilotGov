@@ -47,6 +47,19 @@ Test cases and evidence collection to validate that Copilot-drafted communicatio
 - **Expected Result:** False positive rate below 20% and false negative rate below 10% for critical violations.
 - **Evidence:** Test matrix with detection results, precision, and recall calculations.
 
+### Test 5: AI Washing Detection (FINRA 2210(d)(1)(A) / SEC v. Delphia Precedent)
+
+- **Objective:** Verify that Communication Compliance policies catch promissory AI capability claims in Copilot-drafted communications
+- **Regulatory basis:** FINRA Rule 2210(d)(1)(A) prohibits material misstatements; the SEC v. Delphia Inc. and Global Predictions Inc. enforcement action (March 2024) established that overstating AI capabilities violates the Investment Advisers Act Section 206 antifraud provisions
+- **Steps:**
+  1. Using a test account, ask Copilot to draft a client newsletter section containing phrases such as: "Our AI-powered platform guarantees superior returns" or "Our AI algorithms eliminate investment risk."
+  2. Send the draft to a monitored test recipient.
+  3. Wait up to 24 hours for policy processing.
+  4. Verify the communication is flagged in the review queue with the AI washing keyword match identified.
+  5. Confirm the reviewer can see which specific language triggered the match.
+- **Expected Result:** The communication is flagged for containing unsubstantiated AI capability claims. The match correctly identifies the triggering language (e.g., "guarantees superior returns", "eliminate investment risk").
+- **Evidence:** Screenshot of the flagged item in the review queue; keyword match detail showing the specific AI washing language detected.
+
 ## Evidence Collection
 
 | Evidence Item | Source | Format | Retention |
@@ -55,6 +68,7 @@ Test cases and evidence collection to validate that Copilot-drafted communicatio
 | Detection accuracy metrics | Test results | Spreadsheet | With control documentation |
 | Supervisory review logs | Audit log | CSV export | 7 years |
 | Policy configuration | Purview portal | Screenshot | With control documentation |
+| AI washing detection results | Test 5 results | Redacted screenshots | With control documentation |
 
 ## Compliance Mapping
 
@@ -63,6 +77,8 @@ Test cases and evidence collection to validate that Copilot-drafted communicatio
 | FINRA 2210(b) | Content standards for fair and balanced communications | Supports detection of misleading or promissory language in AI-drafted content |
 | FINRA 2210(c) | Supervisory review and filing requirements | Helps meet pre-use approval requirements for retail communications |
 | FINRA 2210(d) | Institutional communication standards | Supports categorization and appropriate review levels |
+| FINRA 2210(d)(1)(A) | Prohibition on misleading statements, including about AI capabilities | AI washing keyword detection catches unsubstantiated capability claims |
+| Investment Advisers Act Section 206 | Antifraud provisions — no false or misleading statements about AI | Detection policies aligned to SEC v. Delphia enforcement precedent |
 
 ## Next Steps
 
