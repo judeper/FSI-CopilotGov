@@ -11,23 +11,29 @@ Step-by-step portal configuration for evaluating organizational readiness and es
 
 ## Steps
 
-### Step 1: Access the Microsoft 365 Copilot Readiness Dashboard
+### Step 1: Run the Microsoft 365 Copilot Optimization Assessment
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Readiness
+**Path:** Admin Center > Health > Copilot readiness
 
-Navigate to the Copilot readiness page to review the automated assessment results. This dashboard surfaces data hygiene concerns including overshared content, unlabeled sensitive documents, and permission anomalies across your tenant.
+Navigate to the Copilot readiness page to access the Optimization Assessment. This Microsoft-provided tool evaluates infrastructure readiness across three dimensions:
 
-Review each category and note any items flagged as high-risk. These must be remediated before Copilot license assignment.
+- **Network readiness:** Bandwidth, latency, and proxy/firewall compatibility with Copilot service endpoints
+- **Office update channel compliance:** Percentage of endpoints on Current Channel or Monthly Enterprise Channel (required for Copilot features; Semi-Annual Enterprise Channel is not supported)
+- **App compatibility:** Office add-ins and applications with known Copilot compatibility issues
+
+Review each category and address any findings flagged as blocking before assigning Copilot licenses. Document the assessment results for your regulatory examination file.
 
 ### Step 2: Review Data Oversharing Report
 
 **Portal:** Microsoft Purview
 **Path:** Purview > Data Security Posture Management > Reports > Oversharing Assessment
 
-Open the DSPM for AI oversharing assessment. This report identifies SharePoint sites, OneDrive locations, and Teams channels where sensitive content may be accessible to users who should not have access.
+Open the DSPM oversharing assessment. This report identifies SharePoint sites, OneDrive locations, and Teams channels where sensitive content may be accessible to users who should not have access.
 
 Filter results by sensitivity level and focus on sites containing financial data, PII, or regulated content. Export the report for governance committee review.
+
+**Quick access alternative:** Microsoft 365 Admin Center > Copilot > Overview > Security tab provides access to key Copilot security controls and the default DLP policy status without navigating to the full Purview portal.
 
 ### Step 3: Evaluate Sensitivity Label Coverage
 
@@ -50,6 +56,7 @@ Flag sites where sharing settings are more permissive than the content sensitivi
 ### Step 5: Document Readiness Findings
 
 Compile findings from Steps 1-4 into a readiness assessment report. Include:
+- Optimization Assessment results (network, update channel, app compatibility)
 - Overall readiness score from the Copilot dashboard
 - Count of overshared sites requiring remediation
 - Sensitivity label coverage percentage
@@ -59,9 +66,9 @@ Compile findings from Steps 1-4 into a readiness assessment report. Include:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Complete readiness assessment and remediate all critical oversharing findings before pilot |
-| **Recommended** | Achieve 85% sensitivity label coverage and resolve all high-risk permission anomalies |
-| **Regulated** | Require governance committee sign-off on readiness report with documented remediation plan for all findings |
+| **Baseline** | Complete Optimization Assessment and address infrastructure findings. Run readiness assessment and remediate all critical oversharing findings before pilot |
+| **Recommended** | Achieve 85% sensitivity label coverage, resolve all high-risk permission anomalies, and achieve >95% update channel compliance |
+| **Regulated** | Require governance committee sign-off on readiness report with documented remediation plan for all findings, including update channel policy enforcement |
 
 ## Next Steps
 

@@ -4,12 +4,24 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 
 ## Test Cases
 
-### Test 1: Readiness Dashboard Accessibility
+### Test 1: Optimization Assessment Completeness
+
+- **Objective:** Verify that the Copilot Optimization Assessment has run and all infrastructure findings have been reviewed
+- **Steps:**
+  1. Sign in to Microsoft 365 Admin Center as Global Administrator
+  2. Navigate to Admin Center > Health > Copilot readiness
+  3. Confirm the Optimization Assessment has completed and shows current results
+  4. Verify network readiness, Office update channel compliance, and app compatibility sections are all reviewed
+  5. Confirm that any "blocking" findings have been addressed or have documented remediation plans
+- **Expected Result:** Optimization Assessment shows no blocking infrastructure issues, or all blocking issues have documented remediation timelines
+- **Evidence:** Screenshot of Optimization Assessment results with timestamp; remediation plan document if findings exist
+
+### Test 1b: Readiness Dashboard Accessibility
 
 - **Objective:** Verify that the Copilot readiness dashboard is accessible and returning data
 - **Steps:**
   1. Sign in to Microsoft 365 Admin Center as Global Administrator
-  2. Navigate to Settings > Microsoft 365 Copilot > Readiness
+  2. Navigate to Health > Copilot readiness
   3. Confirm the dashboard loads and displays assessment categories
   4. Verify data freshness (last updated within 48 hours)
 - **Expected Result:** Dashboard displays current readiness scores across all assessment categories

@@ -4,16 +4,18 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
 
 ## Test Cases
 
-### Test 1: DSPM for AI Activation Verification
+### Test 1: DSPM Activation and Unified Experience Verification
 
-- **Objective:** Confirm DSPM for AI is enabled and scanning the tenant
+- **Objective:** Confirm DSPM is enabled and the unified experience is accessible from both Purview and MAC
 - **Steps:**
-  1. Navigate to Microsoft Purview > DSPM for AI > Overview
+  1. Navigate to Microsoft Purview > Data Security Posture Management > Overview
   2. Verify the service status shows "Active"
   3. Confirm the last scan date is within the past 7 days
   4. Check that the scan scope includes all SharePoint Online sites
-- **Expected Result:** DSPM for AI is active with a current scan covering all in-scope sites
-- **Evidence:** Screenshot of DSPM overview page showing active status and scan date
+  5. Verify AI observability section is accessible
+  6. Navigate to Microsoft 365 Admin Center > Copilot > Overview > Security tab and confirm DSPM security controls are accessible from this path
+- **Expected Result:** DSPM is active with current scan coverage; both access paths (Purview and MAC) are functional
+- **Evidence:** Screenshots of DSPM overview from Purview portal and MAC Security tab with timestamps
 
 ### Test 2: Oversharing Detection Accuracy
 
@@ -50,7 +52,18 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
 - **Expected Result:** Alert is generated and delivered to configured recipients within the expected timeframe
 - **Evidence:** Alert record from Purview and email notification screenshot
 
-### Test 5: Copilot Access Validation Post-Remediation
+### Test 5a: Shadow AI Discovery Functional Verification
+
+- **Objective:** Verify Shadow AI discovery is detecting unsanctioned AI tool usage
+- **Steps:**
+  1. Navigate to Microsoft Purview > Data Security Posture Management > AI Observability
+  2. Confirm Shadow AI discovery section is enabled and populated with data
+  3. Verify the governance team has reviewed Shadow AI findings in the past 30 days
+  4. Confirm alert configurations exist for new Shadow AI tool detections
+- **Expected Result:** Shadow AI discovery is active and governance team has a process to review findings
+- **Evidence:** Screenshot of Shadow AI findings dashboard; alert configuration screenshot
+
+### Test 6: Copilot Access Validation Post-Remediation
 
 - **Objective:** Confirm Copilot respects remediated permissions and does not surface overshared content
 - **Steps:**

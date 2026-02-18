@@ -1,4 +1,4 @@
-# Control 1.2: SharePoint Oversharing Detection (DSPM for AI) — PowerShell Setup
+# Control 1.2: SharePoint Oversharing Detection (DSPM) — PowerShell Setup
 
 Automation scripts for detecting, reporting, and remediating SharePoint oversharing at scale.
 
@@ -8,6 +8,22 @@ Automation scripts for detecting, reporting, and remediating SharePoint overshar
 - Microsoft Graph PowerShell SDK (`Microsoft.Graph`)
 - PnP PowerShell module (`PnP.PowerShell`) for detailed site analysis
 - SharePoint Administrator or Global Administrator role
+
+### PnP PowerShell: Custom App Registration Required
+
+The shared multi-tenant PnP Management Shell Entra ID app was **retired September 9, 2024**. All PnP PowerShell scripts now require a tenant-specific Entra ID app registration. Complete this one-time setup before running any scripts that use `Connect-PnPOnline`.
+
+```powershell
+# One-time setup: Register a tenant-specific app for PnP PowerShell
+Register-PnPEntraIDAppForInteractiveLogin `
+    -ApplicationName "PnP Governance Shell - [YourOrg]" `
+    -Tenant "yourorg.onmicrosoft.com" `
+    -SharePointDelegated `
+    -GraphDelegated `
+    -Interactive
+```
+
+Save the returned Client ID. All `Connect-PnPOnline` calls must include `-ClientId <your-app-id>`.
 
 ## Scripts
 
@@ -57,12 +73,13 @@ $oversharedSites | Export-Csv "OversharedSites_$(Get-Date -Format 'yyyyMMdd').cs
 
 ```powershell
 # Deep permission analysis for a specific SharePoint site
-# Requires: PnP PowerShell module
+# Requires: PnP PowerShell module with custom app registration (see Prerequisites)
 
 Import-Module PnP.PowerShell
 
 $siteUrl = "https://<tenant>.sharepoint.com/sites/<sitename>"
-Connect-PnPOnline -Url $siteUrl -Interactive
+$clientId = "<your-app-id>"  # From Register-PnPEntraIDAppForInteractiveLogin
+Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Interactive
 
 $web = Get-PnPWeb -Includes RoleAssignments
 $uniquePermItems = Get-PnPListItem -List "Documents" -PageSize 500 |
@@ -88,7 +105,44 @@ foreach ($item in $uniquePermItems) {
 $permReport | Export-Csv "SitePermissions_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 3: Bulk Remediation — Restrict Overshared Sites
+### Script 3: Identify Sites for Item-Level Remediation
+
+```powershell
+# Identify specific files within sites that need item-level remediation
+# For use alongside DSPM portal item-level remediation workflow
+# Requires: PnP PowerShell module with custom app registration (see Prerequisites)
+
+Import-Module PnP.PowerShell
+
+$siteUrl = "https://<tenant>.sharepoint.com/sites/<sitename>"
+$clientId = "<your-app-id>"  # From Register-PnPEntraIDAppForInteractiveLogin
+Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Interactive
+
+# Find files with sensitive content and broad sharing links
+$files = Get-PnPListItem -List "Documents" -PageSize 500
+$sensitiveFiles = @()
+
+foreach ($file in $files) {
+    $sharingInfo = Get-PnPFileSharingLink -FileId $file.Id -ErrorAction SilentlyContinue
+    if ($sharingInfo) {
+        $broadLinks = $sharingInfo | Where-Object {
+            $_.Link.Scope -in @("organization", "anonymous")
+        }
+        if ($broadLinks) {
+            $sensitiveFiles += [PSCustomObject]@{
+                FilePath     = $file.FieldValues["FileRef"]
+                SharingLinks = ($broadLinks | Select-Object -ExpandProperty Link) | ForEach-Object { $_.WebUrl } | Join-String -Separator "; "
+                SensitivityLabel = $file.FieldValues["_SensitivityLabel"]
+            }
+        }
+    }
+}
+
+Write-Host "Files with broad sharing links: $($sensitiveFiles.Count)"
+$sensitiveFiles | Export-Csv "ItemsForRemediation_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+```
+
+### Script 4: Bulk Remediation — Restrict Overshared Sites
 
 ```powershell
 # Bulk restrict sharing on flagged overshared sites

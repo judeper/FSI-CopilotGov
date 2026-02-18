@@ -4,7 +4,18 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
 
 ## Common Issues
 
-### Issue 1: Copilot Readiness Dashboard Shows No Data
+### Issue 1: Optimization Assessment Shows Low Update Channel Compliance
+
+- **Symptoms:** The Optimization Assessment reports that a high percentage of endpoints are on Semi-Annual Enterprise Channel or an unsupported Office update channel
+- **Root Cause:** Semi-Annual Enterprise Channel does not receive Copilot feature updates. Endpoints on this channel may install the Copilot license but will not have access to the latest Copilot capabilities.
+- **Resolution:**
+  1. Use Microsoft Intune (Devices > Update rings for Microsoft 365 Apps) to move endpoints from Semi-Annual Enterprise Channel to Current Channel or Monthly Enterprise Channel
+  2. For Group Policy-managed environments, update the "Update Channel" policy to "Current Channel" (or "Monthly Enterprise Channel" for environments requiring monthly patch cycles)
+  3. For a phased approach, move Copilot pilot users first, then expand as each group transitions channels
+  4. Allow 1-7 days for channel transitions to complete after policy change
+  5. Re-run the Optimization Assessment to confirm update channel compliance improves after the transition
+
+### Issue 2: Copilot Readiness Dashboard Shows No Data
 
 - **Symptoms:** Dashboard loads but displays "No data available" or shows stale information older than 7 days
 - **Root Cause:** The readiness assessment requires specific licensing and tenant configuration to generate data. Data may not populate until Copilot licenses are assigned to at least one user or the assessment service has not completed its initial scan.
@@ -14,7 +25,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
   3. Wait 48-72 hours after initial license provisioning for data to populate
   4. If data remains unavailable, open a Microsoft support ticket referencing the Copilot readiness service
 
-### Issue 2: DSPM Oversharing Report Missing Sites
+### Issue 3: DSPM Oversharing Report Missing Sites
 
 - **Symptoms:** The DSPM for AI report shows fewer sites than expected, or known sensitive sites are not appearing in the oversharing assessment
 - **Root Cause:** DSPM scanning may not cover all site types by default. Personal OneDrive sites, Teams-connected sites with specific configurations, or recently created sites may be excluded from the initial scan scope.
@@ -24,7 +35,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
   3. Manually add missing sites to the DSPM assessment scope
   4. Allow 24-48 hours for newly added sites to appear in reports
 
-### Issue 3: PowerShell Script Authentication Failures
+### Issue 4: PowerShell Script Authentication Failures
 
 - **Symptoms:** Scripts fail with "Access Denied", "Insufficient privileges", or "Connect-MgGraph: Interactive authentication is not supported"
 - **Root Cause:** Graph API consent may not be granted, or the execution environment does not support interactive authentication (e.g., Azure Automation runbooks).
@@ -34,7 +45,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
   3. Verify the app registration has admin consent for required Graph API scopes
   4. For SPO Management Shell: Confirm the account has SharePoint Administrator role
 
-### Issue 4: Label Coverage Report Shows Unexpectedly Low Numbers
+### Issue 5: Label Coverage Report Shows Unexpectedly Low Numbers
 
 - **Symptoms:** Label analytics shows coverage well below expected levels despite active labeling policies
 - **Root Cause:** Label analytics may have reporting delays of up to 7 days. Additionally, labels applied via client-side labeling (manual) may not be reflected until documents are next accessed or indexed.
@@ -44,7 +55,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
   3. Review label policy scoping — labels may not be published to all user groups
   4. Force a re-index of key SharePoint sites using `Request-SPOReIndex`
 
-### Issue 5: Stale Site Detection False Positives
+### Issue 6: Stale Site Detection False Positives
 
 - **Symptoms:** Sites actively used by teams are flagged as stale in the hygiene scan
 - **Root Cause:** The `LastContentModifiedDate` property in SharePoint may not update for certain activity types such as viewing, commenting, or metadata-only changes

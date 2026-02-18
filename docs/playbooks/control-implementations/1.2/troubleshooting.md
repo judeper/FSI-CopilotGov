@@ -4,7 +4,17 @@ Common issues and resolution steps for SharePoint oversharing detection using DS
 
 ## Common Issues
 
-### Issue 1: DSPM for AI Not Available in Tenant
+### Issue 1: PnP PowerShell "Application not registered" or Authentication Failure
+
+- **Symptoms:** `Connect-PnPOnline -Interactive` fails with "Application is not registered" or "AADSTS700016: Application with identifier '31359c7f-...' was not found in the directory"
+- **Root Cause:** The shared multi-tenant PnP Management Shell Entra ID app (App ID `31359c7f-...`) was retired September 9, 2024. Scripts written before this date that omit `-ClientId` will fail against this deleted app registration.
+- **Resolution:**
+  1. Run the one-time registration: `Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Governance Shell - [YourOrg]" -Tenant "yourorg.onmicrosoft.com" -SharePointDelegated -GraphDelegated -Interactive`
+  2. Save the returned Client ID
+  3. Update all `Connect-PnPOnline` calls to include `-ClientId <your-app-id>`
+  4. Verify the app registration in Microsoft Entra admin center under App registrations
+
+### Issue 2: DSPM Not Available in Tenant
 
 - **Symptoms:** The DSPM for AI option does not appear in Microsoft Purview navigation, or displays "This feature is not available for your organization"
 - **Root Cause:** DSPM for AI requires Microsoft 365 E5 or E5 Compliance add-on licensing. The feature may also require tenant-level opt-in or may be in staged rollout.
@@ -14,7 +24,7 @@ Common issues and resolution steps for SharePoint oversharing detection using DS
   3. Enable targeted release in Admin Center > Settings > Org settings > Release preferences
   4. If licensing is confirmed, open a support ticket with Microsoft to verify feature eligibility
 
-### Issue 2: Oversharing Scan Returns Incomplete Results
+### Issue 3: Oversharing Scan Returns Incomplete Results
 
 - **Symptoms:** Known overshared sites do not appear in the DSPM assessment, or the total site count is significantly lower than expected
 - **Root Cause:** DSPM scans are incremental and may not cover all sites in the initial scan. Sites created after the last scan cycle, or sites with specific template types, may be excluded.
@@ -24,7 +34,7 @@ Common issues and resolution steps for SharePoint oversharing detection using DS
   3. Use the PowerShell oversharing detection script (Script 1) as a supplementary scan
   4. Compare DSPM results with manual PowerShell scan output to identify coverage gaps
 
-### Issue 3: Remediation Actions Not Taking Effect
+### Issue 4: Remediation Actions Not Taking Effect
 
 - **Symptoms:** After restricting sharing capability on a site, the site still appears as overshared in the next DSPM scan, or users can still access content they should not
 - **Root Cause:** Sharing capability changes affect future sharing actions but do not automatically revoke existing shared links. Additionally, DSPM scan results may be cached.
@@ -34,7 +44,7 @@ Common issues and resolution steps for SharePoint oversharing detection using DS
   3. Wait for at least one full DSPM scan cycle (24-48 hours) before verifying
   4. Use `Get-SPOSite -Identity <url> -Detailed` to confirm the setting persisted
 
-### Issue 4: High Volume of False Positives
+### Issue 5: High Volume of False Positives
 
 - **Symptoms:** DSPM flags sites as overshared that have legitimate business reasons for broad access (e.g., company-wide communication sites, policy document libraries)
 - **Root Cause:** DSPM applies generic sensitivity heuristics that may flag content as sensitive when it is intentionally shared broadly.
@@ -44,7 +54,7 @@ Common issues and resolution steps for SharePoint oversharing detection using DS
   3. Consider applying specific sensitivity labels to truly sensitive content rather than relying on heuristic detection
   4. Create DSPM policy exceptions for documented broad-access sites with governance approval
 
-### Issue 5: PnP PowerShell Permission Scan Timeouts
+### Issue 6: PnP PowerShell Permission Scan Timeouts
 
 - **Symptoms:** Script 2 (Site-Level Permission Analysis) times out or fails with "The operation has timed out" on large document libraries
 - **Root Cause:** Large libraries with thousands of items with unique permissions cause excessive API calls that exceed timeout thresholds.
