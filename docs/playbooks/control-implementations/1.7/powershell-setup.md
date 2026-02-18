@@ -6,7 +6,7 @@ Automation scripts for configuring and monitoring SharePoint Advanced Management
 
 - SharePoint Online Management Shell (latest version)
 - SharePoint Administrator role
-- SharePoint Advanced Management license active
+- Microsoft 365 Copilot license (includes SAM) or SharePoint Advanced Management add-on license active
 
 ## Scripts
 
@@ -73,6 +73,7 @@ foreach ($site in $sites) {
         SharingCapability      = $detail.SharingCapability
         SensitivityLabel       = $detail.SensitivityLabel
         ConditionalAccessPolicy = $detail.ConditionalAccessPolicy
+        RestrictContentOrg     = $detail.RestrictContentOrgWideSearch
         LastContentModified    = $detail.LastContentModifiedDate
         StorageMB              = [math]::Round($detail.StorageUsageCurrent, 2)
         IsInactive             = ($detail.LastContentModifiedDate -lt (Get-Date).AddDays(-180))
@@ -82,16 +83,62 @@ foreach ($site in $sites) {
 
 $inactive = ($governanceReport | Where-Object IsInactive).Count
 $sensitive = ($governanceReport | Where-Object { $_.SensitivityLabel -ne "" }).Count
+$rcdEnabled = ($governanceReport | Where-Object { $_.RestrictContentOrg -eq $true }).Count
 
 Write-Host "=== Data Access Governance Summary ==="
 Write-Host "Total sites: $($governanceReport.Count)"
-Write-Host "Inactive sites: $inactive"
+Write-Host "Inactive sites (>180 days): $inactive"
 Write-Host "Labeled sites: $sensitive"
+Write-Host "Sites with RCD enabled: $rcdEnabled"
 
 $governanceReport | Export-Csv "DataAccessGovernance_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 4: Bulk Configure Site-Level Access Policies
+### Script 4: Configure Restricted Access Control on Sensitive Sites
+
+```powershell
+# Apply Restricted Access Control (RAC) to sites containing NPI or MNPI
+# RAC enforces a maximum access boundary -- only security group members can access the site
+# Requires: SharePoint Online Management Shell
+
+Import-Module Microsoft.Online.SharePoint.PowerShell
+Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
+
+$sensitiveSites = Import-Csv "SensitiveSites.csv"
+# CSV must include columns: Url, RestrictedGroupId (the security group ID to enforce as the access boundary)
+
+$configLog = @()
+
+foreach ($site in $sensitiveSites) {
+    try {
+        # Enable Restricted Access Control with designated security group
+        Set-SPOSite -Identity $site.Url `
+            -RestrictedAccessControl $true `
+            -RestrictedAccessControlGroups $site.RestrictedGroupId
+
+        $configLog += [PSCustomObject]@{
+            Url    = $site.Url
+            Status = "RAC Configured"
+            Group  = $site.RestrictedGroupId
+            Date   = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+        }
+        Write-Host "RAC enabled on $($site.Url)"
+    } catch {
+        $configLog += [PSCustomObject]@{
+            Url    = $site.Url
+            Status = "Failed: $($_.Exception.Message)"
+            Group  = $site.RestrictedGroupId
+            Date   = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+        }
+        Write-Warning "Failed to configure RAC on $($site.Url): $($_.Exception.Message)"
+    }
+}
+
+$configLog | Export-Csv "RACConfiguration_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+Write-Host "RAC configuration complete. $($configLog | Where-Object Status -eq 'RAC Configured' | Measure-Object | Select-Object -ExpandProperty Count) sites configured."
+```
+
+### Script 5: Bulk Configure Site-Level Access Policies
 
 ```powershell
 # Apply conditional access and sharing restrictions to sensitive sites
@@ -133,7 +180,8 @@ $configLog | Export-Csv "SAMSiteConfig_$(Get-Date -Format 'yyyyMMdd').csv" -NoTy
 |------|-----------|---------|
 | SAM Feature Verification | Monthly | Confirm all SAM features remain enabled |
 | Inactive Site Review | Monthly | Identify and act on inactive sites |
-| Data Access Governance Export | Quarterly | Generate compliance evidence reports |
+| Data Access Governance Export | Quarterly | Generate compliance evidence reports including RCD status |
+| RAC Group Membership Review | Quarterly (Regulated) | Verify security group membership for all RAC-enabled sites |
 
 ## Next Steps
 

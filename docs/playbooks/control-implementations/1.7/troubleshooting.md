@@ -6,14 +6,15 @@ Common issues and resolution steps for SharePoint Advanced Management configurat
 
 ### Issue 1: SAM Features Not Appearing After License Assignment
 
-- **Symptoms:** SAM license is assigned but governance features like Restricted SharePoint Search or data access governance reports are not visible in the SharePoint Admin Center
-- **Root Cause:** SAM feature provisioning can take 24-72 hours after license assignment. Additionally, the Admin Center may require a full page refresh or cache clear to display new features.
+- **Symptoms:** SAM governance features like Restricted Content Discovery, Restricted Access Control, or data access governance reports are not visible in the SharePoint Admin Center
+- **Root Cause:** SAM feature provisioning can take 24-72 hours after license assignment or Copilot license activation. The Admin Center may require a full page refresh or cache clear to display new features.
 - **Resolution:**
-  1. Verify the license is assigned at the tenant level in Admin Center > Billing
-  2. Wait 72 hours for full feature provisioning
-  3. Clear browser cache and sign out/in to the SharePoint Admin Center
-  4. If features remain unavailable, verify the tenant region supports all SAM features
-  5. Contact Microsoft support if features are not available after 72 hours
+  1. **For Microsoft 365 Copilot license holders:** Verify the Copilot license is fully provisioned in Admin Center > Billing > Licenses. SAM is included with Copilot licenses — no additional purchase is required.
+  2. **For standalone SAM add-on users:** Verify the license is assigned at the tenant level in Admin Center > Billing
+  3. Wait 72 hours for full feature provisioning
+  4. Clear browser cache and sign out/in to the SharePoint Admin Center
+  5. If features remain unavailable, verify the tenant region supports all SAM features
+  6. Contact Microsoft support if features are not available after 72 hours
 
 ### Issue 2: Data Access Governance Reports Show Empty or Stale Data
 
@@ -58,12 +59,33 @@ Common issues and resolution steps for SharePoint Advanced Management configurat
   4. Set up backup reviewers to handle cases where primary reviewers are unavailable
   5. Monitor review completion status and send manual reminders for overdue reviews
 
+### Issue 6: Restricted Access Control Not Blocking Users with Sharing Links
+
+- **Symptoms:** A user who holds a sharing link to a RAC-enabled site can still access the site content, despite not being in the designated security group
+- **Root Cause:** RAC may not have been fully applied, or the security group configuration was incorrect during RAC setup. There may also be a propagation delay after RAC is enabled.
+- **Resolution:**
+  1. Verify RAC is enabled on the site: navigate to SharePoint Admin Center > Active Sites > [site] > Settings and confirm Restricted Access Control shows the correct security group
+  2. Check that the designated security group contains the correct members and no broader groups that would inadvertently include the user
+  3. Allow up to 30 minutes for RAC changes to propagate across SharePoint infrastructure
+  4. If the issue persists, re-apply the RAC configuration: `Set-SPOSite -Identity <siteUrl> -RestrictedAccessControl $true -RestrictedAccessControlGroups <groupId>`
+  5. Test access again after propagation delay
+
+### Issue 7: RAC Breaking Legitimate Access Patterns
+
+- **Symptoms:** After enabling RAC, users who should have access to the site are being blocked (e.g., site contributors, guest collaborators)
+- **Root Cause:** RAC replaces all other access methods with the security group boundary. Users who previously had access through direct permissions, sharing links, or group memberships will lose access if they are not members of the RAC security group.
+- **Resolution:**
+  1. Review the membership of the designated security group and add any users or groups who should retain access
+  2. For guest collaborators: Guests cannot typically be added to standard security groups -- use Entra ID external user groups or SharePoint site membership instead
+  3. Communicate RAC changes to site owners in advance of enabling, allowing them to nominate security group members
+  4. Consider a phased rollout: enable RAC in read-only mode or on a test copy of the site before applying to production
+
 ## Diagnostic Steps
 
-1. **Verify licensing:** Confirm SAM license count and assignment in Admin Center
+1. **Verify licensing:** Confirm SAM license availability -- for Copilot organizations, confirm Copilot license is provisioned; for non-Copilot organizations, confirm standalone SAM add-on
 2. **Check feature status:** Run Script 1 to enumerate available SAM features
 3. **Review configuration:** Compare current settings against documented baseline
-4. **Test individual features:** Validate each SAM feature independently
+4. **Test individual features:** Validate each SAM feature independently (RCD, RAC, lifecycle, access reviews)
 5. **Check service health:** Review Microsoft 365 service health for SharePoint incidents
 
 ## Escalation
@@ -72,11 +94,13 @@ Common issues and resolution steps for SharePoint Advanced Management configurat
 |----------|-----------|----------------|
 | **Low** | Feature provisioning delays under 72 hours | Monitor and retest |
 | **Medium** | Governance reports not populating after 7 days | Microsoft support ticket |
+| **Medium** | RAC propagation delay exceeding 2 hours | Verify configuration, wait, then Microsoft support if persistent |
 | **High** | Conditional access policies conflicting and causing access gaps | Security Operations and Identity team |
+| **High** | RAC misconfiguration exposing NPI or MNPI to unauthorized users | Information Security team -- treat as data exposure incident |
 | **Critical** | SAM features non-functional affecting Copilot governance | Microsoft TAM and CISO |
 
 ## Related Resources
 
-- [Portal Walkthrough](portal-walkthrough.md) — SAM configuration steps
-- [PowerShell Setup](powershell-setup.md) — Automation scripts
-- [Verification & Testing](verification-testing.md) — Validation procedures
+- [Portal Walkthrough](portal-walkthrough.md) — SAM configuration steps including RCD and RAC
+- [PowerShell Setup](powershell-setup.md) — Automation scripts including RAC bulk configuration
+- [Verification & Testing](verification-testing.md) — Validation procedures for all SAM features
