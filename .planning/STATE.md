@@ -42,6 +42,7 @@ Progress: [████████████░] 65% (13 of ~20 total plans c
 | Phase 03-pillar-readiness-security P06 | 5 | 2 tasks | 1 files |
 | Phase 04-pillar-compliance-operations P05 | 8 | 2 tasks | 10 files |
 | Phase 04-pillar-compliance-operations P02 | 8 | 2 tasks | 10 files |
+| Phase 04-pillar-compliance-operations P03 | 9 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,9 @@ Progress: [████████████░] 65% (13 of ~20 total plans c
 - [Phase 04-pillar-compliance-operations]: 04-02: Unified eDiscovery presented as current state (May 2025 GA); pre-migration case gap documented inline; February 2026 UX simplification documented with 'as of' framing
 - [Phase 04-pillar-compliance-operations]: 04-02: IRM integration tier structure — Baseline (no IRM), Recommended (high-risk CC policies), Regulated (all policies with automated escalation workflows)
 - [Phase 04-pillar-compliance-operations]: 04-02: Scope guardrail for expanded CC surfaces — Security Copilot, Fabric Copilot, Copilot Studio mentioned for awareness only (one sentence + table row); no configuration guidance
+- [Phase 04-pillar-compliance-operations]: 04-03: SEC v. Delphia enforcement precedent placed in 'Why This Matters for FSI' section of 3.5 using !!! warning admonition; follow-up paragraph connects it to 2210(d)(1)(A) AI washing risk
+- [Phase 04-pillar-compliance-operations]: 04-03: Agentic AI supervision in 3.6 placed in dedicated section — Teams channel agents and declarative agents each require full paragraph treatment; full-chain telemetry documented as 4-step chain with tier guidance
+- [Phase 04-pillar-compliance-operations]: 04-03: Agent PowerShell scripts use RecordType CopilotInteraction with AgentId filter — Scripts 5 (all agents) and 6 (specific AgentId) provide complementary retrieval patterns for supervisory review
 
 ### Blockers/Concerns
 
@@ -88,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17
-Stopped at: Completed 04-02-PLAN.md (control 3.3 unified eDiscovery + 3.4 CC IRM integration; 10 files updated; P3-03 and P3-04 requirements marked complete)
-Resume file: .planning/phases/04-pillar-compliance-operations/04-02-SUMMARY.md
+Last session: 2026-02-18
+Stopped at: Completed 04-03-PLAN.md (controls 3.5 SEC v. Delphia + FINRA 2026, control 3.6 agentic AI supervision + SEC 2026 exam focus; 10 files updated; P3-05 and P3-06 requirements satisfied)
+Resume file: .planning/phases/04-pillar-compliance-operations/04-03-SUMMARY.md

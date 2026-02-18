@@ -37,8 +37,8 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 - [ ] **P3-02**: Update 3.2 to add restructured retention locations (Microsoft Copilot experiences, Enterprise AI Apps, Other AI Apps), priority cleanup for AI-generated assets, threaded summaries retention
 - [x] **P3-03**: Update 3.3 to document unified eDiscovery experience migration (May 2025) and Feb 2026 UX simplification
 - [x] **P3-04**: Update 3.4 to add expanded Communication Compliance coverage (Security Copilot, Fabric Copilot, Copilot Studio) and IRM integration (CC indicators feeding insider risk)
-- [ ] **P3-05**: Update 3.5 to add AI washing enforcement precedent (SEC v. Delphia/Global Predictions) and FINRA 2026 Oversight Report reference
-- [ ] **P3-06**: Update 3.6 to add FINRA 2026 agentic AI supervision requirements, full-chain telemetry for decision reconstruction, SEC 2026 internal AI examination focus
+- [x] **P3-05**: Update 3.5 to add AI washing enforcement precedent (SEC v. Delphia/Global Predictions) and FINRA 2026 Oversight Report reference
+- [x] **P3-06**: Update 3.6 to add FINRA 2026 agentic AI supervision requirements, full-chain telemetry for decision reconstruction, SEC 2026 internal AI examination focus
 - [ ] **P3-07**: Update 3.8 to add OCC Bulletin 2025-26 MRM proportionality for community banks and clarify Copilot's model status under SR 11-7
 - [ ] **P3-08**: Update 3.10 to add Reg S-P amendment details (72-hour vendor notification, large/small entity compliance dates, mandatory incident response programs)
 - [ ] **P3-09**: Update 3.11 to add SEC 17a-4 audit-trail alternative to WORM, off-channel communications enforcement context ($2B+ in fines), mobile Copilot recordkeeping
@@ -108,8 +108,8 @@ Requirements for Review 01 milestone. Each maps to roadmap phases.
 | P3-02 | Phase 4 | Pending |
 | P3-03 | Phase 4 | Complete |
 | P3-04 | Phase 4 | Complete |
-| P3-05 | Phase 4 | Pending |
-| P3-06 | Phase 4 | Pending |
+| P3-05 | Phase 4 | Complete |
+| P3-06 | Phase 4 | Complete |
 | P3-07 | Phase 4 | Pending |
 | P3-08 | Phase 4 | Pending |
 | P3-09 | Phase 4 | Pending |
