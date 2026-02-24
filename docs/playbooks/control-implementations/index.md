@@ -52,11 +52,45 @@ Runtime controls that protect data, enforce policies, and govern Copilot interac
 
 ## Pillar 3: Compliance and Audit (13 Controls)
 
-*Coming soon — see [Pillar 3 controls](../../../docs/controls/) for current reference.*
+Audit logging, retention, eDiscovery, regulatory record-keeping, supervisory review, and compliance monitoring controls.
+
+| Control | Name | Playbooks |
+|---------|------|-----------|
+| 3.1 | Copilot Audit Logging | [Portal](3.1/portal-walkthrough.md) / [PowerShell](3.1/powershell-setup.md) / [Verification](3.1/verification-testing.md) / [Troubleshooting](3.1/troubleshooting.md) |
+| 3.2 | Data Retention Policies | [Portal](3.2/portal-walkthrough.md) / [PowerShell](3.2/powershell-setup.md) / [Verification](3.2/verification-testing.md) / [Troubleshooting](3.2/troubleshooting.md) |
+| 3.3 | eDiscovery for Copilot Content | [Portal](3.3/portal-walkthrough.md) / [PowerShell](3.3/powershell-setup.md) / [Verification](3.3/verification-testing.md) / [Troubleshooting](3.3/troubleshooting.md) |
+| 3.4 | Communication Compliance Monitoring | [Portal](3.4/portal-walkthrough.md) / [PowerShell](3.4/powershell-setup.md) / [Verification](3.4/verification-testing.md) / [Troubleshooting](3.4/troubleshooting.md) |
+| 3.5 | FINRA Rule 2210 Compliance | [Portal](3.5/portal-walkthrough.md) / [PowerShell](3.5/powershell-setup.md) / [Verification](3.5/verification-testing.md) / [Troubleshooting](3.5/troubleshooting.md) |
+| 3.6 | Supervision and Oversight (FINRA 3110) | [Portal](3.6/portal-walkthrough.md) / [PowerShell](3.6/powershell-setup.md) / [Verification](3.6/verification-testing.md) / [Troubleshooting](3.6/troubleshooting.md) |
+| 3.7 | Regulatory Reporting Automation | [Portal](3.7/portal-walkthrough.md) / [PowerShell](3.7/powershell-setup.md) / [Verification](3.7/verification-testing.md) / [Troubleshooting](3.7/troubleshooting.md) |
+| 3.8 | Model Risk Management (OCC 2011-12 / SR 11-7) | [Portal](3.8/portal-walkthrough.md) / [PowerShell](3.8/powershell-setup.md) / [Verification](3.8/verification-testing.md) / [Troubleshooting](3.8/troubleshooting.md) |
+| 3.9 | AI Disclosure and Transparency | [Portal](3.9/portal-walkthrough.md) / [PowerShell](3.9/powershell-setup.md) / [Verification](3.9/verification-testing.md) / [Troubleshooting](3.9/troubleshooting.md) |
+| 3.10 | SEC Regulation S-P Privacy Compliance | [Portal](3.10/portal-walkthrough.md) / [PowerShell](3.10/powershell-setup.md) / [Verification](3.10/verification-testing.md) / [Troubleshooting](3.10/troubleshooting.md) |
+| 3.11 | Record Keeping and Retention (SEC 17a-3/4) | [Portal](3.11/portal-walkthrough.md) / [PowerShell](3.11/powershell-setup.md) / [Verification](3.11/verification-testing.md) / [Troubleshooting](3.11/troubleshooting.md) |
+| 3.12 | Evidence Collection and Audit Packages | [Portal](3.12/portal-walkthrough.md) / [PowerShell](3.12/powershell-setup.md) / [Verification](3.12/verification-testing.md) / [Troubleshooting](3.12/troubleshooting.md) |
+| 3.13 | FFIEC IT Examination Alignment | [Portal](3.13/portal-walkthrough.md) / [PowerShell](3.13/powershell-setup.md) / [Verification](3.13/verification-testing.md) / [Troubleshooting](3.13/troubleshooting.md) |
+
+---
 
 ## Pillar 4: Operations and Monitoring (13 Controls)
 
-*Coming soon — see [Pillar 4 controls](../../../docs/controls/) for current reference.*
+Feature management, per-app configuration, analytics, cost tracking, incident response, and business continuity controls.
+
+| Control | Name | Playbooks |
+|---------|------|-----------|
+| 4.1 | Admin Settings and Feature Management (Copilot Control System) | [Portal](4.1/portal-walkthrough.md) / [PowerShell](4.1/powershell-setup.md) / [Verification](4.1/verification-testing.md) / [Troubleshooting](4.1/troubleshooting.md) |
+| 4.2 | Teams Meetings Governance | [Portal](4.2/portal-walkthrough.md) / [PowerShell](4.2/powershell-setup.md) / [Verification](4.2/verification-testing.md) / [Troubleshooting](4.2/troubleshooting.md) |
+| 4.3 | Teams Phone and Queues | [Portal](4.3/portal-walkthrough.md) / [PowerShell](4.3/powershell-setup.md) / [Verification](4.3/verification-testing.md) / [Troubleshooting](4.3/troubleshooting.md) |
+| 4.4 | Viva Suite Governance | [Portal](4.4/portal-walkthrough.md) / [PowerShell](4.4/powershell-setup.md) / [Verification](4.4/verification-testing.md) / [Troubleshooting](4.4/troubleshooting.md) |
+| 4.5 | Usage Analytics | [Portal](4.5/portal-walkthrough.md) / [PowerShell](4.5/powershell-setup.md) / [Verification](4.5/verification-testing.md) / [Troubleshooting](4.5/troubleshooting.md) |
+| 4.6 | Viva Insights Measurement | [Portal](4.6/portal-walkthrough.md) / [PowerShell](4.6/powershell-setup.md) / [Verification](4.6/verification-testing.md) / [Troubleshooting](4.6/troubleshooting.md) |
+| 4.7 | Feedback and Telemetry | [Portal](4.7/portal-walkthrough.md) / [PowerShell](4.7/powershell-setup.md) / [Verification](4.7/verification-testing.md) / [Troubleshooting](4.7/troubleshooting.md) |
+| 4.8 | Cost Allocation and PAYG Governance | [Portal](4.8/portal-walkthrough.md) / [PowerShell](4.8/powershell-setup.md) / [Verification](4.8/verification-testing.md) / [Troubleshooting](4.8/troubleshooting.md) |
+| 4.9 | Incident Reporting | [Portal](4.9/portal-walkthrough.md) / [PowerShell](4.9/powershell-setup.md) / [Verification](4.9/verification-testing.md) / [Troubleshooting](4.9/troubleshooting.md) |
+| 4.10 | Business Continuity | [Portal](4.10/portal-walkthrough.md) / [PowerShell](4.10/powershell-setup.md) / [Verification](4.10/verification-testing.md) / [Troubleshooting](4.10/troubleshooting.md) |
+| 4.11 | Sentinel Integration | [Portal](4.11/portal-walkthrough.md) / [PowerShell](4.11/powershell-setup.md) / [Verification](4.11/verification-testing.md) / [Troubleshooting](4.11/troubleshooting.md) |
+| 4.12 | Change Management for Rollouts | [Portal](4.12/portal-walkthrough.md) / [PowerShell](4.12/powershell-setup.md) / [Verification](4.12/verification-testing.md) / [Troubleshooting](4.12/troubleshooting.md) |
+| 4.13 | Extensibility Governance | [Portal](4.13/portal-walkthrough.md) / [PowerShell](4.13/powershell-setup.md) / [Verification](4.13/verification-testing.md) / [Troubleshooting](4.13/troubleshooting.md) |
 
 ---
 

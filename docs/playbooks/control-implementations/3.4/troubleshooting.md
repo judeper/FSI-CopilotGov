@@ -87,6 +87,6 @@ Common issues and resolution steps for communication compliance monitoring of Co
 
 ## Related Resources
 
-- [Control 2.10: Insider Risk Detection](../../pillar-2-security/2.10/portal-walkthrough.md)
+- [Control 2.10: Insider Risk Detection](../2.10/portal-walkthrough.md)
 - [Control 3.5: FINRA Rule 2210 Compliance](../3.5/portal-walkthrough.md)
 - [Control 3.6: Supervision and Oversight](../3.6/portal-walkthrough.md)

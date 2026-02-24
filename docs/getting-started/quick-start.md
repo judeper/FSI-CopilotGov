@@ -61,14 +61,15 @@ Copilot respects existing Microsoft 365 permissions. If users have access to con
 
 **Key controls:**
 
-- Control 1.1 — Oversharing Assessment and Remediation
-- Control 1.2 — SharePoint Permissions Review
-- Control 1.3 — Restricted SharePoint Search Configuration
+- Control 1.1 — Copilot Readiness Assessment
+- Control 1.2 — Oversharing Detection (DSPM for AI)
+- Control 1.3 — Restricted SharePoint Search
 
 **Playbooks:**
 
-- [1.1 — Oversharing Assessment Implementation](../playbooks/control-implementations/1.1/)
-- [1.3 — Restricted SharePoint Search Implementation](../playbooks/control-implementations/1.3/)
+- [1.1 — Copilot Readiness Assessment](../playbooks/control-implementations/1.1/portal-walkthrough.md)
+- [1.2 — Oversharing Detection](../playbooks/control-implementations/1.2/portal-walkthrough.md)
+- [1.3 — Restricted SharePoint Search](../playbooks/control-implementations/1.3/portal-walkthrough.md)
 
 ---
 
@@ -88,14 +89,13 @@ Sensitivity labels control how Copilot can interact with classified content. Cop
 
 **Key controls:**
 
-- Control 2.1 — Sensitivity Label Taxonomy for Copilot
-- Control 2.2 — Auto-labeling Policies
-- Control 2.3 — Label Inheritance and Copilot
+- Control 1.5 — Sensitivity Label Taxonomy Review
+- Control 2.2 — Sensitivity Labels and Classification
 
 **Playbooks:**
 
-- [2.1 — Sensitivity Label Implementation](../playbooks/control-implementations/2.1/)
-- [2.2 — Auto-labeling Implementation](../playbooks/control-implementations/2.2/)
+- [1.5 — Sensitivity Label Taxonomy Review](../playbooks/control-implementations/1.5/portal-walkthrough.md)
+- [2.2 — Sensitivity Labels and Classification](../playbooks/control-implementations/2.2/portal-walkthrough.md)
 
 ---
 
@@ -115,13 +115,11 @@ Data Loss Prevention policies help prevent Copilot from surfacing regulated data
 
 **Key controls:**
 
-- Control 2.4 — DLP Policies for Copilot Interactions
-- Control 2.5 — Sensitive Information Type Definitions
-- Control 2.6 — DLP Policy Tips and User Notification
+- Control 2.1 — DLP Policies for Copilot
 
 **Playbooks:**
 
-- [2.4 — DLP for Copilot Implementation](../playbooks/control-implementations/2.4/)
+- [2.1 — DLP Policies for Copilot](../playbooks/control-implementations/2.1/portal-walkthrough.md)
 
 ---
 
@@ -142,13 +140,13 @@ Audit logging for Copilot interactions is critical for regulatory record-keeping
 **Key controls:**
 
 - Control 3.1 — Copilot Audit Logging
-- Control 3.2 — Retention Policies for Copilot Data
-- Control 3.11 — Regulatory Record-keeping
+- Control 3.2 — Data Retention Policies
+- Control 3.11 — Record Keeping
 
 **Playbooks:**
 
-- [3.1 — Audit Logging Implementation](../playbooks/control-implementations/3.1/)
-- [3.2 — Retention Policy Implementation](../playbooks/control-implementations/3.2/)
+- [3.1 — Copilot Audit Logging](../playbooks/control-implementations/3.1/portal-walkthrough.md)
+- [3.2 — Data Retention Policies](../playbooks/control-implementations/3.2/portal-walkthrough.md)
 
 ---
 
@@ -168,14 +166,14 @@ Microsoft 365 Copilot can be enabled or disabled per application. For FSI organi
 
 **Key controls:**
 
-- Control 4.1 — Copilot Feature Toggle Management
-- Control 4.2 — Per-App Copilot Configuration
-- Control 4.3 — Web Search and External Data Controls
+- Control 4.1 — Admin Settings and Feature Management
+- Control 2.6 — Web Search Controls
+- Control 4.13 — Extensibility Governance
 
 **Playbooks:**
 
-- [4.1 — Feature Toggle Implementation](../playbooks/control-implementations/4.1/)
-- [4.2 — Per-App Configuration Implementation](../playbooks/control-implementations/4.2/)
+- [4.1 — Admin Settings and Feature Management](../playbooks/control-implementations/4.1/portal-walkthrough.md)
+- [2.6 — Web Search Controls](../playbooks/control-implementations/2.6/portal-walkthrough.md)
 
 **Reference:** [Copilot Admin Toggles](../reference/copilot-admin-toggles.md) for a complete list of every toggle, default value, and FSI-recommended setting.
 
@@ -189,9 +187,9 @@ After completing the five-step quick start, you have **Baseline** governance in 
 |-----------|-------------|-----------|
 | **Complete the Implementation Checklist** | Walk through all 54 controls across four pillars | [Implementation Checklist](checklist.md) |
 | **Read the Executive Summary** | Understand the strategic governance context for leadership communication | [Executive Summary](../framework/executive-summary.md) |
-| **Configure Information Barriers** | Required for broker-dealers and firms with material nonpublic information (MNPI) walls | Control 2.8 |
+| **Configure Information Barriers** | Required for broker-dealers and firms with material nonpublic information (MNPI) walls | Control 2.4 |
 | **Set up Communication Compliance** | Required for FINRA 3110 supervisory review of Copilot-assisted communications | Control 3.4 |
-| **Enable DSPM for AI** | Data Security Posture Management for AI provides Copilot-specific risk insights | Control 3.9 |
+| **Enable DSPM for AI** | Data Security Posture Management for AI provides Copilot-specific risk insights | Control 1.2 |
 | **Review Regulatory Mappings** | Map controls to your specific regulatory obligations | [Regulatory Mappings](../reference/regulatory-mappings.md) |
 | **Follow the Adoption Roadmap** | Phase your rollout from pilot to broad deployment | [Adoption Roadmap](../framework/adoption-roadmap.md) |
 
