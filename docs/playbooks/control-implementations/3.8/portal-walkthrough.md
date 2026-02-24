@@ -38,7 +38,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 ### Step 2: Configure Compliance Manager for Model Risk Assessments
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Compliance Manager > Assessments > Create assessment
 
 1. Create a custom assessment for "OCC 2011-12 Model Risk Management".
@@ -51,7 +51,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 ### Step 3: Establish Model Performance Monitoring
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Audit > Copilot activity searches
 
 1. Configure monitoring for Copilot output quality indicators:

@@ -35,7 +35,7 @@ Step-by-step portal configuration for governing the collection, storage, and use
 
 ### Step 3: Configure Telemetry Data Retention
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Data lifecycle management
 
 1. Create a retention policy for Copilot telemetry and feedback data.

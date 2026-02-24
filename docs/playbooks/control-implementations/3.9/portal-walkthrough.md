@@ -12,7 +12,7 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 
 ### Step 1: Configure Sensitivity Labels for AI-Generated Content Disclosure
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Information protection > Labels > Create a label
 
 1. Create a sensitivity label named "AI-Assisted Content".
@@ -24,7 +24,7 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 
 ### Step 2: Create Communication Compliance Policy for SEC Marketing Rule
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Communication compliance > Policies > Create policy
 
 1. Create a policy named "FSI-SEC-MarketingRule-AI-Disclosure".
@@ -37,7 +37,7 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 
 ### Step 3: Configure DLP Policy for AI Disclosure Enforcement
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Data loss prevention > Policies > Create policy
 
 1. Create a DLP policy named "FSI-AI-Disclosure-Enforcement".

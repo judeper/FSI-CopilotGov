@@ -12,7 +12,7 @@ Step-by-step portal configuration for establishing evidence collection and audit
 
 ### Step 1: Configure Compliance Manager Evidence Repository
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Compliance Manager > Assessments
 
 1. Open or create an assessment for your primary regulatory framework.
@@ -26,7 +26,7 @@ Step-by-step portal configuration for establishing evidence collection and audit
 
 ### Step 2: Create Evidence Collection Templates
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Compliance Manager > Templates
 
 1. Create or customize an assessment template for "FSI Copilot Governance Evidence Pack".
@@ -38,7 +38,7 @@ Step-by-step portal configuration for establishing evidence collection and audit
 
 ### Step 3: Set Up Automated Evidence Gathering
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Compliance Manager > Assessments > Improvement actions
 
 1. For each improvement action, configure automated testing where available:
@@ -49,7 +49,7 @@ Step-by-step portal configuration for establishing evidence collection and audit
 
 ### Step 4: Configure Attestation Workflow
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Compliance Manager > Assessments > Attestations
 
 1. Define attestation frequency for each control area:

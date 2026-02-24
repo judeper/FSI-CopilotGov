@@ -12,7 +12,7 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 
 ### Step 1: Configure Compliance Manager Assessments for AI Governance
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Compliance Manager > Assessments
 
 1. Navigate to Compliance Manager and review existing assessments.
@@ -25,7 +25,7 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 
 ### Step 2: Set Up Regulatory Report Data Sources
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Audit > Saved searches
 
 1. Create saved audit log searches for data that feeds into regulatory reports:
@@ -37,7 +37,7 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 
 ### Step 3: Configure Report Export Templates
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Compliance Manager > Reports
 
 1. Create report templates for each regulatory submission that includes AI governance data.

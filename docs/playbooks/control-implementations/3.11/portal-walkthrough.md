@@ -12,7 +12,7 @@ Step-by-step portal configuration for implementing record keeping controls that 
 
 ### Step 1: Configure Records Management for Copilot Content
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Records management > File plan
 
 1. Navigate to the Records management solution.
@@ -25,7 +25,7 @@ Step-by-step portal configuration for implementing record keeping controls that 
 
 ### Step 2: Create Retention Labels with Regulatory Record Status
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Records management > File plan > Create a label
 
 1. Create retention labels for each record category:
@@ -37,7 +37,7 @@ Step-by-step portal configuration for implementing record keeping controls that 
 
 ### Step 3: Configure Auto-Apply Retention Labels
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Records management > Label policies > Auto-apply a label
 
 1. Create auto-apply policies for each retention label:
@@ -49,7 +49,7 @@ Step-by-step portal configuration for implementing record keeping controls that 
 
 ### Step 4: Configure WORM Compliance — Audit-Trail Alternative or Third-Party Archival
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Records management > Retention policies
 
 SEC Rule 17a-4(f) requires WORM storage or an audit-trail alternative under Rule 17a-4(f)(2)(ii)(A). Configure one of the following paths:
@@ -80,7 +80,7 @@ The audit-trail alternative allows records to be stored in non-WORM format if th
 
 ### Step 5: Verify the Audit-Trail Alternative Configuration
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Audit > Search
 
 After enabling Preservation Lock and regulatory record labels (Option A), verify that the audit trail is comprehensive:

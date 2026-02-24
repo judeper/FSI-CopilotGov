@@ -26,7 +26,7 @@ Step-by-step portal configuration for establishing incident reporting and root c
 
 ### Step 2: Configure Alert Policies for Copilot Incidents
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Policies > Alert policies
 
 1. Create alert policies for Copilot-specific incidents:

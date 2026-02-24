@@ -52,7 +52,7 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 
 ### Step 4: Configure Sensitivity Labels for Meetings
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Information protection > Labels
 
 1. Create or configure sensitivity labels for meeting types:

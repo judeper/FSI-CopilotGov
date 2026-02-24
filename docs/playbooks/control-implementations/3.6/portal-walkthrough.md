@@ -12,7 +12,7 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 
 ### Step 1: Define Supervisory Hierarchy in Purview
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Communication compliance > Supervisory review settings
 
 1. Map the supervisory hierarchy by assigning supervising principals to groups of registered representatives.
@@ -21,7 +21,7 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 
 ### Step 2: Create Supervisory Review Policies
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Communication compliance > Policies > Create policy
 
 1. Create a policy named "FSI-FINRA-3110-Supervision-Copilot".
@@ -34,7 +34,7 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 
 ### Step 3: Configure Reg BI Documentation Review
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Communication compliance > Policies
 
 1. Create a second policy named "FSI-RegBI-Copilot-BestInterest-Review".
@@ -47,7 +47,7 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 
 ### Step 4: Set Up Supervision Dashboards
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Communication compliance > Dashboard
 
 1. Configure the dashboard to display key supervision metrics:

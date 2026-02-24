@@ -12,7 +12,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 
 ### Step 1: Configure Sensitive Information Types for Consumer Financial Data
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Data classification > Sensitive info types
 
 1. Review built-in sensitive information types relevant to Reg S-P:
@@ -27,7 +27,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 
 ### Step 2: Create DLP Policies for Consumer Financial Information in Copilot
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Data loss prevention > Policies > Create policy
 
 1. Create a DLP policy named "FSI-RegSP-Copilot-Privacy-Protection".
@@ -40,7 +40,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 
 ### Step 3: Configure Information Barriers for Privacy Segregation
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Information barriers > Segments and policies
 
 1. Review existing information barrier segments.
@@ -49,7 +49,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 
 ### Step 4: Enable Privacy Impact Assessment for Copilot Data Flows
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Data classification > Content explorer
 
 1. Use Content Explorer to identify where consumer financial information resides.
@@ -59,7 +59,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 
 ### Step 5: Configure the Incident Response Program for Copilot NPI Events (Reg S-P Rule 248.30(a)(4))
 
-**Portal:** Microsoft Purview Compliance Portal / Internal incident response documentation
+**Portal:** Microsoft Purview portal / Internal incident response documentation
 **Path:** Microsoft Purview > Audit > Alert policies; Internal IRP documentation system
 
 The amended Reg S-P requires a written incident response program addressing unauthorized access to or use of customer information. Configure the following for Copilot NPI incident coverage:

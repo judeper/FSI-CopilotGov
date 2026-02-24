@@ -12,7 +12,7 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
 
 ### Step 1: Create FINRA 2210 Communication Compliance Policy
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Communication compliance > Policies > Create policy
 
 1. Click **Create policy** and select **Custom policy**.
@@ -23,7 +23,7 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
 
 ### Step 2: Configure FINRA 2210-Specific Detection Rules
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Policy wizard > Conditions
 
 1. Add keyword conditions for prohibited language patterns:
@@ -39,7 +39,7 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
 
 ### Step 3: Configure Pre-Send Review Workflow
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Policy wizard > Review settings
 
 1. Set the review percentage to **100%** for outbound client communications.
@@ -49,7 +49,7 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
 
 ### Step 4: Set Up FINRA Correspondence Categories
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Policy wizard > Categories
 
 1. Create classification tags aligned with FINRA 2210 categories:

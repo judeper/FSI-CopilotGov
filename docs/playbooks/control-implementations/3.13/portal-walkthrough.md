@@ -12,7 +12,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 ### Step 1: Map Copilot Controls to FFIEC Examination Booklets
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Compliance Manager > Assessments > Create assessment
 
 1. Create a custom assessment titled "FFIEC IT Examination — Copilot AI Governance".
@@ -25,7 +25,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 ### Step 2: Configure FFIEC-Aligned Audit Trail Requirements
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Audit > Audit retention policies
 
 1. Review audit retention policies against FFIEC audit trail requirements.
@@ -38,7 +38,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 ### Step 3: Document Risk Assessment Alignment
 
-**Portal:** Microsoft Purview Compliance Portal
+**Portal:** Microsoft Purview portal
 **Path:** Solutions > Compliance Manager > Assessments > Improvement actions
 
 1. For each FFIEC booklet mapping, create improvement actions documenting:
