@@ -161,4 +161,4 @@ Complete inventory of every admin toggle for Microsoft 365 Copilot, organized by
 
 ---
 
-*FSI Copilot Governance Framework v1.0 - February 2026*
+*FSI Copilot Governance Framework v1.1 - February 2026*

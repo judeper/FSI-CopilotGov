@@ -191,4 +191,4 @@ The three-layer architecture separates:
 
 ---
 
-*FSI Copilot Governance Framework v1.0 - February 2026*
+*FSI Copilot Governance Framework v1.1 - February 2026*

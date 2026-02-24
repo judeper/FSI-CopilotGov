@@ -105,4 +105,4 @@ Each playbook is self-contained but references related playbooks within the same
 
 ---
 
-*FSI Copilot Governance Framework v1.0 — February 2026*
+*FSI Copilot Governance Framework v1.1 — February 2026*

@@ -262,4 +262,4 @@ This framework provides governance guidance and does not constitute legal, regul
 
 ---
 
-*FSI Copilot Governance Framework v1.0 - February 2026*
+*FSI Copilot Governance Framework v1.1 - February 2026*

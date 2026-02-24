@@ -245,4 +245,4 @@ Microsoft regularly updates Microsoft 365 Copilot with new features, changed beh
 
 ---
 
-*FSI Copilot Governance Framework v1.0 - February 2026*
+*FSI Copilot Governance Framework v1.1 - February 2026*

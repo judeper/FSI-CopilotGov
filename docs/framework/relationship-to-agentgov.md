@@ -221,4 +221,4 @@ If your organization already uses FSI-AgentGov and is now deploying M365 Copilot
 
 ---
 
-*FSI Copilot Governance Framework v1.0 - February 2026*
+*FSI Copilot Governance Framework v1.1 - February 2026*

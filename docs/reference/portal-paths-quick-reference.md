@@ -242,4 +242,4 @@ Admin portal navigation paths for every configuration referenced in the FSI Copi
 
 ---
 
-*FSI Copilot Governance Framework v1.0 - February 2026*
+*FSI Copilot Governance Framework v1.1 - February 2026*
