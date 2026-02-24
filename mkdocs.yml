@@ -12,6 +12,9 @@ extra:
 
 theme:
   name: material
+  icon:
+    logo: material/shield-check
+  favicon: images/favicon.png
   features:
     - navigation.instant
     - navigation.tracking

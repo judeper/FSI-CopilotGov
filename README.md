@@ -113,7 +113,6 @@ FSI-CopilotGov/
 │   │   └── regulatory-modules/       # State-specific guides
 │   └── reference/          # Quick-reference materials
 ├── scripts/                # CI validation scripts
-├── templates/              # Downloadable governance templates
 └── .github/                # CI/CD workflows
 ```
 
