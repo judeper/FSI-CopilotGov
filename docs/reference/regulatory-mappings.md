@@ -203,7 +203,7 @@ Controls that appear across the most regulations should be prioritized for imple
 
 | Control | Regulation Count | Regulations |
 |---------|-----------------|-------------|
-| Control 3.1 (Copilot Audit Logging) | 7 | FINRA 4511, 3110, SEC 17a-3, SOX, GLBA, FFIEC, Interagency AI |
+| Control 3.1 (Copilot Audit Logging) | 8 | FINRA 4511, 3110, SEC 17a-3, SEC 17a-4 (audit-trail alternative), SOX, GLBA, FFIEC, Interagency AI |
 | Control 3.2 (Retention Policies) | 5 | FINRA 4511, SEC 17a-4, Reg S-P, GLBA, FFIEC |
 | Control 3.11 (Regulatory Record-keeping) | 4 | FINRA 4511, SEC 17a-3, SEC 17a-4, SOX |
 | Control 2.4 (DLP Policies) | 5 | Reg S-P, SOX, GLBA, FFIEC, Interagency AI |
