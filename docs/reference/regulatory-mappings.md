@@ -40,6 +40,7 @@ Requires each member firm to establish, maintain, and enforce a system to superv
 | 3110(b) | Designate supervisory principals for each type of business | Control 4.13 (Stakeholder RACI Matrix), Control 3.6 (Supervisory Review) | Reg |
 | 3110(b)(4) | Review of communications with the public | Control 3.4 (Communication Compliance), Control 3.5 (FINRA 2210), Control 3.6 (Supervisory Review) | Reg |
 | 3110(d) | Review of customer account activity | Control 3.1 (Copilot Audit Logging), Control 4.6 (Usage Analytics) | R |
+| 3110(a) / FINRA 2026 | Agentic AI supervision — firms deploying AI agents must extend FINRA Rule 3110(a) supervisory systems to cover autonomous and semi-autonomous agent actions, including Teams channel agents and declarative agents with documented scope and review cadence | Control 3.6 (Supervisory Review) | Reg |
 
 ---
 
@@ -79,6 +80,8 @@ Specifies record retention periods and storage requirements for broker-dealer re
 | 17a-4(b) | Records preserved for not less than 3 years (communications) | Control 3.2 (Retention Policies), Control 3.4 (Communication Compliance) | Reg |
 | 17a-4(f) | Electronic storage media requirements — WORM compliance | Control 3.2 (Retention Policies), Control 3.11 (Record-keeping) | Reg |
 | 17a-4(j) | Third-party access and SEC examination access | Control 3.3 (eDiscovery), Control 3.12 (Audit Evidence) | Reg |
+| 17a-4(f)(2)(ii)(A) | Audit-trail alternative to WORM — records need not be stored in non-rewriteable format if the broker-dealer maintains a complete audit trail of all modifications, deletions, and access events throughout the retention period; for Copilot content, satisfiable via Purview retention labels with regulatory record declaration + Preservation Lock + audit log coverage | Control 3.11 (Regulatory Record-keeping), Control 3.1 (Copilot Audit Logging) | Reg |
+| Off-channel enforcement | SEC and CFTC off-channel enforcement campaign — over $2B in fines imposed on financial institutions for failing to preserve business communications on unapproved channels (personal devices, unauthorized messaging apps); recordkeeping obligations attach to business purpose, not channel; mobile Copilot access through unmanaged devices creates the same regulatory gap | Control 3.11 (Regulatory Record-keeping), Control 3.4 (Communication Compliance) | Reg |
 
 ---
 
@@ -91,6 +94,7 @@ Requires broker-dealers, investment companies, and investment advisers to protec
 | 248.30(a) | Policies and procedures to protect customer records and information | Control 3.10 (Privacy and Reg S-P), Control 2.4 (DLP Policies), Control 2.13 (Encryption) | R |
 | 248.30(a) | Protection against unauthorized access or use | Control 2.7 (Conditional Access), Control 2.8 (Information Barriers), Control 1.1 (Oversharing Assessment) | R / Reg |
 | 248.30(b) | Disposal of consumer information | Control 3.2 (Retention Policies), Control 1.7 (Content Lifecycle) | R |
+| 248.30(a)(3)–(4) | Reg S-P 2023 amendments — mandatory incident response program and 72-hour vendor notification; covered institutions must notify service providers of unauthorized access to customer information within 72 hours of detection, including Copilot-related NPI incidents (staggered compliance: large entities June 2025, small entities December 2025 — both now in effect) | Control 3.10 (Privacy and Reg S-P), Control 4.8 (Incident Response) | Reg |
 
 ---
 
@@ -104,6 +108,8 @@ Requires broker-dealers to act in the best interest of retail customers when rec
 | 240.15l-1(a)(2)(ii) | Care obligation — reasonable diligence, care, and skill | Control 3.6 (Supervisory Review), Control 3.8 (Model Risk Management) | Reg |
 | 240.15l-1(a)(2)(iii) | Conflict of interest obligation | Control 2.8 (Information Barriers), Control 3.6 (Supervisory Review) | Reg |
 | 240.15l-1(a)(2)(iv) | Compliance obligation — policies and procedures | Control 1.12 (Governance Committee), Control 4.12 (Governance Calendar) | Reg |
+| SEC v. Delphia / Global Predictions (March 2024) | Enforcement precedent — SEC charged firms with false and misleading statements about purported AI use in investment processes; combined $400K penalties established that "AI washing" in client-facing materials violates Investment Advisers Act Section 206 antifraud provisions | Control 3.5 (FINRA 2210 Compliance) | Reg |
+| SEC 2026 Examination Priorities | SEC 2026 examination priorities include focused review of how registered entities govern internal AI tools; examiners will assess AI tool inventories, supervisory procedures specific to AI-assisted activities, and evidence of ongoing monitoring of AI-generated outputs including annual testing per FINRA 3120(b) | Control 3.6 (Supervisory Review) | Reg |
 
 ---
 
@@ -143,6 +149,7 @@ Provides guidance on model risk management for banking organizations.
 | Model Governance | Board and senior management oversight | Control 1.12 (Governance Committee), Control 4.13 (RACI Matrix) | Reg |
 | Documentation | Maintain comprehensive model documentation | Control 3.8 (Model Risk Management), Control 3.12 (Audit Evidence) | Reg |
 | Vendor Models | Assess third-party model risk | Control 1.10 (Vendor Risk Assessment), Control 3.8 (Model Risk Management) | Reg |
+| OCC Bulletin 2025-26 | Proportionality guidance — community banks and smaller institutions may apply simplified MRM (model inventory registration, basic output monitoring, vendor due diligence) commensurate with size, complexity, and risk profile; larger institutions with client-facing Copilot deployments apply full OCC 2011-12 / SR 11-7 framework | Control 3.8 (Model Risk Management) | Reg |
 
 ---
 
@@ -204,7 +211,8 @@ Controls that appear across the most regulations should be prioritized for imple
 | Control 3.8 (Model Risk Management) | 4 | OCC 2011-12, Reg BI, CFPB UDAAP, Interagency AI |
 | Control 1.12 (Governance Committee) | 4 | FINRA 3110, Reg BI, OCC 2011-12, Interagency AI |
 | Control 3.12 (Audit Evidence) | 4 | SEC 17a-3, SEC 17a-4, SOX, OCC 2011-12 |
-| Control 3.4 (Communication Compliance) | 4 | FINRA 3110, 2210, SEC 17a-3, CFPB UDAAP |
+| Control 3.4 (Communication Compliance) | 5 | FINRA 3110, 2210, SEC 17a-3, SEC 17a-4 (off-channel enforcement), CFPB UDAAP |
+| Control 3.5 (FINRA 2210 Compliance) | 4 | FINRA 2210, SEC Reg BI (Delphia enforcement precedent), CFPB UDAAP, Interagency AI |
 | Control 3.7 (UDAAP Compliance) | 3 | FINRA 2210, CFPB UDAAP, Interagency AI |
 
 ---

@@ -21,6 +21,9 @@ This document maps the FSI Copilot Governance Framework controls to applicable U
 
 **Key Requirements for M365 Copilot:**
 
+!!! info "SEC 2026 Examination Priorities"
+    The SEC Division of Examinations 2026 priorities include a focus on firms' internal use of AI tools, including generative AI. Examiners are expected to evaluate whether firms have adequate policies and procedures governing AI tool deployment, supervisory review of AI outputs, and recordkeeping for AI-assisted activities. Organizations should be prepared to demonstrate their Copilot governance controls during routine examinations.
+
 - Copilot interaction logs constitute business records subject to retention
 - Copilot-generated content that becomes part of customer communications or transaction records must be preserved
 - Records must be maintained in a format that is readily accessible for the required retention period
@@ -81,6 +84,9 @@ This document maps the FSI Copilot Governance Framework controls to applicable U
 - Sampling protocols for Copilot-drafted communications
 - Escalation procedures for identified issues
 
+!!! info "FINRA 2026 Annual Risk Monitoring and Examination Priorities"
+    FINRA's 2026 oversight report highlights agentic AI supervision as an emerging examination focus area. As AI tools move from passive assistance to agentic workflows (where AI takes actions on behalf of associated persons), firms must evaluate whether existing supervisory procedures adequately cover AI-initiated actions. Organizations deploying Microsoft 365 Copilot should assess whether agentic features (such as Copilot agents acting on SharePoint content or processing workflows) require enhanced supervisory controls beyond those designed for interactive Copilot use.
+
 **Applicable Controls:**
 
 | Control | Requirement | Mapping |
@@ -112,6 +118,9 @@ This document maps the FSI Copilot Governance Framework controls to applicable U
 
 !!! info "FINRA Regulatory Notice 24-09"
     FINRA Notice 24-09 (June 2024) confirms that existing FINRA rules apply equally to AI-generated content. The technology used to create a communication does not change the supervisory obligation.
+
+!!! info "SEC v. Delphia and Global Predictions (2024)"
+    The SEC's enforcement actions against Delphia Inc. and Global Predictions Inc. established precedent for AI-related enforcement in financial services. Both firms were charged with making misleading claims about their use of AI in investment processes. This precedent reinforces the importance of accurate disclosure when using AI tools like Copilot in client-facing contexts and supervision of AI-generated content to prevent misleading statements.
 
 **Copilot-Specific Concerns:**
 
@@ -274,6 +283,9 @@ This document maps the FSI Copilot Governance Framework controls to applicable U
 
 **Overview:** Provides guidance on model risk management (MRM) for banks using models in decision-making. Requires model validation, ongoing monitoring, governance, and independent validation.
 
+!!! info "OCC Bulletin 2025-26: MRM Proportionality"
+    OCC Bulletin 2025-26 reinforces the proportionality principle for model risk management: the rigor of MRM controls should be commensurate with the risk posed by the model's use case. For general-purpose AI productivity tools like M365 Copilot, this means MRM obligations scale with how the tool's outputs are used — casual productivity assistance requires lighter governance than AI-assisted investment recommendations or credit decisions.
+
 **Key Requirements for M365 Copilot:**
 
 Model risk management applicability to M365 Copilot depends on how Copilot outputs are used:
@@ -386,7 +398,7 @@ The following state regulations may apply but require separate analysis beyond t
 
 #### Colorado AI Act (SB 24-205)
 
-**Overview:** Effective February 2026, requires developers and deployers of "high-risk AI systems" to use reasonable care to protect consumers from known or foreseeable risks of algorithmic discrimination.
+**Overview:** Effective June 2026 (per Colorado SB 25B-004 amendment), requires developers and deployers of "high-risk AI systems" to use reasonable care to protect consumers from known or foreseeable risks of algorithmic discrimination.
 
 **M365 Copilot Relevance:** May apply if Copilot outputs influence consequential decisions (employment, lending, insurance). Organizations operating in Colorado should assess whether their Copilot use cases constitute "high-risk AI" under the Act.
 

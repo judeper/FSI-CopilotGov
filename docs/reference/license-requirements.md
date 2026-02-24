@@ -16,7 +16,9 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | **Microsoft 365 Copilot** | Per-user add-on enabling AI assistance across M365 apps | Required for any Copilot functionality |
 | **Microsoft 365 E5 Compliance** | Add-on for E3 providing E5-level compliance capabilities | Alternative to full E5 for compliance-focused deployments |
 | **Microsoft 365 E5 Security** | Add-on for E3 providing E5-level security capabilities | Alternative to full E5 for security-focused deployments |
-| **SharePoint Advanced Management (SAM)** | Add-on for advanced SharePoint governance | Required for oversharing reports and advanced site management |
+| **SharePoint Advanced Management (SAM)** | Advanced SharePoint governance (DAG reports, site lifecycle, RCD, RAC) | Included with Microsoft 365 Copilot licenses at no additional cost (Ignite 2024); also available as standalone add-on (~$3/user/month) for non-Copilot environments |
+| **Microsoft 365 Copilot (PAYG)** | Pay-as-you-go billing for Copilot Chat | $0.01/message via Azure Commerce; Copilot Chat only (not full in-app Copilot); cost-effective below ~3,000 messages/user/month |
+| **Microsoft 365 F1/F3** | Frontline worker licenses | Copilot availability extended to Frontline SKUs; check current Microsoft documentation for feature parity with E3/E5 |
 
 ---
 
@@ -24,7 +26,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 
 | Control | Feature | E3 | E5 | Copilot | Add-on Required (if E3) | Notes |
 |---------|---------|----|----|---------|------------------------|-------|
-| 1.1 | Oversharing Assessment (SAM reports) | -- | -- | -- | SharePoint Advanced Management | SAM is a separate add-on for both E3 and E5 |
+| 1.1 | Oversharing Assessment (SAM reports) | -- | -- | Included | SharePoint Advanced Management (if no Copilot license) | SAM is included with Copilot licenses (Ignite 2024); standalone add-on available for non-Copilot users |
 | 1.1 | Basic SharePoint sharing audit | Included | Included | -- | -- | Basic sharing reports available in SharePoint Admin Center |
 | 1.2 | SharePoint Permissions Review | Included | Included | -- | -- | Native SharePoint admin capabilities |
 | 1.3 | Restricted SharePoint Search | Included | Included | -- | -- | Available in SharePoint Admin Center; limits Microsoft 365 Copilot Chat grounding |
@@ -32,7 +34,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | 1.5 | M365 Groups Membership Audit | Included | Included | -- | -- | Available via Entra admin center and PowerShell |
 | 1.6 | Guest and External Access Review | Included | Included | -- | -- | Entra ID access reviews require Entra ID P2 (included in E5) |
 | 1.6 | Entra ID Access Reviews | -- | Included | -- | Entra ID P2 | Automated access reviews for guest accounts |
-| 1.7 | Inactive Site and Content Lifecycle | -- | -- | -- | SharePoint Advanced Management | SAM provides inactive site policies |
+| 1.7 | Inactive Site and Content Lifecycle | -- | -- | Included | SharePoint Advanced Management (if no Copilot license) | SAM site lifecycle management included with Copilot licenses |
 | 1.8 | Semantic Index Readiness | -- | -- | Included | -- | Semantic Index processing is part of Copilot license |
 | 1.9 | License Assignment and Scoping | Included | Included | -- | -- | Group-based license assignment via Entra |
 | 1.10 | Vendor Risk Assessment | Included | Included | -- | -- | Organizational process; no specific license needed |
@@ -104,6 +106,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | 4.6 | Copilot Usage Analytics | Included | Included | Included | -- | Usage reports in M365 Admin Center; Viva Insights adds detail |
 | 4.6 | Copilot Usage Analytics (advanced) | -- | -- | -- | Viva Insights | Advanced Copilot adoption analytics |
 | 4.7 | Cost Management | Included | Included | Included | -- | License utilization tracking in M365 Admin Center |
+| 4.8 | PAYG Cost Governance | -- | -- | -- | Azure Commerce (PAYG) | PAYG billing ($0.01/msg) requires Azure Cost Management for budget caps and usage alerts |
 | 4.8 | AI Incident Response | Included | Included | -- | -- | Process-based; Defender and Sentinel enhance automation |
 | 4.9 | Business Continuity | Included | Included | -- | -- | Process-based planning |
 | 4.10 | Change Management | Included | Included | -- | -- | Message Center monitoring; no additional license |
@@ -129,20 +132,19 @@ Baseline governance is achievable with E3 + Copilot, but with significant manual
 | Required License | Purpose |
 |-----------------|---------|
 | Microsoft 365 E5 (strongly recommended) | Advanced compliance, security, and audit capabilities |
-| Microsoft 365 Copilot | Copilot functionality per user |
-| SharePoint Advanced Management | Oversharing assessment and site lifecycle management |
+| Microsoft 365 Copilot | Copilot functionality per user; includes SAM at no additional cost |
 
-E5 is strongly recommended for FSI environments. The cost of individual add-ons to E3 typically exceeds the incremental cost of E5.
+E5 is strongly recommended for FSI environments. The cost of individual add-ons to E3 typically exceeds the incremental cost of E5. Note: SharePoint Advanced Management (SAM) is included with Copilot licenses and no longer requires a separate add-on for Copilot-licensed users.
 
 ### Regulated Governance
 
 | Required License | Purpose |
 |-----------------|---------|
 | Microsoft 365 E5 | Full compliance and security suite |
-| Microsoft 365 Copilot | Copilot functionality per user |
-| SharePoint Advanced Management | Oversharing reports, site lifecycle, access governance |
+| Microsoft 365 Copilot | Copilot functionality per user; includes SAM at no additional cost |
 | Microsoft Sentinel | SIEM/SOAR for Copilot audit data |
 | Viva Insights (optional) | Advanced Copilot adoption analytics |
+| Microsoft 365 Copilot PAYG (optional) | Pay-as-you-go for occasional Copilot Chat users ($0.01/message via Azure Commerce) |
 
 ---
 

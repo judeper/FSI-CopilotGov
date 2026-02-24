@@ -8,7 +8,7 @@ Compliance considerations for Colorado SB 24-205 (Colorado Artificial Intelligen
 
 The Colorado AI Act (SB 24-205), signed into law in 2024, establishes requirements for developers and deployers of "high-risk artificial intelligence systems" — AI systems that make, or are a substantial factor in making, consequential decisions affecting consumers. Financial services organizations using M365 Copilot should assess whether their use cases fall within the Act's scope.
 
-**Effective date:** February 1, 2026
+**Effective date:** June 30, 2026 (amended by SB 25B-004)
 **Applicability:** Organizations that deploy AI systems making or substantially contributing to consequential decisions in areas including financial services, insurance, and lending.
 
 ## Scope Assessment for M365 Copilot

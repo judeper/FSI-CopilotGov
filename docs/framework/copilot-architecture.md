@@ -432,6 +432,34 @@ See Control 4.10 for detailed declarative agent governance requirements.
 
 ---
 
+## Copilot Control System (Administrative Governance Surface)
+
+The **Copilot Control System** is Microsoft's February 2026 branding for the consolidated administrative governance surface across Microsoft 365 Copilot. Previously, administrators had to navigate across multiple admin centers (M365 Admin Center, Teams Admin Center, Exchange Admin Center, SharePoint Admin Center, and Microsoft Purview) to manage Copilot settings. The Copilot Control System unifies these distributed controls into a coherent governance experience accessible primarily through **M365 Admin Center > Copilot**.
+
+### What the Copilot Control System Consolidates
+
+| Capability | Previous Location | Copilot Control System Location |
+|------------|------------------|-------------------------------|
+| **Global Copilot toggle** | M365 Admin Center (Copilot section) | MAC > Copilot (unchanged) |
+| **Per-application feature toggles** | Individual app admin centers | Progressively migrating to MAC > Copilot |
+| **Baseline Security Mode** | N/A (new capability) | MAC > Copilot > Settings > Security |
+| **Copilot overview dashboard** | N/A (new capability) | MAC > Copilot > Overview |
+| **License utilization and adoption** | Multiple reporting surfaces | Consolidated in Copilot overview dashboard |
+| **Security posture summary** | Purview, Defender, Entra (separately) | Summary links from Copilot overview dashboard |
+
+### Governance Relevance
+
+The Copilot Control System is significant for governance architecture because it introduces a **single pane of glass** for Copilot administration, which directly supports:
+
+- **SOX Section 404 ITGC evidence collection** -- the overview dashboard provides centralized proof of ongoing governance oversight
+- **Segregation of duties enforcement** -- role-based access (Copilot Admin, Teams Admin, Exchange Admin, SharePoint Admin) is preserved within the unified surface
+- **Configuration drift detection** -- a centralized baseline makes it easier to detect and remediate unauthorized setting changes
+- **Regulatory examination readiness** -- a single admin surface simplifies evidence production for examiners
+
+For detailed implementation guidance, including Baseline Security Mode configuration and change management procedures, see [Control 4.1: Copilot Admin Settings and Feature Management](../controls/pillar-4-operations/4.1-admin-settings-feature-management.md).
+
+---
+
 ## Data Processing and Residency
 
 ### Data Processing Principles
@@ -470,6 +498,7 @@ See Control 4.10 for detailed declarative agent governance requirements.
 | Plugins / Connectors | Extended data reach beyond M365 | 2.8, 4.10 |
 | Audit Events | Copilot interactions logged for regulatory record-keeping | 3.1, 3.2 |
 | Responsible AI | Microsoft-managed; organizations layer additional controls | DLP, communication compliance |
+| Copilot Control System | Unified admin surface for all Copilot settings; configuration drift and SOX evidence | 4.1 |
 
 ---
 
