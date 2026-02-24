@@ -1,0 +1,30 @@
+# Build output
+site/
+
+# Planning and internal artifacts
+.planning/
+
+# Research files (internal reference only)
+FSI AI Regulatory*.md
+M365 Copilot Admin*.md
+Microsoft 365 Copilot Governance*.md
+Purview & Compliance*.md
+
+# OS files
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node
+node_modules/
