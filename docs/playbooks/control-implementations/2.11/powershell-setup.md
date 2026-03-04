@@ -41,8 +41,15 @@ Connect-IPPSSession
 $startDate = (Get-Date).AddDays(-30).ToString("MM/dd/yyyy")
 $endDate = (Get-Date).ToString("MM/dd/yyyy")
 
-$pagesEvents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate `
-    -FreeText "CopilotPage" -ResultSize 5000
+# Copilot Pages use Loop infrastructure; query CopilotInteraction and filter by AppHost
+$copilotEvents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate `
+    -RecordType CopilotInteraction -ResultSize 5000
+
+$pagesEvents = $copilotEvents | Where-Object {
+    $auditData = $_.AuditData | ConvertFrom-Json
+    $auditData.AppHost -in @("Loop", "OneDrive", "SharePoint") -or
+    $auditData.ObjectId -match "\.loop$|\.fluid$"
+}
 
 $pagesReport = @()
 foreach ($event in $pagesEvents) {
@@ -51,6 +58,7 @@ foreach ($event in $pagesEvents) {
         Date      = $event.CreationDate
         User      = $event.UserIds
         Operation = $event.Operations
+        AppHost   = $data.AppHost
         Detail    = $data.ObjectId
     }
 }
@@ -74,15 +82,22 @@ $endDate = (Get-Date).ToString("MM/dd/yyyy")
 
 $sharingEvents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate `
     -Operations "SharingSet","SharingInvitationCreated","AnonymousLinkCreated" `
-    -FreeText "CopilotPage" -ResultSize 1000
+    -ResultSize 1000
+
+# Filter for Pages/Loop content (stored as .loop/.fluid files in OneDrive/SharePoint)
+$pagesSharing = $sharingEvents | Where-Object {
+    $auditData = $_.AuditData | ConvertFrom-Json
+    $auditData.ObjectId -match "\.loop$|\.fluid$" -or
+    $auditData.SourceFileExtension -in @("loop", "fluid")
+}
 
 Write-Host "=== Pages Sharing Activity ==="
-Write-Host "Sharing events (last 30 days): $($sharingEvents.Count)"
+Write-Host "Sharing events on Pages content (last 30 days): $($pagesSharing.Count)"
 
-if ($sharingEvents.Count -gt 0) {
-    foreach ($event in $sharingEvents) {
+if ($pagesSharing.Count -gt 0) {
+    foreach ($event in $pagesSharing) {
         $data = $event.AuditData | ConvertFrom-Json
-        Write-Host "  $($event.CreationDate) | $($event.UserIds) | $($event.Operations)"
+        Write-Host "  $($event.CreationDate) | $($event.UserIds) | $($event.Operations) | $($data.ObjectId)"
     }
 }
 ```

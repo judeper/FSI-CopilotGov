@@ -113,24 +113,57 @@ $evidence | Export-Csv "AuditEvidence_${ControlArea}_$(Get-Date -Format 'yyyyMMd
 ### Script 4: Evidence Freshness Audit
 
 ```powershell
-# Check evidence freshness to identify stale evidence requiring updates
-$evidenceItems = @(
-    @{Name="Audit Log Config"; MaxAgeDays=90; LastCollected="2026-01-15"},
-    @{Name="Retention Policies"; MaxAgeDays=90; LastCollected="2026-01-15"},
-    @{Name="DLP Policies"; MaxAgeDays=90; LastCollected="2026-01-15"},
-    @{Name="Communication Compliance"; MaxAgeDays=90; LastCollected="2026-01-15"},
-    @{Name="Supervisory Reviews"; MaxAgeDays=30; LastCollected="2026-02-01"}
-)
+# Check evidence freshness by querying actual tenant configuration
+# and comparing against the most recent evidence pack collection
+
+$evidenceItems = @()
+
+# Dynamically discover retention policies in tenant
+$retPolicies = Get-RetentionCompliancePolicy | Where-Object {
+    $_.Name -like "*Copilot*" -or $_.Name -like "*FSI*"
+}
+foreach ($pol in $retPolicies) {
+    $evidenceItems += @{Name="Retention: $($pol.Name)"; MaxAgeDays=90}
+}
+if ($retPolicies.Count -eq 0) {
+    $evidenceItems += @{Name="Retention Policies (none found)"; MaxAgeDays=90}
+}
+
+# Dynamically discover DLP policies in tenant
+$dlpPolicies = Get-DlpCompliancePolicy | Where-Object {
+    $_.Name -like "*Copilot*" -or $_.Name -like "*FSI*"
+}
+foreach ($pol in $dlpPolicies) {
+    $evidenceItems += @{Name="DLP: $($pol.Name)"; MaxAgeDays=90}
+}
+if ($dlpPolicies.Count -eq 0) {
+    $evidenceItems += @{Name="DLP Policies (none found)"; MaxAgeDays=90}
+}
+
+# Dynamically discover sensitivity labels in tenant
+$labels = Get-Label | Where-Object { $_.Name -like "*AI*" -or $_.Name -like "*Copilot*" }
+foreach ($lbl in $labels) {
+    $evidenceItems += @{Name="Label: $($lbl.Name)"; MaxAgeDays=90}
+}
+
+# Standard evidence types requiring periodic collection
+$evidenceItems += @{Name="Audit Log Config"; MaxAgeDays=90}
+$evidenceItems += @{Name="Communication Compliance"; MaxAgeDays=90}
+$evidenceItems += @{Name="Supervisory Reviews"; MaxAgeDays=30}
+
+# Determine last collection date from most recent evidence pack directory
+$latestPack = Get-ChildItem -Path "." -Filter "EvidencePack_*" -Directory -ErrorAction SilentlyContinue |
+    Sort-Object Name -Descending | Select-Object -First 1
+$lastCollected = if ($latestPack) { $latestPack.CreationTime } else { $null }
 
 $freshnessReport = $evidenceItems | ForEach-Object {
-    $lastDate = [DateTime]$_.LastCollected
-    $ageDays = ((Get-Date) - $lastDate).Days
+    $ageDays = if ($lastCollected) { ((Get-Date) - $lastCollected).Days } else { [int]::MaxValue }
     [PSCustomObject]@{
         EvidenceItem   = $_.Name
-        LastCollected  = $_.LastCollected
-        AgeDays        = $ageDays
+        LastCollected  = if ($lastCollected) { $lastCollected.ToString("yyyy-MM-dd") } else { "NOT COLLECTED" }
+        AgeDays        = if ($lastCollected) { $ageDays } else { "N/A" }
         MaxAgeDays     = $_.MaxAgeDays
-        Status         = if ($ageDays -le $_.MaxAgeDays) { "Current" } else { "STALE" }
+        Status         = if ($lastCollected -and $ageDays -le $_.MaxAgeDays) { "Current" } else { "STALE" }
     }
 }
 
