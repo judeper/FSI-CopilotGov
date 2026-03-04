@@ -71,13 +71,16 @@ $copilotData = Import-Csv "CopilotUsage_Impact_$(Get-Date -Format 'yyyyMMdd').cs
 $activeUsers = ($copilotData | Where-Object { $_.'Last Activity Date' -ne '' }).Count
 $totalLicensed = $copilotData.Count
 
-# Assumptions (adjust per organization's analysis)
-$monthlyLicenseCost = 30  # per user
-$estimatedMinutesSavedPerWeek = 60  # per active user (conservative estimate)
-$hourlyLaborCost = 75  # average fully-loaded cost
+# --- Configurable assumptions — update these to reflect current pricing and org estimates ---
+# $costPerUser: M365 Copilot license cost per user/month. Verify at https://www.microsoft.com/en-us/microsoft-365/copilot
+$costPerUser = 30
+# $estimatedTimeSavedMinPerWeek: Estimated minutes saved per active user per week. Adjust based on org survey data or Viva Insights time-saved metrics.
+$estimatedTimeSavedMinPerWeek = 60
+# $hourlyLaborCost: Average fully-loaded labor cost per hour for your organization.
+$hourlyLaborCost = 75
 
-$monthlyLicenseSpend = $totalLicensed * $monthlyLicenseCost
-$monthlyTimeSavings = $activeUsers * $estimatedMinutesSavedPerWeek * 4.33 / 60  # hours per month
+$monthlyLicenseSpend = $totalLicensed * $costPerUser
+$monthlyTimeSavings = $activeUsers * $estimatedTimeSavedMinPerWeek * 4.33 / 60  # hours per month
 $monthlyProductivityValue = $monthlyTimeSavings * $hourlyLaborCost
 
 $roi = [PSCustomObject]@{
@@ -98,16 +101,35 @@ $roi | Export-Csv "CopilotROI_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInforma
 
 ```powershell
 # Audit Viva Insights privacy and access settings
+# What IS available via PowerShell: Copilot Dashboard usage summary via Graph API
 Write-Host "Viva Insights Privacy Configuration Audit:" -ForegroundColor Cyan
 Write-Host "==========================================`n"
-Write-Host "The following settings must be verified in the Viva Insights admin center:"
-Write-Host "1. Minimum aggregation group size: [Verify >= 10]"
-Write-Host "2. Manager insights: [Verify disabled or selective]"
-Write-Host "3. Data access roles: [Verify restricted to authorized users]"
-Write-Host "4. Data retention period: [Verify per organizational policy]"
-Write-Host "`nNote: Viva Insights admin settings are primarily managed via the web portal."
-Write-Host "PowerShell automation for these settings is limited."
-Write-Host "`nReview at: https://insights.viva.office.com"
+
+# Retrieve Copilot usage summary from Viva Insights Copilot Dashboard
+Write-Host "--- Copilot Usage Summary (Graph API) ---" -ForegroundColor Yellow
+try {
+    $usageSummary = Invoke-MgGraphRequest -Method GET `
+        -Uri "https://graph.microsoft.com/v1.0/reports/microsoft365CopilotUsageSummary(period='D30')"
+    $usageSummary | ConvertTo-Json -Depth 5 | Out-File "VivaInsights_CopilotSummary_$(Get-Date -Format 'yyyyMMdd').json"
+    Write-Host "  Copilot usage summary exported successfully" -ForegroundColor Green
+} catch {
+    Write-Warning "  Unable to retrieve Copilot usage summary: $($_.Exception.Message)"
+}
+
+# Note: Viva Insights admin settings (minimum group size, manager insights, data access roles,
+# data retention) are portal-only — no PowerShell cmdlets are available for these controls.
+# Default minimum aggregation group size is 10 (recommended FSI minimum: 10–25).
+Write-Host "`n--- Settings Requiring Portal Verification ---" -ForegroundColor Yellow
+Write-Host "  Portal: insights.viva.cloud.microsoft > Copilot Dashboard"
+Write-Host "  Admin:  M365 Admin Center > Viva > Viva Insights > Settings"
+Write-Host ""
+$portalChecks = @(
+    [PSCustomObject]@{ Setting="Minimum aggregation group size"; Expected=">= 10"; Status="Verify in portal" }
+    [PSCustomObject]@{ Setting="Manager insights"; Expected="Disabled or selective"; Status="Verify in portal" }
+    [PSCustomObject]@{ Setting="Data access roles"; Expected="Restricted to authorized users"; Status="Verify in portal" }
+    [PSCustomObject]@{ Setting="Data retention period"; Expected="Per organizational policy"; Status="Verify in portal" }
+)
+$portalChecks | Format-Table -AutoSize
 ```
 
 ## Scheduled Tasks

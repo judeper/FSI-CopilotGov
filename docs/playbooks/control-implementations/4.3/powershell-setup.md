@@ -1,11 +1,12 @@
 # Control 4.3: Copilot in Teams Phone and Queues Governance — PowerShell Setup
 
-Automation scripts for configuring and managing Copilot governance in Teams Phone and call queue environments.
+Automation scripts for configuring and auditing Copilot-relevant settings in Teams Phone and call queue environments. Copilot in Teams Phone relies on call transcription and recording infrastructure — these scripts configure the underlying policies that support Copilot functionality and compliance record-keeping.
 
 ## Prerequisites
 
 - **Modules:** `MicrosoftTeams`, `ExchangeOnlineManagement`
-- **Permissions:** Teams Administrator
+- **Permissions:** Teams Admin, Purview Compliance Admin (for audit log search)
+- **Licenses:** Microsoft 365 Copilot, Teams Phone
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -13,14 +14,23 @@ Automation scripts for configuring and managing Copilot governance in Teams Phon
 ```powershell
 Import-Module MicrosoftTeams
 Connect-MicrosoftTeams
+
+# For audit log search (Script 4)
+Import-Module ExchangeOnlineManagement
+Connect-IPPSSession
 ```
 
 ## Scripts
 
-### Script 1: Configure Calling Policy with Copilot Controls
+### Script 1: Configure Calling Policy with Copilot-Relevant Controls
+
+Copilot in Teams Phone requires call transcription to generate real-time assistance and post-call summaries. This script configures the calling policy parameters that support Copilot functionality.
 
 ```powershell
-# Create calling policy with Copilot governance settings
+# Configure calling policy with transcription and recording for Copilot support
+# Copilot in calls depends on AllowTranscriptionForCalling and AllowCloudRecordingForCalls
+# Requires: MicrosoftTeams module
+
 $policyName = "FSI-Copilot-Calling-Policy"
 
 $existingPolicy = Get-CsTeamsCallingPolicy -Identity $policyName -ErrorAction SilentlyContinue
@@ -29,39 +39,81 @@ if (-not $existingPolicy) {
 }
 
 Set-CsTeamsCallingPolicy -Identity $policyName `
-    -AllowVoicemail "AlwaysEnabled" `
-    -AllowCallForwardingToPhone $true `
+    -AllowCloudRecordingForCalls $true `
+    -AllowTranscriptionForCalling $true `
+    -LiveCaptionsEnabledType "DisabledUserOverride" `
+    -AllowPrivateCalling $true `
+    -AllowVoicemail "UserOverride" `
+    -AllowCallGroups $true `
+    -AllowDelegation $true `
     -AllowCallForwardingToUser $true `
-    -BusyOnBusyEnabledType "Enabled" `
-    -AllowWebPSTNCalling $true
+    -AllowCallForwardingToPhone $true
 
-Write-Host "Calling policy created: $policyName" -ForegroundColor Green
-Write-Host "Note: Copilot-specific calling settings are configured in Teams Admin Center" -ForegroundColor Yellow
+Write-Host "Calling policy configured: $policyName" -ForegroundColor Green
+
+# Verify Copilot-relevant parameters
+Write-Host "`nVerification — Copilot-relevant calling policy settings:" -ForegroundColor Cyan
+Get-CsTeamsCallingPolicy -Identity $policyName |
+    Select-Object Identity, AllowCloudRecordingForCalls, AllowTranscriptionForCalling,
+        LiveCaptionsEnabledType, AllowPrivateCalling, AllowVoicemail |
+    Format-List
 ```
 
-### Script 2: Assign Calling Policies to Phone Users
+### Script 2: Configure Meeting Policy for Copilot with Transcript Enforcement
+
+Teams meetings involving phone dial-in participants also require meeting policy configuration. Post-September 2025 (MC1139493), the Global policy default changed to allow Copilot without transcription — FSI organizations should explicitly set `EnabledWithTranscript` to support compliance record-keeping.
 
 ```powershell
-# Assign the FSI calling policy to Teams Phone users
-$policyName = "FSI-Copilot-Calling-Policy"
+# Configure meeting policy to require Copilot WITH transcript
+# Critical: Default changed Sept 2025 — without explicit setting, post-meeting
+# Copilot summaries and "after the meeting" access are unavailable
+# Requires: MicrosoftTeams module
+
+$meetingPolicyName = "FSI-Regulated"
+
+Set-CsTeamsMeetingPolicy -Identity $meetingPolicyName `
+    -Copilot "EnabledWithTranscript" `
+    -AllowTranscription $true `
+    -AllowCloudRecording $true `
+    -LiveCaptionsEnabledType "DisabledUserOverride" `
+    -AllowMeetingCoach $true `
+    -AllowCarbonSummary $true
+
+Write-Host "Meeting policy configured: $meetingPolicyName" -ForegroundColor Green
+
+# Verify Global policy Copilot default (check for post-Sept 2025 drift)
+Write-Host "`nGlobal policy Copilot settings (verify post-Sept 2025 default):" -ForegroundColor Cyan
+Get-CsTeamsMeetingPolicy -Identity Global |
+    Select-Object Identity, Copilot, AllowTranscription, AllowCloudRecording |
+    Format-List
+
+# Assign calling and meeting policies to Teams Phone users
+$callingPolicyName = "FSI-Copilot-Calling-Policy"
 $phoneUsers = Get-CsOnlineUser -Filter { EnterpriseVoiceEnabled -eq $true }
 
 $assignedCount = 0
 foreach ($user in $phoneUsers) {
-    Grant-CsTeamsCallingPolicy -Identity $user.UserPrincipalName -PolicyName $policyName
+    Grant-CsTeamsCallingPolicy -Identity $user.UserPrincipalName -PolicyName $callingPolicyName
+    Grant-CsTeamsMeetingPolicy -Identity $user.UserPrincipalName -PolicyName $meetingPolicyName
     $assignedCount++
 }
 
-Write-Host "Calling policy assigned to $assignedCount Teams Phone users" -ForegroundColor Green
+Write-Host "`nCalling + meeting policies assigned to $assignedCount Teams Phone users" -ForegroundColor Green
 ```
 
-### Script 3: Report on Call Queue Configuration
+### Script 3: Call Queue and Compliance Recording Audit
+
+Call queue Copilot access is governed by each agent's calling policy and license assignment — `Set-CsCallQueue` does not have direct Copilot-specific parameters. This script audits call queue configuration and verifies compliance recording policies.
 
 ```powershell
-# Report on call queue configurations and Copilot settings
+# Audit call queue configurations
+# Note: Set-CsCallQueue has no direct Copilot parameters as of March 2026
+# Copilot availability for queue agents depends on agent-level calling policy + license
+# Requires: MicrosoftTeams module
+
 $callQueues = Get-CsCallQueue
 
-$report = $callQueues | ForEach-Object {
+$queueReport = $callQueues | ForEach-Object {
     [PSCustomObject]@{
         Name              = $_.Name
         Agents            = $_.Agents.Count
@@ -72,44 +124,86 @@ $report = $callQueues | ForEach-Object {
     }
 }
 
-Write-Host "Call Queue Configuration Report:" -ForegroundColor Cyan
-$report | Format-Table -AutoSize
-$report | Export-Csv "CallQueueConfig_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+Write-Host "=== Call Queue Configuration Report ===" -ForegroundColor Cyan
+$queueReport | Format-Table -AutoSize
+
+# Verify compliance recording policies
+# Certified providers (NICE, Verint, etc.) capture Copilot-generated call summaries
+# if the provider supports transcript ingestion
+Write-Host "`n=== Compliance Recording Policies ===" -ForegroundColor Cyan
+$recordingPolicies = Get-CsTeamsComplianceRecordingPolicy
+if ($recordingPolicies) {
+    $recordingPolicies | Select-Object Identity, Enabled,
+        ComplianceRecordingApplications | Format-Table -AutoSize
+} else {
+    Write-Warning "No compliance recording policies found."
+    Write-Host "Configure via: Teams Admin Center > Voice > Compliance recording policies" -ForegroundColor Yellow
+}
+
+# Export combined report
+$queueReport | Export-Csv "CallQueueConfig_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 4: Phone Call Copilot Usage Audit
+### Script 4: Copilot Usage Audit for Teams Phone Context
+
+Copilot interactions in Teams calls log under `RecordType = CopilotInteraction` with `AppHost` values that include `Teams`. This script searches the Unified Audit Log and filters for call-context Copilot events.
 
 ```powershell
-# Audit Copilot usage in Teams Phone interactions
-Import-Module ExchangeOnlineManagement
-Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
+# Search Copilot audit events and filter for Teams call context
+# Requires: ExchangeOnlineManagement module, Connect-IPPSSession
 
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
 
-$phoneEvents = Search-UnifiedAuditLog `
+$copilotEvents = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
     -RecordType CopilotInteraction `
     -ResultSize 5000
 
-$callEvents = $phoneEvents | Where-Object {
-    $_.AuditData -like "*Phone*" -or $_.AuditData -like "*PSTN*" -or $_.AuditData -like "*Call*"
+# Parse AuditData and filter for call-related Copilot interactions
+$callCopilotEvents = $copilotEvents | ForEach-Object {
+    $auditData = $_.AuditData | ConvertFrom-Json
+    [PSCustomObject]@{
+        Date        = $_.CreationDate
+        User        = $_.UserIds
+        Operation   = $_.Operations
+        AppHost     = $auditData.AppHost
+        Resources   = ($auditData.AccessedResources.Name -join "; ")
+    }
+} | Where-Object {
+    $_.AppHost -match "Teams" -or
+    $_.Operation -match "Call|Phone|PSTN"
 }
 
-Write-Host "Copilot in Teams Phone Usage (Last 30 Days):"
-Write-Host "Total call-related Copilot events: $($callEvents.Count)"
+Write-Host "=== Copilot in Teams Phone Usage (Last 30 Days) ===" -ForegroundColor Cyan
+Write-Host "Total Copilot events found: $($copilotEvents.Count)"
+Write-Host "Teams/call-context events: $($callCopilotEvents.Count)"
 
-$callEvents | Select-Object CreationDate, UserIds, Operations |
-    Export-Csv "CopilotPhoneUsage_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+if ($callCopilotEvents.Count -gt 0) {
+    $callCopilotEvents | Group-Object AppHost |
+        Select-Object @{N='AppHost';E={$_.Name}}, @{N='Count';E={$_.Count}} |
+        Format-Table -AutoSize
+}
+
+$callCopilotEvents | Export-Csv "CopilotPhoneUsage_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
 ## Scheduled Tasks
 
 | Task | Frequency | Script |
 |------|-----------|--------|
-| Policy assignment verification | Monthly | Script 2 (verify) |
-| Call queue configuration audit | Quarterly | Script 3 |
-| Phone Copilot usage report | Weekly | Script 4 |
+| Calling policy verification | Monthly | Script 1 (verify section) |
+| Policy assignment for new phone users | Monthly | Script 2 |
+| Call queue + compliance recording audit | Quarterly | Script 3 |
+| Copilot phone usage report | Weekly | Script 4 |
+
+## Limitations
+
+| Area | Detail |
+|------|--------|
+| Call queue Copilot params | `Set-CsCallQueue` has no direct Copilot parameters; agent Copilot access is governed by per-user calling policy and license |
+| Compliance recording | Copilot-generated call summaries are captured only if the certified recording provider supports transcript ingestion |
+| Audit log filtering | No dedicated `AppHost` value for "phone call Copilot" — filter on `Teams` and verify call context in audit data |
 
 ## Next Steps
 

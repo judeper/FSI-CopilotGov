@@ -4,8 +4,8 @@ Automation scripts for monitoring Copilot service health, testing business conti
 
 ## Prerequisites
 
-- **Modules:** `Microsoft.Graph`
-- **Permissions:** ServiceHealth.Read.All, Reports.Read.All
+- **Modules:** `Microsoft.Graph`, `ExchangeOnlineManagement`
+- **Permissions:** ServiceHealth.Read.All, Reports.Read.All, Compliance Administrator (for DLP/UAL checks)
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -73,31 +73,128 @@ $issues | Export-Csv "ServiceIncidentHistory_$(Get-Date -Format 'yyyyMMdd').csv"
 ### Script 3: BCP Readiness Assessment
 
 ```powershell
-# Generate a BCP readiness assessment for Copilot service dependencies
-$assessment = @(
-    [PSCustomObject]@{Category="Service Monitoring"; Status="Active"; LastTested=(Get-Date -Format "yyyy-MM-dd")},
-    [PSCustomObject]@{Category="Fallback Procedures"; Status="Documented"; LastTested="Verify manually"},
-    [PSCustomObject]@{Category="Communication Templates"; Status="Prepared"; LastTested="Verify manually"},
-    [PSCustomObject]@{Category="RTO/RPO Defined"; Status="Documented"; LastTested="Verify manually"},
-    [PSCustomObject]@{Category="DR Test Completed"; Status="Verify"; LastTested="Verify last test date"},
-    [PSCustomObject]@{Category="Vendor SLA Reviewed"; Status="Verify"; LastTested="Verify review date"}
-)
-
+# Automated BCP readiness assessment for Copilot service dependencies
 Write-Host "BCP Readiness Assessment — Copilot Services:" -ForegroundColor Cyan
-$assessment | Format-Table -AutoSize
+Write-Host "=============================================`n"
 
-$incomplete = $assessment | Where-Object { $_.Status -eq "Verify" }
-if ($incomplete) {
-    Write-Warning "$($incomplete.Count) items require manual verification"
+$assessment = @()
+
+# --- Automated Check: UAL enabled ---
+try {
+    Connect-ExchangeOnline -ShowBanner:$false
+    $ualConfig = Get-AdminAuditLogConfig
+    $ualStatus = if ($ualConfig.UnifiedAuditLogIngestionEnabled) { "Enabled" } else { "NOT ENABLED" }
+    $assessment += [PSCustomObject]@{
+        Category="Unified Audit Log"; Check="UAL ingestion enabled"; Status=$ualStatus;
+        Method="Automated"; Detail="Get-AdminAuditLogConfig"
+    }
+} catch {
+    $assessment += [PSCustomObject]@{
+        Category="Unified Audit Log"; Check="UAL ingestion enabled"; Status="ERROR";
+        Method="Automated"; Detail=$_.Exception.Message
+    }
+}
+
+# --- Automated Check: Copilot-related DLP policies exist ---
+try {
+    $dlpPolicies = Get-DlpCompliancePolicy | Where-Object {
+        $_.Name -like "*Copilot*" -or $_.Name -like "*AI*" -or $_.Name -like "*FSI*"
+    }
+    $dlpStatus = if ($dlpPolicies.Count -gt 0) { "$($dlpPolicies.Count) policy(ies) found" } else { "NO POLICIES FOUND" }
+    $assessment += [PSCustomObject]@{
+        Category="DLP for Copilot"; Check="Copilot/AI DLP policies configured"; Status=$dlpStatus;
+        Method="Automated"; Detail=($dlpPolicies.Name -join ", ")
+    }
+} catch {
+    $assessment += [PSCustomObject]@{
+        Category="DLP for Copilot"; Check="Copilot/AI DLP policies configured"; Status="ERROR";
+        Method="Automated"; Detail=$_.Exception.Message
+    }
+}
+
+# --- Automated Check: Copilot service health ---
+try {
+    $copilotHealth = Get-MgServiceAnnouncementHealthOverview -All | Where-Object {
+        $_.Service -like "*Copilot*"
+    }
+    foreach ($svc in $copilotHealth) {
+        $assessment += [PSCustomObject]@{
+            Category="Service Health"; Check="$($svc.Service) status"; Status=$svc.Status;
+            Method="Automated"; Detail="Get-MgServiceAnnouncementHealthOverview"
+        }
+    }
+} catch {
+    $assessment += [PSCustomObject]@{
+        Category="Service Health"; Check="Copilot service status"; Status="ERROR";
+        Method="Automated"; Detail=$_.Exception.Message
+    }
+}
+
+# --- Automated Check: Active Copilot service incidents ---
+try {
+    $activeIncidents = Get-MgServiceAnnouncementIssue -All | Where-Object {
+        $_.Service -like "*Copilot*" -and $_.Status -ne "Resolved"
+    }
+    if ($activeIncidents.Count -gt 0) {
+        foreach ($incident in $activeIncidents) {
+            $assessment += [PSCustomObject]@{
+                Category="Active Incidents"; Check=$incident.Title; Status=$incident.Status;
+                Method="Automated"; Detail="Started: $($incident.StartDateTime)"
+            }
+        }
+    } else {
+        $assessment += [PSCustomObject]@{
+            Category="Active Incidents"; Check="Copilot service incidents"; Status="None active";
+            Method="Automated"; Detail="Get-MgServiceAnnouncementIssue"
+        }
+    }
+} catch {
+    $assessment += [PSCustomObject]@{
+        Category="Active Incidents"; Check="Copilot service incidents"; Status="ERROR";
+        Method="Automated"; Detail=$_.Exception.Message
+    }
+}
+
+# --- Manual items (structured output) ---
+$manualItems = @(
+    [PSCustomObject]@{
+        Category="DR Testing"; Check="Disaster recovery test completed"; Status="Manual verification required";
+        Method="Manual"; Detail="Verify last DR test date and results with BCP team"
+    },
+    [PSCustomObject]@{
+        Category="Backup Verification"; Check="Backup and restore procedures validated"; Status="Manual verification required";
+        Method="Manual"; Detail="Confirm backup scope includes Copilot-adjacent data (Exchange, SharePoint, OneDrive)"
+    },
+    [PSCustomObject]@{
+        Category="Fallback Procedures"; Check="Copilot-unavailable fallback documented"; Status="Manual verification required";
+        Method="Manual"; Detail="Verify documented procedures for operating without Copilot during outages"
+    },
+    [PSCustomObject]@{
+        Category="Vendor SLA"; Check="Microsoft SLA reviewed for Copilot services"; Status="Manual verification required";
+        Method="Manual"; Detail="Verify SLA terms reviewed within last 12 months"
+    }
+)
+$assessment += $manualItems
+
+# Display results
+$assessment | Format-Table Category, Check, Status, Method -AutoSize
+
+$manualCount = ($assessment | Where-Object { $_.Method -eq "Manual" }).Count
+$failedAuto = ($assessment | Where-Object { $_.Method -eq "Automated" -and $_.Status -match "NOT|ERROR|NO " }).Count
+if ($manualCount -gt 0) {
+    Write-Warning "$manualCount item(s) require manual verification"
+}
+if ($failedAuto -gt 0) {
+    Write-Warning "$failedAuto automated check(s) returned issues — review above"
 }
 
 $assessment | Export-Csv "BCPReadiness_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 4: Service Uptime Report
+### Script 4: Service Uptime and Active Incident Report
 
 ```powershell
-# Calculate service uptime percentage for Copilot dependencies
+# Calculate service uptime percentage for Copilot dependencies and check active incidents
 $startDate = (Get-Date).AddDays(-30)
 $totalHours = 30 * 24  # 720 hours
 
@@ -122,6 +219,22 @@ Write-Host "Total hours: $totalHours"
 Write-Host "Downtime hours: $([math]::Round($downtimeHours, 1))"
 Write-Host "Uptime: $uptimePercentage%"
 Write-Host "Incidents: $($issues.Count)"
+
+# Check for active (unresolved) incidents affecting Copilot services
+Write-Host "`nActive Copilot Service Incidents:" -ForegroundColor Yellow
+$activeIncidents = Get-MgServiceAnnouncementIssue -All | Where-Object {
+    $_.Status -ne "Resolved" -and
+    ($_.Service -like "*Copilot*" -or $_.Service -like "*Teams*" -or
+     $_.Service -like "*Exchange*" -or $_.Service -like "*SharePoint*")
+}
+
+if ($activeIncidents.Count -gt 0) {
+    Write-Warning "$($activeIncidents.Count) active incident(s) detected"
+    $activeIncidents | Select-Object Id, Service, Title, Status, StartDateTime |
+        Format-Table -AutoSize
+} else {
+    Write-Host "  No active incidents affecting Copilot dependencies" -ForegroundColor Green
+}
 ```
 
 ## Scheduled Tasks
@@ -131,7 +244,7 @@ Write-Host "Incidents: $($issues.Count)"
 | Service health check | Every 15 minutes | Script 1 |
 | Incident history report | Monthly | Script 2 |
 | BCP readiness assessment | Quarterly | Script 3 |
-| Uptime report | Monthly | Script 4 |
+| Uptime and incident report | Monthly | Script 4 |
 
 ## Next Steps
 

@@ -25,6 +25,12 @@ PROHIBITED_PHRASES = [
 # Files that are allowed to contain prohibited phrases (for documentation of the rules themselves)
 EXEMPT_FILES = [
     os.path.join(".github", "instructions", "fsi-language-rules.instructions.md"),
+    # Control 3.5 and its playbooks intentionally contain prohibited marketing
+    # language as detection examples for FINRA 2210 Communication Compliance policies
+    os.path.join("docs", "controls", "pillar-3-compliance", "3.5-finra-2210-compliance.md"),
+    os.path.join("docs", "playbooks", "control-implementations", "3.5", "portal-walkthrough.md"),
+    os.path.join("docs", "playbooks", "control-implementations", "3.5", "troubleshooting.md"),
+    os.path.join("docs", "playbooks", "control-implementations", "3.5", "verification-testing.md"),
 ]
 
 

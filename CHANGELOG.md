@@ -4,6 +4,30 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.2 — March 2026
+
+### Content Quality Improvements
+- Enriched Governance Levels sections in 12 controls with specific portal paths, PowerShell cmdlets, configuration values, and regulatory thresholds (2.10, 3.1, 3.2, 3.6, 3.8, 3.10, 3.11, 3.13, 4.2, 4.3, 4.4, 4.8)
+- Rewrote 6 thin PowerShell playbooks with real cmdlets replacing pseudo-code (3.7, 3.8, 3.9, 4.3, 4.7, 4.12)
+- Improved 6 moderate PowerShell playbooks — replaced hardcoded data with parameterized scripts (2.11, 3.12, 3.13, 4.6, 4.9, 4.10)
+
+### Research-Backed Updates
+- Added Copilot-specific UAL RecordTypes and operations (CopilotInteraction, TeamCopilotInteraction, AgentAdminActivity) to audit logging controls and playbooks
+- Added IRM "Risky AI usage (preview)" template and Generative AI indicators to insider risk control
+- Added amended SEC Reg S-P timeline (Dec 3, 2025 compliance deadline) and 72-hour vendor notification details
+- Added OCC Bulletin 2025-26 proportionality principle to model risk management control
+- Added FFIEC AIO (2021) booklet examination procedures and examiner documentation request checklist
+- Added Teams meeting default change (MC1139493, September 2025) to Teams meetings governance
+- Added PAYG billing model details ($0.01/message) and Graph API usage endpoints to cost allocation control
+- Added Viva Copilot per-app features and portal-only limitation documentation
+
+### CI and Validation
+- Fixed pre-existing FSI language rule violation in Control 4.2 ("guarantees" → "requires")
+- Added FINRA 2210 control and playbooks to language rule scanner exemptions (intentional prohibited phrase examples)
+- Added `.github/copilot-instructions.md` for Copilot session context
+
+---
+
 ## v1.1 — February 2026
 
 ### Framework Updates
