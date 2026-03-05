@@ -18,7 +18,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Data, privacy, and security for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy) |
 | Microsoft 365 Copilot adoption guide | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources) |
 | Copilot in Teams meetings | [https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription](https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription) |
-| Copilot usage reports | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-usage-report](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-usage-report) |
+| Copilot usage reports | [https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage](https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage) |
 | Semantic Index for Copilot | [https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot](https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot) |
 
 ---
@@ -31,7 +31,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Plan for DLP | [https://learn.microsoft.com/en-us/purview/dlp-overview-plan-for-dlp](https://learn.microsoft.com/en-us/purview/dlp-overview-plan-for-dlp) |
 | Create and deploy a DLP policy | [https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy](https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy) |
 | DLP policy reference | [https://learn.microsoft.com/en-us/purview/dlp-policy-reference](https://learn.microsoft.com/en-us/purview/dlp-policy-reference) |
-| DLP for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/purview/dlp-microsoft-365-copilot](https://learn.microsoft.com/en-us/purview/dlp-microsoft-365-copilot) |
+| DLP for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp](https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp) |
 | Sensitive information type entity definitions | [https://learn.microsoft.com/en-us/purview/sensitive-information-type-entity-definitions](https://learn.microsoft.com/en-us/purview/sensitive-information-type-entity-definitions) |
 | Custom sensitive information types | [https://learn.microsoft.com/en-us/purview/create-a-custom-sensitive-information-type](https://learn.microsoft.com/en-us/purview/create-a-custom-sensitive-information-type) |
 | Endpoint DLP | [https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about](https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about) |
@@ -63,7 +63,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Search the audit log | [https://learn.microsoft.com/en-us/purview/audit-log-search](https://learn.microsoft.com/en-us/purview/audit-log-search) |
 | Audit log activities | [https://learn.microsoft.com/en-us/purview/audit-log-activities](https://learn.microsoft.com/en-us/purview/audit-log-activities) |
 | Manage audit log retention policies | [https://learn.microsoft.com/en-us/purview/audit-log-retention-policies](https://learn.microsoft.com/en-us/purview/audit-log-retention-policies) |
-| Learn about retention policies | [https://learn.microsoft.com/en-us/purview/retention-policies-overview](https://learn.microsoft.com/en-us/purview/retention-policies-overview) |
+| Learn about retention policies | [https://learn.microsoft.com/en-us/purview/retention](https://learn.microsoft.com/en-us/purview/retention) |
 | Create and configure retention policies | [https://learn.microsoft.com/en-us/purview/create-retention-policies](https://learn.microsoft.com/en-us/purview/create-retention-policies) |
 | Retention for Teams | [https://learn.microsoft.com/en-us/purview/retention-policies-teams](https://learn.microsoft.com/en-us/purview/retention-policies-teams) |
 | Retention for Copilot interactions | [https://learn.microsoft.com/en-us/purview/retention-policies-copilot](https://learn.microsoft.com/en-us/purview/retention-policies-copilot) |
@@ -89,7 +89,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 |-------|-----|
 | Learn about information barriers | [https://learn.microsoft.com/en-us/purview/information-barriers](https://learn.microsoft.com/en-us/purview/information-barriers) |
 | Get started with information barriers | [https://learn.microsoft.com/en-us/purview/information-barriers-policies](https://learn.microsoft.com/en-us/purview/information-barriers-policies) |
-| Define IB policies | [https://learn.microsoft.com/en-us/purview/information-barriers-policy-define](https://learn.microsoft.com/en-us/purview/information-barriers-policy-define) |
+| Define IB policies | [https://learn.microsoft.com/en-us/purview/information-barriers-policies](https://learn.microsoft.com/en-us/purview/information-barriers-policies) |
 | Information barriers in Teams | [https://learn.microsoft.com/en-us/microsoftteams/information-barriers-in-teams](https://learn.microsoft.com/en-us/microsoftteams/information-barriers-in-teams) |
 | Information barriers in SharePoint | [https://learn.microsoft.com/en-us/sharepoint/information-barriers](https://learn.microsoft.com/en-us/sharepoint/information-barriers) |
 | Information barriers in OneDrive | [https://learn.microsoft.com/en-us/onedrive/information-barriers](https://learn.microsoft.com/en-us/onedrive/information-barriers) |
@@ -105,7 +105,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | eDiscovery (Premium) | [https://learn.microsoft.com/en-us/purview/ediscovery-premium-get-started](https://learn.microsoft.com/en-us/purview/ediscovery-premium-get-started) |
 | Search for content | [https://learn.microsoft.com/en-us/purview/ediscovery-search-for-content](https://learn.microsoft.com/en-us/purview/ediscovery-search-for-content) |
 | Collect data for a case | [https://learn.microsoft.com/en-us/purview/ediscovery-create-draft-collection](https://learn.microsoft.com/en-us/purview/ediscovery-create-draft-collection) |
-| Review sets | [https://learn.microsoft.com/en-us/purview/ediscovery-review-set-overview](https://learn.microsoft.com/en-us/purview/ediscovery-review-set-overview) |
+| Review sets | [https://learn.microsoft.com/en-us/purview/ediscovery-review-set-search](https://learn.microsoft.com/en-us/purview/ediscovery-review-set-search) |
 | Export and download content | [https://learn.microsoft.com/en-us/purview/ediscovery-export-content](https://learn.microsoft.com/en-us/purview/ediscovery-export-content) |
 
 ---
@@ -127,9 +127,9 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Topic | URL |
 |-------|-----|
 | DSPM for AI overview | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
-| Get started with DSPM for AI | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-get-started](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-get-started) |
-| DSPM for AI policies | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-policies](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-policies) |
-| DSPM for AI data assessments | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-assessments](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-assessments) |
+| Get started with DSPM for AI | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-considerations](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-considerations) |
+| DSPM for AI policies | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
+| DSPM for AI data assessments | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
 
 ---
 
@@ -137,11 +137,11 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| Copilot extensibility overview | [https://learn.microsoft.com/en-us/copilot/microsoft-365/extensibility/](https://learn.microsoft.com/en-us/copilot/microsoft-365/extensibility/) |
+| Copilot extensibility overview | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/) |
 | Manage plugins for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-plugins-for-copilot-in-integrated-apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-plugins-for-copilot-in-integrated-apps) |
 | Microsoft Graph connectors overview | [https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview](https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview) |
 | Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent) |
-| SharePoint agents | [https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-agents](https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-agents) |
+| SharePoint agents | [https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-best-practices](https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-best-practices) |
 
 ---
 
