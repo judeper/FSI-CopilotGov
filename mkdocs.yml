@@ -2,27 +2,34 @@ site_name: FSI Copilot Governance Framework
 site_description: "Governance framework for Microsoft 365 Copilot in Financial Services"
 site_author: "FSI Copilot Governance Team"
 site_url: "https://judeper.github.io/FSI-CopilotGov/"
-copyright: "*FSI Copilot Governance Framework v1.1 - February 2026*"
+repo_url: https://github.com/judeper/FSI-CopilotGov
+repo_name: judeper/FSI-CopilotGov
+copyright: 'Copyright 2026 FSI Copilot Governance Team | <a href="/FSI-CopilotGov/disclaimer/">Disclaimer</a>'
 
 extra:
   generator: false
-  footer: |
-    Built with care for the US Financial Services Microsoft Community
-    This framework does not constitute legal advice. See Disclaimer.
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/judeper/FSI-CopilotGov
+      name: FSI Copilot Governance on GitHub
 
 theme:
   name: material
-  icon:
-    logo: material/shield-check
-  favicon: images/favicon.png
+  custom_dir: overrides
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
   features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes
+    - navigation.footer
     - navigation.instant
     - navigation.tracking
     - navigation.sections
     - navigation.path
     - search.suggest
     - search.highlight
-    - toc.integrate
+    - announce.dismiss
   palette:
     # Light mode
     - scheme: default
