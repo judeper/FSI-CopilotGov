@@ -17,6 +17,21 @@
     },
     {
       "pattern": "^https://account\\.microsoft\\.com"
+    },
+    {
+      "pattern": "^https://www\\.ecfr\\.gov"
+    },
+    {
+      "pattern": "^https://www\\.law\\.cornell\\.edu"
+    },
+    {
+      "pattern": "^https://www\\.finra\\.org"
+    },
+    {
+      "pattern": "^https://www\\.eeoc\\.gov"
+    },
+    {
+      "pattern": "^https://ithandbook\\.ffiec\\.gov"
     }
   ],
   "timeout": "10s",

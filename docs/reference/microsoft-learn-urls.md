@@ -16,7 +16,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Manage Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-public-web-access](https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-public-web-access) |
 | Microsoft 365 Copilot requirements | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements) |
 | Data, privacy, and security for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy) |
-| Microsoft 365 Copilot adoption guide | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-adoption](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-adoption) |
+| Microsoft 365 Copilot adoption guide | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources) |
 | Copilot in Teams meetings | [https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription](https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription) |
 | Copilot usage reports | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-usage-report](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-usage-report) |
 | Semantic Index for Copilot | [https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot](https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot) |
@@ -47,7 +47,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Get started with sensitivity labels | [https://learn.microsoft.com/en-us/purview/get-started-with-sensitivity-labels](https://learn.microsoft.com/en-us/purview/get-started-with-sensitivity-labels) |
 | Create and configure sensitivity labels | [https://learn.microsoft.com/en-us/purview/create-sensitivity-labels](https://learn.microsoft.com/en-us/purview/create-sensitivity-labels) |
 | Apply sensitivity labels automatically | [https://learn.microsoft.com/en-us/purview/apply-sensitivity-label-automatically](https://learn.microsoft.com/en-us/purview/apply-sensitivity-label-automatically) |
-| Sensitivity label inheritance in Copilot | [https://learn.microsoft.com/en-us/purview/sensitivity-labels-copilot](https://learn.microsoft.com/en-us/purview/sensitivity-labels-copilot) |
+| Sensitivity label inheritance in Copilot | [https://learn.microsoft.com/en-us/purview/sensitivity-labels](https://learn.microsoft.com/en-us/purview/sensitivity-labels) |
 | Encryption with sensitivity labels | [https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels](https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels) |
 | Mandatory labeling | [https://learn.microsoft.com/en-us/purview/sensitivity-labels-office-apps#require-users-to-apply-a-label](https://learn.microsoft.com/en-us/purview/sensitivity-labels-office-apps#require-users-to-apply-a-label) |
 
@@ -138,9 +138,9 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Topic | URL |
 |-------|-----|
 | Copilot extensibility overview | [https://learn.microsoft.com/en-us/copilot/microsoft-365/extensibility/](https://learn.microsoft.com/en-us/copilot/microsoft-365/extensibility/) |
-| Manage plugins for Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-plugins-for-copilot-in-integrated-apps](https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-plugins-for-copilot-in-integrated-apps) |
+| Manage plugins for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-plugins-for-copilot-in-integrated-apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-plugins-for-copilot-in-integrated-apps) |
 | Microsoft Graph connectors overview | [https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview](https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview) |
-| Declarative agents for Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/copilot/microsoft-365/extensibility/overview-declarative-agent) |
+| Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent) |
 | SharePoint agents | [https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-agents](https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-agents) |
 
 ---
