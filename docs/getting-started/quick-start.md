@@ -2,6 +2,9 @@
 
 Get Microsoft 365 Copilot governance in place for your financial services organization in **2-4 hours** with these five essential steps.
 
+!!! info "First time here?"
+    If you're not sure this framework fits your situation, read the [Start Here](../start-here.md) page first — it covers what this is, what it's not, and which pillar to begin with.
+
 !!! warning "Disclaimer"
     This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. See [full disclaimer](../disclaimer.md).
 

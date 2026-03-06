@@ -4,6 +4,9 @@
 
 ---
 
+!!! tip "New to this framework?"
+    Not sure if this is the right tool or where to begin? **[Start Here →](start-here.md)** — covers what this is, what it's not, and where to go for your specific situation.
+
 ## Welcome
 
 This framework provides **54 technical controls** and **216 implementation playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
@@ -78,6 +81,14 @@ Microsoft 365 Copilot as it appears in:
 For governance of **Copilot Studio**, **Agent Builder**, and **custom AI agents**, see the companion framework:
 
 **[FSI-AgentGov](https://github.com/judeper/FSI-AgentGov)** — 71 controls, 284 playbooks for Microsoft 365 AI agent governance.
+
+---
+
+## Not What You're Looking For?
+
+- **Building custom AI agents with Copilot Studio?** → [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov)
+- **Looking for end-user Copilot prompting tips?** → [Microsoft Adoption Hub](https://adoption.microsoft.com/en-us/copilot/)
+- **Not in financial services?** This framework's controls are calibrated for FSI regulatory obligations and may not apply to other industries.
 
 ---
 

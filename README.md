@@ -5,6 +5,8 @@
 [![Publish Docs](https://github.com/judeper/FSI-CopilotGov/actions/workflows/publish_docs.yml/badge.svg)](https://github.com/judeper/FSI-CopilotGov/actions/workflows/publish_docs.yml)
 [![Link Validation](https://github.com/judeper/FSI-CopilotGov/actions/workflows/link-check.yml/badge.svg)](https://github.com/judeper/FSI-CopilotGov/actions/workflows/link-check.yml)
 
+> **New to this framework? [→ Start Here](docs/start-here.md)** — understand what this is and where to begin.
+
 ---
 
 ## What This Is
@@ -14,6 +16,22 @@ A technical documentation framework providing **54 controls** and **216 playbook
 This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat, Copilot Pages**, and **SharePoint declarative agents** — plus extensibility via **plugins, Graph connectors, and declarative agents**.
 
 > **Companion Repository:** For governance of Copilot Studio, Agent Builder, and custom agents, see [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov).
+
+---
+
+## Who Is This For?
+
+**You should use this framework if you are:**
+
+- An M365 admin or architect deploying Microsoft 365 Copilot at a bank, insurer, or broker-dealer
+- A compliance or security engineer preparing for FINRA, SEC, or OCC examination
+- A Microsoft CSA helping an FSI customer establish a defensible Copilot governance posture
+
+**This is NOT the right repo if you are:**
+
+- Deploying custom agents built in Copilot Studio → see [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov)
+- Looking for end-user Copilot usage guides or prompt tips
+- Working outside regulated financial services
 
 ---
 
@@ -90,6 +108,16 @@ mkdocs serve
 2. **Understand** the [Executive Summary](docs/framework/executive-summary.md) and [Copilot Architecture](docs/framework/copilot-architecture.md)
 3. **Implement** controls by pillar, starting with Pillar 1 (Readiness)
 4. **Follow** the [Adoption Roadmap](docs/framework/adoption-roadmap.md) for phased rollout
+
+### Orientation Path (New to the Framework?)
+
+If you're not yet sure where to begin, this path helps you understand what the framework covers:
+
+1. **Read the Executive Summary** — understand scope and audience → [Executive Summary](docs/framework/executive-summary.md)
+2. **Scan the Four Pillars** — see the governance lifecycle at a glance → [Control Catalog](docs/controls/index.md)
+3. **Review the Readiness Assessment** — see what a pre-deployment assessment involves → [Control 1.1](docs/controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md)
+4. **Check your regulatory obligations** — identify which regulations apply → [Regulatory Framework](docs/framework/regulatory-framework.md)
+5. **Open the Implementation Checklist** — your actionable to-do list → [Implementation Checklist](docs/getting-started/checklist.md)
 
 ---
 

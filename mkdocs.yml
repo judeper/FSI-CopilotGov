@@ -90,6 +90,7 @@ nav:
   - Disclaimer: disclaimer.md
 
   - Getting Started:
+    - Start Here: start-here.md
     - Quick Start: getting-started/quick-start.md
     - Implementation Checklist: getting-started/checklist.md
 
