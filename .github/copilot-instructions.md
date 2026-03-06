@@ -32,7 +32,17 @@ The framework has three content layers:
 - **Controls** (`docs/controls/pillar-{1-4}-*/`) — 54 technical controls across 4 lifecycle pillars specifying *what* to configure and *why*
 - **Playbooks** (`docs/playbooks/control-implementations/{control-id}/`) — 4 playbooks per control specifying *how*: `portal-walkthrough.md`, `powershell-setup.md`, `verification-testing.md`, `troubleshooting.md`
 
-Supporting content: `docs/getting-started/` (quick start, checklist), `docs/reference/` (regulatory mappings, glossary, admin toggles, FAQ).
+Supporting content: `docs/getting-started/` (quick start, checklist), `docs/reference/` (regulatory mappings, glossary, admin toggles, FAQ), `docs/start-here.md` (newcomer orientation page).
+
+### Interactive Assessment Tool
+
+- **Page**: `docs/assessment/index.md` — Governance Scorecard, a browser-based self-assessment across all 54 controls
+- **App code**: `docs/javascripts/assessment-app.js` (main app), `docs/javascripts/assessment-loader.js` (bootstrap)
+- **Styles**: `docs/stylesheets/assessment.css`
+- **Data extraction**: `scripts/extract_assessment_data.py` — parses control markdown files to generate `docs/javascripts/assessment-data.json`
+- **Vendor libs**: `docs/javascripts/lib/chart.min.js` (Chart.js for radar/bar charts); see `docs/javascripts/lib/VENDOR-MANIFEST.md` for license info
+
+All assessment data stays client-side (no server calls). The assessment-data.json file is generated, not hand-edited.
 
 ## Control File Structure
 
