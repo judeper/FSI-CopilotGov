@@ -51,6 +51,7 @@ Organizations should verify these configurations meet their specific regulatory 
 | "We already deployed Copilot and now need to retroactively govern it" | [Implementation Checklist](getting-started/checklist.md) — start from Pillar 2 |
 | "We need to map our controls to NIST AI RMF" | [NIST AI RMF Crosswalk](reference/nist-ai-rmf-crosswalk.md) |
 | "Copilot surfaced sensitive data to the wrong person — what do we do?" | [AI Incident Response Playbook](playbooks/incident-and-risk/ai-incident-response-playbook.md) + [Control 2.1 — DLP](controls/pillar-2-security/2.1-dlp-policies-for-copilot.md) |
+| "We want to benchmark our current Copilot governance posture and identify gaps" | [Governance Scorecard](assessment/index.md) |
 
 ---
 
@@ -63,6 +64,9 @@ This path helps you understand what the framework covers and how it applies to y
 3. **Review the Readiness Assessment** — see what a pre-deployment assessment involves → [Control 1.1 — Copilot Readiness Assessment](controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md)
 4. **Check your regulatory obligations** — identify which regulations apply to your organization → [Regulatory Framework](framework/regulatory-framework.md)
 5. **Open the Implementation Checklist** — your actionable to-do list for getting started → [Implementation Checklist](getting-started/checklist.md)
+
+!!! tip "Ready to assess your current posture?"
+    Once you've reviewed the controls, use the [Governance Scorecard](assessment/index.md) to score your organization across all 54 controls, identify gaps, and generate a prioritized remediation roadmap.
 
 ---
 

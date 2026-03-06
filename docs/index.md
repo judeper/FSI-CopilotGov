@@ -73,6 +73,7 @@ Microsoft 365 Copilot as it appears in:
 | Find regulatory mappings | [Regulatory Mappings](reference/regulatory-mappings.md) |
 | See admin portal toggles | [Copilot Admin Toggles](reference/copilot-admin-toggles.md) |
 | Understand this vs. FSI-AgentGov | [Relationship to AgentGov](framework/relationship-to-agentgov.md) |
+| Score my governance posture | [Governance Scorecard](assessment/index.md) |
 
 ---
 

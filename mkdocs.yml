@@ -66,6 +66,7 @@ exclude_docs: |
   scripts/
   templates/
   controls/CONTROL-INDEX.md
+  javascripts/lib/VENDOR-MANIFEST.md
 
 markdown_extensions:
   - admonition
@@ -84,6 +85,9 @@ markdown_extensions:
 
 extra_css:
   - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/assessment-loader.js
 
 nav:
   - Home: index.md
@@ -169,6 +173,8 @@ nav:
       - 4.11 Sentinel Integration: controls/pillar-4-operations/4.11-sentinel-integration.md
       - 4.12 Change Management for Rollouts: controls/pillar-4-operations/4.12-change-management-rollouts.md
       - 4.13 Extensibility Governance: controls/pillar-4-operations/4.13-extensibility-governance.md
+
+  - Governance Scorecard: assessment/index.md
 
   - Playbooks:
     - Overview: playbooks/index.md
