@@ -27,10 +27,10 @@ The Governance Scorecard is an interactive self-assessment tool that helps finan
 ### How It Works
 
 1. **Scoping** — Select your target governance level (Baseline, Recommended, or Regulated) and organization profile
-2. **Assessment** — Rate each control's implementation status (Yes / Partial / No / N/A)
-3. **Drill-Down** — Answer detailed sub-questions for gap controls to refine scores
-4. **Results Dashboard** — View executive scorecard with per-level breakdowns, regulatory exposure, and remediation roadmap
-5. **Export** — Download results as Excel workbook, JSON, CSV, or print to PDF
+2. **Assess Controls** — Rate each control's implementation status (Yes / Partial / No / N/A); all controls must be answered before continuing to Results
+3. **Drill-Down** — Refine gap-control scores with detailed verification checks and import completed delegated sections when applicable
+4. **Results Dashboard** — View executive scorecard with per-level breakdowns, regulatory exposure, and remediation roadmap; if Drill-Down is incomplete, results remain preliminary
+5. **Export** — Download the full assessment JSON for re-import or trend comparison, plus Excel, CSV, or print-to-PDF outputs for reporting
 
 ### Scoring Methodology
 
@@ -90,8 +90,8 @@ The scorecard identifies which administrator roles are responsible for each cont
 
 ### Collaboration
 
-The governance lead can export role-specific sections as JSON files for relevant admins to complete independently, then import completed sections back with conflict detection.
+The governance lead can export role-specific sections as JSON files for relevant admins to complete independently during Drill-Down, then import completed sections back into the same assessment. If imported responses conflict with existing answers, the current assessment keeps the existing response so the governance lead can review the difference manually.
 
 ### Data Privacy
 
-All assessment data stays in your browser. No data is sent to any server. Use "Save to File" (JSON export) as the primary artifact for sharing and archival. Browser localStorage is used only as a convenience cache.
+All assessment data stays in your browser. No data is sent to any server. Browser drafts are saved automatically on the current device as a convenience cache, while "Save to File" (JSON export) remains the primary artifact for sharing, re-import, and archival.

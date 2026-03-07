@@ -14,11 +14,13 @@
      CONSTANTS
      ================================================================ */
   var STORAGE_KEY = "fsi-copilotgov-assessment";
+  var STATE_SCHEMA_VERSION = 2;
+  var LEVELS = ["baseline", "recommended", "regulated"];
   var STEPS = [
     { id: "welcome", label: "Welcome", num: 1 },
-    { id: "scoping", label: "Scoping", num: 2 },
-    { id: "phase1", label: "Phase 1", num: 3 },
-    { id: "phase2", label: "Phase 2", num: 4 },
+    { id: "scoping", label: "Scope", num: 2 },
+    { id: "phase1", label: "Assess Controls", num: 3 },
+    { id: "phase2", label: "Drill-Down", num: 4 },
     { id: "results", label: "Results", num: 5 },
     { id: "export", label: "Export", num: 6 },
   ];
@@ -119,6 +121,35 @@
     return match ? match[1] : "/";
   }
 
+  function getStorageStateKey(id) {
+    return STORAGE_KEY + "-state-" + id;
+  }
+
+  function findStep(stepId) {
+    for (var i = 0; i < STEPS.length; i++) {
+      if (STEPS[i].id === stepId) return STEPS[i];
+    }
+    return null;
+  }
+
+  function normalizeLevel(level) {
+    return LEVELS.indexOf(level) >= 0 ? level : "recommended";
+  }
+
+  function isFocusable(el) {
+    if (!el || typeof el.matches !== "function") return false;
+    if (el.disabled) return false;
+    if (el.getAttribute("aria-hidden") === "true") return false;
+    if (el.tabIndex < 0) return false;
+    return el.matches('a[href], button, textarea, input, select, [tabindex]');
+  }
+
+  function getFocusableElements(root) {
+    return Array.prototype.slice.call(
+      root.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])')
+    ).filter(isFocusable);
+  }
+
   /* ================================================================
      AssessmentApp CLASS
      ================================================================ */
@@ -128,8 +159,9 @@
     this.state = null;          // current assessment state
     this.charts = [];           // Chart.js instances to destroy on cleanup
     this.step = "welcome";
+    this.message = null;
+    this.pendingDeleteId = null;
     this._observers = [];
-    this._savePrompted = false; // Track if save prompt has been shown
     this._debouncedSave = debounce(this.saveToStorage.bind(this), 500);
   }
 
@@ -170,6 +202,70 @@
       });
   };
 
+  AssessmentApp.prototype.setMessage = function (type, title, text, details) {
+    this.message = {
+      type: type || "info",
+      title: title || "",
+      text: text || "",
+      details: Array.isArray(details) ? details : [],
+    };
+    this.refreshMessageRegion();
+  };
+
+  AssessmentApp.prototype.clearMessage = function () {
+    this.message = null;
+    this.refreshMessageRegion();
+  };
+
+  AssessmentApp.prototype.renderMessageRegion = function () {
+    var wrap = h("div", { id: "ag-message-region" });
+    if (!this.message) return wrap;
+
+    var msg = this.message;
+    var banner = h("div", {
+      className: "ag-message ag-message-" + msg.type,
+      role: msg.type === "error" ? "alert" : "status",
+      "aria-live": msg.type === "error" ? "assertive" : "polite",
+      "aria-atomic": "true",
+    });
+    var main = h("div", { style: "flex:1" });
+    if (msg.title) {
+      main.appendChild(h("strong", { className: "ag-message-title" }, msg.title));
+    }
+    if (msg.text) {
+      main.appendChild(h("p", { className: "ag-message-text" }, msg.text));
+    }
+    if (msg.details && msg.details.length > 0) {
+      var list = h("ul", { className: "ag-message-list" });
+      msg.details.forEach(function (detail) {
+        list.appendChild(h("li", null, detail));
+      });
+      main.appendChild(list);
+    }
+    banner.appendChild(main);
+    banner.appendChild(h("button", {
+      className: "ag-message-dismiss",
+      type: "button",
+      "aria-label": "Dismiss message",
+      onClick: this.clearMessage.bind(this),
+    }, "Dismiss"));
+    wrap.appendChild(banner);
+    return wrap;
+  };
+
+  AssessmentApp.prototype.refreshMessageRegion = function () {
+    var current = this.el.querySelector("#ag-message-region");
+    if (!current || !current.parentNode) return;
+    current.parentNode.replaceChild(this.renderMessageRegion(), current);
+  };
+
+  AssessmentApp.prototype.announce = function (message) {
+    var live = this.el.querySelector("#ag-app-live");
+    if (!live) return;
+    live.textContent = "";
+    setTimeout(function () { live.textContent = message; }, 10);
+  };
+
   /* ================================================================
      STATE MANAGEMENT
      ================================================================ */
@@ -179,6 +275,10 @@
       assessmentName: "",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      schemaVersion: STATE_SCHEMA_VERSION,
+      dataVersion: this.data && this.data.version ? String(this.data.version) : "",
+      frameworkVersion: this.data && this.data.frameworkVersion ? String(this.data.frameworkVersion) : "",
+      lastStep: "scoping",
       scoping: {
         organizationName: "",
         assessorName: "",
@@ -196,13 +296,78 @@
     };
   };
 
+  AssessmentApp.prototype.getStepLabel = function (stepId) {
+    var step = findStep(stepId);
+    return step ? step.label : "Assessment";
+  };
+
+  AssessmentApp.prototype.getTargetLevel = function (state) {
+    var source = state || this.state;
+    return normalizeLevel(source && source.scoping ? source.scoping.targetLevel : "recommended");
+  };
+
+  AssessmentApp.prototype.getIncludedLevels = function (level) {
+    var normalized = normalizeLevel(level || this.getTargetLevel());
+    return LEVELS.slice(0, LEVELS.indexOf(normalized) + 1);
+  };
+
+  AssessmentApp.prototype.getDefaultAssessmentName = function (state) {
+    var source = state || this.state;
+    var orgName = source && source.scoping ? source.scoping.organizationName : "";
+    if (!orgName) return "";
+    return orgName + " — " + new Date().toISOString().slice(0, 10);
+  };
+
+  AssessmentApp.prototype.hasAnsweredControl = function (controlId, state) {
+    var source = state || this.state;
+    var resp = source && source.responses ? source.responses[controlId] : null;
+    return !!(resp && resp.answer);
+  };
+
+  AssessmentApp.prototype.getAnsweredControlCount = function (state) {
+    var source = state || this.state;
+    var self = this;
+    if (!source || !source.responses || !this.data) return 0;
+    return this.data.controls.filter(function (ctrl) {
+      return self.hasAnsweredControl(ctrl.id, source);
+    }).length;
+  };
+
+  AssessmentApp.prototype.getUnansweredControls = function (state) {
+    var source = state || this.state;
+    var self = this;
+    if (!this.data) return [];
+    return this.data.controls.filter(function (ctrl) {
+      return !self.hasAnsweredControl(ctrl.id, source);
+    });
+  };
+
+  AssessmentApp.prototype.isScopingComplete = function (state) {
+    var source = state || this.state;
+    if (!source || !source.scoping) return false;
+    return !!(source.scoping.organizationName && source.scoping.institutionType && source.scoping.targetLevel);
+  };
+
+  AssessmentApp.prototype.getCurrentStorageId = function () {
+    try {
+      return localStorage.getItem(STORAGE_KEY + "-current-id") || "";
+    } catch (e) {
+      return "";
+    }
+  };
+
   AssessmentApp.prototype.saveToStorage = function () {
     if (!this.state) return;
+    var stateKey = getStorageStateKey(this.state.assessmentId);
     this.state.updatedAt = new Date().toISOString();
+    this.state.lastStep = this.step;
+    this.state.schemaVersion = STATE_SCHEMA_VERSION;
+    this.state.dataVersion = this.data && this.data.version ? String(this.data.version) : this.state.dataVersion || "";
+    this.state.frameworkVersion = this.data && this.data.frameworkVersion ? String(this.data.frameworkVersion) : this.state.frameworkVersion || "";
     try {
-      // Save current assessment
+      localStorage.setItem(stateKey, JSON.stringify(this.state));
+      localStorage.setItem(STORAGE_KEY + "-current-id", this.state.assessmentId);
       localStorage.setItem(STORAGE_KEY + "-current", JSON.stringify(this.state));
-      // Update saved list
       var list = this.getSavedList();
       var idx = list.findIndex(function (s) { return s.id === this.state.assessmentId; }.bind(this));
       var entry = {
@@ -211,28 +376,66 @@
         updatedAt: this.state.updatedAt,
         createdAt: this.state.createdAt,
         progress: this.getProgressPct(),
+        step: this.state.lastStep,
       };
       if (idx >= 0) list[idx] = entry;
       else list.push(entry);
       localStorage.setItem(STORAGE_KEY + "-list", JSON.stringify(list));
-    } catch (e) { /* localStorage quota */ }
+    } catch (e) {
+      console.error("Failed to save assessment draft:", e);
+      this.setMessage(
+        "warning",
+        "Browser draft not saved",
+        "Your latest changes could not be saved to browser storage. Use Save to File to keep a portable copy of this assessment."
+      );
+    }
+  };
+
+  AssessmentApp.prototype.getStoredStateBlob = function (id) {
+    if (!id) return null;
+    try {
+      var perAssessment = localStorage.getItem(getStorageStateKey(id));
+      if (perAssessment) return perAssessment;
+      var legacy = localStorage.getItem(STORAGE_KEY + "-current");
+      if (!legacy) return null;
+      var parsed = JSON.parse(legacy);
+      if (parsed && parsed.assessmentId === id) return legacy;
+    } catch (e) {
+      return null;
+    }
+    return null;
   };
 
   AssessmentApp.prototype.getSavedList = function () {
     try {
       var raw = JSON.parse(localStorage.getItem(STORAGE_KEY + "-list") || "[]");
       if (!Array.isArray(raw)) return [];
+      var self = this;
       return raw.filter(function (item) {
-        return item && typeof item === "object" && typeof item.id === "string";
+        return item && typeof item === "object" && typeof item.id === "string" && !!self.getStoredStateBlob(item.id);
       });
     } catch (e) { return []; }
   };
 
+  AssessmentApp.prototype.getDefaultResumeStep = function (state) {
+    var source = state || this.state;
+    if (!source) return "welcome";
+    if (source.lastStep && findStep(source.lastStep)) return source.lastStep;
+    if (source.completedSteps && source.completedSteps.indexOf("results") >= 0) return "results";
+    if (source.completedSteps && source.completedSteps.indexOf("phase2") >= 0) return "results";
+    if (source.completedSteps && source.completedSteps.indexOf("phase1") >= 0) return "results";
+    if (this.isScopingComplete(source)) return "phase1";
+    return "scoping";
+  };
+
   AssessmentApp.prototype.loadFromStorage = function (id) {
     try {
-      var data = JSON.parse(localStorage.getItem(STORAGE_KEY + "-current"));
-      if (data && (!id || data.assessmentId === id) && this.validateState(data)) {
-        this.state = data;
+      var targetId = id || this.getCurrentStorageId();
+      var blob = targetId ? this.getStoredStateBlob(targetId) : localStorage.getItem(STORAGE_KEY + "-current");
+      if (!blob) return false;
+      var data = JSON.parse(blob);
+      if (data && (!targetId || data.assessmentId === targetId) && this.validateState(data)) {
+        this.state = this.buildCleanState(data);
         return true;
       }
     } catch (e) { /* */ }
@@ -243,8 +446,10 @@
     var list = this.getSavedList().filter(function (s) { return s.id !== id; });
     localStorage.setItem(STORAGE_KEY + "-list", JSON.stringify(list));
     try {
-      var current = JSON.parse(localStorage.getItem(STORAGE_KEY + "-current"));
-      if (current && current.assessmentId === id) {
+      localStorage.removeItem(getStorageStateKey(id));
+      var currentId = this.getCurrentStorageId();
+      if (currentId === id) {
+        localStorage.removeItem(STORAGE_KEY + "-current-id");
         localStorage.removeItem(STORAGE_KEY + "-current");
       }
     } catch (e) { /* */ }
@@ -253,7 +458,7 @@
   AssessmentApp.prototype.getProgressPct = function () {
     if (!this.state || !this.data) return 0;
     var total = this.data.controls.length;
-    var answered = Object.keys(this.state.responses).length;
+    var answered = this.getAnsweredControlCount();
     return Math.round((answered / total) * 100);
   };
 
@@ -272,134 +477,331 @@
     return true;
   };
 
-  AssessmentApp.prototype.importState = function (json) {
+  AssessmentApp.prototype.buildCleanState = function (parsed) {
+    var sc = parsed.scoping || {};
+    var clean = {
+      assessmentId: String(parsed.assessmentId),
+      assessmentName: String(parsed.assessmentName || ""),
+      createdAt: parsed.createdAt || new Date().toISOString(),
+      updatedAt: parsed.updatedAt || new Date().toISOString(),
+      schemaVersion: typeof parsed.schemaVersion === "number" ? parsed.schemaVersion : 1,
+      dataVersion: String(parsed.dataVersion || ""),
+      frameworkVersion: String(parsed.frameworkVersion || ""),
+      lastStep: findStep(parsed.lastStep) ? parsed.lastStep : "",
+      scoping: {
+        organizationName: String(sc.organizationName || ""),
+        assessorName: String(sc.assessorName || ""),
+        assessorRole: String(sc.assessorRole || ""),
+        institutionType: String(sc.institutionType || ""),
+        zones: Array.isArray(sc.zones) ? sc.zones.filter(function (z) { return [1, 2, 3].indexOf(z) >= 0; }) : [1, 2, 3],
+        targetLevel: normalizeLevel(sc.targetLevel || "recommended"),
+        adoptionPhase: [0, 1, 2].indexOf(parseInt(sc.adoptionPhase, 10)) >= 0 ? parseInt(sc.adoptionPhase, 10) : 0,
+        regulations: Array.isArray(sc.regulations) ? sc.regulations.map(String) : [],
+        scope: String(sc.scope || "full"),
+      },
+      responses: {},
+      drilldown: {},
+      completedSteps: Array.isArray(parsed.completedSteps) ? parsed.completedSteps.filter(function (stepId) {
+        return !!findStep(stepId);
+      }) : [],
+    };
+    for (var k in parsed.responses) {
+      if (!Object.prototype.hasOwnProperty.call(parsed.responses, k)) continue;
+      clean.responses[k] = parsed.responses[k];
+    }
+    if (parsed.drilldown) {
+      for (var d in parsed.drilldown) {
+        if (!Object.prototype.hasOwnProperty.call(parsed.drilldown, d)) continue;
+        clean.drilldown[d] = parsed.drilldown[d];
+      }
+    }
+    clean.schemaVersion = STATE_SCHEMA_VERSION;
+    clean.dataVersion = this.data && this.data.version ? String(this.data.version) : clean.dataVersion;
+    clean.frameworkVersion = this.data && this.data.frameworkVersion ? String(this.data.frameworkVersion) : clean.frameworkVersion;
+    clean.lastStep = this.getDefaultResumeStep(clean);
+    return clean;
+  };
+
+  AssessmentApp.prototype.importState = function (json, mode) {
     try {
       var parsed = typeof json === "string" ? JSON.parse(json) : json;
-      // Deep structural validation
-      if (!this.validateState(parsed)) {
-        throw new Error("Invalid assessment file structure");
-      }
-      // Sanitize: prevent prototype pollution by only copying known keys
-      var sc = parsed.scoping || {};
-      var clean = {
-        assessmentId: String(parsed.assessmentId),
-        assessmentName: String(parsed.assessmentName || ""),
-        createdAt: parsed.createdAt || new Date().toISOString(),
-        updatedAt: parsed.updatedAt || new Date().toISOString(),
-        scoping: {
-          organizationName: String(sc.organizationName || ""),
-          assessorName: String(sc.assessorName || ""),
-          assessorRole: String(sc.assessorRole || ""),
-          institutionType: String(sc.institutionType || ""),
-          zones: Array.isArray(sc.zones) ? sc.zones.filter(function (z) { return [1, 2, 3].indexOf(z) >= 0; }) : [1, 2, 3],
-          adoptionPhase: [0, 1, 2].indexOf(parseInt(sc.adoptionPhase, 10)) >= 0 ? parseInt(sc.adoptionPhase, 10) : 0,
-          regulations: Array.isArray(sc.regulations) ? sc.regulations.map(String) : [],
-          scope: String(sc.scope || "full"),
-        },
-        responses: {},
-        drilldown: {},
-        completedSteps: Array.isArray(parsed.completedSteps) ? parsed.completedSteps : [],
-      };
-      // Copy responses safely
-      for (var k in parsed.responses) {
-        if (!Object.prototype.hasOwnProperty.call(parsed.responses, k)) continue;
-        clean.responses[k] = parsed.responses[k];
-      }
-      if (parsed.drilldown) {
-        for (var d in parsed.drilldown) {
-          if (!Object.prototype.hasOwnProperty.call(parsed.drilldown, d)) continue;
-          clean.drilldown[d] = parsed.drilldown[d];
+      var importMode = mode || "assessment";
+
+      if (parsed && parsed.sectionExport) {
+        if (importMode !== "section") {
+          this.setMessage(
+            "warning",
+            "Use full assessment files here",
+            "Role-specific section files should be imported from Drill-Down after you start or resume the related assessment."
+          );
+          return null;
         }
-      }
-      // Section import (role-specific)
-      if (parsed.sectionExport) {
         if (!this.state) {
-          alert("Start or resume an assessment first before importing a section.");
-          return false;
+          this.setMessage(
+            "warning",
+            "Start an assessment first",
+            "Import a completed section after you start a new assessment or resume the related browser draft."
+          );
+          return null;
         }
         return this.importSection(parsed);
       }
-      this.state = clean;
+
+      if (importMode === "section") {
+        this.setMessage(
+          "warning",
+          "Import a section file instead",
+          "The selected file is a full assessment export. Use Import Assessment File from the welcome step to resume it."
+        );
+        return null;
+      }
+
+      if (!this.validateState(parsed)) {
+        throw new Error("Invalid assessment file structure");
+      }
+      if (parsed.schemaVersion && parsed.schemaVersion > STATE_SCHEMA_VERSION) {
+        throw new Error("This assessment file was created by a newer scorecard version.");
+      }
+
+      var details = [];
+      if (!parsed.dataVersion && !parsed.frameworkVersion) {
+        details.push("This file was created before version metadata was added. Review the imported scoping and scores before relying on it.");
+      } else {
+        if (parsed.dataVersion && this.data && String(parsed.dataVersion) !== String(this.data.version)) {
+          details.push("Assessment data version mismatch: imported file " + parsed.dataVersion + ", current site " + this.data.version + ".");
+        }
+        if (parsed.frameworkVersion && this.data && String(parsed.frameworkVersion) !== String(this.data.frameworkVersion)) {
+          details.push("Framework version mismatch: imported file " + parsed.frameworkVersion + ", current site " + this.data.frameworkVersion + ".");
+        }
+      }
+
+      this.state = this.buildCleanState(parsed);
+      this.pendingDeleteId = null;
       this.saveToStorage();
-      return true;
+      this.setMessage(
+        details.length > 0 ? "warning" : "success",
+        details.length > 0 ? "Assessment imported with warnings" : "Assessment imported",
+        details.length > 0
+          ? "The assessment file was imported. Review the notes below before continuing."
+          : "The assessment file was imported successfully. You can continue where it left off.",
+        details
+      );
+      return {
+        ok: true,
+        type: "assessment",
+        step: this.getDefaultResumeStep(this.state),
+      };
     } catch (e) {
-      alert("Error importing assessment: " + e.message);
-      return false;
+      console.error("Assessment import failed:", e);
+      this.setMessage("error", "Import failed", "The selected file could not be imported. " + e.message);
+      return null;
     }
   };
 
   AssessmentApp.prototype.importSection = function (sectionData) {
-    if (!sectionData.responses || typeof sectionData.responses !== "object") return false;
+    if (!sectionData || !sectionData.responses || typeof sectionData.responses !== "object") {
+      this.setMessage("error", "Section import failed", "The selected section file does not contain any responses to import.");
+      return null;
+    }
+    if (sectionData.assessmentId && sectionData.assessmentId !== this.state.assessmentId) {
+      this.setMessage(
+        "error",
+        "Section import blocked",
+        "This section file belongs to a different assessment. Export a section from this assessment before importing updates."
+      );
+      return null;
+    }
+
     var validAnswers = { yes: 1, partial: 1, no: 1, na: 1 };
     var conflicts = [];
+    var applied = 0;
     var imported = 0;
+    var details = [];
     var self = this;
+
+    if (sectionData.dataVersion && this.data && String(sectionData.dataVersion) !== String(this.data.version)) {
+      details.push("Section file data version " + sectionData.dataVersion + " differs from the current site version " + this.data.version + ".");
+    }
+
     Object.keys(sectionData.responses).forEach(function (cid) {
       if (!Object.prototype.hasOwnProperty.call(sectionData.responses, cid)) return;
       var raw = sectionData.responses[cid];
       if (!raw || typeof raw !== "object") return;
-      // Sanitize incoming response
-      var incoming = { answer: validAnswers[raw.answer] ? raw.answer : "", notes: String(raw.notes || "") };
-      var existing = self.state.responses[cid];
-      if (existing && existing.answer && existing.answer !== incoming.answer) {
-        conflicts.push(cid);
-      }
-      self.state.responses[cid] = incoming;
       imported++;
+
+      var incoming = { answer: validAnswers[raw.answer] ? raw.answer : "", notes: String(raw.notes || "") };
+      var existing = self.state.responses[cid] || {};
+      if (existing.answer && incoming.answer && existing.answer !== incoming.answer) {
+        conflicts.push(cid);
+        return;
+      }
+
+      self.state.responses[cid] = {
+        answer: incoming.answer || existing.answer || "",
+        notes: incoming.notes || existing.notes || "",
+      };
+      applied++;
     });
+
     if (sectionData.drilldown && typeof sectionData.drilldown === "object") {
       Object.keys(sectionData.drilldown).forEach(function (cid) {
         if (!Object.prototype.hasOwnProperty.call(sectionData.drilldown, cid)) return;
+        if (conflicts.indexOf(cid) >= 0) return;
         var dd = sectionData.drilldown[cid];
         if (!dd || typeof dd !== "object") return;
-        // Sanitize drilldown: only yes/no values
         var clean = {};
         Object.keys(dd).forEach(function (k) {
           if (Object.prototype.hasOwnProperty.call(dd, k) && (dd[k] === "yes" || dd[k] === "no")) {
             clean[k] = dd[k];
           }
         });
-        self.state.drilldown[cid] = clean;
+        if (Object.keys(clean).length > 0) {
+          self.state.drilldown[cid] = clean;
+        }
       });
     }
+
     this.saveToStorage();
     if (conflicts.length > 0) {
-      alert(
-        "Imported " + imported + " responses. " +
-        conflicts.length + " conflict(s) detected for: " + conflicts.join(", ") +
-        ". The imported answers have overwritten previous values."
-      );
+      details.unshift(conflicts.length + " conflicting response(s) were kept in the current assessment: " + conflicts.join(", "));
     }
-    return true;
+    this.setMessage(
+      conflicts.length > 0 ? "warning" : "success",
+      "Section import complete",
+      applied + " of " + imported + " response(s) were merged into the current assessment.",
+      details
+    );
+    return {
+      ok: true,
+      type: "section",
+      step: this.step,
+    };
   };
 
   /* ================================================================
      SCORING
      ================================================================ */
-  AssessmentApp.prototype.getControlScore = function (controlId) {
-    var resp = this.state.responses[controlId];
+  AssessmentApp.prototype.getControlById = function (controlId) {
+    if (!this.data || !this.data.controls) return null;
+    for (var i = 0; i < this.data.controls.length; i++) {
+      if (this.data.controls[i].id === controlId) return this.data.controls[i];
+    }
+    return null;
+  };
+
+  AssessmentApp.prototype.getVerificationCriteria = function (control, level) {
+    var allowedLevels = this.getIncludedLevels(level);
+    return (control.verificationCriteria || []).slice(0, 12).map(function (criterion, idx) {
+      var text = typeof criterion === "string" ? criterion : String(criterion && criterion.text || "");
+      var criterionLevel = criterion && typeof criterion === "object" ? criterion.governanceLevel : null;
+      return text ? {
+        id: "q" + idx,
+        text: text,
+        governanceLevel: LEVELS.indexOf(criterionLevel) >= 0 ? criterionLevel : null,
+      } : null;
+    }).filter(function (criterion) {
+      return criterion && (!criterion.governanceLevel || allowedLevels.indexOf(criterion.governanceLevel) >= 0);
+    });
+  };
+
+  AssessmentApp.prototype.getHiddenCriteriaCount = function (control, level) {
+    var total = (control.verificationCriteria || []).slice(0, 12).filter(function (criterion) {
+      if (typeof criterion === "string") return !!criterion;
+      return !!(criterion && criterion.text);
+    }).length;
+    return Math.max(total - this.getVerificationCriteria(control, level).length, 0);
+  };
+
+  AssessmentApp.prototype.getDrilldownStats = function (level, state) {
+    var source = state || this.state;
+    if (!source || !this.data) {
+      return { totalQuestions: 0, answeredQuestions: 0, controlsWithQuestions: 0, pendingControls: 0 };
+    }
+
+    var self = this;
+    var totalQuestions = 0;
+    var answeredQuestions = 0;
+    var controlsWithQuestions = 0;
+    var pendingControls = 0;
+
+    this.getGapControls(level, source).forEach(function (ctrl) {
+      var questions = self.getVerificationCriteria(ctrl, level || self.getTargetLevel(source));
+      if (questions.length === 0) return;
+
+      var dd = source.drilldown && source.drilldown[ctrl.id] ? source.drilldown[ctrl.id] : {};
+      var answeredForControl = 0;
+      controlsWithQuestions++;
+      totalQuestions += questions.length;
+
+      questions.forEach(function (question) {
+        if (dd[question.id] === "yes" || dd[question.id] === "no") {
+          answeredQuestions++;
+          answeredForControl++;
+        }
+      });
+
+      if (answeredForControl < questions.length) {
+        pendingControls++;
+      }
+    });
+
+    return {
+      totalQuestions: totalQuestions,
+      answeredQuestions: answeredQuestions,
+      controlsWithQuestions: controlsWithQuestions,
+      pendingControls: pendingControls,
+    };
+  };
+
+  AssessmentApp.prototype.getAssessmentCompletion = function (state) {
+    var answered = this.getAnsweredControlCount(state);
+    var total = this.data ? this.data.controls.length : 0;
+    return {
+      answered: answered,
+      total: total,
+      remaining: Math.max(total - answered, 0),
+      complete: total > 0 && answered === total,
+    };
+  };
+
+  AssessmentApp.prototype.getControlScoreFromState = function (state, controlId, level) {
+    var source = state || this.state;
+    var resp = source && source.responses ? source.responses[controlId] : null;
     if (!resp || !resp.answer) return null;
     if (resp.answer === "na") return null;
     if (resp.answer === "yes") return 1.0;
-    if (resp.answer === "no") return 0.0;
-    // Partial — refine with drilldown if available
-    var dd = this.state.drilldown[controlId];
-    if (dd) {
-      var keys = Object.keys(dd);
-      if (keys.length > 0) {
-        var yes = keys.filter(function (k) { return dd[k] === "yes"; }).length;
-        return yes / keys.length;
+
+    var control = this.getControlById(controlId);
+    var questions = control ? this.getVerificationCriteria(control, level || this.getTargetLevel(source)) : [];
+    if (questions.length > 0) {
+      var dd = source.drilldown && source.drilldown[controlId] ? source.drilldown[controlId] : {};
+      var answeredAny = false;
+      var yesCount = 0;
+      questions.forEach(function (question) {
+        if (dd[question.id] === "yes") {
+          yesCount++;
+          answeredAny = true;
+        } else if (dd[question.id] === "no") {
+          answeredAny = true;
+        }
+      });
+      if (answeredAny) {
+        return yesCount / questions.length;
       }
     }
-    return 0.5;
+    return resp.answer === "partial" ? 0.5 : 0.0;
   };
 
-  AssessmentApp.prototype.getAggregateScore = function (controlIds) {
+  AssessmentApp.prototype.getControlScore = function (controlId, level) {
+    return this.getControlScoreFromState(this.state, controlId, level);
+  };
+
+  AssessmentApp.prototype.getAggregateScore = function (controlIds, level, state) {
     var self = this;
     var total = 0;
     var count = 0;
     controlIds.forEach(function (cid) {
-      var score = self.getControlScore(cid);
+      var score = self.getControlScoreFromState(state || self.state, cid, level);
       if (score !== null) {
         total += score;
         count++;
@@ -408,22 +810,22 @@
     return count > 0 ? Math.round((total / count) * 100) : null;
   };
 
-  AssessmentApp.prototype.getPillarScore = function (pillarNum) {
+  AssessmentApp.prototype.getPillarScore = function (pillarNum, level, state) {
     var ids = this.data.controls
       .filter(function (c) { return c.pillar === pillarNum; })
       .map(function (c) { return c.id; });
-    return this.getAggregateScore(ids);
+    return this.getAggregateScore(ids, level, state);
   };
 
-  AssessmentApp.prototype.getOverallScore = function () {
+  AssessmentApp.prototype.getOverallScore = function (level, state) {
     var ids = this.data.controls.map(function (c) { return c.id; });
-    return this.getAggregateScore(ids);
+    return this.getAggregateScore(ids, level, state);
   };
 
-  AssessmentApp.prototype.getRegulationScore = function (regKey) {
+  AssessmentApp.prototype.getRegulationScore = function (regKey, level, state) {
     var mapping = this.data.regulatoryMappings[regKey];
     if (!mapping) return null;
-    return this.getAggregateScore(mapping.controls);
+    return this.getAggregateScore(mapping.controls, level, state);
   };
 
   AssessmentApp.prototype.getZoneScore = function (zoneNum) {
@@ -445,18 +847,13 @@
   };
 
   // CopilotGov: governance level scoring (cumulative target model)
-  AssessmentApp.prototype.getLevelScore = function (level) {
-    var self = this;
-    var total = 0;
-    var count = 0;
-    this.data.controls.forEach(function (c) {
-      var score = self.getControlScore(c.id);
-      if (score !== null) {
-        total += score;
-        count++;
-      }
-    });
-    return count > 0 ? Math.round((total / count) * 100) : null;
+  AssessmentApp.prototype.getLevelScore = function (level, state) {
+    var normalized = normalizeLevel(level);
+    return this.getAggregateScore(
+      this.data.controls.map(function (c) { return c.id; }),
+      normalized,
+      state
+    );
   };
 
   AssessmentApp.prototype.getRiskPriority = function (control) {
@@ -476,14 +873,49 @@
     return (1 - score) * regWeight * levelWeight * phaseWeight;
   };
 
-  AssessmentApp.prototype.getGapControls = function () {
+  AssessmentApp.prototype.getGapControls = function (level, state) {
     var self = this;
+    var source = state || this.state;
     return this.data.controls.filter(function (c) {
-      var score = self.getControlScore(c.id);
+      var score = self.getControlScoreFromState(source, c.id, level);
       return score !== null && score < 1.0;
     }).sort(function (a, b) {
       return self.getRiskPriority(b) - self.getRiskPriority(a);
     });
+  };
+
+  AssessmentApp.prototype.canAccessStep = function (stepId) {
+    var completion = this.getAssessmentCompletion();
+    var phase1Complete = !!(this.state && this.state.completedSteps && this.state.completedSteps.indexOf("phase1") >= 0) || completion.complete;
+    var resultsComplete = !!(this.state && this.state.completedSteps && this.state.completedSteps.indexOf("results") >= 0);
+    var hasGaps = this.state && this.data ? this.getGapControls().length > 0 : false;
+
+    if (stepId === "welcome") return true;
+    if (!this.state) return false;
+    if (stepId === "scoping") return true;
+    if (stepId === "phase1") return this.isScopingComplete();
+    if (stepId === "phase2") return phase1Complete && hasGaps;
+    if (stepId === "results") return phase1Complete;
+    if (stepId === "export") return resultsComplete || this.step === "export";
+    return false;
+  };
+
+  AssessmentApp.prototype.getStepAccessHint = function (stepId) {
+    if (stepId === "phase1" && !this.isScopingComplete()) {
+      return "Complete the required scoping fields first.";
+    }
+    var completion = this.getAssessmentCompletion();
+    if (stepId === "phase2") {
+      if (!completion.complete) return "Answer every control in Assess Controls first.";
+      if (this.state && this.data && this.getGapControls().length === 0) return "No gap controls require drill-down.";
+    }
+    if (stepId === "results" && !completion.complete) {
+      return "Answer every control in Assess Controls before viewing results.";
+    }
+    if (stepId === "export" && !(this.state && this.state.completedSteps && this.state.completedSteps.indexOf("results") >= 0)) {
+      return "Open Results before using Export.";
+    }
+    return this.getStepLabel(stepId);
   };
 
   /* ================================================================
@@ -493,6 +925,13 @@
     this.destroy(); // Clean up charts
     this.el.innerHTML = "";
     this.el.appendChild(this.renderSteps());
+    this.el.appendChild(this.renderMessageRegion());
+    this.el.appendChild(h("div", {
+      className: "ag-sr-only",
+      id: "ag-app-live",
+      "aria-live": "polite",
+      "aria-atomic": "true",
+    }));
     var content = h("div", { className: "ag-content" });
     switch (this.step) {
       case "welcome": this.renderWelcome(content); break;
@@ -506,9 +945,13 @@
   };
 
   AssessmentApp.prototype.goToStep = function (step) {
+    if (!this.canAccessStep(step) && step !== "welcome") return;
     this.step = step;
     this.render();
     this.el.scrollIntoView({ behavior: "smooth", block: "start" });
+    var heading = this.el.querySelector("[data-step-heading]");
+    if (heading) heading.focus();
+    this.announce("Step " + (findStep(step) ? findStep(step).num : "?") + " of " + STEPS.length + ": " + this.getStepLabel(step));
   };
 
   AssessmentApp.prototype.renderSteps = function () {
@@ -518,14 +961,18 @@
       var cls = "ag-step-indicator";
       var current = s.id === self.step;
       var isCompleted = self.state && self.state.completedSteps && self.state.completedSteps.indexOf(s.id) >= 0;
+      var canAccess = self.canAccessStep(s.id);
       if (current) cls += " active";
       else if (isCompleted) cls += " completed";
       var prefix = isCompleted && !current ? "\u2713 " : s.num + ". ";
       var el = h("button", {
         className: cls,
-        title: isCompleted ? s.label + " (completed)" : current ? s.label + " (current step)" : s.label,
+        type: "button",
+        title: isCompleted ? s.label + " (completed)" : self.getStepAccessHint(s.id),
         "aria-current": current ? "step" : null,
-        onClick: function () { if (self.state || s.id === "welcome") self.goToStep(s.id); }
+        "aria-disabled": canAccess ? null : "true",
+        disabled: canAccess ? null : "disabled",
+        onClick: function () { self.goToStep(s.id); }
       }, prefix + s.label);
       nav.appendChild(el);
     });
@@ -537,9 +984,17 @@
      ================================================================ */
   AssessmentApp.prototype.showModal = function (title, contentEl) {
     var backdrop = h("div", { className: "ag-modal-backdrop" });
-    var modal = h("div", { className: "ag-modal", role: "dialog", "aria-modal": "true", "aria-label": title });
+    var previousFocus = document.activeElement;
+    var titleId = "ag-modal-title-" + Date.now();
+    var modal = h("div", {
+      className: "ag-modal",
+      role: "dialog",
+      "aria-modal": "true",
+      "aria-labelledby": titleId,
+      tabindex: "-1",
+    });
     var header = h("div", { className: "ag-modal-header" });
-    header.appendChild(h("h3", null, title));
+    header.appendChild(h("h3", { id: titleId }, title));
     var closeBtn = h("button", { className: "ag-modal-close", "aria-label": "Close" }, "\u00D7");
     header.appendChild(closeBtn);
     modal.appendChild(header);
@@ -548,10 +1003,36 @@
     modal.appendChild(body);
     backdrop.appendChild(modal);
 
-    var close = function () { if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop); };
+    var close = function () {
+      if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+      if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
+    };
+    var trapFocus = function (e) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        close();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      var focusable = getFocusableElements(modal);
+      if (focusable.length === 0) {
+        e.preventDefault();
+        modal.focus();
+        return;
+      }
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     closeBtn.addEventListener("click", close);
     backdrop.addEventListener("click", function (e) { if (e.target === backdrop) close(); });
-    backdrop.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+    backdrop.addEventListener("keydown", trapFocus);
 
     document.body.appendChild(backdrop);
     closeBtn.focus();
@@ -616,7 +1097,7 @@
     var self = this;
     var wrap = h("div", { className: "ag-welcome" });
 
-    wrap.appendChild(h("h2", null, "Governance Scorecard"));
+    wrap.appendChild(h("h2", { "data-step-heading": "true", tabindex: "-1" }, "Governance Scorecard"));
     wrap.appendChild(h("p", null,
       "Assess your organization's readiness across the 54-control FSI Copilot Governance Framework. " +
       "This tool helps identify gaps and generates a personalized remediation roadmap."
@@ -625,7 +1106,7 @@
     // Disclaimer
     wrap.appendChild(h("div", { className: "ag-disclaimer" },
       "This assessment helps support governance readiness. It does not constitute legal advice " +
-      "and does not guarantee compliance with any regulation."
+      "and does not constitute a compliance certification."
     ));
 
     // Scoring summary
@@ -653,60 +1134,89 @@
     btns.appendChild(h("button", {
       className: "ag-btn ag-btn-primary",
       onClick: function () {
+        self.pendingDeleteId = null;
+        self.clearMessage();
         self.state = self.newState();
+        self.saveToStorage();
         self.goToStep("scoping");
       }
     }, "Start New Assessment"));
 
-    // File import
     btns.appendChild(h("button", {
       className: "ag-btn ag-btn-secondary",
-      onClick: function () { self.triggerImport(); }
-    }, "Resume or Import Saved Assessment"));
+      onClick: function () { self.triggerImport("assessment"); }
+    }, "Import Assessment File"));
     wrap.appendChild(btns);
 
-    // Import helper text
     wrap.appendChild(h("p", { style: "font-size:0.78rem;color:var(--md-default-fg-color--light);max-width:600px;margin:0.5rem auto" },
-      "Import a previously exported JSON file to resume an assessment or review completed results. " +
-      "You can also import role-specific sections completed by other team members."));
+      "Browser drafts are saved automatically after you start the assessment and stay on this device only. " +
+      "Use Save to File (JSON export) as the primary artifact for sharing or archival. " +
+      "Import completed role-specific sections during Drill-Down."));
 
-    // Saved assessments from localStorage
     var saved = this.getSavedList();
     if (saved.length > 0) {
-      wrap.appendChild(h("h3", { style: "margin-top:2rem;font-size:1rem" }, "Previous Assessments"));
+      wrap.appendChild(h("h3", { style: "margin-top:2rem;font-size:1rem" }, "Saved Browser Drafts"));
       var list = h("ul", { className: "ag-saved-list" });
       saved.sort(function (a, b) { return new Date(b.updatedAt) - new Date(a.updatedAt); });
       saved.forEach(function (s) {
         var item = h("li", { className: "ag-saved-item" });
         var info = h("div");
+        var savedStep = s.step && findStep(s.step) ? s.step : "scoping";
         info.appendChild(h("strong", null, s.name || "Untitled"));
         info.appendChild(h("div", { className: "ag-saved-meta" },
-          fmtDate(s.updatedAt) + " — " + (s.progress || 0) + "% complete"
+          fmtDate(s.updatedAt) + " — " + self.getStepLabel(savedStep) + " — " + (s.progress || 0) + "% of controls answered"
         ));
         item.appendChild(info);
         var actions = h("div", { className: "ag-btn-group", style: "margin:0" });
         var savedName = s.name || "Untitled";
+        var awaitingDelete = self.pendingDeleteId === s.id;
         actions.appendChild(h("button", {
           className: "ag-btn ag-btn-sm ag-btn-primary",
-          "aria-label": "Resume " + savedName,
+          type: "button",
+          "aria-label": "Resume draft " + savedName,
           onClick: function (e) {
             e.stopPropagation();
             if (self.loadFromStorage(s.id)) {
-              self.goToStep("phase1");
+              self.pendingDeleteId = null;
+              self.setMessage("success", "Draft resumed", "Resumed the saved browser draft for " + savedName + ".");
+              self.goToStep(self.getDefaultResumeStep(self.state));
             }
           }
-        }, "Resume"));
-        actions.appendChild(h("button", {
-          className: "ag-btn ag-btn-sm ag-btn-danger",
-          "aria-label": "Delete " + savedName,
-          onClick: function (e) {
-            e.stopPropagation();
-            if (confirm("Delete this assessment?")) {
+        }, "Resume Draft"));
+        if (awaitingDelete) {
+          actions.appendChild(h("button", {
+            className: "ag-btn ag-btn-sm ag-btn-danger",
+            type: "button",
+            "aria-label": "Confirm delete draft " + savedName,
+            onClick: function (e) {
+              e.stopPropagation();
               self.deleteSaved(s.id);
+              self.pendingDeleteId = null;
+              self.setMessage("success", "Draft deleted", "Deleted the saved browser draft for " + savedName + ".");
               self.render();
             }
-          }
-        }, "Delete"));
+          }, "Confirm Delete"));
+          actions.appendChild(h("button", {
+            className: "ag-btn ag-btn-sm ag-btn-secondary",
+            type: "button",
+            onClick: function (e) {
+              e.stopPropagation();
+              self.pendingDeleteId = null;
+              self.render();
+            }
+          }, "Cancel"));
+        } else {
+          actions.appendChild(h("button", {
+            className: "ag-btn ag-btn-sm ag-btn-danger",
+            type: "button",
+            "aria-label": "Delete draft " + savedName,
+            onClick: function (e) {
+              e.stopPropagation();
+              self.pendingDeleteId = s.id;
+              self.render();
+            }
+          }, "Delete Draft"));
+        }
         item.appendChild(actions);
         list.appendChild(item);
       });
@@ -716,7 +1226,7 @@
     parent.appendChild(wrap);
   };
 
-  AssessmentApp.prototype.triggerImport = function () {
+  AssessmentApp.prototype.triggerImport = function (mode) {
     var self = this;
     var input = document.createElement("input");
     input.type = "file";
@@ -726,8 +1236,9 @@
       if (!file) return;
       var reader = new FileReader();
       reader.onload = function () {
-        if (self.importState(reader.result)) {
-          self.goToStep("phase1");
+        var result = self.importState(reader.result, mode || "assessment");
+        if (result && result.ok && result.step) {
+          self.goToStep(result.step);
         }
       };
       reader.readAsText(file);
@@ -743,20 +1254,32 @@
     var sc = this.state.scoping;
     var wrap = h("div");
 
-    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem" }, "Assessment Scoping"));
+    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem", "data-step-heading": "true", tabindex: "-1" }, "Assessment Scoping"));
     wrap.appendChild(h("p", { className: "ag-card-subtitle" },
       "Configure the assessment scope for your organization. " +
       "All 54 controls will be assessed and prioritized based on your profile and target governance level."
+    ));
+    wrap.appendChild(h("div", { className: "ag-callout" },
+      "Required fields are marked with an asterisk. Browser drafts are saved on this device while you work, but Save to File remains the primary artifact for sharing or archival."
     ));
 
     var form = h("div", { className: "ag-card" });
 
     // Organization name
-    form.appendChild(this.field("Organization Name", "text", sc.organizationName, function (v) { sc.organizationName = v; }));
+    form.appendChild(this.field("Organization Name", "text", sc.organizationName, function (v) {
+      sc.organizationName = v;
+      self._debouncedSave();
+    }, "Used to label saved drafts and exports.", { required: true }));
 
     // Assessor
-    form.appendChild(this.field("Assessor Name", "text", sc.assessorName, function (v) { sc.assessorName = v; }));
-    form.appendChild(this.field("Assessor Role", "text", sc.assessorRole, function (v) { sc.assessorRole = v; },
+    form.appendChild(this.field("Assessor Name", "text", sc.assessorName, function (v) {
+      sc.assessorName = v;
+      self._debouncedSave();
+    }));
+    form.appendChild(this.field("Assessor Role", "text", sc.assessorRole, function (v) {
+      sc.assessorRole = v;
+      self._debouncedSave();
+    },
       "e.g., AI Governance Lead, Compliance Officer"));
 
     // Institution type
@@ -774,7 +1297,8 @@
       // Auto-populate regulations
       var inst = self.data.institutionTypes[v];
       if (inst) sc.regulations = inst.regulations.slice();
-    }));
+      self._debouncedSave();
+    }, "Used to preselect relevant regulations for the assessment.", { required: true }));
 
     // Target Governance Level
     var levelOptions = [
@@ -784,7 +1308,8 @@
     ];
     form.appendChild(this.selectField("Target Governance Level", levelOptions, sc.targetLevel || "recommended", function (v) {
       sc.targetLevel = v;
-    }));
+      self._debouncedSave();
+    }, "Determines which governance tiers are scored and displayed in Results.", { required: true }));
 
     // Adoption phase
     var phaseOptions = [
@@ -794,13 +1319,17 @@
     ];
     form.appendChild(this.selectField("Current Adoption Phase", phaseOptions, String(sc.adoptionPhase), function (v) {
       sc.adoptionPhase = parseInt(v, 10);
+      self._debouncedSave();
     }));
 
     // Assessment name
-    form.appendChild(this.field("Assessment Name", "text", sc.organizationName ?
-      sc.organizationName + " — " + new Date().toISOString().slice(0, 10) : "",
-      function (v) { self.state.assessmentName = v; },
-      "Name for this assessment (used in exports)"));
+    form.appendChild(this.field("Assessment Name", "text",
+      this.state.assessmentName || this.getDefaultAssessmentName(),
+      function (v) {
+        self.state.assessmentName = v;
+        self._debouncedSave();
+      },
+      "Optional — defaults to Organization Name + date and is used in exports."));
 
     wrap.appendChild(form);
 
@@ -813,12 +1342,15 @@
     btns.appendChild(h("button", {
       className: "ag-btn ag-btn-primary",
       onClick: function () {
-        if (!sc.organizationName) { alert("Please enter an organization name."); return; }
-        if (!sc.institutionType) { alert("Please select an institution type."); return; }
-        if (!sc.targetLevel) { alert("Please select a target governance level."); return; }
-        if (!self.state.assessmentName) {
-          self.state.assessmentName = sc.organizationName + " — " + new Date().toISOString().slice(0, 10);
+        var errors = self.validateScoping();
+        if (errors.length > 0) {
+          self.showScopingErrors(errors);
+          return;
         }
+        if (!self.state.assessmentName) {
+          self.state.assessmentName = self.getDefaultAssessmentName();
+        }
+        self.clearMessage();
         self.markStep("scoping");
         self.saveToStorage();
         self.goToStep("phase1");
@@ -836,35 +1368,115 @@
     }
   };
 
+  AssessmentApp.prototype.clearFieldError = function (inputId) {
+    var input = this.el.querySelector("#" + inputId);
+    var errorId = inputId + "-error";
+    var error = this.el.querySelector("#" + errorId);
+    if (error && error.parentNode) error.parentNode.removeChild(error);
+    if (!input) return;
+    input.removeAttribute("aria-invalid");
+    var describedBy = (input.getAttribute("aria-describedby") || "").split(/\s+/).filter(function (id) {
+      return id && id !== errorId;
+    });
+    if (describedBy.length > 0) input.setAttribute("aria-describedby", describedBy.join(" "));
+    else input.removeAttribute("aria-describedby");
+  };
+
+  AssessmentApp.prototype.showFieldError = function (inputId, message) {
+    this.clearFieldError(inputId);
+    var input = this.el.querySelector("#" + inputId);
+    if (!input || !input.parentNode) return;
+    var errorId = inputId + "-error";
+    input.setAttribute("aria-invalid", "true");
+    var describedBy = (input.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+    describedBy.push(errorId);
+    input.setAttribute("aria-describedby", describedBy.join(" "));
+    input.parentNode.appendChild(h("div", { className: "ag-field-error", id: errorId }, message));
+  };
+
+  AssessmentApp.prototype.validateScoping = function () {
+    var sc = this.state && this.state.scoping ? this.state.scoping : {};
+    var errors = [];
+    if (!sc.organizationName) {
+      errors.push({ id: "ag-field-organization-name", message: "Organization Name is required." });
+    }
+    if (!sc.institutionType) {
+      errors.push({ id: "ag-select-institution-type", message: "Institution Type is required." });
+    }
+    if (!sc.targetLevel) {
+      errors.push({ id: "ag-select-target-governance-level", message: "Target Governance Level is required." });
+    }
+    return errors;
+  };
+
+  AssessmentApp.prototype.showScopingErrors = function (errors) {
+    var self = this;
+    errors.forEach(function (error) {
+      self.showFieldError(error.id, error.message);
+    });
+    if (errors.length > 0) {
+      this.setMessage("error", "Complete the required scoping fields", "Fix the highlighted fields before continuing.");
+      var firstField = this.el.querySelector("#" + errors[0].id);
+      if (firstField) firstField.focus();
+    }
+  };
+
   /* ---- Form helpers ---- */
-  AssessmentApp.prototype.field = function (label, type, value, onChange, hint) {
+  AssessmentApp.prototype.field = function (label, type, value, onChange, hint, options) {
+    var self = this;
+    options = options || {};
     var inputId = "ag-field-" + label.toLowerCase().replace(/\s+/g, "-");
     var wrap = h("div", { className: "ag-field" });
-    wrap.appendChild(h("label", { className: "ag-label", htmlFor: inputId }, label));
+    var labelEl = h("label", { className: "ag-label", htmlFor: inputId });
+    labelEl.appendChild(document.createTextNode(label));
+    if (options.required) {
+      labelEl.appendChild(h("span", { className: "ag-required", "aria-hidden": "true" }, " *"));
+    }
+    wrap.appendChild(labelEl);
     if (hint) wrap.appendChild(h("span", { className: "ag-hint", id: inputId + "-hint" }, hint));
     var input = h("input", {
       className: "ag-input",
       type: type,
       value: value || "",
       id: inputId,
+      required: options.required ? "required" : null,
       "aria-describedby": hint ? inputId + "-hint" : null,
     });
-    input.addEventListener("input", function () { onChange(input.value); });
+    input.addEventListener("input", function () {
+      self.clearFieldError(inputId);
+      onChange(input.value);
+    });
     wrap.appendChild(input);
     return wrap;
   };
 
-  AssessmentApp.prototype.selectField = function (label, options, value, onChange) {
+  AssessmentApp.prototype.selectField = function (label, options, value, onChange, hint, config) {
+    var self = this;
+    config = config || {};
     var selectId = "ag-select-" + label.toLowerCase().replace(/\s+/g, "-");
     var wrap = h("div", { className: "ag-field" });
-    wrap.appendChild(h("label", { className: "ag-label", htmlFor: selectId }, label));
-    var sel = h("select", { className: "ag-select", id: selectId });
+    var labelEl = h("label", { className: "ag-label", htmlFor: selectId });
+    labelEl.appendChild(document.createTextNode(label));
+    if (config.required) {
+      labelEl.appendChild(h("span", { className: "ag-required", "aria-hidden": "true" }, " *"));
+    }
+    wrap.appendChild(labelEl);
+    if (hint) wrap.appendChild(h("span", { className: "ag-hint", id: selectId + "-hint" }, hint));
+    var sel = h("select", {
+      className: "ag-select",
+      id: selectId,
+      required: config.required ? "required" : null,
+      "aria-describedby": hint ? selectId + "-hint" : null,
+    });
     options.forEach(function (o) {
       var opt = h("option", { value: o.value }, o.label);
       if (o.value === value) opt.selected = true;
       sel.appendChild(opt);
     });
-    sel.addEventListener("change", function () { onChange(sel.value); });
+    sel.addEventListener("change", function () {
+      self.clearFieldError(selectId);
+      onChange(sel.value);
+    });
     wrap.appendChild(sel);
     return wrap;
   };
@@ -900,37 +1512,38 @@
     return fieldset;
   };
 
+  AssessmentApp.prototype.getAnswerMeta = function (answer) {
+    if (answer === "yes") return { key: "yes", label: "Implemented" };
+    if (answer === "partial") return { key: "partial", label: "Partial" };
+    if (answer === "no") return { key: "no", label: "Gap" };
+    if (answer === "na") return { key: "na", label: "N/A" };
+    return null;
+  };
+
   /* ================================================================
      STEP 3: PHASE 1 — CONTROL-LEVEL ASSESSMENT
      ================================================================ */
   AssessmentApp.prototype.renderPhase1 = function (parent) {
     var self = this;
     var wrap = h("div");
+    var completion = this.getAssessmentCompletion();
+    var answered = completion.answered;
+    var total = completion.total;
+    var pct = total > 0 ? Math.round((answered / total) * 100) : 0;
+    var gaps = this.getGapControls();
+    var drilldownStats = this.getDrilldownStats();
 
-    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem" }, "Phase 1: Control-Level Assessment"));
+    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem", "data-step-heading": "true", tabindex: "-1" }, "Phase 1: Control-Level Assessment"));
     wrap.appendChild(h("p", { className: "ag-card-subtitle" },
-      "For each control, indicate your organization's implementation status."
+      "For each control, indicate your organization's implementation status before moving on to Drill-Down or Results."
     ));
 
-    // Instructional callout
     var callout = h("div", { className: "ag-callout" });
     callout.appendChild(h("strong", null, "How to answer: "));
-    callout.appendChild(document.createTextNode(
-      "For each control, assess your organization\u2019s current implementation. "));
-    callout.appendChild(h("strong", null, "Yes"));
-    callout.appendChild(document.createTextNode(" = fully in place, "));
-    callout.appendChild(h("strong", null, "Partial"));
-    callout.appendChild(document.createTextNode(" = some aspects implemented (triggers detailed drill-down), "));
-    callout.appendChild(h("strong", null, "No"));
-    callout.appendChild(document.createTextNode(" = not yet started, "));
-    callout.appendChild(h("strong", null, "N/A"));
-    callout.appendChild(document.createTextNode(" = not applicable to your organization."));
+    callout.appendChild(document.createTextNode("Yes = fully in place, Partial = some aspects implemented and worth refining in Drill-Down, No = not yet implemented, and N/A = not applicable and excluded from scoring. "));
+    callout.appendChild(document.createTextNode("Browser drafts save automatically on this device, and Save to File creates the shareable JSON record."));
     wrap.appendChild(callout);
 
-    // Progress
-    var answered = Object.keys(this.state.responses).length;
-    var total = this.data.controls.length;
-    var pct = Math.round((answered / total) * 100);
     var progressText = h("div", { className: "ag-progress-text" },
       answered + " of " + total + " controls answered (" + pct + "%)");
     wrap.appendChild(progressText);
@@ -946,38 +1559,51 @@
     }));
     wrap.appendChild(progress);
 
-    // Live region for progress announcements
-    var liveRegion = h("div", {
+    wrap.appendChild(h("div", {
       className: "ag-sr-only",
       "aria-live": "polite",
       "aria-atomic": "true",
       id: "ag-progress-live",
-    });
-    wrap.appendChild(liveRegion);
+    }));
 
-    // Save button + scoring help
     var topBtns = h("div", { className: "ag-btn-group", style: "margin-bottom:1rem" });
     topBtns.appendChild(h("button", {
       className: "ag-btn ag-btn-sm ag-btn-secondary",
+      type: "button",
       onClick: function () { self.exportJSON(); }
     }, "Save to File"));
     topBtns.appendChild(h("button", {
       className: "ag-info-btn",
+      type: "button",
       onClick: function () { self.showScoringModal(); }
     }, "\u2139 How Scoring Works"));
     wrap.appendChild(topBtns);
 
-    // Group by pillar
-    var pillars = [
-      { num: 1, name: "Pillar 1 — Security" },
-      { num: 2, name: "Pillar 2 — Management" },
-      { num: 3, name: "Pillar 3 — Reporting" },
-      { num: 4, name: "Pillar 4 — SharePoint" },
-    ];
+    if (!completion.complete) {
+      wrap.appendChild(h("div", { className: "ag-disclaimer" },
+        completion.remaining + " control" + (completion.remaining == 1 ? "" : "s") +
+        " still need an answer before you can continue to Drill-Down or Results."
+      ));
+    } else if (gaps.length > 0) {
+      var drilldownText = "You have " + gaps.length + " gap control" + (gaps.length == 1 ? "" : "s") + ".";
+      if (drilldownStats.totalQuestions > 0) {
+        drilldownText += " Drill-Down includes " + drilldownStats.totalQuestions +
+          " verification check" + (drilldownStats.totalQuestions == 1 ? "" : "s") +
+          " for your selected target governance level.";
+      }
+      drilldownText += " If you skip Drill-Down, Partial answers keep their default 50% score and Results stay preliminary.";
+      wrap.appendChild(h("div", { className: "ag-disclaimer", style: "background:var(--md-default-fg-color--lightest);border-left-color:var(--md-primary-fg-color)" }, drilldownText));
+    } else {
+      wrap.appendChild(h("div", { className: "ag-disclaimer", style: "background:var(--ag-green-bg);border-left-color:var(--ag-green)" },
+        "No gap controls require Drill-Down for the selected target governance level. You can continue directly to Results."
+      ));
+    }
 
-    pillars.forEach(function (p) {
-      var controls = self.data.controls.filter(function (c) { return c.pillar === p.num; });
-      var answeredInPillar = controls.filter(function (c) { return self.state.responses[c.id]; }).length;
+    Object.keys(this.data.pillars).sort().forEach(function (pillarKey) {
+      var pillarNum = parseInt(pillarKey, 10);
+      var pillarName = self.data.pillars[pillarKey].name;
+      var controls = self.data.controls.filter(function (c) { return c.pillar === pillarNum; });
+      var answeredInPillar = controls.filter(function (c) { return self.hasAnsweredControl(c.id); }).length;
       var allAnswered = answeredInPillar === controls.length;
 
       var group = h("div", { className: "ag-pillar-group" });
@@ -986,34 +1612,26 @@
         role: "button",
         tabindex: "0",
         "aria-expanded": allAnswered ? "false" : "true",
-        "aria-controls": "ag-pillar-" + p.num,
+        "aria-controls": "ag-pillar-" + pillarNum,
       });
-      header.appendChild(h("span", { className: "ag-pillar-name" }, p.name));
-      header.appendChild(h("span", { className: "ag-pillar-count" },
-        answeredInPillar + "/" + controls.length));
+      header.appendChild(h("span", { className: "ag-pillar-name" }, "Pillar " + pillarNum + " \u2014 " + pillarName));
+      header.appendChild(h("span", { className: "ag-pillar-count" }, answeredInPillar + "/" + controls.length));
       group.appendChild(header);
 
       var controlsContainer = h("div", {
         className: "ag-pillar-controls" + (allAnswered ? " collapsed" : ""),
-        id: "ag-pillar-" + p.num,
+        id: "ag-pillar-" + pillarNum,
       });
       controls.forEach(function (ctrl) {
         controlsContainer.appendChild(self.renderControlCard(ctrl));
       });
       group.appendChild(controlsContainer);
 
-      // Toggle collapse
       var toggle = function () {
         var isCollapsed = controlsContainer.classList.contains("collapsed");
-        if (isCollapsed) {
-          controlsContainer.classList.remove("collapsed");
-          header.classList.remove("collapsed");
-          header.setAttribute("aria-expanded", "true");
-        } else {
-          controlsContainer.classList.add("collapsed");
-          header.classList.add("collapsed");
-          header.setAttribute("aria-expanded", "false");
-        }
+        controlsContainer.classList.toggle("collapsed", !isCollapsed);
+        header.classList.toggle("collapsed", !isCollapsed);
+        header.setAttribute("aria-expanded", isCollapsed ? "true" : "false");
       };
       header.addEventListener("click", toggle);
       header.addEventListener("keydown", function (e) {
@@ -1023,40 +1641,47 @@
       wrap.appendChild(group);
     });
 
-    // Navigation
     var btns = h("div", { className: "ag-btn-group" });
     btns.appendChild(h("button", {
       className: "ag-btn ag-btn-secondary",
+      type: "button",
       onClick: function () { self.goToStep("scoping"); }
     }, "Back to Scoping"));
 
-    var gaps = this.getGapControls();
     if (gaps.length > 0) {
       btns.appendChild(h("button", {
         className: "ag-btn ag-btn-primary",
+        type: "button",
+        disabled: completion.complete ? null : "disabled",
         onClick: function () {
+          if (!completion.complete) return;
           self.markStep("phase1");
           self.saveToStorage();
           self.goToStep("phase2");
         }
-      }, "Phase 2: Drill-Down (" + gaps.length + " gaps)"));
+      }, "Continue to Drill-Down (" + gaps.length + " gap control" + (gaps.length == 1 ? "" : "s") + ")"));
     }
 
     btns.appendChild(h("button", {
-      className: "ag-btn ag-btn-primary",
+      className: "ag-btn " + (gaps.length > 0 ? "ag-btn-secondary" : "ag-btn-primary"),
+      type: "button",
+      disabled: completion.complete ? null : "disabled",
       onClick: function () {
+        if (!completion.complete) return;
         self.markStep("phase1");
         self.saveToStorage();
-        if (!self._savePrompted) {
-          self._savePrompted = true;
-          if (confirm("Would you like to save your assessment to a file before viewing results? " +
-            "You can also export later from the Export page.")) {
-            self.exportJSON();
-          }
+        if (gaps.length > 0) {
+          self.setMessage(
+            "warning",
+            "Results are preliminary",
+            "You skipped Drill-Down. Partial answers keep their default 50% score until you complete the verification checks."
+          );
+        } else {
+          self.clearMessage();
         }
         self.goToStep("results");
       }
-    }, "View Results"));
+    }, gaps.length > 0 ? "View Preliminary Results" : "View Results"));
     wrap.appendChild(btns);
 
     parent.appendChild(wrap);
@@ -1070,17 +1695,23 @@
     else if (resp.answer === "partial") cls += " partial";
     else if (resp.answer === "no") cls += " gap";
 
-    var card = h("div", { className: cls });
+    var statusMeta = this.getAnswerMeta(resp.answer);
+    var card = h("div", { className: cls, "data-control-id": ctrl.id, tabindex: "-1" });
 
-    // Header
     var header = h("div", { className: "ag-control-header" });
     var left = h("div", { style: "flex:1" });
     var titleLine = h("div", { style: "display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap" });
     titleLine.appendChild(h("span", { className: "ag-control-id" }, ctrl.id));
     titleLine.appendChild(h("span", { className: "ag-control-title" }, ctrl.title));
+    var statusBadge = h("span", {
+      className: "ag-status-chip" + (statusMeta ? " ag-status-" + statusMeta.key : " ag-status-empty"),
+      "aria-hidden": statusMeta ? null : "true",
+    }, statusMeta ? statusMeta.label : "Status pending");
+    var statusText = h("span", { className: "ag-sr-only" }, "Status: " + (statusMeta ? statusMeta.label : "Not answered"));
+    titleLine.appendChild(statusBadge);
+    titleLine.appendChild(statusText);
     left.appendChild(titleLine);
 
-    // Badges
     var badges = h("div", { className: "ag-control-badges", style: "margin-top:0.3rem" });
     if (ctrl.adoptionPhase) {
       var pCls = "ag-badge ag-badge-" + ctrl.adoptionPhase.priority.toLowerCase();
@@ -1093,13 +1724,11 @@
     header.appendChild(left);
     card.appendChild(header);
 
-    // Objective (prefer question form if available)
     var displayText = ctrl.questionText || ctrl.objective;
     if (displayText) {
       card.appendChild(h("div", { className: "ag-control-objective" }, displayText));
     }
 
-    // Answer buttons
     var answerGroup = h("div", { className: "ag-answer-group", role: "group", "aria-label": "Implementation status for " + ctrl.id });
     ANSWERS.forEach(function (a) {
       var bcls = "ag-answer-btn";
@@ -1107,33 +1736,31 @@
       if (isPressed) bcls += " " + a.cls;
       var btn = h("button", {
         className: bcls,
+        type: "button",
+        "aria-label": "Mark " + ctrl.id + " as " + a.label,
         "aria-pressed": isPressed ? "true" : "false",
         onClick: function () {
+          var nextMeta = self.getAnswerMeta(a.value);
           self.state.responses[ctrl.id] = self.state.responses[ctrl.id] || {};
           self.state.responses[ctrl.id].answer = a.value;
           self.saveToStorage();
-          // Update card styling
-          card.className = "ag-control-card" +
-            (a.value === "yes" ? " answered" : a.value === "partial" ? " partial" : a.value === "no" ? " gap" : "");
-          // Update button states
-          answerGroup.querySelectorAll(".ag-answer-btn").forEach(function (b) {
-            b.className = "ag-answer-btn";
-            b.setAttribute("aria-pressed", "false");
-          });
-          btn.className = "ag-answer-btn " + a.cls;
-          btn.setAttribute("aria-pressed", "true");
-          // Update progress
-          self.updateProgress();
+          statusBadge.textContent = nextMeta ? nextMeta.label : "Status pending";
+          statusBadge.className = "ag-status-chip" + (nextMeta ? " ag-status-" + nextMeta.key : " ag-status-empty");
+          statusBadge.removeAttribute("aria-hidden");
+          statusText.textContent = "Status: " + (nextMeta ? nextMeta.label : "Not answered");
+          self.render();
+          self.focusControlCard(ctrl.id);
+          self.announce("Updated " + ctrl.id + " to " + (nextMeta ? nextMeta.label : a.label) + ".");
         }
       }, a.label);
       answerGroup.appendChild(btn);
     });
     card.appendChild(answerGroup);
 
-    // Notes toggle
     var notesVisible = !!resp.notes;
     var notesBtn = h("button", {
       className: "ag-notes-toggle",
+      type: "button",
       "aria-expanded": notesVisible ? "true" : "false",
       "aria-controls": "ag-notes-" + ctrl.id,
     }, resp.notes ? "Edit notes" : "Add notes");
@@ -1152,7 +1779,7 @@
       self._debouncedSave();
     });
     notesBtn.addEventListener("click", function () {
-      var showing = notesArea.style.display !== "none";
+      var showing = notesArea.style.display != "none";
       notesArea.style.display = showing ? "none" : "block";
       notesBtn.textContent = showing ? (notesArea.value ? "Edit notes" : "Add notes") : "Hide notes";
       notesBtn.setAttribute("aria-expanded", showing ? "false" : "true");
@@ -1165,78 +1792,87 @@
   };
 
   AssessmentApp.prototype.updateProgress = function () {
-    var answered = Object.keys(this.state.responses).length;
-    var total = this.data.controls.length;
-    var pct = Math.round((answered / total) * 100);
+    var completion = this.getAssessmentCompletion();
+    var answered = completion.answered;
+    var total = completion.total;
+    var pct = total > 0 ? Math.round((answered / total) * 100) : 0;
     var msg = answered + " of " + total + " controls answered (" + pct + "%)";
     var txt = this.el.querySelector(".ag-progress-text");
     if (txt) txt.textContent = msg;
     var bar = this.el.querySelector(".ag-progress-bar");
     if (bar) {
       bar.style.width = pct + "%";
-      bar.setAttribute("aria-valuenow", pct);
+      bar.setAttribute("aria-valuenow", String(pct));
     }
-    // Announce milestone progress to screen readers (every 10%)
-    if (pct % 10 === 0 || answered === total) {
-      var live = this.el.querySelector("#ag-progress-live");
-      if (live) live.textContent = msg;
-    }
+    var live = this.el.querySelector("#ag-progress-live");
+    if (live) live.textContent = msg;
   };
 
-  /* ================================================================
-     STEP 4: PHASE 2 — DRILL-DOWN
-     ================================================================ */
   AssessmentApp.prototype.renderPhase2 = function (parent) {
     var self = this;
     var wrap = h("div");
     var gaps = this.getGapControls();
+    var drilldownStats = this.getDrilldownStats();
 
-    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem" }, "Phase 2: Gap Drill-Down"));
+    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem", "data-step-heading": "true", tabindex: "-1" }, "Phase 2: Drill-Down and Delegation"));
     wrap.appendChild(h("p", { className: "ag-card-subtitle" },
-      "For each gap or partial control, answer detailed sub-questions to refine your score. " +
-      "This phase is presented by pillar so sections can be delegated to the responsible admin."
+      "Answer detailed verification checks for gap controls, then export or import delegated sections as needed before reviewing Results."
     ));
 
-    // Phase 2 reminder
     wrap.appendChild(h("div", { className: "ag-disclaimer", style: "background:var(--md-default-fg-color--lightest);border-left-color:var(--md-primary-fg-color)" },
-      "Phase 2 refines Partial scores using verification criteria sub-questions. " +
-      "This helps distinguish between partially-implemented controls and informs remediation planning."
+      "Drill-Down refines Partial and No responses using verification checks that apply to your selected target governance level."
     ));
 
-    if (gaps.length === 0) {
+    var topBtns = h("div", { className: "ag-btn-group", style: "margin-bottom:1rem" });
+    topBtns.appendChild(h("button", {
+      className: "ag-btn ag-btn-sm ag-btn-secondary",
+      type: "button",
+      onClick: function () { self.exportJSON(); }
+    }, "Save to File"));
+    topBtns.appendChild(h("button", {
+      className: "ag-info-btn",
+      type: "button",
+      onClick: function () { self.showScoringModal(); }
+    }, "\u2139 How Scoring Works"));
+    wrap.appendChild(topBtns);
+
+    var collaboration = h("div", { className: "ag-collab-callout" });
+    collaboration.appendChild(h("strong", null, "Delegate and re-import sections"));
+    collaboration.appendChild(h("p", { style: "margin:0.3rem 0" },
+      "Export a role-specific JSON section for a team member, then import the completed section back into this same assessment. Conflicting answers stay in your current assessment so you can review them manually."
+    ));
+    var collabBtns = h("div", { className: "ag-btn-group", style: "margin-top:0.75rem" });
+    Object.keys(this.data.roleAssignments).forEach(function (role) {
+      collabBtns.appendChild(h("button", {
+        className: "ag-btn ag-btn-sm ag-btn-secondary",
+        type: "button",
+        onClick: function () { self.exportRoleSection(role); }
+      }, "Export " + role));
+    });
+    collabBtns.appendChild(h("button", {
+      className: "ag-btn ag-btn-sm ag-btn-primary",
+      type: "button",
+      onClick: function () { self.triggerImport("section"); }
+    }, "Import Completed Section"));
+    collaboration.appendChild(collabBtns);
+    wrap.appendChild(collaboration);
+
+    if (drilldownStats.totalQuestions > 0) {
+      wrap.appendChild(h("div", { className: "ag-progress-text" },
+        drilldownStats.answeredQuestions + " of " + drilldownStats.totalQuestions + " verification checks answered across " +
+        drilldownStats.controlsWithQuestions + " gap control" + (drilldownStats.controlsWithQuestions == 1 ? "" : "s") + "."
+      ));
+    }
+
+    if (gaps.length == 0) {
       wrap.appendChild(h("div", { className: "ag-card" },
-        h("p", null, "No gaps detected. All controls are fully implemented or marked N/A.")));
+        h("p", null, "No gap controls require Drill-Down for the selected target governance level. You can continue to Results.")));
     } else {
-      // Group by pillar
       var byPillar = {};
       gaps.forEach(function (c) {
         if (!byPillar[c.pillar]) byPillar[c.pillar] = [];
         byPillar[c.pillar].push(c);
       });
-
-      // Export section button + scoring help
-      var exportBtns = h("div", { className: "ag-btn-group", style: "margin-bottom:1rem" });
-      exportBtns.appendChild(h("button", {
-        className: "ag-btn ag-btn-sm ag-btn-secondary",
-        onClick: function () { self.exportJSON(); }
-      }, "Save to File"));
-      exportBtns.appendChild(h("button", {
-        className: "ag-info-btn",
-        onClick: function () { self.showScoringModal(); }
-      }, "\u2139 How Scoring Works"));
-      wrap.appendChild(exportBtns);
-
-      // Role-specific export
-      var roles = Object.keys(this.data.roleAssignments);
-      var roleBtns = h("div", { className: "ag-btn-group", style: "margin-bottom:1rem" });
-      roleBtns.appendChild(h("span", { style: "font-size:0.82rem;align-self:center" }, "Export section for:"));
-      roles.forEach(function (role) {
-        roleBtns.appendChild(h("button", {
-          className: "ag-btn ag-btn-sm ag-btn-secondary",
-          onClick: function () { self.exportRoleSection(role); }
-        }, role));
-      });
-      wrap.appendChild(roleBtns);
 
       Object.keys(byPillar).sort().forEach(function (pNum) {
         var pillarName = self.data.pillars[pNum].name;
@@ -1245,7 +1881,7 @@
         var group = h("div", { className: "ag-pillar-group" });
         var header = h("div", { className: "ag-pillar-header ag-pillar-header-static" });
         header.appendChild(h("span", { className: "ag-pillar-name" },
-          "Pillar " + pNum + " — " + pillarName));
+          "Pillar " + pNum + " \u2014 " + pillarName));
         header.appendChild(h("span", { className: "ag-pillar-count" },
           controls.length + " gap" + (controls.length > 1 ? "s" : "")));
         group.appendChild(header);
@@ -1257,27 +1893,31 @@
       });
     }
 
-    // Navigation
     var btns = h("div", { className: "ag-btn-group" });
     btns.appendChild(h("button", {
       className: "ag-btn ag-btn-secondary",
+      type: "button",
       onClick: function () { self.goToStep("phase1"); }
-    }, "Back to Phase 1"));
+    }, "Back to Assessment"));
     btns.appendChild(h("button", {
       className: "ag-btn ag-btn-primary",
+      type: "button",
       onClick: function () {
         self.markStep("phase2");
         self.saveToStorage();
-        if (!self._savePrompted) {
-          self._savePrompted = true;
-          if (confirm("Would you like to save your assessment to a file before viewing results? " +
-            "You can also export later from the Export page.")) {
-            self.exportJSON();
-          }
+        if (drilldownStats.pendingControls > 0) {
+          self.setMessage(
+            "warning",
+            "Results are still preliminary",
+            drilldownStats.pendingControls + " gap control" + (drilldownStats.pendingControls == 1 ? " still has" : "s still have") +
+            " unanswered verification checks. Complete Drill-Down for the most accurate refined scores."
+          );
+        } else {
+          self.clearMessage();
         }
         self.goToStep("results");
       }
-    }, "View Results"));
+    }, drilldownStats.pendingControls > 0 ? "View Preliminary Results" : "View Results"));
     wrap.appendChild(btns);
 
     parent.appendChild(wrap);
@@ -1286,63 +1926,81 @@
   AssessmentApp.prototype.renderDrilldownCard = function (ctrl) {
     var self = this;
     var card = h("div", { className: "ag-card" });
+    var targetLevel = this.getTargetLevel();
+    var questions = this.getVerificationCriteria(ctrl, targetLevel);
+    var hiddenCriteria = this.getHiddenCriteriaCount(ctrl, targetLevel);
 
     var header = h("div", { style: "margin-bottom:0.75rem" });
-    var titleLine = h("div", { style: "display:flex;align-items:center;gap:0.5rem" });
+    var titleLine = h("div", { style: "display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap" });
     titleLine.appendChild(h("span", { className: "ag-control-id" }, ctrl.id));
     titleLine.appendChild(h("span", { className: "ag-control-title" }, ctrl.title));
     var resp = this.state.responses[ctrl.id] || {};
-    var statusLabel = resp.answer === "partial" ? " (Partial)" : " (No)";
-    titleLine.appendChild(h("span", { style: "font-size:0.8rem;color:var(--md-default-fg-color--light)" }, statusLabel));
+    var statusMeta = this.getAnswerMeta(resp.answer);
+    if (statusMeta) {
+      titleLine.appendChild(h("span", { className: "ag-status-chip ag-status-" + statusMeta.key }, statusMeta.label));
+    }
     header.appendChild(titleLine);
     card.appendChild(header);
 
-    // Generate sub-questions from verification criteria
-    var questions = ctrl.verificationCriteria.slice(0, 12); // Cap at 12
-    if (questions.length === 0) {
+    if (hiddenCriteria > 0) {
+      card.appendChild(h("p", { className: "ag-card-subtitle" },
+        hiddenCriteria + " additional verification check" + (hiddenCriteria == 1 ? " applies" : "s apply") +
+        " to a higher governance level and is hidden for this assessment target."
+      ));
+    }
+
+    if (questions.length == 0) {
       card.appendChild(h("p", { style: "font-size:0.82rem;color:var(--md-default-fg-color--light)" },
-        "No verification criteria available for drill-down."));
+        "No target-level verification checks are available for this control. The score will continue to use the top-level answer."));
       return card;
     }
 
     if (!this.state.drilldown[ctrl.id]) this.state.drilldown[ctrl.id] = {};
     var dd = this.state.drilldown[ctrl.id];
 
-    // Score display
     var scoreEl = h("div", {
       style: "font-size:0.82rem;margin-bottom:0.5rem;font-weight:600"
     });
     var updateScore = function () {
-      var keys = Object.keys(dd);
-      var answered = keys.filter(function (k) { return dd[k]; }).length;
-      var yesCount = keys.filter(function (k) { return dd[k] === "yes"; }).length;
-      if (answered > 0) {
-        var pct = Math.round((yesCount / questions.length) * 100);
-        scoreEl.textContent = "Refined score: " + pct + "% (" + yesCount + "/" + questions.length + " met)";
-        scoreEl.style.color = pct >= 80 ? "var(--ag-green)" : pct >= 50 ? "var(--ag-amber)" : "var(--ag-red)";
+      var answeredChecks = 0;
+      var yesCount = 0;
+      questions.forEach(function (question) {
+        if (dd[question.id] === "yes") {
+          yesCount++;
+          answeredChecks++;
+        } else if (dd[question.id] === "no") {
+          answeredChecks++;
+        }
+      });
+      var pct = answeredChecks > 0 ? Math.round((yesCount / questions.length) * 100) : (resp.answer === "partial" ? 50 : 0);
+      if (answeredChecks > 0) {
+        scoreEl.textContent = "Refined score: " + pct + "% (" + yesCount + "/" + questions.length + " checks met)";
+      } else if (resp.answer === "partial") {
+        scoreEl.textContent = "Current score: 50% until you answer the verification checks.";
       } else {
-        scoreEl.textContent = "";
+        scoreEl.textContent = "Current score: 0% until the verification checks are met.";
       }
+      scoreEl.style.color = pct >= 80 ? "var(--ag-green)" : pct >= 50 ? "var(--ag-amber)" : "var(--ag-red)";
     };
     card.appendChild(scoreEl);
 
-    questions.forEach(function (q, idx) {
-      var qId = "q" + idx;
+    questions.forEach(function (question) {
       var row = h("div", { className: "ag-drilldown-q" });
-      row.appendChild(h("span", { style: "flex:1;margin-right:0.5rem" }, q));
+      row.appendChild(h("span", { style: "flex:1;margin-right:0.5rem" }, question.text));
       var btns = h("div", { className: "ag-drilldown-btns" });
 
       ["yes", "no"].forEach(function (val) {
         var bcls = "ag-answer-btn ag-btn-sm";
-        var isPressed = dd[qId] === val;
+        var isPressed = dd[question.id] === val;
         if (isPressed) bcls += " " + (val === "yes" ? "selected" : "selected-no");
         var btn = h("button", {
           className: bcls,
+          type: "button",
+          "aria-label": (val === "yes" ? "Mark check as met for " : "Mark check as not met for ") + ctrl.id,
           "aria-pressed": isPressed ? "true" : "false",
           onClick: function () {
-            dd[qId] = val;
+            dd[question.id] = val;
             self.saveToStorage();
-            // Update button states in this row
             btns.querySelectorAll(".ag-answer-btn").forEach(function (b) {
               b.className = "ag-answer-btn ag-btn-sm";
               b.setAttribute("aria-pressed", "false");
@@ -1350,6 +2008,7 @@
             btn.className = "ag-answer-btn ag-btn-sm " + (val === "yes" ? "selected" : "selected-no");
             btn.setAttribute("aria-pressed", "true");
             updateScore();
+            self.announce("Updated verification check for " + ctrl.id + ".");
           }
         }, val === "yes" ? "Yes" : "No");
         btns.appendChild(btn);
@@ -1367,6 +2026,9 @@
     var controlIds = this.data.roleAssignments[role] || [];
     var sectionData = {
       assessmentId: this.state.assessmentId,
+      schemaVersion: STATE_SCHEMA_VERSION,
+      dataVersion: this.data && this.data.version ? String(this.data.version) : "",
+      frameworkVersion: this.data && this.data.frameworkVersion ? String(this.data.frameworkVersion) : "",
       sectionExport: {
         role: role,
         controlIds: controlIds,
@@ -1385,6 +2047,29 @@
     var blob = new Blob([JSON.stringify(sectionData, null, 2)], { type: "application/json" });
     var safeName = role.replace(/\s+/g, "-").toLowerCase();
     downloadBlob(blob, "assessment-section-" + safeName + ".json");
+    this.setMessage(
+      "success",
+      "Role section exported",
+      "Downloaded a role-specific section for " + role + ". Import the completed file back into this same assessment from Drill-Down."
+    );
+  };
+
+  AssessmentApp.prototype.focusControlCard = function (controlId) {
+    var card = this.el.querySelector('.ag-control-card[data-control-id="' + controlId + '"]');
+    if (!card) return;
+    var pillarControls = card.closest(".ag-pillar-controls");
+    if (pillarControls && pillarControls.classList.contains("collapsed")) {
+      pillarControls.classList.remove("collapsed");
+      var pillarHeader = pillarControls.previousElementSibling;
+      if (pillarHeader) {
+        pillarHeader.classList.remove("collapsed");
+        pillarHeader.setAttribute("aria-expanded", "true");
+      }
+    }
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("ag-highlight");
+    card.focus();
+    setTimeout(function () { card.classList.remove("ag-highlight"); }, 2000);
   };
 
   /* ================================================================
@@ -1393,6 +2078,7 @@
   AssessmentApp.prototype.renderResults = function (parent) {
     var self = this;
     var wrap = h("div");
+    var drilldownStats = this.getDrilldownStats();
 
     // Print header (hidden on screen, shown in print)
     var printHeader = h("div", { className: "ag-print-header", style: "display:none" });
@@ -1404,13 +2090,19 @@
       " | Assessor: " + (this.state.scoping.assessorName || "—")));
     wrap.appendChild(printHeader);
 
-    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem" }, "Results Dashboard"));
+    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem", "data-step-heading": "true", tabindex: "-1" }, "Results Dashboard"));
 
     // Disclaimer
     wrap.appendChild(h("div", { className: "ag-disclaimer" },
       "This assessment helps support governance readiness. Scores reflect self-reported implementation " +
       "status and do not constitute a compliance certification."
     ));
+    if (drilldownStats.pendingControls > 0) {
+      wrap.appendChild(h("div", { className: "ag-disclaimer", style: "background:var(--md-default-fg-color--lightest);border-left-color:var(--md-primary-fg-color)" },
+        drilldownStats.pendingControls + " gap control" + (drilldownStats.pendingControls === 1 ? " still has" : "s still have") +
+        " unanswered verification checks. These results are preliminary until Drill-Down is complete."
+      ));
+    }
 
     // Tabs
     var tabs = [
@@ -1499,11 +2191,12 @@
     collabCard.appendChild(h("strong", null, "Delegate Sections to Team Members"));
     collabCard.appendChild(h("p", { style: "margin:0.3rem 0" },
       "Export role-specific sections as JSON for admins to complete independently. " +
-      "Import completed sections back with conflict detection."));
+      "Import completed sections back during Drill-Down, where conflicts stay in the current assessment for manual review."));
     collabCard.appendChild(h("button", {
       className: "ag-btn ag-btn-sm ag-btn-secondary",
+      type: "button",
       onClick: function () { self.goToStep("phase2"); }
-    }, "Go to Phase 2 (Section Export)"));
+    }, "Manage Delegated Sections"));
     wrap.appendChild(collabCard);
 
     // Re-render charts on dark mode toggle
@@ -1527,10 +2220,12 @@
     var btns = h("div", { className: "ag-btn-group" });
     btns.appendChild(h("button", {
       className: "ag-btn ag-btn-secondary",
+      type: "button",
       onClick: function () { self.goToStep("phase1"); }
     }, "Back to Assessment"));
     btns.appendChild(h("button", {
       className: "ag-btn ag-btn-primary",
+      type: "button",
       onClick: function () {
         self.markStep("results");
         self.saveToStorage();
@@ -1556,7 +2251,7 @@
     grid.appendChild(scoreCard);
 
     // Answered count
-    var answered = Object.keys(this.state.responses).length;
+    var answered = this.getAnsweredControlCount();
     var total = this.data.controls.length;
     var countCard = h("div", { className: "ag-card", style: "text-align:center" });
     countCard.appendChild(h("div", { className: "ag-score-big", style: "color:var(--md-primary-fg-color)" },
@@ -1713,9 +2408,13 @@
     var self = this;
     var card = h("div", { className: "ag-card" });
     card.appendChild(h("div", { className: "ag-card-title" }, "Score by Governance Level"));
+    card.appendChild(h("p", { className: "ag-card-subtitle" },
+      "Selected target governance level: " + (this.getTargetLevel() === "baseline" ? "Baseline" : this.getTargetLevel() === "recommended" ? "Recommended" : "Regulated") +
+      ". Scores are cumulative up to that target."
+    ));
 
     var levelNames = { "baseline": "Baseline", "recommended": "Recommended", "regulated": "Regulated" };
-    var levels = ["baseline", "recommended", "regulated"];
+    var levels = this.getIncludedLevels();
     levels.forEach(function (lvl) {
       var score = self.getLevelScore(lvl);
       card.appendChild(self.renderRagBar(levelNames[lvl], score !== null ? score : 0));
@@ -1739,11 +2438,12 @@
     var isDark = document.documentElement.getAttribute("data-md-color-scheme") === "slate";
     var textColor = isDark ? "#ccc" : "#666";
 
-    var levels = ["baseline", "recommended", "regulated"];
+    var levelNames = { "baseline": "Baseline", "recommended": "Recommended", "regulated": "Regulated" };
+    var levels = this.getIncludedLevels();
     var chart = new Chart(canvas, {
       type: "bar",
       data: {
-        labels: ["Baseline", "Recommended", "Regulated"],
+        labels: levels.map(function (lvl) { return levelNames[lvl]; }),
         datasets: [{
           label: "Score %",
           data: levels.map(function (lvl) { return self.getLevelScore(lvl) || 0; }),
@@ -1855,33 +2555,11 @@
       var editTd = h("td");
       editTd.appendChild(h("button", {
         className: "ag-edit-link",
+        type: "button",
         "aria-label": "Edit response for " + ctrl.id,
         onClick: function () {
           self.goToStep("phase1");
-          // Scroll to and highlight the control card after render
-          setTimeout(function () {
-            var target = self.el.querySelector(".ag-control-id");
-            var cards = self.el.querySelectorAll(".ag-control-card");
-            for (var i = 0; i < cards.length; i++) {
-              var idEl = cards[i].querySelector(".ag-control-id");
-              if (idEl && idEl.textContent === ctrl.id) {
-                cards[i].scrollIntoView({ behavior: "smooth", block: "center" });
-                cards[i].classList.add("ag-highlight");
-                // Expand parent pillar group if collapsed
-                var pillarControls = cards[i].closest(".ag-pillar-controls");
-                if (pillarControls && pillarControls.classList.contains("collapsed")) {
-                  pillarControls.classList.remove("collapsed");
-                  var pillarHeader = pillarControls.previousElementSibling;
-                  if (pillarHeader) {
-                    pillarHeader.classList.remove("collapsed");
-                    pillarHeader.setAttribute("aria-expanded", "true");
-                  }
-                }
-                setTimeout(function () { cards[i].classList.remove("ag-highlight"); }, 2000);
-                break;
-              }
-            }
-          }, 100);
+          self.focusControlCard(ctrl.id);
         }
       }, "Edit"));
       row.appendChild(editTd);
@@ -2023,9 +2701,13 @@
   AssessmentApp.prototype.renderExport = function (parent) {
     var self = this;
     var wrap = h("div");
-    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem" }, "Export Results"));
+    wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem", "data-step-heading": "true", tabindex: "-1" }, "Export Results"));
     wrap.appendChild(h("p", { className: "ag-card-subtitle" },
       "Download your assessment results in various formats."
+    ));
+    wrap.appendChild(h("div", { className: "ag-callout" },
+      "Use Full Assessment (JSON) to save a shareable snapshot for archival, re-import, or trend comparison. " +
+      "Role-specific delegated sections are exported separately during Drill-Down."
     ));
 
     var grid = h("div", { className: "ag-export-grid" });
@@ -2058,21 +2740,23 @@
     // Trend comparison
     wrap.appendChild(h("h3", { style: "font-size:1rem;margin-top:2rem" }, "Trend Comparison"));
     wrap.appendChild(h("p", { className: "ag-card-subtitle" },
-      "Upload a previous assessment JSON to compare scores side-by-side."
+      "Upload a previous full assessment JSON export to compare score trends side-by-side."
     ));
     var compareBtn = h("button", {
       className: "ag-btn ag-btn-secondary",
+      type: "button",
       onClick: function () { self.triggerTrendCompare(); }
     }, "Upload Previous Assessment");
     wrap.appendChild(compareBtn);
 
-    var compareResult = h("div", { id: "ag-trend-result" });
+    var compareResult = h("div", { id: "ag-trend-result", "aria-live": "polite", "aria-atomic": "true" });
     wrap.appendChild(compareResult);
 
     // Navigation
     var btns = h("div", { className: "ag-btn-group" });
     btns.appendChild(h("button", {
       className: "ag-btn ag-btn-secondary",
+      type: "button",
       onClick: function () { self.goToStep("results"); }
     }, "Back to Results"));
     wrap.appendChild(btns);
@@ -2095,9 +2779,15 @@
 
   /* ---- JSON export ---- */
   AssessmentApp.prototype.exportJSON = function () {
+    this.saveToStorage();
     var blob = new Blob([JSON.stringify(this.state, null, 2)], { type: "application/json" });
     var name = (this.state.assessmentName || "assessment").replace(/[^a-zA-Z0-9-_]/g, "-");
     downloadBlob(blob, name + ".json");
+    this.setMessage(
+      "success",
+      "Assessment exported",
+      "Downloaded the full assessment JSON file. Use this file to re-import the assessment later or compare trends."
+    );
   };
 
   /* ---- CSV export ---- */
@@ -2130,6 +2820,11 @@
     var blob = new Blob([csv], { type: "text/csv" });
     var name = (this.state.assessmentName || "assessment").replace(/[^a-zA-Z0-9-_]/g, "-");
     downloadBlob(blob, name + "-gaps.csv");
+    this.setMessage(
+      "success",
+      "Gap list exported",
+      "Downloaded the current gap list as CSV for spreadsheet review."
+    );
   };
 
   /* ---- Excel export ---- */
@@ -2146,7 +2841,11 @@
 
     var doExport = function () {
       if (typeof XLSX === "undefined") {
-        alert("SheetJS library not available. Please try the CSV export instead.");
+        self.setMessage(
+          "error",
+          "Excel export unavailable",
+          "The Excel export library is not available. Use the CSV export instead."
+        );
         return;
       }
       var wb = XLSX.utils.book_new();
@@ -2159,10 +2858,13 @@
         ["Organization", sanitizeCell(self.state.scoping.organizationName || "")],
         ["Assessor", sanitizeCell(self.state.scoping.assessorName || "")],
         ["Institution Type", sanitizeCell(self.state.scoping.institutionType || "")],
+        ["Target Governance Level", sanitizeCell(self.getTargetLevel())],
         ["Date", fmtDate(self.state.updatedAt)],
+        ["Data Version", sanitizeCell(self.state.dataVersion || "")],
+        ["Framework Version", sanitizeCell(self.state.frameworkVersion || "")],
         [],
         ["Overall Score", (self.getOverallScore() || 0) + "%"],
-        ["Controls Assessed", Object.keys(self.state.responses).length + " / " + self.data.totalControls],
+        ["Controls Assessed", self.getAnsweredControlCount() + " / " + self.data.totalControls],
         ["Gaps Identified", self.getGapControls().length],
         [],
         ["Pillar", "Score"],
@@ -2247,6 +2949,11 @@
       var blob = new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       var name = (self.state.assessmentName || "assessment").replace(/[^a-zA-Z0-9-_]/g, "-");
       downloadBlob(blob, name + ".xlsx");
+      self.setMessage(
+        "success",
+        "Excel workbook exported",
+        "Downloaded the multi-sheet Excel workbook for the current assessment."
+      );
     };
 
     if (typeof XLSX !== "undefined") {
@@ -2265,7 +2972,13 @@
       s.integrity = "sha256-yVBhl8r4CaB1tt7h2g02+xnacVj/6KiOewyWxdhiPJk=";
       s.crossOrigin = "anonymous";
       s.onload = doExport;
-      s.onerror = function () { alert("Failed to load SheetJS library. Please try the CSV export."); };
+      s.onerror = function () {
+        self.setMessage(
+          "error",
+          "Excel export unavailable",
+          "The Excel export library could not be loaded. Try the CSV export instead."
+        );
+      };
       document.head.appendChild(s);
     }
   };
@@ -2285,7 +2998,14 @@
           var prev = JSON.parse(reader.result);
           self.showTrendComparison(prev);
         } catch (e) {
-          alert("Invalid JSON file: " + e.message);
+          var container = document.getElementById("ag-trend-result");
+          if (container) {
+            container.innerHTML = "";
+            container.appendChild(h("div", { className: "ag-disclaimer" },
+              "The selected file is not valid JSON. Upload a full assessment JSON export to compare trends."
+            ));
+          }
+          self.setMessage("error", "Trend comparison failed", "The selected file is not valid JSON. " + e.message);
         }
       };
       reader.readAsText(file);
@@ -2300,16 +3020,44 @@
 
     // Validate uploaded file is a valid assessment
     if (!this.validateState(prevState)) {
+      this.setMessage(
+        "error",
+        "Trend comparison failed",
+        "Upload a full assessment JSON export created from this scorecard."
+      );
       container.appendChild(h("div", { className: "ag-disclaimer" },
         "The uploaded file does not appear to be a valid assessment export."));
       return;
     }
 
+    if (prevState.schemaVersion && prevState.schemaVersion > STATE_SCHEMA_VERSION) {
+      this.setMessage(
+        "error",
+        "Trend comparison blocked",
+        "The uploaded assessment file was created by a newer scorecard version."
+      );
+      container.appendChild(h("div", { className: "ag-disclaimer" },
+        "The uploaded file was created by a newer scorecard version and cannot be compared here."));
+      return;
+    }
+
     var self = this;
+    var previous = this.buildCleanState(prevState);
+    var currentTarget = this.getTargetLevel();
+    var previousTarget = this.getTargetLevel(previous);
     var card = h("div", { className: "ag-card" });
     card.appendChild(h("div", { className: "ag-card-title" }, "Trend Comparison"));
     card.appendChild(h("p", { className: "ag-card-subtitle" },
-      "Current vs. " + fmtDate(prevState.updatedAt)));
+      "Current assessment vs. " + fmtDate(previous.updatedAt)));
+    if (previousTarget !== currentTarget) {
+      card.appendChild(h("div", { className: "ag-disclaimer" },
+        "The uploaded assessment used the " +
+        (previousTarget === "baseline" ? "Baseline" : previousTarget === "recommended" ? "Recommended" : "Regulated") +
+        " target governance level, while the current assessment uses " +
+        (currentTarget === "baseline" ? "Baseline" : currentTarget === "recommended" ? "Recommended" : "Regulated") +
+        ". Compare the results with that scope difference in mind."
+      ));
+    }
 
     var wrap = h("div", { className: "ag-table-wrap" });
     var table = h("table", { className: "ag-table" });
@@ -2320,17 +3068,7 @@
     table.appendChild(head);
 
     // Calculate previous scores
-    var prevScores = {};
-    this.data.controls.forEach(function (ctrl) {
-      var resp = prevState.responses && prevState.responses[ctrl.id];
-      if (!resp || !resp.answer || resp.answer === "na") return;
-      var score = resp.answer === "yes" ? 1.0 : resp.answer === "no" ? 0.0 : 0.5;
-      prevScores[ctrl.id] = score;
-    });
-
-    var prevTotal = 0, prevCount = 0;
-    Object.keys(prevScores).forEach(function (k) { prevTotal += prevScores[k]; prevCount++; });
-    var prevOverall = prevCount > 0 ? Math.round((prevTotal / prevCount) * 100) : 0;
+    var prevOverall = this.getOverallScore(undefined, previous) || 0;
     var currOverall = self.getOverallScore() || 0;
 
     var addRow = function (label, prev, curr) {
@@ -2345,9 +3083,21 @@
     };
 
     table.appendChild(addRow("Overall", prevOverall, currOverall));
+    [1, 2, 3, 4].forEach(function (pillarNum) {
+      table.appendChild(addRow(
+        "Pillar " + pillarNum,
+        self.getPillarScore(pillarNum, undefined, previous) || 0,
+        self.getPillarScore(pillarNum) || 0
+      ));
+    });
     wrap.appendChild(table);
     card.appendChild(wrap);
     container.appendChild(card);
+    this.setMessage(
+      "success",
+      "Trend comparison loaded",
+      "Compared the current assessment with the uploaded assessment export."
+    );
   };
 
   /* ================================================================
