@@ -96,3 +96,17 @@ Two GitHub Actions workflows run on push to `main`:
 2. **Link Validation** — Checks markdown links in `docs/` (also runs weekly on schedule); Microsoft admin portal URLs are excluded from link checking
 
 Both workflows block commits containing internal-only artifacts (PDFs, TXT, JSON in `docs/reference/` or `docs/controls/`, and files like `docs/HANDOFF.md`).
+
+## Site Design System
+
+The documentation site uses a unified FSI design system shared across all FSI-AgentGov and FSI-CopilotGov repositories.
+
+- **Theme:** MkDocs Material with `primary: custom` / `accent: custom` palette
+- **Colors:** Microsoft Blue (`#0078D4`) primary, WCAG AA teal (`#007A7E`) accent, full dark mode tokens in `docs/stylesheets/extra.css`
+- **Logo:** Shield + circuit motif SVG (`docs/assets/logo.svg`, `docs/assets/favicon.svg`)
+- **Homepage pattern:** Hero section → metrics strip → role cards → architecture diagram (uses `hide: navigation, toc` frontmatter, `md_in_html` extension, `attr_list` for buttons)
+- **Navigation:** `navigation.sections` is intentionally removed so sidebar sections collapse by default
+- **Font:** `font: false` — avoids Google Fonts CDN (blocked in FSI network environments)
+- **Extensions required:** `pymdownx.emoji` (icon shortcodes), `md_in_html` (hero/cards), `pymdownx.highlight` (code blocks)
+
+When modifying the site theme, update `docs/stylesheets/extra.css` — do not change `primary`/`accent` in `mkdocs.yml` (they must stay `custom`).
