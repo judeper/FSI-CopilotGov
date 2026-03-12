@@ -1,96 +1,169 @@
-# FSI Copilot Governance Framework
-
-**Comprehensive governance, compliance, and security framework for Microsoft 365 Copilot in US Financial Services.**
-
+---
+hide:
+  - navigation
+  - toc
 ---
 
-!!! tip "New to this framework?"
-    Not sure if this is the right tool or where to begin? **[Start Here →](start-here.md)** — covers what this is, what it's not, and where to go for your specific situation.
+<div class="hero" markdown>
 
-## Welcome
+# M365 Copilot Governance for **Financial Services**
 
-This framework provides **54 technical controls** and **216 implementation playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
+Govern Microsoft 365 Copilot with confidence across every M365 application.
+54 controls, 216 playbooks, and regulatory mappings for
+FINRA, SEC, SOX, and GLBA compliance.
 
-!!! warning "Disclaimer"
-    This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. See [full disclaimer](disclaimer.md).
+[Get Started](getting-started/quick-start.md){ .md-button .md-button--primary }
+[View Controls](controls/index.md){ .md-button }
 
----
+</div>
+
+<div class="metrics-strip">
+  <div class="metric">
+    <span class="metric-number">54</span>
+    <span class="metric-label">Controls</span>
+  </div>
+  <div class="metric">
+    <span class="metric-number">216</span>
+    <span class="metric-label">Playbooks</span>
+  </div>
+  <div class="metric">
+    <span class="metric-number">4</span>
+    <span class="metric-label">Governance Pillars</span>
+  </div>
+  <div class="metric">
+    <span class="metric-number">3</span>
+    <span class="metric-label">Governance Levels</span>
+  </div>
+</div>
+<p class="metrics-regulations">
+  FINRA · SEC · SOX · GLBA · OCC/SR 11-7
+</p>
+
+## Quick Start by Role
+
+<div class="grid cards" markdown>
+
+-   :material-shield-check:{ .lg .middle } **Compliance Officer**
+
+    ---
+
+    Map controls to FINRA, SEC, SOX, and GLBA requirements.
+    Understand governance levels and regulatory mappings.
+
+    [:material-arrow-right: Executive Summary](framework/executive-summary.md)
+
+-   :material-cog:{ .lg .middle } **M365 Admin**
+
+    ---
+
+    Configure Copilot governance controls, admin toggles,
+    and DLP policies across your tenant.
+
+    [:material-arrow-right: Quick Start](getting-started/quick-start.md)
+
+-   :material-security:{ .lg .middle } **IT Security / InfoSec**
+
+    ---
+
+    Implement DLP, conditional access, information barriers,
+    and security controls for Copilot.
+
+    [:material-arrow-right: Security Controls](controls/index.md)
+
+-   :material-file-document-check:{ .lg .middle } **Examination Readiness**
+
+    ---
+
+    Prepare for FINRA/SEC examinations with
+    audit logging, retention, and evidence standards.
+
+    [:material-arrow-right: Regulatory Mappings](reference/regulatory-mappings.md)
+
+-   :material-chart-bar:{ .lg .middle } **Governance Scorecard**
+
+    ---
+
+    Assess your governance posture across all 54 controls
+    with the interactive scorecard tool.
+
+    [:material-arrow-right: Start Assessment](assessment/index.md)
+
+</div>
 
 ## Framework Architecture
 
-```
-+-------------------+-------------------+-------------------+-------------------+
-|     PILLAR 1      |     PILLAR 2      |     PILLAR 3      |     PILLAR 4      |
-|    Readiness &    |    Security &     |   Compliance &    |   Operations &    |
-|    Assessment     |    Protection     |      Audit        |    Monitoring     |
-|   (13 controls)   |   (15 controls)   |   (13 controls)   |   (13 controls)   |
-+-------------------+-------------------+-------------------+-------------------+
-| Data hygiene,     | DLP, labels,      | Audit logging,    | Feature toggles,  |
-| oversharing,      | conditional       | retention,        | analytics, cost,  |
-| permissions,      | access, barriers, | eDiscovery,       | incident response, |
-| licensing         | Defender          | FINRA, SEC        | BC/DR, Sentinel   |
-+-------------------+-------------------+-------------------+-------------------+
-```
-
-### Three Layers
-
-| Layer | Purpose | Start Here |
-|-------|---------|------------|
-| [Framework](framework/index.md) | Strategic governance context | [Executive Summary](framework/executive-summary.md) |
-| [Controls](controls/index.md) | Technical specifications (what & why) | [Control Index](controls/index.md) |
-| [Playbooks](playbooks/index.md) | Implementation procedures (how) | [Quick Start](getting-started/quick-start.md) |
-
-### Three Governance Levels
-
-| Level | Description | Typical Use |
-|-------|-------------|-------------|
-| **Baseline** | Minimum viable governance | Initial Copilot deployment |
-| **Recommended** | Best practices for production | Most organizations |
-| **Regulated** | Comprehensive, examination-ready | High-risk, FINRA/SEC-regulated |
-
----
-
-## Copilot Surfaces Covered
-
-Microsoft 365 Copilot as it appears in:
-
-- **Productivity:** Word, Excel, PowerPoint, OneNote, Loop, Whiteboard, Forms
-- **Communication:** Outlook, Teams (chat, meetings, phone, queues)
-- **Collaboration:** SharePoint, OneDrive, Planner, Stream
-- **Intelligence:** Viva (Insights, Engage, Learning, Pulse, Goals)
-- **AI-Native:** Microsoft 365 Copilot Chat, Copilot Pages
-- **Extensibility:** Plugins, Graph connectors, declarative agents
-
----
-
-## Quick Navigation
-
-| I want to... | Go to... |
-|--------------|----------|
-| Get started quickly | [Quick Start Guide](getting-started/quick-start.md) |
-| See all controls | [Control Index](controls/index.md) |
-| Understand Copilot architecture | [Copilot Architecture](framework/copilot-architecture.md) |
-| Find regulatory mappings | [Regulatory Mappings](reference/regulatory-mappings.md) |
-| See admin portal toggles | [Copilot Admin Toggles](reference/copilot-admin-toggles.md) |
-| Understand this vs. FSI-AgentGov | [Relationship to AgentGov](framework/relationship-to-agentgov.md) |
-| Score my governance posture | [Governance Scorecard](assessment/index.md) |
-
----
+<div class="arch-diagram" markdown>
+<div class="arch-layer">
+<div class="arch-label">Governance Levels</div>
+<div class="arch-row">
+<div class="arch-card arch-zone">
+<strong>Baseline</strong>
+Minimum viable governance
+</div>
+<div class="arch-card arch-zone">
+<strong>Recommended</strong>
+Production best practices
+</div>
+<div class="arch-card arch-zone">
+<strong>Regulated</strong>
+Examination-ready
+</div>
+</div>
+</div>
+<div class="arch-arrow">▼</div>
+<div class="arch-layer">
+<div class="arch-label">54 Controls across 4 Pillars</div>
+<div class="arch-row">
+<div class="arch-card arch-pillar">
+<strong>Readiness</strong>
+13 Controls
+</div>
+<div class="arch-card arch-pillar">
+<strong>Security</strong>
+15 Controls
+</div>
+<div class="arch-card arch-pillar">
+<strong>Compliance</strong>
+13 Controls
+</div>
+<div class="arch-card arch-pillar">
+<strong>Operations</strong>
+13 Controls
+</div>
+</div>
+</div>
+<div class="arch-arrow">▼</div>
+<div class="arch-layer">
+<div class="arch-label">Copilot Surfaces Covered</div>
+<div class="arch-row">
+<div class="arch-card arch-reg">
+<strong>Productivity</strong>
+Word, Excel, PPT
+</div>
+<div class="arch-card arch-reg">
+<strong>Communication</strong>
+Outlook, Teams
+</div>
+<div class="arch-card arch-reg">
+<strong>Collaboration</strong>
+SharePoint, OneDrive
+</div>
+<div class="arch-card arch-reg">
+<strong>AI-Native</strong>
+Copilot Chat, Pages
+</div>
+</div>
+</div>
+</div>
 
 ## Companion Repository
 
-For governance of **Copilot Studio**, **Agent Builder**, and **custom AI agents**, see the companion framework:
-
-**[FSI-AgentGov](https://github.com/judeper/FSI-AgentGov)** — 71 controls, 284 playbooks for Microsoft 365 AI agent governance.
-
----
-
-## Not What You're Looking For?
-
-- **Building custom AI agents with Copilot Studio?** → [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov)
-- **Looking for end-user Copilot prompting tips?** → [Microsoft Adoption Hub](https://adoption.microsoft.com/en-us/copilot/)
-- **Not in financial services?** This framework's controls are calibrated for FSI regulatory obligations and may not apply to other industries.
+| Site | Description |
+|------|-------------|
+| [FSI Agent Governance](https://judeper.github.io/FSI-AgentGov/) | For Copilot Studio, Agent Builder, and custom AI agents (71 controls) |
+| [FSI Copilot Governance](https://judeper.github.io/FSI-CopilotGov/) | This site — M365 Copilot governance (54 controls) |
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - February 2026*
+!!! warning "Disclaimer"
+    This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. See [full disclaimer](disclaimer.md).
