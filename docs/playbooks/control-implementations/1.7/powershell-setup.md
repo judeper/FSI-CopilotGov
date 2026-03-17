@@ -49,7 +49,7 @@ Write-Host "Site lifecycle policy configured:"
 Write-Host "  Inactivity threshold: 180 days"
 Write-Host "  Notifications enabled: Yes"
 Write-Host ""
-Write-Host "Review inactive sites in SharePoint Admin Center > Sites > Active sites > Inactive filter"
+Write-Host "Review inactive sites in SharePoint admin center > Sites > Active sites > Inactive filter"
 ```
 
 ### Script 3: Data Access Governance Report Export

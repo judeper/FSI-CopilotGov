@@ -10,7 +10,7 @@ Test cases and evidence collection for validating SharePoint Advanced Management
 - **Steps:**
   1. For organizations with Microsoft 365 Copilot licenses: verify Copilot license count in Admin Center > Billing > Licenses (SAM is included)
   2. For organizations using the standalone add-on: verify SharePoint Advanced Management license in Admin Center > Billing > Licenses
-  3. Navigate to SharePoint Admin Center and confirm SAM-specific features are visible (Data access governance, Site lifecycle management, Restricted Content Discovery in site settings)
+  3. Navigate to SharePoint admin center and confirm SAM-specific features are visible (Data access governance, Site lifecycle management, Restricted Content Discovery in site settings)
   4. Run PowerShell Script 1 to enumerate available features
   5. Confirm Data Access Governance reports, RCD, RAC, and lifecycle management are accessible
 - **Expected Result:** SAM features are available and accessible without requiring a separate purchase (for Copilot-licensed organizations)
@@ -20,7 +20,7 @@ Test cases and evidence collection for validating SharePoint Advanced Management
 
 - **Objective:** Verify data access governance reports generate accurate data including the site permissions snapshot
 - **Steps:**
-  1. Navigate to SharePoint Admin Center > Reports > Data access governance
+  1. Navigate to SharePoint admin center > Reports > Data access governance
   2. Verify each report type loads and contains data (sharing links, sensitivity labels, EEEU, oversharing baseline)
   3. Run the site permissions snapshot report and verify it captures a complete point-in-time view of site permissions
   4. Cross-reference the sharing links report with a manual check of known shared sites

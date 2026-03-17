@@ -1,12 +1,12 @@
 # Control Catalog
 
-The FSI Copilot Governance Framework contains **54 controls** organized across four lifecycle-based pillars, providing comprehensive governance coverage for Microsoft 365 Copilot in US financial services.
+The FSI Copilot Governance Framework contains **56 controls** organized across four lifecycle-based pillars, providing comprehensive governance coverage for Microsoft 365 Copilot in US financial services.
 
 ---
 
 ## Control Index
 
-### Pillar 1: Readiness & Assessment (13 Controls)
+### Pillar 1: Readiness & Assessment (15 Controls)
 
 Pre-deployment data hygiene, oversharing detection, permission audits, and license planning.
 
@@ -25,6 +25,8 @@ Pre-deployment data hygiene, oversharing detection, permission audits, and licen
 | 1.11 | [Organizational Change Management and Adoption Planning](pillar-1-readiness/1.11-change-management-adoption.md) | Baseline |
 | 1.12 | [Training and Awareness Program](pillar-1-readiness/1.12-training-awareness.md) | Baseline |
 | 1.13 | [Extensibility Readiness](pillar-1-readiness/1.13-extensibility-readiness.md) | Recommended |
+| 1.14 | [Item-Level Permission Scanning](pillar-1-readiness/1.14-item-level-permission-scanning.md) | Recommended |
+| 1.15 | [SharePoint Permissions Drift Detection](pillar-1-readiness/1.15-sharepoint-permissions-drift.md) | Recommended |
 
 ---
 
@@ -100,11 +102,11 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 
 | Pillar | Controls | Baseline | Recommended | Regulated |
 |--------|----------|----------|-------------|-----------|
-| 1. Readiness & Assessment | 13 | 6 | 5 | 2 |
+| 1. Readiness & Assessment | 15 | 6 | 7 | 2 |
 | 2. Security & Protection | 15 | 5 | 6 | 4 |
 | 3. Compliance & Audit | 13 | 3 | 4 | 6 |
 | 4. Operations & Monitoring | 13 | 5 | 5 | 3 |
-| **Total** | **54** | **19** | **20** | **15** |
+| **Total** | **56** | **19** | **22** | **15** |
 
 ---
 

@@ -132,6 +132,8 @@ nav:
       - 1.11 Change Management and Adoption: controls/pillar-1-readiness/1.11-change-management-adoption.md
       - 1.12 Training and Awareness: controls/pillar-1-readiness/1.12-training-awareness.md
       - 1.13 Extensibility Readiness: controls/pillar-1-readiness/1.13-extensibility-readiness.md
+      - 1.14 Item-Level Permission Scanning: controls/pillar-1-readiness/1.14-item-level-permission-scanning.md
+      - 1.15 SharePoint Permissions Drift Detection: controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md
     - Pillar 2 - Security & Protection:
       - Overview: controls/pillar-2-security/index.md
       - 2.1 DLP Policies for Copilot: controls/pillar-2-security/2.1-dlp-policies-for-copilot.md

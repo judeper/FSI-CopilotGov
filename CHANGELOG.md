@@ -4,6 +4,17 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.2.1 — 2026-03-17
+
+### New Controls (Pillar 1 — Readiness & Assessment)
+- **1.14** Item-Level Permission Scanning — new control for scanning and governing item-level permissions before Copilot deployment
+- **1.15** SharePoint Permissions Drift Detection — new control for detecting and remediating permissions drift in SharePoint sites exposed to Copilot
+
+### Metadata Updates
+- Updated control and pillar counts across README and instruction files (54 → 56 controls, Pillar 1: 13 → 15 controls)
+
+---
+
 ## v1.2 — March 2026
 
 ### Content Quality Improvements
@@ -62,7 +73,7 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 - Added cross-pillar Related Controls links to all 54 control documents
 
 ### Navigation and Build Fixes
-- Rebuilt implementation checklist with correct control taxonomy (all 54 controls)
+- Rebuilt implementation checklist with correct control taxonomy (all 56 controls)
 - Updated quick-start guide control references and playbook links
 - Populated Pillar 3 and 4 playbook index tables (replacing "Coming soon" stubs)
 - Fixed broken cross-references in playbook troubleshooting guides

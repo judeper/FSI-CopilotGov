@@ -5,7 +5,7 @@ Step-by-step portal procedures for assessing and governing Copilot extensibility
 ## Prerequisites
 
 - Microsoft 365 Admin Center access (Global Administrator or Teams Administrator)
-- Microsoft Teams Admin Center access
+- Teams admin center access
 - Understanding of planned Copilot extensibility use cases
 - Governance committee input on extensibility policies
 
@@ -26,7 +26,7 @@ Document which extensions are currently active and their data access scope.
 
 ### Step 2: Configure Extension Governance Policies
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Teams Admin > Teams apps > Permission policies
 
 Configure governance policies for Copilot extensions:

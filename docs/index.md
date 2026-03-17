@@ -9,7 +9,7 @@ hide:
 # M365 Copilot Governance for **Financial Services**
 
 Govern Microsoft 365 Copilot with confidence across every M365 application.
-54 controls, 216 playbooks, and regulatory mappings for
+56 controls, 216 playbooks, and regulatory mappings for
 FINRA, SEC, SOX, and GLBA compliance.
 
 [Get Started](getting-started/quick-start.md){ .md-button .md-button--primary }
@@ -83,7 +83,7 @@ FINRA, SEC, SOX, and GLBA compliance.
 
     ---
 
-    Assess your governance posture across all 54 controls
+    Assess your governance posture across all 56 controls
     with the interactive scorecard tool.
 
     [:material-arrow-right: Start Assessment](assessment/index.md)
@@ -112,11 +112,11 @@ Examination-ready
 </div>
 <div class="arch-arrow">▼</div>
 <div class="arch-layer">
-<div class="arch-label">54 Controls across 4 Pillars</div>
+<div class="arch-label">56 Controls across 4 Pillars</div>
 <div class="arch-row">
 <div class="arch-card arch-pillar">
 <strong>Readiness</strong>
-13 Controls
+15 Controls
 </div>
 <div class="arch-card arch-pillar">
 <strong>Security</strong>
@@ -161,7 +161,7 @@ Copilot Chat, Pages
 | Site | Description |
 |------|-------------|
 | [FSI Agent Governance](https://judeper.github.io/FSI-AgentGov/) | For Copilot Studio, Agent Builder, and custom AI agents (71 controls) |
-| [FSI Copilot Governance](https://judeper.github.io/FSI-CopilotGov/) | This site — M365 Copilot governance (54 controls) |
+| [FSI Copilot Governance](https://judeper.github.io/FSI-CopilotGov/) | This site — M365 Copilot governance (56 controls) |
 
 ---
 

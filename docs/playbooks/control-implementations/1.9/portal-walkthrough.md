@@ -53,7 +53,7 @@ Verify the license assignment processes successfully with no errors.
 **Portal:** Microsoft 365 Admin Center
 **Path:** Admin Center > Billing > Licenses (Azure billing linkage) or Azure portal > Cost Management
 
-If deploying PAYG Copilot Chat ($0.01/message) for pilot users or occasional-access populations:
+If deploying PAYG Copilot Chat (metered per-message pricing; refer to [Microsoft 365 Copilot pricing](https://www.microsoft.com/en-us/microsoft-365/copilot#plans) for current rates) for pilot users or occasional-access populations:
 
 1. Verify PAYG Copilot Chat is enabled for the tenant in the Microsoft 365 Admin Center
 2. Navigate to Azure portal > Cost Management to set up spend alerts and budget limits for PAYG usage

@@ -97,7 +97,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 |  |  Baseline / Recommended    |  |  - ALM Pipelines            |  |
 |  |  / Regulated               |  |                             |  |
 |  |                             |  |  Governance model:          |  |
-|  |  54 controls, 216 books    |  |  Zone 1 / 2 / 3            |  |
+|  |  56 controls, 216 books    |  |  Zone 1 / 2 / 3            |  |
 |  |                             |  |  71 controls, 284 books    |  |
 |  +-----------------------------+  +-----------------------------+  |
 |                                                                    |

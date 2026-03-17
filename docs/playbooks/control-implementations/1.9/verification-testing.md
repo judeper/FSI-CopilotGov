@@ -37,6 +37,17 @@ Test cases and evidence collection for validating Copilot license management.
 - **Expected Result:** All Copilot users have complete prerequisite license stacks
 - **Evidence:** License stack audit for sample users
 
+### Test 4: License Reclamation Process
+
+- **Objective:** Verify the process for reclaiming licenses from inactive or departed users
+- **Steps:**
+  1. Identify users flagged as inactive in the utilization report
+  2. Verify the reclamation workflow is documented and approved
+  3. Test the reclamation process by removing a test user from the deployment group
+  4. Confirm the Copilot license is removed within 24 hours
+- **Expected Result:** License reclamation process works as documented
+- **Evidence:** Reclamation workflow test results
+
 ### Test 5: Frontline User License Verification
 
 - **Objective:** Confirm Frontline (F1/F3) users receiving the Copilot add-on have appropriate base licenses and governance coverage
@@ -59,17 +70,6 @@ Test cases and evidence collection for validating Copilot license management.
   4. Review PAYG user list against the governance policy scope to identify any coverage gaps
 - **Expected Result:** PAYG Copilot Chat spending is tracked, limited, and governed
 - **Evidence:** Azure Cost Management configuration; PAYG usage report; governance policy scope confirmation
-
-### Test 4: License Reclamation Process
-
-- **Objective:** Verify the process for reclaiming licenses from inactive or departed users
-- **Steps:**
-  1. Identify users flagged as inactive in the utilization report
-  2. Verify the reclamation workflow is documented and approved
-  3. Test the reclamation process by removing a test user from the deployment group
-  4. Confirm the Copilot license is removed within 24 hours
-- **Expected Result:** License reclamation process works as documented
-- **Evidence:** Reclamation workflow test results
 
 ## Evidence Collection
 

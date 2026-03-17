@@ -88,7 +88,7 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 |     PILLAR 1      |     PILLAR 2      |     PILLAR 3      |     PILLAR 4      |
 |    Readiness &    |    Security &     |   Compliance &    |   Operations &    |
 |    Assessment     |    Protection     |      Audit        |    Monitoring     |
-|   (13 controls)   |   (15 controls)   |   (13 controls)   |   (13 controls)   |
+|   (15 controls)   |   (15 controls)   |   (13 controls)   |   (13 controls)   |
 +-------------------+-------------------+-------------------+-------------------+
 | Data hygiene,     | DLP, labels,      | Audit logging,    | Feature toggles,  |
 | oversharing,      | conditional       | retention,        | analytics, cost,  |
@@ -105,7 +105,7 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 |-------|--------------|-------------|------------------|
 | **Baseline** | Minimum viable governance | Initial Copilot deployment, low-risk environments | ~30 controls |
 | **Recommended** | Best-practice governance | Most production environments | ~45 controls |
-| **Regulated** | Examination-ready governance | FINRA/SEC-regulated, high-risk environments | All 54 controls |
+| **Regulated** | Examination-ready governance | FINRA/SEC-regulated, high-risk environments | All 56 controls |
 
 ---
 
