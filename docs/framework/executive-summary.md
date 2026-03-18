@@ -97,7 +97,7 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 +-------------------+-------------------+-------------------+-------------------+
 ```
 
-**54 Total Controls** across four lifecycle pillars addressing readiness, security, compliance, and operations for M365 Copilot governance.
+**56 Total Controls** across four lifecycle pillars addressing readiness, security, compliance, and operations for M365 Copilot governance.
 
 ### Three Governance Levels
 

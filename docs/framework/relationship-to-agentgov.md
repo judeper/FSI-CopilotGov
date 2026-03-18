@@ -28,14 +28,14 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 | **What it governs** | AI capabilities embedded in M365 apps | Custom AI agents and automated workflows |
 | **Governance model** | Three governance levels: Baseline, Recommended, Regulated | Three governance zones: Zone 1 (Personal), Zone 2 (Team), Zone 3 (Enterprise) |
 | **Pillars** | 1. Readiness & Assessment, 2. Security & Protection, 3. Compliance & Audit, 4. Operations & Monitoring | 1. Security, 2. Management, 3. Reporting, 4. SharePoint |
-| **Controls** | 54 | 71 |
-| **Playbooks** | 216 (4 per control) | 284 (4 per control) |
+| **Controls** | 56 | 71 |
+| **Playbooks** | 224 (4 per control) | 284 (4 per control) |
 | **Key concepts** | Semantic Index, Graph grounding, discovery amplification, Restricted SharePoint Search, DSPM for AI | Managed Environments, Connectors, DLP Connector Policies, Agent Lifecycle, Multi-Agent Orchestration |
 | **Primary risk** | Oversharing amplification -- Copilot surfaces content users already have access to, but at unprecedented speed and scale | Unauthorized agent creation -- custom agents that access regulated data without governance |
 | **Deployment model** | Org-wide (Copilot is tenant-level, per-user licensed) | Per-agent (each agent is individually built, tested, deployed) |
 | **Admin portals** | M365 Admin Center, Purview, Entra, SharePoint Admin, Teams Admin, Defender | Power Platform Admin Center (PPAC), M365 Admin Center, Purview |
 | **Regulatory focus** | FINRA 2210 (Copilot-drafted communications), recordkeeping, supervision | Model risk management (OCC 2011-12), agent lifecycle, testing |
-| **Framework version** | v1.0 | v1.2.42 |
+| **Framework version** | v1.1 | v1.2.42 |
 
 ---
 
@@ -97,7 +97,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 |  |  Baseline / Recommended    |  |  - ALM Pipelines            |  |
 |  |  / Regulated               |  |                             |  |
 |  |                             |  |  Governance model:          |  |
-|  |  56 controls, 216 books    |  |  Zone 1 / 2 / 3            |  |
+|  |  56 controls, 224 books    |  |  Zone 1 / 2 / 3            |  |
 |  |                             |  |  71 controls, 284 books    |  |
 |  +-----------------------------+  +-----------------------------+  |
 |                                                                    |

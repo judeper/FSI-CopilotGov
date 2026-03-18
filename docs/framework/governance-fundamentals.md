@@ -8,7 +8,7 @@ Core concepts and principles for Microsoft 365 Copilot governance in financial s
 
 The FSI Copilot Governance Framework provides complete guidance for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
 
-**Version:** 1.0 (February 2026)
+**Version:** 1.1 (February 2026)
 **Target Audience:** US Financial Services Organizations
 **Regulatory Focus:** FINRA, SEC, SOX, GLBA, OCC, Federal Reserve, FDIC, NCUA, CFPB
 
@@ -340,6 +340,8 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 | 1.11 | External Sharing Audit | Required | Required | Required |
 | 1.12 | OneDrive Governance | -- | Required | Required |
 | 1.13 | Exchange/Mailbox Permissions Review | -- | Required | Required |
+| 1.14 | Item-Level Permission Scanning | Required | Required | Required |
+| 1.15 | SharePoint Permissions Drift Detection | Required | Required | Required |
 
 ### Pillar 2: Security & Protection (15 controls)
 
