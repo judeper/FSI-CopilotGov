@@ -4,7 +4,7 @@ Automation scripts for deploying and managing communication compliance policies 
 
 ## Prerequisites
 
-- **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph.Compliance`
+- **Modules:** `ExchangeOnlineManagement` (Security & Compliance PowerShell)
 - **Permissions:** Compliance Administrator or Communication Compliance Admin
 - **PowerShell:** Version 7.x recommended
 
@@ -13,29 +13,27 @@ Automation scripts for deploying and managing communication compliance policies 
 ```powershell
 Import-Module ExchangeOnlineManagement
 Connect-IPPSSession -UserPrincipalName admin@contoso.com
-Connect-MgGraph -Scopes "CommunicationsCompliance.ReadWrite.All"
 ```
 
 ## Scripts
 
-### Script 1: Create Communication Compliance Policy via Graph API
+### Script 1: Inventory Microsoft Purview Communication Compliance Policies
 
 ```powershell
-# Create a communication compliance policy targeting Copilot-assisted communications
-# Note: Communication compliance policies are primarily managed via portal
-# The Graph API supports reporting and review operations
+# Retrieve existing communication compliance (supervisory review) policies
+# Communication compliance is managed via Security & Compliance PowerShell,
+# not via the Microsoft Graph API
 
-$policyParams = @{
-    displayName = "FSI-Copilot-Communication-Monitoring"
-    description = "Monitors Copilot-assisted communications for FSI regulatory compliance"
+$policies = Get-SupervisoryReviewPolicyV2
+
+if ($policies.Count -eq 0) {
+    Write-Host "No communication compliance policies found." -ForegroundColor Yellow
+    Write-Host "Create policies in the Microsoft Purview compliance portal under Communication Compliance."
+} else {
+    Write-Host "Communication Compliance Policies:" -ForegroundColor Green
+    $policies | Select-Object Name, Enabled, CreatedBy, LastModifiedDateTime |
+        Format-Table -AutoSize
 }
-
-# Retrieve existing policies for inventory
-$existingPolicies = Invoke-MgGraphRequest -Method GET `
-    -Uri "https://graph.microsoft.com/v1.0/security/cases/ediscoveryCases" `
-    -OutputType PSObject
-
-Write-Host "Current compliance policies retrieved for review" -ForegroundColor Green
 ```
 
 ### Script 2: Generate Communication Compliance Review Report

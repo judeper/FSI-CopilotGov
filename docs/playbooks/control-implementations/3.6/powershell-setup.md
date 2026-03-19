@@ -166,11 +166,9 @@ Write-Host "Agent audit events exported for supervisory review" -ForegroundColor
 # Use when reviewing a particular Teams channel agent or declarative agent
 # that has been flagged for supervisory follow-up
 
-param(
-    [Parameter(Mandatory=$true)]
-    [string]$TargetAgentId,
-    [int]$DaysBack = 30
-)
+# Set these variables before running
+$TargetAgentId = "your-agent-id-here"   # Replace with the agent's GUID
+$DaysBack = 30
 
 $startDate = (Get-Date).AddDays(-$DaysBack)
 $endDate = Get-Date

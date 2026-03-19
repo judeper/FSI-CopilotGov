@@ -46,6 +46,7 @@ $endDate = (Get-Date).ToString("MM/dd/yyyy")
 New-ComplianceSearch `
     -Name $searchName `
     -ExchangeLocation $custodians `
+    # Replace with your organization's SharePoint site URL
     -SharePointLocation "https://contoso.sharepoint.com/sites/finance" `
     -ContentMatchQuery "kind:microsearch AND date>=$startDate AND date<=$endDate" `
     -Description "Search for Copilot interactions in FSI custodian mailboxes"
