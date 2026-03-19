@@ -45,12 +45,14 @@ Write-Host "AI-Assisted Content label created and published" -ForegroundColor Gr
 Write-Host "Label propagation may take up to 24 hours across all workloads" -ForegroundColor Yellow
 ```
 
-### Script 2: Create DLP Policy for AI Disclosure Enforcement
+### Script 2: Create DLP Policy for NPI Detection in AI-Generated Content
 
 ```powershell
 # Create DLP policy detecting NPI in content shared externally from Copilot workloads
 # Covers SharePoint, OneDrive, Exchange, and Teams locations
 # Requires Connect-IPPSSession (Security & Compliance PowerShell)
+# NOTE: Policy name "FSI-AI-Disclosure-Enforcement" in portal-walkthrough.md refers to the
+# portal-created equivalent. This script uses "FSI-AIDisclosure-DLP" for PowerShell deployment.
 
 New-DlpCompliancePolicy -Name "FSI-AIDisclosure-DLP" `
     -SharePointLocation All `

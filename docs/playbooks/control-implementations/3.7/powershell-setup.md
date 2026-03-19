@@ -23,6 +23,8 @@ Connect-MgGraph -Scopes "Reports.Read.All", "Directory.Read.All"
 ```powershell
 # Export Copilot usage summary and per-user detail from Graph reporting endpoints
 # Supports D7, D30, D90, D180 reporting periods
+# NOTE: Graph reporting URLs below require an authenticated session (Connect-MgGraph).
+# They return HTTP 405 if accessed directly in a browser without authentication.
 $period = "D30"
 
 # Org-level usage summary
