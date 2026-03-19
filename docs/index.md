@@ -19,7 +19,7 @@ FINRA, SEC, SOX, and GLBA compliance.
 
 <div class="metrics-strip">
   <div class="metric">
-    <span class="metric-number">54</span>
+    <span class="metric-number">56</span>
     <span class="metric-label">Controls</span>
   </div>
   <div class="metric">
