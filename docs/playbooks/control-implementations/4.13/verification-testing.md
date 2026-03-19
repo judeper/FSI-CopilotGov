@@ -53,7 +53,7 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
 | Plugin inventory | PowerShell | CSV | Monthly archive |
-| Approval workflow records | Admin Center | Screenshot/Export | 7 years |
+| Approval workflow records | Microsoft 365 admin center | Screenshot/Export | 7 years |
 | Permission audit | PowerShell | CSV | Monthly archive |
 | Connector sensitivity assessments | Assessment documents | PDF | 7 years |
 
@@ -62,7 +62,7 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FFIEC Development Booklet | Third-party software governance | Supports compliance with software acquisition and deployment governance |
-| OCC Third-Party Risk | Vendor risk management | Helps meet third-party risk management for plugin providers |
+| OCC Bulletin 2013-29 (Third-Party Relationships) | Vendor risk management | Helps meet third-party risk management for plugin providers |
 | NYDFS 23 NYCRR 500 | Third-party security assessment | Supports security assessment of third-party service providers |
 
 ## Next Steps
