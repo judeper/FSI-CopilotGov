@@ -121,10 +121,10 @@ Allocate resources to mapped and measured risks on a regular basis, including re
 
 | NIST AI RMF Function | Categories Mapped | Key FSI-CopilotGov Controls |
 |---------------------|-------------------|----------------------------|
-| **GOVERN** (17 subcategories) | GOVERN 1-6 | 1.10, 1.12, 1.13, 3.8, 4.5, 4.6, 4.8, 4.9, 4.11, 4.12, 4.13 |
-| **MAP** (12 subcategories) | MAP 1-5 | 1.1, 1.2, 1.8, 1.9, 1.11, 2.4, 2.7, 2.15, 3.7, 3.8, 4.2, 4.6 |
-| **MEASURE** (14 subcategories) | MEASURE 1-4 | 3.1, 3.7, 3.8, 3.9, 3.10, 3.12, 4.6, 4.11, 4.12, 4.13 |
-| **MANAGE** (10 subcategories) | MANAGE 1-4 | 1.10, 2.4, 3.9, 4.1, 4.2, 4.5, 4.6, 4.8, 4.9, 4.10, 4.11, 4.12 |
+| **GOVERN** (18 subcategories) | GOVERN 1-6 | 1.10, 1.12, 1.13, 3.8, 4.5, 4.6, 4.8, 4.9, 4.11, 4.12, 4.13 |
+| **MAP** (14 subcategories) | MAP 1-5 | 1.1, 1.2, 1.8, 1.9, 1.11, 2.4, 2.7, 2.15, 3.7, 3.8, 4.2, 4.6 |
+| **MEASURE** (15 subcategories) | MEASURE 1-4 | 3.1, 3.7, 3.8, 3.9, 3.10, 3.12, 4.6, 4.11, 4.12, 4.13 |
+| **MANAGE** (12 subcategories) | MANAGE 1-4 | 1.10, 2.4, 3.9, 4.1, 4.2, 4.5, 4.6, 4.8, 4.9, 4.10, 4.11, 4.12 |
 
 ---
 

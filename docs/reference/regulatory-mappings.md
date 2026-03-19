@@ -40,7 +40,7 @@ Requires each member firm to establish, maintain, and enforce a system to superv
 | 3110(b) | Designate supervisory principals for each type of business | Control 4.13 (Stakeholder RACI Matrix), Control 3.6 (Supervisory Review) | Reg |
 | 3110(b)(4) | Review of communications with the public | Control 3.4 (Communication Compliance), Control 3.5 (FINRA 2210), Control 3.6 (Supervisory Review) | Reg |
 | 3110(d) | Review of customer account activity | Control 3.1 (Copilot Audit Logging), Control 4.6 (Usage Analytics) | R |
-| 3110(a) / FINRA 2026 | Agentic AI supervision — firms deploying AI agents must extend FINRA Rule 3110(a) supervisory systems to cover autonomous and semi-autonomous agent actions, including Teams channel agents and declarative agents with documented scope and review cadence | Control 3.6 (Supervisory Review) | Reg |
+| 3110(a) / Anticipated guidance | Agentic AI supervision — firms deploying AI agents should consider extending FINRA Rule 3110(a) supervisory systems to cover autonomous and semi-autonomous agent actions, including Teams channel agents and declarative agents with documented scope and review cadence. *Based on FINRA Notice 25-07 (comment period); not yet enacted as a rule.* | Control 3.6 (Supervisory Review) | Reg |
 
 ---
 
@@ -109,7 +109,7 @@ Requires broker-dealers to act in the best interest of retail customers when rec
 | 240.15l-1(a)(2)(iii) | Conflict of interest obligation | Control 2.8 (Information Barriers), Control 3.6 (Supervisory Review) | Reg |
 | 240.15l-1(a)(2)(iv) | Compliance obligation — policies and procedures | Control 1.12 (Governance Committee), Control 4.12 (Governance Calendar) | Reg |
 | SEC v. Delphia / Global Predictions (March 2024) | Enforcement precedent — SEC charged firms with false and misleading statements about purported AI use in investment processes; combined $400K penalties established that "AI washing" in client-facing materials violates Investment Advisers Act Section 206 antifraud provisions | Control 3.5 (FINRA 2210 Compliance) | Reg |
-| SEC 2026 Examination Priorities | SEC 2026 examination priorities include focused review of how registered entities govern internal AI tools; examiners will assess AI tool inventories, supervisory procedures specific to AI-assisted activities, and evidence of ongoing monitoring of AI-generated outputs including annual testing per FINRA 3120(b) | Control 3.6 (Supervisory Review) | Reg |
+| SEC 2026 Examination Priorities | SEC 2026 examination priorities include focused review of how registered entities govern internal AI tools; examiners will assess AI tool inventories, supervisory procedures specific to AI-assisted activities, and evidence of ongoing monitoring of AI-generated outputs including annual testing per FINRA 3120(b). <!-- NEEDS_HUMAN_REVIEW: Verify exact content of SEC 2026 Examination Priorities and FINRA 3120(b) annual testing reference when published. --> | Control 3.6 (Supervisory Review) | Reg |
 
 ---
 
@@ -149,7 +149,7 @@ Provides guidance on model risk management for banking organizations.
 | Model Governance | Board and senior management oversight | Control 1.12 (Governance Committee), Control 4.13 (RACI Matrix) | Reg |
 | Documentation | Maintain comprehensive model documentation | Control 3.8 (Model Risk Management), Control 3.12 (Audit Evidence) | Reg |
 | Vendor Models | Assess third-party model risk | Control 1.10 (Vendor Risk Assessment), Control 3.8 (Model Risk Management) | Reg |
-| OCC Bulletin 2025-26 | Proportionality guidance — community banks and smaller institutions may apply simplified MRM (model inventory registration, basic output monitoring, vendor due diligence) commensurate with size, complexity, and risk profile; larger institutions with client-facing Copilot deployments apply full OCC 2011-12 / SR 11-7 framework | Control 3.8 (Model Risk Management) | Reg |
+| OCC Bulletin 2025-26 | Proportionality guidance — community banks and smaller institutions may apply simplified MRM (model inventory registration, basic output monitoring, vendor due diligence) commensurate with size, complexity, and risk profile; larger institutions with client-facing Copilot deployments apply full OCC 2011-12 / SR 11-7 framework. <!-- NEEDS_HUMAN_REVIEW: Verify OCC Bulletin 2025-26 number and publication status. --> | Control 3.8 (Model Risk Management) | Reg |
 
 ---
 

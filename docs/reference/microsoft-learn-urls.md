@@ -31,7 +31,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Plan for DLP | [https://learn.microsoft.com/en-us/purview/dlp-overview-plan-for-dlp](https://learn.microsoft.com/en-us/purview/dlp-overview-plan-for-dlp) |
 | Create and deploy a DLP policy | [https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy](https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy) |
 | DLP policy reference | [https://learn.microsoft.com/en-us/purview/dlp-policy-reference](https://learn.microsoft.com/en-us/purview/dlp-policy-reference) |
-| DLP for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp](https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp) |
+| DLP for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/purview/dlp-microsoft-365-copilot](https://learn.microsoft.com/en-us/purview/dlp-microsoft-365-copilot) |
 | Sensitive information type entity definitions | [https://learn.microsoft.com/en-us/purview/sensitive-information-type-entity-definitions](https://learn.microsoft.com/en-us/purview/sensitive-information-type-entity-definitions) |
 | Custom sensitive information types | [https://learn.microsoft.com/en-us/purview/create-a-custom-sensitive-information-type](https://learn.microsoft.com/en-us/purview/create-a-custom-sensitive-information-type) |
 | Endpoint DLP | [https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about](https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about) |
