@@ -2,6 +2,9 @@
 
 Copilot-specific incident response procedures for financial services organizations. This playbook supplements your existing incident response plan with AI-specific procedures.
 
+!!! warning "Disclaimer"
+    This playbook is provided for informational purposes only and does not constitute legal or regulatory advice. Consult legal counsel for specific compliance requirements.
+
 ---
 
 ## AI Incident Categories
@@ -136,3 +139,5 @@ Engage Legal Counsel for all notification decisions.
 ---
 
 *Test this playbook through tabletop exercises semi-annually. Update based on real incidents and evolving AI capabilities.*
+
+*FSI Copilot Governance Framework v1.2.1 — March 2026*

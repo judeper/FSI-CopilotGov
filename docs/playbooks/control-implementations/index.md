@@ -23,6 +23,8 @@ Pre-deployment controls that establish the foundation for secure M365 Copilot ad
 | 1.11 | Change Management and Adoption Planning | [Portal](1.11/portal-walkthrough.md) / [PowerShell](1.11/powershell-setup.md) / [Verification](1.11/verification-testing.md) / [Troubleshooting](1.11/troubleshooting.md) |
 | 1.12 | Training and Awareness Program | [Portal](1.12/portal-walkthrough.md) / [PowerShell](1.12/powershell-setup.md) / [Verification](1.12/verification-testing.md) / [Troubleshooting](1.12/troubleshooting.md) |
 | 1.13 | Extensibility Readiness | [Portal](1.13/portal-walkthrough.md) / [PowerShell](1.13/powershell-setup.md) / [Verification](1.13/verification-testing.md) / [Troubleshooting](1.13/troubleshooting.md) |
+| 1.14 | Item-Level Permission Scanning | [Portal](1.14/portal-walkthrough.md) / [PowerShell](1.14/powershell-setup.md) / [Verification](1.14/verification-testing.md) / [Troubleshooting](1.14/troubleshooting.md) |
+| 1.15 | SharePoint Permissions Drift Detection | [Portal](1.15/portal-walkthrough.md) / [PowerShell](1.15/powershell-setup.md) / [Verification](1.15/verification-testing.md) / [Troubleshooting](1.15/troubleshooting.md) |
 
 ---
 
@@ -105,4 +107,4 @@ Each playbook is self-contained but references related playbooks within the same
 
 ---
 
-*FSI Copilot Governance Framework v1.1 — February 2026*
+*FSI Copilot Governance Framework v1.2.1 — March 2026*

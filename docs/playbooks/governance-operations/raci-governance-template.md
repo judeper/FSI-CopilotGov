@@ -19,6 +19,7 @@ Responsibility Assignment Matrix (RACI) for M365 Copilot governance activities i
 | AI Governance Lead | **AIGL** | Day-to-day governance program management |
 | Compliance Officer | **CO** | Regulatory compliance, examination readiness, and supervisory oversight |
 | Legal Counsel | **Legal** | Legal review, regulatory interpretation, and contractual matters |
+| Security Operations | **SecOps** | Security monitoring, incident detection, and triage |
 | Business Unit Owners | **BUO** | Business use case validation and departmental adoption |
 
 ---
@@ -71,7 +72,7 @@ Responsibility Assignment Matrix (RACI) for M365 Copilot governance activities i
 
 | Activity | M365 | PCA | CISO | AIGL | CO | Legal | BUO |
 |----------|------|-----|------|------|----|-------|-----|
-| Detect and triage Copilot incident | C | C | I | I | I | I | I |
+| Detect and triage Copilot incident | C | C | A | R | I | I | I |
 | Classify incident severity | I | I | A | C | C | I | I |
 | Execute containment (disable Copilot) | R | I | A | C | I | I | I |
 | Preserve evidence and audit logs | C | R | C | I | C | I | I |
@@ -135,4 +136,4 @@ Responsibility Assignment Matrix (RACI) for M365 Copilot governance activities i
 
 *Customize this RACI based on your organizational structure. Review and update quarterly or when roles change.*
 
-*FSI Copilot Governance Framework v1.1 -- February 2026*
+*FSI Copilot Governance Framework v1.2.1 — March 2026*

@@ -102,11 +102,11 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 
 | Pillar | Controls | Baseline | Recommended | Regulated |
 |--------|----------|----------|-------------|-----------|
-| 1. Readiness & Assessment | 15 | 6 | 7 | 2 |
-| 2. Security & Protection | 15 | 5 | 6 | 4 |
-| 3. Compliance & Audit | 13 | 3 | 4 | 6 |
-| 4. Operations & Monitoring | 13 | 5 | 5 | 3 |
-| **Total** | **56** | **19** | **22** | **15** |
+| 1. Readiness & Assessment | 15 | 7 | 7 | 1 |
+| 2. Security & Protection | 15 | 6 | 6 | 3 |
+| 3. Compliance & Audit | 13 | 3 | 5 | 5 |
+| 4. Operations & Monitoring | 13 | 5 | 7 | 1 |
+| **Total** | **56** | **21** | **25** | **10** |
 
 ---
 
@@ -119,4 +119,4 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - February 2026*
+*FSI Copilot Governance Framework v1.2.1 — March 2026*
