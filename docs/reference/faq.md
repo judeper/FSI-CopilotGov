@@ -52,7 +52,7 @@ Microsoft 365 Copilot interaction data is stored within the Microsoft 365 compli
 | **Copilot in Teams meetings** | Meeting transcript storage (Exchange/SharePoint) | Subject to meeting retention policies |
 | **Copilot in Outlook** | Exchange Online (within the email context) | Subject to Exchange retention policies |
 | **Copilot in Word/Excel/PPT** | No persistent storage of the Copilot interaction itself; generated content saved by user is stored in the document | Subject to SharePoint/OneDrive retention policies |
-| **Copilot Pages** | User's OneDrive for Business | Subject to OneDrive retention policies |
+| **Copilot Pages** | User-owned SharePoint Embedded container | Subject to SharePoint retention policies and manual legal hold workflows |
 | **Audit logs (CopilotInteraction events)** | Unified Audit Log | Subject to audit log retention policies (180 days standard, up to 10 years with Audit Premium) |
 
 **Data residency:** Copilot interaction data is stored in the same geographic region as the user's Microsoft 365 data. Copilot processing (LLM inference) occurs within the Microsoft 365 service boundary and is subject to the same data processing commitments.
@@ -67,7 +67,7 @@ Microsoft 365 Copilot interaction data is stored within the Microsoft 365 compli
 
 **FSI recommendation:** Disable web search for Copilot in regulated environments. This is a Baseline governance recommendation in this framework for all FSI organizations. With web search disabled, Copilot responses are grounded exclusively in organizational data from the Microsoft Graph.
 
-**How to disable:** M365 Admin Center > Settings > Microsoft 365 Copilot > Web search > Turn off.
+**How to disable:** M365 Admin Center > Copilot > Settings > Data access > Web search > Turn off.
 
 **Relevant controls:** Control 4.3 (Web Search and External Data Controls). See also: [Copilot Admin Toggles](copilot-admin-toggles.md)
 
@@ -105,7 +105,7 @@ Copilot interaction data is subject to the same Microsoft Purview retention poli
 | Teams chat | Teams chat retention policy | Purview > Data lifecycle management > Retention policies > Teams |
 | Teams meetings | Teams meeting/transcript retention policy | Purview > Data lifecycle management > Retention policies > Teams |
 | Outlook | Exchange Online retention policy | Purview > Data lifecycle management > Retention policies > Exchange |
-| Copilot Pages | OneDrive retention policy | Purview > Data lifecycle management > Retention policies > OneDrive |
+| Copilot Pages | SharePoint retention policy | Purview > Data lifecycle management > Retention policies > All SharePoint Sites |
 | Audit logs | Audit log retention policy | Purview > Audit > Audit retention policies |
 
 **FSI-specific considerations:**

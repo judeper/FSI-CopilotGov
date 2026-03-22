@@ -17,7 +17,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | **Microsoft 365 E5 Compliance** | Add-on for E3 providing E5-level compliance capabilities | Alternative to full E5 for compliance-focused deployments |
 | **Microsoft 365 E5 Security** | Add-on for E3 providing E5-level security capabilities | Alternative to full E5 for security-focused deployments |
 | **SharePoint Advanced Management (SAM)** | Advanced SharePoint governance (DAG reports, site lifecycle, RCD, RAC) | Included with Microsoft 365 Copilot licenses at no additional cost (Ignite 2024); also available as standalone add-on (~$3/user/month) for non-Copilot environments |
-| **Microsoft 365 Copilot (PAYG)** | Pay-as-you-go billing for Copilot Chat | $0.01/message via Azure Commerce; Copilot Chat only (not full in-app Copilot); cost-effective below ~3,000 messages/user/month |
+| **Microsoft 365 Copilot (PAYG)** | Pay-as-you-go billing for approved Copilot services | Usage-based Azure billing tied to a billing policy; commonly used for Copilot Chat without assigning full seats |
 | **Microsoft 365 F1/F3** | Frontline worker licenses | Copilot availability extended to Frontline SKUs; check current Microsoft documentation for feature parity with E3/E5 |
 
 ---
@@ -106,7 +106,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | 4.6 | Copilot Usage Analytics | Included | Included | Included | -- | Usage reports in M365 Admin Center; Viva Insights adds detail |
 | 4.6 | Copilot Usage Analytics (advanced) | -- | -- | -- | Viva Insights | Advanced Copilot adoption analytics |
 | 4.7 | Cost Management | Included | Included | Included | -- | License utilization tracking in M365 Admin Center |
-| 4.8 | PAYG Cost Governance | -- | -- | -- | Azure Commerce (PAYG) | PAYG billing ($0.01/msg) requires Azure Cost Management for budget caps and usage alerts |
+| 4.8 | PAYG Cost Governance | -- | -- | -- | Azure-backed billing policy | PAYG billing requires billing policy governance, Cost Management review, and budget notifications |
 | 4.8 | AI Incident Response | Included | Included | -- | -- | Process-based; Defender and Sentinel enhance automation |
 | 4.9 | Business Continuity | Included | Included | -- | -- | Process-based planning |
 | 4.10 | Change Management | Included | Included | -- | -- | Message Center monitoring; no additional license |
@@ -144,7 +144,7 @@ E5 is strongly recommended for FSI environments. The cost of individual add-ons 
 | Microsoft 365 Copilot | Copilot functionality per user; includes SAM at no additional cost |
 | Microsoft Sentinel | SIEM/SOAR for Copilot audit data |
 | Viva Insights (optional) | Advanced Copilot adoption analytics |
-| Microsoft 365 Copilot PAYG (optional) | Pay-as-you-go for occasional Copilot Chat users ($0.01/message via Azure Commerce) |
+| Microsoft 365 Copilot PAYG (optional) | Pay-as-you-go for approved occasional Copilot Chat users through billing policy governance |
 
 ---
 

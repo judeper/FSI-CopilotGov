@@ -16,7 +16,7 @@ Microsoft's cloud-based solution for classifying and protecting documents and em
 The free Microsoft 365 Copilot chat experience (accessed via microsoft365.com/chat or the Microsoft 365 Copilot app) that can query across all Microsoft 365 data a user has access to via the Microsoft Graph. Copilot Chat grounds its responses in organizational data from Exchange, SharePoint, OneDrive, Teams, and other M365 services. Included with any Microsoft 365 subscription; does not require a per-user Copilot license. For the licensed experience with full work data grounding, see Microsoft 365 Copilot.
 
 ### Copilot Pages
-A collaborative AI-powered canvas created from Microsoft 365 Copilot Chat responses. Users can convert a Copilot response into a Page for further editing and sharing. Pages are stored in the user's OneDrive and are subject to the same sharing, retention, and governance policies.
+A collaborative AI-powered canvas created from Microsoft 365 Copilot Chat responses. Users can convert a Copilot response into a Page for further editing and sharing. Copilot Pages (`.page` files) are stored in a user-owned SharePoint Embedded container shared with Copilot Notebooks and Loop My workspace, and creation is governed through Microsoft 365 Cloud Policy.
 
 ### Declarative Agents
 Custom Copilot agents defined through configuration (not code) that scope Copilot's behavior to specific data sources, instructions, and capabilities. Can be created in Copilot Studio, SharePoint, or Teams developer tools.

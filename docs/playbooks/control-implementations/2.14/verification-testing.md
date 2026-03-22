@@ -1,18 +1,18 @@
-# Control 2.14: Declarative Agents from SharePoint Governance — Verification & Testing
+# Control 2.14: Declarative and SharePoint Agents Governance — Verification & Testing
 
-Test cases and evidence collection for validating declarative agent governance.
+Test cases and evidence collection for validating agent access, sharing, Registry review, and SharePoint-backed knowledge governance.
 
 ## Test Cases
 
-### Test 1: Agent Creation Restriction
+### Test 1: Agent Access and Creation Restriction
 
-- **Objective:** Confirm agent creation is restricted to approved users
+- **Objective:** Confirm agent access and agent creation are restricted to approved users
 - **Steps:**
-  1. As a standard Copilot user (not in the approved creators group), attempt to create a declarative agent
-  2. Verify the creation is blocked or not available
-  3. As an approved creator, verify agent creation is possible
-- **Expected Result:** Only approved users can create declarative agents
-- **Evidence:** Creation attempt screenshots from both user types
+  1. As a standard Copilot user outside the approved scope, attempt to access and create agents.
+  2. Verify the experience is blocked or not available.
+  3. As an approved user, verify the intended access path is available.
+- **Expected Result:** Only approved users can access or create governed agents.
+- **Evidence:** Screenshots from both user types.
 
 ### Test 2: Agent Data Source Security
 
@@ -36,16 +36,16 @@ Test cases and evidence collection for validating declarative agent governance.
 - **Expected Result:** Agent responses limited to defined content scope
 - **Evidence:** Agent interaction showing scope enforcement
 
-### Test 4: Agent Governance Documentation
+### Test 4: Registry and Governance Documentation
 
-- **Objective:** Verify all active agents have governance approval documentation
+- **Objective:** Verify all active agents have Registry visibility, ownership, and governance approval documentation
 - **Steps:**
-  1. Compile the inventory of active declarative agents
+  1. Compile the inventory of active agents from the Registry or equivalent export.
   2. Cross-reference each agent against governance approval records
-  3. Verify each agent has documented purpose, data source review, and approval
-  4. Flag any agents without proper governance documentation
-- **Expected Result:** All active agents have complete governance documentation
-- **Evidence:** Agent inventory with governance approval cross-reference
+  3. Verify each agent has documented purpose, owner, data source review, and approval
+  4. Flag any agents without proper governance documentation or owner assignment
+- **Expected Result:** All active agents have complete governance documentation and ownership.
+- **Evidence:** Agent inventory with governance approval cross-reference.
 
 ## Evidence Collection
 

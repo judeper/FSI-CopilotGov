@@ -333,7 +333,7 @@ Copilot Pages is an AI-native content surface that allows users to collaborate o
 
 1. User generates content via Copilot (in Microsoft 365 Copilot Chat or any M365 app)
 2. User promotes the response to a "Page" for collaboration
-3. The Page is stored in the user's OneDrive (or a shared location)
+3. The Page is stored in the user's SharePoint Embedded container (shared platform with Copilot Notebooks and Loop My workspace)
 4. Other users can be invited to collaborate on the Page
 5. Pages support real-time co-authoring and further Copilot interactions
 
@@ -341,7 +341,7 @@ Copilot Pages is an AI-native content surface that allows users to collaborate o
 
 | Concern | Risk | Control |
 |---------|------|---------|
-| **Storage location** | Pages may store sensitive content in OneDrive without appropriate classification | Sensitivity labels (2.2), auto-labeling (2.3) |
+| **Storage location** | Pages may store sensitive content in SharePoint Embedded without appropriate classification or lifecycle controls | Sensitivity labels (2.2), auto-labeling (2.3) |
 | **Sharing scope** | Pages can be shared broadly, potentially duplicating regulated content | Sharing governance (1.11), DLP (2.1) |
 | **Retention** | Pages must be subject to the same retention policies as other M365 content | Retention policies (3.2) |
 | **eDiscovery** | Pages must be discoverable for regulatory examination | eDiscovery configuration (3.3) |
@@ -442,7 +442,7 @@ The **Copilot Control System** is Microsoft's February 2026 branding for the con
 |------------|------------------|-------------------------------|
 | **Global Copilot toggle** | M365 Admin Center (Copilot section) | MAC > Copilot (unchanged) |
 | **Per-application feature toggles** | Individual app admin centers | Progressively migrating to MAC > Copilot |
-| **Baseline Security Mode** | N/A (new capability) | MAC > Copilot > Settings > Security |
+| **Baseline Security Mode** | N/A (new capability) | MAC > Settings > Org settings > Security & privacy |
 | **Copilot overview dashboard** | N/A (new capability) | MAC > Copilot > Overview |
 | **License utilization and adoption** | Multiple reporting surfaces | Consolidated in Copilot overview dashboard |
 | **Security posture summary** | Purview, Defender, Entra (separately) | Summary links from Copilot overview dashboard |

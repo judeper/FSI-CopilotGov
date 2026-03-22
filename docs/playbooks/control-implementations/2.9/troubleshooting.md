@@ -52,7 +52,7 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 - **Resolution:**
   1. Verify the tenant has the required Defender XDR license tier for agent threat detection (included in M365 E5 Security or Defender for Office 365 P2)
   2. Navigate to Defender portal > Settings > Microsoft Defender XDR and confirm unified XDR is enabled
-  3. Check that the agents are registered in Agent Registry (MAC > Copilot > Agents) — unregistered agents may not have threat detection coverage
+  3. Check that the agents are registered in Agent Registry (MAC > Agents > All agents / Registry) — unregistered agents may not have threat detection coverage
   4. Verify no filter is hiding agent incidents: in Incidents & alerts, clear all filters and search for recent agent-related events
   5. Allow 24-48 hours after enabling detection — initial alert generation may be delayed
   6. If alerts still do not appear after enabling: open a Microsoft support ticket referencing Defender XDR agent threat detection

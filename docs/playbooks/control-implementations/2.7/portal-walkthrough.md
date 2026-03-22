@@ -21,9 +21,9 @@ Review the tenant's data residency configuration. Microsoft 365 stores data at r
 ### Step 2: Review Copilot Data Processing Location
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Data Processing
+**Path:** Admin Center > Copilot > Settings > Data access
 
-Review where Copilot processes prompts and generates responses. Microsoft processes Copilot interactions within the tenant's data boundary. Verify this configuration meets your regulatory data residency requirements.
+Review the tenant-level Copilot data access posture and cross-check Microsoft's published data processing commitments for your tenant geography. Verify the documented processing model meets your regulatory data residency requirements.
 
 Document the data processing locations for each Copilot workload.
 

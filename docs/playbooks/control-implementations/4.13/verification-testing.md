@@ -1,6 +1,6 @@
-# Control 4.13: Copilot Extensibility Governance (Plugin Lifecycle) — Verification & Testing
+# Control 4.13: Copilot Extensibility and Agent Operations Governance — Verification & Testing
 
-Test cases and evidence collection procedures for Copilot extensibility governance and plugin lifecycle management.
+Test cases and evidence collection procedures for Copilot extensibility governance and ongoing agent operations.
 
 ## Test Cases
 
@@ -15,7 +15,17 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 - **Expected Result:** User consent is blocked and the request is routed through the approval workflow.
 - **Evidence:** Screenshots showing the blocked consent attempt and admin notification.
 
-### Test 2: Plugin Approval Workflow
+### Test 2: Agent Ownership and Registry Review
+
+- **Objective:** Validate that widely available agents are visible in the Registry and have assigned owners
+- **Steps:**
+  1. Review the current Registry inventory.
+  2. Identify any ownerless or broadly shared agents.
+  3. Verify follow-up or remediation is recorded for each exception.
+- **Expected Result:** Registry is current and owner accountability is clear.
+- **Evidence:** Registry export or screenshots with owner fields.
+
+### Test 3: Plugin Approval Workflow
 
 - **Objective:** Validate the end-to-end plugin approval workflow
 - **Steps:**
@@ -26,7 +36,7 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 - **Expected Result:** Plugin approval workflow completes through all levels with documented approvals.
 - **Evidence:** Approval workflow records showing each approval level.
 
-### Test 3: Plugin Access Control by Group
+### Test 4: Plugin Access Control by Group
 
 - **Objective:** Confirm that plugin access is correctly restricted by user group
 - **Steps:**
@@ -37,7 +47,7 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 - **Expected Result:** Plugin access follows group membership restrictions.
 - **Evidence:** Screenshots showing plugin availability per group membership.
 
-### Test 4: Graph Connector Data Sensitivity Assessment
+### Test 5: Graph Connector Data Sensitivity Assessment
 
 - **Objective:** Verify that Graph connectors exposing data to Copilot have been assessed for sensitivity
 - **Steps:**
@@ -53,6 +63,7 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
 | Plugin inventory | PowerShell | CSV | Monthly archive |
+| Agent Registry review | Admin Center | Screenshot/Export | 7 years |
 | Approval workflow records | Admin Center | Screenshot/Export | 7 years |
 | Permission audit | PowerShell | CSV | Monthly archive |
 | Connector sensitivity assessments | Assessment documents | PDF | 7 years |

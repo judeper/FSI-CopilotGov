@@ -213,7 +213,7 @@ See also: [Control 1.5 -- Sensitivity Label Taxonomy Review](../control-implemen
 **Why:** M365 Admin Center provides granular toggles to enable or disable Copilot capabilities on a per-application basis. During Phase 0, configure toggles to match the approved pilot scope.
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot
+**Path:** Admin Center > Copilot > Settings
 
 **Actions:**
 

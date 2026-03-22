@@ -14,7 +14,7 @@ Step-by-step portal configuration for limiting Copilot's data grounding scope to
 ### Step 1: Review Copilot Data Access Configuration
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Data Access
+**Path:** Admin Center > Copilot > Settings > Data access
 
 Review the current Copilot data access configuration. Copilot grounds its responses on content the user has access to across Microsoft 365. Data minimization limits this scope to only what is necessary for the intended use cases.
 
@@ -38,7 +38,7 @@ For sites on the allowed list, further minimize the data scope by:
 ### Step 4: Review and Restrict Copilot Features by Workload
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Settings
+**Path:** Admin Center > Copilot > Settings
 
 Disable Copilot features that are not needed for your deployment:
 - Disable web grounding if not required (see Control 2.6)

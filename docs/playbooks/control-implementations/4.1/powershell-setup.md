@@ -5,7 +5,7 @@ Automation scripts for managing Copilot Control System administrative settings, 
 ## Prerequisites
 
 - **Modules:** `Microsoft.Graph`, `ExchangeOnlineManagement`
-- **Permissions:** Global Administrator, Copilot Administrator, or Microsoft 365 Service Administrator
+- **Permissions:** AI Administrator (recommended), M365 Global Admin, or another approved admin role with the required Graph and Exchange scopes
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -103,7 +103,7 @@ $features = @(
 )
 
 Write-Host "Copilot Control System Feature Enablement Report:" -ForegroundColor Cyan
-Write-Host "Note: Verify settings in M365 Admin Center > Copilot > Settings"
+Write-Host "Note: Verify settings in M365 Admin Center > Copilot > Settings and Agents > Settings"
 Write-Host "PowerShell cmdlets for Copilot policy management continue to expand."
 $features | ForEach-Object {
     [PSCustomObject]@{
@@ -133,12 +133,12 @@ if ($caPolicies.Count -eq 0) {
     $caPolicies | Select-Object DisplayName, State | Format-Table -AutoSize
 }
 
-# Report Copilot admin role assignments
-$copilotAdminRole = Get-MgDirectoryRole | Where-Object { $_.DisplayName -eq "Copilot Administrator" }
-if ($copilotAdminRole) {
-    $copilotAdmins = Get-MgDirectoryRoleMember -DirectoryRoleId $copilotAdminRole.Id
-    Write-Host "`nCopilot Administrator role assignments: $($copilotAdmins.Count)" -ForegroundColor Cyan
-    $copilotAdmins | ForEach-Object {
+# Report AI Administrator role assignments
+$aiAdminRole = Get-MgDirectoryRole | Where-Object { $_.DisplayName -eq "AI Administrator" }
+if ($aiAdminRole) {
+    $aiAdmins = Get-MgDirectoryRoleMember -DirectoryRoleId $aiAdminRole.Id
+    Write-Host "`nAI Administrator role assignments: $($aiAdmins.Count)" -ForegroundColor Cyan
+    $aiAdmins | ForEach-Object {
         $user = Get-MgUser -UserId $_.Id -Property DisplayName, UserPrincipalName -ErrorAction SilentlyContinue
         if ($user) { Write-Host "  - $($user.DisplayName) ($($user.UserPrincipalName))" }
     }

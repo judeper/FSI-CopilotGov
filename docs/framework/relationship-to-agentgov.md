@@ -68,8 +68,8 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 | Model risk management | OCC 2011-12 / SR 11-7 alignment for AI agents |
 | Multi-agent orchestration | Governance of agent-to-agent interactions |
 | SharePoint as agent knowledge source | Pillar 4 (SharePoint-specific agent controls) |
-| Microsoft-built agents (Researcher, Analyst, Facilitator) | Limited governance for Microsoft-provided agents |
-| Agent 365 / Entra Agent ID | Emerging agent governance control plane |
+| Microsoft-built Copilot chat experiences (Researcher, Analyst, Facilitator) | Usage oversight and access decisions for first-party experiences surfaced in Copilot Chat |
+| Agent 365 / Agent Registry / agent settings | Centralized control plane for agent governance at scale |
 
 ### Scope Boundary Diagram
 
@@ -88,7 +88,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 |  |  - Viva, Loop, etc.        |  |  - Agent 365 / Entra Agent  |  |
 |  |                             |  |                             |  |
 |  |  Extensibility:            |  |  Microsoft agents:          |  |
-|  |  - Plugins                 |  |  - Researcher, Analyst      |  |
+|  |  - Plugins                 |  |  - Agent 365 / Registry     |  |
 |  |  - Graph connectors        |  |  - Facilitator              |  |
 |  |  - Declarative agents      |  |                             |  |
 |  |    from SharePoint         |  |  Agent lifecycle:           |  |
@@ -134,8 +134,8 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 | Implementing DLP connector policies for agent data boundaries | Agent-specific DLP controls |
 | Conducting model risk management for AI agents | OCC 2011-12 / SR 11-7 agent alignment |
 | Governing multi-agent orchestration | Agent-to-agent interaction governance |
-| Managing Microsoft-built agents (Researcher, Analyst) | Limited governance for Microsoft agents |
-| Implementing Agent 365 or Entra Agent ID | Emerging agent governance controls |
+| Governing Researcher and Analyst usage within Copilot Chat | Core Copilot chat experience governance |
+| Implementing Agent 365, Registry, templates, or large-scale agent lifecycle controls | Agent governance control plane and lifecycle |
 
 ### Use Both Repositories When
 

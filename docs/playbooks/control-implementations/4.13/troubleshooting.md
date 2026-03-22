@@ -1,6 +1,6 @@
-# Control 4.13: Copilot Extensibility Governance (Plugin Lifecycle) — Troubleshooting
+# Control 4.13: Copilot Extensibility and Agent Operations Governance — Troubleshooting
 
-Common issues and resolution steps for Copilot extensibility governance and plugin lifecycle management.
+Common issues and resolution steps for Copilot extensibility governance and agent operations.
 
 ## Common Issues
 
@@ -25,7 +25,16 @@ Common issues and resolution steps for Copilot extensibility governance and plug
   3. Create a fast-track process for plugins from Microsoft's verified catalog.
   4. Pre-approve categories of low-risk plugins to reduce the review burden.
 
-### Issue 3: Graph Connector Exposing Sensitive Data to Copilot
+### Issue 3: Ownerless or Unmanaged Agents in the Registry
+
+- **Symptoms:** Agents appear in the Registry without an assigned owner or approval evidence.
+- **Root Cause:** Publishing or sharing occurred without the governance workflow being completed.
+- **Resolution:**
+  1. Review **Agents > All agents / Registry**.
+  2. Assign an owner where appropriate or block the agent.
+  3. Record remediation in the governance register.
+
+### Issue 4: Graph Connector Exposing Sensitive Data to Copilot
 
 - **Symptoms:** Copilot surfaces sensitive information from a Graph connector that should not be accessible.
 - **Root Cause:** The Graph connector's access controls are insufficient, or the data was not properly classified before connection.
@@ -36,7 +45,7 @@ Common issues and resolution steps for Copilot extensibility governance and plug
   4. Apply sensitivity labels to connector content if supported.
   5. Re-enable the connector only after appropriate controls are in place.
 
-### Issue 4: Plugin Permissions Exceeding Least Privilege
+### Issue 5: Plugin Permissions Exceeding Least Privilege
 
 - **Symptoms:** Permission audit reveals plugins with broader access than necessary (e.g., read-write access when read-only is sufficient).
 - **Root Cause:** Initial consent granted excessive permissions, or permissions were not reviewed during the approval process.
@@ -51,8 +60,9 @@ Common issues and resolution steps for Copilot extensibility governance and plug
 
 1. **Check user consent settings:** Entra Admin Center > Enterprise applications > Consent and permissions.
 2. **Review plugin catalog:** M365 Admin Center > Settings > Integrated apps.
-3. **Audit app permissions:** Run the permission audit script (Script 3 from PowerShell Setup).
-4. **Test user experience:** Log in as a standard user and verify plugin access restrictions.
+3. **Review agent inventory:** M365 Admin Center > Agents > All agents / Registry.
+4. **Audit app permissions:** Run the permission audit script (Script 3 from PowerShell Setup).
+5. **Test user experience:** Log in as a standard user and verify plugin and agent access restrictions.
 
 ## Escalation
 

@@ -38,11 +38,11 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
 ### Issue 4: IRM Triage Agent Not Producing Context Summaries
 
 - **Symptoms:** Alerts do not show Triage Agent context summaries; Triage Agent feature not visible in IRM settings
-- **Root Cause:** The IRM Triage Agent requires a Security Copilot license. Without this license, the feature is not available. If the license is present, the Triage Agent may need to be enabled in settings.
+- **Root Cause:** The IRM Triage Agent entitlement and rollout can vary by tenant. The feature may not yet be available in the tenant, or the tenant might not have the required entitlement enabled.
 - **Resolution:**
-  1. Verify a Security Copilot license is provisioned for the tenant
+  1. Verify the tenant currently has access to the IRM Triage Agent capability
   2. Navigate to Microsoft Purview > Insider Risk Management > Settings and look for the Triage Agent configuration
-  3. Enable the Triage Agent if it is disabled
+  3. Enable the Triage Agent if it is available but disabled
   4. If the Triage Agent is enabled but context summaries are absent, allow 24-48 hours for the system to process existing alerts
   5. Check that the IRM investigator role has appropriate access to view Triage Agent outputs
 

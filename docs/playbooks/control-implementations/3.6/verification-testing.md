@@ -64,7 +64,7 @@ Test cases and evidence collection procedures for validating supervisory control
 
 - **Objective:** Confirm that the firm's written supervisory procedures (WSPs) address every currently deployed Copilot agent
 - **Steps:**
-  1. Generate a list of deployed Teams channel agents and declarative agents from the Microsoft 365 Admin Center (Admin Center > Copilot > Agents).
+  1. Generate a list of deployed Teams channel agents and declarative agents from the Microsoft 365 Admin Center (Admin Center > Agents > All agents / Registry).
   2. Cross-reference each deployed agent against the agent inventory section of the firm's WSP Copilot addendum.
   3. For any agent not listed in the WSP, flag as a gap requiring immediate documentation.
   4. For listed agents, verify the WSP entry includes: agent scope, authorized actions, supervisory review cadence, and the person responsible for oversight.

@@ -1,6 +1,6 @@
-# Control 2.14: Declarative Agents from SharePoint Governance — Troubleshooting
+# Control 2.14: Declarative and SharePoint Agents Governance — Troubleshooting
 
-Common issues and resolution steps for declarative agent governance.
+Common issues and resolution steps for declarative, SharePoint-backed, and Registry-governed agent security.
 
 ## Common Issues
 
@@ -9,7 +9,7 @@ Common issues and resolution steps for declarative agent governance.
 - **Symptoms:** Declarative agents discovered in the tenant without governance approval or documentation
 - **Root Cause:** Agent creation restrictions may not be properly configured, or users may have found alternative creation paths.
 - **Resolution:**
-  1. Review agent creation settings in Admin Center > Copilot > Agents
+  1. Review agent settings in Admin Center > Agents > Settings
   2. Restrict creation to approved security groups
   3. Audit existing agents and require retroactive governance approval
   4. Set up monitoring (Script 3) to detect new agent creation
@@ -46,7 +46,7 @@ Common issues and resolution steps for declarative agent governance.
 
 ## Diagnostic Steps
 
-1. **Check agent inventory:** Review Admin Center > Copilot > Agents
+1. **Check agent inventory:** Review Admin Center > Agents > All agents / Registry
 2. **Verify source security:** Run Script 2 on agent data sources
 3. **Review creation policies:** Verify agent creation restrictions in admin settings
 4. **Monitor activity:** Run Script 3 for recent agent events

@@ -51,7 +51,7 @@ Test cases and evidence collection for validating Information Barrier enforcemen
 
 - **Objective:** Confirm Channel Agent deployments comply with the IB gap compensating controls
 - **Steps:**
-  1. Enumerate all active Channel Agent deployments: navigate to Microsoft 365 Admin Center > Copilot > Agents or Microsoft Teams Admin Center > Teams apps
+  1. Enumerate all active Channel Agent deployments: navigate to Microsoft 365 Admin Center > Agents > All agents / Registry or Microsoft Teams Admin Center > Teams apps
   2. For each Channel Agent, retrieve the channels where it is deployed
   3. Review the membership of each channel where Channel Agent is deployed
   4. Confirm no channel with an active Channel Agent has members from IB-separated segments

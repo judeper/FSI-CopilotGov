@@ -58,11 +58,11 @@ Verify that the mandatory labeling prompt appears when Copilot creates content w
 ### Step 5: Review Copilot Studio Agent Label Inheritance
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** MAC > Copilot > Agents
+**Path:** MAC > Agents > All agents / Registry
 
 Before activating any Copilot Studio agent, review its knowledge source labels to determine the effective inherited label:
 
-1. In MAC > Copilot > Agents, select the agent to review
+1. In MAC > Agents > All agents / Registry, select the agent to review
 2. Navigate to the agent's knowledge sources configuration
 3. For each knowledge source, note the sensitivity label applied to the connected content (SharePoint sites, documents, or data sources)
 4. The agent's effective inherited label is the **highest label** found across all knowledge sources

@@ -236,8 +236,8 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | Collaborative AI-generated content surface; users can promote Copilot responses to shareable Pages; real-time co-authoring with Copilot assistance |
 | **Data Sources** | User's M365 content (via Copilot Chat), page content, collaborator inputs |
-| **Governance Considerations** | Pages create new content objects that may duplicate regulated data outside original governance boundaries. Pages are stored in OneDrive and may be shared broadly. Pages require sensitivity labeling, retention policies, and eDiscovery coverage. Pages represent a new data sprawl vector that did not exist before Copilot. |
-| **Key Controls** | 4.8 (Copilot Pages governance), 2.2 (Sensitivity labels), 3.2 (Retention), 3.3 (eDiscovery), 1.11 (Sharing governance) |
+| **Governance Considerations** | Pages create new content objects that may duplicate regulated data outside original governance boundaries. Pages are stored in user-owned SharePoint Embedded containers and may be shared broadly if not governed. Pages require sensitivity labeling, SharePoint retention coverage, eDiscovery procedures, and explicit Cloud Policy decisions for creation. Pages represent a new data sprawl vector that did not exist before Copilot. |
+| **Key Controls** | 2.11 (Copilot Pages governance), 2.2 (Sensitivity labels), 3.2 (Retention), 3.3 (eDiscovery), 1.11 (Sharing governance) |
 
 ---
 

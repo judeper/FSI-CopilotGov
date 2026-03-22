@@ -13,7 +13,7 @@ Step-by-step portal configuration for securing Copilot plugins and Microsoft Gra
 ### Step 1: Inventory Active Plugins and Connectors
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Extensions
+**Path:** Admin Center > Agents > All agents and Settings > Integrated apps
 
 Review all active Copilot extensions including Microsoft first-party plugins, third-party plugins, and custom-built plugins. Document each plugin's data access scope, publisher, and certification status.
 

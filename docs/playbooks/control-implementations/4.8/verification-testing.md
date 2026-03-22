@@ -6,38 +6,38 @@ Test cases and evidence collection procedures for Copilot cost allocation and li
 
 ### Test 1: PAYG Billing Accuracy Verification
 
-- **Objective:** Verify that PAYG Copilot Chat charges in Azure Commerce accurately reflect actual usage and are reconcilable to internal records
+- **Objective:** Verify that PAYG Copilot charges are tied to the correct billing policy and reconciled to internal records
 - **Steps:**
   1. Run Script 1 from the PowerShell Setup guide to retrieve PAYG billing data from Azure Commerce for the current month.
-  2. Compare the total PAYG charges with the estimated message count ($0.01/message): verify the calculation is consistent with usage data from the Microsoft 365 usage report.
-  3. Download the Azure invoice from **Azure Portal > Cost Management + Billing > Invoices** and confirm the PAYG Copilot Chat line item matches Script 1 output.
-  4. Verify department tag assignment is correct: confirm each PAYG charge routes to the correct cost center via Azure cost tags.
-  5. Reconcile the total PAYG cost against the department budget cap to confirm no budget was exceeded without alerting.
-- **Expected Result:** PAYG billing data in Azure Commerce matches usage estimates, reconciles to the invoice, and routes to correct cost centers via tags.
-- **Evidence:** Script 1 output CSV; Azure invoice screenshot showing PAYG line items; Azure Cost Management tag report.
+  2. Review the billing policy configuration in **Billing > Pay-as-you-go services** and confirm the intended users or groups are covered.
+  3. Download the Azure invoice or cost export and confirm the PAYG Copilot line item matches Script 1 output.
+  4. Reconcile the total PAYG cost to the internal cost owner or department assigned to the billing policy.
+  5. Confirm the connected service and policy coverage match the approved scope.
+- **Expected Result:** PAYG billing data matches the billing-policy scope, reconciles to invoice or cost-management records, and is attributable to the correct cost owner.
+- **Evidence:** Script 1 output CSV; billing policy screenshot; invoice or Cost Management export.
 
-### Test 2: Budget Cap Enforcement Verification
+### Test 2: Budget and Notification Verification
 
-- **Objective:** Confirm that PAYG budget caps alert appropriately before spending limits are reached
+- **Objective:** Confirm that PAYG billing policies have budgets and notification routing configured appropriately
 - **Steps:**
-  1. Navigate to **Azure Portal > Cost Management > Budgets** and review active budget configurations for PAYG Copilot Chat.
-  2. Verify each department with PAYG enabled has a budget configured with both 80% and 100% alert thresholds.
-  3. Confirm alert recipients are set to the department head and IT finance owner (as configured in Step 1b of the portal walkthrough).
-  4. Test alert delivery: if a budget was previously reached in the current month, confirm an alert was received. If not, verify the alert email routing by reviewing the budget alert configuration.
+  1. Navigate to **Billing > Pay-as-you-go services** and review the active billing policies.
+  2. Verify each active billing policy has a budget configured.
+  3. Confirm alert recipients are set to the approved business and IT finance owners.
+  4. If prior notifications exist, confirm they were received and handled appropriately.
   5. Run Script 2 from the PowerShell Setup guide to review budget configuration programmatically.
-- **Expected Result:** Budget caps are in place for all PAYG-enabled departments with correct alert thresholds and recipients.
-- **Evidence:** Screenshot of Azure Budget configurations; alert notification records or email confirmation.
+- **Expected Result:** Budgets and notification routing are in place for all active billing policies.
+- **Evidence:** Screenshot of billing policy settings or budget configuration; notification records or email confirmation.
 
 ### Test 3: PAYG Cost Allocation Verification
 
-- **Objective:** Verify that PAYG costs are correctly allocated to departments via Azure cost management tags
+- **Objective:** Verify that PAYG costs are correctly allocated to departments or cost owners through billing policy governance
 - **Steps:**
-  1. In **Azure Portal > Cost Management > Cost analysis**, filter by the Copilot Chat service and group by department tag.
-  2. Verify that costs appear attributed to the expected departments based on user group membership.
-  3. Identify any "Untagged" costs and investigate their source — untagged PAYG usage indicates a tag governance gap.
-  4. Compare the cost allocation output with the internal finance cost center mapping to confirm alignment.
-- **Expected Result:** PAYG costs are fully tagged and allocated to correct cost centers; no significant untagged charges.
-- **Evidence:** Azure Cost Management cost analysis export grouped by department tag; comparison with finance cost center report.
+  1. In **Cost Management**, filter by the Copilot service covered by PAYG.
+  2. Compare the costs with the billing policy owner and covered user or group list.
+  3. Identify any costs that cannot be mapped to an approved billing policy and investigate their source.
+  4. Compare the output with the internal finance cost center mapping to confirm alignment.
+- **Expected Result:** PAYG costs are attributable to approved billing policies and mapped to the correct cost owners.
+- **Evidence:** Cost Management export; billing policy inventory; comparison with finance cost center report.
 
 ### Test 4: License Inventory Accuracy
 
@@ -88,8 +88,8 @@ Test cases and evidence collection procedures for Copilot cost allocation and li
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
 | PAYG billing accuracy report | Script 1 + Azure invoice | CSV + Screenshot | Monthly archive; 7-year for regulated |
-| Budget cap configuration | Azure Portal + Script 2 | Screenshot + Script output | With control documentation |
-| PAYG cost allocation by department | Azure Cost Management export | CSV | Monthly archive |
+| Billing policy and budget configuration | Admin Center + Script 2 | Screenshot + Script output | With control documentation |
+| PAYG cost allocation by department | Cost Management export + billing policy inventory | CSV | Monthly archive |
 | License inventory | PowerShell/Admin Center | CSV | Monthly archive |
 | Chargeback report (per-seat) | Script 5 | CSV | Monthly archive |
 | Underutilization report | Script 6 | CSV | Monthly archive |
@@ -99,9 +99,9 @@ Test cases and evidence collection procedures for Copilot cost allocation and li
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SOX Section 404 (15 U.S.C. § 7262) | IT general controls over financial reporting — material technology expenditure authorization | PAYG budget authorization controls and per-seat license tracking fulfill IT asset management control requirements |
-| FFIEC Management Booklet, Section II.D | IT investment governance — cost-benefit analysis and ongoing cost monitoring | Per-seat vs. PAYG comparison documentation and monthly PAYG billing reconciliation directly satisfy this expectation |
-| OCC Heightened Standards (12 CFR Part 30, Appendix D) | Operational risk governance framework — technology cost management | Budget caps, anomaly detection, and monthly PAYG reporting demonstrate responsive cost governance |
+| SOX Section 404 (15 U.S.C. § 7262) | IT general controls over financial reporting — material technology expenditure authorization | PAYG budget authorization controls, billing-policy review, and per-seat license tracking support IT asset management control requirements |
+| FFIEC Management Booklet, Section II.D | IT investment governance — cost-benefit analysis and ongoing cost monitoring | Per-seat versus PAYG documentation and monthly billing review help satisfy this expectation |
+| OCC Heightened Standards (12 CFR Part 30, Appendix D) | Operational risk governance framework — technology cost management | Billing-policy review, anomaly detection, and monthly PAYG reporting demonstrate responsive cost governance |
 
 ## Next Steps
 

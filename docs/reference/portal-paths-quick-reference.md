@@ -1,9 +1,9 @@
 # Portal Paths Quick Reference
 
-Admin portal navigation paths for every configuration referenced in the FSI Copilot Governance Framework. Use this as a quick lookup when implementing controls.
+Admin portal navigation paths for the main Microsoft 365 Copilot governance controls referenced in the framework. Use this as a quick lookup when implementing controls.
 
 !!! warning "Disclaimer"
-    This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. Portal paths are current as of February 2026; Microsoft may update admin portal layouts and URLs. See [full disclaimer](../disclaimer.md).
+    This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. Portal paths are current as of March 2026; Microsoft may update admin portal layouts and URLs. See [full disclaimer](../disclaimer.md).
 
 ---
 
@@ -15,22 +15,27 @@ Admin portal navigation paths for every configuration referenced in the FSI Copi
 
 | Setting | Navigation Path | Direct URL |
 |---------|----------------|------------|
-| Copilot global settings | Settings > Microsoft 365 Copilot | `https://admin.microsoft.com/Adminportal/Home#/Settings/CopilotSettings` |
-| Copilot license management | Settings > Microsoft 365 Copilot > Licenses | `https://admin.microsoft.com/Adminportal/Home#/Settings/CopilotSettings` |
-| Web search in Copilot | Settings > Microsoft 365 Copilot > Web search | `https://admin.microsoft.com/Adminportal/Home#/Settings/CopilotSettings` |
-| Copilot Pages | Settings > Microsoft 365 Copilot > Copilot Pages | `https://admin.microsoft.com/Adminportal/Home#/Settings/CopilotSettings` |
-| Copilot plugins | Settings > Microsoft 365 Copilot > Plugins | `https://admin.microsoft.com/Adminportal/Home#/Settings/CopilotSettings` |
-| Copilot agents | Settings > Microsoft 365 Copilot > Agents | `https://admin.microsoft.com/Adminportal/Home#/Settings/CopilotSettings` |
-| Apps that work with Copilot | Settings > Microsoft 365 Copilot > Apps that work with Copilot | `https://admin.microsoft.com/Adminportal/Home#/Settings/CopilotSettings` |
+| Copilot overview | Copilot > Overview | `https://admin.microsoft.com` |
+| Copilot settings | Copilot > Settings | `https://admin.microsoft.com` |
+| Copilot user access | Copilot > Settings > User access | `https://admin.microsoft.com` |
+| Copilot data access | Copilot > Settings > Data access | `https://admin.microsoft.com` |
+| Copilot actions | Copilot > Settings > Copilot actions | `https://admin.microsoft.com` |
+| Copilot other settings | Copilot > Settings > Other settings | `https://admin.microsoft.com` |
+| Agents overview | Agents > Overview | `https://admin.cloud.microsoft/?#/agents/overview` |
+| Agent Registry / All agents | Agents > All agents | `https://admin.microsoft.com` |
+| Agent settings | Agents > Settings | `https://admin.microsoft.com` |
 
 ### General Settings
 
 | Setting | Navigation Path | Direct URL |
 |---------|----------------|------------|
 | Org settings | Settings > Org settings | `https://admin.microsoft.com/Adminportal/Home#/Settings/OrganizationProfile` |
+| Self-service trials and purchases | Settings > Org settings > Self-service trials and purchases | `https://admin.microsoft.com` |
 | Services settings | Settings > Org settings > Services | `https://admin.microsoft.com/Adminportal/Home#/Settings/Services` |
 | Integrated apps | Settings > Integrated apps | `https://admin.microsoft.com/Adminportal/Home#/Settings/IntegratedApps` |
 | License assignment | Billing > Licenses | `https://admin.microsoft.com/Adminportal/Home#/licenses` |
+| Pay-as-you-go services | Billing > Pay-as-you-go services | `https://admin.microsoft.com` |
+| Cost Management | Cost Management | `https://admin.microsoft.com` |
 | User management | Users > Active users | `https://admin.microsoft.com/Adminportal/Home#/users` |
 | Groups | Teams and groups > Active teams and groups | `https://admin.microsoft.com/Adminportal/Home#/groups` |
 | Message Center | Health > Message center | `https://admin.microsoft.com/Adminportal/Home#/MessageCenter` |
@@ -115,6 +120,17 @@ Admin portal navigation paths for every configuration referenced in the FSI Copi
 | Overview dashboard | Data classification > Overview | `https://purview.microsoft.com/dataclassification/overview` |
 | Content explorer | Data classification > Content explorer | `https://purview.microsoft.com/dataclassification/contentexplorer` |
 | Activity explorer | Data classification > Activity explorer | `https://purview.microsoft.com/dataclassification/activityexplorer` |
+
+---
+
+## Microsoft 365 Cloud Policy Service
+
+**Base URL:** [https://config.office.com](https://config.office.com)
+
+| Setting | Navigation Path | Direct URL |
+|---------|----------------|------------|
+| Copilot Pages / Notebooks creation | Customization > Policy Management > Create and view Copilot Pages and Copilot Notebooks | `https://config.office.com` |
+| Copilot code previews | Customization > Policy Management > Enable code previews for AI-generated content in Microsoft 365 Copilot Chat and Copilot Pages | `https://config.office.com` |
 
 ---
 

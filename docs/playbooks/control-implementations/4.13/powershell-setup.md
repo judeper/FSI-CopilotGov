@@ -1,6 +1,6 @@
-# Control 4.13: Copilot Extensibility Governance (Plugin Lifecycle) — PowerShell Setup
+# Control 4.13: Copilot Extensibility and Agent Operations Governance — PowerShell Setup
 
-Automation scripts for managing the Copilot plugin lifecycle, including inventory, governance, and monitoring.
+Automation scripts for managing Copilot plugins, connectors, and related extensibility governance.
 
 ## Prerequisites
 

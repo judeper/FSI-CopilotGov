@@ -31,7 +31,7 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 - **Symptoms:** A Copilot Studio agent appears to trigger DLP policies or label enforcement at a higher sensitivity level than expected based on its described purpose
 - **Root Cause:** The agent is inheriting the highest sensitivity label from all connected knowledge sources, including sources that may have been labeled at a higher tier than intended. One Highly Confidential document in a knowledge source elevates the entire agent's inherited label.
 - **Resolution:**
-  1. Review all knowledge sources connected to the agent in MAC > Copilot > Agents > [Agent] > Knowledge
+  1. Review all knowledge sources connected to the agent in MAC > Agents > All agents / Registry > [Agent] > Details
   2. Identify the highest-labeled document or source in the knowledge base
   3. Determine whether that content should be in the agent's knowledge base:
      - If not needed: remove the high-sensitivity source from the agent's knowledge configuration

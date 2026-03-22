@@ -25,7 +25,7 @@ Write-Host "=== Copilot Web Search Configuration ==="
 Write-Host "Tenant: $($org.DisplayName)"
 Write-Host ""
 Write-Host "NOTE: Web search toggle is managed via Microsoft 365 Admin Center."
-Write-Host "Verify at: Admin Center > Settings > Microsoft 365 Copilot > Web Search"
+Write-Host "Verify at: Admin Center > Copilot > Settings > Data access > Web search"
 Write-Host ""
 Write-Host "Recommended FSI setting: DISABLED for all users"
 ```

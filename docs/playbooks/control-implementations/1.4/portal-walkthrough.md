@@ -14,7 +14,7 @@ Step-by-step portal configuration for governing the Microsoft 365 Semantic Index
 ### Step 1: Review Semantic Index Status
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Semantic Index
+**Path:** Admin Center > Copilot > Overview
 
 Review the current status of the Semantic Index for your tenant. The Semantic Index processes content across Microsoft 365 to create embeddings that Copilot uses for content discovery and response grounding.
 
@@ -23,7 +23,7 @@ Note the indexing status, coverage percentage, and any reported errors or exclud
 ### Step 2: Configure Content Source Scope
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Data Access > Content Sources
+**Path:** SharePoint Admin > Settings > Search > Restricted SharePoint Search and related content-source governance
 
 Review which content sources are included in the Semantic Index. By default, the index covers SharePoint Online, OneDrive for Business, Exchange Online, and Teams messages.
 
@@ -41,7 +41,7 @@ Verify that items with "Highly Confidential" labels are handled according to you
 ### Step 4: Set Tenant-Level Index Controls
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Settings
+**Path:** Admin Center > Copilot > Settings
 
 Configure tenant-level controls that affect semantic index behavior:
 - Content types included in indexing

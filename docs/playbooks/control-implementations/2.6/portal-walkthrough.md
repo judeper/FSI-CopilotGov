@@ -13,14 +13,14 @@ Step-by-step portal configuration for controlling Copilot's ability to search th
 ### Step 1: Review Web Search Settings
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Web Search
+**Path:** Admin Center > Copilot > Settings > Data access > Web search
 
 Review the current web search configuration for Copilot. By default, Copilot may use Bing web search to supplement responses with public web content. For FSI environments, this behavior requires careful governance.
 
 ### Step 2: Disable or Restrict Web Search
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Web Search > Toggle
+**Path:** Admin Center > Copilot > Settings > Data access > Web search
 
 For most FSI deployments, disable web search to prevent Copilot from:
 - Grounding responses on unverified external content
@@ -32,7 +32,7 @@ Toggle web search to "Off" for all users or specific groups based on governance 
 ### Step 3: Configure Web Content Plugin Settings
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Extensions > Web Content
+**Path:** Admin Center > Agents > Settings and Settings > Integrated apps
 
 If web search is selectively enabled, configure the web content plugin:
 - Restrict to specific user groups with business justification

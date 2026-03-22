@@ -1,16 +1,43 @@
-# Control 4.13: Copilot Extensibility Governance (Plugin Lifecycle) — Portal Walkthrough
+# Control 4.13: Copilot Extensibility and Agent Operations Governance — Portal Walkthrough
 
-Step-by-step portal configuration for governing the lifecycle of Copilot plugins, Graph connectors, and declarative agents including approval, deployment, monitoring, and retirement.
+Step-by-step portal configuration for governing plugins, Graph connectors, and agent operations through Integrated apps and the Agent 365 control plane.
 
 ## Prerequisites
 
-- **Role:** Global Administrator, Teams Administrator
+- **Role:** AI Administrator, Teams Admin, or another approved admin role for the surfaces being reviewed
 - **License:** Microsoft 365 E5 with Copilot add-on
 - **Access:** Microsoft 365 Admin Center, Teams Admin Center
 
 ## Steps
 
-### Step 1: Configure Integrated Apps Governance
+### Step 1: Review Agent Overview
+
+**Portal:** Microsoft 365 Admin Center
+**Path:** Agents > Overview
+
+1. Review hero metrics for active users, sessions, exception rate, and runtime.
+2. Review governance action cards for pending requests or ownerless agents.
+3. Record follow-up actions in the governance register.
+
+### Step 2: Review Agent Registry and Ownership
+
+**Portal:** Microsoft 365 Admin Center
+**Path:** Agents > All agents / Registry
+
+1. Review published, shared, blocked, and ownerless agents.
+2. Confirm each broadly available agent has an owner and approval record.
+3. Block or remove agents that do not meet policy.
+
+### Step 3: Configure Agent Settings
+
+**Portal:** Microsoft 365 Admin Center
+**Path:** Agents > Settings
+
+1. Review allowed agent types.
+2. Review sharing controls.
+3. Review user access scope and any templates used in publication workflows.
+
+### Step 4: Configure Integrated Apps Governance
 
 **Portal:** Microsoft 365 Admin Center
 **Path:** Settings > Integrated apps
@@ -23,7 +50,7 @@ Step-by-step portal configuration for governing the lifecycle of Copilot plugins
    - **Third-party app access** — Restrict to a pre-approved list for FSI environments
 4. Document the approved plugin catalog with business justification for each.
 
-### Step 2: Establish Plugin Approval Workflow
+### Step 5: Establish Plugin Approval Workflow
 
 **Portal:** Microsoft 365 Admin Center
 **Path:** Settings > Integrated apps > User requests
@@ -36,10 +63,10 @@ Step-by-step portal configuration for governing the lifecycle of Copilot plugins
 3. Set SLA for approval decisions (5 business days recommended).
 4. Create a standardized Plugin Risk Assessment template.
 
-### Step 3: Configure Copilot Plugin Access Controls
+### Step 6: Configure Copilot Plugin Access Controls
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Settings > Copilot > Plugins
+**Path:** Agents > Settings and Settings > Integrated apps
 
 1. Navigate to the Copilot plugin settings.
 2. Configure plugin availability:
@@ -49,7 +76,7 @@ Step-by-step portal configuration for governing the lifecycle of Copilot plugins
 3. Set plugin access by user group (not all users need all plugins).
 4. Document which plugins are approved and for which user groups.
 
-### Step 4: Configure Graph Connector Governance
+### Step 7: Configure Graph Connector Governance
 
 **Portal:** Microsoft 365 Admin Center
 **Path:** Settings > Search & intelligence > Data sources
@@ -66,9 +93,10 @@ Step-by-step portal configuration for governing the lifecycle of Copilot plugins
 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
+| Agent Overview review | Monthly | Monthly with tracked follow-up | Weekly / monthly depending on risk |
+| Agent ownership | Required for published agents | Required for all broad-scope agents | Required with escalation for ownerless agents |
 | User consent for plugins | Allowed | Admin-only consent | Admin-only with compliance review |
-| Third-party plugins | Allowed | Pre-approved list | Pre-approved with security assessment |
-| Custom plugins | Unrestricted | Governed | Governed with code review |
+| Third-party plugins / partner agents | Review | Pre-approved list | Pre-approved with security assessment |
 | Graph connector review | Ad hoc | Annual | Semi-annual with data classification |
 
 ## Regulatory Alignment

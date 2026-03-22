@@ -161,11 +161,11 @@ Microsoft 365 Copilot can be enabled or disabled per application. For FSI organi
 
 **What to do:**
 
-1. Navigate to **M365 Admin Center > Settings > Microsoft 365 Copilot** to review global settings
+1. Navigate to **M365 Admin Center > Copilot > Settings** to review the current tenant controls for Copilot user access, data access, actions, and other feature settings
 2. Disable **web search** in Copilot (Baseline recommendation for regulated environments) — this prevents Copilot from querying Bing for grounding data
-3. Review **per-app settings** and disable Copilot in applications not yet approved by your governance committee (e.g., you may enable Word/Excel/Outlook but disable Loop/Whiteboard initially)
-4. Configure **Copilot Pages** settings — determine whether users can create Copilot Pages (which are stored in the user's OneDrive and may contain Copilot-generated content)
-5. Review **extensibility settings** — disable third-party plugins and Graph connectors until your governance review process is in place
+3. Review **per-app and user access settings** and disable Copilot in applications or user groups not yet approved by your governance committee
+4. Configure **Copilot Pages** creation through **Cloud Policy** — determine whether users can create Copilot Pages and Copilot Notebooks, which are stored in user-owned SharePoint Embedded containers and require SharePoint retention/eDiscovery coverage
+5. Review **extensibility and agent settings** — disable or restrict third-party plugins, external agents, and custom agents until your governance review process is in place
 
 **Key controls:**
 

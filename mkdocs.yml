@@ -468,6 +468,7 @@ nav:
       - Governance Operating Calendar: playbooks/governance-operations/governance-operating-calendar.md
       - RACI Governance Template: playbooks/governance-operations/raci-governance-template.md
       - Escalation Matrix: playbooks/governance-operations/escalation-matrix.md
+      - Microsoft Open-Source Copilot Analytics Tools: playbooks/governance-operations/microsoft-open-source-copilot-analytics-tools.md
     - Compliance and Audit:
       - Evidence Pack Assembly: playbooks/compliance-and-audit/evidence-pack-assembly.md
       - Audit Readiness Checklist: playbooks/compliance-and-audit/audit-readiness-checklist.md

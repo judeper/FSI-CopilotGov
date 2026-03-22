@@ -1,113 +1,82 @@
 # Control 4.1: Copilot Admin Settings and Feature Management — Portal Walkthrough
 
-Step-by-step portal configuration for managing Microsoft 365 Copilot administrative settings and feature controls through the Copilot Control System in the Microsoft 365 Admin Center.
+Step-by-step portal review for the current Microsoft 365 Copilot administration model across Copilot settings, Agents, billing, and Cloud Policy.
 
 ## Prerequisites
 
-- **Role:** Global Administrator, Copilot Administrator, or Microsoft 365 Service Administrator
-- **License:** Microsoft 365 E5 with Copilot add-on
-- **Access:** Microsoft 365 Admin Center (admin.microsoft.com)
+- **Role:** AI Administrator (recommended), Global Reader for read-only review, or M365 Global Admin where broader tenant changes are required
+- **Access:** Microsoft 365 Admin Center and Cloud Policy service
+- **Governance prerequisite:** Approved rollout groups and change approval process
 
 ## Steps
 
-### Step 1: Access the Copilot Control System Overview Dashboard
+### Step 1: Review Copilot Overview
 
-**Portal:** Microsoft 365 Admin Center
+**Portal:** Microsoft 365 Admin Center  
 **Path:** Copilot > Overview
 
-1. Navigate to the Microsoft 365 Admin Center at admin.microsoft.com.
-2. In the left navigation, select **Copilot** to expand the Copilot Control System section.
-3. Select **Overview** to open the Copilot dashboard.
-4. Review each dashboard section:
-   - **License summary** — verify license assignments match the approved deployment list
-   - **Security posture** — check for flagged gaps (sensitivity labels, DLP, Conditional Access)
-   - **Usage analytics** — review adoption trends and feature engagement
-   - **Recommended actions** — evaluate each recommendation before acting
-5. Use the overview dashboard as the starting point for all Copilot governance activities — it provides links directly to relevant configuration areas.
+1. Open **Copilot > Overview**.
+2. Review readiness, adoption, and recommended actions.
+3. Capture evidence of who reviewed the dashboard and when.
 
-### Step 2: Configure Baseline Security Mode
+### Step 2: Review Copilot Settings Tabs
 
-**Portal:** Microsoft 365 Admin Center
-**Path:** Copilot > Settings > Security
+**Portal:** Microsoft 365 Admin Center  
+**Path:** Copilot > Settings
 
-1. From the Copilot Control System dashboard, navigate to **Copilot > Settings**.
-2. Select the **Security** tab to access Baseline Security Mode settings.
-3. Enable **Baseline Security Mode** to apply Microsoft's recommended security defaults.
-4. Review the default settings applied:
-   - Sensitivity label requirements for Copilot interactions
-   - DLP policy defaults for Copilot data access
-   - Conditional Access configuration for Copilot-licensed users
-5. Document the baseline configuration in the configuration register.
-6. For Recommended and Regulated tiers: note any customizations applied beyond the baseline and document the business justification.
+1. Open **User access** and confirm which users or groups can use Copilot.
+2. Open **Data access** and review web search and related data-source decisions.
+3. Open **Copilot actions** and review actions that affect feature behavior or connected experiences.
+4. Open **Other settings** and review tenant-level settings that affect the Copilot experience.
+5. Record any deviations from the approved baseline.
 
-### Step 3: Configure Feature Availability by User Group
+### Step 3: Review Agents Governance
 
-**Portal:** Microsoft 365 Admin Center
-**Path:** Copilot > Settings > Feature settings
+**Portal:** Microsoft 365 Admin Center  
+**Path:** Agents > Overview / All agents / Settings
 
-1. From the Copilot section, navigate to **Settings > Feature settings**.
-2. Review each Copilot feature and its current availability:
-   - Copilot in Word, Excel, PowerPoint, Outlook, Teams
-   - Microsoft 365 Copilot Chat
-   - Copilot in Loop, OneNote, Whiteboard
-3. For each feature, set availability by group:
-   - **Pilot group** — initial rollout users for testing
-   - **General availability group** — broader workforce access
-   - **Excluded group** — users restricted from specific features (e.g., temporary workers, compliance-restricted roles)
-4. Save configuration changes and document in the change register with approval reference.
+1. Open **Agents > Overview** and review governance signals.
+2. Open **All agents** to review inventory, requests, blocked agents, and ownerless agents.
+3. Open **Settings** and verify:
+   - allowed agent types
+   - sharing settings
+   - user access scope
 
-### Step 4: Configure Data and Privacy Settings
+### Step 4: Review Copilot Pages / Notebooks Policy
+
+**Portal:** Microsoft 365 Cloud Policy service  
+**Path:** `https://config.office.com` > Customization > Policy Management
+
+1. Review **Create and view Copilot Pages and Copilot Notebooks**.
+2. Review the code preview policy for Copilot Chat and Pages.
+3. Confirm the policy is scoped only to the intended user population.
+
+### Step 5: Review Billing Controls
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Copilot > Settings > Data and privacy
 
-1. From the Copilot section, navigate to **Settings > Data and privacy**.
-2. Review and configure:
-   - **Web grounding** — Enable or disable Copilot's ability to reference web content (recommended: Disabled for regulated environments)
-   - **Plugin access** — Control which plugins are available to Copilot users
-   - **Feedback collection** — Configure whether user feedback data is sent to Microsoft
-3. For FSI environments, set data and privacy settings to the most restrictive options during initial deployment.
+1. Open **Settings > Org settings > Self-service trials and purchases** and confirm Microsoft 365 Copilot self-service purchasing is configured as approved.
+2. Open **Billing > Pay-as-you-go services** and confirm whether any billing policies are active.
+3. Open **Cost Management** and review cost visibility if PAYG is enabled.
 
-### Step 5: Configure Copilot License Assignment
+### Step 6: Review Baseline Security Mode
 
-**Portal:** Microsoft 365 Admin Center
-**Path:** Billing > Licenses > Microsoft 365 Copilot
+**Portal:** Microsoft 365 Admin Center  
+**Path:** Settings > Org settings > Security & privacy
 
-1. Review current license assignments.
-2. Cross-reference against the license utilization summary from the Copilot > Overview dashboard.
-3. Assign Copilot licenses only to approved user groups per the governance plan.
-4. Remove licenses from users who have left the pilot group or no longer require access.
-5. Document the license assignment policy and approval workflow.
-
-### Step 6: Access Security Posture Details from Dashboard
-
-**Portal:** Microsoft 365 Admin Center
-**Path:** Copilot > Overview > Security posture links
-
-1. From the Copilot > Overview dashboard, use the security posture section to navigate directly to:
-   - **DSPM for AI** — review data exposure findings for Copilot grounding sources
-   - **DLP policies** — verify Copilot surfaces are covered by data loss prevention policies
-   - **Sensitivity labels** — confirm label coverage for documents and communications accessible to Copilot
-2. Address any recommended actions flagged in the security posture section.
-3. Document completion of recommended actions in the governance register.
+1. Review the organization's Baseline Security Mode posture.
+2. Confirm any relevant findings are reflected in Copilot governance decisions.
+3. Document Baseline Security Mode as a complementary Microsoft 365 baseline rather than a Copilot-specific tab.
 
 ## FSI Recommendations
 
-| Setting | Baseline | Recommended | Regulated |
-|---------|----------|-------------|-----------|
-| Baseline Security Mode | Enabled | Enabled + customized | Enabled + fully customized |
-| Web grounding | Enabled | Disabled | Disabled |
-| Plugin access | All plugins | Approved plugins only | Approved plugins only |
-| Feedback collection | Enabled | Organization-controlled | Disabled |
-| Feature rollout | All at once | Phased by group | Phased with compliance review |
-| Overview dashboard review | Quarterly | Monthly | Weekly |
-
-## Regulatory Alignment
-
-- **SOX Section 404** — Copilot > Overview dashboard provides centralized evidence of IT general controls governance and ongoing oversight
-- **FFIEC Management Booklet** — Supports compliance with IT governance and change management requirements
-- **OCC Heightened Standards** — Helps meet technology governance expectations for large institutions
-- **NYDFS Cybersecurity Regulation** — Supports access control and technology governance requirements
+| Area | Baseline | Recommended | Regulated |
+|------|----------|-------------|-----------|
+| Admin role | AI Administrator | AI Administrator + documented reviewer roles | AI Administrator with PIM / time-bound activation |
+| Web search | Disabled | Disabled by default | Disabled |
+| Agents | Approved types only | Approved types + scoped user access | Restricted to approved groups with compliance review |
+| Pages / Notebooks | Scoped by Cloud Policy | Scoped by Cloud Policy + quarterly review | Disabled for IB-sensitive populations unless exception approved |
+| PAYG | Review before enablement | Approved groups only | Approved groups only with documented spend governance |
 
 ## Next Steps
 

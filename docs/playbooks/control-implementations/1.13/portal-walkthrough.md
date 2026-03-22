@@ -14,7 +14,7 @@ Step-by-step portal procedures for assessing and governing Copilot extensibility
 ### Step 1: Review Current Copilot Extensions
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Extensions
+**Path:** Admin Center > Agents > Settings and Settings > Integrated apps
 
 Review the current state of Copilot extensions in the tenant:
 - Pre-built Microsoft plugins (Graph connectors, Microsoft apps)

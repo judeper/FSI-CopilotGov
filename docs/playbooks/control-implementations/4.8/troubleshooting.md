@@ -7,35 +7,36 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 ### Issue 1: PAYG Costs Not Appearing in Azure Billing
 
 - **Symptoms:** PAYG Copilot Chat billing has been enabled, but no charges appear in Azure Cost Management or the Azure invoice for the current month.
-- **Root Cause:** Azure billing for PAYG services typically has a 24–48 hour delay before charges appear in Cost Management. Alternatively, PAYG may not be correctly linked to the Azure subscription, or the Azure subscription and Microsoft 365 tenant may not be properly associated.
+- **Root Cause:** PAYG might not be correctly connected through a billing policy, the wrong users or groups may be covered, or the Azure subscription and Microsoft 365 tenant might not be properly associated.
 - **Resolution:**
-  1. Allow 48 hours after the first known PAYG usage event before expecting charges to appear in Azure Cost Management.
+  1. Allow for normal billing-report refresh if usage began recently.
   2. Verify the Azure subscription is linked to the correct Microsoft 365 tenant: in **Azure Portal > Subscriptions > [subscription] > Properties**, confirm the tenant ID matches your Microsoft 365 tenant.
-  3. Confirm PAYG Copilot Chat is enabled: in **Microsoft 365 Admin Center > Billing > Your products**, verify Microsoft 365 Copilot Chat (pay-as-you-go) appears as an active product.
-  4. Run Script 1 from the PowerShell Setup guide — if the Azure Commerce API returns no data, the subscription association or PAYG enablement is the root cause.
-  5. If the issue persists after 48 hours, open a Microsoft billing support ticket referencing the Azure subscription ID and the PAYG product name.
+  3. Confirm the billing policy is connected to the intended service in **Microsoft 365 Admin Center > Billing > Pay-as-you-go services**.
+  4. Verify the intended users or groups are covered by the billing policy.
+  5. Run Script 1 from the PowerShell Setup guide — if the Azure Commerce API returns no data, the subscription association or billing-policy setup is the likely root cause.
+  6. If the issue persists after the expected billing refresh, open a Microsoft billing support ticket referencing the Azure subscription ID and the PAYG product name.
 
-### Issue 2: Budget Caps Not Enforcing for PAYG Spending
+### Issue 2: Budget Notifications Not Triggering as Expected
 
-- **Symptoms:** Azure Cost Management budget caps have been configured, but alerts are not being triggered when spending approaches or exceeds the configured limits.
-- **Root Cause:** Budget cap enforcement in Azure Cost Management sends alerts but does not automatically block spending — it is advisory only. Alternatively, the budget scope may not match the Azure resource scope where PAYG charges are being tracked.
+- **Symptoms:** PAYG budgets exist, but business or finance owners aren't receiving the expected notifications.
+- **Root Cause:** Notification recipients might be incorrect, the wrong billing policy might be under review, or the budget wasn't configured on the active billing policy.
 - **Resolution:**
-  1. Confirm the budget scope: in **Azure Portal > Cost Management > Budgets**, verify the budget is scoped to the correct subscription, resource group, or management group that contains PAYG Copilot Chat charges.
-  2. Verify the alert recipient email addresses are correct and check spam/junk folders for missed alerts.
-  3. Understand that Azure Cost Management budgets are alert-based, not enforcement-based — to prevent spending above the cap, additional Azure Policy controls or PAYG access revocation procedures are needed.
-  4. For hard enforcement: establish a process to immediately disable PAYG access for a user group if its monthly budget is reached, pending management approval for reactivation.
-  5. Run Script 2 from the PowerShell Setup guide to review the budget configuration and confirm thresholds are set correctly.
+  1. Review the active billing policy in **Billing > Pay-as-you-go services**.
+  2. Confirm the budget and notification recipients are configured for that policy.
+  3. Verify the finance and business-owner addresses are current.
+  4. Confirm the policy is tied to the expected Azure subscription and service.
+  5. Run Script 2 from the PowerShell Setup guide to review existing budget objects.
 
-### Issue 3: PAYG Cost Allocation Tags Not Propagating
+### Issue 3: Costs Can't Be Mapped to the Correct Cost Owner
 
-- **Symptoms:** Azure Cost Management cost analysis shows PAYG Copilot Chat charges as "Untagged" or attributed to the wrong cost center, despite tag policies being in place.
-- **Root Cause:** Azure resource tags must be applied to the Azure subscription or resource group that receives the PAYG charges. If tags are applied at the wrong scope or tags are not inherited by the PAYG billing resource, costs appear untagged.
+- **Symptoms:** PAYG charges appear in Cost Management, but finance can't determine which department or approved population should own them.
+- **Root Cause:** Billing policy ownership was not documented clearly, or users and groups were added to the wrong billing policy.
 - **Resolution:**
-  1. In **Azure Portal > Subscriptions > [subscription] > Tags**, verify that department and cost center tags are applied at the subscription level.
-  2. Enable tag inheritance in **Azure Policy**: create an Azure Policy initiative that inherits subscription tags to all resources, including PAYG billing resources.
-  3. In **Azure Cost Management > Cost analysis**, filter by "Untagged" and review the resource IDs to identify the untagged PAYG resources.
-  4. Manually apply tags to identified resources and allow 24 hours for tag propagation to appear in cost analysis.
-  5. For ongoing tag compliance, configure an Azure Policy assignment that audits or enforces required tags on all resources in the PAYG subscription.
+  1. Review **Microsoft 365 Admin Center > Billing > Pay-as-you-go services**.
+  2. Confirm the billing policy owner, covered users or groups, and connected service.
+  3. Compare policy coverage with the current finance cost center mapping.
+  4. Move users or groups to the correct billing policy if needed and document the change.
+  5. Retain the corrected mapping in the governance register.
 
 ### Issue 4: Group-Based Licensing Assignment Failures
 
@@ -50,22 +51,23 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 ### Issue 5: Chargeback Allocations Do Not Match Finance Records
 
 - **Symptoms:** Department chargeback totals from the license report do not match what finance has budgeted or invoiced.
-- **Root Cause:** User department attributes in Entra ID may be outdated, or the chargeback calculation uses different rates.
+- **Root Cause:** User department attributes in Entra ID may be outdated, the chargeback calculation uses different rates, or PAYG policy ownership is mapped incorrectly.
 - **Resolution:**
   1. Audit Entra ID department attributes against HR records.
   2. Update stale department assignments for users who have moved teams.
   3. Align the per-user cost rate with the contracted license price.
   4. Reconcile the total license count with the Microsoft invoice.
+  5. Reconcile PAYG charges with the documented billing policy owner.
 
 ### Issue 6: Underutilization Report Flagging Active Users
 
 - **Symptoms:** The underutilization report flags users as inactive who claim they are regularly using Copilot.
-- **Root Cause:** Usage reporting data may have a 48-hour delay, or the user is using Copilot features that are not tracked in the standard usage report.
+- **Root Cause:** Usage reporting data may have a delay, or the user is using Copilot features that aren't fully reflected in the standard report.
 - **Resolution:**
   1. Allow 48 hours after the last activity before flagging as inactive.
   2. Cross-reference with the unified audit log for Copilot interaction events.
-  3. Verify the user is using Copilot in tracked applications (not just Microsoft 365 Copilot Chat in browser).
-  4. Implement a grace period before license reallocation (e.g., 60 days instead of 30).
+  3. Verify the user is using Copilot in tracked applications.
+  4. Implement a grace period before license reallocation (for example, 60 days instead of 30).
 
 ### Issue 7: License Reallocation Disrupting Active Users
 
@@ -73,30 +75,30 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 - **Root Cause:** The underutilization threshold may be too aggressive, or the user's activity pattern is intermittent but legitimate.
 - **Resolution:**
   1. Immediately reassign the Copilot license to the affected user.
-  2. Review the reallocation criteria and adjust thresholds (consider 60 or 90 day inactivity).
+  2. Review the reallocation criteria and adjust thresholds.
   3. Implement an approval workflow requiring manager confirmation before license removal.
-  4. Add a notification step that warns users before license removal (e.g., 14-day notice).
+  4. Add a notification step that warns users before license removal.
 
 ## Diagnostic Steps
 
 1. **Check license availability:** `Get-MgSubscribedSku | Where SkuPartNumber -like "*Copilot*"`
-2. **Verify PAYG enabled:** Confirm in Microsoft 365 Admin Center > Billing > Your products that PAYG Copilot Chat is listed as active.
+2. **Verify PAYG enabled:** Confirm in Microsoft 365 Admin Center > Billing > Pay-as-you-go services that the billing policy is connected to the intended service.
 3. **Check Azure subscription link:** Confirm the Azure subscription is associated with the correct Microsoft 365 tenant (Azure Portal > Subscriptions > Properties > Directory).
 4. **Review group licensing errors:** Check the group's licensing status in Entra Admin Center.
 5. **Verify department data:** `Get-MgUser -UserId "user@contoso.com" -Property Department`
-6. **Check PAYG billing delay:** PAYG charges have a 24–48 hour delay; cost tag propagation takes up to 24 hours.
+6. **Check PAYG billing timing:** Allow for normal billing-report refresh and confirm policy coverage before escalating.
 7. **Test usage data freshness:** Compare the report date with the current date.
 
 ## Escalation
 
 | Severity | Condition | Escalation Path |
 |----------|-----------|-----------------|
-| High | PAYG budget cap breached without alert — possible overspend | IT Finance + Management — review and reauthorize |
+| High | PAYG spend exceeds approved expectation without notification | IT Finance + Management — review billing policy and reauthorize if needed |
 | High | License reallocation disrupting active users | IT Admin — immediate reassignment |
-| Medium | PAYG costs not appearing after 48 hours | IT Admin + Microsoft Billing Support — subscription association |
+| Medium | PAYG costs not appearing after expected billing refresh | IT Admin + Microsoft Billing Support — subscription association |
 | Medium | Group licensing failures | IT Admin — investigate and resolve |
 | Medium | Chargeback discrepancies with finance (per-seat or PAYG) | IT + Finance — reconciliation |
-| Medium | PAYG tag propagation failures — untagged costs | IT Admin — Azure Policy enforcement |
+| Medium | PAYG costs can't be mapped to approved cost owner | IT Admin + Finance — review billing policy mapping |
 | Low | Minor reporting delays | Monitor and report at next cycle |
 
 ## Related Resources

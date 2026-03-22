@@ -14,14 +14,14 @@ Step-by-step portal configuration for governing declarative Copilot agents creat
 ### Step 1: Understand Declarative Agent Architecture
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Agents
+**Path:** Admin Center > Agents > Overview
 
 Review how declarative agents work: users can create custom Copilot agents scoped to specific SharePoint sites or document libraries. These agents answer questions based on the defined content scope, making governance of the underlying content critical.
 
 ### Step 2: Configure Agent Creation Policies
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Agents > Creation Settings
+**Path:** Admin Center > Agents > Settings > User access
 
 Configure who can create declarative agents:
 - Restrict agent creation to specific groups (e.g., IT team, approved power users)
@@ -41,7 +41,7 @@ For each declarative agent, the data access scope is defined by the SharePoint s
 ### Step 4: Configure Agent Sharing and Distribution
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Agents > Sharing
+**Path:** Admin Center > Agents > Settings > Sharing
 
 Control how declarative agents are shared:
 - Limit sharing to "People with existing access" to the underlying content

@@ -6,7 +6,7 @@ Step-by-step portal configuration for deploying insider risk detection that moni
 
 - Microsoft Purview Insider Risk Management Administrator role
 - Microsoft 365 E5 or E5 Compliance license
-- Security Copilot license (required for IRM Triage Agent)
+- Verify current tenant entitlement for the IRM Triage Agent feature (for example, current Security Copilot / Microsoft 365 E5 availability in your tenant)
 - HR connector configured (optional, for departing employee detection)
 - Insider risk program approved by legal and compliance
 
@@ -74,8 +74,8 @@ Data risk graphs (GA December 2025) visualize relationships between users, data 
 **Portal:** Microsoft Purview
 **Path:** Microsoft Purview > Insider Risk Management > Settings > Triage Agent
 
-The IRM Triage Agent (Security Copilot, GA December 2025) automates initial alert triage:
-1. Enable the Triage Agent — requires Security Copilot license
+The IRM Triage Agent automates initial alert triage:
+1. Enable the Triage Agent after verifying the feature is available for your tenant
 2. Initial deployment: enable in read-only mode and review categorization quality for 30 days
 3. After validation, enable auto-categorization to drive investigator queue prioritization
 4. For Regulated tier: configure human-in-the-loop requirement — alerts cannot be dismissed without investigator review of Triage Agent recommendation

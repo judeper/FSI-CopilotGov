@@ -51,16 +51,18 @@ Verify the license assignment processes successfully with no errors.
 ### Step 4: Configure Pay-As-You-Go (PAYG) Copilot Chat
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Billing > Licenses (Azure billing linkage) or Azure portal > Cost Management
+**Path:** Admin Center > Billing > Pay-as-you-go services / Cost Management
 
-If deploying PAYG Copilot Chat ($0.01/message) for pilot users or occasional-access populations:
+If deploying PAYG Copilot Chat for pilot users or occasional-access populations:
 
-1. Verify PAYG Copilot Chat is enabled for the tenant in the Microsoft 365 Admin Center
-2. Navigate to Azure portal > Cost Management to set up spend alerts and budget limits for PAYG usage
-3. Configure per-department or per-user cost tracking to ensure PAYG spending is attributed correctly
-4. Document which users are on the PAYG model vs. per-seat licensing in the deployment plan
+1. Create or review the billing policy tied to the correct Azure subscription.
+2. Add the approved users or groups to the billing policy and document the cost owner.
+3. Add a budget limit and notification routing to the billing policy.
+4. Connect the billing policy to Microsoft 365 Copilot Chat.
+5. Review **Settings > Org settings > Self-service trials and purchases** and document the per-product self-service state for Microsoft 365 Copilot and related products.
+6. Record which populations are on the PAYG model versus per-seat licensing in the deployment plan.
 
-**Note:** PAYG users do not require individual license assignment — any user with an appropriate base license can access Copilot Chat at the metered rate once PAYG is enabled. Apply governance policies to cover PAYG users the same as per-seat users.
+**Note:** PAYG users do not require individual full-seat assignment for Copilot Chat, but only the users or groups covered by the connected billing policy should receive metered access. Apply the same governance controls to PAYG users as to seat-licensed users.
 
 ### Step 5: Verify Prerequisite License Stack
 

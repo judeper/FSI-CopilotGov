@@ -14,7 +14,7 @@ Step-by-step portal procedures for establishing change management and adoption p
 ### Step 1: Configure Copilot Deployment Settings
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Settings > Microsoft 365 Copilot > Deployment
+**Path:** Admin Center > Copilot > Overview / Settings > User access
 
 Review and configure deployment settings that affect the user experience:
 - Enable or disable Copilot features by workload (Word, Excel, PowerPoint, Teams, Outlook)

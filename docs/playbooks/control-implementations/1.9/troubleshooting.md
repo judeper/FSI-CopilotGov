@@ -84,7 +84,7 @@ Common issues and resolution steps for Copilot license management.
 1. **Check license status:** `Get-MgUser -UserId <upn> -Property AssignedLicenses`
 2. **Verify group membership:** `Get-MgGroupMember -GroupId <id>` and confirm user is listed
 3. **Review assignment errors:** Entra ID > Groups > [Group] > Licenses > error details
-4. **Check tenant settings:** Admin Center > Settings > Microsoft 365 Copilot
+4. **Check tenant settings:** Admin Center > Copilot > Settings and Billing > Licenses
 5. **Review audit logs:** Search for license assignment events in Entra ID audit logs
 
 ## Escalation

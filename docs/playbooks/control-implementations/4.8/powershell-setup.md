@@ -1,6 +1,6 @@
 # Control 4.8: Cost Allocation and License Optimization — PowerShell Setup
 
-Automation scripts for Copilot license management, cost allocation, pay-as-you-go (PAYG) cost monitoring, budget cap configuration, and optimization reporting.
+Automation scripts for Copilot license management, cost allocation, pay-as-you-go (PAYG) cost monitoring, budget review, and optimization reporting.
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ Connect-AzAccount  # Authenticate with Billing Administrator or Cost Management 
 ### Script 1: PAYG Cost Monitoring — Monthly Billing Report
 
 ```powershell
-# Monitor pay-as-you-go Copilot Chat costs from Azure Commerce billing
+# Monitor pay-as-you-go Copilot costs from Azure Commerce billing
 # Requires: Az.CostManagement module, Cost Management Reader or Contributor role on Azure subscription
 # Note: Replace $SubscriptionId with your organization's Azure subscription ID
 
@@ -34,105 +34,54 @@ $SubscriptionId = "<your-subscription-id>"
 $StartDate = (Get-Date -Day 1).ToString("yyyy-MM-dd")   # First day of current month
 $EndDate = (Get-Date).ToString("yyyy-MM-dd")             # Today
 
-# Retrieve PAYG Copilot Chat costs for the current billing month
+# Retrieve PAYG Copilot costs for the current billing month
 $costData = Get-AzConsumptionUsageDetail `
     -SubscriptionId $SubscriptionId `
     -StartDate $StartDate `
     -EndDate $EndDate
 
-# Filter for Copilot Chat metered billing
+# Filter for Copilot metered billing
 $copilotPaygCosts = $costData | Where-Object {
     $_.ServiceName -like "*Copilot*" -or $_.MeterName -like "*Copilot*"
 }
 
 if ($copilotPaygCosts.Count -gt 0) {
     $totalCost = ($copilotPaygCosts | Measure-Object -Property PretaxCost -Sum).Sum
-    Write-Host "PAYG Copilot Chat Costs — Current Month ($StartDate to $EndDate):" -ForegroundColor Cyan
+    Write-Host "PAYG Copilot Costs — Current Month ($StartDate to $EndDate):" -ForegroundColor Cyan
     Write-Host "Total PAYG cost: `$$([math]::Round($totalCost, 2)) USD"
-    Write-Host "Estimated messages at `$0.01/message: $([math]::Round($totalCost / 0.01, 0))"
 
-    # Group by department tag
-    $bydept = $copilotPaygCosts | Group-Object { $_.Tags['Department'] } | ForEach-Object {
-        [PSCustomObject]@{
-            Department = if ($_.Name) { $_.Name } else { "Untagged" }
-            Cost       = [math]::Round(($_.Group | Measure-Object PretaxCost -Sum).Sum, 2)
-        }
-    } | Sort-Object Cost -Descending
-
-    Write-Host ""
-    Write-Host "PAYG Cost by Department:" -ForegroundColor Yellow
-    $bydept | Format-Table -AutoSize
-    $bydept | Export-Csv "PAYGCopilotCost_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+    $copilotPaygCosts |
+        Select-Object UsageStart, ServiceName, MeterName, ResourceGroupName, PretaxCost |
+        Export-Csv "PAYGCopilotCost_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+    Write-Host "Detailed PAYG rows exported for reconciliation." -ForegroundColor Yellow
 } else {
-    Write-Host "No PAYG Copilot Chat charges found for the current billing period." -ForegroundColor Green
+    Write-Host "No PAYG Copilot charges found for the current billing period." -ForegroundColor Green
     Write-Host "Either PAYG is not enabled, or no metered usage has occurred this month."
 }
 ```
 
-### Script 2: Configure PAYG Budget Cap via Azure Cost Management
+### Script 2: Review PAYG Budget Configuration
 
 ```powershell
-# Configure or verify PAYG budget caps for Copilot Chat spending
-# Requires: Az.CostManagement module, Cost Management Contributor role
-# Note: Replace scope and amounts per your organization's approved budget authority
+# Review PAYG budget settings for Copilot spending
+# Requires: Az.CostManagement module and rights to view Cost Management budgets
+# Note: Use the portal walkthrough for the authoritative billing-policy setup flow
 
 param(
-    [string]$SubscriptionId = "<your-subscription-id>",
-    [string]$DepartmentName = "Finance",        # Department name for budget tracking
-    [decimal]$MonthlyBudgetLimit = 500.00,      # Monthly budget cap in USD — adjust per approval
-    [string]$AlertRecipient = "itfinance@contoso.com"
+    [string]$SubscriptionId = "<your-subscription-id>"
 )
 
-$budgetName = "CopilotPAYG-$DepartmentName"
 $scope = "/subscriptions/$SubscriptionId"
 
-# Create or update a budget with 80% and 100% alert thresholds
-$budget = @{
-    Name        = $budgetName
-    Amount      = $MonthlyBudgetLimit
-    TimeGrain   = "Monthly"
-    TimePeriod  = @{
-        StartDate = (Get-Date -Day 1).ToString("yyyy-MM-ddTHH:mm:ssZ")
-        EndDate   = (Get-Date).AddYears(1).ToString("yyyy-MM-ddTHH:mm:ssZ")
-    }
-    Notifications = @{
-        Alert80Pct = @{
-            Enabled       = $true
-            Operator      = "GreaterThan"
-            Threshold     = 80
-            ContactEmails = @($AlertRecipient)
-            ThresholdType = "Actual"
-        }
-        Alert100Pct = @{
-            Enabled       = $true
-            Operator      = "GreaterThan"
-            Threshold     = 100
-            ContactEmails = @($AlertRecipient)
-            ThresholdType = "Actual"
-        }
-    }
-}
-
-try {
-    New-AzConsumptionBudget `
-        -Name $budgetName `
-        -Amount $MonthlyBudgetLimit `
-        -Category Cost `
-        -TimeGrain Monthly `
-        -StartDate (Get-Date -Day 1) `
-        -EndDate (Get-Date).AddYears(1) `
-        -Scope $scope
-    Write-Host "Budget '$budgetName' configured: `$$MonthlyBudgetLimit/month with 80%/100% alerts to $AlertRecipient" -ForegroundColor Green
-} catch {
-    Write-Warning "Budget configuration failed: $($_.Exception.Message)"
-    Write-Host "Manual action: Configure budget cap in Azure Portal > Cost Management > Budgets"
-}
+Get-AzConsumptionBudget -Scope $scope |
+    Select-Object Name, Amount, CurrentSpend, TimeGrain |
+    Format-Table -AutoSize
 ```
 
 ### Script 3: PAYG Cost Anomaly Detection
 
 ```powershell
-# Detect unusual PAYG Copilot Chat spending patterns
+# Detect unusual PAYG Copilot spending patterns
 # Compares current month spending rate to previous month baseline
 # Requires: Az.CostManagement module
 
@@ -158,7 +107,7 @@ $daysInMonth  = [int](Get-Date -Day 1).AddMonths(1).AddDays(-1).Day
 $dayOfMonth   = (Get-Date).Day
 $runRate      = if ($dayOfMonth -gt 0) { ($currentTotal / $dayOfMonth) * $daysInMonth } else { 0 }
 
-Write-Host "PAYG Copilot Chat Anomaly Detection:" -ForegroundColor Cyan
+Write-Host "PAYG Copilot Anomaly Detection:" -ForegroundColor Cyan
 Write-Host "  Previous month actual: `$$([math]::Round($prevTotal, 2))"
 Write-Host "  Current month to-date: `$$([math]::Round($currentTotal, 2))"
 Write-Host "  Current month run rate: `$$([math]::Round($runRate, 2))"
@@ -278,7 +227,7 @@ if ($confirm -eq "CONFIRM") {
 | Task | Frequency | Script |
 |------|-----------|--------|
 | PAYG monthly billing report | Monthly | Script 1 |
-| PAYG budget cap configuration | One-time setup, update quarterly | Script 2 |
+| PAYG budget review | Monthly or after policy changes | Script 2 |
 | PAYG cost anomaly detection | Monthly | Script 3 |
 | License inventory report | Monthly | Script 4 |
 | Department chargeback (per-seat) | Monthly | Script 5 |
