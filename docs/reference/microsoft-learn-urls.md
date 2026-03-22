@@ -188,4 +188,23 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 ---
 
+## Microsoft Open Source Tools
+
+These Microsoft-authored open-source repositories supplement native Copilot readiness, usage, impact, and audit reporting.
+
+| Tool | URL | Purpose |
+|------|-----|---------|
+| Analytics Hub | https://github.com/microsoft/Analytics-Hub | Discovery hub for Microsoft Copilot analytics companion repositories |
+| AI-in-One Dashboard | https://github.com/microsoft/AI-in-One-Dashboard | Power BI dashboard for Copilot, Copilot Chat, and agent analytics |
+| Copilot Chat & Agent Intelligence | https://github.com/microsoft/CopilotChatAnalytics | Power BI templates for Copilot Chat and agent adoption analytics |
+| M365 Copilot Readiness Report | https://github.com/microsoft/M365UsageAnalytics | License readiness and allocation analytics for Microsoft 365 Copilot |
+| Decoding Super Usage | https://github.com/microsoft/DecodingSuperUsage | Viva Insights-based super-user adoption analytics |
+| Super User Impact | https://github.com/microsoft/superuserimpact | Viva Insights-based impact and work-pattern measurement |
+| CustomizeCopilot | https://github.com/microsoft/customizecopilot | Add-on pages for extending the Viva Insights-based Copilot reports |
+| PAX (Portable Audit eXporter) | https://github.com/microsoft/PAX | PowerShell scripts to automate Purview and Graph audit exports |
+
+See the [Microsoft Open-Source Copilot Analytics Tools playbook](../playbooks/governance-operations/microsoft-open-source-copilot-analytics-tools.md) for framework-specific fit guidance.
+
+---
+
 *FSI Copilot Governance Framework v1.1 - February 2026*

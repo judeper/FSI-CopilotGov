@@ -30,9 +30,9 @@ The framework has three content layers:
 
 - **Framework** (`docs/framework/`) — Strategic governance context (executive summary, architecture, regulatory landscape, operating model)
 - **Controls** (`docs/controls/pillar-{1-4}-*/`) — 56 technical controls across 4 lifecycle pillars specifying *what* to configure and *why*
-- **Playbooks** (`docs/playbooks/control-implementations/{control-id}/`) — 4 playbooks per control specifying *how*: `portal-walkthrough.md`, `powershell-setup.md`, `verification-testing.md`, `troubleshooting.md`
+- **Playbooks** (`docs/playbooks/`) — control implementation playbooks in `control-implementations/{control-id}/` plus cross-control operational guidance in folders such as `governance-operations/` and `compliance-and-audit/`
 
-Supporting content: `docs/getting-started/` (quick start, checklist), `docs/reference/` (regulatory mappings, glossary, admin toggles, FAQ), `docs/start-here.md` (newcomer orientation page).
+Supporting content: `docs/getting-started/` (quick start, checklist, phased rollout), `docs/reference/` (regulatory mappings, glossary, admin toggles, FAQ, external tool references), `docs/start-here.md` (newcomer orientation page).
 
 ### Interactive Assessment Tool
 
