@@ -43,6 +43,7 @@ Ongoing operational procedures:
 | Playbook | Purpose |
 |----------|---------|
 | [Governance Operating Calendar](governance-operations/governance-operating-calendar.md) | Monthly/quarterly/annual governance activities |
+| [Microsoft Open-Source Copilot Analytics Tools](governance-operations/microsoft-open-source-copilot-analytics-tools.md) | Companion repository guide for Analytics Hub tools covering readiness, usage, impact, and audit reporting |
 | [RACI Governance Template](governance-operations/raci-governance-template.md) | Responsibility assignment for governance activities |
 | [Escalation Matrix](governance-operations/escalation-matrix.md) | Incident and issue escalation procedures |
 
