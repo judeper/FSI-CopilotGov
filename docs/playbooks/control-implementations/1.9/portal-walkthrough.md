@@ -53,7 +53,7 @@ Verify the license assignment processes successfully with no errors.
 **Portal:** Microsoft 365 Admin Center
 **Path:** Admin Center > Billing > Pay-as-you-go services / Cost Management
 
-If deploying PAYG Copilot Chat for pilot users or occasional-access populations:
+If deploying PAYG Copilot Chat (metered per-message pricing; refer to [Microsoft 365 Copilot pricing](https://www.microsoft.com/en-us/microsoft-365/copilot#plans) for current rates) for pilot users or occasional-access populations:
 
 1. Create or review the billing policy tied to the correct Azure subscription.
 2. Add the approved users or groups to the billing policy and document the cost owner.

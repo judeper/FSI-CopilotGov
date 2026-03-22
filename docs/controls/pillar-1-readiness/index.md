@@ -6,7 +6,7 @@
 
 ## Overview
 
-Pillar 1 establishes the foundational readiness posture required before deploying Microsoft 365 Copilot into a regulated financial services environment. These 13 controls address the critical pre-deployment activities that help reduce risk from data oversharing, permission sprawl, inadequate classification, and insufficient organizational preparedness.
+Pillar 1 establishes the foundational readiness posture required before deploying Microsoft 365 Copilot into a regulated financial services environment. These 15 controls address the critical pre-deployment activities that help reduce risk from data oversharing, permission sprawl, inadequate classification, and insufficient organizational preparedness.
 
 Financial regulators increasingly expect that institutions demonstrate due diligence *before* deploying AI capabilities -- not after. The controls in this pillar provide a structured approach to assessing data hygiene, remediating access risks, planning license strategy, and preparing the organization for responsible Copilot adoption.
 
@@ -46,6 +46,8 @@ Key regulatory drivers for pre-deployment readiness:
 | [1.11](1.11-change-management-adoption.md) | Organizational Change Management and Adoption Planning | Change management framework for Copilot rollout including stakeholder communication, user readiness assessment, and adoption metrics | Recommended |
 | [1.12](1.12-training-awareness.md) | Training and Awareness Program | Role-based training program covering responsible AI use, data sensitivity, prompt hygiene, and regulatory boundaries for Copilot users | Baseline |
 | [1.13](1.13-extensibility-readiness.md) | Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents) | Pre-deployment assessment for Copilot extensibility features including Graph connectors, plugins, and declarative agents | Regulated |
+| [1.14](1.14-item-level-permission-scanning.md) | Item-Level Permission Scanning | Extend oversharing detection to individual files and folders with unique permissions that site-level tools miss, addressing the gap between site-level DAG and Copilot's file-level content surfacing | Recommended |
+| [1.15](1.15-sharepoint-permissions-drift.md) | SharePoint Permissions Drift Detection | Establish permissions baselines and continuous drift detection to identify unauthorized or unintended permission changes that expand Copilot's data surface | Recommended |
 
 ---
 
@@ -62,7 +64,9 @@ Phase 1: Assessment (Week 1-2)
 Phase 2: Remediation (Week 3-4)
 ├── Control 1.2  SharePoint Oversharing Detection and Remediation
 ├── Control 1.5  Sensitivity Label Taxonomy Review
-└── Control 1.7  SharePoint Advanced Management Readiness
+├── Control 1.7  SharePoint Advanced Management Readiness
+├── Control 1.14 Item-Level Permission Scanning
+└── Control 1.15 SharePoint Permissions Drift Detection
 
 Phase 3: Configuration (Week 5-6)
 ├── Control 1.3  Restricted SharePoint Search
@@ -85,6 +89,8 @@ Pillar 1 controls are primarily foundational and have few intra-pillar dependenc
 | This Control | Feeds Into | Relationship |
 |-------------|-----------|--------------|
 | 1.2 Oversharing Detection | 2.x DLP Policies | Oversharing findings inform DLP rule creation |
+| 1.14 Item-Level Scanning | 1.2 Oversharing Detection, 2.x DLP Policies | Item-level findings extend site-level oversharing remediation |
+| 1.15 Permissions Drift | 1.2 Oversharing Detection, 2.x Conditional Access | Drift findings feed ongoing access control governance |
 | 1.5 Sensitivity Labels | 2.x Label Enforcement | Label taxonomy must be defined before enforcement |
 | 1.6 Permission Audit | 2.x Conditional Access | Permission findings inform access policies |
 | 1.9 License Planning | All Pillars | Licensing determines which governance tools are available |
@@ -101,4 +107,4 @@ Pillar 1 controls are primarily foundational and have few intra-pillar dependenc
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - February 2026*
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

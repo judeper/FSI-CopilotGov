@@ -2,6 +2,9 @@
 
 Risk assessment template for evaluating M365 Copilot use cases and deployment scenarios in financial services environments.
 
+!!! warning "Disclaimer"
+    This playbook is provided for informational purposes only and does not constitute legal or regulatory advice. Consult legal counsel for specific compliance requirements.
+
 ---
 
 ## Assessment Information
@@ -102,3 +105,5 @@ For each identified risk, document existing and additional controls:
 ---
 
 *Complete this assessment for each new Copilot use case. Store completed assessments in the risk management repository with 7-year retention.*
+
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

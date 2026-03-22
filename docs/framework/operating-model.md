@@ -424,4 +424,4 @@ M365 Copilot governance should integrate with, not replace, existing IT governan
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - February 2026*
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

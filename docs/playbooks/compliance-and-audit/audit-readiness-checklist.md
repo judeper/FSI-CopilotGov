@@ -2,6 +2,9 @@
 
 Pre-examination preparation checklist for regulatory examinations and internal audits of M365 Copilot governance controls.
 
+!!! warning "Disclaimer"
+    This playbook is provided for informational purposes only and does not constitute legal or regulatory advice. Consult legal counsel for specific compliance requirements.
+
 ---
 
 ## 30 Days Before Examination
@@ -122,3 +125,5 @@ Prepare responses for these frequently asked examination questions:
 ---
 
 *Review and update this checklist annually and after each examination to incorporate lessons learned.*
+
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

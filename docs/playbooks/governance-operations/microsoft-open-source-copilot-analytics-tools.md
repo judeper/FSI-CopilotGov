@@ -140,4 +140,4 @@ PAX is also relevant to AgentGov, where it already supports AI audit and reporti
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - March 2026*
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

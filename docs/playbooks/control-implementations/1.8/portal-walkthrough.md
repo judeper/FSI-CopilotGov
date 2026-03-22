@@ -5,7 +5,7 @@ Step-by-step portal procedures for reviewing and optimizing the Microsoft 365 in
 ## Prerequisites
 
 - SharePoint Administrator and Global Reader roles
-- Access to SharePoint Admin Center and Microsoft Purview
+- Access to SharePoint admin center and Microsoft Purview
 - Content inventory documentation or content management system records
 - Information architecture governance committee or content owners
 
@@ -13,10 +13,10 @@ Step-by-step portal procedures for reviewing and optimizing the Microsoft 365 in
 
 ### Step 1: Inventory Site Architecture
 
-**Portal:** SharePoint Admin Center
+**Portal:** SharePoint admin center
 **Path:** SharePoint Admin > Active Sites
 
-Review the complete site inventory to understand the current information architecture. Categorize sites by:
+Review the complete site inventoryto understand the current information architecture. Categorize sites by:
 - **Type:** Team sites, communication sites, hub sites, OneDrive
 - **Purpose:** Departmental, project, cross-functional, knowledge base
 - **Hub associations:** Which sites are connected to hub sites
@@ -26,7 +26,7 @@ Export the site list for documentation and analysis.
 
 ### Step 2: Evaluate Hub Site Structure
 
-**Portal:** SharePoint Admin Center
+**Portal:** SharePoint admin center
 **Path:** SharePoint Admin > Active Sites > Hub sites filter
 
 Review the hub site hierarchy. Hub sites define content relationships that affect how Copilot discovers and associates content. Verify:
@@ -38,7 +38,7 @@ Identify opportunities to improve hub structure for better Copilot content groun
 
 ### Step 3: Review Content Type and Metadata Standards
 
-**Portal:** SharePoint Admin Center
+**Portal:** SharePoint admin center
 **Path:** SharePoint Admin > Content Type Gallery
 
 Review the content type hierarchy published from the content type hub. Consistent content types and metadata improve Copilot's ability to understand and classify content accurately.
@@ -47,7 +47,7 @@ Verify that FSI-relevant content types are defined (e.g., client agreements, reg
 
 ### Step 4: Assess Taxonomy and Term Store
 
-**Portal:** SharePoint Admin Center
+**Portal:** SharePoint admin center
 **Path:** SharePoint Admin > Term Store
 
 Review the managed metadata term store for FSI-relevant term groups:

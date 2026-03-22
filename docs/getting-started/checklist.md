@@ -1,6 +1,6 @@
 # Implementation Checklist
 
-Use this checklist to track implementation of all 54 controls across the four governance pillars. Each item includes its governance level and space for status tracking.
+Use this checklist to track implementation of all 56 controls across the four governance pillars. Each item includes its governance level and space for status tracking.
 
 !!! warning "Disclaimer"
     This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. See [full disclaimer](../disclaimer.md).
@@ -23,7 +23,7 @@ Use this checklist to track implementation of all 54 controls across the four go
 
 ---
 
-## Pillar 1: Readiness and Assessment (13 Controls)
+## Pillar 1: Readiness and Assessment (15 Controls)
 
 Pre-deployment data hygiene, oversharing remediation, permissions audit, sensitivity label review, licensing, vendor risk, change management, and extensibility readiness.
 
@@ -147,4 +147,4 @@ Download or copy this checklist into your governance tracking system. Recommende
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - February 2026*
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

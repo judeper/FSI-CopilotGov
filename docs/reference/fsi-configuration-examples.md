@@ -240,7 +240,7 @@ For OCC 2011-12 / SR 11-7 compliance, document Copilot in the model inventory:
 | Meeting recap with Copilot | **On** | Valuable for documenting client meetings; supports fiduciary duty documentation |
 | Third-party plugins | **Off** | Vendor governance |
 | User-deployed plugins | **Off** | Central control |
-| Graph connectors | **Review** | May enable CRM connector (e.g., Salesforce, Dynamics) after security review to allow Copilot to reference client context |
+| Graph connectors | **Review** | May enable CRM connector (e.g., Salesforce, Dynamics 365) after security review to allow Copilot to reference client context |
 | User-created agents | **Off** | Central governance |
 | Copilot Pages sharing | **Specific people** | Client data protection |
 | Copilot in Excel | **On with DLP** | Portfolio analysis is a high-value Copilot use case; DLP policies protect client account data |
@@ -411,4 +411,4 @@ Insurance companies face unique challenges due to state-by-state regulatory vari
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - February 2026*
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

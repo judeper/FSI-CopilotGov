@@ -134,7 +134,7 @@ $labelSummary
 - **Next Assessment Due:** $((Get-Date).AddMonths(6).ToString("yyyy-MM-dd"))
 
 ### Control Framework
-- Pillar 1: Readiness and Assessment (13 controls)
+- Pillar 1: Readiness and Assessment (15 controls)
 - Pillar 2: Security and Protection (15 controls)
 - Pillar 3: Compliance and Audit (13 controls)
 - Pillar 4: Operations and Monitoring (13 controls)
@@ -149,6 +149,8 @@ Write-Host "FFIEC governance report generated with live tenant data" -Foreground
 ```powershell
 # Generate FFIEC examination readiness scorecard with tenant verification
 # Booklet versions per FFIEC: InfoSec (2016), AIO (2021), Audit (2024), Management (2015)
+# NEEDS_HUMAN_REVIEW: Verify publication years against https://ithandbook.ffiec.gov/
+# particularly "Audit (2024)" which may not yet be published.
 
 $booklets = @(
     @{Booklet="Audit (2024)"; Controls="3.1, 3.12"; VerifyCmdlet="Get-AdminAuditLogConfig"},

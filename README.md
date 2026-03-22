@@ -11,7 +11,7 @@
 
 ## What This Is
 
-A technical documentation framework providing **54 controls** and **216 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
+A technical documentation framework providing **56 controls** and **224 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
 
 This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat, Copilot Pages**, and **SharePoint declarative agents** — plus extensibility via **plugins, Graph connectors, and declarative agents**.
 
@@ -42,14 +42,14 @@ This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outloo
 | Layer | Purpose | Content |
 |-------|---------|---------|
 | **Framework** (Strategic) | Board/executive governance context | Executive summary, regulatory landscape, architecture, operating model |
-| **Controls** (Technical) | What to configure and why | 54 controls across 4 lifecycle pillars with FSI regulatory mappings |
+| **Controls** (Technical) | What to configure and why | 56 controls across 4 lifecycle pillars with FSI regulatory mappings |
 | **Playbooks** (Implementation) | How to configure step-by-step | Portal walkthroughs, PowerShell automation, verification, troubleshooting |
 
 ### Four Lifecycle Pillars
 
 | Pillar | Focus | Controls | Primary Admin Portals |
 |--------|-------|----------|-----------------------|
-| **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | 13 | Purview, SharePoint Admin, M365 Admin |
+| **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | 15 | Purview, SharePoint Admin, M365 Admin |
 | **2. Security & Protection** | DLP, sensitivity labels, conditional access, information barriers, Defender | 15 | Purview, Entra, Defender |
 | **3. Compliance & Audit** | Audit logging, retention, eDiscovery, FINRA 2210, supervision, regulatory reporting | 13 | Purview, M365 Admin |
 | **4. Operations & Monitoring** | Feature management, per-app toggles, analytics, cost tracking, incident response | 13 | M365 Admin, Viva Insights, Teams Admin |
@@ -128,7 +128,7 @@ FSI-CopilotGov/
 ├── docs/
 │   ├── framework/          # Layer 1: Strategic governance documents
 │   ├── controls/           # Layer 2: Technical control specifications
-│   │   ├── pillar-1-readiness/    # 13 controls
+│   │   ├── pillar-1-readiness/    # 15 controls
 │   │   ├── pillar-2-security/     # 15 controls
 │   │   ├── pillar-3-compliance/   # 13 controls
 │   │   └── pillar-4-operations/   # 13 controls
@@ -154,8 +154,8 @@ FSI-CopilotGov/
 | **Pillars** | Security, Management, Reporting, SharePoint | Readiness, Security, Compliance, Operations |
 | **Governance Model** | Zones 1-2-3 (Personal/Team/Enterprise agents) | Org-wide with Baseline/Recommended/Regulated levels |
 | **Key Concepts** | Managed Environments, Connectors, DLP Connector Policies | Semantic Index, Graph grounding, Restricted SharePoint Search, DSPM for AI |
-| **Controls** | 71 | 54 |
-| **Playbooks** | 284 | 216 |
+| **Controls** | 71 | 56 |
+| **Playbooks** | 284 | 224 |
 
 Both repositories are **standalone** — no cross-repo dependencies. Where governance topics overlap (e.g., sensitivity labels, audit logging), each repo provides self-contained guidance tailored to its scope.
 
@@ -187,4 +187,4 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 ---
 
-*FSI Copilot Governance Framework v1.0 - February 2026*
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

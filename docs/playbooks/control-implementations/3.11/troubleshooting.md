@@ -114,5 +114,5 @@ Common issues and resolution steps for records management of Copilot-generated c
 - [Control 3.2: Data Retention Policies](../3.2/portal-walkthrough.md)
 - [Control 3.12: Evidence Collection](../3.12/portal-walkthrough.md)
 - [Control 2.3: Conditional Access Policies](../2.3/portal-walkthrough.md)
-- [SEC Rule 17a-4 (Records to Be Preserved)](https://www.ecfr.gov/current/title-17/chapter-II/part-240/subject-group-Records/section-240.17a-4)
+- [SEC Rule 17a-4 (Records to Be Preserved)](https://www.ecfr.gov/current/title-17/chapter-II/part-240/section-240.17a-4)
 - [Microsoft Purview audit retention policies](https://learn.microsoft.com/en-us/purview/audit-log-retention-policies)

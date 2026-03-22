@@ -47,7 +47,7 @@ Common issues and resolution steps for AI disclosure and transparency controls.
 ## Diagnostic Steps
 
 1. **Check label deployment:** `Get-LabelPolicy | Select Name, Enabled, DistributionStatus`
-2. **Review DLP incidents:** `Get-DlpDetailReport -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date)`
+2. **Review DLP incidents:** `Get-DlpDetectionsReport -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date)` <!-- Get-DlpDetailReport deprecated; use Get-DlpDetectionsReport in current Exchange Online PowerShell -->
 3. **Verify content markings:** Open a labeled document and check for header/footer visibility.
 4. **Test DLP enforcement:** Send a test email to an external address without disclosure language.
 

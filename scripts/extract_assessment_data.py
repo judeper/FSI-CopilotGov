@@ -3,7 +3,7 @@
 Extract assessment data from FSI-CopilotGov control markdown files.
 
 Generates docs/javascripts/assessment-data.json for the Governance Readiness
-Assessment Tool. Parses all 54 controls to extract metadata, verification
+Assessment Tool. Parses all 56 controls to extract metadata, verification
 criteria, governance level requirements, and role assignments.
 
 Also parses:
@@ -33,7 +33,7 @@ CONTROLS_DIR = DOCS_DIR / "controls"
 OUTPUT_PATH = DOCS_DIR / "javascripts" / "assessment-data.json"
 
 PILLARS = {
-    1: {"name": "Readiness & Assessment", "folder": "pillar-1-readiness", "count": 13},
+    1: {"name": "Readiness & Assessment", "folder": "pillar-1-readiness", "count": 15},
     2: {"name": "Security & Protection", "folder": "pillar-2-security", "count": 15},
     3: {"name": "Compliance & Audit", "folder": "pillar-3-compliance", "count": 13},
     4: {"name": "Operations & Monitoring", "folder": "pillar-4-operations", "count": 13},
@@ -43,7 +43,7 @@ PILLARS = {
 ROLE_CONTROLS = {
     "M365 Global Admin": ["1.9", "1.11", "1.12", "4.1", "4.2", "4.3", "4.4", "4.5", "4.7", "4.8", "4.12"],
     "Purview Compliance Admin": ["1.5", "2.1", "2.2", "2.5", "2.10", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"],
-    "SharePoint Admin": ["1.1", "1.2", "1.3", "1.6", "1.7", "1.8", "2.11", "2.12"],
+    "SharePoint Admin": ["1.1", "1.2", "1.3", "1.6", "1.7", "1.8", "1.14", "1.15", "2.11", "2.12"],
     "Entra Global Admin": ["2.3", "2.4", "2.15"],
     "Exchange Online Admin": ["2.8"],
     "Teams Admin": ["4.2", "4.3"],
@@ -80,7 +80,7 @@ PHASE_CONTROLS = {
         "name": "Expansion",
         "duration": "3-12 months",
         "controls": {
-            "1.13": "Medium", "2.9": "Medium", "2.10": "Medium",
+            "1.13": "Medium", "1.14": "Medium", "1.15": "Medium", "2.9": "Medium", "2.10": "Medium",
             "2.11": "Medium", "2.12": "Medium", "2.13": "Medium",
             "2.14": "Medium", "2.15": "Medium",
             "3.7": "Medium", "3.8": "Medium", "3.9": "Medium",
@@ -587,9 +587,9 @@ def build_output():
             else:
                 errors.append(f"{pillar_num}.{ctrl_num}")
 
-    # Validate we got all 54 controls
-    if len(controls) != 54:
-        print(f"\nERROR: Expected 54 controls, got {len(controls)}")
+    # Validate we got all 56 controls
+    if len(controls) != 56:
+        print(f"\nERROR: Expected 56 controls, got {len(controls)}")
         if errors:
             print(f"  Missing: {', '.join(errors)}")
         return None

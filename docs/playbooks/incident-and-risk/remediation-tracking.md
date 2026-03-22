@@ -2,6 +2,9 @@
 
 Procedures for tracking and resolving governance gaps, audit findings, and risk assessment items related to M365 Copilot.
 
+!!! warning "Disclaimer"
+    This playbook is provided for informational purposes only and does not constitute legal or regulatory advice. Consult legal counsel for specific compliance requirements.
+
 ---
 
 ## Remediation Sources
@@ -116,3 +119,5 @@ For regulatory examination findings (MRAs/MRIAs):
 ---
 
 *Review this process annually and after each examination cycle. Update SLAs and procedures based on organizational capacity and regulatory expectations.*
+
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

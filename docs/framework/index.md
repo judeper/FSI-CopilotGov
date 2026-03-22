@@ -32,7 +32,7 @@ The FSI Copilot Governance Framework uses a three-layer documentation model to s
         v                       v                       v
 +============================================================================+
 |                                                                            |
-|  LAYER 2: CONTROLS  (54 technical controls)                                |
+|  LAYER 2: CONTROLS  (56 technical controls)                                |
 |  What to configure and why                                                 |
 |  Audience: Compliance officers, architects                                 |
 |  Update frequency: Quarterly                                               |
@@ -41,7 +41,7 @@ The FSI Copilot Governance Framework uses a three-layer documentation model to s
 |  | Pillar 1:        | | Pillar 2:        | | Pillar 3:        |            |
 |  | Readiness &      | | Security &       | | Compliance &     |            |
 |  | Assessment       | | Protection       | | Audit            |            |
-|  | (13 controls)    | | (15 controls)    | | (13 controls)    |            |
+|  | (15 controls)    | | (15 controls)    | | (13 controls)    |            |
 |  +------------------+ +------------------+ +------------------+            |
 |  +------------------+                                                      |
 |  | Pillar 4:        |                                                      |
@@ -55,7 +55,7 @@ The FSI Copilot Governance Framework uses a three-layer documentation model to s
         v                       v                       v
 +============================================================================+
 |                                                                            |
-|  LAYER 3: PLAYBOOKS  (216 implementation procedures)                       |
+|  LAYER 3: PLAYBOOKS  (224 implementation procedures)                       |
 |  How to configure step-by-step                                             |
 |  Audience: Platform teams, operations                                      |
 |  Update frequency: Continuous (as Microsoft portals change)                |
@@ -77,7 +77,7 @@ This separation provides governance stability while allowing rapid updates to im
 |     PILLAR 1      |     PILLAR 2      |     PILLAR 3      |     PILLAR 4      |
 |    Readiness &    |    Security &     |   Compliance &    |   Operations &    |
 |    Assessment     |    Protection     |      Audit        |    Monitoring     |
-|   (13 controls)   |   (15 controls)   |   (13 controls)   |   (13 controls)   |
+|   (15 controls)   |   (15 controls)   |   (13 controls)   |   (13 controls)   |
 +-------------------+-------------------+-------------------+-------------------+
 | Data hygiene,     | DLP, labels,      | Audit logging,    | Feature toggles,  |
 | oversharing,      | conditional       | retention,        | analytics, cost,  |
@@ -88,7 +88,7 @@ This separation provides governance stability while allowing rapid updates to im
 
 | Pillar | Focus | Controls | Primary Admin Portals |
 |--------|-------|----------|-----------------------|
-| **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | 13 | Purview, SharePoint Admin, M365 Admin |
+| **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | 15 | Purview, SharePoint Admin, M365 Admin |
 | **2. Security & Protection** | DLP, sensitivity labels, conditional access, information barriers, Defender | 15 | Purview, Entra, Defender |
 | **3. Compliance & Audit** | Audit logging, retention, eDiscovery, FINRA 2210, supervision, regulatory reporting | 13 | Purview, M365 Admin |
 | **4. Operations & Monitoring** | Feature management, per-app toggles, analytics, cost tracking, incident response | 13 | M365 Admin, Viva Insights, Teams Admin |
@@ -176,7 +176,7 @@ The three-layer architecture separates:
 
 ## Version Information
 
-- **Framework Version:** 1.0 (February 2026)
+- **Framework Version:** 1.1 (February 2026)
 - **Last Updated:** February 2026
 - **Update Frequency:** 1-2 times per year (major regulatory or platform changes)
 
@@ -191,4 +191,4 @@ The three-layer architecture separates:
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - February 2026*
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

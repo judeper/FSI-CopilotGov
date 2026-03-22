@@ -8,7 +8,7 @@ Core concepts and principles for Microsoft 365 Copilot governance in financial s
 
 The FSI Copilot Governance Framework provides complete guidance for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
 
-**Version:** 1.0 (February 2026)
+**Version:** 1.1 (February 2026)
 **Target Audience:** US Financial Services Organizations
 **Regulatory Focus:** FINRA, SEC, SOX, GLBA, OCC, Federal Reserve, FDIC, NCUA, CFPB
 
@@ -113,13 +113,13 @@ Copilot closes this gap instantly. Governance must address the permissions gap *
 
 ### Overview
 
-Each of the 54 controls in this framework provides implementation guidance at three governance levels. Organizations select their target level based on regulatory obligations, risk appetite, and institutional type.
+Each of the 56 controls in this framework provides implementation guidance at three governance levels. Organizations select their target level based on regulatory obligations, risk appetite, and institutional type.
 
 | Level | Description | Typical Use | Control Coverage |
 |-------|-------------|-------------|------------------|
 | **Baseline** | Minimum viable governance | Initial Copilot deployment in low-risk environments | ~30 core controls |
 | **Recommended** | Best-practice governance | Most production environments, standard FSI firms | ~45 controls |
-| **Regulated** | Examination-ready, comprehensive governance | FINRA/SEC-regulated broker-dealers, banks with OCC oversight | All 54 controls |
+| **Regulated** | Examination-ready, comprehensive governance | FINRA/SEC-regulated broker-dealers, banks with OCC oversight | All 56 controls |
 
 ### Baseline
 
@@ -323,7 +323,7 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 
 ## Control Applicability by Governance Level
 
-### Pillar 1: Readiness & Assessment (13 controls)
+### Pillar 1: Readiness & Assessment (15 controls)
 
 | Control | Name | Baseline | Recommended | Regulated |
 |---------|------|----------|-------------|-----------|
@@ -340,6 +340,8 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 | 1.11 | External Sharing Audit | Required | Required | Required |
 | 1.12 | OneDrive Governance | -- | Required | Required |
 | 1.13 | Exchange/Mailbox Permissions Review | -- | Required | Required |
+| 1.14 | Item-Level Permission Scanning | Required | Required | Required |
+| 1.15 | SharePoint Permissions Drift Detection | Required | Required | Required |
 
 ### Pillar 2: Security & Protection (15 controls)
 
@@ -437,4 +439,4 @@ This framework is designed to **complement, not replace** existing enterprise go
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - February 2026*
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

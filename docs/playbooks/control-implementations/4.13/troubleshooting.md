@@ -9,9 +9,9 @@ Common issues and resolution steps for Copilot extensibility governance and agen
 - **Symptoms:** Users can access and use Copilot plugins that are not on the approved list.
 - **Root Cause:** User consent settings may allow self-service consent, or the admin-approved plugin list is not enforced.
 - **Resolution:**
-  1. Navigate to Entra Admin Center > Enterprise applications > Consent and permissions.
+  1. Navigate to Microsoft Entra admin center > Enterprise applications > Consent and permissions.
   2. Set "Users can consent to apps" to **No** to require admin approval.
-  3. Review the Integrated Apps settings in the M365 Admin Center for any overrides.
+  3. Review the Integrated Apps settings in the Microsoft 365 admin center for any overrides.
   4. Audit the current plugin list and remove any unauthorized apps.
   5. Communicate the approved plugin catalog to all Copilot users.
 
@@ -58,9 +58,9 @@ Common issues and resolution steps for Copilot extensibility governance and agen
 
 ## Diagnostic Steps
 
-1. **Check user consent settings:** Entra Admin Center > Enterprise applications > Consent and permissions.
-2. **Review plugin catalog:** M365 Admin Center > Settings > Integrated apps.
-3. **Review agent inventory:** M365 Admin Center > Agents > All agents / Registry.
+1. **Check user consent settings:** Microsoft Entra admin center > Enterprise applications > Consent and permissions.
+2. **Review plugin catalog:** Microsoft 365 admin center > Settings > Integrated apps.
+3. **Review agent inventory:** Microsoft 365 admin center > Agents > All agents / Registry.
 4. **Audit app permissions:** Run the permission audit script (Script 3 from PowerShell Setup).
 5. **Test user experience:** Log in as a standard user and verify plugin and agent access restrictions.
 

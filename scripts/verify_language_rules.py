@@ -31,6 +31,9 @@ EXEMPT_FILES = [
     os.path.join("docs", "playbooks", "control-implementations", "3.5", "portal-walkthrough.md"),
     os.path.join("docs", "playbooks", "control-implementations", "3.5", "troubleshooting.md"),
     os.path.join("docs", "playbooks", "control-implementations", "3.5", "verification-testing.md"),
+    # Examination-response guidance includes prohibited phrases as examples of
+    # wording reviewers should avoid in regulator-facing responses.
+    os.path.join("docs", "playbooks", "compliance-and-audit", "examination-response-guide.md"),
 ]
 
 

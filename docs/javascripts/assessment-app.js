@@ -1084,7 +1084,7 @@
 
     content.appendChild(h("p", { style: "margin-top:1rem;font-weight:600" }, "Governance Level Scoring"));
     content.appendChild(h("p", null,
-      "All 54 controls are assessed at your selected target governance level. " +
+      "All 56 controls are assessed at your selected target governance level. " +
       "Governance levels are cumulative: Recommended includes all Baseline requirements, and Regulated includes all Recommended requirements."));
 
     this.showModal("How Scoring Works", content);
@@ -1257,7 +1257,7 @@
     wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem", "data-step-heading": "true", tabindex: "-1" }, "Assessment Scoping"));
     wrap.appendChild(h("p", { className: "ag-card-subtitle" },
       "Configure the assessment scope for your organization. " +
-      "All 54 controls will be assessed and prioritized based on your profile and target governance level."
+      "All 56 controls will be assessed and prioritized based on your profile and target governance level."
     ));
     wrap.appendChild(h("div", { className: "ag-callout" },
       "Required fields are marked with an asterisk. Browser drafts are saved on this device while you work, but Save to File remains the primary artifact for sharing or archival."

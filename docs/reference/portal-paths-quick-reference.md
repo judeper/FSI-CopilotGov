@@ -253,9 +253,9 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 1. **Bookmark frequently used paths** — Copilot settings, DLP policies, and audit log search are accessed repeatedly during implementation
 2. **Use direct URLs** where provided — avoids navigating through multiple menu levels
 3. **SharePoint Admin Center URLs are tenant-specific** — replace `<tenant>` with your organization's tenant name
-4. **Microsoft is consolidating portals** — the new Purview portal (`purview.microsoft.com`) is gradually replacing `purview.microsoft.com`; both work during transition
+4. **Microsoft is consolidating portals** — the new Purview portal (`purview.microsoft.com`) is gradually replacing the legacy compliance portal (`compliance.microsoft.com`); both work during transition
 5. **Some paths require specific admin roles** — if a path is inaccessible, verify your role assignment in Entra admin center
 
 ---
 
-*FSI Copilot Governance Framework v1.1 - February 2026*
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

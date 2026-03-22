@@ -132,6 +132,8 @@ nav:
       - 1.11 Change Management and Adoption: controls/pillar-1-readiness/1.11-change-management-adoption.md
       - 1.12 Training and Awareness: controls/pillar-1-readiness/1.12-training-awareness.md
       - 1.13 Extensibility Readiness: controls/pillar-1-readiness/1.13-extensibility-readiness.md
+      - 1.14 Item-Level Permission Scanning: controls/pillar-1-readiness/1.14-item-level-permission-scanning.md
+      - 1.15 SharePoint Permissions Drift Detection: controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md
     - Pillar 2 - Security & Protection:
       - Overview: controls/pillar-2-security/index.md
       - 2.1 DLP Policies for Copilot: controls/pillar-2-security/2.1-dlp-policies-for-copilot.md
@@ -252,6 +254,16 @@ nav:
           - PowerShell Setup: playbooks/control-implementations/1.13/powershell-setup.md
           - Verification: playbooks/control-implementations/1.13/verification-testing.md
           - Troubleshooting: playbooks/control-implementations/1.13/troubleshooting.md
+        - 1.14 Item-Level Permission Scanning:
+          - Portal Walkthrough: playbooks/control-implementations/1.14/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.14/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.14/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.14/troubleshooting.md
+        - 1.15 SharePoint Permissions Drift Detection:
+          - Portal Walkthrough: playbooks/control-implementations/1.15/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.15/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.15/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.15/troubleshooting.md
       - Pillar 2 - Security & Protection:
         - 2.1 DLP Policies:
           - Portal Walkthrough: playbooks/control-implementations/2.1/portal-walkthrough.md

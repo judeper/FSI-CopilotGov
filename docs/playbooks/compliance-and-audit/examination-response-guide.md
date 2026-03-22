@@ -2,6 +2,9 @@
 
 Guide for responding to FINRA, SEC, OCC, and other regulatory examination requests related to M365 Copilot governance.
 
+!!! warning "Disclaimer"
+    This playbook is provided for informational purposes only and does not constitute legal or regulatory advice. Consult legal counsel for specific compliance requirements.
+
 ---
 
 ## Examination Types and Scope
@@ -61,9 +64,9 @@ All examination responses must:
 
 | Avoid | Use Instead |
 |-------|-------------|
-| "This [overclaiming phrase]..." | "This control supports compliance with..." |
+| "This guarantees compliance with..." | "This control supports compliance with..." |
 | "We [promise] that..." | "This control helps meet the requirement for..." |
-| "This [overclaiming phrase]..." | "This control helps prevent..." |
+| "This ensures compliance with..." | "This control helps prevent..." |
 | "We have eliminated the risk of..." | "This control reduces the risk of..." |
 | "Copilot cannot access..." | "Copilot access is restricted by [specific control]..." |
 
@@ -130,3 +133,5 @@ If an examiner identifies a finding or deficiency:
 ---
 
 *Review this guide before each examination and update based on evolving regulatory expectations and examination trends.*
+
+*FSI Copilot Governance Framework v1.2.1 - March 2026*

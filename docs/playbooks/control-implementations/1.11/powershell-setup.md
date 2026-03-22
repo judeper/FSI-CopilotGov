@@ -21,8 +21,8 @@ Import-Module Microsoft.Graph.Users
 
 Connect-MgGraph -Scopes "Reports.Read.All","User.Read.All"
 
-# Get Copilot usage data
-$copilotUsage = Get-MgReportM365AppUserDetail -Period "D30" -OutFile "CopilotRawUsage.csv"
+# Export M365 app usage details (general app activity, not Copilot-specific)
+Get-MgReportM365AppUserDetail -Period "D30" -OutFile "M365AppUsage.csv"
 
 # Generate adoption summary from licensed users
 $copilotSku = Get-MgSubscribedSku | Where-Object { $_.SkuPartNumber -match "Microsoft_365_Copilot" }
