@@ -1,4 +1,4 @@
-# Control 2.14: Declarative and SharePoint Agents Governance — Troubleshooting
+# Control 2.14: Declarative Agents from SharePoint Governance — Troubleshooting
 
 Common issues and resolution steps for declarative, SharePoint-backed, and Registry-governed agent security.
 

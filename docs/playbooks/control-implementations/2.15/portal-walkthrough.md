@@ -4,7 +4,7 @@ Step-by-step portal configuration for implementing network security controls and
 
 ## Prerequisites
 
-- Azure Network Administrator or Global Administrator role
+- Azure Network Administrator or Entra Global Admin role
 - Azure subscription for Private Link configuration
 - Network architecture documentation
 - Understanding of Microsoft 365 network connectivity requirements

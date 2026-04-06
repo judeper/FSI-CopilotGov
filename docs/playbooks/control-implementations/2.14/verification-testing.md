@@ -1,4 +1,4 @@
-# Control 2.14: Declarative and SharePoint Agents Governance — Verification & Testing
+# Control 2.14: Declarative Agents from SharePoint Governance — Verification & Testing
 
 Test cases and evidence collection for validating agent access, sharing, Registry review, and SharePoint-backed knowledge governance.
 
