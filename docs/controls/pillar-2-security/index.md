@@ -21,7 +21,7 @@ Each control provides three governance levels — **Baseline**, **Recommended**,
 
 | Control | Title | Key Regulatory Refs | Priority |
 |---------|-------|---------------------|----------|
-| [2.1](2.1-dlp-policies-for-copilot.md) | DLP Policies for M365 Copilot Interactions | FINRA 4511, SEC Reg S-P, GLBA 501(b), SOX 404 | Critical |
+| [2.1](2.1-dlp-policies-for-copilot.md) | DLP Policies for Microsoft 365 Copilot Interactions | FINRA 4511, SEC Reg S-P, GLBA 501(b), SOX 404 | Critical |
 | [2.2](2.2-sensitivity-labels-classification.md) | Sensitivity Labels and Copilot Content Classification | GLBA 501(b), SOX 404 | Critical |
 | [2.3](2.3-conditional-access-policies.md) | Conditional Access Policies for Copilot Workloads | GLBA 501(b), NYDFS Part 500, FFIEC | Critical |
 | [2.4](2.4-information-barriers.md) | Information Barriers for Copilot (Chinese Wall) | SEC Rule 10b-5, FINRA 5280 | Critical |
@@ -34,7 +34,7 @@ Each control provides three governance levels — **Baseline**, **Recommended**,
 | [2.11](2.11-copilot-pages-security.md) | Copilot Pages Security and Sharing Controls | GLBA 501(b), FINRA 4511 | High |
 | [2.12](2.12-external-sharing-governance.md) | External Sharing and Guest Access Governance | GLBA 501(b), SEC Reg S-P | High |
 | [2.13](2.13-plugin-connector-security.md) | Plugin and Graph Connector Security Governance | GLBA 501(b), FFIEC | Medium |
-| [2.14](2.14-declarative-agents-governance.md) | Declarative Agents from SharePoint — Creation and Sharing Governance | GLBA 501(b) | Medium |
+| [2.14](2.14-declarative-agents-governance.md) | Declarative and SharePoint Agents Governance | GLBA 501(b) | Medium |
 | [2.15](2.15-network-security.md) | Network Security and Private Connectivity | NYDFS Part 500, FFIEC | Medium |
 
 ---
