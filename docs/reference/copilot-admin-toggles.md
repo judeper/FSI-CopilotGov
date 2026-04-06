@@ -84,8 +84,8 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 
 | Workload | Primary Path | FSI Note |
 |----------|--------------|----------|
-| Teams meetings | Teams Admin Center > Meetings > Meeting policies | Review recap, transcript, and in-meeting Copilot availability |
-| Teams chat and channels | Teams Admin Center > Messaging policies | Pair Copilot availability with supervision and DLP controls |
+| Teams meetings | Teams admin center > Meetings > Meeting policies | Review recap, transcript, and in-meeting Copilot availability |
+| Teams chat and channels | Teams admin center > Messaging policies | Pair Copilot availability with supervision and DLP controls |
 | Outlook, Word, Excel, PowerPoint | Copilot > Settings > User access plus workload-specific admin controls when surfaced | Validate rollout by user group and regulated use case |
 | Viva Insights analytics | Viva Insights / role assignment | Limit access to designated analysts and governance personnel |
 
