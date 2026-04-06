@@ -61,7 +61,7 @@ The FSI Copilot Governance Framework uses a three-layer documentation model to s
 |  Update frequency: Continuous (as Microsoft portals change)                |
 |                                                                            |
 |  Each control has 4 playbooks:                                             |
-|  [Portal Walkthrough] [PowerShell Automation] [Verification] [Rollback]   |
+|  [Portal Walkthrough] [PowerShell Setup] [Verification & Testing] [Troubleshooting] |
 |                                                                            |
 +============================================================================+
 ```
@@ -176,8 +176,8 @@ The three-layer architecture separates:
 
 ## Version Information
 
-- **Framework Version:** 1.1 (February 2026)
-- **Last Updated:** February 2026
+- **Framework Version:** 1.2.1 (March 2026)
+- **Last Updated:** March 2026
 - **Update Frequency:** 1-2 times per year (major regulatory or platform changes)
 
 ---

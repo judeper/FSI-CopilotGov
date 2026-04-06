@@ -8,7 +8,7 @@ Core concepts and principles for Microsoft 365 Copilot governance in financial s
 
 The FSI Copilot Governance Framework provides complete guidance for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
 
-**Version:** 1.1 (February 2026)
+**Version:** 1.2.1 (March 2026)
 **Target Audience:** US Financial Services Organizations
 **Regulatory Focus:** FINRA, SEC, SOX, GLBA, OCC, Federal Reserve, FDIC, NCUA, CFPB
 
@@ -349,19 +349,19 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 |---------|------|----------|-------------|-----------|
 | 2.1 | DLP Policy Configuration | Required | Required | Required |
 | 2.2 | Sensitivity Label Deployment | Required | Required | Required |
-| 2.3 | Auto-Labeling Policies | -- | Required | Required |
-| 2.4 | Conditional Access for Copilot | -- | Required | Required |
-| 2.5 | Insider Risk Management | -- | -- | Required |
-| 2.6 | Information Barriers | -- | -- | Required |
-| 2.7 | Web Search and Grounding Controls | Required | Required | Required |
-| 2.8 | Plugin and Connector Governance | Required | Required | Required |
-| 2.9 | Defender for Cloud Apps Integration | -- | Required | Required |
-| 2.10 | Endpoint DLP | -- | Required | Required |
-| 2.11 | Encryption and Rights Management | Required | Required | Required |
-| 2.12 | DSPM for AI | -- | Required | Required |
-| 2.13 | Adaptive Protection | -- | -- | Required |
-| 2.14 | Privileged Access Management | -- | -- | Required |
-| 2.15 | Network and Device Compliance | Required | Required | Required |
+| 2.3 | Conditional Access Policies | -- | Required | Required |
+| 2.4 | Information Barriers (Chinese Wall) | -- | -- | Required |
+| 2.5 | Data Minimization and Grounding Scope | -- | Required | Required |
+| 2.6 | Web Search and Grounding Controls | Required | Required | Required |
+| 2.7 | Data Residency and Cross-Border Data Flow | -- | Required | Required |
+| 2.8 | Encryption (Transit and At Rest) | Required | Required | Required |
+| 2.9 | Defender for Cloud Apps | -- | Required | Required |
+| 2.10 | Insider Risk Detection | -- | -- | Required |
+| 2.11 | Copilot Pages Security | Required | Required | Required |
+| 2.12 | External Sharing and Guest Access Governance | -- | Required | Required |
+| 2.13 | Plugin and Connector Security | -- | Required | Required |
+| 2.14 | Declarative and SharePoint Agents Governance | -- | Required | Required |
+| 2.15 | Network Security and Private Connectivity | Required | Required | Required |
 
 ### Pillar 3: Compliance & Audit (13 controls)
 
