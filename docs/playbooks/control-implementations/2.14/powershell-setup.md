@@ -6,7 +6,7 @@ Automation scripts for managing and monitoring declarative Copilot agents.
 
 - SharePoint Online Management Shell
 - Microsoft Graph PowerShell SDK
-- SharePoint Administrator role
+- SharePoint Admin role
 
 ## Scripts
 

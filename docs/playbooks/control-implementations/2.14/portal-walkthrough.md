@@ -4,7 +4,7 @@ Step-by-step portal configuration for governing declarative Copilot agents creat
 
 ## Prerequisites
 
-- SharePoint Administrator role
+- SharePoint Admin role
 - Microsoft 365 Copilot licenses deployed
 - Understanding of declarative agent capabilities and data access
 - Governance framework for agent creation and deployment
@@ -30,7 +30,7 @@ Configure who can create declarative agents:
 
 ### Step 3: Review Agent Data Access Scope
 
-**Portal:** SharePoint Admin Center
+**Portal:** SharePoint admin center
 **Path:** SharePoint Admin > Active Sites > review sites used as agent data sources
 
 For each declarative agent, the data access scope is defined by the SharePoint site or library it references. Verify:

@@ -49,4 +49,4 @@ Test cases and evidence collection for validating plugin and connector security.
 |-----------|-------------|------------------------------|
 | OCC Heightened Standards | Third-party risk management | Plugin security supports compliance with third-party technology risk requirements |
 | FINRA Rule 3110 | Technology oversight | Plugin governance supports compliance with supervisory technology controls |
-| NIST CSF | PR.IP-1 Baseline configuration | Plugin restrictions establish and maintain secure baseline configurations |
+| NIST CSF | PR.IP-1 Baseline configuration | Plugin restrictions help establish and maintain secure baseline configurations |

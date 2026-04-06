@@ -9,7 +9,7 @@ Common issues and resolution steps for plugin and connector security.
 - **Symptoms:** A previously approved plugin stops functioning after a Teams app permission policy update
 - **Root Cause:** Policy changes may inadvertently remove the plugin from the allowlist or change the policy assignment.
 - **Resolution:**
-  1. Verify the plugin is on the current allowlist in Teams Admin Center
+  1. Verify the plugin is on the current allowlist in Teams admin center
   2. Check the user's assigned app permission policy
   3. Re-add the plugin to the allowlist if it was inadvertently removed
   4. Allow 24 hours for policy propagation after changes
