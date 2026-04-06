@@ -170,7 +170,7 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 
 ---
 
-## Teams Admin Center
+## Teams admin center
 
 **Base URL:** [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com)
 
@@ -188,7 +188,7 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 
 ---
 
-## SharePoint Admin Center
+## SharePoint admin center
 
 **Base URL:** [https://admin.microsoft.com/sharepoint](https://admin.microsoft.com/sharepoint) (or `https://<tenant>-admin.sharepoint.com`)
 
@@ -206,7 +206,7 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 
 ---
 
-## Exchange Admin Center
+## Exchange admin center
 
 **Base URL:** [https://admin.exchange.microsoft.com](https://admin.exchange.microsoft.com)
 

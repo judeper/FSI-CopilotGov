@@ -64,7 +64,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | 2.10 | Defender for Cloud Apps | -- | Included | -- | E5 Security or Defender for Cloud Apps | Session and access policies for cloud app governance |
 | 2.11 | Insider Risk Management | -- | Included | -- | E5 Compliance or Insider Risk add-on | Anomalous Copilot usage detection |
 | 2.12 | DSPM for AI | -- | Included | Included | E5 Compliance | Data Security Posture Management for AI; requires both E5 compliance and Copilot |
-| 2.13 | Azure Information Protection encryption | Included | Included | -- | -- | Rights Management encryption included in E3 |
+| 2.13 | Microsoft Purview Information Protection encryption | Included | Included | -- | -- | Rights Management encryption included in E3 |
 | 2.14 | Network Security | Included | Included | -- | -- | Network-level controls are infrastructure; not license-dependent |
 | 2.15 | Zero Trust Alignment | Included | Included | -- | -- | Architectural approach; Entra ID P1 for Conditional Access is the key license |
 
