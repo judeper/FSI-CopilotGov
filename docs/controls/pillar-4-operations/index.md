@@ -43,14 +43,14 @@ Key regulatory drivers for operational governance:
 | [4.3](4.3-teams-phone-queues.md) | Copilot in Teams Phone and Queues Governance | FINRA 3110, FINRA 4511 | High |
 | [4.4](4.4-viva-suite-governance.md) | Copilot in Viva Suite Governance | GLBA 501(b), Labor Regulations | Medium |
 | [4.5](4.5-usage-analytics.md) | Copilot Usage Analytics and Adoption Reporting | SOX 404, FFIEC | High |
-| [4.6](4.6-viva-insights-measurement.md) | Microsoft Viva Insights -- Copilot Impact Measurement | Internal Governance | Medium |
+| [4.6](4.6-viva-insights-measurement.md) | Microsoft Viva Insights and Copilot Analytics Impact Measurement | Internal Governance | Medium |
 | [4.7](4.7-feedback-telemetry.md) | Copilot Feedback and Telemetry Data Governance | GLBA 501(b), Privacy Regulations | Medium |
 | [4.8](4.8-cost-allocation.md) | Cost Allocation and License Optimization | SOX 404, FFIEC | Medium |
 | [4.9](4.9-incident-reporting.md) | Incident Reporting and Root Cause Analysis | FINRA 4530, GLBA 501(b), NYDFS 500.17 | Critical |
 | [4.10](4.10-business-continuity.md) | Business Continuity and Disaster Recovery for Copilot Dependency | FFIEC BC/DR, OCC, FINRA 4370 | High |
 | [4.11](4.11-sentinel-integration.md) | Microsoft Sentinel Integration for Copilot Events | FFIEC, SOX 404, NYDFS 500 | High |
 | [4.12](4.12-change-management-rollouts.md) | Change Management for Copilot Feature Rollouts | SOX 404, FFIEC | High |
-| [4.13](4.13-extensibility-governance.md) | Copilot Extensibility Governance (Plugin Lifecycle, Connector Monitoring) | GLBA 501(b), FFIEC, OCC | High |
+| [4.13](4.13-extensibility-governance.md) | Copilot Extensibility and Agent Operations Governance | GLBA 501(b), FFIEC, OCC | High |
 
 ---
 
