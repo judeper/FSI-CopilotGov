@@ -61,11 +61,11 @@ Get-CsTeamsCallingPolicy -Identity $policyName |
 
 ### Script 2: Configure Meeting Policy for Copilot with Transcript Enforcement
 
-Teams meetings involving phone dial-in participants also require meeting policy configuration. Post-September 2025 (MC1139493), the Global policy default changed to allow Copilot without transcription — FSI organizations should explicitly set `EnabledWithTranscript` to support compliance record-keeping.
+Teams meetings involving phone dial-in participants also require meeting policy configuration. Effective March 2026, the Global policy default changed to allow Copilot without transcription — FSI organizations should explicitly set `EnabledWithTranscript` to support compliance record-keeping.
 
 ```powershell
 # Configure meeting policy to require Copilot WITH transcript
-# Critical: Default changed Sept 2025 — without explicit setting, post-meeting
+# Critical: Default changed March 2026 — without explicit setting, post-meeting
 # Copilot summaries and "after the meeting" access are unavailable
 # Requires: MicrosoftTeams module
 
@@ -81,8 +81,8 @@ Set-CsTeamsMeetingPolicy -Identity $meetingPolicyName `
 
 Write-Host "Meeting policy configured: $meetingPolicyName" -ForegroundColor Green
 
-# Verify Global policy Copilot default (check for post-Sept 2025 drift)
-Write-Host "`nGlobal policy Copilot settings (verify post-Sept 2025 default):" -ForegroundColor Cyan
+# Verify Global policy Copilot default (check for post-March 2026 drift)
+Write-Host "`nGlobal policy Copilot settings (verify post-March 2026 default):" -ForegroundColor Cyan
 Get-CsTeamsMeetingPolicy -Identity Global |
     Select-Object Identity, Copilot, AllowTranscription, AllowCloudRecording |
     Format-List

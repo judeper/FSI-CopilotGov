@@ -4,7 +4,7 @@ Step-by-step portal configuration for governing the collection, storage, and use
 
 ## Prerequisites
 
-- **Role:** Global Administrator, Privacy Administrator
+- **Role:** Entra Global Admin, Privacy Administrator
 - **License:** Microsoft 365 E5 with Copilot add-on
 - **Access:** Microsoft 365 Admin Center, Microsoft Purview
 

@@ -4,7 +4,7 @@ Step-by-step portal configuration for establishing usage analytics and adoption 
 
 ## Prerequisites
 
-- **Role:** Global Administrator, Reports Reader, or Usage Summary Reports Reader
+- **Role:** Entra Global Admin, Reports Reader, or Usage Summary Reports Reader
 - **License:** Microsoft 365 E5 with Copilot add-on
 - **Access:** Microsoft 365 Admin Center
 

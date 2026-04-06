@@ -77,9 +77,12 @@ Write-Host "Copilot licenses assigned to $assignedCount new users" -ForegroundCo
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
 
+# Note: Filter by FreeText to capture Copilot-related admin changes;
+# specific operation names vary by tenant configuration and API version.
 $configChanges = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -Operations "Set-CopilotPolicy", "Update-CopilotSettings" `
+    -FreeText "Copilot" `
+    -RecordType ExchangeAdmin `
     -ResultSize 5000
 
 Write-Host "Copilot Control System Configuration Changes (Last 30 Days): $($configChanges.Count)"

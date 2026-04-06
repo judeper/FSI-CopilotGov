@@ -4,7 +4,7 @@ Step-by-step portal configuration for using Microsoft Viva Insights to measure t
 
 ## Prerequisites
 
-- **Role:** Viva Insights Administrator, Global Administrator
+- **Role:** Viva Insights Administrator, Entra Global Admin
 - **License:** Microsoft Viva Insights, Microsoft 365 E5 with Copilot add-on
 - **Access:** Viva Insights Advanced portal, Microsoft 365 Admin Center
 

@@ -5,7 +5,7 @@ Automation scripts for configuring and managing Copilot governance in Microsoft 
 ## Prerequisites
 
 - **Modules:** `MicrosoftTeams`, `ExchangeOnlineManagement`
-- **Permissions:** Teams Administrator, Compliance Administrator
+- **Permissions:** Teams Admin, Purview Compliance Admin
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
