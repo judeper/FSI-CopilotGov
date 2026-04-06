@@ -4,7 +4,7 @@ Step-by-step portal configuration for establishing business continuity and disas
 
 ## Prerequisites
 
-- **Role:** Global Administrator, IT Infrastructure Manager
+- **Role:** Entra Global Admin, IT Infrastructure Manager
 - **License:** Microsoft 365 E5 with Copilot add-on
 - **Access:** Microsoft 365 Admin Center, Service Health Dashboard
 

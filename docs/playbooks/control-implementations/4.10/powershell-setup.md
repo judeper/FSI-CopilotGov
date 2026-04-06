@@ -5,7 +5,7 @@ Automation scripts for monitoring Copilot service health, testing business conti
 ## Prerequisites
 
 - **Modules:** `Microsoft.Graph`, `ExchangeOnlineManagement`
-- **Permissions:** ServiceHealth.Read.All, Reports.Read.All, Compliance Administrator (for DLP/UAL checks)
+- **Permissions:** ServiceHealth.Read.All, Reports.Read.All, Purview Compliance Admin (for DLP/UAL checks)
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services

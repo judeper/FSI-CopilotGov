@@ -4,7 +4,7 @@ Step-by-step portal configuration for implementing cost allocation, chargeback, 
 
 ## Prerequisites
 
-- **Role:** AI Administrator, License Administrator, Billing Administrator, or Global Administrator as needed
+- **Role:** AI Administrator, License Administrator, Billing Administrator, or Entra Global Admin as needed
 - **License:** Microsoft 365 E5 with Copilot add-on; Azure subscription (for PAYG billing management)
 - **Access:** Microsoft 365 Admin Center, Azure Portal (Cost Management + Billing), Azure Cost Management
 

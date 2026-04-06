@@ -4,7 +4,7 @@ Step-by-step portal configuration for establishing change management processes g
 
 ## Prerequisites
 
-- **Role:** Global Administrator, Microsoft 365 Service Administrator
+- **Role:** Entra Global Admin, Microsoft 365 Service Administrator
 - **License:** Microsoft 365 E5 with Copilot add-on
 - **Access:** Microsoft 365 Admin Center, Microsoft 365 Message Center
 

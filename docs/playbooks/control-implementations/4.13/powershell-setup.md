@@ -5,7 +5,7 @@ Automation scripts for managing Copilot plugins, connectors, and related extensi
 ## Prerequisites
 
 - **Modules:** `Microsoft.Graph`, `ExchangeOnlineManagement`
-- **Permissions:** Application Administrator, Global Administrator
+- **Permissions:** Application Administrator, Entra Global Admin
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services

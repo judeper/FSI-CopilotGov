@@ -4,7 +4,7 @@ Automation scripts for Copilot license management, cost allocation, pay-as-you-g
 
 ## Prerequisites
 
-- **Modules:** `Microsoft.Graph`, `Az.CostManagement`, `Az.Billing`
+- **Modules:** `Microsoft.Graph`, `Az.Consumption`, `Az.Billing`
 - **Permissions:** License Administrator, Reports.Read.All, User.Read.All, Azure Cost Management Contributor (for PAYG monitoring)
 - **PowerShell:** Version 7.x recommended
 
@@ -16,7 +16,7 @@ Import-Module Microsoft.Graph
 Connect-MgGraph -Scopes "User.Read.All", "Reports.Read.All", "Organization.Read.All", "Directory.Read.All"
 
 # Connect to Azure for PAYG cost monitoring (if PAYG billing is enabled)
-Import-Module Az.CostManagement
+Import-Module Az.Consumption
 Import-Module Az.Billing
 Connect-AzAccount  # Authenticate with Billing Administrator or Cost Management Contributor role
 ```
@@ -27,7 +27,7 @@ Connect-AzAccount  # Authenticate with Billing Administrator or Cost Management 
 
 ```powershell
 # Monitor pay-as-you-go Copilot costs from Azure Commerce billing
-# Requires: Az.CostManagement module, Cost Management Reader or Contributor role on Azure subscription
+# Requires: Az.Consumption module, Cost Management Reader or Contributor role on Azure subscription
 # Note: Replace $SubscriptionId with your organization's Azure subscription ID
 
 $SubscriptionId = "<your-subscription-id>"
@@ -64,7 +64,7 @@ if ($copilotPaygCosts.Count -gt 0) {
 
 ```powershell
 # Review PAYG budget settings for Copilot spending
-# Requires: Az.CostManagement module and rights to view Cost Management budgets
+# Requires: Az.Consumption module and rights to view Cost Management budgets
 # Note: Use the portal walkthrough for the authoritative billing-policy setup flow
 
 param(
@@ -83,7 +83,7 @@ Get-AzConsumptionBudget -Scope $scope |
 ```powershell
 # Detect unusual PAYG Copilot spending patterns
 # Compares current month spending rate to previous month baseline
-# Requires: Az.CostManagement module
+# Requires: Az.Consumption module
 
 $SubscriptionId = "<your-subscription-id>"
 

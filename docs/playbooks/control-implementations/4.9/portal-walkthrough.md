@@ -4,7 +4,7 @@ Step-by-step portal configuration for establishing incident reporting and root c
 
 ## Prerequisites
 
-- **Role:** Compliance Administrator, IT Security Administrator
+- **Role:** Purview Compliance Admin, IT Security Administrator
 - **License:** Microsoft 365 E5 with Copilot add-on, Microsoft Sentinel (recommended)
 - **Access:** Microsoft Purview, Microsoft Defender portal
 

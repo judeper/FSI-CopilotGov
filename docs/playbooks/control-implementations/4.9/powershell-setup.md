@@ -5,7 +5,7 @@ Automation scripts for detecting, reporting, and analyzing Copilot-related incid
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph`
-- **Permissions:** Compliance Administrator, Security Administrator
+- **Permissions:** Purview Compliance Admin, Security Administrator
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
