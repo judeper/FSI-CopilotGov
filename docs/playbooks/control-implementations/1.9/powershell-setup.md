@@ -1,11 +1,11 @@
 # Control 1.9: License Planning and Assignment Strategy — PowerShell Setup
 
-Automation scripts for managing M365 Copilot license assignments and utilization tracking.
+Automation scripts for managing Microsoft 365 Copilot license assignments and utilization tracking.
 
 ## Prerequisites
 
 - Microsoft Graph PowerShell SDK (`Microsoft.Graph`)
-- License Administrator or Global Administrator role
+- License Administrator or Entra Global Admin role
 - Microsoft 365 Copilot SKU provisioned in tenant
 
 ## Scripts

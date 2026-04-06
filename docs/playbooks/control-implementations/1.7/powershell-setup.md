@@ -5,7 +5,7 @@ Automation scripts for configuring and monitoring SharePoint Advanced Management
 ## Prerequisites
 
 - SharePoint Online Management Shell (latest version)
-- SharePoint Administrator role
+- SharePoint Admin role
 - Microsoft 365 Copilot license (includes SAM) or SharePoint Advanced Management add-on license active
 
 ## Scripts

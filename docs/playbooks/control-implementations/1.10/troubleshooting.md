@@ -9,7 +9,7 @@ Common issues and resolution steps for vendor risk management of Microsoft AI se
 - **Symptoms:** Unable to sign in to servicetrust.microsoft.com or receiving "Access Denied" when attempting to download compliance documents
 - **Root Cause:** The Service Trust Portal requires authentication with a valid organizational account. Some compliance documents may require specific licensing or acceptance of NDA terms.
 - **Resolution:**
-  1. Sign in with a Global Administrator or Compliance Administrator account
+  1. Sign in with an Entra Global Admin or Purview Compliance Admin account
   2. Accept the Service Trust Portal terms of service if prompted
   3. Verify the account has the required license for accessing restricted documents
   4. For partner or consultant access, request a guest account with appropriate permissions

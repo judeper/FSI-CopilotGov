@@ -4,7 +4,7 @@ Step-by-step portal procedures for assessing and governing Copilot extensibility
 
 ## Prerequisites
 
-- Microsoft 365 Admin Center access (Global Administrator or Teams Administrator)
+- Microsoft 365 Admin Center access (Entra Global Admin or Teams Admin)
 - Teams admin center access
 - Understanding of planned Copilot extensibility use cases
 - Governance committee input on extensibility policies

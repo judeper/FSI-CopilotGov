@@ -4,7 +4,7 @@ Step-by-step portal procedures for reviewing and optimizing the Microsoft 365 in
 
 ## Prerequisites
 
-- SharePoint Administrator and Global Reader roles
+- SharePoint Admin and Global Reader roles
 - Access to SharePoint admin center and Microsoft Purview
 - Content inventory documentation or content management system records
 - Information architecture governance committee or content owners
@@ -16,7 +16,7 @@ Step-by-step portal procedures for reviewing and optimizing the Microsoft 365 in
 **Portal:** SharePoint admin center
 **Path:** SharePoint Admin > Active Sites
 
-Review the complete site inventoryto understand the current information architecture. Categorize sites by:
+Review the complete site inventory to understand the current information architecture. Categorize sites by:
 - **Type:** Team sites, communication sites, hub sites, OneDrive
 - **Purpose:** Departmental, project, cross-functional, knowledge base
 - **Hub associations:** Which sites are connected to hub sites

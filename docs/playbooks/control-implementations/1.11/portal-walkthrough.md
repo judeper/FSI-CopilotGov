@@ -1,10 +1,10 @@
 # Control 1.11: Change Management and Adoption Planning — Portal Walkthrough
 
-Step-by-step portal procedures for establishing change management and adoption plans for M365 Copilot deployment.
+Step-by-step portal procedures for establishing change management and adoption plans for Microsoft 365 Copilot deployment.
 
 ## Prerequisites
 
-- Microsoft 365 Admin Center access (Global Administrator or Service Administrator)
+- Microsoft 365 Admin Center access (Entra Global Admin or Service Administrator)
 - Microsoft Viva Insights license (optional, for adoption tracking)
 - Organizational change management framework or methodology
 - Executive sponsor and change management lead identified
