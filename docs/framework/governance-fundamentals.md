@@ -327,19 +327,19 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 
 | Control | Name | Baseline | Recommended | Regulated |
 |---------|------|----------|-------------|-----------|
-| 1.1 | Oversharing Assessment | Required | Required | Required |
-| 1.2 | SharePoint Permissions Remediation | Required | Required | Required |
-| 1.3 | Least-Privilege Access Review | -- | Required | Required |
-| 1.4 | Restricted SharePoint Search | -- | -- | Required |
-| 1.5 | Teams and Meeting Governance | Required | Required | Required |
-| 1.6 | Access Certification Campaigns | -- | Required | Required |
-| 1.7 | Data Classification Assessment | Required | Required | Required |
-| 1.8 | Licensing and Assignment Governance | Required | Required | Required |
-| 1.9 | Copilot Readiness Assessment | Required | Required | Required |
-| 1.10 | Vendor Risk Assessment for Copilot | -- | Required | Required |
-| 1.11 | External Sharing Audit | Required | Required | Required |
-| 1.12 | OneDrive Governance | -- | Required | Required |
-| 1.13 | Exchange/Mailbox Permissions Review | -- | Required | Required |
+| 1.1 | Copilot Readiness Assessment and Data Hygiene | Required | Required | Required |
+| 1.2 | SharePoint Oversharing Detection and Remediation (DSPM for AI) | Required | Required | Required |
+| 1.3 | Restricted SharePoint Search Configuration | -- | Required | Required |
+| 1.4 | Semantic Index Governance and Scope Control | -- | -- | Required |
+| 1.5 | Sensitivity Label Taxonomy Review for Copilot | Required | Required | Required |
+| 1.6 | Permission Model Audit (SharePoint, OneDrive, Exchange, Teams, Graph) | -- | Required | Required |
+| 1.7 | SharePoint Advanced Management Readiness for Copilot | Required | Required | Required |
+| 1.8 | Information Architecture Review | Required | Required | Required |
+| 1.9 | License Planning and Copilot Assignment Strategy | Required | Required | Required |
+| 1.10 | Vendor Risk Management for Microsoft AI Services | -- | Required | Required |
+| 1.11 | Organizational Change Management and Adoption Planning | Required | Required | Required |
+| 1.12 | Training and Awareness Program | -- | Required | Required |
+| 1.13 | Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents) | -- | Required | Required |
 | 1.14 | Item-Level Permission Scanning | Required | Required | Required |
 | 1.15 | SharePoint Permissions Drift Detection | Required | Required | Required |
 
@@ -367,37 +367,37 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 
 | Control | Name | Baseline | Recommended | Regulated |
 |---------|------|----------|-------------|-----------|
-| 3.1 | Copilot Audit Logging | Required | Required | Required |
-| 3.2 | Retention Policies for Copilot | Required | Required | Required |
-| 3.3 | eDiscovery for Copilot Content | -- | Required | Required |
+| 3.1 | Copilot Interaction Audit Logging | Required | Required | Required |
+| 3.2 | Data Retention Policies for Copilot Interactions | Required | Required | Required |
+| 3.3 | eDiscovery for Copilot-Generated Content | -- | Required | Required |
 | 3.4 | Communication Compliance Monitoring | -- | Required | Required |
-| 3.5 | FINRA 2210 Communication Review | -- | -- | Required |
-| 3.6 | Supervisory Review (FINRA 3110) | -- | Required | Required |
-| 3.7 | CFPB UDAAP Monitoring | -- | -- | Required |
-| 3.8 | Model Risk Documentation (OCC/SR 11-7) | -- | -- | Required |
-| 3.9 | Regulatory Reporting | -- | Required | Required |
-| 3.10 | Privacy Controls (Reg S-P) | Required | Required | Required |
-| 3.11 | Recordkeeping (SEC 17a-3/4) | -- | Required | Required |
-| 3.12 | SOX Internal Controls Integration | -- | -- | Required |
-| 3.13 | FFIEC Examination Alignment | -- | -- | Required |
+| 3.5 | FINRA Rule 2210 Compliance for Copilot-Drafted Communications | -- | -- | Required |
+| 3.6 | Supervision and Oversight (FINRA 3110 / SEC Reg BI) | -- | Required | Required |
+| 3.7 | Regulatory Reporting | -- | -- | Required |
+| 3.8 | Model Risk Management Alignment (OCC 2011-12 / SR 11-7) | -- | -- | Required |
+| 3.9 | AI Disclosure, Transparency, and SEC Marketing Rule | -- | Required | Required |
+| 3.10 | SEC Reg S-P -- Privacy of Consumer Financial Information | Required | Required | Required |
+| 3.11 | Record Keeping and Books-and-Records Compliance | -- | Required | Required |
+| 3.12 | Evidence Collection and Audit Attestation | -- | -- | Required |
+| 3.13 | FFIEC IT Examination Handbook Alignment | -- | -- | Required |
 
 ### Pillar 4: Operations & Monitoring (13 controls)
 
 | Control | Name | Baseline | Recommended | Regulated |
 |---------|------|----------|-------------|-----------|
-| 4.1 | Copilot Feature Toggle Management | Required | Required | Required |
-| 4.2 | Per-App Copilot Controls | Required | Required | Required |
-| 4.3 | Copilot Usage Analytics | Required | Required | Required |
-| 4.4 | Cost Tracking and Optimization | Required | Required | Required |
-| 4.5 | Incident Response for Copilot | Required | Required | Required |
-| 4.6 | Teams-Specific Copilot Controls | Required | Required | Required |
-| 4.7 | Copilot Feedback and Quality Monitoring | -- | Required | Required |
-| 4.8 | Copilot Pages Governance | -- | Required | Required |
-| 4.9 | Business Continuity and DR | -- | Required | Required |
-| 4.10 | Declarative Agent Governance | -- | Required | Required |
-| 4.11 | Sentinel Integration for Copilot | -- | -- | Required |
-| 4.12 | Change Management for Copilot Updates | Required | Required | Required |
-| 4.13 | Governance Training and Awareness | Required | Required | Required |
+| 4.1 | Copilot Admin Settings and Feature Management | Required | Required | Required |
+| 4.2 | Copilot in Teams Meetings Governance | Required | Required | Required |
+| 4.3 | Copilot in Teams Phone and Queues Governance | Required | Required | Required |
+| 4.4 | Copilot in Viva Suite Governance | Required | Required | Required |
+| 4.5 | Copilot Usage Analytics and Adoption Reporting | Required | Required | Required |
+| 4.6 | Microsoft Viva Insights -- Copilot Impact Measurement | Required | Required | Required |
+| 4.7 | Copilot Feedback and Telemetry Data Governance | -- | Required | Required |
+| 4.8 | Cost Allocation and License Optimization | -- | Required | Required |
+| 4.9 | Incident Reporting and Root Cause Analysis | -- | Required | Required |
+| 4.10 | Business Continuity and Disaster Recovery for Copilot Dependency | -- | Required | Required |
+| 4.11 | Microsoft Sentinel Integration for Copilot Events | -- | -- | Required |
+| 4.12 | Change Management for Copilot Feature Rollouts | Required | Required | Required |
+| 4.13 | Copilot Extensibility Governance (Plugin Lifecycle, Connector Monitoring) | Required | Required | Required |
 
 ---
 
