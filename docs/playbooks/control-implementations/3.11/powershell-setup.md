@@ -5,7 +5,7 @@ Automation scripts for implementing and managing records management for Copilot-
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`
-- **Permissions:** Records Management Administrator, Compliance Administrator
+- **Permissions:** Records Management Administrator, Purview Compliance Admin
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services

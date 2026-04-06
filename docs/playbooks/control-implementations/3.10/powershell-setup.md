@@ -5,7 +5,7 @@ Automation scripts for implementing and monitoring privacy controls for consumer
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph`
-- **Permissions:** Compliance Administrator, Information Protection Administrator
+- **Permissions:** Purview Compliance Admin, Information Protection Administrator
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services

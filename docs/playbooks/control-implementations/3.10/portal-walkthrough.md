@@ -4,7 +4,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 
 ## Prerequisites
 
-- **Role:** Compliance Administrator, Privacy Officer
+- **Role:** Purview Compliance Admin, Privacy Officer
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
 - **Access:** Microsoft Purview portal
 

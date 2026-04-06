@@ -4,9 +4,9 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 
 ## Prerequisites
 
-- **Role:** Compliance Administrator, Marketing Compliance Officer
+- **Role:** Purview Compliance Admin, Marketing Compliance Officer
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
-- **Access:** Microsoft Purview portal, Microsoft 365 Admin Center
+- **Access:** Microsoft Purview portal, Microsoft 365 admin center
 
 ## Steps
 
@@ -49,7 +49,7 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 
 ### Step 4: Establish AI Disclosure Templates
 
-**Portal:** Microsoft 365 Admin Center
+**Portal:** Microsoft 365 admin center
 **Path:** Settings > Org settings > Email templates
 
 1. Create standard AI disclosure templates for different communication types:
