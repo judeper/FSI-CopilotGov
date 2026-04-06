@@ -46,7 +46,7 @@ Common issues and resolution steps for Copilot impact measurement using Viva Ins
 
 ## Diagnostic Steps
 
-1. **Check Viva Insights access:** Navigate to insights.viva.office.com and verify access.
+1. **Check Viva Insights access:** Navigate to insights.viva.cloud.microsoft and verify access.
 2. **Verify data freshness:** Check the last updated date on the Copilot dashboard.
 3. **Review privacy settings:** Confirm minimum group size and data access configurations.
 4. **Test data extraction:** Run the Graph API reports to verify data availability.

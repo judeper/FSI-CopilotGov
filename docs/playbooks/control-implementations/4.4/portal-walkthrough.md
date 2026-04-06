@@ -4,7 +4,7 @@ Step-by-step portal configuration for governing Copilot capabilities within the 
 
 ## Prerequisites
 
-- **Role:** Global Administrator or Viva Administrator
+- **Role:** Entra Global Admin or Viva Administrator
 - **License:** Microsoft 365 E5 with Copilot add-on, Microsoft Viva suite license (Viva Insights P2 or Viva Suite for Copilot Chat analytics)
 - **Access:** Microsoft 365 Admin Center, Viva Admin Center, Microsoft Purview
 
@@ -81,7 +81,7 @@ Step-by-step portal configuration for governing Copilot capabilities within the 
 
 ### Step 5: Configure Viva Connections Copilot Integration
 
-**Portal:** SharePoint Admin Center / Viva Connections
+**Portal:** SharePoint admin center / Viva Connections
 **Path:** Viva Connections settings
 
 1. Review how Copilot interacts with Viva Connections dashboard content.

@@ -5,7 +5,7 @@ Automation scripts for generating Copilot usage analytics and adoption reports.
 ## Prerequisites
 
 - **Modules:** `Microsoft.Graph`
-- **Permissions:** Reports.Read.All, Usage.Read.All
+- **Permissions:** Reports.Read.All
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services

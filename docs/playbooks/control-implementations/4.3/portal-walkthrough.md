@@ -4,15 +4,15 @@ Step-by-step portal configuration for governing Copilot capabilities in Teams Ph
 
 ## Prerequisites
 
-- **Role:** Teams Administrator, Compliance Administrator
+- **Role:** Teams Admin, Purview Compliance Admin
 - **License:** Microsoft 365 E5 with Copilot add-on, Teams Phone license
-- **Access:** Microsoft Teams Admin Center
+- **Access:** Teams admin center
 
 ## Steps
 
 ### Step 1: Configure Copilot for Teams Phone
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Voice > Calling policies
 
 1. Navigate to Voice > Calling policies.
@@ -25,7 +25,7 @@ Step-by-step portal configuration for governing Copilot capabilities in Teams Ph
 
 ### Step 2: Configure Call Queue Copilot Settings
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Voice > Call queues
 
 1. Open each call queue that handles client interactions.
@@ -39,7 +39,7 @@ Step-by-step portal configuration for governing Copilot capabilities in Teams Ph
 
 ### Step 3: Configure Recording and Transcription Compliance
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Voice > Calling policies > Recording and transcription
 
 1. Enable compliance recording if required by your firm's communication recording obligations.
@@ -49,7 +49,7 @@ Step-by-step portal configuration for governing Copilot capabilities in Teams Ph
 
 ### Step 4: Configure Auto-Attendant AI Responses
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Voice > Auto attendants
 
 1. Review auto-attendant configurations that use AI-powered responses.

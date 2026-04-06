@@ -91,7 +91,7 @@ Test cases and evidence collection procedures to validate Copilot governance in 
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Rule 17a-4(b)(4) | 3-year preservation of business communications | EnabledWithTranscript ensures verbatim transcript paired with AI summaries; both retained per policy |
+| SEC Rule 17a-4(b)(4) | 3-year preservation of business communications | EnabledWithTranscript supports verbatim transcript paired with AI summaries; both retained per policy |
 | FINRA 3110(b)(4) | Supervisory review of communications | AI-generated meeting summaries reviewable through Communication Compliance |
 | FINRA 4511 | Books and records preservation | Meeting transcripts and Copilot artifacts retained under Exchange and OneDrive retention policies |
 | FFIEC | IT governance of AI features | Supports governance of AI-enabled collaboration tools |

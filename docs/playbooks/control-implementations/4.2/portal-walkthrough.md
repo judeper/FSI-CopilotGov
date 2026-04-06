@@ -4,20 +4,20 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 
 ## Prerequisites
 
-- **Role:** Teams Administrator, Compliance Administrator
+- **Role:** Teams Admin, Purview Compliance Admin
 - **License:** Microsoft 365 E5 with Copilot add-on, Teams Premium (for advanced meeting controls)
-- **Access:** Microsoft Teams Admin Center, Microsoft 365 Admin Center
+- **Access:** Teams admin center, Microsoft 365 Admin Center
 
 ## Steps
 
 ### Step 1: Override the Teams Copilot Default Change (Critical)
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Meetings > Meeting Policies
 
 !!! danger "Effective March 2026, Microsoft changed the default Copilot Teams meeting policy from EnabledWithTranscript to Enabled. This step overrides that change for FSI compliance."
 
-1. Navigate to **Teams Admin Center > Meetings > Meeting Policies**.
+1. Navigate to **Teams admin center > Meetings > Meeting Policies**.
 2. Select the meeting policy assigned to regulated users (e.g., "FSI-Regulated-Policy" or "Global").
 3. Locate the **Copilot** section within the policy settings.
 4. Verify the **Copilot** setting — if it shows "Enabled" (without transcript requirement), this must be changed.
@@ -27,7 +27,7 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 
 ### Step 2: Configure Meeting Transcription Policy
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Meetings > Meeting Policies > Recording and transcription
 
 1. Navigate to the Meeting policies section.
@@ -40,13 +40,13 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 
 ### Step 3: Configure Copilot Meeting Settings
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Meetings > Meeting Policies > Copilot
 
 1. Under the Copilot section of the meeting policy:
    - Set **Copilot** to "On with transcript" — this is the FSI-compliant configuration (EnabledWithTranscript)
    - Do not use "On without transcript" for any user group with recordkeeping obligations
-   - For regulated meetings, "On with transcript" ensures that all Copilot-generated artifacts have a corresponding verbatim record
+   - For regulated meetings, "On with transcript" helps ensure that all Copilot-generated artifacts have a corresponding verbatim record
 2. Configure whether Copilot can be used during and/or after meetings.
 3. Set the default Copilot access for different meeting types (scheduled, ad hoc, channel meetings).
 
@@ -64,7 +64,7 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 
 ### Step 5: Configure Meeting Summary and Action Item Controls
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Meetings > Meeting Policies > AI features
 
 1. Configure AI-generated meeting notes and summary settings:
@@ -76,7 +76,7 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 
 ### Step 6: Verify Policy Assignment
 
-**Portal:** Microsoft Teams Admin Center
+**Portal:** Teams admin center
 **Path:** Users > Manage users
 
 1. Select a sample of users from regulated business units.
@@ -96,7 +96,7 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 
 ## Regulatory Alignment
 
-- **SEC Rule 17a-4(b)(4)** — EnabledWithTranscript ensures verbatim transcript preservation alongside AI-generated summaries, meeting the 3-year readily accessible retention requirement
+- **SEC Rule 17a-4(b)(4)** — EnabledWithTranscript supports verbatim transcript preservation alongside AI-generated summaries, helping meet the 3-year readily accessible retention requirement
 - **FINRA Rule 3110** — Supports compliance with supervisory requirements for meeting documentation
 - **FINRA Rule 4511** — Preserves the underlying record (transcript) that validates the AI-generated meeting artifacts
 - **MiFID II** — Supports meeting documentation requirements for firms with EU operations

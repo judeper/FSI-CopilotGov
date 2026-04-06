@@ -39,7 +39,7 @@ Test cases and evidence collection procedures for Copilot governance across the 
 - **Expected Result:** Copilot-assisted Engage posts are captured by communication compliance policies.
 - **Evidence:** Communication compliance review queue showing the Engage post.
 
-### Test 2: Viva Learning Compliance Training Integrity
+### Test 4: Viva Learning Compliance Training Integrity
 
 - **Objective:** Confirm that Copilot AI recommendations do not bypass mandatory compliance training
 - **Steps:**
@@ -50,7 +50,7 @@ Test cases and evidence collection procedures for Copilot governance across the 
 - **Expected Result:** Mandatory compliance training integrity is maintained alongside Copilot recommendations.
 - **Evidence:** Training completion reports showing mandatory courses are tracked independently.
 
-### Test 3: Viva Goals Data Boundary Enforcement
+### Test 5: Viva Goals Data Boundary Enforcement
 
 - **Objective:** Validate that Copilot in Viva Goals respects organizational data boundaries
 - **Steps:**
@@ -61,7 +61,7 @@ Test cases and evidence collection procedures for Copilot governance across the 
 - **Expected Result:** Copilot respects organizational hierarchies and access controls in Viva Goals.
 - **Evidence:** Test results showing data boundary enforcement.
 
-### Test 4: Viva Connections Content Sensitivity
+### Test 6: Viva Connections Content Sensitivity
 
 - **Objective:** Verify that Copilot respects sensitivity labels when surfacing content in Viva Connections
 - **Steps:**
@@ -88,9 +88,9 @@ Test cases and evidence collection procedures for Copilot governance across the 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FINRA 3110 | Supervision of internal communications | Supports monitoring of AI-assisted Viva Engage communications, including content surfacing through Teams integration |
-| FFIEC Management Booklet, Section II.C | IT risk monitoring — technology usage pattern oversight | Copilot Chat analytics in Viva Insights directly fulfills this monitoring expectation |
+| FFIEC Management Booklet, Section II.C | IT risk monitoring — technology usage pattern oversight | Copilot Chat analytics in Viva Insights supports this monitoring expectation |
 | SOX 404 | Internal controls | Supports governance of AI tools affecting business processes |
-| EEOC AI Guidance | Non-discriminatory use of AI analytics | Privacy-protected Copilot Chat analytics ensure individual query data is not used for employment decisions |
+| EEOC AI Guidance | Non-discriminatory use of AI analytics | Privacy-protected Copilot Chat analytics help ensure individual query data is not used for employment decisions |
 
 ## Next Steps
 

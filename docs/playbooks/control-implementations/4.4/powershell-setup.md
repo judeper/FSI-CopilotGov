@@ -5,7 +5,7 @@ Automation scripts for managing Copilot governance across the Microsoft Viva sui
 ## Prerequisites
 
 - **Modules:** `Microsoft.Graph`, `ExchangeOnlineManagement`
-- **Permissions:** Global Administrator or Viva Administrator
+- **Permissions:** Entra Global Admin or Viva Administrator
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -52,7 +52,7 @@ Write-Host "Note: Departments below the configured minimum group size threshold 
 
 ```powershell
 # Query current Viva Insights privacy configuration for Copilot Chat analytics
-# Requires: Viva Insights Administrator role or Global Administrator
+# Requires: Viva Insights Administrator role or Entra Global Admin
 # Note: Full privacy threshold configuration is completed via the Viva Insights Admin portal
 #       (insights.viva.office.com > Admin > Privacy settings). This script validates current state.
 
