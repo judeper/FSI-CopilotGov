@@ -27,7 +27,7 @@ Common issues and resolution steps for Microsoft Sentinel integration with Copil
 
 ### Issue 3: Sentinel Workspace Costs Increasing Unexpectedly
 
-- **Symptoms:** Azure Sentinel costs are significantly higher than expected after enabling Copilot event ingestion.
+- **Symptoms:** Microsoft Sentinel costs are significantly higher than expected after enabling Copilot event ingestion.
 - **Root Cause:** High-volume Copilot interactions generating large amounts of audit data that increase ingestion costs.
 - **Resolution:**
   1. Review Sentinel workspace data volume: check Usage and estimated costs in the workspace settings.

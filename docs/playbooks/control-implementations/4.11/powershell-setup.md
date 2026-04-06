@@ -80,8 +80,8 @@ $ruleParams = @{
     TriggerThreshold  = 0
 }
 
-Write-Host "Exfiltration detection rule created" -ForegroundColor Green
-Write-Host "Note: Deploy via Sentinel portal or ARM template for full configuration" -ForegroundColor Yellow
+Write-Host "Exfiltration detection rule parameters defined — deploy via Sentinel portal or ARM template" -ForegroundColor Green
+Write-Host "Note: Review query thresholds before deploying to production" -ForegroundColor Yellow
 ```
 
 ### Script 3: Copilot Hunting Query Library

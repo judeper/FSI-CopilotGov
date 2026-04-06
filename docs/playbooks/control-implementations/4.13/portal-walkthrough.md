@@ -6,7 +6,7 @@ Step-by-step portal configuration for governing plugins, Graph connectors, and a
 
 - **Role:** AI Administrator, Teams Admin, or another approved admin role for the surfaces being reviewed
 - **License:** Microsoft 365 E5 with Copilot add-on
-- **Access:** Microsoft 365 Admin Center, Teams Admin Center
+- **Access:** Microsoft 365 Admin Center, Teams admin center
 
 ## Steps
 
