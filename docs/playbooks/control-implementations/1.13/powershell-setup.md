@@ -6,7 +6,7 @@ Automation scripts for managing and monitoring Copilot extensibility components.
 
 - Microsoft Graph PowerShell SDK
 - Microsoft Teams PowerShell module (`MicrosoftTeams`)
-- Global Administrator or Teams Administrator role
+- Entra Global Admin or Teams Admin role
 
 ## Scripts
 

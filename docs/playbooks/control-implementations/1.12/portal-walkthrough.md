@@ -17,7 +17,7 @@ Step-by-step portal procedures for establishing and managing the Copilot trainin
 **Path:** adoption.microsoft.com > Copilot > Training
 
 Review the Microsoft-provided Copilot training resources including:
-- Copilot for Microsoft 365 user training modules
+- Microsoft 365 Copilot user training modules
 - Administrator training for Copilot governance
 - Prompt engineering best practices
 - Role-specific use case guides

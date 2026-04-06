@@ -23,7 +23,7 @@ Common issues and resolution steps for SharePoint Advanced Management configurat
 - **Resolution:**
   1. Verify SAM license has been active for at least 7 days
   2. Check service health for any SharePoint-related processing delays
-  3. Ensure the signed-in account has SharePoint Administrator role (lower roles may see limited data)
+  3. Ensure the signed-in account has SharePoint Admin role (lower roles may see limited data)
   4. If data remains unavailable after 7 days, open a Microsoft support ticket
 
 ### Issue 3: Lifecycle Policy Not Detecting Inactive Sites

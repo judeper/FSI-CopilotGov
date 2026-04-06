@@ -1,10 +1,10 @@
 # Control 1.9: License Planning and Assignment Strategy — Portal Walkthrough
 
-Step-by-step portal configuration for planning and managing M365 Copilot license assignments aligned with governance requirements.
+Step-by-step portal configuration for planning and managing Microsoft 365 Copilot license assignments aligned with governance requirements.
 
 ## Prerequisites
 
-- License Administrator or Global Administrator role
+- License Administrator or Entra Global Admin role
 - Microsoft 365 Admin Center access
 - Approved Copilot deployment plan from governance committee
 - User readiness assessment results from Control 1.1

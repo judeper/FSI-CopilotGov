@@ -1,6 +1,6 @@
 # Control 1.10: Vendor Risk Management for Microsoft AI Services — Portal Walkthrough
 
-Step-by-step procedures for conducting vendor risk assessment of Microsoft AI services used by M365 Copilot.
+Step-by-step procedures for conducting vendor risk assessment of Microsoft AI services used by Microsoft 365 Copilot.
 
 ## Prerequisites
 

@@ -44,7 +44,7 @@ $tenantConfig | ConvertTo-Json | Out-File "VendorRiskConfig_$(Get-Date -Format '
 # Check Microsoft 365 Message Center for AI-related service updates
 # Requires: Microsoft Graph SDK
 
-Import-Module Microsoft.Graph.Beta.DeviceManagement
+Import-Module Microsoft.Graph.Devices.ServiceAnnouncement
 Connect-MgGraph -Scopes "ServiceHealth.Read.All"
 
 $messages = Get-MgServiceAnnouncementMessage -Top 100 |
@@ -78,7 +78,7 @@ $aiUpdates | Export-Csv "AIServiceUpdates_$(Get-Date -Format 'yyyyMMdd').csv" -N
 # Monitor service health for AI-related Microsoft 365 workloads
 # Requires: Microsoft Graph SDK
 
-Import-Module Microsoft.Graph.Beta.DeviceManagement
+Import-Module Microsoft.Graph.Devices.ServiceAnnouncement
 Connect-MgGraph -Scopes "ServiceHealth.Read.All"
 
 $healthOverviews = Get-MgServiceAnnouncementHealthOverview
