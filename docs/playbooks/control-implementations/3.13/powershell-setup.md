@@ -5,7 +5,7 @@ Automation scripts for generating FFIEC-aligned evidence, assessment reports, an
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph`
-- **Permissions:** Compliance Administrator, AuditLog.Read.All
+- **Permissions:** Purview Compliance Admin, AuditLog.Read.All
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
