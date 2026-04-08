@@ -68,7 +68,7 @@ Create an encryption posture document covering:
 |------|---------------|
 | **Baseline** | Verify default platform encryption; enforce TLS 1.2; document encryption posture |
 | **Recommended** | Evaluate Customer Key for additional control; sensitivity label encryption for Confidential+ content |
-| **Regulated** | Customer Key deployed with documented key management; FIPS 140-2 validated encryption; quarterly encryption posture review |
+| **Regulated** | Customer Key deployed with documented key management; FIPS 140-3 validated encryption; quarterly encryption posture review |
 
 ## Next Steps
 

@@ -105,6 +105,9 @@ $autoReport | Export-Csv "AutoLabelPolicies_$(Get-Date -Format 'yyyyMMdd').csv" 
 ```powershell
 # Generate label adoption metrics for governance review
 # Requires: Microsoft Graph SDK
+# NOTE: Get-MgReportSecurity does not return sensitivity label usage data.
+# Use the Purview portal for label analytics: Purview > Information Protection > Label Analytics.
+# The script below attempts the call but falls back to directing users to the portal.
 
 Import-Module Microsoft.Graph.Reports
 Connect-MgGraph -Scopes "Reports.Read.All"
@@ -115,8 +118,9 @@ $report = Get-MgReportSecurity -Period "D30" -ErrorAction SilentlyContinue
 
 Write-Host "=== Label Adoption Summary ==="
 Write-Host "Report period: Last 30 days"
-Write-Host "Review label analytics in Microsoft Purview for detailed adoption metrics."
-Write-Host "Manual verification: Purview > Information Protection > Label Analytics"
+Write-Host "NOTE: Get-MgReportSecurity may not return label usage data."
+Write-Host "For detailed label adoption metrics, use the Purview portal:"
+Write-Host "  Purview > Information Protection > Label Analytics"
 ```
 
 ## Scheduled Tasks
@@ -126,7 +130,7 @@ Write-Host "Manual verification: Purview > Information Protection > Label Analyt
 | Taxonomy Export | Monthly | Track taxonomy changes and maintain audit trail |
 | Policy Coverage Analysis | Quarterly | Verify all user groups have label access |
 | Auto-Labeling Status Check | Weekly | Monitor auto-labeling policy health and mode |
-| Adoption Metrics | Monthly | Track progress toward 85% labeling target |
+| Adoption Metrics | Monthly | Track progress toward governance-level labeling targets (>50% Baseline, >75% Recommended, >90% Regulated) |
 
 ## Next Steps
 

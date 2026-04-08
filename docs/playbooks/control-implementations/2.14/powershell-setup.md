@@ -15,6 +15,7 @@ Automation scripts for managing and monitoring declarative Copilot agents.
 ```powershell
 # Inventory declarative agents and their data sources
 # Note: Agent management APIs may be in preview
+# NOTE: This script provides guidance only. For actual agent enumeration, use the Graph API: GET /beta/appCatalogs/agents/packages
 Import-Module Microsoft.Graph.Search
 Connect-MgGraph -Scopes "Sites.Read.All"
 

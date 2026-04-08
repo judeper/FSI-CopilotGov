@@ -17,7 +17,8 @@ Automation scripts for tracking training completion and managing awareness progr
 # Requires: Microsoft Graph SDK + LMS export
 
 Import-Module Microsoft.Graph.Users
-Connect-MgGraph -Scopes "User.Read.All"
+Import-Module Microsoft.Graph.Identity.DirectoryManagement
+Connect-MgGraph -Scopes "User.Read.All","Organization.Read.All"
 
 # Import training completion data from LMS
 $trainingCompleted = Import-Csv "TrainingCompletions.csv"  # Expected columns: UPN, CompletionDate, Module
@@ -47,6 +48,7 @@ foreach ($user in $licensedUsers) {
 
 $compliant = ($complianceReport | Where-Object TrainingCompleted).Count
 $total = $complianceReport.Count
+if ($total -eq 0) { Write-Warning "No Copilot-licensed users found."; return }
 $rate = [math]::Round(($compliant / $total) * 100, 1)
 
 Write-Host "=== Training Compliance Report ==="

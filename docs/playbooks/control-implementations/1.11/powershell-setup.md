@@ -15,11 +15,14 @@ Automation scripts for tracking Copilot adoption metrics and deployment progress
 ```powershell
 # Generate Copilot adoption metrics across the organization
 # Requires: Microsoft Graph SDK with Reports.Read.All
+# NOTE: This script tracks M365 sign-in activity, not Copilot-specific usage.
+# For actual Copilot adoption data, use the Viva Insights Copilot Dashboard
+# or the getMicrosoft365CopilotUsageUserDetail Graph API.
 
 Import-Module Microsoft.Graph.Reports
 Import-Module Microsoft.Graph.Users
 
-Connect-MgGraph -Scopes "Reports.Read.All","User.Read.All"
+Connect-MgGraph -Scopes "Reports.Read.All","User.Read.All","AuditLog.Read.All"
 
 # Export M365 app usage details (general app activity, not Copilot-specific)
 Get-MgReportM365AppUserDetail -Period "D30" -OutFile "M365AppUsage.csv"

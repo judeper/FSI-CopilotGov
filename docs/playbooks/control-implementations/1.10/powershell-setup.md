@@ -16,7 +16,6 @@ Automation scripts for monitoring Microsoft AI service configuration and complia
 # Document current Microsoft AI service configuration for vendor risk records
 # Requires: Microsoft Graph SDK
 
-Import-Module Microsoft.Graph.Beta.Reports
 Import-Module Microsoft.Graph.Identity.DirectoryManagement
 
 Connect-MgGraph -Scopes "Organization.Read.All","Policy.Read.All"
@@ -45,7 +44,7 @@ $tenantConfig | ConvertTo-Json | Out-File "VendorRiskConfig_$(Get-Date -Format '
 # Requires: Microsoft Graph SDK
 
 Import-Module Microsoft.Graph.Devices.ServiceAnnouncement
-Connect-MgGraph -Scopes "ServiceHealth.Read.All"
+Connect-MgGraph -Scopes "ServiceMessage.Read.All"
 
 $messages = Get-MgServiceAnnouncementMessage -Top 100 |
     Where-Object {

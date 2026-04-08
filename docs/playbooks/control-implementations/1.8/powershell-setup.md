@@ -65,7 +65,7 @@ Write-Host "Total sites: $($inventory.Count)"
 Write-Host "Hub sites: $hubSites"
 Write-Host "Orphaned sites (no hub association): $orphaned"
 
-$inventory | Export-Csv "SiteArchitecture_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+$inventory | Export-Csv "SiteArchitecture.csv" -NoTypeInformation
 ```
 
 ### Script 2: Hub Site Relationship Map

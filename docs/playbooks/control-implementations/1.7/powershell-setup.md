@@ -35,19 +35,23 @@ Write-Host "Site Creation Default: $($tenantSettings.SelfSiteCreationDisabled)"
 ```powershell
 # Set up site lifecycle management for inactive sites
 # Requires: SharePoint Online Management Shell
+# NOTE: Site lifecycle management is configured via SharePoint admin center >
+# Policies > Site lifecycle management. No PowerShell cmdlet exists for
+# inactivity threshold or notification settings.
 
 Import-Module Microsoft.Online.SharePoint.PowerShell
 Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 
-# Configure inactive site policy (180 days for FSI)
-Set-SPOTenant -InactivityThresholdDays 180
+# Site lifecycle policy must be configured in the admin portal:
+#   SharePoint admin center > Policies > Site lifecycle management
+#   - Set inactivity threshold (e.g., 180 days for FSI)
+#   - Enable owner notifications
+#   - Configure archival rules
 
-# Set notification preferences
-Set-SPOTenant -InactivityNotificationEnabled $true
-
-Write-Host "Site lifecycle policy configured:"
-Write-Host "  Inactivity threshold: 180 days"
-Write-Host "  Notifications enabled: Yes"
+Write-Host "Site lifecycle policy configuration:"
+Write-Host "  Configure via: SharePoint admin center > Policies > Site lifecycle management"
+Write-Host "  Recommended inactivity threshold: 180 days"
+Write-Host "  Enable notifications: Yes"
 Write-Host ""
 Write-Host "Review inactive sites in SharePoint admin center > Sites > Active sites > Inactive filter"
 ```
@@ -106,6 +110,9 @@ Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 
 $sensitiveSites = Import-Csv "SensitiveSites.csv"
 # CSV must include columns: Url, RestrictedGroupId (the security group ID to enforce as the access boundary)
+
+# Enable RAC at the tenant level (required before per-site RAC can be configured)
+Set-SPOTenant -EnableRestrictedAccessControl $true
 
 $configLog = @()
 

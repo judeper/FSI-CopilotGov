@@ -45,9 +45,9 @@ Write-Host "`nOrganization TLS: TLSReceiveDomainSecureList=$($orgConfig.TLSRecei
 # Requires: Security & Compliance PowerShell
 
 Import-Module ExchangeOnlineManagement
-Connect-IPPSSession
+Connect-ExchangeOnline
 
-$deks = Get-DataEncryptionPolicy -ErrorAction SilentlyContinue
+$deks = Get-DataEncryptionPolicy-ErrorAction SilentlyContinue
 
 if ($deks) {
     Write-Host "=== Customer Key Status ==="

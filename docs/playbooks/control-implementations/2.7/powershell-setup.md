@@ -5,7 +5,7 @@ Automation scripts for verifying and monitoring data residency configurations.
 ## Prerequisites
 
 - Microsoft Graph PowerShell SDK
-- Global Reader or Global Administrator role
+- Global Reader or Entra Global Admin role
 
 ## Scripts
 
@@ -22,21 +22,16 @@ $org = Get-MgOrganization
 Write-Host "=== Tenant Data Location Report ==="
 Write-Host "Tenant: $($org.DisplayName)"
 Write-Host "Country: $($org.CountryLetterCode)"
-Write-Host "Preferred Data Location: $($org.PreferredDataLocation)"
+Write-Host "Registered Country: $($org.CountryLetterCode)"
 Write-Host "Tenant Type: $($org.TenantType)"
 Write-Host ""
-
-# Check for Multi-Geo configuration
-$dataLocations = $org.AssignedPlans | Where-Object {
-    $_.Service -match "SharePoint|Exchange|Teams"
-}
 
 Write-Host "Data residency assessment generated. Verify specific workload locations in Admin Center."
 
 $report = [PSCustomObject]@{
     TenantName     = $org.DisplayName
     Country        = $org.CountryLetterCode
-    DataLocation   = $org.PreferredDataLocation
+    RegisteredCountry = $org.CountryLetterCode
     AssessmentDate = Get-Date -Format "yyyy-MM-dd"
 }
 

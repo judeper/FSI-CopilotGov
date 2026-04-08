@@ -47,7 +47,7 @@ Confirm default label settings — a default label helps meet the minimum labeli
 **Portal:** Microsoft Purview
 **Path:** Purview > Information Protection > Auto-labeling
 
-Review auto-labeling policies that detect and classify sensitive content types common in FSI (account numbers, SSNs, financial data). Auto-labeling helps achieve the 85% coverage target before Copilot deployment.
+Review auto-labeling policies that detect and classify sensitive content types common in FSI (account numbers, SSNs, financial data). Auto-labeling helps achieve the governance-level coverage targets (>50% Baseline, >75% Recommended, >90% Regulated) before Copilot deployment.
 
 Verify policies are in enforcement mode rather than simulation mode.
 
@@ -59,9 +59,9 @@ Record all taxonomy review decisions including any labels added, modified, or de
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Review and document current taxonomy; set default label to "General" |
+| **Baseline** | Review and document current taxonomy; set default label to "General"; enable mandatory labeling policy |
 | **Recommended** | Optimize taxonomy for Copilot with sub-labels for FSI data types; enable auto-labeling for top 10 sensitive information types |
-| **Regulated** | Mandatory labeling policy; auto-labeling for all FSI-relevant sensitive information types; quarterly taxonomy review |
+| **Regulated** | Auto-labeling for all FSI-relevant sensitive information types; quarterly taxonomy review |
 
 ## Next Steps
 

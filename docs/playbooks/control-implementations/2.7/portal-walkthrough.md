@@ -4,7 +4,7 @@ Step-by-step portal procedures for verifying and configuring data residency cont
 
 ## Prerequisites
 
-- Global Administrator role
+- Entra Global Admin role
 - Microsoft 365 Admin Center access
 - Understanding of organizational data residency requirements
 - Legal and compliance input on cross-border data flow obligations

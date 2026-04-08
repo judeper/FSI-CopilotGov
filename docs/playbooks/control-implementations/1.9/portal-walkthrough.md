@@ -19,7 +19,7 @@ Step-by-step portal configuration for planning and managing Microsoft 365 Copilo
 Review current license inventory including:
 - Microsoft 365 Copilot license count (purchased vs. assigned)
 - Prerequisite licenses (M365 E3/E5, Office 365 E3/E5, Microsoft 365 F1/F3)
-- Required add-ons (SharePoint Advanced Management, E5 Compliance, Entra ID P2)
+- Required add-ons (Purview Suite (formerly E5 Compliance), Entra ID P2). SharePoint Advanced Management (SAM) is included with the Microsoft 365 Copilot license.
 
 Confirm all prerequisite licenses are assigned to users planned for Copilot deployment. Note which users are on Frontline (F1/F3) base licenses, as Copilot is available as an add-on for these SKUs.
 
@@ -72,7 +72,7 @@ If deploying PAYG Copilot Chat (metered per-message pricing; refer to [Microsoft
 For a sample of users in each deployment group, verify the complete license stack:
 - Base license (M365 E3/E5 or F1/F3 for Frontline users)
 - Copilot license (full seat or Frontline add-on as applicable)
-- Any required add-on licenses (SAM, E5 Compliance, Entra ID P2)
+- Any required add-on licenses (SAM — included with Copilot license, Purview Suite, Entra ID P2)
 
 Identify and resolve any license dependency gaps.
 

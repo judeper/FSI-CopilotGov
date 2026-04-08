@@ -39,7 +39,7 @@ Identify opportunities to improve hub structure for better Copilot content groun
 ### Step 3: Review Content Type and Metadata Standards
 
 **Portal:** SharePoint admin center
-**Path:** SharePoint Admin > Content Type Gallery
+**Path:** SharePoint admin center > Content services > Content type gallery
 
 Review the content type hierarchy published from the content type hub. Consistent content types and metadata improve Copilot's ability to understand and classify content accurately.
 
@@ -48,7 +48,7 @@ Verify that FSI-relevant content types are defined (e.g., client agreements, reg
 ### Step 4: Assess Taxonomy and Term Store
 
 **Portal:** SharePoint admin center
-**Path:** SharePoint Admin > Term Store
+**Path:** SharePoint admin center > Content services > Term store
 
 Review the managed metadata term store for FSI-relevant term groups:
 - Business unit taxonomy

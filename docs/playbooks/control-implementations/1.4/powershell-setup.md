@@ -37,7 +37,8 @@ $report.SharePointSites.Total = $sites.Count
 
 foreach ($site in $sites) {
     $siteDetail = Get-MgSite -SiteId $site.Id -Property "sharepointIds,displayName"
-    # Sites with specific configurations may be excluded
+    # TODO: Add actual eligibility logic (e.g., check for RCD exclusion, site lock state)
+    # Currently this counter mirrors Total — refine with your org's index eligibility criteria
     $report.SharePointSites.IndexEligible++
 }
 
@@ -74,7 +75,10 @@ foreach ($site in $spoSites) {
         SensitivityLabel  = $detail.SensitivityLabel
         StorageMB         = [math]::Round($detail.StorageUsageCurrent, 2)
         LastModified      = $detail.LastContentModifiedDate
-        IndexRecommendation = if ($detail.SensitivityLabel -match "Highly Confidential") { "Review Required" } else { "Include" }
+        # NOTE: SensitivityLabel returns a GUID, not a display name.
+        # Resolve GUID to name via: Get-Label | Select DisplayName, Guid
+        # Replace the GUID below with your "Highly Confidential" label GUID.
+        IndexRecommendation = $(if ($detail.SensitivityLabel -match "<your-highly-confidential-label-guid>") { "Review Required" } else { "Include" })
     }
 }
 
@@ -86,20 +90,21 @@ Write-Host "Inventoried $($inventory.Count) content sources for index governance
 
 ```powershell
 # Review Copilot usage patterns to identify index governance concerns
-# Requires: Microsoft Graph SDK with AuditLog.Read.All
+# Requires: ExchangeOnlineManagement module with Compliance Search role
 
-Import-Module Microsoft.Graph.Reports
+Import-Module ExchangeOnlineManagement
 
-Connect-MgGraph -Scopes "AuditLog.Read.All"
+Connect-IPPSSession
 
-$startDate = (Get-Date).AddDays(-30).ToString("yyyy-MM-dd")
-$endDate = (Get-Date).ToString("yyyy-MM-dd")
+$startDate = (Get-Date).AddDays(-30).ToString("yyyy-MM-ddTHH:mm:ss")
+$endDate = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
 
-# Pull Copilot activity from audit logs
-$auditLogs = Get-MgAuditLogSignIn -Filter "appDisplayName eq 'Microsoft 365 Copilot'" `
-    -Top 1000
+# Pull Copilot activity from unified audit log
+$auditLogs = Search-UnifiedAuditLog -RecordType CopilotInteraction `
+    -StartDate $startDate -EndDate $endDate `
+    -ResultSize 1000
 
-$usageSummary = $auditLogs | Group-Object -Property UserPrincipalName |
+$usageSummary = $auditLogs | Group-Object -Property UserIds |
     Select-Object @{N='User';E={$_.Name}}, @{N='QueryCount';E={$_.Count}} |
     Sort-Object QueryCount -Descending
 

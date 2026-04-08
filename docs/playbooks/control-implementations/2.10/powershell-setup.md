@@ -15,6 +15,7 @@ Automation scripts for monitoring and reporting on insider risk detection for Co
 ```powershell
 # Check insider risk policy configurations and status
 # Requires: Security & Compliance PowerShell
+# NOTE: Get-InsiderRiskPolicy is not officially supported by Microsoft for general customer use. Verify availability in your tenant. Use the Purview portal as a fallback for policy verification.
 
 Import-Module ExchangeOnlineManagement
 Connect-IPPSSession

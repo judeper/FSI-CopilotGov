@@ -20,8 +20,8 @@ The shared multi-tenant PnP Management Shell Entra ID app was retired on Septemb
 Register-PnPEntraIDAppForInteractiveLogin `
     -ApplicationName "PnP Governance Shell - [YourOrg]" `
     -Tenant "yourorg.onmicrosoft.com" `
-    -SharePointDelegated `
-    -GraphDelegated `
+    -SharePointApplicationPermissions "Sites.FullControl.All" `
+    -GraphApplicationPermissions "Sites.Read.All" `
     -Interactive
 ```
 
@@ -51,6 +51,7 @@ foreach ($site in $sites) {
     $siteGroups = Get-SPOSiteGroup -Site $site.Url -ErrorAction SilentlyContinue
 
     $everyoneAccess = $siteGroups | Where-Object {
+        # NOTE: Replace $detail.HubSiteId with your tenant GUID. Get via: (Get-MgOrganization).Id
         $_.Users -contains "c:0-.f|rolemanager|spo-grid-all-users/$($detail.HubSiteId)" -or
         $_.LoginName -match "Everyone"
     }
@@ -125,9 +126,9 @@ foreach ($site in $targetSites) {
                     Site     = $site.Url
                     FilePath = $item.FieldValues["FileRef"]
                     LinkType = $link.LinkKind
-                    Scope    = $link.ShareScope
-                    Created  = $link.Created
-                    Expiration = $link.Expiration
+                    Scope    = $link.Scope
+                    Created  = $link.CreatedDateTime
+                    Expiration = $link.ExpirationDateTime
                 }
             }
         }

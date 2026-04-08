@@ -48,7 +48,7 @@ $copilotEvents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate 
 $pagesEvents = $copilotEvents | Where-Object {
     $auditData = $_.AuditData | ConvertFrom-Json
     $auditData.AppHost -in @("Loop", "OneDrive", "SharePoint") -or
-    $auditData.ObjectId -match "\.loop$|\.fluid$"
+    $auditData.ObjectId -match "\.page$|\.pod$"
 }
 
 $pagesReport = @()
@@ -84,11 +84,11 @@ $sharingEvents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate 
     -Operations "SharingSet","SharingInvitationCreated","AnonymousLinkCreated" `
     -ResultSize 1000
 
-# Filter for Pages/Loop content (stored as .loop/.fluid files in OneDrive/SharePoint)
+# Filter for Pages content (stored as .page/.pod files in OneDrive/SharePoint)
 $pagesSharing = $sharingEvents | Where-Object {
     $auditData = $_.AuditData | ConvertFrom-Json
-    $auditData.ObjectId -match "\.loop$|\.fluid$" -or
-    $auditData.SourceFileExtension -in @("loop", "fluid")
+    $auditData.ObjectId -match "\.page$|\.pod$" -or
+    $auditData.SourceFileExtension -in @("page", "pod")
 }
 
 Write-Host "=== Pages Sharing Activity ==="

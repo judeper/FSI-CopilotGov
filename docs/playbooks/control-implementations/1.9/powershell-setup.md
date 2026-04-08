@@ -17,6 +17,7 @@ Automation scripts for managing Microsoft 365 Copilot license assignments and ut
 # Requires: Microsoft Graph SDK
 
 Import-Module Microsoft.Graph.Users
+Import-Module Microsoft.Graph.Identity.DirectoryManagement
 Connect-MgGraph -Scopes "Organization.Read.All","User.Read.All"
 
 $subscribedSkus = Get-MgSubscribedSku
@@ -47,6 +48,7 @@ $licenseReport | Export-Csv "LicenseInventory_$(Get-Date -Format 'yyyyMMdd').csv
 # Requires: Microsoft Graph SDK
 
 Import-Module Microsoft.Graph.Groups
+Import-Module Microsoft.Graph.Identity.DirectoryManagement
 Connect-MgGraph -Scopes "Group.ReadWrite.All","Organization.Read.All"
 
 $groupName = "Copilot-Pilot-Users"
@@ -75,6 +77,7 @@ if ($copilotSku -and $group) {
 
 Import-Module Microsoft.Graph.Users
 Import-Module Microsoft.Graph.Reports
+Import-Module Microsoft.Graph.Identity.DirectoryManagement
 Connect-MgGraph -Scopes "User.Read.All","AuditLog.Read.All"
 
 $copilotSku = Get-MgSubscribedSku | Where-Object { $_.SkuPartNumber -match "Microsoft_365_Copilot" }
@@ -112,6 +115,7 @@ $utilizationReport | Export-Csv "CopilotUtilization_$(Get-Date -Format 'yyyyMMdd
 # Requires: Microsoft Graph SDK
 
 Import-Module Microsoft.Graph.Users
+Import-Module Microsoft.Graph.Identity.DirectoryManagement
 Connect-MgGraph -Scopes "User.Read.All","Organization.Read.All"
 
 $allSkus = Get-MgSubscribedSku
