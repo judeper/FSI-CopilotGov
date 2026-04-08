@@ -23,10 +23,10 @@ Requires member firms to make and preserve books and records as prescribed by FI
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| 4511(a) | Make and preserve books, accounts, records, memoranda, and correspondence | Control 3.1 (Copilot Audit Logging), Control 3.2 (Retention Policies), Control 3.11 (Regulatory Record-keeping) | B / Reg |
-| 4511(b) | Retain records for prescribed periods (6 years for general records, 3 years for certain communications) | Control 3.2 (Retention Policies), Control 3.11 (Regulatory Record-keeping) | Reg |
+| 4511(a) | Make and preserve books, accounts, records, memoranda, and correspondence | Control 3.1 (Copilot Audit Logging), Control 3.2 (Retention Policies), Control 3.11 (Record Keeping) | B / Reg |
+| 4511(b) | Retain records for prescribed periods (6 years for general records, 3 years for certain communications) | Control 3.2 (Retention Policies), Control 3.11 (Record Keeping) | Reg |
 | 4511(c) | Records must be readily accessible for first 2 years | Control 3.1 (Copilot Audit Logging), Control 3.3 (eDiscovery) | R |
-| 4511(d) | Electronic storage media must meet non-rewriteable, non-erasable requirements (WORM) | Control 3.2 (Retention Policies), Control 3.11 (Regulatory Record-keeping) | Reg |
+| 4511(d) | Electronic storage media must meet non-rewriteable, non-erasable requirements (WORM) | Control 3.2 (Retention Policies), Control 3.11 (Record Keeping) | Reg |
 
 ---
 
@@ -36,11 +36,11 @@ Requires each member firm to establish, maintain, and enforce a system to superv
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| 3110(a) | Establish and maintain written supervisory procedures | Control 3.6 (Supervisory Review Procedures), Control 1.12 (Governance Committee) | Reg |
-| 3110(b) | Designate supervisory principals for each type of business | Control 4.13 (Stakeholder RACI Matrix), Control 3.6 (Supervisory Review) | Reg |
-| 3110(b)(4) | Review of communications with the public | Control 3.4 (Communication Compliance), Control 3.5 (FINRA 2210), Control 3.6 (Supervisory Review) | Reg |
-| 3110(d) | Review of customer account activity | Control 3.1 (Copilot Audit Logging), Control 4.6 (Usage Analytics) | R |
-| 3110(a) / Anticipated guidance | Agentic AI supervision — firms deploying AI agents should consider extending FINRA Rule 3110(a) supervisory systems to cover autonomous and semi-autonomous agent actions, including Teams channel agents and declarative agents with documented scope and review cadence. *Based on FINRA Notice 25-07 (comment period); not yet enacted as a rule.* | Control 3.6 (Supervisory Review) | Reg |
+| 3110(a) | Establish and maintain written supervisory procedures | Control 3.6 (Supervision and Oversight), Control 1.12 (Training and Awareness) | Reg |
+| 3110(b) | Designate supervisory principals for each type of business | Control 4.13 (Extensibility and Agent Operations), Control 3.6 (Supervision and Oversight) | Reg |
+| 3110(b)(4) | Review of communications with the public | Control 3.4 (Communication Compliance), Control 3.5 (FINRA 2210), Control 3.6 (Supervision and Oversight) | Reg |
+| 3110(d) | Review of customer account activity | Control 3.1 (Copilot Audit Logging), Control 4.6 (Copilot Analytics) | R |
+| 3110(a) / Anticipated guidance | Agentic AI supervision — firms deploying AI agents should consider extending FINRA Rule 3110(a) supervisory systems to cover autonomous and semi-autonomous agent actions, including Teams channel agents and declarative agents with documented scope and review cadence. *Based on FINRA Notice 25-07 (comment period); not yet enacted as a rule.* | Control 3.6 (Supervision and Oversight) | Reg |
 
 ---
 
@@ -50,10 +50,10 @@ Governs retail communications, correspondence, and institutional communications 
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| 2210(a) | Classification of communications (retail, correspondence, institutional) | Control 3.5 (FINRA 2210 Compliance), Control 2.1 (Sensitivity Labels) | Reg |
-| 2210(b) | Approval and review requirements — principal pre-approval for retail communications | Control 3.5 (FINRA 2210 Compliance), Control 3.6 (Supervisory Review) | Reg |
+| 2210(a) | Classification of communications (retail, correspondence, institutional) | Control 3.5 (FINRA 2210 Compliance), Control 2.2 (Sensitivity Labels) | Reg |
+| 2210(b) | Approval and review requirements — principal pre-approval for retail communications | Control 3.5 (FINRA 2210 Compliance), Control 3.6 (Supervision and Oversight) | Reg |
 | 2210(d) | Content standards — fair, balanced, not misleading | Control 3.5 (FINRA 2210 Compliance), Control 3.4 (Communication Compliance) | Reg |
-| 2210(d)(1) | No false, exaggerated, unwarranted, or misleading statements | Control 3.5 (FINRA 2210 Compliance), Control 3.7 (UDAAP Compliance) | Reg |
+| 2210(d)(1) | No false, exaggerated, unwarranted, or misleading statements | Control 3.5 (FINRA 2210 Compliance), Control 3.7 (Regulatory Reporting) | Reg |
 
 ---
 
@@ -63,10 +63,10 @@ Requires broker-dealers to create and maintain specified records relating to the
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| 17a-3(a)(6) | Memorandum of each order including terms and conditions | Control 3.11 (Regulatory Record-keeping), Control 3.1 (Audit Logging) | Reg |
-| 17a-3(a)(7) | Memorandum of each purchase and sale of a security | Control 3.11 (Regulatory Record-keeping) | Reg |
-| 17a-3(a)(17) | Records of written communications relating to the business | Control 3.4 (Communication Compliance), Control 3.11 (Record-keeping) | Reg |
-| 17a-3(a)(25) | Records of written supervisory procedures and reviews | Control 3.6 (Supervisory Review), Control 3.12 (Audit Evidence) | Reg |
+| 17a-3(a)(6) | Memorandum of each order including terms and conditions | Control 3.11 (Record Keeping), Control 3.1 (Audit Logging) | Reg |
+| 17a-3(a)(7) | Memorandum of each purchase and sale of a security | Control 3.11 (Record Keeping) | Reg |
+| 17a-3(a)(17) | Records of written communications relating to the business | Control 3.4 (Communication Compliance), Control 3.11 (Record Keeping) | Reg |
+| 17a-3(a)(25) | Records of written supervisory procedures and reviews | Control 3.6 (Supervision and Oversight), Control 3.12 (Evidence Collection) | Reg |
 
 ---
 
@@ -76,12 +76,12 @@ Specifies record retention periods and storage requirements for broker-dealer re
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| 17a-4(a) | Records preserved for not less than 6 years | Control 3.2 (Retention Policies), Control 3.11 (Record-keeping) | Reg |
+| 17a-4(a) | Records preserved for not less than 6 years | Control 3.2 (Retention Policies), Control 3.11 (Record Keeping) | Reg |
 | 17a-4(b) | Records preserved for not less than 3 years (communications) | Control 3.2 (Retention Policies), Control 3.4 (Communication Compliance) | Reg |
-| 17a-4(f) | Electronic storage media requirements — WORM compliance | Control 3.2 (Retention Policies), Control 3.11 (Record-keeping) | Reg |
-| 17a-4(j) | Third-party access and SEC examination access | Control 3.3 (eDiscovery), Control 3.12 (Audit Evidence) | Reg |
-| 17a-4(f)(2)(ii)(A) | Audit-trail alternative to WORM — records need not be stored in non-rewriteable format if the broker-dealer maintains a complete audit trail of all modifications, deletions, and access events throughout the retention period; for Copilot content, satisfiable via Purview retention labels with regulatory record declaration + Preservation Lock + audit log coverage | Control 3.11 (Regulatory Record-keeping), Control 3.1 (Copilot Audit Logging) | Reg |
-| Off-channel enforcement | SEC and CFTC off-channel enforcement campaign — over $2B in fines imposed on financial institutions for failing to preserve business communications on unapproved channels (personal devices, unauthorized messaging apps); recordkeeping obligations attach to business purpose, not channel; mobile Copilot access through unmanaged devices creates the same regulatory gap | Control 3.11 (Regulatory Record-keeping), Control 3.4 (Communication Compliance) | Reg |
+| 17a-4(f) | Electronic storage media requirements — WORM compliance | Control 3.2 (Retention Policies), Control 3.11 (Record Keeping) | Reg |
+| 17a-4(j) | Third-party access and SEC examination access | Control 3.3 (eDiscovery), Control 3.12 (Evidence Collection) | Reg |
+| 17a-4(f)(2)(ii)(A) | Audit-trail alternative to WORM — records need not be stored in non-rewriteable format if the broker-dealer maintains a complete audit trail of all modifications, deletions, and access events throughout the retention period; for Copilot content, satisfiable via Purview retention labels with regulatory record declaration + Preservation Lock + audit log coverage | Control 3.11 (Record Keeping), Control 3.1 (Copilot Audit Logging) | Reg |
+| Off-channel enforcement | SEC and CFTC off-channel enforcement campaign — over $2B in fines imposed on financial institutions for failing to preserve business communications on unapproved channels (personal devices, unauthorized messaging apps); recordkeeping obligations attach to business purpose, not channel; mobile Copilot access through unmanaged devices creates the same regulatory gap | Control 3.11 (Record Keeping), Control 3.4 (Communication Compliance) | Reg |
 
 ---
 
@@ -91,10 +91,10 @@ Requires broker-dealers, investment companies, and investment advisers to protec
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| 248.30(a) | Policies and procedures to protect customer records and information | Control 3.10 (Privacy and Reg S-P), Control 2.4 (DLP Policies), Control 2.13 (Encryption) | R |
-| 248.30(a) | Protection against unauthorized access or use | Control 2.7 (Conditional Access), Control 2.8 (Information Barriers), Control 1.1 (Oversharing Assessment) | R / Reg |
-| 248.30(b) | Disposal of consumer information | Control 3.2 (Retention Policies), Control 1.7 (Content Lifecycle) | R |
-| 248.30(a)(3)–(4) | Reg S-P 2023 amendments — mandatory incident response program and 72-hour vendor notification; service providers must notify covered institutions of unauthorized access to customer information within 72 hours of detection, including Copilot-related NPI incidents (staggered compliance: large entities June 2025, small entities December 2025 — both now in effect) | Control 3.10 (Privacy and Reg S-P), Control 4.8 (Incident Response) | Reg |
+| 248.30(a) | Policies and procedures to protect customer records and information | Control 3.10 (SEC Reg S-P), Control 2.1 (DLP Policies), Control 2.8 (Encryption) | R |
+| 248.30(a) | Protection against unauthorized access or use | Control 2.3 (Conditional Access), Control 2.4 (Information Barriers), Control 1.1 (Copilot Readiness Assessment), Control 1.14 (Item-Level Permission Scanning) | R / Reg |
+| 248.30(b) | Disposal of consumer information | Control 3.2 (Retention Policies), Control 1.7 (SharePoint Advanced Management) | R |
+| 248.30(a)(3)–(4) | Reg S-P 2023 amendments — mandatory incident response program and 72-hour vendor notification; service providers must notify covered institutions of unauthorized access to customer information within 72 hours of detection, including Copilot-related NPI incidents (staggered compliance: large entities June 2025, small entities December 2025 — both now in effect) | Control 3.10 (SEC Reg S-P), Control 4.9 (Incident Reporting) | Reg |
 
 ---
 
@@ -104,12 +104,12 @@ Requires broker-dealers to act in the best interest of retail customers when rec
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| 240.15l-1(a)(1) | Disclosure obligation | Control 3.5 (FINRA 2210), Control 3.7 (UDAAP Compliance) | Reg |
-| 240.15l-1(a)(2)(ii) | Care obligation — reasonable diligence, care, and skill | Control 3.6 (Supervisory Review), Control 3.8 (Model Risk Management) | Reg |
-| 240.15l-1(a)(2)(iii) | Conflict of interest obligation | Control 2.8 (Information Barriers), Control 3.6 (Supervisory Review) | Reg |
-| 240.15l-1(a)(2)(iv) | Compliance obligation — policies and procedures | Control 1.12 (Governance Committee), Control 4.12 (Governance Calendar) | Reg |
+| 240.15l-1(a)(1) | Disclosure obligation | Control 3.5 (FINRA 2210), Control 3.7 (Regulatory Reporting) | Reg |
+| 240.15l-1(a)(2)(ii) | Care obligation — reasonable diligence, care, and skill | Control 3.6 (Supervision and Oversight), Control 3.8 (Model Risk Management) | Reg |
+| 240.15l-1(a)(2)(iii) | Conflict of interest obligation | Control 2.4 (Information Barriers), Control 3.6 (Supervision and Oversight) | Reg |
+| 240.15l-1(a)(2)(iv) | Compliance obligation — policies and procedures | Control 1.12 (Training and Awareness), Control 4.12 (Change Management) | Reg |
 | SEC v. Delphia / Global Predictions (March 2024) | Enforcement precedent — SEC charged firms with false and misleading statements about purported AI use in investment processes; combined $400K penalties established that "AI washing" in client-facing materials violates Investment Advisers Act Section 206 antifraud provisions | Control 3.5 (FINRA 2210 Compliance) | Reg |
-| SEC 2026 Examination Priorities | SEC 2026 examination priorities include focused review of how registered entities govern internal AI tools; examiners will assess AI tool inventories, supervisory procedures specific to AI-assisted activities, and evidence of ongoing monitoring of AI-generated outputs including annual testing per FINRA 3120(b). **:material-alert: Unverified — verify exact content of SEC 2026 Examination Priorities and FINRA 3120(b) annual testing reference when published.** | Control 3.6 (Supervisory Review) | Reg |
+| SEC 2026 Examination Priorities | SEC 2026 examination priorities include focused review of how registered entities govern internal AI tools; examiners will assess AI tool inventories, supervisory procedures specific to AI-assisted activities, and evidence of ongoing monitoring of AI-generated outputs including annual testing per FINRA 3120(b). **:material-alert: Unverified — verify exact content of SEC 2026 Examination Priorities and FINRA 3120(b) annual testing reference when published.** | Control 3.6 (Supervision and Oversight) | Reg |
 
 ---
 
@@ -119,9 +119,9 @@ Requires public companies to maintain internal controls over financial reporting
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| SOX 302 | CEO/CFO certification of financial reports and internal controls | Control 3.1 (Audit Logging), Control 3.12 (Audit Evidence), Control 4.13 (RACI Matrix) | Reg |
-| SOX 404 | Management assessment of internal controls; auditor attestation | Control 3.1 (Audit Logging), Control 3.12 (Audit Evidence), Control 2.4 (DLP), Control 2.13 (Encryption) | Reg |
-| SOX 404 | Change management controls | Control 4.10 (Change Management), Control 4.1 (Feature Toggle Management) | R |
+| SOX 302 | CEO/CFO certification of financial reports and internal controls | Control 3.1 (Audit Logging), Control 3.12 (Evidence Collection), Control 4.13 (Extensibility and Agent Operations) | Reg |
+| SOX 404 | Management assessment of internal controls; auditor attestation | Control 3.1 (Audit Logging), Control 3.12 (Evidence Collection), Control 2.1 (DLP), Control 2.8 (Encryption) | Reg |
+| SOX 404 | Change management controls | Control 4.12 (Change Management), Control 4.1 (Copilot Admin Settings) | R |
 
 ---
 
@@ -131,9 +131,9 @@ Requires financial institutions to develop, implement, and maintain a comprehens
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| 501(b) | Protect security and confidentiality of customer records | Control 2.1 (Sensitivity Labels), Control 2.4 (DLP), Control 2.13 (Encryption), Control 2.7 (Conditional Access) | B / R |
-| 501(b) | Protect against anticipated threats or hazards | Control 2.10 (Defender Integration), Control 2.11 (Insider Risk), Control 4.8 (Incident Response) | R |
-| 501(b) | Protect against unauthorized access or use | Control 1.1 (Oversharing Assessment), Control 1.2 (Permissions Review), Control 2.7 (Conditional Access) | B |
+| 501(b) | Protect security and confidentiality of customer records | Control 2.2 (Sensitivity Labels), Control 2.1 (DLP), Control 2.8 (Encryption), Control 2.3 (Conditional Access) | B / R |
+| 501(b) | Protect against anticipated threats or hazards | Control 2.9 (Defender for Cloud Apps), Control 2.10 (Insider Risk Detection), Control 4.9 (Incident Reporting) | R |
+| 501(b) | Protect against unauthorized access or use | Control 1.1 (Copilot Readiness Assessment), Control 1.2 (SharePoint Oversharing Detection), Control 1.14 (Item-Level Permission Scanning), Control 1.15 (Permissions Drift Detection), Control 2.3 (Conditional Access) | B |
 
 ---
 
@@ -144,11 +144,11 @@ Provides guidance on model risk management for banking organizations.
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
 | Model Identification | Identify and inventory all models | Control 3.8 (Model Risk Management) | Reg |
-| Model Validation | Independent review and validation | Control 3.8 (Model Risk Management), Control 3.12 (Audit Evidence) | Reg |
-| Ongoing Monitoring | Monitor model performance and outcomes | Control 4.6 (Usage Analytics), Control 3.9 (DSPM for AI), Control 4.11 (Sentinel Integration) | Reg |
-| Model Governance | Board and senior management oversight | Control 1.12 (Governance Committee), Control 4.13 (RACI Matrix) | Reg |
-| Documentation | Maintain comprehensive model documentation | Control 3.8 (Model Risk Management), Control 3.12 (Audit Evidence) | Reg |
-| Vendor Models | Assess third-party model risk | Control 1.10 (Vendor Risk Assessment), Control 3.8 (Model Risk Management) | Reg |
+| Model Validation | Independent review and validation | Control 3.8 (Model Risk Management), Control 3.12 (Evidence Collection) | Reg |
+| Ongoing Monitoring | Monitor model performance and outcomes | Control 4.6 (Copilot Analytics), Control 3.9 (AI Disclosure and Transparency), Control 4.11 (Sentinel Integration) | Reg |
+| Model Governance | Board and senior management oversight | Control 1.12 (Training and Awareness), Control 4.13 (Extensibility and Agent Operations) | Reg |
+| Documentation | Maintain comprehensive model documentation | Control 3.8 (Model Risk Management), Control 3.12 (Evidence Collection) | Reg |
+| Vendor Models | Assess third-party model risk | Control 1.10 (Vendor Risk Management), Control 3.8 (Model Risk Management) | Reg |
 | OCC Bulletin 2025-26 | Proportionality guidance — community banks and smaller institutions may apply simplified MRM (model inventory registration, basic output monitoring, vendor due diligence) commensurate with size, complexity, and risk profile; larger institutions with client-facing Copilot deployments apply full OCC 2011-12 / SR 11-7 framework. **:material-alert: Unverified — verify OCC Bulletin 2025-26 number and publication status.** | Control 3.8 (Model Risk Management) | Reg |
 
 ---
@@ -159,10 +159,10 @@ Prohibits unfair, deceptive, or abusive acts or practices by covered persons in 
 
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
-| Unfair Acts | Acts that cause substantial injury not reasonably avoidable | Control 3.7 (UDAAP Compliance), Control 3.8 (Model Risk Management) | Reg |
-| Deceptive Acts | Material misleading representations or omissions | Control 3.7 (UDAAP Compliance), Control 3.5 (FINRA 2210), Control 3.4 (Communication Compliance) | Reg |
-| Abusive Acts | Acts that take unreasonable advantage of consumer understanding | Control 3.7 (UDAAP Compliance), Control 3.6 (Supervisory Review) | Reg |
-| AI and UDAAP | CFPB guidance on AI-generated consumer communications | Control 3.7 (UDAAP Compliance), Control 3.8 (Model Risk Management), Control 1.13 (Training) | Reg |
+| Unfair Acts | Acts that cause substantial injury not reasonably avoidable | Control 3.7 (Regulatory Reporting), Control 3.8 (Model Risk Management) | Reg |
+| Deceptive Acts | Material misleading representations or omissions | Control 3.7 (Regulatory Reporting), Control 3.5 (FINRA 2210), Control 3.4 (Communication Compliance) | Reg |
+| Abusive Acts | Acts that take unreasonable advantage of consumer understanding | Control 3.7 (Regulatory Reporting), Control 3.6 (Supervision and Oversight) | Reg |
+| AI and UDAAP | CFPB guidance on AI-generated consumer communications | Control 3.7 (Regulatory Reporting), Control 3.8 (Model Risk Management), Control 1.13 (Extensibility Readiness) | Reg |
 
 ---
 
@@ -172,12 +172,12 @@ Interagency guidance for IT examination of financial institutions.
 
 | Domain | Requirement | Applicable Controls | Level |
 |--------|-------------|-------------------|-------|
-| Audit | IT audit program covering AI tools | Control 3.1 (Audit Logging), Control 3.12 (Audit Evidence), Control 3.13 (FFIEC Alignment) | Reg |
-| Information Security | Controls over AI-generated content and data access | Control 2.4 (DLP), Control 2.7 (Conditional Access), Control 2.13 (Encryption) | R |
-| Management | IT governance including AI adoption | Control 1.12 (Governance Committee), Control 4.13 (RACI Matrix), Control 3.13 (FFIEC Alignment) | Reg |
-| Operations | Operational resilience for AI services | Control 4.8 (Incident Response), Control 4.9 (Business Continuity), Control 3.13 (FFIEC Alignment) | R |
-| Development and Acquisition | Vendor management for AI services | Control 1.10 (Vendor Risk Assessment), Control 3.13 (FFIEC Alignment) | Reg |
-| Business Continuity | Continuity planning for AI service disruption | Control 4.9 (Business Continuity), Control 3.13 (FFIEC Alignment) | R |
+| Audit | IT audit program covering AI tools | Control 3.1 (Audit Logging), Control 3.12 (Evidence Collection), Control 3.13 (FFIEC Alignment) | Reg |
+| Information Security | Controls over AI-generated content and data access | Control 2.1 (DLP), Control 2.3 (Conditional Access), Control 2.8 (Encryption) | R |
+| Management | IT governance including AI adoption | Control 1.12 (Training and Awareness), Control 4.13 (Extensibility and Agent Operations), Control 3.13 (FFIEC Alignment) | Reg |
+| Operations | Operational resilience for AI services | Control 4.9 (Incident Reporting), Control 4.10 (Business Continuity), Control 3.13 (FFIEC Alignment) | R |
+| Development and Acquisition | Vendor management for AI services | Control 1.10 (Vendor Risk Management), Control 3.13 (FFIEC Alignment) | Reg |
+| Business Continuity | Continuity planning for AI service disruption | Control 4.10 (Business Continuity), Control 3.13 (FFIEC Alignment) | R |
 
 ---
 
@@ -187,13 +187,13 @@ Joint guidance on managing risks associated with AI in financial services, inclu
 
 | Topic | Requirement | Applicable Controls | Level |
 |-------|-------------|-------------------|-------|
-| Risk Management | Incorporate AI risk into enterprise risk framework | Control 3.8 (Model Risk Management), Control 1.12 (Governance Committee) | Reg |
-| Governance | Board and management oversight of AI adoption | Control 1.12 (Governance Committee), Control 4.13 (RACI Matrix), Control 4.12 (Governance Calendar) | Reg |
-| Third-Party Risk | Assess and monitor third-party AI providers | Control 1.10 (Vendor Risk Assessment) | Reg |
-| Data Management | Controls over data used in AI systems | Control 1.1 (Oversharing Assessment), Control 1.11 (Data Classification), Control 2.4 (DLP) | R |
-| Consumer Protection | Protect consumers from AI-related harm | Control 3.7 (UDAAP Compliance), Control 3.5 (FINRA 2210) | Reg |
-| Fair Lending | Address potential bias in AI outputs | Control 3.7 (UDAAP Compliance), Control 3.8 (Model Risk Management) | Reg |
-| Cybersecurity | Secure AI systems and data flows | Control 2.7 (Conditional Access), Control 2.14 (Network Security), Control 2.15 (Zero Trust) | R / Reg |
+| Risk Management | Incorporate AI risk into enterprise risk framework | Control 3.8 (Model Risk Management), Control 1.12 (Training and Awareness) | Reg |
+| Governance | Board and management oversight of AI adoption | Control 1.12 (Training and Awareness), Control 4.13 (Extensibility and Agent Operations), Control 4.12 (Change Management) | Reg |
+| Third-Party Risk | Assess and monitor third-party AI providers | Control 1.10 (Vendor Risk Management) | Reg |
+| Data Management | Controls over data used in AI systems | Control 1.1 (Copilot Readiness Assessment), Control 1.11 (Organizational Change Management), Control 2.1 (DLP) | R |
+| Consumer Protection | Protect consumers from AI-related harm | Control 3.7 (Regulatory Reporting), Control 3.5 (FINRA 2210) | Reg |
+| Fair Lending | Address potential bias in AI outputs | Control 3.7 (Regulatory Reporting), Control 3.8 (Model Risk Management) | Reg |
+| Cybersecurity | Secure AI systems and data flows | Control 2.3 (Conditional Access), Control 2.15 (Network Security) | R / Reg |
 
 ---
 
@@ -205,15 +205,15 @@ Controls that appear across the most regulations should be prioritized for imple
 |---------|-----------------|-------------|
 | Control 3.1 (Copilot Audit Logging) | 8 | FINRA 4511, 3110, SEC 17a-3, SEC 17a-4 (audit-trail alternative), SOX, GLBA, FFIEC, Interagency AI |
 | Control 3.2 (Retention Policies) | 5 | FINRA 4511, SEC 17a-4, Reg S-P, GLBA, FFIEC |
-| Control 3.11 (Regulatory Record-keeping) | 4 | FINRA 4511, SEC 17a-3, SEC 17a-4, SOX |
-| Control 2.4 (DLP Policies) | 5 | Reg S-P, SOX, GLBA, FFIEC, Interagency AI |
-| Control 3.6 (Supervisory Review) | 5 | FINRA 3110, 2210, SEC 17a-3, Reg BI, CFPB UDAAP |
+| Control 3.11 (Record Keeping) | 4 | FINRA 4511, SEC 17a-3, SEC 17a-4, SOX |
+| Control 2.1 (DLP Policies) | 5 | Reg S-P, SOX, GLBA, FFIEC, Interagency AI |
+| Control 3.6 (Supervision and Oversight) | 5 | FINRA 3110, 2210, SEC 17a-3, Reg BI, CFPB UDAAP |
 | Control 3.8 (Model Risk Management) | 4 | OCC 2011-12, Reg BI, CFPB UDAAP, Interagency AI |
-| Control 1.12 (Governance Committee) | 4 | FINRA 3110, Reg BI, OCC 2011-12, Interagency AI |
-| Control 3.12 (Audit Evidence) | 4 | SEC 17a-3, SEC 17a-4, SOX, OCC 2011-12 |
+| Control 1.12 (Training and Awareness) | 4 | FINRA 3110, Reg BI, OCC 2011-12, Interagency AI |
+| Control 3.12 (Evidence Collection) | 4 | SEC 17a-3, SEC 17a-4, SOX, OCC 2011-12 |
 | Control 3.4 (Communication Compliance) | 5 | FINRA 3110, 2210, SEC 17a-3, SEC 17a-4 (off-channel enforcement), CFPB UDAAP |
 | Control 3.5 (FINRA 2210 Compliance) | 4 | FINRA 2210, SEC Reg BI (Delphia enforcement precedent), CFPB UDAAP, Interagency AI |
-| Control 3.7 (UDAAP Compliance) | 3 | FINRA 2210, CFPB UDAAP, Interagency AI |
+| Control 3.7 (Regulatory Reporting) | 3 | FINRA 2210, CFPB UDAAP, Interagency AI |
 
 ---
 

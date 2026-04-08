@@ -24,10 +24,10 @@ Four FSI-specific deployment scenarios demonstrating how to apply the governance
 
 | Phase | Controls | Rationale |
 |-------|----------|-----------|
-| **Phase 1: Pre-deployment** | 1.1 (Oversharing Assessment), 1.2 (Permissions Review), 1.9 (License Scoping), 2.8 (Information Barriers) | Oversharing remediation and MNPI wall enforcement must be in place before any Copilot enablement |
-| **Phase 2: Core governance** | 2.1 (Sensitivity Labels), 2.4 (DLP for Copilot), 3.1 (Audit Logging), 3.2 (Retention), 3.4 (Communication Compliance) | Regulatory record-keeping and supervisory review capabilities must be active at enablement |
-| **Phase 3: Supervisory** | 3.5 (FINRA 2210), 3.6 (FINRA 3110), 3.11 (SEC 17a-3/4), 3.3 (eDiscovery) | Supervisory review workflows and record-keeping classification specific to broker-dealer obligations |
-| **Phase 4: Operational maturity** | 4.1 (Feature Toggles), 4.6 (Analytics), 4.11 (Sentinel), 3.8 (Model Risk), 3.12 (Audit Evidence) | Ongoing monitoring, model risk documentation, and examination readiness |
+| **Phase 1: Pre-deployment** | 1.1 (Copilot Readiness Assessment), 1.2 (SharePoint Oversharing Detection), 1.14 (Item-Level Permission Scanning), 1.15 (Permissions Drift Detection), 1.9 (License Planning), 2.4 (Information Barriers) | Oversharing remediation and MNPI wall enforcement must be in place before any Copilot enablement |
+| **Phase 2: Core governance** | 2.2 (Sensitivity Labels), 2.1 (DLP for Copilot), 3.1 (Audit Logging), 3.2 (Retention), 3.4 (Communication Compliance) | Regulatory record-keeping and supervisory review capabilities must be active at enablement |
+| **Phase 3: Supervisory** | 3.5 (FINRA 2210), 3.6 (Supervision and Oversight), 3.11 (Record Keeping), 3.3 (eDiscovery) | Supervisory review workflows and record-keeping classification specific to broker-dealer obligations |
+| **Phase 4: Operational maturity** | 4.1 (Copilot Admin Settings), 4.6 (Copilot Analytics), 4.11 (Sentinel Integration), 3.8 (Model Risk), 3.12 (Evidence Collection) | Ongoing monitoring, model risk documentation, and examination readiness |
 
 ### Admin Toggle Recommendations
 
@@ -136,10 +136,10 @@ Segment 4: Compliance
 
 | Phase | Controls | Rationale |
 |-------|----------|-----------|
-| **Phase 1: Pre-deployment** | 1.1 (Oversharing Assessment), 1.11 (Data Classification), 1.10 (Vendor Risk Assessment), 3.8 (Model Risk Management) | Banking examiners expect vendor risk assessment and model risk documentation before AI deployment |
-| **Phase 2: Data protection** | 2.1 (Sensitivity Labels), 2.4 (DLP), 2.7 (Conditional Access), 2.13 (Encryption) | GLBA 501(b) safeguards requirement |
-| **Phase 3: Compliance** | 3.1 (Audit Logging), 3.2 (Retention), 3.13 (FFIEC Alignment), 3.10 (Privacy) | Examination readiness and regulatory record-keeping |
-| **Phase 4: Operations** | 4.6 (Analytics), 4.8 (Incident Response), 4.9 (Business Continuity), 4.11 (Sentinel), 4.12 (Governance Calendar) | Ongoing monitoring and operational resilience |
+| **Phase 1: Pre-deployment** | 1.1 (Copilot Readiness Assessment), 1.11 (Organizational Change Management), 1.10 (Vendor Risk Management), 3.8 (Model Risk Management) | Banking examiners expect vendor risk assessment and model risk documentation before AI deployment |
+| **Phase 2: Data protection** | 2.2 (Sensitivity Labels), 2.1 (DLP), 2.3 (Conditional Access), 2.8 (Encryption) | GLBA 501(b) safeguards requirement |
+| **Phase 3: Compliance** | 3.1 (Audit Logging), 3.2 (Retention), 3.13 (FFIEC Alignment), 3.10 (SEC Reg S-P) | Examination readiness and regulatory record-keeping |
+| **Phase 4: Operations** | 4.6 (Copilot Analytics), 4.9 (Incident Reporting), 4.10 (Business Continuity), 4.11 (Sentinel Integration), 4.12 (Change Management) | Ongoing monitoring and operational resilience |
 
 ### Admin Toggle Recommendations
 
@@ -226,10 +226,10 @@ For OCC 2011-12 / SR 11-7 compliance, document Copilot in the model inventory:
 
 | Phase | Controls | Rationale |
 |-------|----------|-----------|
-| **Phase 1: Pre-deployment** | 1.1 (Oversharing Assessment), 1.2 (Permissions Review), 1.9 (License Scoping), 1.11 (Data Classification) | Identify where client portfolio data and investment research are stored; remediate oversharing |
-| **Phase 2: Data protection** | 2.1 (Sensitivity Labels), 2.4 (DLP), 2.7 (Conditional Access), 3.10 (Privacy / Reg S-P) | Client data protection is the primary regulatory obligation |
+| **Phase 1: Pre-deployment** | 1.1 (Copilot Readiness Assessment), 1.2 (SharePoint Oversharing Detection), 1.14 (Item-Level Permission Scanning), 1.9 (License Planning), 1.11 (Organizational Change Management) | Identify where client portfolio data and investment research are stored; remediate oversharing |
+| **Phase 2: Data protection** | 2.2 (Sensitivity Labels), 2.1 (DLP), 2.3 (Conditional Access), 3.10 (SEC Reg S-P) | Client data protection is the primary regulatory obligation |
 | **Phase 3: Record-keeping** | 3.1 (Audit Logging), 3.2 (Retention), 3.3 (eDiscovery) | SEC examination readiness and record-keeping |
-| **Phase 4: Supervision** | 3.6 (Supervisory Review — if dual-registered), 3.7 (UDAAP), 4.6 (Analytics), 4.8 (Incident Response) | Fiduciary duty and operational governance |
+| **Phase 4: Supervision** | 3.6 (Supervision and Oversight — if dual-registered), 3.7 (Regulatory Reporting), 4.6 (Copilot Analytics), 4.9 (Incident Reporting) | Fiduciary duty and operational governance |
 
 ### Admin Toggle Recommendations
 
@@ -308,10 +308,10 @@ Investment advisers have a fiduciary duty to act in clients' best interests. Cop
 
 | Phase | Controls | Rationale |
 |-------|----------|-----------|
-| **Phase 1: Pre-deployment** | 1.1 (Oversharing Assessment), 1.11 (Data Classification), 1.9 (License Scoping), 1.13 (Training Plan) | Policyholder data classification and oversharing remediation are foundational |
-| **Phase 2: Data protection** | 2.1 (Sensitivity Labels), 2.4 (DLP), 2.5 (Custom SITs), 2.7 (Conditional Access) | Policyholder PII and claims data require strong protection |
-| **Phase 3: Compliance** | 3.1 (Audit Logging), 3.2 (Retention), 3.10 (Privacy), 3.7 (UDAAP — if applicable) | Record-keeping and privacy compliance |
-| **Phase 4: Operations** | 4.1 (Feature Toggles), 4.2 (Per-App), 4.6 (Analytics), 4.8 (Incident Response), 4.10 (Change Management) | Operational governance and change management |
+| **Phase 1: Pre-deployment** | 1.1 (Copilot Readiness Assessment), 1.11 (Organizational Change Management), 1.9 (License Planning), 1.13 (Extensibility Readiness) | Policyholder data classification and oversharing remediation are foundational |
+| **Phase 2: Data protection** | 2.2 (Sensitivity Labels), 2.1 (DLP and Custom SITs), 2.3 (Conditional Access) | Policyholder PII and claims data require strong protection |
+| **Phase 3: Compliance** | 3.1 (Audit Logging), 3.2 (Retention), 3.10 (SEC Reg S-P), 3.7 (Regulatory Reporting — if applicable) | Record-keeping and privacy compliance |
+| **Phase 4: Operations** | 4.1 (Copilot Admin Settings), 4.2 (Teams Meetings Governance), 4.6 (Copilot Analytics), 4.9 (Incident Reporting), 4.12 (Change Management) | Operational governance and change management |
 
 ### Admin Toggle Recommendations
 

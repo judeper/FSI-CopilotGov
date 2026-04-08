@@ -14,7 +14,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | **Microsoft 365 E3** | Productivity, security basics, compliance basics | Baseline governance — requires add-ons for most regulated controls |
 | **Microsoft 365 E5** | Full productivity, advanced security, advanced compliance | Recommended for FSI — includes Purview, Defender, and advanced compliance |
 | **Microsoft 365 Copilot** | Per-user add-on enabling AI assistance across M365 apps | Required for any Copilot functionality |
-| **Microsoft 365 E5 Compliance** | Add-on for E3 providing E5-level compliance capabilities | Alternative to full E5 for compliance-focused deployments |
+| **Microsoft Purview Suite (formerly E5 Compliance)** | Add-on for E3 providing E5-level compliance capabilities | Alternative to full E5 for compliance-focused deployments |
 | **Microsoft 365 E5 Security** | Add-on for E3 providing E5-level security capabilities | Alternative to full E5 for security-focused deployments |
 | **SharePoint Advanced Management (SAM)** | Advanced SharePoint governance (DAG reports, site lifecycle, RCD, RAC) | Included with Microsoft 365 Copilot licenses at no additional cost (Ignite 2024); also available as standalone add-on (~$3/user/month) for non-Copilot environments |
 | **Microsoft 365 Copilot (PAYG)** | Pay-as-you-go billing for approved Copilot services | Usage-based Azure billing tied to a billing policy; commonly used for Copilot Chat without assigning full seats |
@@ -26,21 +26,22 @@ License requirements for each governance capability in the FSI Copilot Governanc
 
 | Control | Feature | E3 | E5 | Copilot | Add-on Required (if E3) | Notes |
 |---------|---------|----|----|---------|------------------------|-------|
-| 1.1 | Oversharing Assessment (SAM reports) | -- | -- | Included | SharePoint Advanced Management (if no Copilot license) | SAM is included with Copilot licenses (Ignite 2024); standalone add-on available for non-Copilot users |
-| 1.1 | Basic SharePoint sharing audit | Included | Included | -- | -- | Basic sharing reports available in SharePoint Admin Center |
-| 1.2 | SharePoint Permissions Review | Included | Included | -- | -- | Native SharePoint admin capabilities |
-| 1.3 | Restricted SharePoint Search | Included | Included | -- | -- | Available in SharePoint Admin Center; limits Microsoft 365 Copilot Chat grounding |
-| 1.4 | OneDrive Sharing Defaults | Included | Included | -- | -- | OneDrive admin settings |
-| 1.5 | M365 Groups Membership Audit | Included | Included | -- | -- | Available via Entra admin center and PowerShell |
-| 1.6 | Guest and External Access Review | Included | Included | -- | -- | Entra ID access reviews require Entra ID P2 (included in E5) |
-| 1.6 | Entra ID Access Reviews | -- | Included | -- | Entra ID P2 | Automated access reviews for guest accounts |
-| 1.7 | Inactive Site and Content Lifecycle | -- | -- | Included | SharePoint Advanced Management (if no Copilot license) | SAM site lifecycle management included with Copilot licenses |
-| 1.8 | Semantic Index Readiness | -- | -- | Included | -- | Semantic Index processing is part of Copilot license |
-| 1.9 | License Assignment and Scoping | Included | Included | -- | -- | Group-based license assignment via Entra |
-| 1.10 | Vendor Risk Assessment | Included | Included | -- | -- | Organizational process; no specific license needed |
-| 1.11 | Data Classification Inventory | -- | Included | -- | E5 Compliance or Purview add-on | Content explorer and data classification dashboards |
-| 1.12 | Governance Committee | Included | Included | -- | -- | Organizational process; no specific license needed |
-| 1.13 | User Communication and Training | Included | Included | -- | -- | Organizational process; Viva Learning available for training delivery |
+| 1.1 | Readiness Assessment — basic sharing audit | Included | Included | -- | -- | Basic sharing reports available in SharePoint Admin Center |
+| 1.2 | Oversharing Detection (DSPM for AI, SAM reports) | -- | Included | Included | Purview Suite | SAM is included with Copilot licenses (Ignite 2024); DSPM for AI requires E5 and Copilot |
+| 1.3 | Restricted SharePoint Search Configuration | Included | Included | -- | -- | Available in SharePoint Admin Center; limits Microsoft 365 Copilot Chat grounding |
+| 1.4 | Semantic Index Governance and Scope Control | -- | -- | Included | -- | Semantic Index processing is part of Copilot license |
+| 1.5 | Sensitivity Label Taxonomy Review | -- | Included | -- | Purview Suite or Purview add-on | Content explorer and data classification dashboards |
+| 1.6 | Permission Model Audit | Included | Included | -- | -- | Native SharePoint, OneDrive, Exchange, Teams admin capabilities |
+| 1.6 | Permission Model Audit — Entra ID Access Reviews | -- | Included | -- | Entra ID P2 | Automated access reviews for guest and external accounts |
+| 1.7 | SharePoint Advanced Management Readiness | -- | -- | Included | SharePoint Advanced Management (if no Copilot license) | SAM site lifecycle management included with Copilot licenses |
+| 1.8 | Information Architecture Review | Included | Included | -- | -- | Organizational process; no specific license needed |
+| 1.9 | License Planning and Assignment Strategy | Included | Included | -- | -- | Group-based license assignment via Entra |
+| 1.10 | Vendor Risk Management | Included | Included | -- | -- | Organizational process; no specific license needed |
+| 1.11 | Change Management and Adoption Planning | Included | Included | -- | -- | Organizational process; no specific license needed |
+| 1.12 | Training and Awareness Program | Included | Included | -- | -- | Organizational process; Viva Learning available for training delivery |
+| 1.13 | Extensibility Readiness (Connectors, Plugins, Agents) | Included | Included | Included | -- | Organizational process; M365 Admin Center for plugin governance |
+| 1.14 | Item-Level Permission Scanning | Included | Included | -- | -- | SharePoint and OneDrive admin capabilities |
+| 1.15 | Permissions Drift Detection (SAM) | -- | -- | Included | SharePoint Advanced Management (if no Copilot license) | SAM permissions change tracking; included with Copilot licenses |
 
 ---
 
@@ -48,25 +49,29 @@ License requirements for each governance capability in the FSI Copilot Governanc
 
 | Control | Feature | E3 | E5 | Copilot | Add-on Required (if E3) | Notes |
 |---------|---------|----|----|---------|------------------------|-------|
-| 2.1 | Sensitivity Labels (manual) | Included | Included | -- | -- | Manual label application available in E3 |
-| 2.1 | Sensitivity Labels (auto-labeling) | -- | Included | -- | E5 Compliance or Information Protection P2 | Server-side auto-labeling requires E5 or add-on |
-| 2.2 | Auto-labeling Policies | -- | Included | -- | E5 Compliance or Information Protection P2 | Service-side auto-labeling policies |
-| 2.3 | Label Inheritance (Copilot) | -- | -- | Included | -- | Copilot label inheritance is part of Copilot functionality |
-| 2.4 | DLP Policies (basic) | Included | Included | -- | -- | Basic DLP for Exchange, SharePoint, OneDrive |
-| 2.4 | DLP for Copilot location | -- | Included | Included | E5 Compliance | Copilot as a DLP location requires E5 compliance capabilities |
-| 2.5 | Custom Sensitive Information Types | Included | Included | -- | -- | Custom SITs available in E3; exact data match requires E5 |
-| 2.5 | Exact Data Match (EDM) | -- | Included | -- | E5 Compliance | High-precision matching for structured data |
-| 2.6 | DLP Policy Tips | Included | Included | -- | -- | User notifications for DLP policy matches |
-| 2.7 | Conditional Access (basic) | Included | Included | -- | -- | Requires Entra ID P1 (included in E3) |
-| 2.7 | Conditional Access (advanced) | -- | Included | -- | Entra ID P2 | Risk-based conditional access and sign-in risk policies |
-| 2.8 | Information Barriers | -- | Included | -- | E5 Compliance | Required for MNPI walls in broker-dealer environments |
-| 2.9 | Endpoint DLP | -- | Included | -- | E5 Compliance | DLP enforcement on Windows/macOS endpoints |
-| 2.10 | Defender for Cloud Apps | -- | Included | -- | E5 Security or Defender for Cloud Apps | Session and access policies for cloud app governance |
-| 2.11 | Insider Risk Management | -- | Included | -- | E5 Compliance or Insider Risk add-on | Anomalous Copilot usage detection |
-| 2.12 | DSPM for AI | -- | Included | Included | E5 Compliance | Data Security Posture Management for AI; requires both E5 compliance and Copilot |
-| 2.13 | Microsoft Purview Information Protection encryption | Included | Included | -- | -- | Rights Management encryption included in E3 |
-| 2.14 | Network Security | Included | Included | -- | -- | Network-level controls are infrastructure; not license-dependent |
-| 2.15 | Zero Trust Alignment | Included | Included | -- | -- | Architectural approach; Entra ID P1 for Conditional Access is the key license |
+| 2.1 | DLP Policies (basic locations) | Included | Included | -- | -- | Basic DLP for Exchange, SharePoint, OneDrive |
+| 2.1 | DLP for Copilot location | -- | Included | Included | Purview Suite | Copilot as a DLP location requires E5 compliance capabilities |
+| 2.1 | Custom Sensitive Information Types | Included | Included | -- | -- | Custom SITs available in E3; exact data match requires E5 |
+| 2.1 | Exact Data Match (EDM) | -- | Included | -- | Purview Suite | High-precision matching for structured data |
+| 2.1 | DLP Policy Tips | Included | Included | -- | -- | User notifications for DLP policy matches |
+| 2.2 | Sensitivity Labels (manual) | Included | Included | -- | -- | Manual label application available in E3 |
+| 2.2 | Sensitivity Labels (auto-labeling) | -- | Included | -- | Purview Suite or Information Protection P2 | Server-side auto-labeling requires E5 or add-on |
+| 2.2 | Auto-labeling Policies | -- | Included | -- | Purview Suite or Information Protection P2 | Service-side auto-labeling policies |
+| 2.2 | Label Inheritance (Copilot) | -- | -- | Included | -- | Copilot label inheritance is part of Copilot functionality |
+| 2.3 | Conditional Access (basic) | Included | Included | -- | -- | Requires Entra ID P1 (included in E3) |
+| 2.3 | Conditional Access (advanced) | -- | Included | -- | Entra ID P2 | Risk-based conditional access and sign-in risk policies |
+| 2.4 | Information Barriers | -- | Included | -- | Purview Suite | Required for MNPI walls in broker-dealer environments |
+| 2.5 | Data Minimization and Grounding Scope | Included | Included | Included | -- | Configuration-based; limits Copilot grounding data sources |
+| 2.6 | Web Search and Web Grounding Controls | Included | Included | Included | -- | Admin toggle in M365 Admin Center |
+| 2.7 | Data Residency and Cross-Border Data Flow | Included | Included | -- | Microsoft 365 Multi-Geo (optional) | Multi-Geo requires add-on; Microsoft data boundary configuration |
+| 2.8 | Encryption (Data in Transit and at Rest) | Included | Included | -- | -- | Rights Management encryption included in E3 |
+| 2.9 | Defender for Cloud Apps — Session Controls | -- | Included | -- | E5 Security or Defender for Cloud Apps | Session and access policies for cloud app governance |
+| 2.10 | Insider Risk Detection | -- | Included | -- | Purview Suite or Insider Risk add-on | Anomalous Copilot usage detection |
+| 2.11 | Copilot Pages Security and Sharing Controls | Included | Included | Included | -- | Admin settings for Copilot Pages sharing |
+| 2.12 | External Sharing and Guest Access Governance | Included | Included | -- | -- | Entra ID access reviews require P2 (included in E5) |
+| 2.13 | Plugin and Graph Connector Security Governance | Included | Included | Included | -- | Integrated Apps settings in M365 Admin Center |
+| 2.14 | Declarative and SharePoint Agents Governance | Included | Included | Included | -- | Admin settings for agent deployment and management |
+| 2.15 | Network Security and Private Connectivity | Included | Included | -- | -- | Network-level controls are infrastructure; not license-dependent |
 
 ---
 
@@ -74,23 +79,23 @@ License requirements for each governance capability in the FSI Copilot Governanc
 
 | Control | Feature | E3 | E5 | Copilot | Add-on Required (if E3) | Notes |
 |---------|---------|----|----|---------|------------------------|-------|
-| 3.1 | Unified Audit Log (basic — 180 days) | Included | Included | -- | -- | 180-day retention in E3 |
-| 3.1 | Audit (Premium — 1 year default, up to 10 years) | -- | Included | -- | E5 Compliance | Extended retention, high-fidelity events, Copilot-specific events |
-| 3.1 | Copilot interaction audit events | -- | Included | Included | E5 Compliance | Detailed Copilot audit events require Audit (Premium) |
+| 3.1 | Audit Logging (basic — 180 days) | Included | Included | -- | -- | 180-day retention in E3 |
+| 3.1 | Audit Logging (Premium — 1 year default, up to 10 years) | -- | Included | -- | Purview Suite | Extended retention, high-fidelity events, Copilot-specific events |
+| 3.1 | Copilot interaction audit events | -- | Included | Included | Purview Suite | Detailed Copilot audit events require Audit (Premium) |
 | 3.2 | Retention Policies (basic) | Included | Included | -- | -- | Basic retention policies for Exchange, SharePoint, OneDrive, Teams |
-| 3.2 | Retention Policies (advanced — adaptive scopes) | -- | Included | -- | E5 Compliance | Adaptive retention scopes for dynamic policy targeting |
+| 3.2 | Retention Policies (advanced — adaptive scopes) | -- | Included | -- | Purview Suite | Adaptive retention scopes for dynamic policy targeting |
 | 3.3 | eDiscovery (Standard) | Included | Included | -- | -- | Basic search and export |
-| 3.3 | eDiscovery (Premium) | -- | Included | -- | E5 Compliance | Advanced workflows, review sets, custodian management, Copilot content search |
-| 3.4 | Communication Compliance | -- | Included | -- | E5 Compliance or Communication Compliance add-on | Required for FINRA 3110 supervisory review |
-| 3.5 | FINRA 2210 review process | -- | Included | -- | E5 Compliance (for Communication Compliance) | Uses Communication Compliance to flag Copilot-drafted content |
-| 3.6 | Supervisory Review | -- | Included | -- | E5 Compliance (for Communication Compliance) | Uses Communication Compliance for supervision policies |
-| 3.7 | UDAAP Compliance review | Included | Included | -- | -- | Process-based; Communication Compliance enhances detection |
-| 3.8 | Model Risk Management | Included | Included | -- | -- | Primarily organizational process; no specific license for documentation |
-| 3.9 | DSPM for AI (compliance monitoring) | -- | Included | Included | E5 Compliance | Ongoing monitoring dashboard for Copilot data risks |
-| 3.10 | Privacy (Reg S-P) | Included | Included | -- | -- | Process-based with DLP/label enforcement; Priva add-on optional |
-| 3.11 | Regulatory Record-keeping | -- | Included | -- | E5 Compliance | Requires Audit (Premium) and advanced retention for WORM-equivalent |
-| 3.12 | Audit Evidence Packages | Included | Included | -- | -- | Process-based; Content Search available in E3 for evidence collection |
-| 3.13 | FFIEC Alignment | Included | Included | -- | -- | Organizational mapping process; no specific license |
+| 3.3 | eDiscovery (Premium) | -- | Included | -- | Purview Suite | Advanced workflows, review sets, custodian management, Copilot content search |
+| 3.4 | Communication Compliance Monitoring | -- | Included | -- | Purview Suite or Communication Compliance add-on | Required for FINRA 3110 supervisory review |
+| 3.5 | FINRA Rule 2210 Compliance | -- | Included | -- | Purview Suite (for Communication Compliance) | Uses Communication Compliance to flag Copilot-drafted content |
+| 3.6 | Supervision and Oversight (FINRA 3110 / SEC Reg BI) | -- | Included | -- | Purview Suite (for Communication Compliance) | Uses Communication Compliance for supervision policies |
+| 3.7 | Regulatory Reporting | Included | Included | -- | -- | Process-based; Communication Compliance enhances detection |
+| 3.8 | Model Risk Management Alignment (OCC 2011-12 / SR 11-7) | Included | Included | -- | -- | Primarily organizational process; no specific license for documentation |
+| 3.9 | AI Disclosure, Transparency, and SEC Marketing Rule | Included | Included | -- | -- | Organizational process; Purview labeling and DLP support disclosure workflows |
+| 3.10 | SEC Reg S-P — Privacy of Consumer Financial Information | Included | Included | -- | -- | Process-based with DLP/label enforcement; Priva add-on optional |
+| 3.11 | Record Keeping and Books-and-Records Compliance | -- | Included | -- | Purview Suite | Requires Audit (Premium) and advanced retention for WORM-equivalent |
+| 3.12 | Evidence Collection and Audit Attestation | Included | Included | -- | -- | Process-based; Content Search available in E3 for evidence collection |
+| 3.13 | FFIEC IT Examination Handbook Alignment | Included | Included | -- | -- | Organizational mapping process; no specific license |
 
 ---
 
@@ -98,21 +103,21 @@ License requirements for each governance capability in the FSI Copilot Governanc
 
 | Control | Feature | E3 | E5 | Copilot | Add-on Required (if E3) | Notes |
 |---------|---------|----|----|---------|------------------------|-------|
-| 4.1 | Feature Toggle Management | Included | Included | Included | -- | M365 Admin Center settings; requires Copilot license to be meaningful |
-| 4.2 | Per-App Configuration | Included | Included | Included | -- | Per-app toggles in M365 Admin Center |
-| 4.3 | Web Search Controls | Included | Included | Included | -- | Admin toggle in M365 Admin Center |
-| 4.4 | Copilot Pages Governance | Included | Included | Included | -- | Admin settings for Copilot Pages |
-| 4.5 | Plugin and Extensibility Governance | Included | Included | Included | -- | Integrated Apps settings in M365 Admin Center |
-| 4.6 | Copilot Usage Analytics | Included | Included | Included | -- | Usage reports in M365 Admin Center; Viva Insights adds detail |
-| 4.6 | Copilot Usage Analytics (advanced) | -- | -- | -- | Viva Insights | Advanced Copilot adoption analytics |
-| 4.7 | Cost Management | Included | Included | Included | -- | License utilization tracking in M365 Admin Center |
-| 4.8 | PAYG Cost Governance | -- | -- | -- | Azure-backed billing policy | PAYG billing requires billing policy governance, Cost Management review, and budget notifications |
-| 4.8 | AI Incident Response | Included | Included | -- | -- | Process-based; Defender and Sentinel enhance automation |
-| 4.9 | Business Continuity | Included | Included | -- | -- | Process-based planning |
-| 4.10 | Change Management | Included | Included | -- | -- | Message Center monitoring; no additional license |
-| 4.11 | Microsoft Sentinel Integration | -- | -- | -- | Microsoft Sentinel | Separate consumption-based (pay-per-GB) service |
-| 4.12 | Governance Operating Calendar | Included | Included | -- | -- | Organizational process; no specific license |
-| 4.13 | Stakeholder RACI Matrix | Included | Included | -- | -- | Organizational process; no specific license |
+| 4.1 | Copilot Admin Settings and Feature Management | Included | Included | Included | -- | M365 Admin Center settings; requires Copilot license to be meaningful |
+| 4.2 | Copilot in Teams Meetings Governance | Included | Included | Included | -- | Teams meeting policy settings in Teams Admin Center |
+| 4.3 | Copilot in Teams Phone and Queues Governance | Included | Included | Included | -- | Teams Phone settings in Teams Admin Center |
+| 4.4 | Copilot in Viva Suite Governance | Included | Included | Included | -- | Viva app admin settings; Viva Insights requires add-on for advanced analytics |
+| 4.5 | Copilot Usage Analytics and Adoption Reporting | Included | Included | Included | -- | Usage reports in M365 Admin Center |
+| 4.6 | Viva Insights and Copilot Analytics | Included | Included | Included | -- | Basic usage reports in M365 Admin Center; Viva Insights adds detail |
+| 4.6 | Viva Insights (advanced analytics) | -- | -- | -- | Viva Insights | Advanced Copilot adoption analytics |
+| 4.7 | Copilot Feedback and Telemetry Data Governance | Included | Included | Included | -- | Admin controls for feedback and telemetry in M365 Admin Center |
+| 4.8 | Cost Allocation and License Optimization | Included | Included | Included | -- | License utilization tracking in M365 Admin Center |
+| 4.8 | Cost Allocation — PAYG Governance | -- | -- | -- | Azure-backed billing policy | PAYG billing requires billing policy governance, Cost Management review, and budget notifications |
+| 4.9 | Incident Reporting and Root Cause Analysis | Included | Included | -- | -- | Process-based; Defender and Sentinel enhance automation |
+| 4.10 | Business Continuity and Disaster Recovery | Included | Included | -- | -- | Process-based planning |
+| 4.11 | Microsoft Sentinel Integration for Copilot Events | -- | -- | -- | Microsoft Sentinel | Separate consumption-based (pay-per-GB) service |
+| 4.12 | Change Management for Copilot Feature Rollouts | Included | Included | -- | -- | Message Center monitoring; no additional license |
+| 4.13 | Copilot Extensibility and Agent Operations Governance | Included | Included | Included | -- | Integrated Apps and agent settings in M365 Admin Center |
 
 ---
 

@@ -17,7 +17,7 @@ When a user asks Copilot a question, Copilot queries the Microsoft Graph using t
 
 **The key governance risk** is not that Copilot has elevated access, but that many organizations have broader permissions than they realize. Copilot makes existing permission gaps more visible through a phenomenon called "discovery amplification" — content that was technically accessible but practically undiscoverable via traditional search becomes easier to surface through natural language queries. This is why the [Quick Start Guide](../getting-started/quick-start.md) begins with an oversharing assessment.
 
-**Relevant controls:** Control 1.1 (Oversharing Assessment), Control 1.2 (SharePoint Permissions Review)
+**Relevant controls:** Control 1.1 (Copilot Readiness Assessment), Control 1.2 (SharePoint Oversharing Detection), Control 1.14 (Item-Level Permission Scanning), Control 1.15 (Permissions Drift Detection)
 
 ---
 
@@ -35,7 +35,7 @@ When a user asks Copilot a question, Copilot queries the Microsoft Graph using t
 
 **Recommended approach for FSI:** Use group-based licensing with a phased rollout. Start with a pilot group, expand to low-risk use cases, then broaden as governance controls mature.
 
-**Relevant controls:** Control 1.9 (License Assignment and Scoping), Control 4.1 (Feature Toggle Management), Control 4.2 (Per-App Configuration)
+**Relevant controls:** Control 1.9 (License Planning), Control 4.1 (Copilot Admin Settings), Control 4.2 (Teams Meetings Governance)
 
 ---
 
@@ -69,7 +69,7 @@ Microsoft 365 Copilot interaction data is stored within the Microsoft 365 compli
 
 **How to disable:** M365 Admin Center > Copilot > Settings > Data access > Web search > Turn off.
 
-**Relevant controls:** Control 4.3 (Web Search and External Data Controls). See also: [Copilot Admin Toggles](copilot-admin-toggles.md)
+**Relevant controls:** Control 2.6 (Web Search and Web Grounding Controls). See also: [Copilot Admin Toggles](copilot-admin-toggles.md)
 
 ---
 
@@ -91,7 +91,7 @@ Copilot usage can be audited through several mechanisms:
 
 **For regulatory record-keeping (FINRA 4511, SEC 17a-4):** The Unified Audit Log with Audit (Premium) retention is the primary mechanism. Configure retention policies to meet your specific regulatory retention periods (typically 3-6 years).
 
-**Relevant controls:** Control 3.1 (Copilot Audit Logging), Control 3.9 (DSPM for AI), Control 4.6 (Usage Analytics), Control 4.11 (Sentinel Integration)
+**Relevant controls:** Control 3.1 (Copilot Audit Logging), Control 3.9 (AI Disclosure and Transparency), Control 4.6 (Copilot Analytics), Control 4.11 (Sentinel Integration)
 
 ---
 
@@ -116,7 +116,7 @@ Copilot interaction data is subject to the same Microsoft Purview retention poli
 - Use "Retain and then delete" for data minimization after the retention period expires
 - Audit (Premium) supports retention of audit log data for up to 10 years
 
-**Relevant controls:** Control 3.2 (Retention Policies), Control 3.11 (Regulatory Record-keeping)
+**Relevant controls:** Control 3.2 (Retention Policies), Control 3.11 (Record Keeping)
 
 ---
 
@@ -136,9 +136,9 @@ DSPM for AI (Data Security Posture Management for AI) is a Microsoft Purview cap
 
 DSPM for AI complements (does not replace) the broader governance controls in this framework. Think of it as a monitoring and assessment layer that helps you measure the effectiveness of your DLP, labeling, and access control implementations.
 
-**Requirements:** Microsoft 365 E5 Compliance + Microsoft 365 Copilot license.
+**Requirements:** Microsoft Purview Suite (formerly E5 Compliance) + Microsoft 365 Copilot license.
 
-**Relevant controls:** Control 2.12 (DSPM for AI), Control 3.9 (DSPM for AI Compliance Monitoring)
+**Relevant controls:** Control 1.2 (SharePoint Oversharing Detection), Control 3.9 (AI Disclosure and Transparency)
 
 ---
 
@@ -193,7 +193,7 @@ Copilot, like all large language models, can generate inaccurate or "hallucinate
 - IB enforcement for Copilot extensibility features (plugins, Graph connectors, declarative agents) may have limitations — see the [Copilot Surfaces Matrix](copilot-surfaces-matrix.md) for details
 - IB policies should be tested with Copilot scenarios before relying on them for MNPI compliance
 
-**Relevant controls:** Control 2.8 (Information Barriers for Copilot)
+**Relevant controls:** Control 2.4 (Information Barriers for Copilot)
 
 ---
 
@@ -209,7 +209,7 @@ Sensitivity labels interact with Copilot in three key ways:
 
 **FSI best practice:** Implement mandatory labeling for at least Word, Excel, PowerPoint, and Outlook so that all content Copilot may reference has a classification. This provides a foundation for both label inheritance and DLP policy enforcement.
 
-**Relevant controls:** Control 2.1 (Sensitivity Labels), Control 2.3 (Label Inheritance), Control 2.4 (DLP Policies)
+**Relevant controls:** Control 2.2 (Sensitivity Labels and Label Inheritance), Control 2.1 (DLP Policies)
 
 ---
 
@@ -239,7 +239,7 @@ Microsoft regularly updates Microsoft 365 Copilot with new features, changed beh
 - Review **Microsoft Purview release notes** for changes to compliance capabilities
 - Participate in **Microsoft FSI community calls** for industry-specific guidance
 
-**Governance response:** Control 4.10 (Change Management for Copilot Updates) provides a structured process for evaluating, testing, and approving Copilot feature changes in your environment.
+**Governance response:** Control 4.12 (Change Management for Copilot Updates) provides a structured process for evaluating, testing, and approving Copilot feature changes in your environment.
 
 **Key risk:** New Copilot features often default to "On." When Microsoft releases a new capability, it may be available to users before your governance team has evaluated it. The governance calendar (Control 4.12) should include regular review of Message Center notifications for Copilot-related changes.
 
