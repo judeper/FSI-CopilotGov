@@ -7,12 +7,12 @@ Common issues and resolution steps for DLP policies governing Copilot interactio
 ### Issue 1: Attempting to Combine Both Policy Types in a Single Policy
 
 - **Symptoms:** Administrator creates one DLP policy intending to cover both label-based response blocking and SIT-based prompt blocking, but only one mechanism appears to work (or neither does correctly)
-- **Root Cause:** Label-based response blocking and SIT-based prompt blocking are architecturally distinct enforcement mechanisms that operate at different points in the Copilot interaction chain. They cannot be merged into a single DLP policy because they target different enforcement points: Type 1 blocks at the grounding/response phase, Type 2 blocks at the user prompt phase.
+- **Root Cause:** Label-based response blocking and SIT-based prompt blocking are architecturally distinct enforcement mechanisms that operate at different points in the Copilot interaction chain. They cannot be combined within a single DLP rule because they target different enforcement points: Type 1 blocks at the grounding/response phase, Type 2 blocks at the user prompt phase. However, they may exist as separate rules within the same policy.
 - **Resolution:**
-  1. Create two separate DLP policies in Purview:
-     - Policy 1 (Type 1 — Label-Based): conditions use "Content contains sensitivity label" — blocks Copilot from including labeled content in responses
-     - Policy 2 (Type 2 — SIT-Based): conditions use "Content contains sensitive information types" — blocks Copilot from processing prompts containing sensitive data
-  2. Each policy must be independently configured, tested in simulation mode, and transitioned to enforcement separately
+  1. Create two separate DLP rules (they may exist within the same policy or as separate policies):
+     - Rule 1 (Type 1 — Label-Based): conditions use "Content contains sensitivity label" — blocks Copilot from including labeled content in responses
+     - Rule 2 (Type 2 — SIT-Based): conditions use "Content contains sensitive information types" — blocks Copilot from processing prompts containing sensitive data
+  2. Each rule must be independently configured, tested in simulation mode, and transitioned to enforcement separately
   3. Verify both policies appear in Purview > DLP > Policies as distinct entries
 
 ### Issue 2: DLP Policy Not Detecting Sensitive Data in Copilot

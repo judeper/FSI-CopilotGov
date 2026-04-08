@@ -47,11 +47,11 @@ Write-Host "Adoption rate: $([math]::Round(($activeUsers / [Math]::Max($totalUse
 $data = Import-Csv "CopilotUsageDetail_$(Get-Date -Format 'yyyyMMdd').csv"
 
 $appUsage = @(
-    [PSCustomObject]@{App="Word"; Users=($data | Where-Object { $_.'Word Copilot Active' -eq 'Yes' }).Count},
-    [PSCustomObject]@{App="Excel"; Users=($data | Where-Object { $_.'Excel Copilot Active' -eq 'Yes' }).Count},
-    [PSCustomObject]@{App="PowerPoint"; Users=($data | Where-Object { $_.'PowerPoint Copilot Active' -eq 'Yes' }).Count},
-    [PSCustomObject]@{App="Outlook"; Users=($data | Where-Object { $_.'Outlook Copilot Active' -eq 'Yes' }).Count},
-    [PSCustomObject]@{App="Teams"; Users=($data | Where-Object { $_.'Teams Copilot Active' -eq 'Yes' }).Count}
+    [PSCustomObject]@{App="Word"; Users=($data | Where-Object { $_.'Word Copilot Last Activity Date' -ne '' }).Count},
+    [PSCustomObject]@{App="Excel"; Users=($data | Where-Object { $_.'Excel Copilot Last Activity Date' -ne '' }).Count},
+    [PSCustomObject]@{App="PowerPoint"; Users=($data | Where-Object { $_.'PowerPoint Copilot Last Activity Date' -ne '' }).Count},
+    [PSCustomObject]@{App="Outlook"; Users=($data | Where-Object { $_.'Outlook Copilot Last Activity Date' -ne '' }).Count},
+    [PSCustomObject]@{App="Teams"; Users=($data | Where-Object { $_.'Teams Copilot Last Activity Date' -ne '' }).Count}
 )
 
 Write-Host "Copilot Usage by Application:" -ForegroundColor Cyan

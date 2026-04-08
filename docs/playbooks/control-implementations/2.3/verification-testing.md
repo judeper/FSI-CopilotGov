@@ -15,9 +15,9 @@ Test cases and evidence collection for validating Conditional Access policies fo
 - **Expected Result:** All Copilot CA policies reference only the correct app ID
 - **Evidence:** PowerShell output showing correct app ID across all policies
 
-### Test 2: March 2026 Enforcement Readiness Check
+### Test 2: May 2026 Enforcement Readiness Check
 
-- **Objective:** Verify CA policies are compliant with the March 27, 2026 enforcement change
+- **Objective:** Verify CA policies are compliant with the May 13, 2026 enforcement change
 - **Steps:**
   1. Run Script 1 to identify "All resources" policies with exclusions
   2. For each identified policy, deploy in report-only mode to assess enforcement impact
@@ -87,7 +87,7 @@ Test cases and evidence collection for validating Conditional Access policies fo
 | Evidence Item | Format | Storage Location | Retention |
 |--------------|--------|-----------------|-----------|
 | App ID audit output | Text/CSV | Compliance evidence repository | 7 years |
-| March 2026 remediation documentation | PDF | Compliance evidence repository | 7 years |
+| May 2026 remediation documentation | PDF | Compliance evidence repository | 7 years |
 | Conditional Access policy export | CSV/JSON | Compliance evidence repository | 7 years |
 | Sign-in log samples | CSV | Compliance evidence repository | 7 years |
 | Access denial test results | PDF with screenshots | Compliance evidence repository | 7 years |
@@ -98,7 +98,7 @@ Test cases and evidence collection for validating Conditional Access policies fo
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| NYDFS Part 500 §500.12 | MFA for external network access | MFA requirement ensures Copilot access from outside corporate network requires MFA; March 2026 enforcement closes the "All resources + exclusion" bypass path |
+| NYDFS Part 500 §500.12 | MFA for external network access | MFA requirement ensures Copilot access from outside corporate network requires MFA; May 2026 enforcement closes the "All resources + exclusion" bypass path |
 | FFIEC Authentication Guidance | Strong authentication | MFA requirement supports compliance with authentication guidance |
 | NIST SP 800-63 | Authentication assurance levels | Conditional Access helps meet assurance level requirements |
 | SEC Regulation S-P | Access controls | Device and authentication controls support compliance with access control obligations |

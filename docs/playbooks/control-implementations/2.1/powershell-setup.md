@@ -24,9 +24,11 @@ Connect-IPPSSession
 New-DlpCompliancePolicy -Name "FSI Copilot DLP - Label-Based Response Blocking" `
     -Comment "Blocks Copilot from surfacing Highly Confidential and MNPI labeled content in responses" `
     -Mode "TestWithNotifications" `
-    -CopilotInteractionType "CopilotContent"
+    -M365CopilotLocation All
 
 # Create DLP rule for Highly Confidential label
+# NOTE: Verify -ContentContainsSensitivityLabels syntax against your live tenant —
+# parameter name and hashtable structure may vary by module version.
 New-DlpComplianceRule -Name "Block HC Label in Copilot Response" `
     -Policy "FSI Copilot DLP - Label-Based Response Blocking" `
     -ContentContainsSensitivityLabel @{
@@ -47,7 +49,8 @@ Write-Host "Review matches before enabling enforcement."
 ```powershell
 # Create DLP policy for SIT-based prompt blocking in Copilot
 # This policy blocks Copilot from processing prompts containing sensitive data
-# These two policy types cannot be merged - configure as a separate policy
+# These two policy types must be configured as separate DLP rules — they cannot be
+# combined within a single DLP rule, but may exist as separate rules within the same policy
 # Requires: Security & Compliance PowerShell
 
 Import-Module ExchangeOnlineManagement
@@ -57,7 +60,7 @@ Connect-IPPSSession
 New-DlpCompliancePolicy -Name "FSI Copilot DLP - SIT-Based Prompt Blocking" `
     -Comment "Blocks Copilot from processing user prompts containing FSI-sensitive information types" `
     -Mode "TestWithNotifications" `
-    -CopilotInteractionType "CopilotContent"
+    -M365CopilotLocation All
 
 # Create DLP rule for SSN detection in prompts
 New-DlpComplianceRule -Name "Block SSN in Copilot Prompt" `

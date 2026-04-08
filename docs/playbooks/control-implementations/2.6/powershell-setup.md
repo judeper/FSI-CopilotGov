@@ -5,7 +5,7 @@ Automation scripts for managing Copilot web search and grounding controls.
 ## Prerequisites
 
 - Microsoft Graph PowerShell SDK
-- Global Administrator role
+- Entra Global Admin or AI Administrator role
 - Microsoft 365 Admin Center API access
 
 ## Scripts

@@ -44,18 +44,21 @@ New-InformationBarrierPolicy -Name "IB-Research Block" `
     -AssignedSegment "InvestmentBanking" `
     -SegmentsBlocked "Research" `
     -State Active
+# IMPORTANT: Create the reciprocal policy (Research blocked from InvestmentBanking) to ensure bidirectional enforcement
 
 # Block Investment Banking <-> Trading
 New-InformationBarrierPolicy -Name "IB-Trading Block" `
     -AssignedSegment "InvestmentBanking" `
     -SegmentsBlocked "Trading" `
     -State Active
+# IMPORTANT: Create the reciprocal policy (Trading blocked from InvestmentBanking) to ensure bidirectional enforcement
 
 # Block Research <-> Trading
 New-InformationBarrierPolicy -Name "Research-Trading Block" `
     -AssignedSegment "Research" `
     -SegmentsBlocked "Trading" `
     -State Active
+# IMPORTANT: Create the reciprocal policy (Trading blocked from Research) to ensure bidirectional enforcement
 
 # Apply all policies
 Start-InformationBarrierPoliciesApplication

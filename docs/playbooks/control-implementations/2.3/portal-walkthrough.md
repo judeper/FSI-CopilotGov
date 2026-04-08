@@ -8,7 +8,7 @@ Step-by-step portal configuration for implementing Conditional Access policies t
 - Microsoft Entra ID P1 or P2 license
 - Device compliance policies configured in Microsoft Intune
 - Named locations defined for corporate network ranges
-- **Action required by March 27, 2026:** If your organization uses "All resources" CA policies with exclusions, audit and remediate before the enforcement change takes effect (see Step 2)
+- **Action required by May 13, 2026:** If your organization uses "All resources" CA policies with exclusions, audit and remediate before the enforcement change takes effect (see Step 2)
 
 ## Steps
 
@@ -23,18 +23,18 @@ Before creating or modifying any Copilot CA policy, confirm you are using the co
 
 Search existing policies for any references to the Copilot app. Use the CA optimization agent to identify policies that may need updating. A misconfigured app ID causes the policy to miss Copilot traffic entirely.
 
-### Step 2: Audit for March 2026 CA Enforcement Change
+### Step 2: Audit for May 2026 CA Enforcement Change
 
 **Portal:** Microsoft Entra Admin Center
 **Path:** Microsoft Entra admin center > Protection > Conditional Access > Optimization
 
-Starting March 27, 2026, Entra ID will enforce MFA and device compliance even for resources excluded in "All resources" policies. This closes a bypass path that previously allowed Copilot access without full enforcement.
+Starting May 13, 2026, Entra ID will enforce MFA and device compliance even for resources excluded in "All resources" policies. This closes a bypass path that previously allowed Copilot access without full enforcement.
 
 1. Open the Conditional Access optimization agent
 2. Review all policies scoped to "All resources" that include resource exclusions
 3. Identify any policy that excludes the Enterprise Copilot Platform (`fb8d773d-7ef8-4ec0-a117-179f88add510`)
 4. Deploy remediated policies in report-only mode to assess user impact
-5. Switch remediated policies to enforcement mode at least 2 weeks before March 27, 2026
+5. Switch remediated policies to enforcement mode at least 2 weeks before May 13, 2026
 
 ### Step 3: Create Conditional Access Policy for Copilot
 
@@ -109,9 +109,9 @@ Deploy the policy in report-only mode to evaluate impact before enforcement:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Require MFA for all Copilot access; compliant device required; audit CA policies for Copilot exclusions before March 2026; enable Adaptive Protection in audit mode |
-| **Recommended** | Location-based restrictions; session controls with 8-hour re-auth; remove Copilot-specific exclusions from "All resources" policies and test in report-only before March 2026; enable Adaptive Protection dynamic blocking for high-risk users |
-| **Regulated** | Compliant device AND MFA AND trusted location required; session controls with 4-hour re-auth and app-enforced restrictions; Defender for Cloud Apps integration; CA policy remediation complete by February 2026; Adaptive Protection dynamic blocking at medium-risk threshold |
+| **Baseline** | Require MFA for all Copilot access; compliant device required; audit CA policies for Copilot exclusions before May 2026; enable Adaptive Protection in audit mode |
+| **Recommended** | Location-based restrictions; session controls with 8-hour re-auth; remove Copilot-specific exclusions from "All resources" policies and test in report-only before May 2026; enable Adaptive Protection dynamic blocking for high-risk users |
+| **Regulated** | Compliant device AND MFA AND trusted location required; session controls with 4-hour re-auth and app-enforced restrictions; Defender for Cloud Apps integration; CA policy remediation complete by April 2026; Adaptive Protection dynamic blocking at medium-risk threshold |
 
 ## Next Steps
 

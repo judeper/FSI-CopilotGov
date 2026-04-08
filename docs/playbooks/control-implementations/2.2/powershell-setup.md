@@ -40,6 +40,9 @@ $policies = Get-LabelPolicy
 foreach ($policy in $policies) {
     Write-Host "=== Policy: $($policy.Name) ==="
     Write-Host "  Enabled: $($policy.Enabled)"
+    # NOTE: MandatoryLabelingEnabled, DefaultLabelId, and RequireDowngradeJustification
+    # must be parsed from the $policy.Settings collection (a string array of key=value pairs),
+    # not accessed as direct properties. Use: $policy.Settings | Where-Object { $_ -match 'MandatoryLabelingEnabled' }
     Write-Host "  Mandatory Labeling: $($policy.MandatoryLabelingEnabled)"
     Write-Host "  Default Label: $($policy.DefaultLabelId)"
     Write-Host "  Require Downgrade Justification: $($policy.RequireDowngradeJustification)"
@@ -101,7 +104,7 @@ $items = Get-PnPListItem -List "Documents" -PageSize 500
 
 $unlabeled = @()
 foreach ($item in $items) {
-    $label = $item.FieldValues["_ComplianceTag"]
+    $label = $item.FieldValues["_SensitivityLabelId"]
     if (-not $label) {
         $unlabeled += [PSCustomObject]@{
             FileName     = $item.FieldValues["FileLeafRef"]
@@ -141,7 +144,7 @@ foreach ($siteUrl in $siteUrls) {
     $items = Get-PnPListItem -List "Documents" -PageSize 500
 
     foreach ($item in $items) {
-        $label = $item.FieldValues["_ComplianceTag"]
+        $label = $item.FieldValues["_SensitivityLabelId"]
         if (-not $label) {
             $allUnlabeled += [PSCustomObject]@{
                 Site         = $siteUrl

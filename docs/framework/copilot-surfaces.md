@@ -207,6 +207,9 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 ### Viva Goals
 
+!!! warning "Retired"
+    Viva Goals was retired December 31, 2025 and is no longer a Copilot surface.
+
 | Attribute | Details |
 |-----------|---------|
 | **Copilot Capabilities** | Goal drafting, progress analysis, alignment suggestions |
@@ -238,6 +241,15 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Data Sources** | User's M365 content (via Copilot Chat), page content, collaborator inputs |
 | **Governance Considerations** | Pages create new content objects that may duplicate regulated data outside original governance boundaries. Pages are stored in user-owned SharePoint Embedded containers and may be shared broadly if not governed. Pages require sensitivity labeling, SharePoint retention coverage, eDiscovery procedures, and explicit Cloud Policy decisions for creation. Pages represent a new data sprawl vector that did not exist before Copilot. |
 | **Key Controls** | 2.11 (Copilot Pages governance), 2.2 (Sensitivity labels), 3.2 (Retention), 3.3 (eDiscovery), 1.11 (Sharing governance) |
+
+### Copilot Notebooks
+
+| Attribute | Details |
+|-----------|---------|
+| **Copilot Capabilities** | AI-generated interactive content stored as .pod files; rich canvas for Copilot-assisted research and drafting |
+| **Data Sources** | User's M365 content (via Copilot Chat), notebook content, SharePoint Embedded storage |
+| **Governance Considerations** | Notebooks are stored in SharePoint Embedded containers. Governance requires sensitivity labeling, retention policies covering SharePoint Embedded, eDiscovery inclusion, and sharing controls analogous to Copilot Pages. |
+| **Key Controls** | 2.11 (Copilot Pages governance — applies similarly), 2.2 (Sensitivity labels), 3.2 (Retention), 1.11 (Sharing governance) |
 
 ---
 

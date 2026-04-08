@@ -69,15 +69,8 @@ Step-by-step portal configuration for governing Copilot capabilities within the 
 
 ### Step 4: Configure Copilot in Viva Goals
 
-**Portal:** Viva Goals Admin Center
-**Path:** Settings > AI features
-
-1. Review Copilot features in Viva Goals:
-   - AI-assisted OKR drafting
-   - Progress analysis and suggestions
-   - Goal alignment recommendations
-2. Configure data access controls to prevent Copilot from surfacing confidential performance data.
-3. Set appropriate access boundaries so Copilot goal suggestions respect organizational hierarchies.
+!!! warning "Viva Goals Retired"
+    Microsoft Viva Goals was retired on December 31, 2025. Organizations that used Viva Goals should verify data has been exported. No further configuration is needed.
 
 ### Step 5: Configure Viva Connections Copilot Integration
 

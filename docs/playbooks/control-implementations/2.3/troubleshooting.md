@@ -15,16 +15,16 @@ Common issues and resolution steps for Conditional Access policies governing Cop
   4. Deploy updated policies in report-only mode first, then switch to enforcement
   5. Confirm Copilot sign-in events now show the correct policy being applied in sign-in logs
 
-### Issue 2: Unexpected Enforcement After March 2026
+### Issue 2: Unexpected Enforcement After May 2026
 
-- **Symptoms:** After March 27, 2026, users experience unexpected MFA prompts or blocks when accessing Copilot — particularly users who previously accessed without issue
-- **Root Cause:** The March 2026 CA enforcement change removes the bypass path in "All resources + exclusion" policies. Users who were previously excluded from enforcement are now subject to MFA and device compliance requirements.
+- **Symptoms:** After May 13, 2026, users experience unexpected MFA prompts or blocks when accessing Copilot — particularly users who previously accessed without issue
+- **Root Cause:** The May 2026 CA enforcement change removes the bypass path in "All resources + exclusion" policies. Users who were previously excluded from enforcement are now subject to MFA and device compliance requirements.
 - **Resolution:**
   1. Check sign-in logs for the specific CA policy that is now enforcing
   2. Identify whether the user's Copilot access was previously relying on a resource exclusion
   3. If the enforcement is correct, assist the user in meeting the policy requirements (MFA setup, device enrollment)
   4. If the enforcement is unexpected, review whether the policy needs restructuring
-  5. Refer to the March 2026 enforcement audit documentation to confirm the intended post-enforcement state
+  5. Refer to the May 2026 enforcement audit documentation to confirm the intended post-enforcement state
 
 ### Issue 3: Legitimate Users Blocked from Copilot
 

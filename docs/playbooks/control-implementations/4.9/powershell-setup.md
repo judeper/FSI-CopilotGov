@@ -12,7 +12,7 @@ Automation scripts for detecting, reporting, and analyzing Copilot-related incid
 
 ```powershell
 Import-Module ExchangeOnlineManagement
-Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
+Connect-IPPSSession -UserPrincipalName admin@contoso.com
 Connect-MgGraph -Scopes "AuditLog.Read.All", "SecurityEvents.Read.All"
 ```
 

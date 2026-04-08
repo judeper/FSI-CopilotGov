@@ -17,7 +17,7 @@ Step-by-step portal configuration for deploying Data Loss Prevention policies th
 | **Type 1: Label-Based Response Blocking** | Prevents Copilot from surfacing labeled files/emails in responses | Copilot's grounding phase (response side) |
 | **Type 2: SIT-Based Prompt Blocking** | Prevents users from submitting sensitive data in prompts | User's prompt (before Copilot processes it) |
 
-These two types cannot be merged. Configure each as a separate policy.
+These two types must be configured as separate DLP rules — they cannot be combined within a single DLP rule, but may exist as separate rules within the same policy.
 
 ## Steps
 

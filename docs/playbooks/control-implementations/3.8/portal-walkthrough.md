@@ -2,11 +2,6 @@
 
 Step-by-step portal configuration for aligning Microsoft 365 Copilot governance with OCC Bulletin 2011-12, OCC Bulletin 2025-26 (proportionality), and Federal Reserve SR 11-7 model risk management requirements.
 
-<!-- NEEDS_HUMAN_REVIEW: OCC Bulletin 2025-26 is cited throughout this file and related 3.8 files
-     as proportionality guidance for community bank model risk management. Verify this bulletin
-     number and URL are correct before publishing. If misnumbered, update all 15 references
-     across portal-walkthrough.md, troubleshooting.md, and verification-testing.md. -->
-
 ## Prerequisites
 
 - **Role:** Purview Compliance Admin, Model Risk Management Officer

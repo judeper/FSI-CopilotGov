@@ -86,5 +86,5 @@ Test cases and evidence collection for validating Information Barrier enforcemen
 |-----------|-------------|------------------------------|
 | FINRA Rule 5280 | Information barriers for trading | Barriers support compliance with trading information wall requirements |
 | SEC Regulation FD | Fair disclosure requirements | Information barriers help prevent selective disclosure through AI |
-| SEC Rule 15g-1 | Chinese Wall requirements | Barriers support compliance with broker-dealer Chinese Wall obligations |
+| Securities Exchange Act Section 15(f) | Chinese Wall requirements | Barriers support compliance with broker-dealer Chinese Wall obligations |
 | MiFID II | Conflict of interest management | Information barriers support compliance with conflict management requirements |

@@ -25,14 +25,14 @@ Guide for responding to FINRA, SEC, OCC, and other regulatory examination reques
 - Customer information protection (Regulation S-P)
 - Electronic records retention (Rule 17a-4)
 - Books and records obligations
-- Cybersecurity risk management (proposed rules)
+- Cybersecurity risk management (finalized 2024)
 
 **Key evidence:** Data protection controls (DLP, encryption, access controls), records retention policies covering Copilot content, risk assessment documentation, cybersecurity control evidence.
 
 ### OCC Examination
 
 **Focus areas for Copilot:**
-- Third-party risk management (Bulletin 2013-29 / updated guidance)
+- Third-party risk management (OCC Bulletin 2023-17 (Interagency TPRM Guidance))
 - IT risk management and heightened standards
 - Operational resilience
 - Model risk management (SR 11-7 applicability to AI)

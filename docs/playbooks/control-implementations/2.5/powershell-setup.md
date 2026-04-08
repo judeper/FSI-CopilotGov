@@ -22,9 +22,9 @@ Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 # Check if RSS is enabled (primary grounding control)
 $rssMode = Get-SPOTenantRestrictedSearchMode -ErrorAction SilentlyContinue
 
-if ($rssMode.Mode -eq "Restricted") {
+if ($rssMode.Mode -eq "Enabled") {
     $allowedSites = Get-SPOTenantRestrictedSearchAllowedList
-    Write-Host "RSS Mode: Restricted — $($allowedSites.Count) sites in grounding scope"
+    Write-Host "RSS Mode: Enabled — $($allowedSites.Count) sites in grounding scope"
     $allowedSites | ForEach-Object { Write-Host "  $_" }
 } else {
     $allSites = Get-SPOSite -Limit All -IncludePersonalSite $false
@@ -81,7 +81,7 @@ $rssMode = Get-SPOTenantRestrictedSearchMode -ErrorAction SilentlyContinue
 
 $checks += [PSCustomObject]@{
     Control  = "Restricted SharePoint Search"
-    Status   = if ($rssMode.Mode -eq "Restricted") { "PASS" } else { "FAIL" }
+    Status   = if ($rssMode.Mode -eq "Enabled") { "PASS" } else { "FAIL" }
     Detail   = "RSS Mode: $($rssMode.Mode)"
 }
 

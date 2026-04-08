@@ -33,12 +33,12 @@ foreach ($policy in $policies) {
     }
     if ($excludeApps -contains $correctAppId) {
         Write-Host "[EXCLUDE] $($policy.DisplayName) — State: $($policy.State)"
-        Write-Host "  WARNING: Copilot is EXCLUDED from this policy — review before March 2026 enforcement"
+        Write-Host "  WARNING: Copilot is EXCLUDED from this policy — review before May 2026 enforcement"
     }
 }
 
-# Report policies with "All resources" + exclusions (March 2026 enforcement impact)
-Write-Host "`n=== Policies with 'All Resources' + Exclusions (March 2026 Impact) ==="
+# Report policies with "All resources" + exclusions (May 2026 enforcement impact)
+Write-Host "`n=== Policies with 'All Resources' + Exclusions (May 2026 Impact) ==="
 foreach ($policy in $policies) {
     $includesAll = $policy.Conditions.Applications.IncludeApplications -contains "All"
     $hasExclusions = $policy.Conditions.Applications.ExcludeApplications.Count -gt 0

@@ -1,6 +1,6 @@
 # Control 4.2: Copilot in Teams Meetings Governance — PowerShell Setup
 
-Automation scripts for configuring and managing Copilot governance in Microsoft Teams meetings, including the critical remediation for Microsoft's March 2026 EnabledWithTranscript default change.
+Automation scripts for configuring and managing Copilot governance in Microsoft Teams meetings, including the critical remediation for Microsoft's late April 2026 EnabledWithTranscript default change.
 
 ## Prerequisites
 
@@ -22,11 +22,11 @@ Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
 
 ### Script 1: Enforce EnabledWithTranscript (Critical Remediation)
 
-This script addresses the March 2026 Microsoft default change from `EnabledWithTranscript` to `Enabled`. Run this script immediately for any Teams environment where recordkeeping obligations apply.
+This script addresses the late April 2026 Microsoft default change from `EnabledWithTranscript` to `Enabled`. Run this script immediately for any Teams environment where recordkeeping obligations apply.
 
 ```powershell
 # ============================================================
-# CRITICAL REMEDIATION: Teams Copilot Default Change (March 2026)
+# CRITICAL REMEDIATION: Teams Copilot Default Change (Late April 2026)
 # Microsoft changed default from EnabledWithTranscript to Enabled.
 # This script enforces EnabledWithTranscript for FSI compliance.
 # ============================================================

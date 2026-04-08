@@ -50,7 +50,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 | M365 Copilot in Teams | Chat summaries, meeting recaps, transcription |
 | Microsoft 365 Copilot Chat | Cross-application Copilot |
 | Copilot Pages | AI-generated collaborative content |
-| Copilot in Viva suite | Viva Insights, Engage, Learning, Pulse, Goals |
+| Copilot in Viva suite | Viva Insights, Engage, Learning, Pulse |
 | Copilot in Loop, Whiteboard, Forms, Planner, Stream | App-specific AI features |
 | Web search / web grounding | Bing integration in Copilot |
 | Plugins and Graph connectors | Extending Copilot's data reach |

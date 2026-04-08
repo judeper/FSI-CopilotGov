@@ -4,7 +4,7 @@ Step-by-step portal configuration for controlling Copilot's ability to search th
 
 ## Prerequisites
 
-- Global Administrator role
+- Entra Global Admin or AI Administrator role
 - Microsoft 365 Admin Center access
 - Governance committee decision on web search policy for Copilot
 

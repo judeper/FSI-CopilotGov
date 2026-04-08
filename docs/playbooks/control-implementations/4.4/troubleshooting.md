@@ -58,6 +58,9 @@ Common issues and resolution steps for Copilot governance across the Viva suite.
 
 ### Issue 6: Viva Goals Copilot Providing Inaccurate Progress Insights
 
+!!! warning "Retired"
+    Viva Goals was retired December 31, 2025. This troubleshooting entry is no longer applicable.
+
 - **Symptoms:** Copilot-generated progress analysis in Viva Goals does not match actual goal completion data.
 - **Root Cause:** Copilot may be generating insights from incomplete or stale data, or data integration between systems is delayed.
 - **Resolution:**

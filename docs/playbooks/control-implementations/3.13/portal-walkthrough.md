@@ -20,7 +20,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
    - **Audit booklet** — Controls 3.1 (Audit Logging), 3.12 (Evidence Collection)
    - **Information Security booklet** — Controls 2.1-2.15 (Security and Protection)
    - **Management booklet** — Controls 3.6 (Supervision), 3.8 (Model Risk)
-   - **Operations booklet** — Controls 4.1-4.13 (Operations and Monitoring)
+   - **Architecture, Infrastructure & Operations (AIO) booklet** — Controls 4.1-4.13 (Operations and Monitoring)
 3. For each mapping, document the control objective and evidence requirements.
 
 ### Step 2: Configure FFIEC-Aligned Audit Trail Requirements
@@ -74,7 +74,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 ## Regulatory Alignment
 
-- **FFIEC IT Examination Handbook** — Supports compliance across Audit, Information Security, Management, and Operations booklets
+- **FFIEC IT Examination Handbook** — Supports compliance across Audit, Information Security, Management, and Architecture, Infrastructure & Operations (AIO) booklets
 - **FFIEC Cybersecurity Assessment Tool** — Helps meet maturity levels for AI-related technology governance
 - **OCC Heightened Standards** — Supports compliance with large institution IT governance requirements
 

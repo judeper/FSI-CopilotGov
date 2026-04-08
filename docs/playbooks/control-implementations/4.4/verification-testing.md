@@ -52,6 +52,9 @@ Test cases and evidence collection procedures for Copilot governance across the 
 
 ### Test 5: Viva Goals Data Boundary Enforcement
 
+!!! warning "Retired"
+    Viva Goals was retired December 31, 2025. This test case is no longer applicable.
+
 - **Objective:** Validate that Copilot in Viva Goals respects organizational data boundaries
 - **Steps:**
   1. Create test goals in Viva Goals at different organizational levels.

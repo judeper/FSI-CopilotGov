@@ -162,7 +162,7 @@ See also: [Control 2.1 -- DLP Policies for M365 Copilot](../control-implementati
     - Search for these event types in the Audit Search to verify they appear
 
 3. **Configure audit log retention:**
-    - Default retention is 180 days (E5) or 90 days (E3)
+    - Default retention is 180 days for all license tiers
     - For FSI organizations, configure extended retention of at least 3 years (aligning with SEC 17a-4(b)(4) for communications)
     - Consider 7-year retention if Copilot outputs may become part of financial records
 

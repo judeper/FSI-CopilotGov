@@ -16,7 +16,7 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
 
 ### Issue 2: Audit Retention Policy Not Applying
 
-- **Symptoms:** Copilot audit records expire after default 90-day period despite a longer retention policy being configured.
+- **Symptoms:** Copilot audit records expire after default 180-day period (all license tiers) despite a longer retention policy being configured.
 - **Root Cause:** The retention policy priority may be lower than the default policy, or the record type filter may not match.
 - **Resolution:**
   1. Review all retention policies: `Get-UnifiedAuditLogRetentionPolicy | Format-List`

@@ -108,6 +108,7 @@ Write-Host "Items Found: $($searchStatus.Items)"
 Write-Host "Size (MB): $([math]::Round($searchStatus.Size / 1MB, 2))"
 
 if ($searchStatus.Status -eq "Completed") {
+    # NOTE: New-ComplianceSearchAction -Export was retired May 2025. Use the Purview portal or Microsoft Graph eDiscovery APIs for export operations.
     # Generate export action
     New-ComplianceSearchAction -SearchName $searchName -Export -Format FxStream
     Write-Host "Export initiated for search: $searchName" -ForegroundColor Green

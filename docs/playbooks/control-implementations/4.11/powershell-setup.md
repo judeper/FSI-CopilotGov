@@ -48,6 +48,9 @@ OfficeActivity
     TriggerThreshold  = 0
 }
 
+# NOTE: Verify syntax against the current Az.SecurityInsights module version.
+# The -Scheduled parameter with splatting may require -Kind Scheduled as a named parameter
+# in some module versions: New-AzSentinelAlertRule -ResourceGroupName $rg -WorkspaceName $ws -Kind Scheduled @ruleParams
 New-AzSentinelAlertRule -ResourceGroupName $resourceGroupName `
     -WorkspaceName $workspaceName `
     -Scheduled @ruleParams
