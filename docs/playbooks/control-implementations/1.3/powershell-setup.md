@@ -45,7 +45,7 @@ $results = @()
 
 foreach ($site in $approvedSites) {
     try {
-        Add-SPOTenantRestrictedSearchAllowedList -SiteUrl $site.Url
+        Add-SPOTenantRestrictedSearchAllowedList -SitesList @($site.Url)
         $results += [PSCustomObject]@{
             Url    = $site.Url
             Status = "Added"
@@ -75,10 +75,10 @@ Write-Host "`nTotal: $($results.Count) | Added: $(($results | Where-Object Statu
 Import-Module Microsoft.Online.SharePoint.PowerShell
 Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 
-$allowedSites = Get-SPOTenantRestrictedSearchAllowedList
+$allowedList = Get-SPOTenantRestrictedSearchAllowedList
 
 $auditReport = @()
-foreach ($siteUrl in $allowedSites) {
+foreach ($siteUrl in $allowedList.SitesList) {
     $siteDetail = Get-SPOSite -Identity $siteUrl -Detailed -ErrorAction SilentlyContinue
     $auditReport += [PSCustomObject]@{
         Url               = $siteUrl
@@ -107,7 +107,7 @@ $sitesToRemove = Import-Csv "SitesToRemove.csv"
 
 foreach ($site in $sitesToRemove) {
     try {
-        Remove-SPOTenantRestrictedSearchAllowedList -SiteUrl $site.Url
+        Remove-SPOTenantRestrictedSearchAllowedList -SitesList @($site.Url)
         Write-Host "Removed: $($site.Url)" -ForegroundColor Yellow
     } catch {
         Write-Host "Failed to remove: $($site.Url) - $($_.Exception.Message)" -ForegroundColor Red
