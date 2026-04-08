@@ -14,9 +14,9 @@ Step-by-step portal configuration for evaluating organizational readiness and es
 ### Step 1: Run the Microsoft 365 Copilot Optimization Assessment
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Health > Copilot readiness
+**Path:** Admin Center > Copilot > Settings > Readiness
 
-Navigate to the Copilot readiness page to access the Optimization Assessment. This Microsoft-provided tool evaluates infrastructure readiness across three dimensions:
+Navigate to the Copilot Readiness page to access the Optimization Assessment.This Microsoft-provided tool evaluates infrastructure readiness across three dimensions:
 
 - **Network readiness:** Bandwidth, latency, and proxy/firewall compatibility with Copilot service endpoints
 - **Office update channel compliance:** Percentage of endpoints on Current Channel or Monthly Enterprise Channel (required for Copilot features; Semi-Annual Enterprise Channel is not supported)

@@ -5,7 +5,7 @@ Step-by-step portal configuration for deploying Microsoft Purview Data Security 
 ## Prerequisites
 
 - Microsoft Purview administrator or Compliance Administrator role
-- Microsoft 365 E5 or E5 Compliance add-on license
+- Microsoft 365 E5 or Purview Suite (formerly E5 Compliance) add-on license
 - SharePoint Administrator role for site-level remediation
 - DSPM feature enabled in the tenant
 

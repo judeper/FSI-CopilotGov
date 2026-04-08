@@ -9,7 +9,7 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 - **Objective:** Verify that the Copilot Optimization Assessment has run and all infrastructure findings have been reviewed
 - **Steps:**
   1. Sign in to Microsoft 365 Admin Center as Global Administrator
-  2. Navigate to Admin Center > Health > Copilot readiness
+  2. Navigate to Admin Center > Copilot > Settings > Readiness
   3. Confirm the Optimization Assessment has completed and shows current results
   4. Verify network readiness, Office update channel compliance, and app compatibility sections are all reviewed
   5. Confirm that any "blocking" findings have been addressed or have documented remediation plans
@@ -21,7 +21,7 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 - **Objective:** Verify that the Copilot readiness dashboard is accessible and returning data
 - **Steps:**
   1. Sign in to Microsoft 365 Admin Center as Global Administrator
-  2. Navigate to Health > Copilot readiness
+  2. Navigate to Copilot > Settings > Readiness
   3. Confirm the dashboard loads and displays assessment categories
   4. Verify data freshness (last updated within 48 hours)
 - **Expected Result:** Dashboard displays current readiness scores across all assessment categories

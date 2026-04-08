@@ -23,7 +23,7 @@ Import-Module Microsoft.Online.SharePoint.PowerShell
 Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 
 # Enable Restricted SharePoint Search
-Set-SPOTenantRestrictedSearchMode -Mode Restricted
+Set-SPOTenantRestrictedSearchMode -Mode Enabled
 
 # Verify the setting
 $mode = Get-SPOTenantRestrictedSearchMode

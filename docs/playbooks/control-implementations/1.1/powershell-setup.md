@@ -21,7 +21,7 @@ Automation scripts for conducting Copilot readiness assessments and data hygiene
 Import-Module Microsoft.Graph.Sites
 Import-Module Microsoft.Graph.Reports
 
-Connect-MgGraph -Scopes "Sites.Read.All","Reports.Read.All","User.Read.All"
+Connect-MgGraph -Scopes "Sites.Read.All","Reports.Read.All"
 
 $report = @{
     AssessmentDate = Get-Date -Format "yyyy-MM-dd"
@@ -32,7 +32,7 @@ $report = @{
 }
 
 # Enumerate SharePoint sites and check sharing settings
-$sites = Get-MgSite -All
+$sites = Get-MgSite -Search "*" -All
 $report.TotalSites = $sites.Count
 
 foreach ($site in $sites) {
@@ -103,11 +103,11 @@ Write-Host "Active label policies: $($labelPolicies.Count)"
 Write-Host "Published labels: $($labels.Count)"
 
 foreach ($label in $labels) {
-    Write-Host "  - $($label.DisplayName) | Priority: $($label.Priority) | Enabled: $($label.Enabled)"
+    Write-Host "  - $($label.DisplayName) | Priority: $($label.Priority) | Enabled: $(-not $label.Disabled)"
 }
 
 # Export label configuration for documentation
-$labels | Select-Object DisplayName, Priority, Enabled, ParentId, ContentType |
+$labels | Select-Object DisplayName, Priority, @{Name="Enabled";Expression={-not $_.Disabled}}, ParentId, ContentType |
     Export-Csv "SensitivityLabelConfig_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 

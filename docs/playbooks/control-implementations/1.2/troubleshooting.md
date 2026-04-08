@@ -9,7 +9,7 @@ Common issues and resolution steps for SharePoint oversharing detection using DS
 - **Symptoms:** `Connect-PnPOnline -Interactive` fails with "Application is not registered" or "AADSTS700016: Application with identifier '31359c7f-...' was not found in the directory"
 - **Root Cause:** The shared multi-tenant PnP Management Shell Entra ID app (App ID `31359c7f-...`) was retired September 9, 2024. Scripts written before this date that omit `-ClientId` will fail against this deleted app registration.
 - **Resolution:**
-  1. Run the one-time registration: `Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Governance Shell - [YourOrg]" -Tenant "yourorg.onmicrosoft.com" -SharePointDelegated -GraphDelegated -Interactive`
+  1. Run the one-time registration: `Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "PnP Governance Shell - [YourOrg]" -Tenant "yourorg.onmicrosoft.com" -SharePointDelegatePermissions "AllSites.FullControl" -GraphDelegatePermissions "Sites.Read.All","Group.Read.All" -Interactive`
   2. Save the returned Client ID
   3. Update all `Connect-PnPOnline` calls to include `-ClientId <your-app-id>`
   4. Verify the app registration in Microsoft Entra admin center under App registrations

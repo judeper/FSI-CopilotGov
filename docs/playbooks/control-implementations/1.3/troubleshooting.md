@@ -61,7 +61,7 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 - **Symptoms:** Users suddenly report seeing search results from sites that were previously restricted
 - **Root Cause:** An administrator may have toggled RSS off via the admin center or PowerShell, or a service update may have reset the setting.
 - **Resolution:**
-  1. Immediately re-enable RSS: `Set-SPOTenantRestrictedSearchMode -Mode Restricted`
+  1. Immediately re-enable RSS: `Set-SPOTenantRestrictedSearchMode -Mode Enabled`
   2. Verify the allowed list is intact: `Get-SPOTenantRestrictedSearchAllowedList`
   3. Review the audit log for who changed the setting: `Search-UnifiedAuditLog -Operations "Set-SPOTenantRestrictedSearchMode"`
   4. Implement alerting on RSS configuration changes to detect future unauthorized modifications

@@ -18,8 +18,8 @@ The shared multi-tenant PnP Management Shell Entra ID app was **retired Septembe
 Register-PnPEntraIDAppForInteractiveLogin `
     -ApplicationName "PnP Governance Shell - [YourOrg]" `
     -Tenant "yourorg.onmicrosoft.com" `
-    -SharePointDelegated `
-    -GraphDelegated `
+    -SharePointDelegatePermissions "AllSites.FullControl" `
+    -GraphDelegatePermissions "Sites.Read.All","Group.Read.All" `
     -Interactive
 ```
 
@@ -82,8 +82,15 @@ $clientId = "<your-app-id>"  # From Register-PnPEntraIDAppForInteractiveLogin
 Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Interactive
 
 $web = Get-PnPWeb -Includes RoleAssignments
-$uniquePermItems = Get-PnPListItem -List "Documents" -PageSize 500 |
-    Where-Object { $_.HasUniqueRoleAssignments }
+$listItems = Get-PnPListItem -List "Documents" -PageSize 500
+$uniquePermItems = @()
+foreach ($item in $listItems) {
+    # HasUniqueRoleAssignments is not loaded by default; load it explicitly
+    Get-PnPProperty -ClientObject $item -Property "HasUniqueRoleAssignments" | Out-Null
+    if ($item.HasUniqueRoleAssignments) {
+        $uniquePermItems += $item
+    }
+}
 
 Write-Host "Items with unique permissions: $($uniquePermItems.Count)"
 
@@ -123,7 +130,7 @@ $files = Get-PnPListItem -List "Documents" -PageSize 500
 $sensitiveFiles = @()
 
 foreach ($file in $files) {
-    $sharingInfo = Get-PnPFileSharingLink -FileId $file.Id -ErrorAction SilentlyContinue
+    $sharingInfo = Get-PnPFileSharingLink -Identity $file.FieldValues["FileRef"] -ErrorAction SilentlyContinue
     if ($sharingInfo) {
         $broadLinks = $sharingInfo | Where-Object {
             $_.Link.Scope -in @("organization", "anonymous")
