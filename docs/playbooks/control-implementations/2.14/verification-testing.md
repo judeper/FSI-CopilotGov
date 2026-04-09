@@ -36,16 +36,28 @@ Test cases and evidence collection for validating agent access, sharing, Registr
 - **Expected Result:** Agent responses limited to defined content scope
 - **Evidence:** Agent interaction showing scope enforcement
 
-### Test 4: Registry and Governance Documentation
+### Test 4: Registry, Agent 365, and Governance Documentation
 
-- **Objective:** Verify all active agents have Registry visibility, ownership, and governance approval documentation
+- **Objective:** Verify all active agents have Registry visibility, Agent 365 inventory coverage, ownership, Entra Agent ID (where applicable), and governance approval documentation
 - **Steps:**
-  1. Compile the inventory of active agents from the Registry or equivalent export.
+  1. Compile the inventory of active agents from the Registry, Agent 365 dashboard, or equivalent export.
   2. Cross-reference each agent against governance approval records
   3. Verify each agent has documented purpose, owner, data source review, and approval
-  4. Flag any agents without proper governance documentation or owner assignment
-- **Expected Result:** All active agents have complete governance documentation and ownership.
-- **Evidence:** Agent inventory with governance approval cross-reference.
+  4. For Recommended/Regulated tiers: verify agents have an Entra Agent ID assigned
+  5. Flag any agents without proper governance documentation or owner assignment
+- **Expected Result:** All active agents have complete governance documentation and ownership; Entra Agent IDs assigned at Recommended/Regulated tiers.
+- **Evidence:** Agent inventory with governance approval cross-reference and Entra Agent ID assignments.
+
+### Test 5: Third-Party Model Provider Policy
+
+- **Objective:** Confirm third-party model providers are disabled (default) or restricted to approved providers
+- **Steps:**
+  1. Navigate to M365 Admin Center > Copilot > Settings and verify the third-party model provider setting.
+  2. If disabled (recommended default): document the setting and confirm it matches the governance policy.
+  3. If enabled: verify a vendor risk assessment has been completed, document which providers are approved, and confirm data classification restrictions are in place.
+  4. Test that agents cannot invoke unapproved model providers.
+- **Expected Result:** Third-party model provider setting matches governance policy; unapproved providers are blocked.
+- **Evidence:** Admin Center screenshot of the third-party model provider setting and governance policy document.
 
 ## Evidence Collection
 

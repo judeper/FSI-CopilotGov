@@ -3,7 +3,7 @@
 Curated list of Microsoft Learn documentation URLs organized by governance topic. Use these references for detailed product documentation, configuration guides, and API references.
 
 !!! warning "Disclaimer"
-    This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. URLs are current as of February 2026; Microsoft may update or relocate documentation. See [full disclaimer](../disclaimer.md).
+    This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. URLs are current as of April 2026; Microsoft may update or relocate documentation. See [full disclaimer](../disclaimer.md).
 
 ---
 
@@ -20,6 +20,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Copilot in Teams meetings | [https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription](https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription) |
 | Copilot usage reports | [https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage](https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage) |
 | Semantic Index for Copilot | [https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot](https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot) |
+| Microsoft 365 Copilot release notes | [https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes](https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes) |
+| What's new in Microsoft Purview | [https://learn.microsoft.com/en-us/purview/whats-new](https://learn.microsoft.com/en-us/purview/whats-new) |
 
 ---
 
@@ -67,6 +69,16 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Create and configure retention policies | [https://learn.microsoft.com/en-us/purview/create-retention-policies](https://learn.microsoft.com/en-us/purview/create-retention-policies) |
 | Retention for Teams | [https://learn.microsoft.com/en-us/purview/retention-policies-teams](https://learn.microsoft.com/en-us/purview/retention-policies-teams) |
 | Retention for Copilot interactions | [https://learn.microsoft.com/en-us/purview/retention-policies-copilot](https://learn.microsoft.com/en-us/purview/retention-policies-copilot) |
+
+---
+
+## Copilot Pages and Notebooks
+
+| Topic | URL |
+|-------|-----|
+| Manage Copilot Pages and Notebooks | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration) |
+| Copilot Pages and Notebooks compliance summary | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary) |
+| Purview management for SharePoint Embedded containers | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management) |
 
 ---
 
@@ -130,6 +142,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Get started with DSPM for AI | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-considerations](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-considerations) |
 | DSPM for AI policies | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
 | DSPM for AI data assessments | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
+| eDiscovery changes announcement | [https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084](https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084) |
 
 ---
 
@@ -142,6 +155,16 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Microsoft Graph connectors overview | [https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview](https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview) |
 | Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent) |
 | SharePoint agents | [https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-best-practices](https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-best-practices) |
+
+---
+
+## Agent Governance
+
+| Topic | URL |
+|-------|-----|
+| Manage agents in Microsoft 365 | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps) |
+| Microsoft 365 Copilot agent governance | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/agents-are-apps](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/agents-are-apps) |
+| Copilot agent security and compliance | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/security-compliance](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/security-compliance) |
 
 ---
 
@@ -207,4 +230,4 @@ See the [Microsoft Open-Source Copilot Analytics Tools playbook](../playbooks/go
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

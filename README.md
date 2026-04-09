@@ -13,7 +13,7 @@
 
 A technical documentation framework providing **56 controls** and **224 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
 
-This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat, Copilot Pages**, and **SharePoint declarative agents** — plus extensibility via **plugins, Graph connectors, and declarative agents**.
+This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat (Basic & Premium tiers), Copilot Pages**, and **SharePoint agents** — plus extensibility via **plugins, Graph connectors, declarative agents, and Agents 365**.
 
 > **Companion Repository:** For governance of Copilot Studio, Agent Builder, and custom agents, see [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov).
 
@@ -187,4 +187,4 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

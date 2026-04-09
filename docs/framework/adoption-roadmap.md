@@ -242,6 +242,8 @@ Organizations should adapt timelines and priorities based on their specific regu
 - [ ] Prepare annual governance review framework
 - [ ] Complete business continuity assessment for Copilot -- Control 4.9
 - [ ] Implement change management procedures for Copilot updates -- Control 4.12
+- [ ] Assess Agent Mode readiness and develop rollout plan for broader user population
+- [ ] Begin phased agent governance adoption using Agent 365 (agent identity, lifecycle, and audit controls)
 
 ### Controls to Implement in Phase 2
 
@@ -362,6 +364,12 @@ These controls must be implemented first as they enable other governance capabil
 
 **How to avoid:** Establish steady-state governance operations (monthly committee, quarterly review, change management) in Phase 2.
 
+### Pitfall 9: Not Planning for the April 2026 Licensing Change
+
+**Risk:** The April 15, 2026 Copilot Chat Basic/Premium licensing split introduces unlicensed Copilot Chat Basic users (web-only grounding) alongside licensed Premium users (full M365 data access). Without planning, organizations may have ungoverned Basic users generating AI-assisted content that enters regulated workflows.
+
+**How to avoid:** Inventory Copilot user populations before the licensing change takes effect. Extend governance training and acceptable use policies to cover Basic users. Ensure supervisory procedures account for AI-assisted content from both tiers.
+
 ### Pitfall 7: Not Training Users on FSI-Specific Restrictions
 
 **Risk:** Users use Copilot for prohibited activities (generating customer recommendations without review, sharing Copilot outputs with clients directly).
@@ -418,9 +426,11 @@ These controls must be implemented first as they enable other governance capabil
 1. **Assess current state** -- Review existing M365 governance maturity (permissions, labels, DLP, audit)
 2. **Assign accountability** -- Identify the AI Governance Lead and secure executive sponsorship
 3. **Secure budget** -- Obtain licensing (Copilot, SharePoint Advanced Management) and staffing commitments
-4. **Customize timeline** -- Adapt phases based on organizational priorities and regulatory obligations
-5. **Begin Phase 0** -- Start with oversharing assessment and governance committee formation
+4. **Plan for licensing changes** -- Prepare for the April 15, 2026 Copilot Chat Basic/Premium split by inventorying user populations and extending governance controls to both tiers
+5. **Customize timeline** -- Adapt phases based on organizational priorities and regulatory obligations
+6. **Plan agent governance** -- Develop a phased approach to Agent 365 adoption, including Entra Agent ID enrollment, agent lifecycle policies, and integration with existing audit frameworks
+7. **Begin Phase 0** -- Start with oversharing assessment and governance committee formation
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

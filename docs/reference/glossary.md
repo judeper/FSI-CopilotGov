@@ -9,14 +9,29 @@ Definitions of key terms, products, regulations, and concepts used throughout th
 
 ## Products and Services
 
+### Agent 365
+Microsoft's centralized platform for monitoring, managing, and configuring Copilot agents across Microsoft 365 apps, Copilot Studio, and third-party integrations.
+
+### Agent Mode
+See *Edit with Copilot*.
+
 ### Azure Information Protection (AIP)
 Microsoft's cloud-based solution for classifying and protecting documents and emails by applying labels. Sensitivity labels in Microsoft Purview are the successor to AIP labels; the underlying encryption and rights management capabilities remain.
 
 ### Microsoft 365 Copilot Chat
 The free Microsoft 365 Copilot chat experience (accessed via microsoft365.com/chat or the Microsoft 365 Copilot app) that can query across all Microsoft 365 data a user has access to via the Microsoft Graph. Copilot Chat grounds its responses in organizational data from Exchange, SharePoint, OneDrive, Teams, and other M365 services. Included with any Microsoft 365 subscription; does not require a per-user Copilot license. For the licensed experience with full work data grounding, see Microsoft 365 Copilot.
 
+### Copilot Chat (Basic)
+The free tier of Copilot Chat available to all Microsoft 365 users via the web (copilot.microsoft.com) and inside Outlook. In-app access in Word, Excel, PowerPoint, and OneNote is limited or removed for large organizations (>2,000 users) as of April 15, 2026.
+
+### Copilot Chat (Premium)
+The paid tier of Copilot Chat included with a Microsoft 365 Copilot license. Provides full access to organizational data via Microsoft Graph, priority access, and advanced features across all Microsoft 365 apps.
+
+### Copilot Cowork
+A Copilot capability that enables delegation of multi-step business tasks to Copilot, with users able to monitor and intervene in the process.
+
 ### Copilot Pages
-A collaborative AI-powered canvas created from Microsoft 365 Copilot Chat responses. Users can convert a Copilot response into a Page for further editing and sharing. Copilot Pages (`.page` files) are stored in a user-owned SharePoint Embedded container shared with Copilot Notebooks and Loop My workspace, and creation is governed through Microsoft 365 Cloud Policy.
+A collaborative AI-powered canvascreated from Microsoft 365 Copilot Chat responses. Users can convert a Copilot response into a Page for further editing and sharing. Copilot Pages (`.page` files) are stored in a user-owned SharePoint Embedded container shared with Copilot Notebooks and Loop My workspace, and creation is governed through Microsoft 365 Cloud Policy.
 
 ### Declarative Agents
 Custom Copilot agents defined through configuration (not code) that scope Copilot's behavior to specific data sources, instructions, and capabilities. Can be created in Copilot Studio, SharePoint, or Teams developer tools.
@@ -24,8 +39,14 @@ Custom Copilot agents defined through configuration (not code) that scope Copilo
 ### DSPM for AI (Data Security Posture Management for AI)
 A Microsoft Purview capability that provides visibility into AI usage across the organization, identifies data risks related to AI interactions, and helps manage AI-related compliance. Accessible via the Purview AI hub.
 
+### Edit with Copilot
+Formerly known as "Agent Mode." An iterative, multi-step document creation and refinement experience in Word, Excel, and PowerPoint. Available to all Microsoft 365 users; unlicensed users are limited to web data sources only.
+
+### Entra Agent ID
+A unique identity assigned to Copilot agents in Microsoft Entra ID, enabling security and compliance tracking, policy enforcement, and audit trail for agent activities.
+
 ### Graph Connectors
-Connectors that bring external data (from third-party systems, databases, or file shares) into the Microsoft Graph, making that data searchable and available to Copilot for grounding. Each connector requires security review as it expands Copilot's data access surface.
+Connectors that bring external data(from third-party systems, databases, or file shares) into the Microsoft Graph, making that data searchable and available to Copilot for grounding. Each connector requires security review as it expands Copilot's data access surface.
 
 ### Microsoft 365 Copilot
 Microsoft's AI assistant embedded across Microsoft 365 applications. Copilot uses large language models (LLMs) grounded in organizational data accessed through the Microsoft Graph. It operates within the user's existing permission boundaries.
@@ -63,6 +84,9 @@ Part of the Microsoft Viva suite providing productivity and wellbeing insights. 
 ### Viva Engage
 Enterprise social networking service within Microsoft Viva (formerly Yammer). Copilot in Viva Engage assists with drafting posts and summarizing discussions.
 
+### Work IQ
+A Copilot capability that provides persistent organizational memory, allowing Copilot to prioritize and personalize assistance based on team context and previous work.
+
 ---
 
 ## Governance and Security Concepts
@@ -85,8 +109,11 @@ The phenomenon where Copilot makes existing permissions problems more visible an
 ### eDiscovery
 The process of identifying, collecting, producing, and reviewing electronically stored information (ESI) for legal, regulatory, or investigative purposes. Microsoft Purview eDiscovery enables searching and exporting Copilot interaction data.
 
+### Editor
+A sensitivity label permission level (formerly "Co-author") that grants users edit rights to labeled content. As of April 2026, the Editor permission no longer includes "Save as, Export" permissions for sensitivity labels. See also *Restricted Editor*.
+
 ### Graph Grounding
-The process by which Copilot retrieves relevant organizational data from the Microsoft Graph to inform its responses. Grounding data includes emails, documents, chats, meetings, and other M365 content the user can access.
+The process by which Copilot retrievesrelevant organizational data from the Microsoft Graph to inform its responses. Grounding data includes emails, documents, chats, meetings, and other M365 content the user can access.
 
 ### Information Barriers (IB)
 Microsoft Purview policies that restrict communication and collaboration between specific groups of users. In FSI, information barriers support compliance with MNPI walls between departments such as investment banking and research.
@@ -99,6 +126,9 @@ A condition where Microsoft 365 content is accessible to more users than intende
 
 ### RAG (Retrieval-Augmented Generation)
 An AI architecture pattern where a language model retrieves relevant data from external sources (in Copilot's case, the Microsoft Graph) and incorporates it into generated responses. RAG enables Copilot to provide contextual, organization-specific answers rather than relying solely on its training data.
+
+### Restricted Editor
+Renamed sensitivity label permission level (formerly "Reviewer"). See also *Editor*.
 
 ### Sensitivity Labels
 Classification labels applied to documents, emails, and other content that define how the content should be protected. Labels can enforce encryption, content marking (headers, footers, watermarks), access restrictions, and DLP policy matching.
@@ -205,4 +235,4 @@ Prohibition under federal consumer financial protection law against unfair, dece
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

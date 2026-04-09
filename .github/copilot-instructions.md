@@ -4,6 +4,8 @@
 
 This is a **documentation-only** MkDocs Material site — a governance framework for Microsoft 365 Copilot in US Financial Services. There is no application code; all content lives in `docs/` as Markdown. CI validates structure and language rules, then deploys to GitHub Pages.
 
+Key platform areas covered: Copilot Chat (Basic and Premium tiers), Agent 365 governance, Entra Agent ID, Work IQ, Copilot Cowork, Edit with Copilot (Agent Mode), Copilot Pages and Notebooks, declarative and SharePoint agents, third-party model providers (Anthropic, xAI), and Microsoft Purview compliance controls (DLP, sensitivity labels, eDiscovery, communication compliance, insider risk, data retention).
+
 ## Build and Validation Commands
 
 ```bash

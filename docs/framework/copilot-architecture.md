@@ -9,7 +9,7 @@ Technical deep-dive into Microsoft 365 Copilot architecture, data flows, and gov
 Understanding the M365 Copilot architecture is essential for effective governance. This document describes how Copilot processes prompts, retrieves content, generates responses, and where governance controls intersect the data flow.
 
 !!! info "Architecture Currency"
-    Microsoft 365 Copilot architecture evolves with platform updates. This document reflects the architecture as of February 2026. Organizations should monitor Microsoft's official documentation for changes.
+    Microsoft 365 Copilot architecture evolves with platform updates. This document reflects the architecture as of April 2026. Organizations should monitor Microsoft's official documentation for changes.
 
 ---
 
@@ -460,6 +460,100 @@ For detailed implementation guidance, including Baseline Security Mode configura
 
 ---
 
+## Agent 365 Platform
+
+**Agent 365** is Microsoft's centralized platform for monitoring, managing, and configuring Copilot agents across M365 apps, Copilot Studio, and third-party integrations. It extends the Agents control plane in the Microsoft 365 admin center into a unified governance hub that spans the full agent lifecycle.
+
+### What Agent 365 Adds
+
+| Capability | Description | Governance Relevance |
+|-----------|-------------|---------------------|
+| **Unified agent inventory** | Single view of all agents — Microsoft first-party, organization-published, partner, and Copilot Studio agents | Supports compliance inventory and ownership tracking across agent sources |
+| **Agent usage analytics** | Telemetry on sessions, active users, runtime, and exception rates per agent | Aids in identifying material agent dependencies and operational risk |
+| **Centralized policy controls** | Allowed types, sharing rules, user access, and template governance in one surface | Reduces configuration drift by consolidating previously distributed settings |
+| **Cross-platform visibility** | Agents from M365, Copilot Studio, and third-party integrations appear in the same registry | Helps address third-party risk and lifecycle management for all agent sources |
+
+### Governance Implications
+
+- **Examination readiness:** Agent 365 provides a single evidence source for agent inventory, ownership, and usage — supporting FFIEC and OCC examination preparation.
+- **Change control:** Centralized settings reduce the risk of inconsistent agent governance across admin portals.
+- **Third-party oversight:** Partner and third-party agents are visible alongside internal agents, which supports OCC 2013-29 third-party risk management expectations.
+
+For operational governance procedures using Agent 365, see [Control 4.13: Extensibility Governance](../controls/pillar-4-operations/4.13-extensibility-governance.md). For security configuration, see [Control 2.14: Declarative Agents Governance](../controls/pillar-2-security/2.14-declarative-agents-governance.md).
+
+---
+
+## Entra Agent ID
+
+Microsoft Entra ID now supports **Entra Agent ID** — a capability that assigns unique identities to Copilot agents within the Entra identity platform. Each agent receives a distinct identity object that can be governed using familiar Entra ID tools and policies.
+
+### How Entra Agent ID Works
+
+| Aspect | Detail |
+|--------|--------|
+| **Identity assignment** | Each agent registered in Agent 365 or Copilot Studio can receive an Entra ID identity |
+| **Security tracking** | Agent identities appear in Entra sign-in and audit logs, supporting security monitoring |
+| **Conditional Access** | Agents can be scoped by Conditional Access policies, controlling where and how they operate |
+| **Compliance mapping** | Agent identities enable per-agent compliance tracking and attribution in Purview audit trails |
+
+### Governance Implications
+
+- **Accountability:** Entra Agent ID provides a traceable identity for each agent, linking agent activity to audit events and supporting regulatory attribution requirements.
+- **Access governance:** Organizations can apply Conditional Access and identity governance policies to agents, consistent with how human identities are managed.
+- **Risk segmentation:** Agent identities allow security teams to distinguish agent-initiated activity from user-initiated activity in sign-in logs and security alerts.
+
+Organizations should verify that Entra Agent ID configuration aligns with their existing identity governance framework and Conditional Access policies.
+
+---
+
+## Work IQ
+
+**Work IQ** is Copilot's persistent organizational memory layer. It enables Copilot to prioritize and personalize assistance based on team context, organizational patterns, and accumulated interaction history within the tenant.
+
+### What Work IQ Provides
+
+| Capability | Description |
+|-----------|-------------|
+| **Organizational context** | Copilot learns team structures, project relationships, and collaboration patterns to deliver more relevant responses |
+| **Priority signals** | Work IQ surfaces priority indicators from emails, meetings, and tasks to help Copilot focus on what matters most |
+| **Persistent memory** | Unlike individual Copilot conversations that reset, Work IQ maintains organizational context across sessions |
+
+### Governance Implications
+
+| Concern | Risk | Mitigation |
+|---------|------|------------|
+| **Data accumulation** | Work IQ builds a persistent organizational knowledge layer that may surface patterns not intended for broad discovery | Review Work IQ data retention settings and scope; align with organizational data governance policies |
+| **Cross-boundary context** | Organizational memory may surface context from teams or projects the user does not directly participate in | Verify that Work IQ respects existing permission boundaries and information barriers |
+| **Behavioral inference** | Priority and collaboration signals could reveal work patterns or organizational dynamics | Evaluate Work IQ output against privacy and employee data protection expectations |
+
+Organizations should verify Work IQ configuration and scope as part of their Copilot governance posture review.
+
+---
+
+## Copilot Cowork
+
+**Copilot Cowork** enables delegation of multi-step business tasks to Copilot. Unlike single-turn Copilot interactions, Cowork allows users to assign complex workflows that Copilot executes autonomously with periodic user monitoring and intervention points.
+
+### How Copilot Cowork Works
+
+1. User defines a multi-step task (e.g., "Research competitor earnings and draft a comparison memo")
+2. Copilot breaks the task into steps and begins autonomous execution
+3. User receives progress updates and can intervene, redirect, or approve at checkpoints
+4. Copilot delivers the completed output for final review
+
+### Governance Implications
+
+| Concern | Risk | Mitigation |
+|---------|------|------------|
+| **Autonomous data access** | Cowork may access content across multiple M365 sources during multi-step execution | Copilot Cowork operates within the user's existing permission boundary; oversharing remediation (Controls 1.1-1.3) remains critical |
+| **Extended processing scope** | Multi-step tasks may accumulate and combine data from sources that individually are appropriate but collectively create sensitivity | Review Cowork task outputs before distribution; apply sensitivity labels to generated artifacts |
+| **Reduced human oversight** | Autonomous execution reduces the frequency of human review compared to single-turn interactions | Establish organizational policies for when Cowork is appropriate vs. when manual Copilot interaction is required |
+| **Audit attribution** | Multi-step tasks generate multiple Copilot interactions attributed to a single delegated workflow | Verify that Unified Audit Log captures Cowork task events with sufficient detail for regulatory record-keeping |
+
+For FSI environments, organizations should document which business functions are approved for Copilot Cowork delegation and establish review requirements for Cowork-generated outputs, particularly for client-facing or regulated content.
+
+---
+
 ## Data Processing and Residency
 
 ### Data Processing Principles
@@ -499,7 +593,11 @@ For detailed implementation guidance, including Baseline Security Mode configura
 | Audit Events | Copilot interactions logged for regulatory record-keeping | 3.1, 3.2 |
 | Responsible AI | Microsoft-managed; organizations layer additional controls | DLP, communication compliance |
 | Copilot Control System | Unified admin surface for all Copilot settings; configuration drift and SOX evidence | 4.1 |
+| Agent 365 | Centralized agent inventory, telemetry, and lifecycle governance across agent sources | 2.14, 4.13 |
+| Entra Agent ID | Unique agent identities for security tracking, Conditional Access, and compliance attribution | 2.14, 1.13 |
+| Work IQ | Persistent organizational memory; data accumulation and cross-boundary context risk | 3.10, 1.1 |
+| Copilot Cowork | Multi-step autonomous task delegation; extended processing scope and reduced human oversight | 3.1, 3.5 |
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

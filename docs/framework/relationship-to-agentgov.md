@@ -35,7 +35,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 | **Deployment model** | Org-wide (Copilot is tenant-level, per-user licensed) | Per-agent (each agent is individually built, tested, deployed) |
 | **Admin portals** | M365 Admin Center, Purview, Entra, SharePoint Admin, Teams Admin, Defender | Power Platform Admin Center (PPAC), M365 Admin Center, Purview |
 | **Regulatory focus** | FINRA 2210 (Copilot-drafted communications), recordkeeping, supervision | Model risk management (OCC 2011-12), agent lifecycle, testing |
-| **Framework version** | v1.2.1 | v1.2.42 |
+| **Framework version** | v1.3 | v1.2.42 |
 
 ---
 
@@ -221,4 +221,4 @@ If your organization already uses FSI-AgentGov and is now deploying M365 Copilot
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

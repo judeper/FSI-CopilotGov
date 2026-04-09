@@ -52,4 +52,4 @@ Common issues and resolution steps for item-level permission scanning and approv
 - [PowerShell Setup](powershell-setup.md)
 - [Verification & Testing](verification-testing.md)
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

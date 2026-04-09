@@ -69,4 +69,4 @@ pwsh .\scripts\Export-DriftEvidence.ps1 `
 - Keep [Troubleshooting](troubleshooting.md) available for baseline mismatches, alerting issues, and reversion problems.
 - Pair recurring drift findings with access-recertification actions where appropriate.
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

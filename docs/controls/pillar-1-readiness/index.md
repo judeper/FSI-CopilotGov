@@ -107,4 +107,4 @@ Pillar 1 controls are primarily foundational and have few intra-pillar dependenc
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

@@ -20,6 +20,7 @@ Before you begin, confirm the following are in place.
 |-------------|---------|
 | **Microsoft 365 E5** (preferred) or **E3 + add-ons** | E5 includes Purview, Defender, and advanced compliance capabilities required for regulated governance. E3 deployments require additional license add-ons — see [License Requirements](../reference/license-requirements.md). |
 | **Microsoft 365 Copilot** | Per-user Copilot license assigned to target users or groups. |
+| **Copilot Chat licensing** | Review the Copilot Chat Basic vs Premium licensing split effective **April 15, 2026**. After this date, Premium features (enterprise data grounding, advanced Copilot capabilities) require a Microsoft 365 Copilot license. Basic features remain available without additional licensing. Plan license assignments and budget before the deadline. |
 | **Purview add-ons** (if E3) | Information Protection, Data Loss Prevention, Audit (Premium), eDiscovery (Premium), Communication Compliance, and Insider Risk Management require separate licenses on E3. |
 
 ### Administrative Roles
@@ -166,6 +167,8 @@ Microsoft 365 Copilot can be enabled or disabled per application. For FSI organi
 3. Review **per-app and user access settings** and disable Copilot in applications or user groups not yet approved by your governance committee
 4. Configure **Copilot Pages** creation through **Cloud Policy** — determine whether users can create Copilot Pages and Copilot Notebooks, which are stored in user-owned SharePoint Embedded containers and require SharePoint retention/eDiscovery coverage
 5. Review **extensibility and agent settings** — disable or restrict third-party plugins, external agents, and custom agents until your governance review process is in place
+6. Review **Agent 365** settings in M365 Admin Center — this is the centralized governance surface for managing agent inventory, policies, and lifecycle across all agent types (declarative, Copilot Studio, third-party)
+7. Verify **third-party model providers** are disabled (default) — do not enable without vendor risk assessment and governance approval
 
 **Key controls:**
 
@@ -214,4 +217,4 @@ After completing the five-step quick start, you have **Baseline** governance in 
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

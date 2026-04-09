@@ -22,6 +22,9 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 - Web search grounding may introduce external data into regulated workflows
 - Audit and retention requirements apply to Copilot interactions in regulated contexts
 - Existing oversharing and permission sprawl are magnified, not introduced, by Copilot
+- Agent 365 platform introduces new governance surfaces for managing AI agents across the enterprise, requiring identity management (Entra Agent ID), audit controls, and lifecycle governance
+- Third-party model provider support (Anthropic, xAI) within the Microsoft AI ecosystem creates emerging governance considerations around model selection, data handling, and vendor risk assessment
+- Copilot Chat licensing split (Basic vs. Premium) means organizations must govern both licensed users with full M365 data access and unlicensed users limited to web-only grounding
 
 ---
 
@@ -166,6 +169,9 @@ See [Operating Model](operating-model.md) for complete RACI matrices.
 | Microsoft Sentinel | Advanced security monitoring, analytics | Optional (Regulated recommended) |
 | SharePoint Advanced Management | Restricted SharePoint Search, access governance reports | Recommended |
 
+!!! info "Copilot Chat Basic vs. Premium Licensing"
+    Effective April 15, 2026, Microsoft offers Copilot Chat in two tiers: **Basic** (included with M365 licenses, web-only grounding) and **Premium** (per-user license, full M365 data access via Microsoft Graph). Organizations should plan governance controls for both tiers -- Basic users can still generate content that enters regulated workflows, while Premium users have the full discovery amplification risk profile. See [Adoption Roadmap](adoption-roadmap.md) for licensing transition planning.
+
 ### Organizational Investment
 
 | Role | Responsibility | FTE Estimate |
@@ -242,6 +248,8 @@ See [Adoption Roadmap](adoption-roadmap.md) for detailed implementation guidance
 5. **Metrics:** What Copilot governance metrics should be reported to the board quarterly?
 6. **Web Search:** Should Copilot web search be enabled, restricted, or disabled for regulated users?
 7. **Expansion Criteria:** What success criteria must be met before expanding Copilot beyond the pilot group?
+8. **Agent Governance:** How will the organization govern AI agents deployed through Agent 365, including identity, lifecycle, and audit requirements?
+9. **Licensing Strategy:** What is the organization's approach to the Copilot Chat Basic/Premium split, and how will governance differ between licensed and unlicensed Copilot users?
 
 ---
 
@@ -262,4 +270,4 @@ This framework provides governance guidance and does not constitute legal, regul
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

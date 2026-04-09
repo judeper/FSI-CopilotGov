@@ -251,6 +251,39 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Governance Considerations** | Notebooks are stored in SharePoint Embedded containers. Governance requires sensitivity labeling, retention policies covering SharePoint Embedded, eDiscovery inclusion, and sharing controls analogous to Copilot Pages. |
 | **Key Controls** | 2.11 (Copilot Pages governance — applies similarly), 2.2 (Sensitivity labels), 3.2 (Retention), 1.11 (Sharing governance) |
 
+### Agent Mode / Edit with Copilot
+
+| Attribute | Details |
+|-----------|---------|
+| **Copilot Capabilities** | Iterative, multi-step document creation and editing in Word, Excel, and PowerPoint. Copilot acts as an in-context collaborator that can plan, draft, revise, and refine documents through multiple turns without leaving the application. |
+| **Data Sources** | Current document, referenced files, Microsoft Graph (user's accessible content), web data (for unlicensed Basic users) |
+| **Governance Considerations** | Agent Mode extends Copilot's interaction pattern from single-turn to multi-step within productivity apps. Basic (unlicensed) users can access Agent Mode with web-only grounding, while Premium (licensed) users access organizational data via Microsoft Graph. Multi-step editing may combine content from multiple sources, increasing the risk of mixing sensitivity levels within a single document. Organizations should verify that sensitivity labels are applied consistently to documents created or modified through Agent Mode. |
+| **Key Controls** | 2.2 (Sensitivity labels), 2.1 (DLP), 3.1 (Audit logging), 3.5 (Communication review for client-facing documents) |
+| **Access** | Basic: web data only (available to all M365 users). Premium: organizational data via Microsoft Graph (requires Copilot license). |
+
+### Copilot Cowork
+
+| Attribute | Details |
+|-----------|---------|
+| **Copilot Capabilities** | Multi-step task delegation — users assign complex business workflows to Copilot for autonomous execution with periodic checkpoints for monitoring and intervention |
+| **Data Sources** | All M365 content accessible to the user — SharePoint, OneDrive, Exchange, Teams, Semantic Index |
+| **Governance Considerations** | Cowork introduces autonomous multi-step processing where Copilot independently accesses and combines data from multiple sources. This reduces the frequency of human review compared to single-turn interactions. Task outputs should be reviewed before distribution, particularly for client-facing or regulated content. Organizations should document which business functions are approved for Cowork delegation. |
+| **Key Controls** | 3.1 (Audit logging), 3.5 (Communication review), 2.2 (Sensitivity labels), 1.1 (Oversharing assessment) |
+| **Access** | Premium only (requires Copilot license). |
+
+### Researcher and Analyst
+
+| Attribute | Details |
+|-----------|---------|
+| **Copilot Capabilities** | **Researcher:** Deep research across web and organizational data, producing comprehensive multi-source reports. **Analyst:** Advanced data analysis with Python code execution, chart generation, and data transformation capabilities. |
+| **Data Sources** | Researcher: M365 content via Microsoft Graph plus web data. Analyst: uploaded files, referenced data, M365 content. |
+| **Governance Considerations** | Researcher and Analyst are embedded first-party experiences within the Microsoft 365 Copilot Chat interface — they are **not** installable agents and are not managed through the Agent Registry. They coexist with agents and inherit Copilot Chat governance capabilities, but access decisions should be documented separately. Researcher outputs may combine web and organizational data, increasing review requirements for regulated use. Analyst generates and executes Python code, creating executable content risk similar to Excel Copilot. |
+| **Key Controls** | 3.1 (Audit logging), 2.7 (Web search controls — Researcher), 3.8 (Model risk — if outputs inform regulated decisions), 2.1 (DLP) |
+| **Access** | Premium only (requires Copilot license). |
+
+!!! info "Basic vs Premium Surface Access"
+    Microsoft distinguishes between **Basic** (available to all M365 users without a Copilot license) and **Premium** (requires a Microsoft 365 Copilot license) surface access. Basic access provides Copilot capabilities grounded only in web data, while Premium access enables grounding in organizational data via Microsoft Graph. Governance teams should map which surfaces are available at each access tier and adjust controls accordingly — Basic users generate less organizational data risk but may still produce content requiring supervision.
+
 ---
 
 ## Extensibility Surfaces
@@ -290,8 +323,8 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 | Tier | Risk Level | Surfaces | Governance Priority |
 |------|-----------|----------|-------------------|
-| **Tier 1 (Highest)** | High | Microsoft 365 Copilot Chat, Outlook, Teams | Full governance at all levels |
-| **Tier 2** | Medium-High | Word, Excel, PowerPoint, SharePoint, Copilot Pages | Sensitivity labels, DLP, audit |
+| **Tier 1 (Highest)** | High | Microsoft 365 Copilot Chat, Outlook, Teams, Copilot Cowork | Full governance at all levels |
+| **Tier 2** | Medium-High | Word, Excel, PowerPoint, SharePoint, Copilot Pages, Agent Mode / Edit with Copilot, Researcher, Analyst | Sensitivity labels, DLP, audit |
 | **Tier 3** | Medium | OneNote, Loop, OneDrive, Stream, Plugins, Connectors | Standard governance, monitoring |
 | **Tier 4** | Lower | Whiteboard, Forms, Planner, Viva suite | Baseline governance, awareness |
 
@@ -312,4 +345,4 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

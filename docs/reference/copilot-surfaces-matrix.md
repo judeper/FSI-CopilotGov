@@ -63,6 +63,10 @@ Feature-by-control applicability matrix showing which governance controls apply 
 |----------------|-----|-------------------|-------------------|---------------|-----------|------------|--------------|----------------|---------------|
 | **Microsoft 365 Copilot Chat** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported |
 | **Copilot Pages** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | N/A | Supported |
+| **Agent Mode / Edit with Copilot** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Partial | Supported |
+| **Copilot Cowork** | Supported | Supported | Supported | Supported | Supported | Partial | Supported | Partial | Supported |
+| **Researcher** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported |
+| **Analyst** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Partial | Supported |
 
 ### Extensibility
 
@@ -119,6 +123,26 @@ Feature-by-control applicability matrix showing which governance controls apply 
 ### Communication Compliance
 
 - **Word / Excel / PowerPoint:** Communication Compliance applies to content shared via Copilot in collaboration scenarios (e.g., shared documents) but does not inspect content during local authoring.
+- **Agent Mode / Edit with Copilot:** Communication Compliance applies to content shared from documents created or modified via Agent Mode but does not inspect content during the multi-step editing session itself.
+- **Copilot Cowork / Analyst:** Communication Compliance coverage for autonomously generated content may be limited to the final output shared by the user; intermediate processing steps may not be individually inspected.
+
+### eDiscovery
+
+- **Copilot Cowork:** eDiscovery coverage for Cowork task outputs depends on how the generated content is stored and shared. Intermediate work products may have limited eDiscovery support.
+
+### Basic vs Premium Access
+
+Microsoft distinguishes between **Basic** (unlicensed, web-data-only) and **Premium** (licensed, organizational data) Copilot access. The following surfaces are affected:
+
+| Surface | Basic Access | Premium Access |
+|---------|-------------|---------------|
+| **Agent Mode / Edit with Copilot** | Available (web data grounding only) | Available (organizational data via Microsoft Graph) |
+| **Copilot Cowork** | Not available | Available |
+| **Researcher** | Not available | Available |
+| **Analyst** | Not available | Available |
+| **Microsoft 365 Copilot Chat** | Available (web data grounding only) | Available (organizational data via Microsoft Graph) |
+
+Governance controls in this matrix apply primarily to **Premium** access where organizational data is involved. Basic access carries lower organizational data risk but may still require supervision for content generation and web-sourced outputs.
 
 ---
 
@@ -132,4 +156,4 @@ Feature-by-control applicability matrix showing which governance controls apply 
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

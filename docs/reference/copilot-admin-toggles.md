@@ -13,7 +13,7 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 - **Baseline (B)** = Minimum FSI governance recommendation
 - **Recommended (R)** = Best practice for most FSI production environments
 - **Regulated (Reg)** = Stricter control posture for higher-risk deployments
-- Paths are current as of March 2026; Microsoft can move or relabel controls by license, region, and rollout stage
+- Paths are current as of April 2026; Microsoft can move or relabel controls by license, region, and rollout stage
 
 ---
 
@@ -33,11 +33,23 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 
 | Control | Portal Path | Default | B | R | Reg | Impact |
 |--------|------------|---------|---|---|-----|--------|
-| Microsoft 365 Copilot access | Copilot > Settings > User access | On for licensed users | On for approved users/groups | On for approved users/groups | On for approved users/groups | Primary control for who can use Copilot scenarios |
+| Microsoft 365 Copilot access | Copilot > Settings > User access | On for licensed users | On for approved users/groups | On for approved users/groups | On for approved users/groups | Primary control for who can use Copilot scenarios; note that Copilot Chat (Basic) is available to all M365 users via web and Outlook regardless of this toggle — this controls Premium (paid) Copilot access |
+| Edit with Copilot (Agent Mode) | Copilot > Settings > User access (when available) | On for all users | Review | Review | Review or Off | Available to all M365 users regardless of Copilot license; uses web data only for unlicensed users — review whether to restrict for regulated populations |
 | Self-service trials and purchases for Microsoft 365 Copilot | Settings > Org settings > Self-service trials and purchases | Allow unless disabled | Off | Off | Off | Prevents unmanaged user purchases or trials |
 | PAYG billing policy | Billing > Pay-as-you-go services | Off until configured | Review | On for approved groups only | On for approved groups only | Required for metered Microsoft 365 Copilot Chat, SharePoint agents, and Retrieval API use |
 | PAYG budget notifications | Billing policy / Cost Management | Off until configured | Review | Enabled | Enabled | Provides budget alerts for variable Copilot consumption |
 | Cost monitoring | Cost Management | Available when PAYG is configured | Monthly review | Monthly review | Weekly review | Tracks spend, anomalies, and department allocation |
+
+---
+
+## Third-Party Model Provider Controls
+
+| Control | Portal Path | Default | B | R | Reg | Impact |
+|--------|------------|---------|---|---|-----|--------|
+| Third-party model providers | Copilot > Settings > Other settings | Off | Off | Off | Off | Enables non-Microsoft AI models (Anthropic Claude, xAI) for Copilot experiences; introduces new data handling and residency considerations |
+
+!!! note "Third-party models and FSI risk"
+    Enabling third-party model providers introduces additional vendor risk, data residency, and model governance considerations. FSI organizations should complete a risk assessment under Control 1.10 (Vendor Risk Management) and Control 3.8 (Model Risk Management) before enabling any non-Microsoft models. The default is Off and should remain Off in Regulated environments unless a documented approval process is completed.
 
 ---
 

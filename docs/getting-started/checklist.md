@@ -38,6 +38,7 @@ Pre-deployment data hygiene, oversharing remediation, permissions audit, sensiti
 | [ ] | 1.7 | SharePoint Advanced Management | R | | | Deploy SAM features: Data Access Governance reports, site access reviews, Restricted Content Discovery |
 | [ ] | 1.8 | Information Architecture Review | R | | | Review SharePoint site structure, Teams channels, and OneDrive folders for grounding quality |
 | [ ] | 1.9 | License Planning | B | | | Copilot license types, assignment strategies, prerequisite licenses, and governance add-ons |
+| [ ] | — | **Copilot Chat Licensing Review** | B | | | Review Copilot Chat Basic vs Premium licensing changes before the April 15, 2026 deadline — Premium features require Microsoft 365 Copilot license; Basic features are available without additional license |
 | [ ] | 1.10 | Vendor Risk Management | Reg | | | Third-party risk management for Microsoft as AI vendor, including subprocessor review |
 | [ ] | 1.11 | Change Management and Adoption | R | | | Organizational change management framework for Copilot rollout and adoption |
 | [ ] | 1.12 | Training and Awareness | B | | | Role-based training on responsible AI use, data sensitivity, prompt hygiene, and regulatory boundaries |
@@ -65,6 +66,8 @@ DLP, sensitivity labels, conditional access, information barriers, data minimiza
 | [ ] | 2.12 | External Sharing Governance | R | | | Govern guest access and external sharing settings impacting Copilot content surfacing |
 | [ ] | 2.13 | Plugin and Connector Security | R | | | Security governance for Copilot plugins and Graph connectors (approval, OAuth, monitoring) |
 | [ ] | 2.14 | Declarative Agents Governance | R | | | Govern creation, sharing, and data boundaries for SharePoint declarative agents |
+| [ ] | — | **Agent 365 Settings Review** | R | | | Review Agent 365 centralized governance settings and maintain a complete agent inventory across all agent types (declarative, Copilot Studio, third-party) |
+| [ ] | — | **Third-Party Model Provider Policy** | R | | | Review and document third-party model provider policy — verify the setting is disabled (default) unless a vendor risk assessment is completed and governance approval is obtained |
 | [ ] | 2.15 | Network Security | Reg | | | Network-level security controls, private connectivity options, and traffic inspection for Copilot |
 
 ---
@@ -147,4 +150,4 @@ Download or copy this checklist into your governance tracking system. Recommende
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

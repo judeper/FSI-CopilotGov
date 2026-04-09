@@ -29,6 +29,7 @@ This framework provides governance guidance for:
 - **Copilot Pages** -- AI-generated collaborative content surfaces
 - **Copilot in Teams** -- meeting transcription, recap, and chat assistance
 - **Copilot extensibility** -- plugins, Graph connectors, declarative agents from SharePoint
+- **Agent 365** -- the enterprise platform for managing AI agent lifecycle, identity (Entra Agent ID), and governance across the M365 ecosystem
 
 ### What This Framework Does NOT Cover
 
@@ -50,6 +51,9 @@ See [Relationship to AgentGov](relationship-to-agentgov.md) for detailed scope b
 | **Microsoft Entra ID** | Identity and access management foundation |
 | **Microsoft Purview** | Compliance and data governance capabilities |
 | **Foundational IT controls** | Network security, endpoint protection, backup/recovery assumed in place |
+
+!!! info "Copilot Chat Basic vs. Premium Licensing"
+    Effective April 15, 2026, Microsoft offers Copilot Chat in two tiers: **Basic** (included with M365 licenses, web-only grounding) and **Premium** (per-user license, full M365 data access via Microsoft Graph). Organizations must govern both populations -- Basic users can generate AI-assisted content that enters regulated workflows despite lacking full tenant data access, while Premium users carry the full discovery amplification risk profile. Governance controls, training requirements, and supervisory procedures should account for this licensing distinction.
 
 ---
 
@@ -439,4 +443,4 @@ This framework is designed to **complement, not replace** existing enterprise go
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

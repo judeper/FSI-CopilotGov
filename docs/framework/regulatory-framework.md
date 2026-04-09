@@ -11,6 +11,9 @@ This document maps the FSI Copilot Governance Framework controls to applicable U
 !!! warning "Disclaimer"
     This mapping is provided for informational purposes and does not constitute legal or regulatory advice. Regulatory interpretations vary by institution type, use case, and jurisdiction. Consult legal counsel for specific compliance requirements.
 
+!!! info "Emerging International Considerations"
+    While the EU AI Act is outside the primary scope of this US-focused framework, Microsoft Purview is expanding AI data lineage tracking capabilities in response to EU AI Act requirements. These capabilities -- including AI interaction provenance and data flow documentation -- may benefit US FSI organizations' own audit and examination readiness posture. Organizations with international operations should monitor how EU AI Act obligations intersect with their US regulatory programs.
+
 ---
 
 ## Primary US Financial Regulations
@@ -525,6 +528,9 @@ The following state regulations may apply but require separate analysis beyond t
 - [ ] Incident reports filed and accessible (Control 4.5)
 - [ ] Governance committee meeting minutes available (Operating Model)
 
+!!! tip "Agent 365 and Entra Agent ID for Examination Readiness"
+    Agent 365 and Entra Agent ID introduce new audit and traceability capabilities relevant to regulatory examinations. Entra Agent ID provides a unique, auditable identity for each AI agent, enabling examiners to trace agent actions, data access patterns, and decision workflows. Organizations deploying agents should incorporate agent identity logs and lifecycle records into their examination response artifacts.
+
 ### Common Examiner Requests
 
 | Request | Control | Documentation |
@@ -565,4 +571,4 @@ The following state regulations may apply but require separate analysis beyond t
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

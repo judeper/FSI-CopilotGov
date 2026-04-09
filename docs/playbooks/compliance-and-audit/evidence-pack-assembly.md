@@ -120,4 +120,4 @@ Before submitting the evidence pack:
 
 *Update this guide when new controls are added or regulatory requirements change.*
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

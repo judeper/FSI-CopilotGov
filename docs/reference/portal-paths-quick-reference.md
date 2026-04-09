@@ -21,9 +21,14 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 | Copilot data access | Copilot > Settings > Data access | `https://admin.microsoft.com` |
 | Copilot actions | Copilot > Settings > Copilot actions | `https://admin.microsoft.com` |
 | Copilot other settings | Copilot > Settings > Other settings | `https://admin.microsoft.com` |
+| Third-party model providers | Copilot > Settings > Other settings | `https://admin.microsoft.com` |
+| Copilot security policies | Copilot > Security | `https://admin.microsoft.com` |
 | Agents overview | Agents > Overview | `https://admin.cloud.microsoft/?#/agents/overview` |
 | Agent Registry / All agents | Agents > All agents | `https://admin.microsoft.com` |
 | Agent settings | Agents > Settings | `https://admin.microsoft.com` |
+| Agent allowed types | Agents > Settings > Allowed agent types | `https://admin.microsoft.com` |
+| Agent sharing | Agents > Settings > Sharing | `https://admin.microsoft.com` |
+| Agent user access | Agents > Settings > User access | `https://admin.microsoft.com` |
 
 ### General Settings
 
@@ -258,4 +263,4 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

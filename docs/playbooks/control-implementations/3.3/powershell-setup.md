@@ -1,6 +1,8 @@
 # Control 3.3: eDiscovery for Copilot-Generated Content — PowerShell Setup
 
-Automation scripts for managing eDiscovery cases, searches, and holds that include Copilot-generated content. The underlying PowerShell cmdlets (`New-ComplianceCase`, `New-ComplianceSearch`, `New-CaseHoldPolicy`) remain fully supported in the unified eDiscovery experience -- the portal consolidation does not affect cmdlet behavior.
+Automation scripts for managing eDiscovery cases, searches, and holds that include Copilot-generated content. The underlying PowerShell cmdlets (`New-ComplianceCase`, `New-ComplianceSearch`, `New-CaseHoldPolicy`) remain fully supported in the unified eDiscovery experience — the portal consolidation does not affect cmdlet behavior.
+
+> **Deprecation Notice:** Several eDiscovery export-related PowerShell cmdlets (including `New-ComplianceSearchAction -Export`) were retired in May 2025. Organizations relying on PowerShell-based export workflows should prepare to migrate to the Purview portal export experience or the Microsoft Graph eDiscovery APIs. Case-management and search cmdlets remain supported.
 
 ## Prerequisites
 

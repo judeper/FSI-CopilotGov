@@ -44,13 +44,25 @@ Common issues and resolution steps for declarative, SharePoint-backed, and Regis
   3. Pre-approve common agent patterns with standardized templates
   4. Define clear SLAs for governance review
 
+### Issue 5: Third-Party Model Provider Enabled Without Governance Approval
+
+- **Symptoms:** Agents are using non-Microsoft AI model providers to process organizational data without the compliance team's knowledge.
+- **Root Cause:** The third-party model provider setting in the M365 Admin Center was enabled without governance review. By default this setting is disabled, but it may have been enabled during initial configuration.
+- **Resolution:**
+  1. Review the third-party model provider setting in M365 Admin Center > Copilot > Settings.
+  2. If enabled without governance approval, disable it immediately and notify the compliance team.
+  3. Audit whether any agents used third-party model providers while the setting was enabled — review audit logs for non-Microsoft model invocations.
+  4. Complete a vendor risk assessment for any third-party model provider before re-enabling.
+  5. Document the approved third-party model provider policy and communicate to agent creators.
+
 ## Diagnostic Steps
 
-1. **Check agent inventory:** Review Admin Center > Agents > All agents / Registry
+1. **Check agent inventory:** Review Admin Center > Agents > All agents / Registry (or Agent 365 dashboard)
 2. **Verify source security:** Run Script 2 on agent data sources
 3. **Review creation policies:** Verify agent creation restrictions in admin settings
-4. **Monitor activity:** Run Script 3 for recent agent events
-5. **Test agent scope:** Query the agent to verify content boundaries
+4. **Check third-party model providers:** Verify the setting is disabled in M365 Admin Center > Copilot > Settings
+5. **Monitor activity:** Run Script 3 for recent agent events
+6. **Test agent scope:** Query the agent to verify content boundaries
 
 ## Escalation
 

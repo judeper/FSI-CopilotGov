@@ -17,12 +17,13 @@ Common issues and resolution steps for Copilot Pages security.
 ### Issue 2: Sensitivity Labels Not Applied to Pages
 
 - **Symptoms:** Copilot Pages are created without sensitivity labels despite mandatory labeling policies
-- **Root Cause:** Label inheritance for Pages may not be fully supported, or the label policy scope may not include the Pages storage location.
+- **Root Cause:** Label inheritance for Pages may not be fully supported, or the label policy scope may not include the Pages storage location. Additionally, Copilot Notebooks have more limited sensitivity labeling support than Pages.
 - **Resolution:**
   1. Verify label policy scope includes all relevant locations
   2. Check if Pages support sensitivity label application in your tenant version
-  3. Configure auto-labeling as a fallback for unlabeled Pages
-  4. Train users to manually apply labels to Pages as a compensating control
+  3. For Notebooks specifically: verify whether sensitivity labels are supported in your tenant; if not, configure auto-labeling and DLP policies as compensating controls
+  4. Configure auto-labeling as a fallback for unlabeled Pages
+  5. Train users to manually apply labels to Pages as a compensating control
 
 ### Issue 3: Pages Content Not Under Retention
 
@@ -43,6 +44,27 @@ Common issues and resolution steps for Copilot Pages security.
   2. Implement DLP policies to detect sensitive content in Pages
   3. Configure alerts for Pages containing sensitive information types
   4. Consider disabling Pages creation if the risk is too high for your environment
+
+### Issue 5: Departed User Content Access and Recycle Bin
+
+- **Symptoms:** After a user's account is deleted, their Copilot Pages and Notebooks content becomes inaccessible, or content that should have been preserved for regulatory or legal purposes has been permanently deleted.
+- **Root Cause:** When a user account is deleted, their SharePoint Embedded containers enter recycle bin status. If the recycle bin retention window expires before content is preserved, the data is permanently lost.
+- **Resolution:**
+  1. Before deleting a departing user's account, check whether their Pages/Notebooks content is subject to legal hold, regulatory retention, or active eDiscovery cases.
+  2. If preservation is required, place a hold on the user's SharePoint Embedded container before account deletion.
+  3. Update the offboarding checklist to include a "Copilot Pages/Notebooks preservation check" step.
+  4. If content has already entered the recycle bin, recover it before the retention window expires.
+  5. For regulated environments, consider extending the recycle bin retention period.
+
+### Issue 6: Information Barriers Not Enforced on Pages
+
+- **Symptoms:** Users subject to Information Barriers can share or access Copilot Pages content that should be segmented by IB policy.
+- **Root Cause:** Information Barriers are not supported for SharePoint Embedded content, including Copilot Pages and Notebooks. IB policies do not apply to this storage type.
+- **Resolution:**
+  1. Disable Copilot Pages and Notebooks creation for all user populations subject to Information Barriers.
+  2. Communicate this limitation to compliance and legal teams.
+  3. Monitor for any attempts by IB-segmented users to create or access Pages content.
+  4. Document this limitation in the firm's IB policy implementation records.
 
 ## Diagnostic Steps
 

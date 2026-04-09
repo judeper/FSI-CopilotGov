@@ -134,4 +134,4 @@ If an examiner identifies a finding or deficiency:
 
 *Review this guide before each examination and update based on evolving regulatory expectations and examination trends.*
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

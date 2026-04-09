@@ -54,15 +54,26 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
   3. Use the `SessionCommand` paging approach for PowerShell-based searches.
   4. Contact Microsoft Support if collection failures persist for Premium eDiscovery cases.
 
-### Issue 6: Missing Metadata in Exported Copilot Content
+### Issue 6: Deprecated eDiscovery Export PowerShell Cmdlets
+
+- **Symptoms:** PowerShell scripts using `New-ComplianceSearchAction -Export` or related export cmdlets fail with errors or return unsupported-operation messages.
+- **Root Cause:** eDiscovery export PowerShell cmdlets were retired as part of the unified eDiscovery portal transition (May 2025). The cmdlets are no longer functional.
+- **Resolution:**
+  1. Replace PowerShell export workflows with the Purview portal export experience (eDiscovery > Cases > [case] > Review sets > Export).
+  2. For programmatic export needs, migrate to the **Microsoft Graph eDiscovery APIs** (`POST /security/cases/ediscoveryCases/{id}/reviewSets/{id}/export`).
+  3. Update any scheduled automation that relies on deprecated cmdlets.
+  4. Case-management cmdlets (`New-ComplianceCase`, `New-ComplianceSearch`, `New-CaseHoldPolicy`) remain supported — only export cmdlets are affected.
+
+### Issue 7: Missing Metadata in Exported Copilot Content
 
 - **Symptoms:** Exported Copilot interaction records lack expected metadata fields such as application context or prompt text.
-- **Root Cause:** Certain Copilot metadata fields may not be included in standard export formats, or the export format does not support the full schema.
+- **Root Cause:** Certain Copilot metadata fields may not be included in standard export formats, or the export format does not support the full schema. Additionally, organizations still using deprecated PowerShell export cmdlets may receive incomplete exports.
 - **Resolution:**
   1. Use the native export format rather than PST to preserve maximum metadata.
-  2. Check that the review set includes all available Copilot-specific columns.
-  3. Review Microsoft documentation for the current Copilot eDiscovery metadata schema.
-  4. For critical fields, supplement eDiscovery exports with Audit Log data from Control 3.1.
+  2. Export via the Purview portal or Microsoft Graph eDiscovery APIs (deprecated PowerShell export cmdlets may produce incomplete results — see Issue 6).
+  3. Check that the review set includes all available Copilot-specific columns.
+  4. Review Microsoft documentation for the current Copilot eDiscovery metadata schema.
+  5. For critical fields, supplement eDiscovery exports with Audit Log data from Control 3.1.
 
 ## Diagnostic Steps
 

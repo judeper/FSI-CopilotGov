@@ -78,7 +78,7 @@ Before activating any Copilot Studio agent, review its knowledge source labels t
 **Portal:** Microsoft Purview
 **Path:** Purview > Information Protection > Auto-labeling > Create auto-labeling policy
 
-Auto-labeling now supports nested AND/OR/NOT conditions (GA December 2025), enabling complex FSI classification rules:
+Auto-labeling now supports nested AND/OR/NOT conditions (GA December 2025), enabling complex FSI classification rules. Additionally, **auto-labeling can now override manually applied labels for files** (not just emails). This means an auto-labeling policy can upgrade a file's sensitivity label even if a user previously applied a lower label manually. Organizations should verify their auto-labeling priority and override settings to avoid unintended label changes on files where users have made deliberate classification decisions.
 
 1. Create or edit an auto-labeling policy
 2. In the conditions section, create condition groups:
@@ -104,6 +104,8 @@ For labels that include encryption, review how Copilot interacts with encrypted 
 - If the user lacks rights, Copilot cannot access the content
 - New content created from encrypted sources inherits the encryption settings
 
+> **Permission Level Renames:** Microsoft has renamed two encryption permission levels — **Reviewer** is now **Restricted Editor**, and **Co-author** is now **Editor**. Existing labels using the old permission names continue to function, but new label configurations and documentation should use the updated names. Organizations should update internal label documentation and user training materials to reflect these renames.
+
 ### Step 8: Enable Label Analytics for Copilot Content
 
 **Portal:** Microsoft Purview
@@ -114,6 +116,7 @@ Enable label analytics to monitor how labels are applied to Copilot-generated co
 - Label changes (upgrades and downgrades) on Copilot content
 - Unlabeled Copilot content (should be zero with mandatory labeling)
 - Agent-generated content label distribution (where applicable)
+- **Default labels for Teams meetings** — verify that Teams meeting sensitivity labels are applied by default for regulated user groups. Default labeling for Teams meetings helps prevent unclassified meeting content (transcripts, notes, recordings) from being surfaced by Copilot without appropriate classification.
 
 ## FSI Recommendations
 

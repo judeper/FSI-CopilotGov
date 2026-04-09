@@ -39,6 +39,50 @@ When a user asks Copilot a question, Copilot queries the Microsoft Graph using t
 
 ---
 
+## Copilot Licensing and Access
+
+### What is the difference between Copilot Chat Basic and Premium?
+
+**Copilot Chat (Basic)** is the free tier available to all Microsoft 365 users via the web (copilot.microsoft.com) and Outlook. It uses web data only and does not access organizational data through the Microsoft Graph.
+
+**Copilot Chat (Premium)** requires a Microsoft 365 Copilot license and provides full access to organizational data via Microsoft Graph, priority access, and advanced features across all Microsoft 365 apps.
+
+As of April 15, 2026, organizations with more than 2,000 users lose embedded Copilot Chat in Word, Excel, PowerPoint, and OneNote for unlicensed users. FSI organizations should review license allocation strategies and communicate access changes to affected users.
+
+**Relevant controls:** Control 1.9 (License Planning), Control 4.1 (Copilot Admin Settings)
+
+---
+
+### What is Edit with Copilot (Agent Mode) and does it require a license?
+
+Edit with Copilot (formerly Agent Mode) is an iterative document creation experience in Word, Excel, and PowerPoint. It is available to all Microsoft 365 users regardless of Copilot license status. However, unlicensed users can only use web data sources — organizational data requires a paid Copilot license.
+
+FSI organizations should review whether web-sourced content meets their governance and supervision requirements, particularly for client-facing document generation.
+
+**Relevant controls:** Control 4.1 (Copilot Admin Settings), Control 1.13 (User Training)
+
+---
+
+### Can users access third-party AI models through Copilot?
+
+Microsoft has introduced support for third-party model providers including Anthropic Claude and xAI. Administrators can enable these models for specific users or groups via M365 Admin Center > Copilot > Settings > Other settings.
+
+FSI organizations should evaluate the data handling, residency, and regulatory implications before enabling third-party models, as they may introduce additional data processing outside Microsoft's standard compliance boundary. Organizations should verify that third-party model usage aligns with their existing vendor risk management and data governance policies.
+
+**Relevant controls:** Control 4.1 (Copilot Admin Settings), Control 2.6 (Web Search and Web Grounding Controls)
+
+---
+
+### Do Information Barriers apply to Copilot Pages and Notebooks?
+
+**No.** Information Barriers are currently **not** supported for SharePoint Embedded content, which includes Copilot Pages and Copilot Notebooks. This is a significant consideration for FSI organizations with Chinese wall requirements.
+
+Organizations should implement alternative controls such as restricting Copilot Pages creation for populations subject to information barriers. Use Microsoft 365 Cloud Policy to disable Copilot Pages and Notebooks for affected user groups.
+
+**Relevant controls:** Control 2.4 (Information Barriers for Copilot), Control 4.1 (Copilot Admin Settings)
+
+---
+
 ## Data Storage and Privacy
 
 ### Where is Copilot interaction data stored?
@@ -245,4 +289,4 @@ Microsoft regularly updates Microsoft 365 Copilot with new features, changed beh
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

@@ -76,6 +76,29 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 - **Expected Result:** Edge browser DLP applies to browser-based Copilot interactions
 - **Evidence:** DLP match event attributed to Edge/Endpoint DLP channel
 
+### Test 6a: Mac Endpoint DLP Expanded File Type Coverage
+
+- **Objective:** Verify Mac endpoint DLP covers expanded file types (100+ supported file types)
+- **Steps:**
+  1. On a managed Mac device with Endpoint DLP configured, create a test file in one of the newly supported file types containing a SIT pattern (e.g., a CSV or Numbers file with test SSN data).
+  2. Attempt to upload or share the file through a Copilot-accessible location.
+  3. Verify the Endpoint DLP policy triggers for the expanded file type.
+  4. Confirm the event appears in DLP incident reports.
+- **Expected Result:** Mac Endpoint DLP detects sensitive data in expanded file types.
+- **Evidence:** DLP match event for the expanded file type on a Mac device.
+
+### Test 6b: Adaptive Scoping for SharePoint DLP
+
+- **Objective:** Verify adaptive scoping dynamically applies DLP policies to SharePoint sites used as Copilot grounding sources
+- **Steps:**
+  1. Configure an adaptive scope targeting SharePoint sites with a specific sensitivity label (e.g., "Confidential").
+  2. Attach the adaptive scope to a DLP policy covering the SharePoint location.
+  3. Apply the target sensitivity label to a test SharePoint site and upload content containing a SIT pattern.
+  4. Verify the DLP policy applies to the newly scoped site without manual policy updates.
+  5. Remove the sensitivity label from the test site and verify the DLP policy no longer targets it.
+- **Expected Result:** Adaptive scoping dynamically includes and excludes SharePoint sites based on site properties.
+- **Evidence:** DLP policy match data showing dynamic site inclusion.
+
 ### Test 7: Override and Justification Flow
 
 - **Objective:** Verify override mechanisms work correctly for permitted override scenarios
@@ -108,6 +131,8 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 | SIT-based prompt blocking test results | PDF with screenshots | Compliance evidence repository | 7 years |
 | Default policy simulation review | PDF with match data | Compliance evidence repository | 7 years |
 | Edge browser DLP test results | PDF with screenshots | Compliance evidence repository | 7 years |
+| Mac endpoint DLP expanded file type test results | PDF with screenshots | Compliance evidence repository | 7 years |
+| Adaptive scoping test results | PDF with match data | Compliance evidence repository | 7 years |
 | DLP incident reports | CSV | Compliance evidence repository | 7 years |
 | False positive analysis (per policy type) | PDF | Compliance evidence repository | 7 years |
 

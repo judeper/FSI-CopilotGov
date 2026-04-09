@@ -151,4 +151,4 @@ To implement this operating calendar:
 
 *Review this calendar annually and update based on organizational changes, regulatory updates, and governance maturity progression.*
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

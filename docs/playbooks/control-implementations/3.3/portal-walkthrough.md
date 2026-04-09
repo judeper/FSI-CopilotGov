@@ -4,6 +4,8 @@ Step-by-step portal configuration for enabling eDiscovery capabilities that cove
 
 The unified eDiscovery experience (generally available May 2025) consolidates all eDiscovery work into a single interface within the Microsoft Purview portal. All navigation in this walkthrough uses the unified experience.
 
+> **Important — Classic Portal Retirement:** Classic Content Search and eDiscovery (Standard) experiences are being retired in favor of the unified Purview eDiscovery portal. Organizations still using classic workflows should plan to migrate. The unified experience uses a **case-centric access model** — all searches, holds, and review sets are scoped within a case, and access is controlled by case membership rather than standalone role assignments. Organizations should verify that case membership is configured correctly for all compliance personnel.
+
 ## Prerequisites
 
 - **Role:** eDiscovery Manager or eDiscovery Administrator
@@ -30,6 +32,7 @@ The unified eDiscovery experience (generally available May 2025) consolidates al
 2. Add a description indicating this case covers Copilot-generated content searches.
 3. Assign case members from the compliance and legal teams.
 4. Click **Save** to create the case. The case opens in the unified eDiscovery interface.
+5. All data access for this case is now governed by the **case-centric access model** — only assigned case members can view, search, or export content within the case.
 
 > **Note:** If you have existing cases created before May 2025, open each case and verify the Copilot content location is included in data sources. Navigate to **Data sources** within the case and confirm "Microsoft Copilot experiences" appears as a data source option. Pre-migration cases may require manual addition of this location.
 

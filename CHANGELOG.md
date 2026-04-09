@@ -4,6 +4,72 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.3 — 2026-04-09
+
+### Critical — Copilot Licensing Changes (April 15, 2026)
+- Added Copilot Chat Basic vs Premium tier distinction across license requirements, Control 1.9, admin toggles, FAQ, glossary, and getting-started content
+- Documented April 15, 2026 deadline: organizations >2,000 users lose embedded Copilot Chat in Word, Excel, PowerPoint, OneNote for unlicensed users
+- Added Edit with Copilot (Agent Mode) governance — available to all M365 users regardless of license, web data only for unlicensed users
+- Added third-party model provider support (Anthropic Claude, xAI) and recommended FSI posture (disabled by default)
+
+### Platform & Architecture Updates
+- Added **Agent 365** platform — centralized agent monitoring, management, and configuration across M365 apps, Copilot Studio, and third-party integrations
+- Added **Entra Agent ID** — unique agent identities in Entra ID for security tracking, policy enforcement, and audit trails
+- Added **Work IQ** — persistent organizational memory for prioritized and personalized Copilot assistance
+- Added **Copilot Cowork** — multi-step business task delegation with user monitoring and intervention
+- Added **Researcher** and **Analyst** as distinct Copilot Chat experiences to surfaces documentation
+- Updated Copilot architecture diagram and surfaces matrix with Basic vs Premium access distinction
+- Added Copilot security pivot in M365 Admin Center for data access policy creation
+
+### Control Updates (Pillar 1 — Readiness & Assessment)
+- **1.9** License Planning — added Copilot Chat Basic/Premium planning, Edit with Copilot governance gap, third-party model provider assessment
+- **1.13** Extensibility Readiness — added Agent 365 platform assessment, Entra Agent ID readiness, third-party model provider readiness
+
+### Control Updates (Pillar 2 — Security & Protection)
+- **2.1** DLP Policies — added Mac endpoint DLP expansion (~40→100+ file types), adaptive scoping for SharePoint, AI-powered policy explanations via Security Copilot, web-grounding DLP restrictions
+- **2.2** Sensitivity Labels — added auto-labeling override for files (April 2026), permission level renames (Reviewer→Restricted Editor, Co-author→Editor), default labeling for Teams meetings
+- **2.10** Insider Risk — added content preview in IRM alerts, enhanced Copilot risky AI usage indicators
+- **2.11** Copilot Pages Security — added Information Barriers NOT supported for SharePoint Embedded (critical for FSI Chinese wall requirements), Notebook sensitivity labeling limitations, departed user workflow, recycle bin status, group-owned workspace policy
+- **2.14** Declarative Agents Governance — added Agent 365 governance surface, Entra Agent ID security controls, third-party model provider risk factors
+
+### Control Updates (Pillar 3 — Compliance & Audit)
+- **3.2** Data Retention — added Copilot Notebooks deletion bug (MC1213768) with workaround, retention via All SharePoint Sites scope, bulk/manual label limitations
+- **3.3** eDiscovery — added unified Purview eDiscovery portal transition (classic Content Search retirement), deprecated export PowerShell cmdlets, case-centric access model
+- **3.4** Communication Compliance — added content preview in IRM alerts, case creation without content, PAYG AI indicators, multicloud coverage (Azure, Fabric, third-party)
+
+### Control Updates (Pillar 4 — Operations & Monitoring)
+- **4.1** Admin Settings — added Agent 365 admin surface, third-party model provider toggles, Copilot security pivot
+- **4.13** Extensibility Governance — added Agent 365 operational governance procedures with cadences, agent inventory dashboards, usage reporting
+
+### Framework Updates
+- Updated executive summary with Agent 365, third-party models, and Basic/Premium licensing considerations
+- Updated regulatory framework with EU AI Act compliance tracking references and Agent 365/Entra Agent ID audit capabilities
+- Updated governance fundamentals with Agent 365 governance surface and Basic/Premium governance model
+- Updated adoption roadmap with Agent Mode rollout milestone, April 15 licensing deadline, and Agent 365 adoption steps
+
+### Reference Updates
+- Updated Microsoft Learn URLs reference — added 9 new URLs across 2 new sections (Agent Governance, Copilot Pages and Notebooks) and 2 existing sections; all 220 existing URLs validated (0 broken)
+- Updated glossary with 10 new terms (Agent 365, Copilot Chat Basic/Premium, Copilot Cowork, Edit with Copilot, Entra Agent ID, Work IQ, Editor/Restricted Editor)
+- Updated FAQ with 4 new entries (Basic vs Premium, Edit with Copilot licensing, third-party models, Information Barriers limitations)
+- Updated portal paths quick reference with Agent 365, third-party model, and Copilot security paths
+- Updated admin toggles with third-party model provider controls and Edit with Copilot row
+- Updated license requirements with Basic/Premium tiers and third-party model providers
+
+### Playbook Updates
+- Updated eDiscovery playbooks (3.3) — unified portal transition, deprecated cmdlets, case-centric access
+- Updated DLP playbooks (2.1) — Mac file types, adaptive scoping, AI-powered explanations
+- Updated sensitivity labels playbooks (2.2) — auto-labeling overrides, permission renames, Teams meeting labels
+- Updated Copilot Pages playbooks (2.11) — IB limitations, departed user workflow, Notebook labeling
+- Updated agent governance playbooks (2.14) — Agent 365, Entra Agent ID, third-party models
+- Updated getting-started checklist and quick-start guide with licensing, Agent 365, and third-party model items
+
+### Metadata
+- Updated all modified control `Last Verified:` dates to `2026-04-09`
+- Updated version stamps across 84 files from `v1.2.1` to `v1.3`
+- Validated all Microsoft Learn URLs (220 unique, 0 broken, 0 errors)
+
+---
+
 ## v1.2.1 — 2026-03-17
 
 ### New Controls (Pillar 1 — Readiness & Assessment)

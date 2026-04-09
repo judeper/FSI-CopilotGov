@@ -51,12 +51,13 @@ Test cases and evidence collection procedures to validate eDiscovery capabilitie
 
 ### Test 5: Export and Production Readiness
 
-- **Objective:** Confirm Copilot content can be exported in standard litigation formats
+- **Objective:** Confirm Copilot content can be exported in standard litigation formats using the unified portal or Graph APIs
 - **Steps:**
   1. Select items from the review set containing Copilot content.
-  2. Export in the required format (PST, EML, or native format).
-  3. Verify exported items retain metadata including Copilot attribution.
-  4. Confirm the export load file contains correct field mappings.
+  2. Export using the **Purview portal export experience** or **Microsoft Graph eDiscovery APIs** (deprecated PowerShell export cmdlets are no longer supported — see Troubleshooting Issue 6).
+  3. Export in the required format (PST, EML, or native format).
+  4. Verify exported items retain metadata including Copilot attribution.
+  5. Confirm the export load file contains correct field mappings.
 - **Expected Result:** Copilot content exports successfully with preserved metadata and standard load file format.
 - **Evidence:** Export manifest and sample exported items with Copilot metadata intact.
 

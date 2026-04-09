@@ -53,4 +53,4 @@ If the organization uses access reviews, define when repeated HIGH-risk drift sh
 - Use [Verification & Testing](verification-testing.md) to validate baseline integrity and drift classification.
 - Keep [Troubleshooting](troubleshooting.md) available for baseline, alerting, and reversion issues.
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

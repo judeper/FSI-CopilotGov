@@ -38,6 +38,10 @@ Step-by-step portal configuration for governing Copilot Pages and Copilot Notebo
 2. Confirm administrators understand the user departure lifecycle and cleanup timing.
 3. Document how ownerless or preservation-sensitive containers are escalated.
 
+> **Departed User Workflow:** When a user account is deleted, their SharePoint Embedded containers (including Pages and Notebooks content) are moved to a **recycle bin** state. Organizations should verify the recycle bin retention window and establish a process to preserve content before the cleanup window expires. If a departed user's content is subject to legal hold or regulatory retention, the compliance team must place a hold on the container before account deletion.
+
+> **Information Barriers Limitation:** Information Barriers are **not supported** for SharePoint Embedded content (including Copilot Pages and Notebooks). Organizations that rely on Information Barriers for MNPI separation (e.g., broker-dealer Chinese walls) should disable Pages and Notebooks creation for populations subject to Information Barriers. This limitation means IB-segmented users could potentially access cross-wall content through Pages if the feature is not disabled for those groups.
+
 ### Step 4: Validate Sharing and Collaboration Posture
 
 **Portal:** Microsoft 365 Copilot app, Loop app, SharePoint Admin Center
@@ -55,6 +59,8 @@ Step-by-step portal configuration for governing Copilot Pages and Copilot Notebo
 2. Run a DLP test with representative FSI-sensitive data.
 3. Confirm retention coverage by reviewing policies that include **All SharePoint Sites**.
 4. Run a test eDiscovery search for `.page` content and document the results.
+
+> **Sensitivity Labeling Limitation for Notebooks:** Copilot Notebooks have limited sensitivity labeling support compared to Pages. Organizations should verify whether their tenant supports sensitivity label application to Notebooks and configure compensating controls (such as DLP policies and auto-labeling) if manual label application is not available for Notebook content.
 
 ### Step 6: Document Legal Hold and Offboarding Procedures
 

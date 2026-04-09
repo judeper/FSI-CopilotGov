@@ -34,4 +34,4 @@ Quick-reference documents, lookup tables, and curated resources for the FSI Copi
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

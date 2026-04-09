@@ -137,4 +137,4 @@ Allocate resources to mapped and measured risks on a regular basis, including re
 
 ---
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

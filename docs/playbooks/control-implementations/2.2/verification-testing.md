@@ -40,15 +40,28 @@ Test cases and evidence collection for validating sensitivity label enforcement 
 
 ### Test 4: Auto-Labeling with Nested Conditions
 
-- **Objective:** Verify nested AND/OR/NOT auto-labeling conditions apply labels correctly to FSI financial content
+- **Objective:** Verify nested AND/OR/NOT auto-labeling conditions apply labels correctly to FSI financial content, including the ability to override manually applied labels on files
 - **Steps:**
   1. Create a test document that matches a nested condition (e.g., contains both a CUSIP pattern AND an earnings context keyword)
   2. Upload the document to a SharePoint site covered by the auto-labeling policy
   3. Verify the policy applies the expected label (Confidential — MNPI per the nested rule)
   4. Create a second test document matching only part of the nested condition (e.g., CUSIP pattern only, no earnings keyword) and verify the label is NOT applied
   5. Create a third test document that would match conditions but is in an excluded folder (NOT condition) and verify the label is NOT applied
-- **Expected Result:** Nested auto-labeling conditions correctly apply and withhold labels based on combined condition logic
-- **Evidence:** Screenshots of labeled and unlabeled test documents with condition logic documentation
+  6. **Override test:** Manually apply a lower-sensitivity label (e.g., "Internal — General") to a file that matches auto-labeling conditions. Verify the auto-labeling policy overrides the manual label and applies the correct higher-sensitivity label.
+- **Expected Result:** Nested auto-labeling conditions correctly apply and withhold labels based on combined condition logic; auto-labeling overrides manually applied labels on files when configured
+- **Evidence:** Screenshots of labeled and unlabeled test documents with condition logic documentation, including override scenario
+
+### Test 4a: Default Labeling for Teams Meetings
+
+- **Objective:** Verify default sensitivity labels are applied to Teams meetings for regulated user groups
+- **Steps:**
+  1. Confirm that a Teams meeting label policy is configured with a default label for regulated user groups.
+  2. Create a new Teams meeting as a user in the regulated group.
+  3. Verify the default sensitivity label is automatically applied to the meeting.
+  4. Confirm that meeting artifacts (transcripts, notes, recordings) inherit the meeting's sensitivity label.
+  5. Verify Copilot-generated meeting summaries respect the meeting label classification.
+- **Expected Result:** Default label is applied to Teams meetings; meeting artifacts inherit the label.
+- **Evidence:** Meeting properties showing applied label; Copilot summary with inherited label.
 
 ### Test 5: Default Label Application
 

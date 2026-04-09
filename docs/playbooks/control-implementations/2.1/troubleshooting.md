@@ -102,6 +102,7 @@ Common issues and resolution steps for DLP policies governing Copilot interactio
 4. **Locate default policy:** Check MAC > Copilot > Overview > Security tab for the Microsoft-deployed default policy
 5. **Test with known data:** Create a test prompt with known SIT patterns; create a test document with a known label
 6. **Check audit logs:** Search for DLP events in the unified audit log
+7. **Use Security Copilot policy explanations:** In the Purview DLP console, use AI-powered policy explanations to review complex rule logic and verify both policy types are configured as intended
 
 ## Escalation
 

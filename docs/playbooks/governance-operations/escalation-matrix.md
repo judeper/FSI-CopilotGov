@@ -236,4 +236,4 @@ If a Level 4 incident may require regulatory notification:
 
 *Review and test this escalation matrix quarterly. Update contacts monthly or when personnel changes occur. Conduct a tabletop exercise using this matrix semi-annually.*
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

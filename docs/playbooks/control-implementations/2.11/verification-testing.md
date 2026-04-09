@@ -17,13 +17,15 @@ Test cases and evidence collection for validating Copilot Pages security.
 
 ### Test 2: Sensitivity Label Application
 
-- **Objective:** Verify sensitivity labels are applied to Copilot Pages
+- **Objective:** Verify sensitivity labels are applied to Copilot Pages; verify Notebook labeling limitations
 - **Steps:**
   1. Create a Copilot Page from a source document with a "Confidential" label
   2. Check the sensitivity label on the resulting Page
   3. Verify label inheritance is working
-- **Expected Result:** Pages inherit sensitivity labels from source content
-- **Evidence:** Page properties showing applied sensitivity label
+  4. Create a Copilot Notebook and verify whether sensitivity labels can be applied (labeling support may be limited for Notebooks)
+  5. If Notebook labeling is not available, verify compensating controls (DLP, auto-labeling) are in place
+- **Expected Result:** Pages inherit sensitivity labels from source content; Notebook labeling limitations are documented with compensating controls
+- **Evidence:** Page properties showing applied sensitivity label; Notebook labeling test results
 
 ### Test 3: Retention Policy Coverage
 

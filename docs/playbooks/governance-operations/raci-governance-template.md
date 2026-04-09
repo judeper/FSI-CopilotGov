@@ -136,4 +136,4 @@ Responsibility Assignment Matrix (RACI) for M365 Copilot governance activities i
 
 *Customize this RACI based on your organizational structure. Review and update quarterly or when roles change.*
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

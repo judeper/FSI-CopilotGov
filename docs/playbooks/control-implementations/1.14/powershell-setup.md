@@ -68,4 +68,4 @@ pwsh .\scripts\Export-Evidence.ps1 -InputPath .\artifacts -OutputPath .\artifact
 - Keep [Troubleshooting](troubleshooting.md) available for authentication, throttling, and scoring issues.
 - Coordinate recurring scans with [Control 1.15: SharePoint Permissions Drift Detection](../../../controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md).
 
-*FSI Copilot Governance Framework v1.2.1 - March 2026*
+*FSI Copilot Governance Framework v1.3 - April 2026*

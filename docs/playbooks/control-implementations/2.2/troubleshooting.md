@@ -52,6 +52,16 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
      - Add the second condition group and verify the combined logic
   5. Review the simulation mode results for sample documents to understand which conditions are and are not matching
 
+### Issue 4: Auto-Labeling Overriding Manually Applied Labels on Files
+
+- **Symptoms:** Files that users manually labeled at a lower sensitivity level are being upgraded by an auto-labeling policy, overriding the user's deliberate classification choice.
+- **Root Cause:** Auto-labeling can now override manually applied labels for files (not just emails). If an auto-labeling policy is configured to apply a higher-priority label, it will override the existing manual label on files.
+- **Resolution:**
+  1. Review auto-labeling policy priority and override settings in Purview > Information Protection > Auto-labeling.
+  2. If override behavior is undesired for specific content, add exclusion conditions (e.g., path-based NOT conditions) to the auto-labeling policy.
+  3. Communicate the new override behavior to users and update training materials.
+  4. For regulated content where manual classification decisions must be preserved, configure the auto-labeling policy to not override manually applied labels (if the option is available) or use monitoring mode.
+
 ### Issue 5: Users Bypassing Mandatory Labeling
 
 - **Symptoms:** Documents found in SharePoint without sensitivity labels despite mandatory labeling policy being enabled
@@ -78,7 +88,7 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 - **Root Cause:** Labels with encryption restrict access to authorized users only. Copilot accesses content as the current user, so if the user has decryption rights, Copilot should work. If not, Copilot is correctly blocked.
 - **Resolution:**
   1. Verify the user has the required rights for the encrypted content
-  2. If the user should have access, check the encryption configuration and add the user to the authorized list
+  2. If the user should have access, check the encryption configuration and add the user to the authorized list. Note: the permission level previously called "Reviewer" is now **Restricted Editor**, and "Co-author" is now **Editor** — use the updated names when configuring encryption permissions.
   3. If Copilot should not access the encrypted content, this is expected behavior — document it
   4. Consider using labels without encryption but with other protections (content marking, DLP) if Copilot access is required
 
