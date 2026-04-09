@@ -66,7 +66,7 @@ This path helps you understand what the framework covers and how it applies to y
 5. **Open the Implementation Checklist** — your actionable to-do list for getting started → [Implementation Checklist](getting-started/checklist.md)
 
 !!! tip "Ready to assess your current posture?"
-    Once you've reviewed the controls, use the [Governance Scorecard](assessment/index.md) to score your organization across all 56 controls, identify gaps, and generate a prioritized remediation roadmap.
+    Once you've reviewed the controls, use the [Governance Scorecard](assessment/index.md) to score your organization across all 57 controls, identify gaps, and generate a prioritized remediation roadmap.
 
 ---
 
@@ -75,7 +75,7 @@ This path helps you understand what the framework covers and how it applies to y
 | Layer | What It Answers | Who Uses It |
 |---|---|---|
 | **[Framework](framework/index.md)** | Why governance matters, what regulations apply, how Copilot works architecturally | CISOs, compliance leads, architects |
-| **[Controls](controls/index.md)** | What specific configurations are required and why — 56 controls across 4 lifecycle pillars | Security engineers, M365 admins |
+| **[Controls](controls/index.md)** | What specific configurations are required and why — 57 controls across 4 lifecycle pillars | Security engineers, M365 admins |
 | **[Playbooks](playbooks/index.md)** | Step-by-step how to implement each control, with portal walkthroughs and PowerShell automation | Engineers doing the actual work |
 
 Each control provides three governance tiers: **Baseline** (minimum viable), **Recommended** (production best practices), and **Regulated** (examination-ready).

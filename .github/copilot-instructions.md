@@ -38,7 +38,7 @@ Supporting content: `docs/getting-started/` (quick start, checklist, phased roll
 
 ### Interactive Assessment Tool
 
-- **Page**: `docs/assessment/index.md` — Governance Scorecard, a browser-based self-assessment across all 56 controls
+- **Page**: `docs/assessment/index.md` — Governance Scorecard, a browser-based self-assessment across all 57 controls
 - **App code**: `docs/javascripts/assessment-app.js` (main app), `docs/javascripts/assessment-loader.js` (bootstrap)
 - **Styles**: `docs/stylesheets/assessment.css`
 - **Data extraction**: `scripts/extract_assessment_data.py` — parses control markdown files to generate `docs/javascripts/assessment-data.json`

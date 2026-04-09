@@ -196,7 +196,7 @@ These are companion frameworks that address different aspects of Microsoft 365 A
 | **Scope** | In-app AI assistance across 23+ M365 surfaces | Custom and declarative agent development, deployment, and lifecycle |
 | **Governance model** | Baseline / Recommended / Regulated levels | Zone 1 (Personal) / Zone 2 (Team) / Zone 3 (Enterprise) agents |
 | **Key concepts** | Semantic Index, Graph grounding, discovery amplification, label inheritance | Managed Environments, DLP connector policies, agent lifecycle, agent inventory |
-| **Controls** | 56 controls across 4 lifecycle pillars | 71 controls across 4 governance domains |
+| **Controls** | 57 controls across 4 lifecycle pillars | 71 controls across 4 governance domains |
 | **Playbooks** | 216 implementation playbooks | 284 implementation playbooks |
 | **Repository** | [FSI-CopilotGov](https://github.com/judeper/FSI-CopilotGov) | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) |
 

@@ -134,6 +134,7 @@ nav:
       - 1.13 Extensibility Readiness: controls/pillar-1-readiness/1.13-extensibility-readiness.md
       - 1.14 Item-Level Permission Scanning: controls/pillar-1-readiness/1.14-item-level-permission-scanning.md
       - 1.15 SharePoint Permissions Drift Detection: controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md
+      - 1.16 Copilot Tuning Governance: controls/pillar-1-readiness/1.16-copilot-tuning-governance.md
     - Pillar 2 - Security & Protection:
       - Overview: controls/pillar-2-security/index.md
       - 2.1 DLP Policies for Copilot: controls/pillar-2-security/2.1-dlp-policies-for-copilot.md

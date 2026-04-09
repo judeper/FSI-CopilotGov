@@ -191,7 +191,7 @@ After completing the five-step quick start, you have **Baseline** governance in 
 
 | Next Step | Description | Reference |
 |-----------|-------------|-----------|
-| **Complete the Implementation Checklist** | Walk through all 56 controls across four pillars | [Implementation Checklist](checklist.md) |
+| **Complete the Implementation Checklist** | Walk through all 57 controls across four pillars | [Implementation Checklist](checklist.md) |
 | **Read the Executive Summary** | Understand the strategic governance context for leadership communication | [Executive Summary](../framework/executive-summary.md) |
 | **Configure Information Barriers** | Required for broker-dealers and firms with material nonpublic information (MNPI) walls | Control 2.4 |
 | **Set up Communication Compliance** | Required for FINRA 3110 supervisory review of Copilot-assisted communications | Control 3.4 |

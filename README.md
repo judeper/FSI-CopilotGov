@@ -11,7 +11,7 @@
 
 ## What This Is
 
-A technical documentation framework providing **56 controls** and **224 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
+A technical documentation framework providing **57 controls** and **224 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
 
 This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat (Basic & Premium tiers), Copilot Pages**, and **SharePoint agents** — plus extensibility via **plugins, Graph connectors, declarative agents, and Agents 365**.
 
@@ -42,7 +42,7 @@ This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outloo
 | Layer | Purpose | Content |
 |-------|---------|---------|
 | **Framework** (Strategic) | Board/executive governance context | Executive summary, regulatory landscape, architecture, operating model |
-| **Controls** (Technical) | What to configure and why | 56 controls across 4 lifecycle pillars with FSI regulatory mappings |
+| **Controls** (Technical) | What to configure and why | 57 controls across 4 lifecycle pillars with FSI regulatory mappings |
 | **Playbooks** (Implementation) | How to configure step-by-step | Portal walkthroughs, PowerShell automation, verification, troubleshooting |
 
 ### Four Lifecycle Pillars
@@ -128,8 +128,8 @@ FSI-CopilotGov/
 ├── docs/
 │   ├── framework/          # Layer 1: Strategic governance documents
 │   ├── controls/           # Layer 2: Technical control specifications
-│   │   ├── pillar-1-readiness/    # 15 controls
-│   │   ├── pillar-2-security/     # 15 controls
+│   │   ├── pillar-1-readiness/    # 16 controls
+│   │   ├── pillar-2-security/     # 16 controls
 │   │   ├── pillar-3-compliance/   # 13 controls
 │   │   └── pillar-4-operations/   # 13 controls
 │   ├── playbooks/          # Layer 3: Implementation procedures
@@ -158,6 +158,8 @@ FSI-CopilotGov/
 | **Playbooks** | 284 | 224 |
 
 Both repositories are **standalone** — no cross-repo dependencies. Where governance topics overlap (e.g., sensitivity labels, audit logging), each repo provides self-contained guidance tailored to its scope.
+
+> **Governance Boundary Note:** The boundary between FSI-CopilotGov and FSI-AgentGov is evolving as agent governance surfaces (Agent 365, agent pinning, agent registry) now appear in the M365 Admin Center alongside Copilot controls. FSI-CopilotGov covers agent governance as it intersects with M365 Copilot admin controls, security, and compliance, while FSI-AgentGov covers custom agent development in Copilot Studio and Agent Builder.
 
 ---
 

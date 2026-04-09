@@ -117,13 +117,13 @@ Copilot closes this gap instantly. Governance must address the permissions gap *
 
 ### Overview
 
-Each of the 56 controls in this framework provides implementation guidance at three governance levels. Organizations select their target level based on regulatory obligations, risk appetite, and institutional type.
+Each of the 57 controls in this framework provides implementation guidance at three governance levels. Organizations select their target level based on regulatory obligations, risk appetite, and institutional type.
 
 | Level | Description | Typical Use | Control Coverage |
 |-------|-------------|-------------|------------------|
 | **Baseline** | Minimum viable governance | Initial Copilot deployment in low-risk environments | ~30 core controls |
 | **Recommended** | Best-practice governance | Most production environments, standard FSI firms | ~45 controls |
-| **Regulated** | Examination-ready, comprehensive governance | FINRA/SEC-regulated broker-dealers, banks with OCC oversight | All 56 controls |
+| **Regulated** | Examination-ready, comprehensive governance | FINRA/SEC-regulated broker-dealers, banks with OCC oversight | All 57 controls |
 
 ### Baseline
 
@@ -327,7 +327,7 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 
 ## Control Applicability by Governance Level
 
-### Pillar 1: Readiness & Assessment (15 controls)
+### Pillar 1: Readiness & Assessment (16 controls)
 
 | Control | Name | Baseline | Recommended | Regulated |
 |---------|------|----------|-------------|-----------|
@@ -347,7 +347,7 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 | 1.14 | Item-Level Permission Scanning | Required | Required | Required |
 | 1.15 | SharePoint Permissions Drift Detection | Required | Required | Required |
 
-### Pillar 2: Security & Protection (15 controls)
+### Pillar 2: Security & Protection (16 controls)
 
 | Control | Name | Baseline | Recommended | Regulated |
 |---------|------|----------|-------------|-----------|

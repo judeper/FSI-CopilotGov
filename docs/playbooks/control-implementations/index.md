@@ -4,7 +4,7 @@ Comprehensive implementation guides for every control in the FSI Copilot Governa
 
 ---
 
-## Pillar 1: Readiness and Assessment (15 Controls)
+## Pillar 1: Readiness and Assessment (16 controls)
 
 Pre-deployment controls that establish the foundation for secure M365 Copilot adoption.
 
@@ -28,7 +28,7 @@ Pre-deployment controls that establish the foundation for secure M365 Copilot ad
 
 ---
 
-## Pillar 2: Security and Protection (15 Controls)
+## Pillar 2: Security and Protection (16 controls)
 
 Runtime controls that protect data, enforce policies, and govern Copilot interactions.
 

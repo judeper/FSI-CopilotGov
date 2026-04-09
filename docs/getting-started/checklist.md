@@ -1,6 +1,6 @@
 # Implementation Checklist
 
-Use this checklist to track implementation of all 56 controls across the four governance pillars. Each item includes its governance level and space for status tracking.
+Use this checklist to track implementation of all 57 controls across the four governance pillars. Each item includes its governance level and space for status tracking.
 
 !!! warning "Disclaimer"
     This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. See [full disclaimer](../disclaimer.md).
@@ -23,7 +23,7 @@ Use this checklist to track implementation of all 56 controls across the four go
 
 ---
 
-## Pillar 1: Readiness and Assessment (15 Controls)
+## Pillar 1: Readiness and Assessment (16 controls)
 
 Pre-deployment data hygiene, oversharing remediation, permissions audit, sensitivity label review, licensing, vendor risk, change management, and extensibility readiness.
 
@@ -46,7 +46,7 @@ Pre-deployment data hygiene, oversharing remediation, permissions audit, sensiti
 
 ---
 
-## Pillar 2: Security and Protection (15 Controls)
+## Pillar 2: Security and Protection (16 controls)
 
 DLP, sensitivity labels, conditional access, information barriers, data minimization, encryption, Defender integration, and extensibility security.
 

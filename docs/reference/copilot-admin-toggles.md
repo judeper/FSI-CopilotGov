@@ -60,6 +60,15 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 | Web search in Copilot | Copilot > Settings > Data access > Web search | On | Off | Off by default, exceptions documented | Off | Controls Bing/public web grounding in Copilot responses |
 | Search in the Copilot app | Settings > Search & intelligence | On | On | On | Review | Controls Microsoft Search experiences surfaced in the Copilot app |
 | Graph connectors / external knowledge sources | Settings > Integrated apps, Search admin center, or agent-specific configuration | Varies | Review | Review | Off until approved | Expands the data available to Copilot or agents |
+| Domain exclusion for web grounding | Copilot > Settings > Data access > Web search > Domain exclusion | None configured | Review | Configure for competitor and unverified sources | Configure and review quarterly | Blocks specific external domains from Copilot web grounding responses |
+
+---
+
+## Security Baseline
+
+| Control | Portal Path | Default | B | R | Reg | Impact |
+|--------|------------|---------|---|---|-----|--------|
+| Baseline Security Mode | Settings > Org Settings > Security & Privacy > Baseline Security Mode | Off (opt-in) | On (simulation first) | On | On | Enforces minimum security baseline across 18-20 settings for Office, Exchange, Teams, SharePoint, Entra |
 
 ---
 
@@ -86,6 +95,7 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 | Agent user access | Agents > Settings > User access | All users | Approved groups only | Approved groups only | Approved groups only | Limits who can access agents at all |
 | Agent Registry lifecycle review | Agents > All agents / Registry | Available | Monthly | Monthly | Weekly | Inventory, block, publish, assign owner, or remove agents |
 | Integrated apps / plugins | Settings > Integrated apps | Available | Off unless approved | Review | Off unless approved | Governs add-ins, plugins, and integrated app deployment |
+| Agent pinning | Copilot > Agents > Manage pinned agents | No agents pinned | Review | Pin sanctioned agents for approved groups | Pin sanctioned agents; document pinning policy | Controls which agents are prominently surfaced to users; up to 3 per user |
 
 !!! note "Researcher and Analyst nuance"
     Researcher and Analyst coexist with agents and inherit agent-related governance capabilities, but Microsoft documents them as part of the core Copilot chat experience. They do **not** fall under agent-related settings in the same way as installable agents.

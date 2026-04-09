@@ -1,12 +1,12 @@
 # Control Catalog
 
-The FSI Copilot Governance Framework contains **56 controls** organized across four lifecycle-based pillars, providing comprehensive governance coverage for Microsoft 365 Copilot in US financial services.
+The FSI Copilot Governance Framework contains **57 controls** organized across four lifecycle-based pillars, providing comprehensive governance coverage for Microsoft 365 Copilot in US financial services.
 
 ---
 
 ## Control Index
 
-### Pillar 1: Readiness & Assessment (15 Controls)
+### Pillar 1: Readiness & Assessment (16 controls)
 
 Pre-deployment data hygiene, oversharing detection, permission audits, and license planning.
 
@@ -30,7 +30,7 @@ Pre-deployment data hygiene, oversharing detection, permission audits, and licen
 
 ---
 
-### Pillar 2: Security & Protection (15 Controls)
+### Pillar 2: Security & Protection (16 controls)
 
 DLP, sensitivity labels, conditional access, encryption, information barriers, and Defender integration.
 

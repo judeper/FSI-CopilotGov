@@ -564,7 +564,7 @@ The following state regulations may apply but require separate analysis beyond t
 | FFIEC IT Handbook | 4 controls | IT governance, vendor management |
 | Interagency AI Guidance | 4 controls | AI risk management |
 
-**Total:** 56 controls across 4 pillars providing mapped coverage to primary US financial regulations.
+**Total:** 57 controls across 4 pillars providing mapped coverage to primary US financial regulations.
 
 !!! note
     Coverage indicates which framework controls address aspects of each regulation. Actual compliance requires implementation, validation, ongoing maintenance, and legal counsel review.

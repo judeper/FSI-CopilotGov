@@ -22,6 +22,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Semantic Index for Copilot | [https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot](https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot) |
 | Microsoft 365 Copilot release notes | [https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes](https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes) |
 | What's new in Microsoft Purview | [https://learn.microsoft.com/en-us/purview/whats-new](https://learn.microsoft.com/en-us/purview/whats-new) |
+| Copilot Search admin experience | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-search-admin-experience](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-search-admin-experience) |
+| Manage Copilot Search | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-search-manage](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-search-manage) |
 
 ---
 
@@ -155,6 +157,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Microsoft Graph connectors overview | [https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview](https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview) |
 | Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent) |
 | SharePoint agents | [https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-best-practices](https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-best-practices) |
+| Copilot Tuning admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide) |
+| M365 Agents admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide) |
 
 ---
 
@@ -198,6 +202,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Restricted SharePoint Search | [https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search](https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search) |
 | SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/advanced-management](https://learn.microsoft.com/en-us/sharepoint/advanced-management) |
 | Data access governance reports | [https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports](https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports) |
+| Agent insights report in SharePoint | [https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents](https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents) |
+| AI in SharePoint (preview) | [https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started](https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started) |
 
 ---
 
@@ -208,6 +214,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Zero Trust deployment guide | [https://learn.microsoft.com/en-us/security/zero-trust/deploy/overview](https://learn.microsoft.com/en-us/security/zero-trust/deploy/overview) |
 | Zero Trust for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/security/zero-trust/copilots/zero-trust-microsoft-365-copilot](https://learn.microsoft.com/en-us/security/zero-trust/copilots/zero-trust-microsoft-365-copilot) |
 | Microsoft Defender for Cloud Apps | [https://learn.microsoft.com/en-us/defender-cloud-apps/what-is-defender-for-cloud-apps](https://learn.microsoft.com/en-us/defender-cloud-apps/what-is-defender-for-cloud-apps) |
+| Baseline Security Mode | [https://techcommunity.microsoft.com/blog/microsoft_365blog/ignite-25-spotlight-announcing-microsoft-baseline-security-mode/4469709](https://techcommunity.microsoft.com/blog/microsoft_365blog/ignite-25-spotlight-announcing-microsoft-baseline-security-mode/4469709) |
 
 ---
 
@@ -230,4 +237,4 @@ See the [Microsoft Open-Source Copilot Analytics Tools playbook](../playbooks/go
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.3.1 - April 2026*

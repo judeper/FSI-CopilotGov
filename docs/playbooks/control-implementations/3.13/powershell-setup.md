@@ -134,8 +134,8 @@ $labelSummary
 - **Next Assessment Due:** $((Get-Date).AddMonths(6).ToString("yyyy-MM-dd"))
 
 ### Control Framework
-- Pillar 1: Readiness and Assessment (15 controls)
-- Pillar 2: Security and Protection (15 controls)
+- Pillar 1: Readiness and Assessment (16 controls)
+- Pillar 2: Security and Protection (16 controls)
 - Pillar 3: Compliance and Audit (13 controls)
 - Pillar 4: Operations and Monitoring (13 controls)
 "@

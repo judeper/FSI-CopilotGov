@@ -6,7 +6,7 @@
 
 ## Overview
 
-Pillar 1 establishes the foundational readiness posture required before deploying Microsoft 365 Copilot into a regulated financial services environment. These 15 controls address the critical pre-deployment activities that help reduce risk from data oversharing, permission sprawl, inadequate classification, and insufficient organizational preparedness.
+Pillar 1 establishes the foundational readiness posture required before deploying Microsoft 365 Copilot into a regulated financial services environment. These 16 controls address the critical pre-deployment activities that help reduce risk from data oversharing, permission sprawl, inadequate classification, and insufficient organizational preparedness.
 
 Financial regulators increasingly expect that institutions demonstrate due diligence *before* deploying AI capabilities -- not after. The controls in this pillar provide a structured approach to assessing data hygiene, remediating access risks, planning license strategy, and preparing the organization for responsible Copilot adoption.
 

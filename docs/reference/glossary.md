@@ -15,6 +15,9 @@ Microsoft's centralized platform for monitoring, managing, and configuring Copil
 ### Agent Mode
 See *Edit with Copilot*.
 
+### AI in SharePoint
+Formerly known as Knowledge Agent. An AI-powered feature set in SharePoint that automates metadata extraction, content enrichment, and site optimization for Copilot and custom agents. Requires enabling Anthropic as an AI Sub-Processor at the tenant level. Public Preview.
+
 ### Azure Information Protection (AIP)
 Microsoft's cloud-based solution for classifying and protecting documents and emails by applying labels. Sensitivity labels in Microsoft Purview are the successor to AIP labels; the underlying encryption and rights management capabilities remain.
 
@@ -32,6 +35,9 @@ A Copilot capability that enables delegation of multi-step business tasks to Cop
 
 ### Copilot Pages
 A collaborative AI-powered canvascreated from Microsoft 365 Copilot Chat responses. Users can convert a Copilot response into a Page for further editing and sharing. Copilot Pages (`.page` files) are stored in a user-owned SharePoint Embedded container shared with Copilot Notebooks and Loop My workspace, and creation is governed through Microsoft 365 Cloud Policy.
+
+### Copilot Tuning
+A capability for organizations with 5,000 or more Microsoft 365 Copilot licenses to create fine-tuned AI agents from proprietary organizational data. Includes admin controls for enabling/disabling per user or group, request access workflows, and data residency enforcement.
 
 ### Declarative Agents
 Custom Copilot agents defined through configuration (not code) that scope Copilot's behavior to specific data sources, instructions, and capabilities. Can be created in Copilot Studio, SharePoint, or Teams developer tools.
@@ -91,8 +97,14 @@ A Copilot capability that provides persistent organizational memory, allowing Co
 
 ## Governance and Security Concepts
 
+### Authoritative Sources
+SharePoint sites designated by administrators as authoritative content in the M365 Admin Center. These sites rank higher in Microsoft 365 Copilot Search results and improve the trustworthiness of AI-generated answers.
+
 ### Auto-labeling
 The ability to automatically apply sensitivity labels to content based on sensitive information type detection or other conditions, without requiring user action. Includes client-side auto-labeling (label recommendation) and service-side auto-labeling (automatic application).
+
+### Baseline Security Mode (BSM)
+An opt-in secure-by-default configuration in the Microsoft 365 Admin Center that enforces a minimum security baseline across Office, Exchange, Teams, SharePoint, and Entra. Covers approximately 18–20 settings including authentication, file handling, and room device controls.
 
 ### Conditional Access
 Microsoft Entra ID policies that control access to cloud applications based on conditions such as user identity, device compliance, location, sign-in risk, and application sensitivity. Used to require specific conditions (e.g., compliant device, MFA) for Copilot access.
@@ -105,6 +117,9 @@ Microsoft Purview policies that identify, monitor, and protect sensitive informa
 
 ### Discovery Amplification
 The phenomenon where Copilot makes existing permissions problems more visible and impactful. If a user has access to content they should not see (due to overly broad permissions), Copilot can surface that content more readily than traditional search. This is not a Copilot security flaw — it is an amplification of existing permission gaps.
+
+### Domain Exclusion
+An administrative control that allows specifying external domains to exclude from Microsoft 365 Copilot web grounding. Excluded domains are not referenced in AI-generated responses, while web grounding continues to function for all other sources.
 
 ### eDiscovery
 The process of identifying, collecting, producing, and reviewing electronically stored information (ESI) for legal, regulatory, or investigative purposes. Microsoft Purview eDiscovery enables searching and exporting Copilot interaction data.
@@ -204,6 +219,7 @@ Prohibition under federal consumer financial protection law against unfair, dece
 | Acronym | Definition |
 |---------|-----------|
 | AIP | Azure Information Protection |
+| BSM | Baseline Security Mode |
 | CA | Conditional Access |
 | CASB | Cloud Access Security Broker |
 | CFPB | Consumer Financial Protection Bureau |
@@ -235,4 +251,4 @@ Prohibition under federal consumer financial protection law against unfair, dece
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.3.1 - April 2026*

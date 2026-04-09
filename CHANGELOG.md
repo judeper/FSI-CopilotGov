@@ -4,6 +4,34 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.3.1 — 2026-04-09
+
+### New Controls
+- **1.16** Copilot Tuning Governance — new control for governing fine-tuned AI agents (5,000+ license orgs), covering data selection, audit trails, output supervision, and data residency (56 → 57 controls, Pillar 1: 15 → 16 controls)
+
+### Feature Gap Remediation (7 High-Priority)
+- **2.6** Web Search Controls — added domain exclusion for web grounding (block specific domains from Copilot responses)
+- **1.4** Semantic Index Governance — added authoritative sources management (designate up to 100 SharePoint sites via admin center)
+- **1.7** SharePoint Advanced Management — added Agent insight report (GA), Catalog management (Preview), SharePoint Admin Agent (Preview)
+- **4.1** Admin Settings — added Baseline Security Mode (BSM, 18-20 settings, simulation mode) and expanded Entra AI Administrator with dedicated homepage
+- **2.14** Declarative Agents Governance — added agent pinning controls (up to 3 agents per user, admin-enforced)
+- **2.1** DLP Policies — made prompt-level DLP policy location explicit (Roadmap 548671, Public Preview March 2026, GA June 2026)
+- **3.11** Record Keeping — added Cohasset Associates December 2024 compliance assessment reference (SEC 17a-4, FINRA 4511, CFTC 1.31)
+
+### Feature Gap Remediation (5 Moderate)
+- **4.5** Usage Analytics — added Copilot Dashboard satisfaction/intent metrics and high-usage user identification
+- **4.8** Cost Allocation — added high-usage user monitoring and message pack tracking for PAYG governance
+- **1.11** Change Management — added organizational branded footer for M365 Copilot app as user trust mechanism
+- **1.8** Information Architecture — added AI in SharePoint (Knowledge Agent) advisory with security implications for metadata extraction
+- **README** — added governance boundary clarification (CopilotGov vs AgentGov scope)
+
+### Reference Updates
+- Updated glossary with 5 new terms (AI in SharePoint, Authoritative Sources, Baseline Security Mode, Copilot Tuning, Domain Exclusion)
+- Updated admin toggles with domain exclusion, BSM, and agent pinning controls
+- Updated Microsoft Learn URLs with 7 new entries across 4 sections
+
+---
+
 ## v1.3 — 2026-04-09
 
 ### Critical — Copilot Licensing Changes (April 15, 2026)
