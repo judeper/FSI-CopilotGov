@@ -24,6 +24,9 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | What's new in Microsoft Purview | [https://learn.microsoft.com/en-us/purview/whats-new](https://learn.microsoft.com/en-us/purview/whats-new) |
 | Copilot Search admin experience | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-search-admin-experience](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-search-admin-experience) |
 | Manage Copilot Search | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-search-manage](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-search-manage) |
+| Secure and Govern Copilot blueprint | [https://learn.microsoft.com/en-us/microsoft-365/copilot/secure-govern-copilot-foundational-deployment-guidance](https://learn.microsoft.com/en-us/microsoft-365/copilot/secure-govern-copilot-foundational-deployment-guidance) |
+| Configure secure and governed Copilot foundation | [https://learn.microsoft.com/en-us/microsoft-365/copilot/configure-secure-governed-data-foundation-microsoft-365-copilot](https://learn.microsoft.com/en-us/microsoft-365/copilot/configure-secure-governed-data-foundation-microsoft-365-copilot) |
+| Use Purview for Copilot data security | [https://learn.microsoft.com/en-us/purview/ai-m365-copilot](https://learn.microsoft.com/en-us/purview/ai-m365-copilot) |
 
 ---
 
@@ -54,6 +57,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Sensitivity label inheritance in Copilot | [https://learn.microsoft.com/en-us/purview/sensitivity-labels](https://learn.microsoft.com/en-us/purview/sensitivity-labels) |
 | Encryption with sensitivity labels | [https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels](https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels) |
 | Mandatory labeling | [https://learn.microsoft.com/en-us/purview/sensitivity-labels-office-apps#require-users-to-apply-a-label](https://learn.microsoft.com/en-us/purview/sensitivity-labels-office-apps#require-users-to-apply-a-label) |
+| Sensitivity labels for Teams, Groups, and sites | [https://learn.microsoft.com/en-us/purview/sensitivity-labels-teams-groups-sites](https://learn.microsoft.com/en-us/purview/sensitivity-labels-teams-groups-sites) |
+| Purview Secure by Default deployment model | [https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-securebydefault-intro](https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-securebydefault-intro) |
 
 ---
 
@@ -121,6 +126,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Collect data for a case | [https://learn.microsoft.com/en-us/purview/ediscovery-create-draft-collection](https://learn.microsoft.com/en-us/purview/ediscovery-create-draft-collection) |
 | Review sets | [https://learn.microsoft.com/en-us/purview/ediscovery-review-set-search](https://learn.microsoft.com/en-us/purview/ediscovery-review-set-search) |
 | Export and download content | [https://learn.microsoft.com/en-us/purview/ediscovery-export-content](https://learn.microsoft.com/en-us/purview/ediscovery-export-content) |
+| Search Copilot data in eDiscovery | [https://learn.microsoft.com/en-us/purview/edisc-search-copilot-data](https://learn.microsoft.com/en-us/purview/edisc-search-copilot-data) |
 
 ---
 
@@ -144,6 +150,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Get started with DSPM for AI | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-considerations](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-considerations) |
 | DSPM for AI policies | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
 | DSPM for AI data assessments | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
+| Learn about DSPM | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about](https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about) |
+| DSPM data risk assessments (oversharing) | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing](https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing) |
 | eDiscovery changes announcement | [https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084](https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084) |
 
 ---
@@ -179,6 +187,17 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Learn about insider risk management | [https://learn.microsoft.com/en-us/purview/insider-risk-management](https://learn.microsoft.com/en-us/purview/insider-risk-management) |
 | Get started with insider risk management | [https://learn.microsoft.com/en-us/purview/insider-risk-management-configure](https://learn.microsoft.com/en-us/purview/insider-risk-management-configure) |
 | Create insider risk policies | [https://learn.microsoft.com/en-us/purview/insider-risk-management-policies](https://learn.microsoft.com/en-us/purview/insider-risk-management-policies) |
+| Adaptive Protection | [https://learn.microsoft.com/en-us/purview/insider-risk-management-adaptive-protection](https://learn.microsoft.com/en-us/purview/insider-risk-management-adaptive-protection) |
+
+---
+
+## Compliance Manager
+
+| Topic | URL |
+|-------|-----|
+| Microsoft Purview Compliance Manager | [https://learn.microsoft.com/en-us/purview/compliance-manager](https://learn.microsoft.com/en-us/purview/compliance-manager) |
+| Compliance Manager improvement actions | [https://learn.microsoft.com/en-us/purview/compliance-manager-improvement-actions](https://learn.microsoft.com/en-us/purview/compliance-manager-improvement-actions) |
+| Update improvement actions | [https://learn.microsoft.com/en-us/purview/compliance-manager-update-actions](https://learn.microsoft.com/en-us/purview/compliance-manager-update-actions) |
 
 ---
 
@@ -204,6 +223,10 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Data access governance reports | [https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports](https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports) |
 | Agent insights report in SharePoint | [https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents](https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents) |
 | AI in SharePoint (preview) | [https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started](https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started) |
+| SAM Content Management Assessment | [https://learn.microsoft.com/en-us/sharepoint/content-management-assessment](https://learn.microsoft.com/en-us/sharepoint/content-management-assessment) |
+| SharePoint site lifecycle management | [https://learn.microsoft.com/en-us/sharepoint/site-lifecycle-management](https://learn.microsoft.com/en-us/sharepoint/site-lifecycle-management) |
+| Restricted Content Discovery | [https://learn.microsoft.com/en-us/sharepoint/restricted-content-discovery](https://learn.microsoft.com/en-us/sharepoint/restricted-content-discovery) |
+| SharePoint Admin Agent (Content Governance Agent) | [https://learn.microsoft.com/en-us/sharepoint/content-governance-agent](https://learn.microsoft.com/en-us/sharepoint/content-governance-agent) |
 
 ---
 
@@ -215,6 +238,14 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Zero Trust for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/security/zero-trust/copilots/zero-trust-microsoft-365-copilot](https://learn.microsoft.com/en-us/security/zero-trust/copilots/zero-trust-microsoft-365-copilot) |
 | Microsoft Defender for Cloud Apps | [https://learn.microsoft.com/en-us/defender-cloud-apps/what-is-defender-for-cloud-apps](https://learn.microsoft.com/en-us/defender-cloud-apps/what-is-defender-for-cloud-apps) |
 | Baseline Security Mode | [https://techcommunity.microsoft.com/blog/microsoft_365blog/ignite-25-spotlight-announcing-microsoft-baseline-security-mode/4469709](https://techcommunity.microsoft.com/blog/microsoft_365blog/ignite-25-spotlight-announcing-microsoft-baseline-security-mode/4469709) |
+
+---
+
+## Microsoft 365 Archive
+
+| Topic | URL |
+|-------|-----|
+| Microsoft 365 Archive overview | [https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview](https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview) |
 
 ---
 

@@ -598,6 +598,16 @@ For FSI environments, organizations should document which business functions are
 | Work IQ | Persistent organizational memory; data accumulation and cross-boundary context risk | 3.10, 1.1 |
 | Copilot Cowork | Multi-step autonomous task delegation; extended processing scope and reduced human oversight | 3.1, 3.5 |
 
+### Microsoft Secure and Govern Blueprint
+
+Microsoft's **[Secure and Govern Microsoft 365 Copilot](https://learn.microsoft.com/en-us/microsoft-365/copilot/secure-govern-copilot-foundational-deployment-guidance)** blueprint organizes Copilot security and governance into three pillars:
+
+1. **Remediate oversharing** — Identify high-risk sites via DSPM data risk assessments, apply interim protections (RCD, DLP for Copilot), and fix access/permissions (RAC, site access reviews)
+2. **Set up guardrails** — Establish secure defaults at provisioning, configure DLP for Copilot grounding and prompts, enable Insider Risk Management with Adaptive Protection, and continuously enforce via DSPM Activity Explorer
+3. **Meet regulations** — Assess AI compliance gaps via Compliance Manager, define audit and retention requirements for Copilot interactions, and improve data hygiene with site lifecycle management and Microsoft 365 Archive
+
+This framework's 56 controls map comprehensively to all three blueprint pillars. See the **[Configure guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/configure-secure-governed-data-foundation-microsoft-365-copilot)** for step-by-step implementation and the **[Purview Secure by Default deployment model](https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-securebydefault-intro)** for the recommended labeling strategy.
+
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.3.1 - April 2026*
