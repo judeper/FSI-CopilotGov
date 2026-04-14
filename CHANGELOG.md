@@ -4,6 +4,32 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.3.2 — 2026-04-14
+
+### Microsoft Secure and Govern Blueprint Alignment
+
+Aligned documentation with Microsoft's [Secure and Govern Microsoft 365 Copilot](https://learn.microsoft.com/en-us/microsoft-365/copilot/secure-govern-copilot-foundational-deployment-guidance) deployment blueprint (published 2026-04-09).
+
+#### Content Updates
+- **1.2** SharePoint Oversharing Detection — aligned "oversharing assessment" terminology with Microsoft's canonical "data risk assessments" term
+- **1.7** SharePoint Advanced Management — expanded SharePoint Admin Agent (Content Governance Agent) with Copilot governance capabilities; added SAM Content Management Assessment section; added Microsoft 365 Archive to SAM feature table
+- **2.2** Sensitivity Labels — added Purview "Secure by Default" label derivation model (site-to-file label inheritance) with FSI scale considerations; added sensitivity labels for Teams/Groups/sites reference
+- **3.2** Data Retention — added Microsoft 365 Archive for inactive content section with FSI regulatory preservation use case
+- **3.12** Evidence Collection — expanded Compliance Manager AI governance guidance with improvement actions, remediation tracking workflow, and framework integration
+
+#### Architecture
+- **copilot-architecture.md** — added Microsoft Secure and Govern blueprint cross-reference with 3-pillar summary (Remediate Oversharing, Set Up Guardrails, Meet Regulations)
+
+#### Reference Updates
+- Added 18 new Microsoft Learn URLs across 8 sections (blueprint, DSPM, Compliance Manager, M365 Archive, SharePoint Admin Agent, eDiscovery, site sensitivity labels, Secure by Default)
+- Added new Compliance Manager and Microsoft 365 Archive URL sections
+
+#### AI Instruction Updates
+- Fixed control count (56 → 57) in `.github/copilot-instructions.md`
+- Added DSPM, Compliance Manager, SAM, and M365 Archive to platform areas
+
+---
+
 ## v1.3.1 — 2026-04-09
 
 ### New Controls

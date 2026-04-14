@@ -4,7 +4,7 @@
 
 This is a **documentation-only** MkDocs Material site — a governance framework for Microsoft 365 Copilot in US Financial Services. There is no application code; all content lives in `docs/` as Markdown. CI validates structure and language rules, then deploys to GitHub Pages.
 
-Key platform areas covered: Copilot Chat (Basic and Premium tiers), Agent 365 governance, Entra Agent ID, Work IQ, Copilot Cowork, Edit with Copilot (Agent Mode), Copilot Pages and Notebooks, declarative and SharePoint agents, third-party model providers (Anthropic, xAI), and Microsoft Purview compliance controls (DLP, sensitivity labels, eDiscovery, communication compliance, insider risk, data retention).
+Key platform areas covered: Copilot Chat (Basic and Premium tiers), Agent 365 governance, Entra Agent ID, Work IQ, Copilot Cowork, Edit with Copilot (Agent Mode), Copilot Pages and Notebooks, declarative and SharePoint agents, third-party model providers (Anthropic, xAI), Microsoft Purview compliance controls (DLP, sensitivity labels, eDiscovery, communication compliance, insider risk, data retention, DSPM data risk assessments, Compliance Manager), and SharePoint Advanced Management (RCD, RAC, Content Management Assessment, site lifecycle management, Microsoft 365 Archive).
 
 ## Build and Validation Commands
 
@@ -31,7 +31,7 @@ python scripts/verify_controls.py && python scripts/verify_language_rules.py && 
 The framework has three content layers:
 
 - **Framework** (`docs/framework/`) — Strategic governance context (executive summary, architecture, regulatory landscape, operating model)
-- **Controls** (`docs/controls/pillar-{1-4}-*/`) — 56 technical controls across 4 lifecycle pillars specifying *what* to configure and *why*
+- **Controls** (`docs/controls/pillar-{1-4}-*/`) — 57 technical controls across 4 lifecycle pillars specifying *what* to configure and *why*
 - **Playbooks** (`docs/playbooks/`) — control implementation playbooks in `control-implementations/{control-id}/` plus cross-control operational guidance in folders such as `governance-operations/` and `compliance-and-audit/`
 
 Supporting content: `docs/getting-started/` (quick start, checklist, phased rollout), `docs/reference/` (regulatory mappings, glossary, admin toggles, FAQ, external tool references), `docs/start-here.md` (newcomer orientation page).
