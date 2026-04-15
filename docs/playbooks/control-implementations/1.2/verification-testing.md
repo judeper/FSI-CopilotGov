@@ -13,7 +13,7 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
   3. Confirm the last scan date is within the past 7 days
   4. Check that the scan scope includes all SharePoint Online sites
   5. Verify AI observability section is accessible
-  6. Navigate to Microsoft 365 Admin Center > Copilot > Overview > Security tab and confirm DSPM security controls are accessible from this path
+  6. Navigate to Microsoft 365 Admin Center > Copilot > Security and confirm DSPM security controls are accessible from this path
 - **Expected Result:** DSPM is active with current scan coverage; both access paths (Purview and MAC) are functional
 - **Evidence:** Screenshots of DSPM overview from Purview portal and MAC Security tab with timestamps
 
@@ -88,7 +88,7 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| FINRA Rule 3110 | Supervisory procedures for information access | Oversharing detection supports compliance with information barrier requirements |
-| SEC Regulation S-P | Protection of customer information | Detecting and remediating oversharing helps meet customer data protection obligations |
-| GLBA Safeguards Rule | Access controls for NPI | Reduces risk of unauthorized access to non-public personal information |
-| SOX Section 404 | Internal controls over financial reporting | Helps prevent unauthorized access to financial data through Copilot |
+| FINRA Rule 3110 | Supervisory systems and WSPs | Oversharing detection supports supervision of access and communications risks |
+| SEC Regulation S-P | Safeguards for customer records and information | Detecting and remediating oversharing helps meet technical safeguard obligations |
+| GLBA §501(b) | Information security program / access controls for NPI | Reduces risk of unauthorized access to non-public personal information |
+| SOX Section 404 | Internal controls over financial reporting | Where applicable, helps address access control risks over financial reporting data |

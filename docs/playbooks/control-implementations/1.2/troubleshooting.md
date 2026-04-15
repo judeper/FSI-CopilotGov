@@ -61,7 +61,7 @@ Common issues and resolution steps for SharePoint oversharing detection using DS
 - **Resolution:**
   1. Add `-PageSize 100` parameter and process items in batches
   2. Filter to specific folders or content types rather than scanning entire libraries
-  3. Increase the PowerShell session timeout: `$global:PnPConnection.Timeout = 600000`
+  3. Increase the PowerShell session timeout: `Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Interactive -RequestTimeout 600`
   4. For very large libraries, use the SharePoint search API to first identify items with unique permissions
 
 ## Diagnostic Steps
@@ -86,3 +86,4 @@ Common issues and resolution steps for SharePoint oversharing detection using DS
 - [Portal Walkthrough](portal-walkthrough.md) — DSPM configuration steps
 - [PowerShell Setup](powershell-setup.md) — Detection and remediation scripts
 - [Verification & Testing](verification-testing.md) — Validation procedures
+- [Control 1.2: SharePoint Oversharing Detection](../../../controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md) — Parent control

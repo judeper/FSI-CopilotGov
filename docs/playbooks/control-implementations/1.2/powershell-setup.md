@@ -7,7 +7,7 @@ Automation scripts for detecting, reporting, and remediating SharePoint overshar
 - SharePoint Online Management Shell (`Microsoft.Online.SharePoint.PowerShell`)
 - Microsoft Graph PowerShell SDK (`Microsoft.Graph`)
 - PnP PowerShell module (`PnP.PowerShell`) for detailed site analysis
-- SharePoint Administrator or Global Administrator role
+- SharePoint Admin or Entra Global Admin role
 
 ### PnP PowerShell: Custom App Registration Required
 
@@ -19,8 +19,7 @@ Register-PnPEntraIDAppForInteractiveLogin `
     -ApplicationName "PnP Governance Shell - [YourOrg]" `
     -Tenant "yourorg.onmicrosoft.com" `
     -SharePointDelegatePermissions "AllSites.FullControl" `
-    -GraphDelegatePermissions "Sites.Read.All","Group.Read.All" `
-    -Interactive
+    -GraphDelegatePermissions "Sites.Read.All","Group.Read.All"
 ```
 
 Save the returned Client ID. All `Connect-PnPOnline` calls must include `-ClientId <your-app-id>`.
@@ -197,3 +196,4 @@ Write-Host "Remediation complete. $($remediationLog.Where({$_.Status -eq 'Succes
 
 - See [Verification & Testing](verification-testing.md) to validate detection accuracy
 - See [Troubleshooting](troubleshooting.md) for script execution issues
+- Back to [Control 1.2: SharePoint Oversharing Detection](../../../controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md)

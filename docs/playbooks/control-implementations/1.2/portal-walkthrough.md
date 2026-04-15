@@ -4,9 +4,9 @@ Step-by-step portal configuration for deploying Microsoft Purview Data Security 
 
 ## Prerequisites
 
-- Microsoft Purview administrator or Compliance Administrator role
+- Microsoft Purview administrator or Purview Compliance Admin role
 - Microsoft 365 E5 or Purview Suite (formerly E5 Compliance) add-on license
-- SharePoint Administrator role for site-level remediation
+- SharePoint Admin role for site-level remediation
 - DSPM feature enabled in the tenant
 
 ## Access Paths
@@ -16,7 +16,7 @@ DSPM is accessible from two locations:
 | Path | Use Case |
 |------|----------|
 | **Microsoft Purview > Data Security Posture Management** | Full DSPM experience — oversharing assessments, AI observability, Purview Posture Agent, Shadow AI discovery, item-level remediation |
-| **Microsoft 365 Admin Center > Copilot > Overview > Security tab** | Quick access to Copilot-specific security controls: default DLP policy status, Shadow AI findings summary, and links to Purview DSPM |
+| **Microsoft 365 Admin Center > Copilot > Security** | Quick access to Copilot-specific security controls: default DLP policy status, Shadow AI findings summary, and links to Purview DSPM |
 
 ## Steps
 
@@ -69,7 +69,7 @@ Configure the unified AI observability view to monitor AI activity across Micros
 3. Check **Shadow AI discovery** findings for unsanctioned AI tools detected in the organization
 4. Configure alerts for new Shadow AI tool detections
 
-**Quick access:** Microsoft 365 Admin Center > Copilot > Overview > Security tab shows a summary of Shadow AI findings and provides a link to the full Purview DSPM experience.
+**Quick access:** Microsoft 365 Admin Center > Copilot > Security shows a summary of Shadow AI findings and provides a link to the full Purview DSPM experience.
 
 ### Step 5: Configure Oversharing Policies
 
@@ -113,4 +113,5 @@ Configure alert thresholds for ongoing monitoring. Set up email notifications to
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for automated oversharing detection scripts
 - See [Verification & Testing](verification-testing.md) to validate remediation completeness
-- Review Control 1.3 for Restricted SharePoint Search and Restricted Content Discovery as complementary controls
+- Review [Control 1.3: Restricted SharePoint Search](../../../controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md) for Restricted Content Discovery as a complementary control
+- Back to [Control 1.2: SharePoint Oversharing Detection](../../../controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md)
