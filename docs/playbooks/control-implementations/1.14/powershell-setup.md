@@ -69,3 +69,4 @@ pwsh .\scripts\Export-Evidence.ps1 -InputPath .\artifacts -OutputPath .\artifact
 - Coordinate recurring scans with [Control 1.15: SharePoint Permissions Drift Detection](../../../controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md).
 
 *FSI Copilot Governance Framework v1.3 - April 2026*
+- Back to [Control 1.14](../../../controls/pillar-1-readiness/1.14-item-level-permission-scanning.md)

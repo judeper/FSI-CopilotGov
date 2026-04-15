@@ -15,7 +15,7 @@ Step-by-step portal workflow for selecting SharePoint sites, validating scope, a
 | Portal | Path | Why it matters |
 |--------|------|----------------|
 | Microsoft Purview | Data Security Posture Management > Assessments > Oversharing | Confirms which sites still warrant item-level analysis |
-| SharePoint admin center | Active sites / Data Access Governance reports | Helps identify high-risk sites, libraries, and owners |
+| SharePoint admin center | Reports > Data access governance | Helps identify high-risk sites, libraries, and owners |
 | Microsoft Entra admin center | Groups and enterprise applications | Validates broad group access and ownership before remediation |
 
 ## Steps
@@ -59,3 +59,4 @@ Create a simple scan manifest containing site URL, targeted libraries, owner, ap
 - Keep [Troubleshooting](troubleshooting.md) available for scan coverage, throttling, and approval-path issues.
 
 *FSI Copilot Governance Framework v1.3 - April 2026*
+- Back to [Control 1.14](../../../controls/pillar-1-readiness/1.14-item-level-permission-scanning.md)

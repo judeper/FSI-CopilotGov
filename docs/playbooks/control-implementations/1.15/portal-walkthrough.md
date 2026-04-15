@@ -13,7 +13,7 @@ Step-by-step governance workflow for establishing approved permission baselines,
 
 | Portal | Path | Why it matters |
 |--------|------|----------------|
-| SharePoint admin center | Active sites / Site permissions | Establishes the approved access baseline for each monitored site |
+| SharePoint admin center | Reports > Data access governance | Establishes the approved access baseline for each monitored site |
 | Microsoft Entra admin center | Groups / Access reviews | Supports group membership validation and downstream recertification |
 | Governance reporting surface | Evidence repository / review workspace | Stores drift findings, approvals, and exception records |
 
@@ -54,3 +54,4 @@ If the organization uses access reviews, define when repeated HIGH-risk drift sh
 - Keep [Troubleshooting](troubleshooting.md) available for baseline, alerting, and reversion issues.
 
 *FSI Copilot Governance Framework v1.3 - April 2026*
+- Back to [Control 1.15](../../../controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md)

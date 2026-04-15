@@ -70,3 +70,4 @@ pwsh .\scripts\Export-DriftEvidence.ps1 `
 - Pair recurring drift findings with access-recertification actions where appropriate.
 
 *FSI Copilot Governance Framework v1.3 - April 2026*
+- Back to [Control 1.15](../../../controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md)
