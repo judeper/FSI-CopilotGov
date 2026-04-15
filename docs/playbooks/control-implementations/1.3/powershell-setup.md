@@ -5,7 +5,7 @@ Automation scripts for managing Restricted SharePoint Search (RSS) and Restricte
 ## Prerequisites
 
 - SharePoint Online Management Shell (`Microsoft.Online.SharePoint.PowerShell`)
-- SharePoint Administrator role
+- SharePoint Admin role
 - SharePoint Advanced Management (SAM) license active in tenant — included with Microsoft 365 Copilot licenses at no additional cost
 - Approved sites list in CSV format (for RSS)
 - List of sites to exclude from Copilot discovery (for RCD)
@@ -213,3 +213,4 @@ $rcdEnabledSites | Export-Csv "RCDAudit_$(Get-Date -Format 'yyyyMMdd').csv" -NoT
 
 - See [Verification & Testing](verification-testing.md) to validate search restrictions
 - See [Troubleshooting](troubleshooting.md) for common RSS configuration issues
+- Back to [Control 1.3: Restricted SharePoint Search](../../../controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md)

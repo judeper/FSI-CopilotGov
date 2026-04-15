@@ -9,10 +9,10 @@ Test cases and evidence collection for validating Restricted SharePoint Search (
 - **Objective:** Confirm that Restricted SharePoint Search is enabled at the tenant level
 - **Steps:**
   1. Run `Get-SPOTenantRestrictedSearchMode` in PowerShell
-  2. Verify the output shows `Mode: Restricted`
+  2. Verify the output shows `Mode: Enabled`
   3. Cross-reference in SharePoint Admin Center > Settings > Search
   4. Confirm the setting matches expected configuration
-- **Expected Result:** RSS mode returns "Restricted" via both PowerShell and Admin Center
+- **Expected Result:** RSS mode returns "Enabled" via both PowerShell and Admin Center
 - **Evidence:** PowerShell output and admin center screenshot
 
 ### Test 2: Allowed List Completeness
@@ -91,5 +91,10 @@ Test cases and evidence collection for validating Restricted SharePoint Search (
 |-----------|-------------|------------------------------|
 | FINRA Rule 3110 | Supervisory controls over information access | RSS limits Copilot data scope to approved content sources |
 | SEC Regulation S-P | Safeguarding customer information | Restricting search scope reduces risk of AI surfacing protected data |
-| GLBA Safeguards Rule | Access controls | RSS acts as a preventive control limiting AI content access |
+| GLBA §501(b) | Information security program / access controls | RSS acts as a preventive control limiting AI content access |
 | SOX Section 404 | Internal controls | Change-controlled allowed list supports compliance with internal control requirements |
+
+## Next Steps
+
+- See [Troubleshooting](troubleshooting.md) for resolving failed test cases
+- Back to [Control 1.3: Restricted SharePoint Search](../../../controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md)

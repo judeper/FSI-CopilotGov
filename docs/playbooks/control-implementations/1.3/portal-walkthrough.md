@@ -4,7 +4,7 @@ Step-by-step portal configuration for implementing Restricted SharePoint Search 
 
 ## Prerequisites
 
-- SharePoint Administrator role
+- SharePoint Admin role
 - SharePoint Advanced Management (SAM) license — included with Microsoft 365 Copilot licenses at no additional cost; standalone SAM add-on required for tenants without Copilot licenses
 - List of approved SharePoint sites for Copilot grounding (for RSS)
 - List of sites to exclude from Copilot discovery (for RCD)
@@ -38,7 +38,7 @@ RCD can be used independently of RSS or alongside it. For each site you want to 
 
 1. Navigate to the site in Active sites
 2. Open the site Settings panel
-3. Enable "Restrict content org-wide search"
+3. Enable "Restrict content from Microsoft 365 Copilot"
 4. Save the setting
 
 RCD excludes the site from Copilot discovery while leaving direct user access unchanged. Users with permissions can still navigate to and use the site — only Copilot's ability to discover and surface the site's content is restricted.
@@ -89,4 +89,5 @@ Document the RSS and/or RCD configuration and communicate to Copilot users that 
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for scripted RSS and RCD management
 - See [Verification & Testing](verification-testing.md) to validate search restrictions
-- Review Control 1.2 for DSPM oversharing detection as a complementary control
+- Review [Control 1.2: SharePoint Oversharing Detection](../../../controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md) for DSPM oversharing detection as a complementary control
+- Back to [Control 1.3: Restricted SharePoint Search](../../../controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md)

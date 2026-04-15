@@ -54,7 +54,7 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
   1. Verify the user has at least read access to the site in question
   2. Check that the content has been indexed by searching directly within the site
   3. Verify the site URL in the allowed list matches exactly (no trailing slashes or variations)
-  4. Request a re-index of the site if content was recently added: `Request-SPOReIndex -Identity <siteUrl>`
+  4. Request a re-index of the site if content was recently added using PnP PowerShell (`Invoke-PnPSiteSearchReindex`) or the SharePoint site settings UI under Search and Offline Availability
 
 ### Issue 5: RSS Accidentally Disabled
 
@@ -68,7 +68,7 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 
 ## Diagnostic Steps
 
-1. **Check RSS mode:** `Get-SPOTenantRestrictedSearchMode` should return "Restricted"
+1. **Check RSS mode:** `Get-SPOTenantRestrictedSearchMode` should return "Enabled"
 2. **Verify allowed list:** `Get-SPOTenantRestrictedSearchAllowedList` returns expected sites
 3. **Test as specific user:** Use a non-admin account to test search behavior
 4. **Review audit logs:** Search for RSS-related admin operations in unified audit log
@@ -88,3 +88,4 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 - [Portal Walkthrough](portal-walkthrough.md) — Configuration reference
 - [PowerShell Setup](powershell-setup.md) — Allowed list management scripts
 - [Verification & Testing](verification-testing.md) — Validation procedures
+- [Control 1.3: Restricted SharePoint Search](../../../controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md) — Parent control
