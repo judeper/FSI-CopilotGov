@@ -63,7 +63,11 @@ Test cases and evidence collection for validating Semantic Index governance cont
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| FINRA Rule 3110 | Information access controls | Index governance limits AI access scope to approved content |
+| FINRA Rule 3110 | Supervisory systems and WSPs | Index governance supports supervision of AI-assisted content access |
 | SEC Regulation S-P | Customer information safeguards | Controlling index scope reduces risk of AI accessing protected NPI |
-| OCC Heightened Standards | Third-party risk management | Governing AI content access supports compliance with data control standards |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Risk management governance | Where applicable, governing AI content access supports heightened risk management requirements |
 | NIST AI RMF | GOVERN 1.1 — AI governance policies | Formal index governance supports compliance with AI governance requirements |
+
+## Next Steps
+
+- Back to [Control 1.4: Semantic Index Governance](../../../controls/pillar-1-readiness/1.4-semantic-index-governance.md)

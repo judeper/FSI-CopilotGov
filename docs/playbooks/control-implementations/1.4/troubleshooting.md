@@ -12,7 +12,7 @@ Common issues and resolution steps for Semantic Index governance.
   1. Check the Copilot readiness page for any index processing alerts
   2. Verify the content is in a supported format (Office documents, PDFs, text files)
   3. Confirm the site containing the content is not excluded from indexing
-  4. If content remains unindexed after 72 hours, request a site re-index via `Request-SPOReIndex`
+  4. If content remains unindexed after 72 hours, request a site re-index via PnP PowerShell (`Invoke-PnPSiteSearchReindex`) or the SharePoint site settings UI
 
 ### Issue 2: Copilot Returning Content That Should Be Excluded
 

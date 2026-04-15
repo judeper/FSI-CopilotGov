@@ -4,7 +4,7 @@ Step-by-step portal configuration for governing the Microsoft 365 Semantic Index
 
 ## Prerequisites
 
-- Global Administrator or SharePoint Administrator role
+- Entra Global Admin or SharePoint Admin role
 - Microsoft 365 Copilot licenses provisioned in the tenant
 - Understanding of current content landscape across SharePoint, OneDrive, and Exchange
 - Governance committee approval on semantic index scope decisions

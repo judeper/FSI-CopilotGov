@@ -6,7 +6,7 @@ Automation scripts for managing and monitoring the Microsoft 365 Semantic Index 
 
 - Microsoft Graph PowerShell SDK (`Microsoft.Graph`)
 - SharePoint Online Management Shell
-- Global Administrator or Search Administrator role
+- Entra Global Admin or Search Administrator role
 - Microsoft 365 Copilot licenses in the tenant
 
 ## Scripts
