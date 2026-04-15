@@ -33,7 +33,7 @@ Common issues and resolution steps for DLP policies governing Copilot interactio
 - **Symptoms:** The Microsoft-deployed default Copilot DLP policy does not appear in Purview > DLP > Policies, or match data is not populating in simulation mode
 - **Root Cause:** The default policy (GA January 2026, MC1182689) should auto-appear for tenants with appropriate licenses. If it does not appear, the policy may not have been provisioned for the tenant, or the admin may lack visibility permissions.
 - **Resolution:**
-  1. Verify access via MAC > Copilot > Overview > Security tab (an alternative access point for the default policy)
+  1. Verify access via MAC > Copilot > Security (an alternative access point for the default policy)
   2. Confirm the tenant has Microsoft 365 E5 or E5 Compliance licenses (required for Copilot DLP)
   3. Wait 48-72 hours after license assignment for the default policy to provision
   4. If the policy does not appear, open a Microsoft support ticket referencing MC1182689
@@ -99,7 +99,7 @@ Common issues and resolution steps for DLP policies governing Copilot interactio
 1. **Verify both policy types exist:** `Get-DlpCompliancePolicy | Where-Object { $_.Name -match "Copilot" } | Select Name, Mode, Enabled`
 2. **Check rule configuration for each policy type:** `Get-DlpComplianceRule -Policy <name>`
 3. **Review recent incidents by policy type:** Run Script 4 for the past 7 days and filter by policy name
-4. **Locate default policy:** Check MAC > Copilot > Overview > Security tab for the Microsoft-deployed default policy
+4. **Locate default policy:** Check MAC > Copilot > Security for the Microsoft-deployed default policy
 5. **Test with known data:** Create a test prompt with known SIT patterns; create a test document with a known label
 6. **Check audit logs:** Search for DLP events in the unified audit log
 7. **Use Security Copilot policy explanations:** In the Purview DLP console, use AI-powered policy explanations to review complex rule logic and verify both policy types are configured as intended
@@ -118,3 +118,4 @@ Common issues and resolution steps for DLP policies governing Copilot interactio
 - [Portal Walkthrough](portal-walkthrough.md) — DLP policy configuration for both policy types
 - [PowerShell Setup](powershell-setup.md) — DLP automation scripts for both policy types
 - [Verification & Testing](verification-testing.md) — DLP validation procedures
+- Back to [Control 2.1](../../../controls/pillar-2-security/2.1-dlp-policies-for-copilot.md)

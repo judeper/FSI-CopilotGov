@@ -112,3 +112,4 @@ Common issues and resolution steps for Conditional Access policies governing Cop
 - [Portal Walkthrough](portal-walkthrough.md) — CA policy configuration
 - [PowerShell Setup](powershell-setup.md) — CA policy management scripts
 - [Verification & Testing](verification-testing.md) — CA validation procedures
+- Back to [Control 2.3](../../../controls/pillar-2-security/2.3-conditional-access-policies.md)

@@ -4,7 +4,7 @@ Step-by-step portal verification for encryption controls protecting data process
 
 ## Prerequisites
 
-- Global Administrator or Security Administrator role
+- Entra Global Admin or Security Administrator role
 - Microsoft Purview access for encryption key management
 - Understanding of Microsoft 365 encryption architecture
 
@@ -75,3 +75,4 @@ Create an encryption posture document covering:
 - Proceed to [PowerShell Setup](powershell-setup.md) for encryption verification scripts
 - See [Verification & Testing](verification-testing.md) to validate encryption
 - Review Control 2.2 for sensitivity label encryption interaction with Copilot
+- Back to [Control 2.8](../../../controls/pillar-2-security/2.8-encryption.md)

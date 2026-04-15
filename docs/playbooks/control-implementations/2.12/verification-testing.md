@@ -50,5 +50,6 @@ Test cases and evidence collection for validating external sharing controls.
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
 | SEC Regulation S-P | Third-party information sharing | External sharing controls support compliance with NPI sharing restrictions |
-| GLBA Safeguards Rule | Access controls for NPI | Guest access governance helps meet safeguards requirements |
-| FINRA Rule 3110 | Information access oversight | External sharing restrictions support compliance with supervisory controls |
+| GLBA §501(b) | Access controls for NPI | Guest access governance helps meet safeguards requirements |
+| FINRA Rule 3110 | Supervisory systems and WSPs | External sharing restrictions support compliance with supervisory controls |
+- Back to [Control 2.12](../../../controls/pillar-2-security/2.12-external-sharing-governance.md)

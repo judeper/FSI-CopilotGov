@@ -101,3 +101,4 @@ Common issues and resolution steps for Information Barriers.
 - [Portal Walkthrough](portal-walkthrough.md) — Barrier configuration
 - [PowerShell Setup](powershell-setup.md) — Barrier management scripts
 - [Verification & Testing](verification-testing.md) — Barrier validation
+- Back to [Control 2.4](../../../controls/pillar-2-security/2.4-information-barriers.md)

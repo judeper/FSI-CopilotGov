@@ -90,3 +90,4 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 - [Portal Walkthrough](portal-walkthrough.md) — Session control configuration
 - [PowerShell Setup](powershell-setup.md) — Monitoring scripts
 - [Verification & Testing](verification-testing.md) — Session control validation
+- Back to [Control 2.9](../../../controls/pillar-2-security/2.9-defender-cloud-apps.md)

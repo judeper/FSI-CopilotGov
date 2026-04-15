@@ -81,3 +81,4 @@ Step-by-step portal configuration for governing Copilot Pages and Copilot Notebo
 - Proceed to [PowerShell Setup](powershell-setup.md) for Pages management automation
 - See [Verification & Testing](verification-testing.md) to validate Pages security
 - Review Control 2.12 for External Sharing governance
+- Back to [Control 2.11](../../../controls/pillar-2-security/2.11-copilot-pages-security.md)

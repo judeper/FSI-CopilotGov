@@ -66,3 +66,4 @@ Common issues and resolution steps for data residency controls.
 - [Portal Walkthrough](portal-walkthrough.md) — Residency verification steps
 - [PowerShell Setup](powershell-setup.md) — Monitoring scripts
 - [Verification & Testing](verification-testing.md) — Residency validation
+- Back to [Control 2.7](../../../controls/pillar-2-security/2.7-data-residency.md)

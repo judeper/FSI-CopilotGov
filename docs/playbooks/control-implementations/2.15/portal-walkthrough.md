@@ -75,3 +75,4 @@ Create a network security document for Copilot connectivity:
 - Proceed to [PowerShell Setup](powershell-setup.md) for network verification automation
 - See [Verification & Testing](verification-testing.md) to validate network controls
 - Review Control 2.3 for Conditional Access integration with network controls
+- Back to [Control 2.15](../../../controls/pillar-2-security/2.15-network-security.md)

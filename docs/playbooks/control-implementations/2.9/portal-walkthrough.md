@@ -99,3 +99,4 @@ Verify that Copilot-related activities appear in the activity log. Configure log
 - Proceed to [PowerShell Setup](powershell-setup.md) for session control automation
 - See [Verification & Testing](verification-testing.md) to validate session controls
 - Review Control 2.3 for Conditional Access integration
+- Back to [Control 2.9](../../../controls/pillar-2-security/2.9-defender-cloud-apps.md)

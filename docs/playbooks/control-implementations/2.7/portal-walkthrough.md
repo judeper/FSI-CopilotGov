@@ -69,3 +69,4 @@ Create a data residency compliance document that includes:
 - Proceed to [PowerShell Setup](powershell-setup.md) for residency verification automation
 - See [Verification & Testing](verification-testing.md) to validate residency controls
 - Review Control 2.8 for encryption controls that complement data residency
+- Back to [Control 2.7](../../../controls/pillar-2-security/2.7-data-residency.md)

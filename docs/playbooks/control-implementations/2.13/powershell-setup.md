@@ -6,7 +6,7 @@ Automation scripts for managing plugin and Graph connector security.
 
 - Microsoft Teams PowerShell module
 - Microsoft Graph PowerShell SDK
-- Teams Administrator and Global Administrator roles
+- Teams Administrator and Entra Global Admin roles
 
 ## Scripts
 
@@ -89,3 +89,4 @@ Write-Host "Recommended: User consent disabled; admin consent required for all a
 
 - See [Verification & Testing](verification-testing.md) for plugin security validation
 - See [Troubleshooting](troubleshooting.md) for plugin issues
+- Back to [Control 2.13](../../../controls/pillar-2-security/2.13-plugin-connector-security.md)

@@ -52,4 +52,5 @@ Test cases and evidence collection for validating Copilot Pages security.
 |-----------|-------------|------------------------------|
 | FINRA Rule 3110 | Communication supervision | Pages sharing controls support compliance with AI-generated content oversight |
 | SEC Rule 17a-4 | Records retention | Retention on Pages helps meet records preservation requirements |
-| GLBA Safeguards Rule | Information sharing controls | Sharing restrictions help prevent unauthorized distribution of AI-generated content |
+| GLBA §501(b) | Information sharing controls | Sharing restrictions help prevent unauthorized distribution of AI-generated content |
+- Back to [Control 2.11](../../../controls/pillar-2-security/2.11-copilot-pages-security.md)

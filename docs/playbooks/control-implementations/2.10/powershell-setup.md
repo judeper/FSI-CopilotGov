@@ -120,3 +120,4 @@ $offHours | Export-Csv "OffHoursCopilot_$(Get-Date -Format 'yyyyMMdd').csv" -NoT
 
 - See [Verification & Testing](verification-testing.md) for insider risk validation
 - See [Troubleshooting](troubleshooting.md) for insider risk issues
+- Back to [Control 2.10](../../../controls/pillar-2-security/2.10-insider-risk-detection.md)

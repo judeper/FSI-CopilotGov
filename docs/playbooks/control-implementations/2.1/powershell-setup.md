@@ -5,7 +5,7 @@ Automation scripts for managing DLP policies that protect Copilot interactions. 
 ## Prerequisites
 
 - Security & Compliance PowerShell (`ExchangeOnlineManagement`)
-- Compliance Administrator role
+- Purview Compliance Admin role
 - Microsoft 365 E5 or E5 Compliance license
 
 ## Scripts
@@ -190,3 +190,4 @@ $incidentReport | Export-Csv "DLPIncidents_$(Get-Date -Format 'yyyyMMdd').csv" -
 
 - See [Verification & Testing](verification-testing.md) to validate both DLP policy types
 - See [Troubleshooting](troubleshooting.md) for DLP policy issues, including guidance on why label-based and SIT-based policies cannot be combined
+- Back to [Control 2.1](../../../controls/pillar-2-security/2.1-dlp-policies-for-copilot.md)

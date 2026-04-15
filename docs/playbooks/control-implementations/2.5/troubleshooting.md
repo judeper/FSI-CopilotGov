@@ -66,3 +66,4 @@ Common issues and resolution steps for data minimization and grounding scope con
 - [Portal Walkthrough](portal-walkthrough.md) — Scope configuration
 - [PowerShell Setup](powershell-setup.md) — Scope management scripts
 - [Verification & Testing](verification-testing.md) — Scope validation
+- Back to [Control 2.5](../../../controls/pillar-2-security/2.5-data-minimization-grounding-scope.md)

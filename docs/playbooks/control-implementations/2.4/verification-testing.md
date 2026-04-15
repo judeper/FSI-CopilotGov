@@ -88,3 +88,4 @@ Test cases and evidence collection for validating Information Barrier enforcemen
 | SEC Regulation FD | Fair disclosure requirements | Information barriers help prevent selective disclosure through AI |
 | Securities Exchange Act Section 15(f) | Chinese Wall requirements | Barriers support compliance with broker-dealer Chinese Wall obligations |
 | MiFID II | Conflict of interest management | Information barriers support compliance with conflict management requirements |
+- Back to [Control 2.4](../../../controls/pillar-2-security/2.4-information-barriers.md)

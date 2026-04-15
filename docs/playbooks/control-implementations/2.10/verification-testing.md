@@ -122,3 +122,4 @@ Test cases and evidence collection for validating insider risk detection for Cop
 | GLBA 501(b) | Monitoring and testing safeguards | IRM provides ongoing monitoring evidence and quarterly testing capability |
 | Bank Secrecy Act | Suspicious activity monitoring | Copilot and agent usage monitoring supports compliance with suspicious activity reporting |
 | NIST CSF | DE.AE-1 Anomaly detection | Insider risk supports compliance with anomaly detection requirements |
+- Back to [Control 2.10](../../../controls/pillar-2-security/2.10-insider-risk-detection.md)

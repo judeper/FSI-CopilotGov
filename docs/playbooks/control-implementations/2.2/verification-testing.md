@@ -115,5 +115,6 @@ Test cases and evidence collection for validating sensitivity label enforcement 
 |-----------|-------------|------------------------------|
 | FINRA Rule 3110 | Information classification | Label enforcement supports compliance with content classification requirements; agent label inheritance extends classification to AI-generated content |
 | SEC Regulation S-P | Customer information protection | Labels help classify and protect AI-generated content containing NPI; nested auto-labeling enables precise classification of complex financial data |
-| GLBA Safeguards Rule | Data classification controls | Sensitivity labels and label groups provide systematic data classification for AI outputs and Copilot interactions |
+| GLBA §501(b) | Data classification controls | Sensitivity labels and label groups provide systematic data classification for AI outputs and Copilot interactions |
 | NIST CSF | PR.DS-1 Data at rest protection | Labels enforce protection policies on stored Copilot content; agent inherited labels extend protection to agent interactions |
+- Back to [Control 2.2](../../../controls/pillar-2-security/2.2-sensitivity-labels-classification.md)

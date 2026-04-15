@@ -103,3 +103,4 @@ Test cases and evidence collection for validating Conditional Access policies fo
 | NIST SP 800-63 | Authentication assurance levels | Conditional Access helps meet assurance level requirements |
 | SEC Regulation S-P | Access controls | Device and authentication controls support compliance with access control obligations |
 | PCI DSS Req 8 | Identify and authenticate access | MFA and device compliance help meet authentication requirements |
+- Back to [Control 2.3](../../../controls/pillar-2-security/2.3-conditional-access-policies.md)

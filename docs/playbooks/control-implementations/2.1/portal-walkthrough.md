@@ -4,7 +4,7 @@ Step-by-step portal configuration for deploying Data Loss Prevention policies th
 
 ## Prerequisites
 
-- Microsoft Purview Compliance Administrator role
+- Microsoft Purview Purview Compliance Admin role
 - Microsoft 365 E5 or E5 Compliance license
 - Sensitivity information types defined for FSI data (account numbers, SSNs, financial data)
 - Sensitivity label taxonomy deployed (see Control 2.2 — label-based DLP depends on labels)
@@ -29,7 +29,7 @@ These two types must be configured as separate DLP rules — they cannot be comb
 Access the DLP policy creation wizard. Two separate policies will be created for the two DLP policy types. Both use the "Microsoft 365 Copilot" location.
 
 **Alternative access for default Copilot DLP policy:**
-**Path:** Microsoft 365 Admin Center > Copilot > Overview > Security tab
+**Path:** Microsoft 365 Admin Center > Copilot > Security
 
 The MAC Security tab provides quick access to the Microsoft-deployed default Copilot DLP policy (in simulation mode, GA January 2026) and links to Purview DLP for full policy management.
 
@@ -62,7 +62,7 @@ Configure a separate SIT-based prompt blocking policy. This policy scans what us
 ### Step 4: Review and Configure the Default DLP Policy
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** MAC > Copilot > Overview > Security tab (or Purview > DLP > Policies)
+**Path:** MAC > Copilot > Security (or Purview > DLP > Policies)
 
 Microsoft auto-deploys a default DLP policy for Copilot in simulation mode. This is the SIT-based prompt blocking type:
 
@@ -143,3 +143,4 @@ For any new policy not yet in simulation mode, deploy in test mode first:
 - Proceed to [PowerShell Setup](powershell-setup.md) for DLP automation
 - See [Verification & Testing](verification-testing.md) to validate both DLP policy types
 - Review Control 2.2 for Sensitivity Label integration with Type 1 label-based DLP
+- Back to [Control 2.1](../../../controls/pillar-2-security/2.1-dlp-policies-for-copilot.md)

@@ -118,3 +118,4 @@ Configure privacy controls to balance risk detection with employee privacy:
 - See [Verification & Testing](verification-testing.md) to validate risk detection
 - Review Control 2.3 for Adaptive Protection CA integration
 - Review Control 2.9 for Defender for Cloud Apps session monitoring and agent threat detection
+- Back to [Control 2.10](../../../controls/pillar-2-security/2.10-insider-risk-detection.md)

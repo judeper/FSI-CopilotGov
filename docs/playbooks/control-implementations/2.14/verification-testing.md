@@ -75,3 +75,4 @@ Test cases and evidence collection for validating agent access, sharing, Registr
 | OCC Model Risk Management | Model governance | Agent governance supports compliance with AI model governance requirements |
 | FINRA Rule 3110 | Technology supervision | Agent oversight supports compliance with supervisory technology requirements |
 | NIST AI RMF | GOVERN 1.1 — AI system governance | Formal agent governance supports compliance with AI governance requirements |
+- Back to [Control 2.14](../../../controls/pillar-2-security/2.14-declarative-agents-governance.md)

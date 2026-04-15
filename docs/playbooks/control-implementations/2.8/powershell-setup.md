@@ -47,7 +47,7 @@ Write-Host "`nOrganization TLS: TLSReceiveDomainSecureList=$($orgConfig.TLSRecei
 Import-Module ExchangeOnlineManagement
 Connect-ExchangeOnline
 
-$deks = Get-DataEncryptionPolicy-ErrorAction SilentlyContinue
+$deks = Get-DataEncryptionPolicy -ErrorAction SilentlyContinue
 
 if ($deks) {
     Write-Host "=== Customer Key Status ==="
@@ -104,3 +104,4 @@ $encLabels | Export-Csv "EncryptionLabels_$(Get-Date -Format 'yyyyMMdd').csv" -N
 
 - See [Verification & Testing](verification-testing.md) for encryption validation
 - See [Troubleshooting](troubleshooting.md) for encryption issues
+- Back to [Control 2.8](../../../controls/pillar-2-security/2.8-encryption.md)

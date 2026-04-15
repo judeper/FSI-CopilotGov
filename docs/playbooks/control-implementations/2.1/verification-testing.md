@@ -46,7 +46,7 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 
 - **Objective:** Validate that the Microsoft-deployed default Copilot DLP policy is capturing expected matches
 - **Steps:**
-  1. Access the default policy via MAC > Copilot > Overview > Security tab or Purview > DLP > Policies
+  1. Access the default policy via MAC > Copilot > Security or Purview > DLP > Policies
   2. Review simulation mode match data for the past 14+ days
   3. Classify a sample of 20 matches as true positive or false positive
   4. Calculate the false positive rate
@@ -142,5 +142,6 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 |-----------|-------------|------------------------------|
 | SEC Regulation S-P (17 CFR §248, amended Dec 3, 2025) | Customer NPI safeguards covering AI interaction surfaces | SIT-based prompt blocking (Type 2) addresses the requirement that customer information safeguards extend to AI interaction surfaces |
 | FINRA Rule 3110 | Supervisory data controls | Both DLP policy types support compliance with supervisory requirements for data protection in AI interactions |
-| GLBA Safeguards Rule | Technical safeguards | Both DLP types provide technical controls — Type 1 at the response layer, Type 2 at the prompt layer |
+| GLBA §501(b) | Technical safeguards | Both DLP types provide technical controls — Type 1 at the response layer, Type 2 at the prompt layer |
 | PCI DSS | Cardholder data protection | SIT-based prompt blocking prevents credit card data from entering Copilot prompts; label-based blocking prevents labeled cardholder data from being surfaced in responses |
+- Back to [Control 2.1](../../../controls/pillar-2-security/2.1-dlp-policies-for-copilot.md)

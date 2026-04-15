@@ -78,3 +78,4 @@ Common issues and resolution steps for declarative, SharePoint-backed, and Regis
 - [Portal Walkthrough](portal-walkthrough.md) — Agent governance configuration
 - [PowerShell Setup](powershell-setup.md) — Agent management scripts
 - [Verification & Testing](verification-testing.md) — Governance validation
+- Back to [Control 2.14](../../../controls/pillar-2-security/2.14-declarative-agents-governance.md)

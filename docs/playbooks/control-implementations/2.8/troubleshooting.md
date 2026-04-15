@@ -67,3 +67,4 @@ Common issues and resolution steps for encryption controls.
 - [Portal Walkthrough](portal-walkthrough.md) — Encryption configuration
 - [PowerShell Setup](powershell-setup.md) — Verification scripts
 - [Verification & Testing](verification-testing.md) — Encryption validation
+- Back to [Control 2.8](../../../controls/pillar-2-security/2.8-encryption.md)

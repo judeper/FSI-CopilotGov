@@ -88,3 +88,4 @@ Common issues and resolution steps for Copilot Pages security.
 - [Portal Walkthrough](portal-walkthrough.md) — Pages security configuration
 - [PowerShell Setup](powershell-setup.md) — Monitoring scripts
 - [Verification & Testing](verification-testing.md) — Security validation
+- Back to [Control 2.11](../../../controls/pillar-2-security/2.11-copilot-pages-security.md)

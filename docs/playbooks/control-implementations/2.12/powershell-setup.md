@@ -6,7 +6,7 @@ Automation scripts for managing external sharing and guest access controls.
 
 - SharePoint Online Management Shell
 - Microsoft Graph PowerShell SDK
-- SharePoint Administrator and Global Reader roles
+- SharePoint Admin and Global Reader roles
 
 ## Scripts
 
@@ -97,3 +97,4 @@ foreach ($guest in $staleGuests) {
 
 - See [Verification & Testing](verification-testing.md) for sharing control validation
 - See [Troubleshooting](troubleshooting.md) for sharing issues
+- Back to [Control 2.12](../../../controls/pillar-2-security/2.12-external-sharing-governance.md)

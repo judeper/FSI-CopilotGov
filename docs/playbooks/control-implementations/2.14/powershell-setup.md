@@ -99,3 +99,4 @@ $agentEvents | Export-Csv "AgentActivity_$(Get-Date -Format 'yyyyMMdd').csv" -No
 
 - See [Verification & Testing](verification-testing.md) for agent governance validation
 - See [Troubleshooting](troubleshooting.md) for agent issues
+- Back to [Control 2.14](../../../controls/pillar-2-security/2.14-declarative-agents-governance.md)

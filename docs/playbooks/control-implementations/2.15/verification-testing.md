@@ -64,3 +64,4 @@ Test cases and evidence collection for validating network security controls.
 | PCI DSS Req 1 | Network segmentation | Network security controls help meet network segmentation requirements |
 | NIST CSF | PR.AC-5 Network integrity | Private connectivity supports compliance with network integrity protection |
 | SOX Section 404 | Network access controls | Network security documents internal controls for technology access |
+- Back to [Control 2.15](../../../controls/pillar-2-security/2.15-network-security.md)

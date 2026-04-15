@@ -108,3 +108,4 @@ if ($webGrounded.Count -gt 0) {
 
 - See [Verification & Testing](verification-testing.md) for web control validation
 - See [Troubleshooting](troubleshooting.md) for web control issues
+- Back to [Control 2.6](../../../controls/pillar-2-security/2.6-web-search-controls.md)

@@ -90,7 +90,7 @@ Configure IRM Adaptive Protection to feed real-time risk signals into Conditiona
 1. Enable Adaptive Protection in IRM settings
 2. Configure risk level thresholds (Recommended: High risk triggers CA block; Regulated: Medium risk triggers CA block)
 3. Return to Entra ID Conditional Access and create a policy that responds to IRM risk levels:
-   - **Condition:** User risk — tied to IRM Adaptive Protection signal
+   - **Condition:** Insider risk — tied to IRM Adaptive Protection signal
    - **Grant:** Block access (Regulated) or require re-authentication (Recommended)
 4. When a user's IRM risk level is elevated, the CA policy automatically restricts their next Copilot authentication without requiring manual intervention
 
@@ -119,3 +119,4 @@ Deploy the policy in report-only mode to evaluate impact before enforcement:
 - See [Verification & Testing](verification-testing.md) to validate access controls
 - Review Control 2.9 for Defender for Cloud Apps session controls
 - Review Control 2.10 for IRM Adaptive Protection configuration
+- Back to [Control 2.3](../../../controls/pillar-2-security/2.3-conditional-access-policies.md)

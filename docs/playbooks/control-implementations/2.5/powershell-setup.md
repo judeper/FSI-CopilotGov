@@ -6,7 +6,7 @@ Automation scripts for implementing and monitoring data minimization controls fo
 
 - SharePoint Online Management Shell
 - Microsoft Graph PowerShell SDK
-- SharePoint Administrator role
+- SharePoint Admin role
 
 ## Scripts
 
@@ -109,3 +109,4 @@ $checks | Export-Csv "DataMinimizationCheck_$(Get-Date -Format 'yyyyMMdd').csv" 
 
 - See [Verification & Testing](verification-testing.md) for minimization validation
 - See [Troubleshooting](troubleshooting.md) for scope issues
+- Back to [Control 2.5](../../../controls/pillar-2-security/2.5-data-minimization-grounding-scope.md)

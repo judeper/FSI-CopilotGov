@@ -66,3 +66,4 @@ Common issues and resolution steps for external sharing and guest access control
 - [Portal Walkthrough](portal-walkthrough.md) — Sharing configuration
 - [PowerShell Setup](powershell-setup.md) — Guest management scripts
 - [Verification & Testing](verification-testing.md) — Sharing control validation
+- Back to [Control 2.12](../../../controls/pillar-2-security/2.12-external-sharing-governance.md)

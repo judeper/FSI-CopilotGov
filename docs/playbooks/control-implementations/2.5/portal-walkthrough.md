@@ -4,7 +4,7 @@ Step-by-step portal configuration for limiting Copilot's data grounding scope to
 
 ## Prerequisites
 
-- Global Administrator or SharePoint Administrator role
+- Entra Global Admin or SharePoint Admin role
 - Microsoft 365 Copilot licenses deployed
 - Data classification inventory completed (Control 1.1)
 - Governance committee approval on grounding scope decisions
@@ -66,3 +66,4 @@ Record all data minimization decisions including:
 - Proceed to [PowerShell Setup](powershell-setup.md) for scope configuration automation
 - See [Verification & Testing](verification-testing.md) to validate data minimization
 - Review Control 2.6 for web search and web grounding controls
+- Back to [Control 2.5](../../../controls/pillar-2-security/2.5-data-minimization-grounding-scope.md)

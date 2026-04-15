@@ -9,7 +9,7 @@ Common issues and resolution steps for web search and grounding controls.
 - **Symptoms:** The web search control does not appear under Copilot settings in the Admin Center
 - **Root Cause:** The web search toggle may be in a staged rollout or may require specific license configurations to appear.
 - **Resolution:**
-  1. Verify the Admin Center is accessed with Global Administrator role
+  1. Verify the Admin Center is accessed with Entra Global Admin role
   2. Check the Microsoft 365 roadmap for web search control availability
   3. Try accessing via direct URL: admin.microsoft.com > Settings > Copilot
   4. If unavailable, contact Microsoft support to verify feature availability for your tenant
@@ -67,3 +67,4 @@ Common issues and resolution steps for web search and grounding controls.
 - [Portal Walkthrough](portal-walkthrough.md) — Web search configuration
 - [PowerShell Setup](powershell-setup.md) — Monitoring scripts
 - [Verification & Testing](verification-testing.md) — Web control validation
+- Back to [Control 2.6](../../../controls/pillar-2-security/2.6-web-search-controls.md)

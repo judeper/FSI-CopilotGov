@@ -123,3 +123,4 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
 - [Portal Walkthrough](portal-walkthrough.md) — Insider risk configuration
 - [PowerShell Setup](powershell-setup.md) — Monitoring scripts
 - [Verification & Testing](verification-testing.md) — Detection validation
+- Back to [Control 2.10](../../../controls/pillar-2-security/2.10-insider-risk-detection.md)

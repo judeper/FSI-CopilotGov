@@ -131,3 +131,4 @@ Enable label analytics to monitor how labels are applied to Copilot-generated co
 - Proceed to [PowerShell Setup](powershell-setup.md) for label enforcement automation
 - See [Verification & Testing](verification-testing.md) to validate label behavior, label groups, and agent inheritance
 - Review Control 2.1 for DLP integration with sensitivity labels, including label-based response blocking (Type 1)
+- Back to [Control 2.2](../../../controls/pillar-2-security/2.2-sensitivity-labels-classification.md)

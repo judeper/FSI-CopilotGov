@@ -104,3 +104,4 @@ Write-Host "Run this check weekly to verify all governance policies remain activ
 
 - See [Verification & Testing](verification-testing.md) for session control validation
 - See [Troubleshooting](troubleshooting.md) for session control issues
+- Back to [Control 2.9](../../../controls/pillar-2-security/2.9-defender-cloud-apps.md)

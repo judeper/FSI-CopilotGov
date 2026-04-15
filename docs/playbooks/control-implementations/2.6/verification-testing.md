@@ -50,3 +50,4 @@ Test cases and evidence collection for validating web search and grounding contr
 | FINRA Rule 2210 | Communications accuracy | Disabling web search helps prevent unverified external data in AI communications |
 | SEC Regulation Best Interest | Reasonable basis for recommendations | Controlling web grounding supports compliance with recommendation basis requirements |
 | NIST AI RMF | MEASURE 2.6 — AI system trustworthiness | Grounding controls support AI response trustworthiness |
+- Back to [Control 2.6](../../../controls/pillar-2-security/2.6-web-search-controls.md)

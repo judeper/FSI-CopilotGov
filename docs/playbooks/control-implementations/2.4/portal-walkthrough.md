@@ -4,7 +4,7 @@ Step-by-step portal configuration for implementing Information Barriers that enf
 
 ## Prerequisites
 
-- Microsoft Purview Compliance Administrator role
+- Microsoft Purview Purview Compliance Admin role
 - Microsoft 365 E5 or E5 Compliance license
 - Entra ID user attributes populated (department, segment identifiers)
 - Chinese Wall policy requirements documented by compliance team
@@ -90,3 +90,4 @@ Document and configure any approved exceptions to barrier policies:
 - Proceed to [PowerShell Setup](powershell-setup.md) for barrier management automation
 - See [Verification & Testing](verification-testing.md) to validate barrier enforcement
 - Review Control 2.1 for DLP integration with Information Barriers
+- Back to [Control 2.4](../../../controls/pillar-2-security/2.4-information-barriers.md)

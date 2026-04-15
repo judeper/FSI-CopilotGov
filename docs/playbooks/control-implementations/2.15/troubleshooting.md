@@ -77,3 +77,4 @@ Common issues and resolution steps for network security controls.
 - [Portal Walkthrough](portal-walkthrough.md) — Network configuration
 - [PowerShell Setup](powershell-setup.md) — Connectivity scripts
 - [Verification & Testing](verification-testing.md) — Network validation
+- Back to [Control 2.15](../../../controls/pillar-2-security/2.15-network-security.md)

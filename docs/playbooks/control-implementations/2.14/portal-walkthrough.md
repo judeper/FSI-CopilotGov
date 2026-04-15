@@ -75,3 +75,4 @@ Create the agent governance document covering:
 - Proceed to [PowerShell Setup](powershell-setup.md) for agent management automation
 - See [Verification & Testing](verification-testing.md) to validate agent governance
 - Review Control 2.13 for broader plugin governance context
+- Back to [Control 2.14](../../../controls/pillar-2-security/2.14-declarative-agents-governance.md)

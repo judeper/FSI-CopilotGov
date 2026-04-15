@@ -49,5 +49,6 @@ Test cases and evidence collection for validating data minimization and groundin
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
 | GDPR Art. 5(1)(c) | Data minimization | Grounding scope limits support compliance with data minimization principles |
-| GLBA Safeguards Rule | Access controls | Limiting AI data scope supports compliance with access control requirements |
+| GLBA §501(b) | Access controls | Limiting AI data scope supports compliance with access control requirements |
 | NIST Privacy Framework | CT.DM-1 Data minimization | Grounding scope controls support compliance with data minimization practices |
+- Back to [Control 2.5](../../../controls/pillar-2-security/2.5-data-minimization-grounding-scope.md)

@@ -106,3 +106,4 @@ $crossBorder | Export-Csv "CrossBorderAccess_$(Get-Date -Format 'yyyyMMdd').csv"
 
 - See [Verification & Testing](verification-testing.md) for residency validation
 - See [Troubleshooting](troubleshooting.md) for residency issues
+- Back to [Control 2.7](../../../controls/pillar-2-security/2.7-data-residency.md)

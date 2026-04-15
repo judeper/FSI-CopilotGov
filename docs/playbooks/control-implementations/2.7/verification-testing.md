@@ -52,5 +52,6 @@ Test cases and evidence collection for validating data residency controls.
 |-----------|-------------|------------------------------|
 | GDPR Art. 44-49 | Cross-border transfer restrictions | Data residency controls support compliance with transfer requirements |
 | State privacy laws | Data localization requirements | Residency verification helps meet state-level data localization rules |
-| OCC Heightened Standards | Third-party data management | Understanding data locations supports compliance with third-party data requirements |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Third-party data management | Understanding data locations supports compliance with third-party data requirements |
 | NIST CSF | PR.DS-2 Data in transit protection | Residency controls complement data-in-transit protections |
+- Back to [Control 2.7](../../../controls/pillar-2-security/2.7-data-residency.md)

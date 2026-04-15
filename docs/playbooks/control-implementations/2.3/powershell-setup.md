@@ -152,3 +152,4 @@ $locationReport | Export-Csv "NamedLocations_$(Get-Date -Format 'yyyyMMdd').csv"
 
 - See [Verification & Testing](verification-testing.md) for access control validation
 - See [Troubleshooting](troubleshooting.md) for Conditional Access issues
+- Back to [Control 2.3](../../../controls/pillar-2-security/2.3-conditional-access-policies.md)

@@ -78,3 +78,4 @@ Test cases and evidence collection for validating session controls.
 | SEC Rule 17a-4 | Electronic communication monitoring | Session logging helps meet communication monitoring obligations |
 | FFIEC Handbook | Security monitoring | Real-time session controls support compliance with security monitoring requirements |
 | NIST CSF | DE.CM-1 Network monitoring | Session controls provide monitoring for AI workloads |
+- Back to [Control 2.9](../../../controls/pillar-2-security/2.9-defender-cloud-apps.md)

@@ -4,7 +4,7 @@ Step-by-step portal configuration for securing Copilot plugins and Microsoft Gra
 
 ## Prerequisites
 
-- Teams Administrator and Global Administrator roles
+- Teams Administrator and Entra Global Admin roles
 - Microsoft 365 Admin Center and Teams Admin Center access
 - Plugin security review process approved by governance committee
 
@@ -70,3 +70,4 @@ Create plugin security standards document covering:
 - Proceed to [PowerShell Setup](powershell-setup.md) for plugin management automation
 - See [Verification & Testing](verification-testing.md) to validate plugin security
 - Review Control 1.13 for Extensibility Readiness
+- Back to [Control 2.13](../../../controls/pillar-2-security/2.13-plugin-connector-security.md)

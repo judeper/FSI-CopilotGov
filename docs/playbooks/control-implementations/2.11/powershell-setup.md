@@ -6,7 +6,7 @@ Automation scripts for managing and monitoring Copilot Pages security.
 
 - SharePoint Online Management Shell
 - Microsoft Graph PowerShell SDK
-- SharePoint Administrator role
+- SharePoint Admin role
 
 ## Scripts
 
@@ -114,3 +114,4 @@ if ($pagesSharing.Count -gt 0) {
 
 - See [Verification & Testing](verification-testing.md) for Pages security validation
 - See [Troubleshooting](troubleshooting.md) for Pages issues
+- Back to [Control 2.11](../../../controls/pillar-2-security/2.11-copilot-pages-security.md)

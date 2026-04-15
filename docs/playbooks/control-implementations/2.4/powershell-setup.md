@@ -5,7 +5,7 @@ Automation scripts for managing Information Barriers that enforce Chinese Wall r
 ## Prerequisites
 
 - Security & Compliance PowerShell (`ExchangeOnlineManagement`)
-- Compliance Administrator role
+- Purview Compliance Admin role
 - Microsoft 365 E5 or E5 Compliance license
 
 ## Scripts
@@ -110,3 +110,4 @@ $policyReport | Export-Csv "IBPolicies_$(Get-Date -Format 'yyyyMMdd').csv" -NoTy
 
 - See [Verification & Testing](verification-testing.md) for barrier validation
 - See [Troubleshooting](troubleshooting.md) for barrier issues
+- Back to [Control 2.4](../../../controls/pillar-2-security/2.4-information-barriers.md)

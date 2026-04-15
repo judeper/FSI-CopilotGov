@@ -69,3 +69,4 @@ Document the organization's web grounding policy including:
 - Proceed to [PowerShell Setup](powershell-setup.md) for web control automation
 - See [Verification & Testing](verification-testing.md) to validate web controls
 - Review Control 2.5 for overall grounding scope management
+- Back to [Control 2.6](../../../controls/pillar-2-security/2.6-web-search-controls.md)

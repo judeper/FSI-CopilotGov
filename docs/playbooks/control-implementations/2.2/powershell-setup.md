@@ -208,3 +208,4 @@ $allLabels | Export-Csv "LabelTaxonomy_$(Get-Date -Format 'yyyyMMdd').csv" -NoTy
 
 - See [Verification & Testing](verification-testing.md) for label enforcement validation, including label groups and agent inheritance
 - See [Troubleshooting](troubleshooting.md) for label issues including migration problems
+- Back to [Control 2.2](../../../controls/pillar-2-security/2.2-sensitivity-labels-classification.md)

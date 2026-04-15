@@ -59,7 +59,8 @@ Test cases and evidence collection for validating encryption controls.
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| GLBA Safeguards Rule | Encryption of customer data | Platform encryption supports compliance with data protection requirements |
+| GLBA §501(b) | Encryption of customer data | Platform encryption supports compliance with data protection requirements |
 | PCI DSS Req 4 | Encrypt transmission of cardholder data | TLS enforcement helps meet transmission encryption requirements |
 | NIST SP 800-171 | Encryption at rest and in transit | Microsoft 365 encryption supports compliance with NIST encryption standards |
 | FFIEC Handbook | Cryptographic controls | Encryption controls support compliance with FFIEC cryptographic requirements |
+- Back to [Control 2.8](../../../controls/pillar-2-security/2.8-encryption.md)

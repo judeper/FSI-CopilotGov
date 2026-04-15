@@ -129,3 +129,4 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 - [Portal Walkthrough](portal-walkthrough.md) — Label configuration for Copilot including label groups and agent inheritance
 - [PowerShell Setup](powershell-setup.md) — Label management scripts with PnP custom app registration
 - [Verification & Testing](verification-testing.md) — Label validation procedures
+- Back to [Control 2.2](../../../controls/pillar-2-security/2.2-sensitivity-labels-classification.md)

@@ -4,7 +4,7 @@ Step-by-step portal configuration for governing external sharing and guest acces
 
 ## Prerequisites
 
-- SharePoint Administrator and Entra ID Administrator roles
+- SharePoint Admin and Entra ID Administrator roles
 - Microsoft 365 E5 or E3 with security add-ons
 - External collaboration policy approved by governance committee
 
@@ -70,3 +70,4 @@ Create recurring access reviews for guest users:
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for external sharing automation
 - See [Verification & Testing](verification-testing.md) to validate sharing controls
+- Back to [Control 2.12](../../../controls/pillar-2-security/2.12-external-sharing-governance.md)
