@@ -9,7 +9,7 @@ Automation scripts for analyzing and documenting the Microsoft 365 information a
 - SharePoint Online Management Shell
 - PnP PowerShell (see custom app registration below)
 - Microsoft Graph PowerShell SDK
-- SharePoint Administrator role
+- SharePoint Admin role
 
 ### PnP PowerShell: Custom App Registration Required
 
@@ -38,7 +38,7 @@ Save the returned Client ID — you will need it for all `Connect-PnPOnline` cal
 Import-Module Microsoft.Online.SharePoint.PowerShell
 Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 
-$sites = Get-SPOSite -Limit All -IncludePersonalSite $false
+$sites = Get-SPOSite -Limit All -IncludePersonalSite Exclude
 $inventory = @()
 
 foreach ($site in $sites) {
@@ -142,3 +142,4 @@ $contentTypeReport | Export-Csv "ContentTypeUsage_$(Get-Date -Format 'yyyyMMdd')
 
 - See [Verification & Testing](verification-testing.md) to validate architecture
 - See [Troubleshooting](troubleshooting.md) for architecture-related issues
+- Back to [Control 1.8: Information Architecture Review](../../../controls/pillar-1-readiness/1.8-information-architecture-review.md)

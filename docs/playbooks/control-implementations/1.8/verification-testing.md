@@ -61,7 +61,8 @@ Test cases and evidence collection for validating information architecture readi
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| FINRA Rule 3110 | Records organization | Proper information architecture supports compliance with records management |
+| FINRA Rule 3110 | Supervisory systems and WSPs | Proper information architecture supports supervisory oversight of AI-accessible content |
 | SEC Rule 17a-4 | Records accessibility | Structured content architecture helps meet records accessibility requirements |
-| NIST CSF | ID.AM-1 Physical device inventory | Information architecture inventory extends to digital asset management |
+| NIST CSF 2.0 | ID.AM-5 — Data asset inventory | Information architecture inventory supports identification and management of data assets |
 | NIST AI RMF | MAP 3.1 — AI system context | Architecture review documents the AI content access context |
+- Back to [Control 1.8: Information Architecture Review](../../../controls/pillar-1-readiness/1.8-information-architecture-review.md)

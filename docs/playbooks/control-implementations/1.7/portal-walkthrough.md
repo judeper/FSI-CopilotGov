@@ -4,7 +4,7 @@ Step-by-step portal configuration for enabling and validating SharePoint Advance
 
 ## Prerequisites
 
-- SharePoint Administrator or Global Administrator role
+- SharePoint Admin or Entra Global Admin role
 - Microsoft 365 Copilot license (includes SAM) or SharePoint Advanced Management add-on license
 - Microsoft 365 E3 or E5 base license
 - Understanding of current SharePoint governance requirements
@@ -19,7 +19,7 @@ Step-by-step portal configuration for enabling and validating SharePoint Advance
 Confirm that SAM capabilities are available for your tenant:
 
 - **If your organization has Microsoft 365 Copilot licenses:** SAM is included at no additional cost. Verify the Copilot license count and confirm SAM features are accessible in the SharePoint Admin Center.
-- **If your organization does not have Copilot licenses:** Confirm that the SharePoint Advanced Management add-on is assigned to SharePoint administrators. Navigate to Admin Center > Billing > Licenses > SharePoint Advanced Management to verify assignment.
+- **If your organization does not have Copilot licenses:** Confirm that the SharePoint Advanced Management add-on is assigned to SharePoint Admins. Navigate to Admin Center > Billing > Licenses > SharePoint Advanced Management to verify assignment.
 
 SAM enables critical governance features including Restricted Content Discovery, Restricted Access Control, site access reviews, data access governance reports, and site lifecycle management.
 
@@ -113,4 +113,5 @@ These policies affect how users interact with content that Copilot may surface.
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for SAM automation
 - See [Verification & Testing](verification-testing.md) to validate SAM configuration
-- Review Control 1.3 for Restricted SharePoint Search (complementary to RCD for Copilot scope control)
+- Review [Control 1.3: Restricted SharePoint Search](../../../controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md) for Restricted SharePoint Search (complementary to RCD for Copilot scope control)
+- Back to [Control 1.7: SharePoint Advanced Management](../../../controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md)

@@ -194,3 +194,4 @@ $configLog | Export-Csv "SAMSiteConfig_$(Get-Date -Format 'yyyyMMdd').csv" -NoTy
 
 - See [Verification & Testing](verification-testing.md) to validate SAM configuration
 - See [Troubleshooting](troubleshooting.md) for SAM-related issues
+- Back to [Control 1.7: SharePoint Advanced Management](../../../controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md)

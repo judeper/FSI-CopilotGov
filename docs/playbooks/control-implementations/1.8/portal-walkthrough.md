@@ -14,7 +14,7 @@ Step-by-step portal procedures for reviewing and optimizing the Microsoft 365 in
 ### Step 1: Inventory Site Architecture
 
 **Portal:** SharePoint admin center
-**Path:** SharePoint Admin > Active Sites
+**Path:** SharePoint admin center > Sites > Active sites
 
 Review the complete site inventory to understand the current information architecture. Categorize sites by:
 - **Type:** Team sites, communication sites, hub sites, OneDrive
@@ -27,7 +27,7 @@ Export the site list for documentation and analysis.
 ### Step 2: Evaluate Hub Site Structure
 
 **Portal:** SharePoint admin center
-**Path:** SharePoint Admin > Active Sites > Hub sites filter
+**Path:** SharePoint admin center > Sites > Active sites > Hub sites filter
 
 Review the hub site hierarchy. Hub sites define content relationships that affect how Copilot discovers and associates content. Verify:
 - Hub sites align with business unit or function boundaries
@@ -78,4 +78,5 @@ Document how the current information architecture supports intended Copilot use 
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for architecture analysis scripts
 - See [Verification & Testing](verification-testing.md) to validate architecture readiness
-- Review Control 1.4 for Semantic Index Governance considerations
+- Review [Control 1.4: Semantic Index Governance](../../../controls/pillar-1-readiness/1.4-semantic-index-governance.md) for Semantic Index Governance considerations
+- Back to [Control 1.8: Information Architecture Review](../../../controls/pillar-1-readiness/1.8-information-architecture-review.md)

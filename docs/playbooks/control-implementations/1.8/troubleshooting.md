@@ -76,3 +76,4 @@ Common issues and resolution steps for information architecture review.
 - [Portal Walkthrough](portal-walkthrough.md) — Architecture review steps
 - [PowerShell Setup](powershell-setup.md) — Analysis scripts
 - [Verification & Testing](verification-testing.md) — Validation procedures
+- Back to [Control 1.8: Information Architecture Review](../../../controls/pillar-1-readiness/1.8-information-architecture-review.md)

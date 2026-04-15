@@ -104,3 +104,4 @@ Common issues and resolution steps for SharePoint Advanced Management configurat
 - [Portal Walkthrough](portal-walkthrough.md) — SAM configuration steps including RCD and RAC
 - [PowerShell Setup](powershell-setup.md) — Automation scripts including RAC bulk configuration
 - [Verification & Testing](verification-testing.md) — Validation procedures for all SAM features
+- Back to [Control 1.7: SharePoint Advanced Management](../../../controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md)
