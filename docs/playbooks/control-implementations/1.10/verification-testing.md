@@ -66,3 +66,4 @@ Test cases and evidence collection for validating vendor risk management process
 | FFIEC IT Examination Handbook | Vendor management | Documented vendor assessment helps meet FFIEC examination expectations |
 | SEC Regulation S-P | Safeguards for service providers | Vendor risk review supports compliance with service provider oversight obligations |
 | NIST AI RMF | GOVERN 5 — Third-party AI governance | Vendor risk assessment supports compliance with AI third-party governance |
+- Back to [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md)

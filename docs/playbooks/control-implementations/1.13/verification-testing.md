@@ -73,7 +73,8 @@ Test cases and evidence collection for validating Copilot extensibility governan
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| FINRA Rule 3110 | Third-party technology oversight | Extension governance supports compliance with technology oversight requirements |
+| FINRA Rule 3110 | Supervisory systems and WSPs | Extension governance supports compliance with technology oversight requirements |
 | OCC Heightened Standards | IT risk management | Extension approval process supports compliance with IT risk management standards |
 | NIST CSF | PR.IP-1 Baseline configuration | Extension governance establishes and maintains baseline configurations |
 | NIST AI RMF | MAP 5 — AI system components | Extension inventory maps AI system component dependencies |
+- Back to [Control 1.13](../../../controls/pillar-1-readiness/1.13-extensibility-readiness.md)

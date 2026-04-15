@@ -125,3 +125,4 @@ $moduleStats | Export-Csv "TrainingMetrics_$(Get-Date -Format 'yyyyMMdd').csv" -
 
 - See [Verification & Testing](verification-testing.md) for program validation
 - See [Troubleshooting](troubleshooting.md) for training delivery issues
+- Back to [Control 1.12](../../../controls/pillar-1-readiness/1.12-training-awareness.md)

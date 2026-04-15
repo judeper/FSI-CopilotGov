@@ -77,3 +77,4 @@ Common issues and resolution steps for vendor risk management of Microsoft AI se
 - [Portal Walkthrough](portal-walkthrough.md) — Assessment procedure steps
 - [PowerShell Setup](powershell-setup.md) — Monitoring automation
 - [Verification & Testing](verification-testing.md) — Assessment validation
+- Back to [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md)

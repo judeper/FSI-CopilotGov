@@ -125,3 +125,4 @@ $waveReport | Format-Table Wave, MemberCount, Status -AutoSize
 
 - See [Verification & Testing](verification-testing.md) for adoption validation
 - See [Troubleshooting](troubleshooting.md) for adoption issues
+- Back to [Control 1.11](../../../controls/pillar-1-readiness/1.11-change-management-adoption.md)

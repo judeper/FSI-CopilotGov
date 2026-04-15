@@ -79,3 +79,4 @@ Create the extensibility governance framework document covering:
 - Proceed to [PowerShell Setup](powershell-setup.md) for extension management automation
 - See [Verification & Testing](verification-testing.md) to validate extensibility controls
 - Review Control 2.13 for Plugin and Graph Connector Security
+- Back to [Control 1.13](../../../controls/pillar-1-readiness/1.13-extensibility-readiness.md)

@@ -81,3 +81,4 @@ Common issues and resolution steps for the training and awareness program.
 - [Portal Walkthrough](portal-walkthrough.md) — Training setup procedures
 - [PowerShell Setup](powershell-setup.md) — Tracking automation
 - [Verification & Testing](verification-testing.md) — Program validation
+- Back to [Control 1.12](../../../controls/pillar-1-readiness/1.12-training-awareness.md)

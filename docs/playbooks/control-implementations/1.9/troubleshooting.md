@@ -101,3 +101,4 @@ Common issues and resolution steps for Copilot license management.
 - [Portal Walkthrough](portal-walkthrough.md) — License management steps
 - [PowerShell Setup](powershell-setup.md) — License automation scripts
 - [Verification & Testing](verification-testing.md) — Validation procedures
+- Back to [Control 1.9](../../../controls/pillar-1-readiness/1.9-license-planning.md)

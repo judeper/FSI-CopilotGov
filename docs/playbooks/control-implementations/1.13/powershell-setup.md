@@ -138,3 +138,4 @@ if ($previousFile) {
 
 - See [Verification & Testing](verification-testing.md) for extensibility governance validation
 - See [Troubleshooting](troubleshooting.md) for extension management issues
+- Back to [Control 1.13](../../../controls/pillar-1-readiness/1.13-extensibility-readiness.md)

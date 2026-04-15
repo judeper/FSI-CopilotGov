@@ -61,7 +61,8 @@ Test cases and evidence collection for validating the training and awareness pro
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| FINRA Rule 3110 | Supervisory training | Copilot governance training supports compliance with supervisory training obligations |
+| FINRA Rule 3110 | Supervisory systems and WSPs | Copilot governance training supports compliance with supervisory training obligations |
 | SEC Regulation S-P | Employee awareness | Security awareness training helps meet employee awareness requirements |
-| GLBA Safeguards Rule | Employee training | Data governance training supports compliance with safeguards training requirements |
+| GLBA §501(b) | Employee training | Data governance training supports compliance with safeguards training requirements |
 | NIST AI RMF | GOVERN 4.2 — AI training | AI-specific training supports compliance with AI governance training requirements |
+- Back to [Control 1.12](../../../controls/pillar-1-readiness/1.12-training-awareness.md)

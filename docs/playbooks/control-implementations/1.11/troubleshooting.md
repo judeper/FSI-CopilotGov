@@ -68,3 +68,4 @@ Common issues and resolution steps for change management and adoption.
 - [Portal Walkthrough](portal-walkthrough.md) — Deployment configuration
 - [PowerShell Setup](powershell-setup.md) — Adoption tracking scripts
 - [Verification & Testing](verification-testing.md) — Effectiveness validation
+- Back to [Control 1.11](../../../controls/pillar-1-readiness/1.11-change-management-adoption.md)

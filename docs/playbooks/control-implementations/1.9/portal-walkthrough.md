@@ -67,7 +67,7 @@ If deploying PAYG Copilot Chat (metered per-message pricing; refer to [Microsoft
 ### Step 5: Verify Prerequisite License Stack
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Users > Active Users > [Select user] > Licenses
+**Path:** Admin Center > Users > Active users > [Select user] > Licenses and apps
 
 For a sample of users in each deployment group, verify the complete license stack:
 - Base license (M365 E3/E5 or F1/F3 for Frontline users)
@@ -97,3 +97,4 @@ Create a license assignment policy that documents:
 - Proceed to [PowerShell Setup](powershell-setup.md) for license management automation
 - See [Verification & Testing](verification-testing.md) to validate license assignments
 - Review Control 1.11 for Change Management planning aligned with license rollout
+- Back to [Control 1.9](../../../controls/pillar-1-readiness/1.9-license-planning.md)

@@ -64,3 +64,4 @@ Test cases and evidence collection for validating change management and adoption
 | OCC Heightened Standards | Change management | Documented change management supports compliance with OCC change management requirements |
 | FFIEC IT Handbook | IT governance | Change management planning supports compliance with IT governance examination procedures |
 | NIST AI RMF | GOVERN 4 — Organizational AI culture | Adoption planning supports compliance with AI culture and awareness requirements |
+- Back to [Control 1.11](../../../controls/pillar-1-readiness/1.11-change-management-adoption.md)

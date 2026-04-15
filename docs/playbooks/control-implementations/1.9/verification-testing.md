@@ -84,7 +84,8 @@ Test cases and evidence collection for validating Copilot license management.
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| FINRA Rule 3110 | Supervisory system controls | Controlled license assignment supports compliance with supervisory access management |
+| FINRA Rule 3110 | Supervisory systems and WSPs | Controlled license assignment supports compliance with supervisory access management |
 | SOX Section 404 | Internal controls | License management as an internal control for AI access governance |
 | OCC Heightened Standards | IT governance | Documented license strategy supports compliance with IT governance requirements |
 | NIST AI RMF | GOVERN 1.2 — AI resource management | License planning supports compliance with AI resource governance |
+- Back to [Control 1.9](../../../controls/pillar-1-readiness/1.9-license-planning.md)

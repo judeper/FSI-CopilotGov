@@ -108,3 +108,4 @@ $aiWorkloads | Select-Object Service, Status |
 
 - See [Verification & Testing](verification-testing.md) to validate vendor risk processes
 - See [Troubleshooting](troubleshooting.md) for vendor assessment issues
+- Back to [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md)

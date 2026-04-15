@@ -79,3 +79,4 @@ Common issues and resolution steps for Copilot extensibility governance.
 - [Portal Walkthrough](portal-walkthrough.md) — Extension governance setup
 - [PowerShell Setup](powershell-setup.md) — Extension management scripts
 - [Verification & Testing](verification-testing.md) — Governance validation
+- Back to [Control 1.13](../../../controls/pillar-1-readiness/1.13-extensibility-readiness.md)

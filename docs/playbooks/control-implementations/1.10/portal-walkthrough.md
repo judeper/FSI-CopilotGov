@@ -19,7 +19,7 @@ Step-by-step procedures for conducting vendor risk assessment of Microsoft AI se
 Access the Service Trust Portal to review Microsoft's compliance documentation, audit reports, and data protection assessments relevant to AI services. Download the following key documents:
 - SOC 2 Type II report for Microsoft 365
 - ISO 27001 certificate for Azure and Microsoft 365
-- Microsoft AI Impact Assessment documentation
+- Microsoft AI Transparency Notes, Data Protection Addendum (DPA), and Service Trust Portal documentation
 - Data Processing Agreement (DPA) and product terms
 
 ### Step 2: Review Microsoft's AI Transparency Documentation
@@ -72,4 +72,5 @@ Set up ongoing vendor monitoring processes:
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for automated monitoring configuration
 - See [Verification & Testing](verification-testing.md) to validate assessment completeness
-- Review Control 2.7 for Data Residency considerations
+- Review [Control 2.7: Data Residency](../../../controls/pillar-2-security/2.7-data-residency.md) for Data Residency considerations
+- Back to [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md)

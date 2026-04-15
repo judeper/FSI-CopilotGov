@@ -162,3 +162,4 @@ $frontlineReport | Export-Csv "FrontlineCopilotStatus_$(Get-Date -Format 'yyyyMM
 
 - See [Verification & Testing](verification-testing.md) to validate license strategy
 - See [Troubleshooting](troubleshooting.md) for license assignment issues
+- Back to [Control 1.9](../../../controls/pillar-1-readiness/1.9-license-planning.md)

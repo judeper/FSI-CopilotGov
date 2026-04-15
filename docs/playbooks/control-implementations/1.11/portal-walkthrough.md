@@ -78,3 +78,4 @@ Create the formal change management plan including:
 - Proceed to [PowerShell Setup](powershell-setup.md) for adoption reporting automation
 - See [Verification & Testing](verification-testing.md) to validate change management effectiveness
 - Review Control 1.12 for Training and Awareness Program details
+- Back to [Control 1.11](../../../controls/pillar-1-readiness/1.11-change-management-adoption.md)

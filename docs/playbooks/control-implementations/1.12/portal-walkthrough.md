@@ -76,3 +76,4 @@ Plan recurring awareness activities:
 - Proceed to [PowerShell Setup](powershell-setup.md) for training tracking automation
 - See [Verification & Testing](verification-testing.md) to validate training program
 - Review Control 1.11 for Change Management context
+- Back to [Control 1.12](../../../controls/pillar-1-readiness/1.12-training-awareness.md)
