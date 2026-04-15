@@ -185,3 +185,4 @@ if ($staleItems) { Write-Warning "$($staleItems.Count) evidence items require re
 
 - See [Verification & Testing](verification-testing.md) to validate evidence completeness
 - See [Troubleshooting](troubleshooting.md) for evidence collection issues
+- Back to [Control 3.12](../../../controls/pillar-3-compliance/3.12-evidence-collection.md)

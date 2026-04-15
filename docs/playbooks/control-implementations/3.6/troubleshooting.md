@@ -101,3 +101,4 @@ Common issues and resolution steps for supervisory controls over Copilot-assiste
 - [Control 3.4: Communication Compliance Monitoring](../3.4/portal-walkthrough.md)
 - [Control 3.5: FINRA Rule 2210 Compliance](../3.5/portal-walkthrough.md)
 - [Control 3.7: Regulatory Reporting](../3.7/portal-walkthrough.md)
+- Back to [Control 3.6](../../../controls/pillar-3-compliance/3.6-supervision-oversight.md)

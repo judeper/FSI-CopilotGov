@@ -4,7 +4,7 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
 
 ## Prerequisites
 
-- **Role:** Compliance Administrator or Communication Compliance Admin
+- **Role:** Purview Compliance Admin or Communication Compliance Admin
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
 - **Access:** Microsoft Purview portal
 
@@ -80,3 +80,4 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for automation of FINRA 2210 monitoring
 - See [Verification & Testing](verification-testing.md) to validate detection accuracy
+- Back to [Control 3.5](../../../controls/pillar-3-compliance/3.5-finra-2210-compliance.md)

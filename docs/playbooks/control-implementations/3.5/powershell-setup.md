@@ -5,7 +5,7 @@ Automation scripts for monitoring, reporting, and managing FINRA 2210 compliance
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph`
-- **Permissions:** Compliance Administrator or Communication Compliance Admin
+- **Permissions:** Purview Compliance Admin or Communication Compliance Admin
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -115,3 +115,4 @@ $unsupervised | Format-Table DisplayName, UserPrincipalName -AutoSize
 
 - See [Verification & Testing](verification-testing.md) to validate FINRA 2210 detection
 - See [Troubleshooting](troubleshooting.md) for policy tuning guidance
+- Back to [Control 3.5](../../../controls/pillar-3-compliance/3.5-finra-2210-compliance.md)

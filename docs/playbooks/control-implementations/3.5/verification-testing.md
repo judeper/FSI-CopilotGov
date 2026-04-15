@@ -84,3 +84,4 @@ Test cases and evidence collection to validate that Copilot-drafted communicatio
 
 - Review [Troubleshooting](troubleshooting.md) for detection tuning
 - Proceed to [Control 3.6](../3.6/portal-walkthrough.md) for supervision and oversight
+- Back to [Control 3.5](../../../controls/pillar-3-compliance/3.5-finra-2210-compliance.md)

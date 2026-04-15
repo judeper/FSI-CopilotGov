@@ -4,7 +4,7 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 
 ## Prerequisites
 
-- **Role:** Compliance Administrator or Regulatory Reporting Officer
+- **Role:** Purview Compliance Admin or Regulatory Reporting Officer
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
 - **Access:** Microsoft Purview portal, Microsoft 365 Admin Center
 
@@ -79,3 +79,4 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for automated reporting scripts
 - See [Verification & Testing](verification-testing.md) to validate reporting accuracy
+- Back to [Control 3.7](../../../controls/pillar-3-compliance/3.7-regulatory-reporting.md)

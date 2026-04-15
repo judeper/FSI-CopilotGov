@@ -5,7 +5,7 @@ Automation scripts for deploying and managing communication compliance policies 
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement` (Security & Compliance PowerShell)
-- **Permissions:** Compliance Administrator or Communication Compliance Admin
+- **Permissions:** Purview Compliance Admin or Communication Compliance Admin
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -147,3 +147,4 @@ $pendingByUser | Export-Csv "PendingReviews_$(Get-Date -Format 'yyyyMMdd').csv" 
 
 - See [Verification & Testing](verification-testing.md) to validate communication compliance
 - See [Troubleshooting](troubleshooting.md) for common policy issues
+- Back to [Control 3.4](../../../controls/pillar-3-compliance/3.4-communication-compliance.md)

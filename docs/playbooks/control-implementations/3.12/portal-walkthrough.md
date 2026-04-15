@@ -79,3 +79,4 @@ Step-by-step portal configuration for establishing evidence collection and audit
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for automated evidence collection
 - See [Verification & Testing](verification-testing.md) to validate evidence completeness
+- Back to [Control 3.12](../../../controls/pillar-3-compliance/3.12-evidence-collection.md)

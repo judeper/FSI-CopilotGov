@@ -130,3 +130,4 @@ if ($searchStatus.Status -eq "Completed") {
 
 - See [Verification & Testing](verification-testing.md) to validate eDiscovery operations
 - See [Troubleshooting](troubleshooting.md) for common eDiscovery issues
+- Back to [Control 3.3](../../../controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md)

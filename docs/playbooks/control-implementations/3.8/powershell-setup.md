@@ -185,3 +185,4 @@ Write-Host "`nDSPM for AI and IRM alerts require manual review in the Purview po
 
 - See [Verification & Testing](verification-testing.md) to validate model risk controls
 - See [Troubleshooting](troubleshooting.md) for monitoring issues
+- Back to [Control 3.8](../../../controls/pillar-3-compliance/3.8-model-risk-management.md)

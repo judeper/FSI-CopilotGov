@@ -84,3 +84,4 @@ Test cases and evidence collection procedures to validate alignment with OCC and
 
 - Review [Troubleshooting](troubleshooting.md) for model risk management issues
 - Proceed to [Control 3.9](../3.9/portal-walkthrough.md) for AI disclosure and transparency
+- Back to [Control 3.8](../../../controls/pillar-3-compliance/3.8-model-risk-management.md)

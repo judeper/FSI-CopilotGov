@@ -64,3 +64,4 @@ Common issues and resolution steps for AI disclosure and transparency controls.
 
 - [Control 3.5: FINRA Rule 2210 Compliance](../3.5/portal-walkthrough.md)
 - [Control 3.10: SEC Reg S-P Privacy](../3.10/portal-walkthrough.md)
+- Back to [Control 3.9](../../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md)

@@ -83,3 +83,4 @@ Test cases and evidence collection procedures to validate communication complian
 
 - Review [Troubleshooting](troubleshooting.md) for communication compliance issues
 - Proceed to [Control 3.5](../3.5/portal-walkthrough.md) for FINRA Rule 2210 compliance
+- Back to [Control 3.4](../../../controls/pillar-3-compliance/3.4-communication-compliance.md)

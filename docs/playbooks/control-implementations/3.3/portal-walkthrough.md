@@ -96,3 +96,4 @@ The unified eDiscovery experience (generally available May 2025) consolidates al
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for eDiscovery automation
 - See [Verification & Testing](verification-testing.md) to validate eDiscovery readiness
+- Back to [Control 3.3](../../../controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md)

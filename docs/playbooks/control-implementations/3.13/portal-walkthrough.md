@@ -76,9 +76,10 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 - **FFIEC IT Examination Handbook** — Supports compliance across Audit, Information Security, Management, and Architecture, Infrastructure & Operations (AIO) booklets
 - **FFIEC Cybersecurity Assessment Tool** — Helps meet maturity levels for AI-related technology governance
-- **OCC Heightened Standards** — Supports compliance with large institution IT governance requirements
+- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Supports compliance with large institution IT governance requirements
 
 ## Next Steps
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for FFIEC evidence automation
 - See [Verification & Testing](verification-testing.md) to validate FFIEC alignment
+- Back to [Control 3.13](../../../controls/pillar-3-compliance/3.13-ffiec-alignment.md)

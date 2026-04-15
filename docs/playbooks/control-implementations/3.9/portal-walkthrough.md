@@ -77,3 +77,4 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for automation of disclosure enforcement
 - See [Verification & Testing](verification-testing.md) to validate disclosure controls
+- Back to [Control 3.9](../../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md)

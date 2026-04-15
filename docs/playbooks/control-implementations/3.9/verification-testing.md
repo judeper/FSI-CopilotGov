@@ -69,3 +69,4 @@ Test cases and evidence collection procedures to validate AI disclosure and tran
 
 - Review [Troubleshooting](troubleshooting.md) for disclosure enforcement issues
 - Proceed to [Control 3.10](../3.10/portal-walkthrough.md) for SEC Reg S-P privacy controls
+- Back to [Control 3.9](../../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md)

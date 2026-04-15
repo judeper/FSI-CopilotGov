@@ -92,3 +92,4 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for monitoring automation
 - See [Verification & Testing](verification-testing.md) to validate model risk controls
+- Back to [Control 3.8](../../../controls/pillar-3-compliance/3.8-model-risk-management.md)

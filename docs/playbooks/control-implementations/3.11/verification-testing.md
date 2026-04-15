@@ -112,3 +112,4 @@ Test cases and evidence collection procedures to validate records management con
 
 - Review [Troubleshooting](troubleshooting.md) for records management issues
 - Proceed to [Control 3.12](../3.12/portal-walkthrough.md) for evidence collection
+- Back to [Control 3.11](../../../controls/pillar-3-compliance/3.11-record-keeping.md)

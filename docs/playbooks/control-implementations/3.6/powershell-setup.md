@@ -5,7 +5,7 @@ Automation scripts for managing supervisory review workflows, reporting, and com
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph`
-- **Permissions:** Compliance Administrator
+- **Permissions:** Purview Compliance Admin
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -212,3 +212,4 @@ Write-Host "Agent-specific audit events exported" -ForegroundColor Green
 
 - See [Verification & Testing](verification-testing.md) to validate supervisory controls
 - See [Troubleshooting](troubleshooting.md) for supervision workflow issues
+- Back to [Control 3.6](../../../controls/pillar-3-compliance/3.6-supervision-oversight.md)

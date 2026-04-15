@@ -97,3 +97,4 @@ Test cases and evidence collection procedures to validate privacy controls for c
 
 - Review [Troubleshooting](troubleshooting.md) for privacy control issues
 - Proceed to [Control 3.11](../3.11/portal-walkthrough.md) for record keeping compliance
+- Back to [Control 3.10](../../../controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md)

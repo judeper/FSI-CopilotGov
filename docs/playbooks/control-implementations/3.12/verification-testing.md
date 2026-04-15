@@ -69,3 +69,4 @@ Test cases and evidence collection procedures to validate audit evidence complet
 
 - Review [Troubleshooting](troubleshooting.md) for evidence collection issues
 - Proceed to [Control 3.13](../3.13/portal-walkthrough.md) for FFIEC alignment
+- Back to [Control 3.12](../../../controls/pillar-3-compliance/3.12-evidence-collection.md)

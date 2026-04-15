@@ -98,3 +98,4 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
 - [Control 3.1: Copilot Interaction Audit Logging](../3.1/portal-walkthrough.md)
 - [Control 3.2: Data Retention Policies](../3.2/portal-walkthrough.md)
 - [Control 3.12: Evidence Collection](../3.12/portal-walkthrough.md)
+- Back to [Control 3.3](../../../controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md)

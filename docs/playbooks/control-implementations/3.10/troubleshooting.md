@@ -102,3 +102,4 @@ Common issues and resolution steps for privacy controls protecting consumer fina
 - [Control 3.11: Record Keeping Compliance](../3.11/portal-walkthrough.md)
 - [SEC Reg S-P Rule 248.30 (17 CFR 248.30)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)
 - [Microsoft Security Response Center (MSRC)](https://msrc.microsoft.com)
+- Back to [Control 3.10](../../../controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md)

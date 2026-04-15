@@ -83,3 +83,4 @@ Test cases and evidence collection procedures to validate eDiscovery capabilitie
 
 - Review [Troubleshooting](troubleshooting.md) for eDiscovery issues with Copilot content
 - Proceed to [Control 3.4](../3.4/portal-walkthrough.md) for communication compliance monitoring
+- Back to [Control 3.3](../../../controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md)

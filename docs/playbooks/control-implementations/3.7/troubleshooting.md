@@ -66,3 +66,4 @@ Common issues and resolution steps for regulatory reporting incorporating Copilo
 - [Control 3.1: Copilot Interaction Audit Logging](../3.1/portal-walkthrough.md)
 - [Control 3.6: Supervision and Oversight](../3.6/portal-walkthrough.md)
 - [Control 3.12: Evidence Collection](../3.12/portal-walkthrough.md)
+- Back to [Control 3.7](../../../controls/pillar-3-compliance/3.7-regulatory-reporting.md)

@@ -120,3 +120,4 @@ The amended Reg S-P requires a written incident response program addressing unau
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for privacy control automation
 - See [Verification & Testing](verification-testing.md) to validate privacy protections
+- Back to [Control 3.10](../../../controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md)

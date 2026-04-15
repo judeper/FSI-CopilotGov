@@ -4,7 +4,7 @@ Step-by-step portal configuration for implementing communication compliance poli
 
 ## Prerequisites
 
-- **Role:** Compliance Administrator or Communication Compliance Admin
+- **Role:** Purview Compliance Admin or Communication Compliance Admin
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
 - **Access:** Microsoft Purview portal at [purview.microsoft.com](https://purview.microsoft.com)
 
@@ -94,3 +94,4 @@ This step connects Communication Compliance violations to Insider Risk Managemen
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for policy automation
 - See [Verification & Testing](verification-testing.md) to validate monitoring coverage
+- Back to [Control 3.4](../../../controls/pillar-3-compliance/3.4-communication-compliance.md)

@@ -76,3 +76,4 @@ Common issues and resolution steps for FINRA 2210 compliance monitoring of Copil
 - [Control 3.4: Communication Compliance Monitoring](../3.4/portal-walkthrough.md)
 - [Control 3.6: Supervision and Oversight](../3.6/portal-walkthrough.md)
 - [FINRA Rule 2210 reference](https://www.finra.org/rules-guidance/rulebooks/finra-rules/2210)
+- Back to [Control 3.5](../../../controls/pillar-3-compliance/3.5-finra-2210-compliance.md)

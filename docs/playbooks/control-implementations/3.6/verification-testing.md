@@ -95,3 +95,4 @@ Test cases and evidence collection procedures for validating supervisory control
 
 - Review [Troubleshooting](troubleshooting.md) for supervisory workflow issues
 - Proceed to [Control 3.7](../3.7/portal-walkthrough.md) for regulatory reporting
+- Back to [Control 3.6](../../../controls/pillar-3-compliance/3.6-supervision-oversight.md)

@@ -193,3 +193,4 @@ Write-Host "`nIncident record saved to: RegSP_Incident_$incidentId.csv" -Foregro
 
 - See [Verification & Testing](verification-testing.md) to validate privacy protections
 - See [Troubleshooting](troubleshooting.md) for privacy control issues
+- Back to [Control 3.10](../../../controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md)

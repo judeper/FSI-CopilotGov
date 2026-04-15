@@ -65,3 +65,4 @@ Common issues and resolution steps for evidence collection and audit attestation
 - [Control 3.1: Copilot Interaction Audit Logging](../3.1/portal-walkthrough.md)
 - [Control 3.7: Regulatory Reporting](../3.7/portal-walkthrough.md)
 - [Control 3.13: FFIEC Alignment](../3.13/portal-walkthrough.md)
+- Back to [Control 3.12](../../../controls/pillar-3-compliance/3.12-evidence-collection.md)

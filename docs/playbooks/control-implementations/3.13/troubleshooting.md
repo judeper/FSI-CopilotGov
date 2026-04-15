@@ -65,3 +65,4 @@ Common issues and resolution steps for FFIEC IT Examination Handbook alignment a
 - [Control 3.12: Evidence Collection and Audit Attestation](../3.12/portal-walkthrough.md)
 - [Control 3.7: Regulatory Reporting](../3.7/portal-walkthrough.md)
 - [Control 3.8: Model Risk Management](../3.8/portal-walkthrough.md)
+- Back to [Control 3.13](../../../controls/pillar-3-compliance/3.13-ffiec-alignment.md)

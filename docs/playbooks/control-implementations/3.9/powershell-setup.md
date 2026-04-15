@@ -183,3 +183,4 @@ Write-Host "Report exported to SECMarketingRule_$(Get-Date -Format 'yyyyMMdd').c
 
 - See [Verification & Testing](verification-testing.md) to validate disclosure controls
 - See [Troubleshooting](troubleshooting.md) for disclosure enforcement issues
+- Back to [Control 3.9](../../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md)

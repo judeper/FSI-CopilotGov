@@ -70,3 +70,4 @@ Test cases and evidence collection procedures to validate regulatory reporting c
 
 - Review [Troubleshooting](troubleshooting.md) for reporting issues
 - Proceed to [Control 3.8](../3.8/portal-walkthrough.md) for model risk management
+- Back to [Control 3.7](../../../controls/pillar-3-compliance/3.7-regulatory-reporting.md)

@@ -63,9 +63,10 @@ Test cases and evidence collection procedures to validate alignment with FFIEC I
 |-----------|-------------|----------------------|
 | FFIEC IT Examination Handbook | Cross-booklet IT governance | Supports comprehensive alignment with FFIEC examination expectations |
 | FFIEC CAT | Cybersecurity maturity assessment | Helps meet maturity level requirements for AI technology governance |
-| OCC Heightened Standards | Large institution governance | Supports compliance with enhanced governance requirements |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Large institution governance | Supports compliance with enhanced governance requirements |
 
 ## Next Steps
 
 - Review [Troubleshooting](troubleshooting.md) for examination preparation issues
 - Return to [Pillar 3 Overview](../../index.md) for the complete control listing
+- Back to [Control 3.13](../../../controls/pillar-3-compliance/3.13-ffiec-alignment.md)

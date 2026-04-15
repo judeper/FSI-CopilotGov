@@ -166,3 +166,4 @@ Write-Host "Scorecard reflects live policy configuration" -ForegroundColor Green
 
 - See [Verification & Testing](verification-testing.md) to validate reporting accuracy
 - See [Troubleshooting](troubleshooting.md) for reporting issues
+- Back to [Control 3.7](../../../controls/pillar-3-compliance/3.7-regulatory-reporting.md)

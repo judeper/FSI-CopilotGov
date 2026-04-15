@@ -91,3 +91,4 @@ Common issues and resolution steps for model risk management compliance related 
 - [Control 3.9: AI Disclosure and Transparency](../3.9/portal-walkthrough.md)
 - [OCC Bulletin 2011-12](https://www.occ.gov/news-issuances/bulletins/2011/bulletin-2011-12.html)
 - [OCC Bulletin 2025-26 (Community Bank MRM Proportionality)](https://www.occ.gov/news-issuances/bulletins/2025/bulletin-2025-26.html)
+- Back to [Control 3.8](../../../controls/pillar-3-compliance/3.8-model-risk-management.md)

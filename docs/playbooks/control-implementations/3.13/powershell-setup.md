@@ -31,7 +31,7 @@ $auditConfig = Get-AdminAuditLogConfig
 $auditConfig | Format-List | Out-File "$outputPath/AuditLogConfiguration.txt"
 
 # Audit retention policies
-$retentionPolicies = Get-UnifiedAuditLogRetentionPolicy
+$retentionPolicies = # Verify audit log retention via Microsoft Purview portal (no supported cmdlet)
 $retentionPolicies | Format-List | Out-File "$outputPath/AuditRetentionPolicies.txt"
 
 # Administrative changes in the last 90 days
@@ -212,3 +212,4 @@ $scorecard | Export-Csv "FFIEC_ReadinessScorecard_$(Get-Date -Format 'yyyyMMdd')
 
 - See [Verification & Testing](verification-testing.md) to validate FFIEC alignment
 - See [Troubleshooting](troubleshooting.md) for examination preparation issues
+- Back to [Control 3.13](../../../controls/pillar-3-compliance/3.13-ffiec-alignment.md)

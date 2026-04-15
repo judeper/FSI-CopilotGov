@@ -77,7 +77,7 @@ Write-Host "Regulatory record labels published to all locations" -ForegroundColo
 # - The retention period cannot be shortened
 # - The policy cannot be disabled or deleted
 # - Additional locations can be added, but existing settings cannot be reduced
-# - Even Global Administrators cannot reverse this action
+# - Even Entra Global Admins cannot reverse this action
 #
 # Only apply after the policy has been fully validated and approved.
 $policyName = "FSI-Regulatory-Record-Labels"
@@ -225,3 +225,4 @@ $report | Export-Csv "RecordsManagement_$(Get-Date -Format 'yyyyMMdd').csv" -NoT
 
 - See [Verification & Testing](verification-testing.md) to validate records management
 - See [Troubleshooting](troubleshooting.md) for records management issues
+- Back to [Control 3.11](../../../controls/pillar-3-compliance/3.11-record-keeping.md)
