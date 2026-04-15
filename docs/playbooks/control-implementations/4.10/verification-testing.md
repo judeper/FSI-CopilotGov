@@ -63,9 +63,10 @@ Test cases and evidence collection procedures for Copilot business continuity an
 |-----------|-------------|----------------------|
 | FFIEC BCP Booklet | Business continuity planning and testing | Supports compliance with BCP testing requirements for AI service dependencies |
 | FINRA 4370 | Business continuity plan | Helps meet broker-dealer BCP requirements |
-| OCC Heightened Standards | Technology resilience | Supports expectations for technology recovery capabilities |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Technology resilience | Supports expectations for technology recovery capabilities |
 
 ## Next Steps
 
 - Review [Troubleshooting](troubleshooting.md) for continuity issues
 - Proceed to [Control 4.11](../4.11/portal-walkthrough.md) for Sentinel integration
+- Back to [Control 4.10](../../../controls/pillar-4-operations/4.10-business-continuity.md)

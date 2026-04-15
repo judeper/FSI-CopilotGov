@@ -103,3 +103,4 @@ Step-by-step portal configuration for governing Copilot capabilities within the 
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for Viva governance automation
 - See [Verification & Testing](verification-testing.md) to validate Viva Copilot controls
+- Back to [Control 4.4](../../../controls/pillar-4-operations/4.4-viva-suite-governance.md)

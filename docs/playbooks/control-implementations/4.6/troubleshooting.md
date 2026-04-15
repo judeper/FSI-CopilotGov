@@ -64,3 +64,4 @@ Common issues and resolution steps for Copilot impact measurement using Viva Ins
 
 - [Control 4.5: Copilot Usage Analytics](../4.5/portal-walkthrough.md)
 - [Control 4.7: Feedback and Telemetry Governance](../4.7/portal-walkthrough.md)
+- Back to [Control 4.6](../../../controls/pillar-4-operations/4.6-viva-insights-measurement.md)

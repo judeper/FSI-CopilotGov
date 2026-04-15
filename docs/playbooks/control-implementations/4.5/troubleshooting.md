@@ -64,3 +64,4 @@ Common issues and resolution steps for Copilot usage analytics and adoption repo
 
 - [Control 4.1: Copilot Admin Settings](../4.1/portal-walkthrough.md)
 - [Control 4.6: Viva Insights Copilot Measurement](../4.6/portal-walkthrough.md)
+- Back to [Control 4.5](../../../controls/pillar-4-operations/4.5-usage-analytics.md)

@@ -21,7 +21,7 @@ Test cases and evidence collection procedures for Copilot usage analytics and ad
 - **Steps:**
   1. Log in as a Reports Reader role user and access the Copilot usage report.
   2. Verify that user-identifiable information is shown or hidden per the configured privacy settings.
-  3. Log in as a compliance administrator and verify they can access identifiable data.
+  3. Log in as a Purview Compliance Admin and verify they can access identifiable data.
   4. Confirm the audit log records who accessed user-identifiable usage reports.
 - **Expected Result:** Privacy settings correctly control visibility of identifiable data per role.
 - **Evidence:** Screenshots showing different data visibility for different roles.
@@ -62,10 +62,11 @@ Test cases and evidence collection procedures for Copilot usage analytics and ad
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FFIEC Management Booklet | IT investment monitoring | Supports compliance with technology utilization tracking |
-| OCC Heightened Standards | Technology governance | Helps meet expectations for AI technology adoption oversight |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Technology governance | Helps meet expectations for AI technology adoption oversight |
 | SOX 404 | Internal control over IT assets | Supports IT asset management and utilization controls |
 
 ## Next Steps
 
 - Review [Troubleshooting](troubleshooting.md) for analytics issues
 - Proceed to [Control 4.6](../4.6/portal-walkthrough.md) for Viva Insights Copilot measurement
+- Back to [Control 4.5](../../../controls/pillar-4-operations/4.5-usage-analytics.md)

@@ -82,3 +82,4 @@ Step-by-step portal configuration for establishing incident reporting and root c
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for incident detection automation
 - See [Verification & Testing](verification-testing.md) to validate incident response
+- Back to [Control 4.9](../../../controls/pillar-4-operations/4.9-incident-reporting.md)

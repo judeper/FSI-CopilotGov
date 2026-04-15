@@ -105,3 +105,4 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 
 - [Control 4.1: Copilot Admin Settings](../4.1/portal-walkthrough.md)
 - [Control 4.5: Copilot Usage Analytics](../4.5/portal-walkthrough.md)
+- Back to [Control 4.8](../../../controls/pillar-4-operations/4.8-cost-allocation.md)

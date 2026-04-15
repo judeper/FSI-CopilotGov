@@ -81,10 +81,11 @@ Test cases and evidence collection procedures to validate Copilot administrative
 |-----------|-------------|----------------------|
 | SOX Section 404 | IT general controls for financial reporting systems | Supports evidence of governed Copilot configuration and change review |
 | FFIEC Management Booklet | IT governance and access control | Supports centralized administration and least-privilege review |
-| OCC Heightened Standards | Technology risk management | Helps document ongoing control of AI feature rollout and spend pathways |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Technology risk management | Helps document ongoing control of AI feature rollout and spend pathways |
 | NYDFS 23 NYCRR 500 | Access controls | Supports use of limited administrator roles and documented access decisions |
 
 ## Next Steps
 
 - Review [Troubleshooting](troubleshooting.md) for configuration issues
 - Proceed to [Control 4.2](../4.2/portal-walkthrough.md) for Teams Meetings governance
+- Back to [Control 4.1](../../../controls/pillar-4-operations/4.1-admin-settings-feature-management.md)

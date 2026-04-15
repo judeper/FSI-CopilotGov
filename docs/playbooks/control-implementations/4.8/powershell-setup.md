@@ -238,3 +238,4 @@ if ($confirm -eq "CONFIRM") {
 
 - See [Verification & Testing](verification-testing.md) to validate cost allocation
 - See [Troubleshooting](troubleshooting.md) for licensing issues
+- Back to [Control 4.8](../../../controls/pillar-4-operations/4.8-cost-allocation.md)

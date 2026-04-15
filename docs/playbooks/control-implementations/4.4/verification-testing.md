@@ -99,3 +99,4 @@ Test cases and evidence collection procedures for Copilot governance across the 
 
 - Review [Troubleshooting](troubleshooting.md) for Viva Copilot issues
 - Proceed to [Control 4.5](../4.5/portal-walkthrough.md) for usage analytics
+- Back to [Control 4.4](../../../controls/pillar-4-operations/4.4-viva-suite-governance.md)

@@ -145,3 +145,4 @@ $portalChecks | Format-Table -AutoSize
 
 - See [Verification & Testing](verification-testing.md) to validate impact measurement
 - See [Troubleshooting](troubleshooting.md) for Viva Insights issues
+- Back to [Control 4.6](../../../controls/pillar-4-operations/4.6-viva-insights-measurement.md)

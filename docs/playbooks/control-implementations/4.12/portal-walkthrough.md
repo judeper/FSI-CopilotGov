@@ -75,10 +75,11 @@ Step-by-step portal configuration for establishing change management processes g
 ## Regulatory Alignment
 
 - **FFIEC Operations Booklet** — Supports compliance with change management requirements for IT systems
-- **OCC Heightened Standards** — Helps meet expectations for controlled technology changes
+- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Helps meet expectations for controlled technology changes
 - **SOX Section 404** — Supports change management controls for systems affecting financial reporting
 
 ## Next Steps
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for change management automation
 - See [Verification & Testing](verification-testing.md) to validate change management processes
+- Back to [Control 4.12](../../../controls/pillar-4-operations/4.12-change-management-rollouts.md)

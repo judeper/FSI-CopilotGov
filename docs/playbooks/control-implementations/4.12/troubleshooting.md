@@ -64,3 +64,4 @@ Common issues and resolution steps for Copilot change management processes.
 
 - [Control 4.1: Copilot Admin Settings](../4.1/portal-walkthrough.md)
 - [Control 4.13: Copilot Extensibility Governance](../4.13/portal-walkthrough.md)
+- Back to [Control 4.12](../../../controls/pillar-4-operations/4.12-change-management-rollouts.md)

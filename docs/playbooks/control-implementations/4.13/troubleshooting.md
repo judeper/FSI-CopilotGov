@@ -78,3 +78,4 @@ Common issues and resolution steps for Copilot extensibility governance and agen
 - [Control 4.1: Copilot Admin Settings](../4.1/portal-walkthrough.md)
 - [Control 4.12: Change Management](../4.12/portal-walkthrough.md)
 - [Control 2.13: Plugin and Graph Connector Security](../2.13/portal-walkthrough.md)
+- Back to [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md)

@@ -73,10 +73,11 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FFIEC Development Booklet | Third-party software governance | Supports compliance with software acquisition and deployment governance |
-| OCC Bulletin 2013-29 (Third-Party Relationships) | Vendor risk management | Helps meet third-party risk management for plugin providers |
+| OCC Bulletin 2023-17 (Third-Party Relationships) | Vendor risk management | Helps meet third-party risk management for plugin providers |
 | NYDFS 23 NYCRR 500 | Third-party security assessment | Supports security assessment of third-party service providers |
 
 ## Next Steps
 
 - Review [Troubleshooting](troubleshooting.md) for plugin governance issues
 - Return to [Pillar 4 Overview](../../index.md) for the complete control listing
+- Back to [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md)

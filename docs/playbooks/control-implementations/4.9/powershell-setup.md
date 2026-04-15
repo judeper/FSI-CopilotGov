@@ -243,3 +243,4 @@ if ($jailbreakTotal -gt 0) {
 
 - See [Verification & Testing](verification-testing.md) to validate incident response
 - See [Troubleshooting](troubleshooting.md) for incident management issues
+- Back to [Control 4.9](../../../controls/pillar-4-operations/4.9-incident-reporting.md)

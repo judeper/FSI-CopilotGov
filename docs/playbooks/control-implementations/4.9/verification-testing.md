@@ -69,3 +69,4 @@ Test cases and evidence collection procedures for Copilot incident reporting and
 
 - Review [Troubleshooting](troubleshooting.md) for incident management issues
 - Proceed to [Control 4.10](../4.10/portal-walkthrough.md) for business continuity
+- Back to [Control 4.9](../../../controls/pillar-4-operations/4.9-incident-reporting.md)

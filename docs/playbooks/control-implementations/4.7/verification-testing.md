@@ -69,3 +69,4 @@ Test cases and evidence collection procedures for Copilot feedback and telemetry
 
 - Review [Troubleshooting](troubleshooting.md) for telemetry governance issues
 - Proceed to [Control 4.8](../4.8/portal-walkthrough.md) for cost allocation and license optimization
+- Back to [Control 4.7](../../../controls/pillar-4-operations/4.7-feedback-telemetry.md)

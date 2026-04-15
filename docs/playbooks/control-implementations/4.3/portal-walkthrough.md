@@ -76,3 +76,4 @@ Step-by-step portal configuration for governing Copilot capabilities in Teams Ph
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for phone policy automation
 - See [Verification & Testing](verification-testing.md) to validate phone governance
+- Back to [Control 4.3](../../../controls/pillar-4-operations/4.3-teams-phone-queues.md)

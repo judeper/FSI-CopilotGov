@@ -93,3 +93,4 @@ Common issues and resolution steps for Copilot governance across the Viva suite.
 
 - [Control 4.1: Copilot Admin Settings](../4.1/portal-walkthrough.md)
 - [Control 4.5: Copilot Usage Analytics](../4.5/portal-walkthrough.md)
+- Back to [Control 4.4](../../../controls/pillar-4-operations/4.4-viva-suite-governance.md)

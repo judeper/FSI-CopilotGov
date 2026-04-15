@@ -251,3 +251,4 @@ $automatedChecks | Export-Csv "FeedbackPolicyVerification_$(Get-Date -Format 'yy
 
 - See [Verification & Testing](verification-testing.md) to validate telemetry governance
 - See [Troubleshooting](troubleshooting.md) for data governance issues
+- Back to [Control 4.7](../../../controls/pillar-4-operations/4.7-feedback-telemetry.md)

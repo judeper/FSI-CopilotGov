@@ -62,10 +62,11 @@ Test cases and evidence collection procedures for Copilot impact measurement usi
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FFIEC Management Booklet | IT investment effectiveness | Supports compliance with technology ROI measurement |
-| OCC Heightened Standards | Technology governance | Helps meet expectations for measuring AI technology impact |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Technology governance | Helps meet expectations for measuring AI technology impact |
 | SOX 404 | IT asset management | Supports governance of IT investment outcomes |
 
 ## Next Steps
 
 - Review [Troubleshooting](troubleshooting.md) for Viva Insights issues
 - Proceed to [Control 4.7](../4.7/portal-walkthrough.md) for feedback and telemetry governance
+- Back to [Control 4.6](../../../controls/pillar-4-operations/4.6-viva-insights-measurement.md)

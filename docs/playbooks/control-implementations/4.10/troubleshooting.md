@@ -65,3 +65,4 @@ Common issues and resolution steps for Copilot business continuity and disaster 
 
 - [Control 4.9: Incident Reporting](../4.9/portal-walkthrough.md)
 - [Control 4.11: Microsoft Sentinel Integration](../4.11/portal-walkthrough.md)
+- Back to [Control 4.10](../../../controls/pillar-4-operations/4.10-business-continuity.md)

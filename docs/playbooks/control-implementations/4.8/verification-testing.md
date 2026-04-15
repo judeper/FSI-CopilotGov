@@ -101,9 +101,10 @@ Test cases and evidence collection procedures for Copilot cost allocation and li
 |-----------|-------------|----------------------|
 | SOX Section 404 (15 U.S.C. § 7262) | IT general controls over financial reporting — material technology expenditure authorization | PAYG budget authorization controls, billing-policy review, and per-seat license tracking support IT asset management control requirements |
 | FFIEC Management Booklet, Section II.D | IT investment governance — cost-benefit analysis and ongoing cost monitoring | Per-seat versus PAYG documentation and monthly billing review help satisfy this expectation |
-| OCC Heightened Standards (12 CFR Part 30, Appendix D) | Operational risk governance framework — technology cost management | Billing-policy review, anomaly detection, and monthly PAYG reporting demonstrate responsive cost governance |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) (12 CFR Part 30, Appendix D) | Operational risk governance framework — technology cost management | Billing-policy review, anomaly detection, and monthly PAYG reporting demonstrate responsive cost governance |
 
 ## Next Steps
 
 - Review [Troubleshooting](troubleshooting.md) for licensing issues
 - Proceed to [Control 4.9](../4.9/portal-walkthrough.md) for incident reporting
+- Back to [Control 4.8](../../../controls/pillar-4-operations/4.8-cost-allocation.md)

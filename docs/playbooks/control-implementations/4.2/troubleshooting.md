@@ -99,3 +99,4 @@ Common issues and resolution steps for Copilot governance in Teams meetings, inc
 
 - [Control 4.1: Copilot Admin Settings](../4.1/portal-walkthrough.md)
 - [Control 4.3: Copilot in Teams Phone](../4.3/portal-walkthrough.md)
+- Back to [Control 4.2](../../../controls/pillar-4-operations/4.2-teams-meetings-governance.md)

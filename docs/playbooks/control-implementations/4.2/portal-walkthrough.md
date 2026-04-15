@@ -105,3 +105,4 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for Teams meeting policy automation and EnabledWithTranscript enforcement scripts
 - See [Verification & Testing](verification-testing.md) to validate meeting governance
+- Back to [Control 4.2](../../../controls/pillar-4-operations/4.2-teams-meetings-governance.md)

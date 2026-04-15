@@ -250,3 +250,4 @@ if ($activeIncidents.Count -gt 0) {
 
 - See [Verification & Testing](verification-testing.md) to validate BCP/DR procedures
 - See [Troubleshooting](troubleshooting.md) for service continuity issues
+- Back to [Control 4.10](../../../controls/pillar-4-operations/4.10-business-continuity.md)

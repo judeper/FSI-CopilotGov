@@ -161,3 +161,4 @@ Write-Host "`nRelease preferences require manual verification in M365 Admin Cent
 
 - See [Verification & Testing](verification-testing.md) to validate change management
 - See [Troubleshooting](troubleshooting.md) for change management issues
+- Back to [Control 4.12](../../../controls/pillar-4-operations/4.12-change-management-rollouts.md)

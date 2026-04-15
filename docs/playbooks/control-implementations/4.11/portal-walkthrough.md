@@ -82,3 +82,4 @@ Step-by-step portal configuration for integrating Microsoft 365 Copilot events i
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for Sentinel configuration automation
 - See [Verification & Testing](verification-testing.md) to validate Sentinel integration
+- Back to [Control 4.11](../../../controls/pillar-4-operations/4.11-sentinel-integration.md)

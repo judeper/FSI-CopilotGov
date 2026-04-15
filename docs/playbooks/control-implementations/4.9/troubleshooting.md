@@ -65,3 +65,4 @@ Common issues and resolution steps for Copilot incident reporting and root cause
 - [Control 3.1: Copilot Interaction Audit Logging](../3.1/portal-walkthrough.md)
 - [Control 4.10: Business Continuity and Disaster Recovery](../4.10/portal-walkthrough.md)
 - [Control 4.11: Microsoft Sentinel Integration](../4.11/portal-walkthrough.md)
+- Back to [Control 4.9](../../../controls/pillar-4-operations/4.9-incident-reporting.md)

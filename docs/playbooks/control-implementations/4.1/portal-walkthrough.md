@@ -82,3 +82,4 @@ Step-by-step portal review for the current Microsoft 365 Copilot administration 
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for administrative automation
 - See [Verification & Testing](verification-testing.md) to validate configuration
+- Back to [Control 4.1](../../../controls/pillar-4-operations/4.1-admin-settings-feature-management.md)

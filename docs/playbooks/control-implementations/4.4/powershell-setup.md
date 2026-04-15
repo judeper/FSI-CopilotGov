@@ -242,3 +242,4 @@ Write-Host "Governance snapshot generated" -ForegroundColor Green
 
 - See [Verification & Testing](verification-testing.md) to validate Viva governance
 - See [Troubleshooting](troubleshooting.md) for Viva Copilot issues
+- Back to [Control 4.4](../../../controls/pillar-4-operations/4.4-viva-suite-governance.md)

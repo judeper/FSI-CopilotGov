@@ -72,3 +72,4 @@ Step-by-step portal configuration for governing the collection, storage, and use
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for telemetry configuration automation
 - See [Verification & Testing](verification-testing.md) to validate data governance
+- Back to [Control 4.7](../../../controls/pillar-4-operations/4.7-feedback-telemetry.md)

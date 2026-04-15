@@ -63,9 +63,10 @@ Test cases and evidence collection procedures for Copilot change management proc
 |-----------|-------------|----------------------|
 | FFIEC Operations Booklet | Change management for IT systems | Supports compliance with change management requirements |
 | SOX 404 | IT change controls | Helps meet change management controls over financial systems |
-| OCC Heightened Standards | Controlled technology changes | Supports expectations for governance of technology changes |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Controlled technology changes | Supports expectations for governance of technology changes |
 
 ## Next Steps
 
 - Review [Troubleshooting](troubleshooting.md) for change management issues
 - Proceed to [Control 4.13](../4.13/portal-walkthrough.md) for extensibility governance
+- Back to [Control 4.12](../../../controls/pillar-4-operations/4.12-change-management-rollouts.md)

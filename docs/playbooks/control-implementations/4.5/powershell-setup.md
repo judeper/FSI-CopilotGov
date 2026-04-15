@@ -132,3 +132,4 @@ $trends | Format-Table -AutoSize
 
 - See [Verification & Testing](verification-testing.md) to validate analytics
 - See [Troubleshooting](troubleshooting.md) for reporting issues
+- Back to [Control 4.5](../../../controls/pillar-4-operations/4.5-usage-analytics.md)

@@ -195,3 +195,4 @@ $meetingEvents | Select-Object CreationDate, UserIds, Operations |
 
 - See [Verification & Testing](verification-testing.md) to validate meeting governance
 - See [Troubleshooting](troubleshooting.md) for Teams meeting issues
+- Back to [Control 4.2](../../../controls/pillar-4-operations/4.2-teams-meetings-governance.md)

@@ -109,3 +109,4 @@ Step-by-step portal configuration for governing plugins, Graph connectors, and a
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for plugin governance automation
 - See [Verification & Testing](verification-testing.md) to validate extensibility controls
+- Back to [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md)

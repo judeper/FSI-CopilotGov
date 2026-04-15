@@ -164,3 +164,4 @@ Write-Host "Expected: Consistent event counts across hourly buckets during busin
 
 - See [Verification & Testing](verification-testing.md) to validate Sentinel integration
 - See [Troubleshooting](troubleshooting.md) for Sentinel configuration issues
+- Back to [Control 4.11](../../../controls/pillar-4-operations/4.11-sentinel-integration.md)

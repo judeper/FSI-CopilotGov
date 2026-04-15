@@ -65,3 +65,4 @@ Common issues and resolution steps for Copilot feedback and telemetry data gover
 
 - [Control 4.1: Copilot Admin Settings](../4.1/portal-walkthrough.md)
 - [Control 4.8: Cost Allocation and License Optimization](../4.8/portal-walkthrough.md)
+- Back to [Control 4.7](../../../controls/pillar-4-operations/4.7-feedback-telemetry.md)

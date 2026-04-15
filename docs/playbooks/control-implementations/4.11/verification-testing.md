@@ -63,9 +63,10 @@ Test cases and evidence collection procedures for Microsoft Sentinel integration
 |-----------|-------------|----------------------|
 | FFIEC IT Handbook | Continuous security monitoring | Supports compliance with security monitoring and threat detection |
 | NYDFS 23 NYCRR 500 | Continuous monitoring | Helps meet continuous monitoring requirements for AI systems |
-| OCC Heightened Standards | Threat detection | Supports expectations for advanced threat detection capabilities |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Threat detection | Supports expectations for advanced threat detection capabilities |
 
 ## Next Steps
 
 - Review [Troubleshooting](troubleshooting.md) for Sentinel integration issues
 - Proceed to [Control 4.12](../4.12/portal-walkthrough.md) for change management
+- Back to [Control 4.11](../../../controls/pillar-4-operations/4.11-sentinel-integration.md)

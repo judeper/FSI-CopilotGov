@@ -86,9 +86,10 @@ Step-by-step portal configuration for implementing cost allocation, chargeback, 
 
 - **SOX Section 404** (15 U.S.C. § 7262) — PAYG budget authorization controls serve as IT general controls over financial reporting; per-seat and PAYG costs should be reconciled to vendor billing and billing-policy records
 - **FFIEC Management Booklet, Section II.D** — Cost-benefit analysis of per-seat versus PAYG model selection should be documented for examiner review; ongoing cost monitoring supports FFIEC expectations
-- **OCC Heightened Standards** (12 CFR Part 30, Appendix D) — Billing-policy review, budgets, and anomaly investigation demonstrate responsible technology cost governance expected by OCC
+- **12 CFR part 30, appendix D (OCC Heightened Standards)** (12 CFR Part 30, Appendix D) — Billing-policy review, budgets, and anomaly investigation demonstrate responsible technology cost governance expected by OCC
 
 ## Next Steps
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for license management automation
 - See [Verification & Testing](verification-testing.md) to validate cost allocation
+- Back to [Control 4.8](../../../controls/pillar-4-operations/4.8-cost-allocation.md)

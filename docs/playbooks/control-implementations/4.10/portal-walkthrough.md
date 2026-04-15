@@ -73,10 +73,11 @@ Step-by-step portal configuration for establishing business continuity and disas
 ## Regulatory Alignment
 
 - **FFIEC BCP Booklet** — Supports compliance with business continuity planning requirements for technology dependencies
-- **OCC Heightened Standards** — Helps meet expectations for technology resilience and recovery
+- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Helps meet expectations for technology resilience and recovery
 - **FINRA Rule 4370** — Supports business continuity plan requirements for broker-dealers
 
 ## Next Steps
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for service monitoring automation
 - See [Verification & Testing](verification-testing.md) to validate BCP/DR procedures
+- Back to [Control 4.10](../../../controls/pillar-4-operations/4.10-business-continuity.md)

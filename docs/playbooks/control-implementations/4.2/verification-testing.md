@@ -100,3 +100,4 @@ Test cases and evidence collection procedures to validate Copilot governance in 
 
 - Review [Troubleshooting](troubleshooting.md) for Teams meeting Copilot issues
 - Proceed to [Control 4.3](../4.3/portal-walkthrough.md) for Teams Phone governance
+- Back to [Control 4.2](../../../controls/pillar-4-operations/4.2-teams-meetings-governance.md)

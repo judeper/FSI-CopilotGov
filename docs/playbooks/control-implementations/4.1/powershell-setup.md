@@ -162,3 +162,4 @@ if ($aiAdminRole) {
 
 - See [Verification & Testing](verification-testing.md) to validate Copilot Control System settings
 - See [Troubleshooting](troubleshooting.md) for configuration issues
+- Back to [Control 4.1](../../../controls/pillar-4-operations/4.1-admin-settings-feature-management.md)

@@ -145,3 +145,4 @@ if ($pluginEvents.Count -gt 0) {
 
 - See [Verification & Testing](verification-testing.md) to validate extensibility governance
 - See [Troubleshooting](troubleshooting.md) for plugin governance issues
+- Back to [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md)

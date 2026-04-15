@@ -72,10 +72,11 @@ Step-by-step portal configuration for establishing usage analytics and adoption 
 ## Regulatory Alignment
 
 - **FFIEC Management Booklet** — Supports compliance with IT investment governance and monitoring
-- **OCC Heightened Standards** — Helps meet technology utilization and governance expectations
+- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Helps meet technology utilization and governance expectations
 - **SOX Section 404** — Supports internal controls over IT asset management
 
 ## Next Steps
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for usage reporting automation
 - See [Verification & Testing](verification-testing.md) to validate analytics accuracy
+- Back to [Control 4.5](../../../controls/pillar-4-operations/4.5-usage-analytics.md)

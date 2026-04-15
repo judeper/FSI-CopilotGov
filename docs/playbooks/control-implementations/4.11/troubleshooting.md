@@ -67,3 +67,4 @@ Common issues and resolution steps for Microsoft Sentinel integration with Copil
 - [Control 3.1: Copilot Interaction Audit Logging](../3.1/portal-walkthrough.md)
 - [Control 4.9: Incident Reporting](../4.9/portal-walkthrough.md)
 - [Control 4.12: Change Management](../4.12/portal-walkthrough.md)
+- Back to [Control 4.11](../../../controls/pillar-4-operations/4.11-sentinel-integration.md)

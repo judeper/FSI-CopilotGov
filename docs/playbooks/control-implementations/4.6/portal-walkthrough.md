@@ -80,3 +80,4 @@ Step-by-step portal configuration for using Microsoft Viva Insights to measure t
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for insights automation
 - See [Verification & Testing](verification-testing.md) to validate impact measurement
+- Back to [Control 4.6](../../../controls/pillar-4-operations/4.6-viva-insights-measurement.md)
