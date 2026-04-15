@@ -97,3 +97,4 @@ Common issues and resolution steps for permission model auditing.
 - [Portal Walkthrough](portal-walkthrough.md) — Audit procedure reference
 - [PowerShell Setup](powershell-setup.md) — Audit automation scripts
 - [Verification & Testing](verification-testing.md) — Validation procedures
+- Back to [Control 1.6: Permission Model Audit](../../../controls/pillar-1-readiness/1.6-permission-model-audit.md)

@@ -80,3 +80,4 @@ Test cases and evidence collection for validating the permission model audit and
 | SOX Section 404 | Internal controls over access | Periodic permission reviews support compliance with internal control requirements |
 | NIST CSF | PR.AC-1 Identity and access management | Permission audits validate access control effectiveness |
 | FFIEC IT Handbook | Least privilege and separation of duties | DSPM role assignments enforce least-privilege access to AI governance data, with AI Content Viewer separated from AI Administrator |
+- Back to [Control 1.6: Permission Model Audit](../../../controls/pillar-1-readiness/1.6-permission-model-audit.md)

@@ -4,7 +4,7 @@ Step-by-step portal procedures for auditing the Microsoft 365 permission model t
 
 ## Prerequisites
 
-- SharePoint Administrator and Entra ID Administrator roles
+- SharePoint Admin and Entra ID Administrator roles
 - Access to SharePoint Admin Center, Microsoft Entra admin center, and Microsoft Purview portal
 - Microsoft 365 E5 or Entra ID P2 license for access reviews
 - Inventory of high-sensitivity SharePoint sites and Teams
@@ -78,10 +78,10 @@ Repeat for "Purview Data Security AI Content Viewer" — add only investigation 
 
 1. Click **AI Administrator** in the roles list
 2. Click **Add assignments**
-3. Search for and select the Copilot governance lead (the person responsible for managing Copilot DLP policies and AI service authorizations)
+3. Search for and select the Copilot governance lead (the person responsible for managing Copilot service settings and AI governance configurations)
 4. Click **Add**
 
-Verify assignment: The AI Administrator role grants full management of Copilot DLP policies in the Microsoft 365 Admin Center without requiring full Purview Compliance Administrator rights.
+Verify assignment: The AI Administrator role grants management of Copilot service settings in the Microsoft 365 Admin Center. DLP policy management requires separate Purview Compliance Admin rights.
 
 ### Step 6: Document Permission Audit Findings
 
@@ -104,4 +104,5 @@ Compile a permission audit report including:
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for bulk permission auditing
 - See [Verification & Testing](verification-testing.md) to validate permission remediation
-- Review Control 1.7 for SharePoint Advanced Management capabilities
+- Review [Control 1.7: SharePoint Advanced Management](../../../controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md) for additional governance capabilities
+- Back to [Control 1.6: Permission Model Audit](../../../controls/pillar-1-readiness/1.6-permission-model-audit.md)

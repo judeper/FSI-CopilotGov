@@ -29,7 +29,7 @@ Save the returned Client ID — you will need it for all `Connect-PnPOnline` cal
 
 ### Required Roles
 
-- SharePoint Administrator and Global Reader roles (for SPO and Graph scripts)
+- SharePoint Admin and Global Reader roles (for SPO and Graph scripts)
 - Exchange Administrator role (for Exchange scripts)
 
 ## Scripts
@@ -152,3 +152,4 @@ Write-Host "Found $($sharingReport.Count) active sharing links across $($targetS
 
 - See [Verification & Testing](verification-testing.md) to validate audit findings
 - See [Troubleshooting](troubleshooting.md) for script execution issues
+- Back to [Control 1.6: Permission Model Audit](../../../controls/pillar-1-readiness/1.6-permission-model-audit.md)
