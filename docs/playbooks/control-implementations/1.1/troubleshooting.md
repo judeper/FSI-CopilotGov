@@ -9,7 +9,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
 - **Symptoms:** The Optimization Assessment reports that a high percentage of endpoints are on Semi-Annual Enterprise Channel or an unsupported Office update channel
 - **Root Cause:** Semi-Annual Enterprise Channel does not receive Copilot feature updates. Endpoints on this channel may install the Copilot license but will not have access to the latest Copilot capabilities.
 - **Resolution:**
-  1. Use Microsoft Intune (Devices > Update rings for Microsoft 365 Apps) to move endpoints from Semi-Annual Enterprise Channel to Current Channel or Monthly Enterprise Channel
+  1. Use Microsoft Intune (Devices > Configuration profiles > Settings catalog > search for Update Channel under Microsoft Office 2016 (Machine) > Updates) to move endpoints from Semi-Annual Enterprise Channel to Current Channel or Monthly Enterprise Channel
   2. For Group Policy-managed environments, update the "Update Channel" policy to "Current Channel" (or "Monthly Enterprise Channel" for environments requiring monthly patch cycles)
   3. For a phased approach, move Copilot pilot users first, then expand as each group transitions channels
   4. Allow 1-7 days for channel transitions to complete after policy change
@@ -53,7 +53,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
   1. Verify reporting timeframe in Label Analytics (default may be 7-day window)
   2. Check auto-labeling policy status — confirm policies are enabled and not in simulation mode
   3. Review label policy scoping — labels may not be published to all user groups
-  4. Force a re-index of key SharePoint sites using `Request-SPOReIndex`
+  4. Force a re-index of key SharePoint sites using PnP PowerShell (`Invoke-PnPSiteSearchReindex`) or the SharePoint site settings UI under Search and Offline Availability
 
 ### Issue 6: Stale Site Detection False Positives
 
@@ -89,3 +89,4 @@ When encountering unexpected results from readiness assessments:
 - [Portal Walkthrough](portal-walkthrough.md) — Step-by-step configuration reference
 - [PowerShell Setup](powershell-setup.md) — Script reference and parameters
 - [Verification & Testing](verification-testing.md) — Test cases to validate resolution
+- [Control 1.1: Copilot Readiness Assessment](../../../controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md) — Parent control

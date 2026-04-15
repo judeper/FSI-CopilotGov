@@ -4,10 +4,10 @@ Step-by-step portal configuration for evaluating organizational readiness and es
 
 ## Prerequisites
 
-- Global Administrator or Security Administrator role
+- Entra Global Admin or Security Administrator role
 - Microsoft 365 E5 or E3 + Security add-on license
 - Access to Microsoft 365 Admin Center and Microsoft Purview portal
-- SharePoint Administrator role for site-level assessment
+- SharePoint Admin role for site-level assessment
 
 ## Steps
 
@@ -32,8 +32,6 @@ Review each category and address any findings flagged as blocking before assigni
 Open the DSPM oversharing assessment. This report identifies SharePoint sites, OneDrive locations, and Teams channels where sensitive content may be accessible to users who should not have access.
 
 Filter results by sensitivity level and focus on sites containing financial data, PII, or regulated content. Export the report for governance committee review.
-
-**Quick access alternative:** Microsoft 365 Admin Center > Copilot > Overview > Security tab provides access to key Copilot security controls and the default DLP policy status without navigating to the full Purview portal.
 
 ### Step 3: Evaluate Sensitivity Label Coverage
 
@@ -67,11 +65,12 @@ Compile findings from Steps 1-4 into a readiness assessment report. Include:
 | Tier | Recommendation |
 |------|---------------|
 | **Baseline** | Complete Optimization Assessment and address infrastructure findings. Run readiness assessment and remediate all critical oversharing findings before pilot |
-| **Recommended** | Achieve 85% sensitivity label coverage, resolve all high-risk permission anomalies, and achieve >95% update channel compliance |
+| **Recommended** | Achieve >75% sensitivity label coverage (per Control 1.1 scoring model), resolve all high-risk permission anomalies, and achieve >95% update channel compliance |
 | **Regulated** | Require governance committee sign-off on readiness report with documented remediation plan for all findings, including update channel policy enforcement |
 
 ## Next Steps
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for automated assessment scripts
 - See [Verification & Testing](verification-testing.md) to validate readiness criteria
-- Review Control 1.2 for detailed oversharing detection procedures
+- Review [Control 1.2: SharePoint Oversharing Detection](../../../controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md) for detailed oversharing detection procedures
+- Back to [Control 1.1: Copilot Readiness Assessment](../../../controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md)

@@ -6,22 +6,21 @@ Automation scripts for conducting Copilot readiness assessments and data hygiene
 
 - PowerShell 7.x or later
 - Microsoft Graph PowerShell SDK (`Microsoft.Graph`)
-- SharePoint Online Management Shell (`Microsoft.Online.SharePoint.PowerShell`)
-- Exchange Online Management module (`ExchangeOnlineManagement`)
-- Global Reader or Security Reader role (minimum for assessment)
+- SharePoint Online Management Shell (`Microsoft.Online.SharePoint.PowerShell`) — requires SharePoint Admin role
+- Exchange Online Management module (`ExchangeOnlineManagement`) — requires Purview Compliance Admin or equivalent role
+- Global Reader or Security Reader role (minimum for Graph-based read operations; SharePoint Admin required for SPO cmdlets)
 
 ## Scripts
 
-### Script 1: Tenant Readiness Assessment Report
+### Script 1: SharePoint Site and Sharing Inventory
 
 ```powershell
-# Generate comprehensive Copilot readiness assessment
-# Requires: Microsoft.Graph module with Sites.Read.All, Reports.Read.All
+# Generate SharePoint site and sharing inventory for Copilot readiness
+# Requires: Microsoft.Graph module with Sites.Read.All
 
 Import-Module Microsoft.Graph.Sites
-Import-Module Microsoft.Graph.Reports
 
-Connect-MgGraph -Scopes "Sites.Read.All","Reports.Read.All"
+Connect-MgGraph -Scopes "Sites.Read.All"
 
 $report = @{
     AssessmentDate = Get-Date -Format "yyyy-MM-dd"
@@ -86,11 +85,11 @@ Write-Host "Overshared sites: $oversharedCount"
 $results | Export-Csv "DataHygieneScan_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 3: Sensitivity Label Coverage Report
+### Script 3: Sensitivity Label Configuration Report
 
 ```powershell
-# Report on sensitivity label adoption across the tenant
-# Requires: Security & Compliance PowerShell
+# Report on sensitivity label configuration and publishing status
+# Requires: Security & Compliance PowerShell (Purview Compliance Admin or equivalent role)
 
 Import-Module ExchangeOnlineManagement
 Connect-IPPSSession
@@ -98,7 +97,7 @@ Connect-IPPSSession
 $labelPolicies = Get-LabelPolicy
 $labels = Get-Label
 
-Write-Host "=== Sensitivity Label Coverage ==="
+Write-Host "=== Sensitivity Label Configuration ==="
 Write-Host "Active label policies: $($labelPolicies.Count)"
 Write-Host "Published labels: $($labels.Count)"
 
@@ -117,7 +116,7 @@ $labels | Select-Object DisplayName, Priority, @{Name="Enabled";Expression={-not
 |------|-----------|---------|
 | Readiness Assessment | Weekly during pre-deployment | Track remediation progress |
 | Data Hygiene Scan | Monthly | Identify new stale or overshared content |
-| Label Coverage Report | Weekly | Monitor label adoption toward 85% target |
+| Label Configuration Report | Weekly | Monitor label publishing and policy status |
 
 Configure scheduled tasks using Azure Automation or Windows Task Scheduler to run these scripts on the recommended cadence.
 
@@ -125,3 +124,4 @@ Configure scheduled tasks using Azure Automation or Windows Task Scheduler to ru
 
 - See [Verification & Testing](verification-testing.md) for validation procedures
 - See [Troubleshooting](troubleshooting.md) for common script issues
+- Back to [Control 1.1: Copilot Readiness Assessment](../../../controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md)

@@ -8,7 +8,7 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 
 - **Objective:** Verify that the Copilot Optimization Assessment has run and all infrastructure findings have been reviewed
 - **Steps:**
-  1. Sign in to Microsoft 365 Admin Center as Global Administrator
+  1. Sign in to Microsoft 365 Admin Center as Entra Global Admin
   2. Navigate to Admin Center > Copilot > Settings > Readiness
   3. Confirm the Optimization Assessment has completed and shows current results
   4. Verify network readiness, Office update channel compliance, and app compatibility sections are all reviewed
@@ -20,7 +20,7 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 
 - **Objective:** Verify that the Copilot readiness dashboard is accessible and returning data
 - **Steps:**
-  1. Sign in to Microsoft 365 Admin Center as Global Administrator
+  1. Sign in to Microsoft 365 Admin Center as Entra Global Admin
   2. Navigate to Copilot > Settings > Readiness
   3. Confirm the dashboard loads and displays assessment categories
   4. Verify data freshness (last updated within 48 hours)
@@ -40,13 +40,13 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 
 ### Test 3: Sensitivity Label Coverage Threshold
 
-- **Objective:** Verify sensitivity label adoption meets the 85% target for FSI environments
+- **Objective:** Verify sensitivity label adoption meets the target for the organization's governance tier (>50% Baseline / >75% Recommended / >90% Regulated)
 - **Steps:**
   1. Open Microsoft Purview > Information Protection > Label Analytics
   2. Review the overall labeling rate for documents in SharePoint and OneDrive
   3. Check department-level breakdown for any groups below threshold
   4. Verify auto-labeling policies are active for common FSI content types
-- **Expected Result:** Organization-wide label coverage is at or above 85%
+- **Expected Result:** Organization-wide label coverage meets or exceeds the target for the selected governance tier
 - **Evidence:** Label analytics report export showing coverage percentages
 
 ### Test 4: Permission Model Remediation Verification
@@ -86,11 +86,12 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
 | FINRA Rule 3110 | Supervisory system review | Readiness assessment documents supervisory review of AI data access |
-| SEC Rule 17a-4 | Records preservation | Assessment reports serve as deployment decision records |
-| OCC Heightened Standards | Risk management governance | Formal governance review supports compliance with risk management requirements |
+| SEC Rule 17a-4 | Records preservation | If the firm treats readiness assessments as required books and records, preserve them in accordance with Rule 17a-4; otherwise retain per internal record-retention policy |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Risk management governance | Where applicable to covered institutions, formal governance review supports compliance with heightened risk management requirements |
 | NIST AI RMF | MAP 1.1 — Context established | Readiness assessment maps the AI deployment context |
 
 ## Next Steps
 
 - See [Troubleshooting](troubleshooting.md) for resolving failed test cases
-- Proceed to Control 1.2 verification after all readiness tests pass
+- Proceed to [Control 1.2: SharePoint Oversharing Detection](../../../controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md) verification after all readiness tests pass
+- Back to [Control 1.1: Copilot Readiness Assessment](../../../controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md)
