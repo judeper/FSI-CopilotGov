@@ -7,11 +7,11 @@ Common issues and resolution steps for sensitivity label taxonomy management.
 ### Issue 1: Labels Not Appearing for Users
 
 - **Symptoms:** Users report that sensitivity labels are not visible in Office applications or the label bar is missing entirely
-- **Root Cause:** Label policies may not be scoped to the affected user groups, or Azure Information Protection client is not installed/configured for the Office version in use.
+- **Root Cause:** Label policies may not be scoped to the affected user groups, or the Office version does not support built-in sensitivity labeling.
 - **Resolution:**
   1. Verify the user is included in an active label policy using `Get-LabelPolicy`
   2. Check that the label policy is enabled and in enforcement mode
-  3. For desktop Office apps, verify the Azure Information Protection unified labeling client is installed
+  3. For desktop Office apps, verify the Office version supports built-in sensitivity labeling (Office 365 Apps, version 2111+ recommended)
   4. Force a policy refresh: In Office, go to Sensitivity button > Help and Feedback > Reset Settings
   5. Allow up to 24 hours for policy propagation to new user groups
 
@@ -78,3 +78,4 @@ Common issues and resolution steps for sensitivity label taxonomy management.
 - [Portal Walkthrough](portal-walkthrough.md) — Taxonomy review steps
 - [PowerShell Setup](powershell-setup.md) — Label management scripts
 - [Verification & Testing](verification-testing.md) — Validation procedures
+- Back to [Control 1.5: Sensitivity Label Taxonomy Review](../../../controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md)

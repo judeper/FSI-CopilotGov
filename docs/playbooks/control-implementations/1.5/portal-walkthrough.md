@@ -4,7 +4,7 @@ Step-by-step portal configuration for reviewing and optimizing the sensitivity l
 
 ## Prerequisites
 
-- Microsoft Purview Compliance Administrator or Information Protection Administrator role
+- Microsoft Purview Purview Compliance Admin or Information Protection Administrator role
 - Microsoft 365 E5 or E5 Compliance license
 - Current sensitivity label taxonomy documentation
 - Governance committee input on classification requirements
@@ -68,3 +68,4 @@ Record all taxonomy review decisions including any labels added, modified, or de
 - Proceed to [PowerShell Setup](powershell-setup.md) for label management automation
 - See [Verification & Testing](verification-testing.md) to validate taxonomy coverage
 - Review Control 2.2 for Copilot-specific sensitivity label enforcement
+- Back to [Control 1.5: Sensitivity Label Taxonomy Review](../../../controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md)

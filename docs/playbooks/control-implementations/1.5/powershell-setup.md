@@ -5,7 +5,7 @@ Automation scripts for auditing and managing the sensitivity label taxonomy.
 ## Prerequisites
 
 - Security & Compliance PowerShell module (`ExchangeOnlineManagement`)
-- Information Protection Administrator or Compliance Administrator role
+- Information Protection Administrator or Purview Compliance Admin role
 - Microsoft 365 E5 or E5 Compliance license
 
 ## Scripts
@@ -103,24 +103,21 @@ $autoReport | Export-Csv "AutoLabelPolicies_$(Get-Date -Format 'yyyyMMdd').csv" 
 ### Script 4: Label Adoption Metrics
 
 ```powershell
-# Generate label adoption metrics for governance review
-# Requires: Microsoft Graph SDK
-# NOTE: Get-MgReportSecurity does not return sensitivity label usage data.
-# Use the Purview portal for label analytics: Purview > Information Protection > Label Analytics.
-# The script below attempts the call but falls back to directing users to the portal.
+# View label adoption metrics for governance review
+# Sensitivity label analytics are available in the Purview portal:
+#   Microsoft Purview > Information Protection > Label Analytics
+#
+# The Graph API does not currently provide a PowerShell cmdlet for
+# sensitivity label usage reporting. Use the Purview portal for:
+#   - Label adoption rates across workloads
+#   - Label coverage percentages by department
+#   - Trends in auto-labeling vs. manual labeling
 
-Import-Module Microsoft.Graph.Reports
-Connect-MgGraph -Scopes "Reports.Read.All"
-
-# Get sensitivity label usage reports
-$reportDate = (Get-Date).AddDays(-30).ToString("yyyy-MM-dd")
-$report = Get-MgReportSecurity -Period "D30" -ErrorAction SilentlyContinue
-
-Write-Host "=== Label Adoption Summary ==="
-Write-Host "Report period: Last 30 days"
-Write-Host "NOTE: Get-MgReportSecurity may not return label usage data."
-Write-Host "For detailed label adoption metrics, use the Purview portal:"
-Write-Host "  Purview > Information Protection > Label Analytics"
+Write-Host "=== Label Adoption Metrics ==="
+Write-Host "For label adoption analytics, use the Purview portal:"
+Write-Host "  Microsoft Purview > Information Protection > Label Analytics"
+Write-Host ""
+Write-Host "Export label analytics reports from the portal for governance documentation."
 ```
 
 ## Scheduled Tasks
@@ -136,3 +133,4 @@ Write-Host "  Purview > Information Protection > Label Analytics"
 
 - See [Verification & Testing](verification-testing.md) to validate taxonomy configuration
 - See [Troubleshooting](troubleshooting.md) for label management issues
+- Back to [Control 1.5: Sensitivity Label Taxonomy Review](../../../controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md)

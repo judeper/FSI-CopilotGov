@@ -76,5 +76,6 @@ Test cases and evidence collection for validating the sensitivity label taxonomy
 |-----------|-------------|------------------------------|
 | FINRA Rule 3110 | Information classification | Label taxonomy supports compliance with supervisory information classification |
 | SEC Regulation S-P | Customer information categories | Sensitivity labels help classify customer NPI appropriately |
-| GLBA Safeguards Rule | Data classification | Taxonomy provides the classification foundation for safeguards implementation |
+| GLBA §501(b) | Data classification | Taxonomy provides the classification foundation for safeguards implementation |
 | NIST CSF | PR.DS-1 Data classification | Sensitivity labels support data-at-rest and data-in-use classification |
+- Back to [Control 1.5: Sensitivity Label Taxonomy Review](../../../controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md)
