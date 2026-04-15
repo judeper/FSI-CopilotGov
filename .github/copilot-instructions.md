@@ -73,6 +73,20 @@ Always include implementation caveats ("Organizations should verify...") and ref
 
 **Exemptions:** Control 3.5 (FINRA 2210) and its playbooks are exempt from language scanning because they intentionally contain prohibited marketing phrases as detection examples. New files containing intentional examples of prohibited language must be added to `EXEMPT_FILES` in `scripts/verify_language_rules.py`.
 
+## Regulatory Citation Conventions
+
+Use these validated citations consistently across all controls and playbooks:
+
+| Topic | Use This | NOT This | Why |
+|-------|----------|----------|-----|
+| Third-party risk (OCC) | OCC Bulletin 2023-17 | OCC Bulletin 2013-29 | 2013-29 was rescinded/superseded by 2023-17 |
+| GLBA for banks/broker-dealers | GLBA §501(b) | GLBA Safeguards Rule | FTC Safeguards Rule applies to non-bank FTC-regulated institutions only |
+| Model risk management | SR 11-7 / OCC Bulletin 2011-12 | OCC SR 11-7 | SR 11-7 is a Federal Reserve issuance; OCC counterpart is Bulletin 2011-12 |
+| OCC Heightened Standards | 12 CFR part 30, appendix D (OCC Heightened Standards) | OCC Heightened Standards | Formal citation required |
+| FINRA supervision | FINRA Rule 3110 — supervisory systems and WSPs | FINRA Rule 3110 — access controls / records organization | Rule 3110 is about supervision, not direct access controls |
+| SOX applicability | Sarbanes-Oxley §§302/404 — where applicable to ICFR | SOX 302/404 — blanket applicability | Only applies where AI tools affect financial reporting controls |
+| SEC records retention | SEC Rule 17a-4 — required broker-dealer records only | SEC Rule 17a-4 — all Copilot artifacts | 17a-4 applies to specific required records, not all audit logs |
+
 ## Admin Role Naming
 
 Use canonical short names in all documentation:

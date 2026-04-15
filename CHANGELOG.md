@@ -4,6 +4,55 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.3.3 — 2026-04-15
+
+### AI Council Deep Review — All 57 Controls
+
+Comprehensive review of all 57 controls across 4 pillars using a multi-agent AI Council (GPT 5.4). Each control was reviewed for technical accuracy, regulatory accuracy, structural compliance, FSI language rules, and cross-reference integrity. Disagreements between council members were resolved through targeted research against authoritative sources.
+
+**246 files changed, 458 insertions, 246 deletions across 12 commits.**
+
+#### Critical Regulatory Corrections
+- **1.1** Copilot Readiness Assessment — "Interagency AI Guidance (2023)" was misattributed; OCC Bulletin 2023-17 is about third-party risk management, not AI. Replaced with SR 11-7 / OCC Bulletin 2011-12 (model risk) and OCC Bulletin 2023-17 (third-party risk)
+- **3.10** SEC Reg S-P Privacy — 72-hour breach notification direction was reversed; service providers must notify the firm, not the other way around
+- **3.9** AI Disclosure & Transparency — SEC Marketing Rule was incorrectly described as prohibiting testimonials; it permits them with conditions and disclosures
+- **1.5** Sensitivity Label Taxonomy — Copilot label inheritance was claimed as universal; behavior varies by workload
+
+#### Recurring Pattern Fixes (All 57 Controls)
+- **GLBA Safeguards Rule** → GLBA §501(b) — FTC Safeguards Rule applies to non-bank institutions only; bank/broker-dealer contexts require GLBA §501(b) and sector-specific implementing guidelines
+- **OCC Bulletin 2013-29** → OCC Bulletin 2023-17 — 2013-29 was rescinded/superseded by 2023-17
+- **OCC Heightened Standards** → 12 CFR part 30, appendix D (OCC Heightened Standards) — formal regulatory citation
+- **FINRA Rule 3110** descriptions corrected — supervision rule for supervisory systems/WSPs, not a direct access-control or records-organization mandate
+- **SOX 302/404** claims narrowed to ICFR-relevant scope
+- **SR 11-7** dual citation — Federal Reserve SR 11-7 / OCC Bulletin 2011-12 (not "OCC SR 11-7")
+- **Admin role names** standardized to canonical short forms across all playbooks (Entra Global Admin, SharePoint Admin, Purview Compliance Admin)
+- **`Request-SPOReIndex`** replaced — not a valid SPO Management Shell cmdlet; replaced with PnP PowerShell `Invoke-PnPSiteSearchReindex`
+
+#### Technical Accuracy Fixes
+- **1.2** Fix `Register-PnPEntraIDAppForInteractiveLogin` invalid `-Interactive` parameter
+- **1.2** Fix `$global:PnPConnection.Timeout` → `Connect-PnPOnline -RequestTimeout`
+- **1.3** Fix RSS mode return value (`Restricted` → `Enabled`); fix RCD portal label
+- **1.4** Fix Bookmarks/Acronyms admin path (Search & intelligence, not Copilot > Search)
+- **1.5** Remove invalid `Get-MgReportSecurity` cmdlet; replace deprecated AIP unified labeling client
+- **1.6** Fix hub site permissions claim (hub association does not inherit permissions)
+- **1.8** Fix `-IncludePersonalSite` parameter (`$false` → `Exclude`)
+- **2.3** Fix Adaptive Protection CA condition (`User risk` → `Insider risk`)
+- **2.8** Fix PowerShell syntax error (`Get-DataEncryptionPolicy-ErrorAction`)
+- **3.13** Remove invalid `Get-UnifiedAuditLogRetentionPolicy` cmdlet
+- **4.11** Fix Sentinel connector name (`Microsoft 365` → `Office 365`)
+- Multiple admin portal path corrections (SharePoint DAG, Copilot Security, Intune update channels)
+
+#### Structural Improvements
+- ~216 playbook backlinks added to parent control files across all 4 pillars
+- Broken `**Related Controls:**[` formatting fixed in 11 Pillar 4 control files
+- Plain text cross-references converted to markdown links across multiple playbooks
+
+#### AI Instruction Updates
+- Added regulatory citation conventions to `.github/copilot-instructions.md`
+- Added regulatory accuracy rules to `.github/instructions/fsi-language-rules.instructions.md`
+
+---
+
 ## v1.3.2 — 2026-04-14
 
 ### Microsoft Secure and Govern Blueprint Alignment
