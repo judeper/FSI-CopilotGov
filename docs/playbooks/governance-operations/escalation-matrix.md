@@ -224,7 +224,7 @@ If a Level 4 incident may require regulatory notification:
 
 1. **Engage Legal Counsel** immediately
 2. **Assess notification obligations** under applicable regulations:
-    - GLBA Safeguards Rule (FTC/prudential regulators)
+    - GLBA §501(b) (FTC/prudential regulators)
     - State data breach notification laws (varies by jurisdiction)
     - SAR filing requirements (if applicable to the activity)
     - FINRA regulatory event reporting

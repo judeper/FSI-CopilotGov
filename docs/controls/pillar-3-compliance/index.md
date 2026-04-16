@@ -23,10 +23,10 @@ Key regulatory drivers for compliance and audit:
 
 - **FINRA 4511:** Requires member firms to make and preserve books and records as required under FINRA rules, the SEA, and the applicable SEA rules -- this extends to Copilot-assisted communications and generated content.
 - **SEC 17a-3 / 17a-4:** Books-and-records rules that specify what records must be created, how long they must be retained, and the format requirements for electronic storage -- directly applicable to Copilot interaction logs and generated documents.
-- **SOX 302/404:** Internal control requirements for financial reporting that extend to AI-assisted document generation and financial analysis workflows.
+- **Sarbanes-Oxley §§302/404 (where applicable to ICFR):** Internal control requirements for financial reporting that extend to AI-assisted document generation and financial analysis workflows.
 - **FINRA 3110/3120:** Supervisory obligations requiring written supervisory procedures, qualified supervision, and annual testing for all forms of communication -- including Copilot-assisted communications.
 - **FINRA 2210:** Communications with the public rules that apply when Copilot drafts or assists with customer-facing materials.
-- **OCC 2011-12 / SR 11-7:** Model risk management guidance applicable to Copilot as a vendor-provided AI model used in financial decision-making contexts.
+- **SR 11-7 / OCC Bulletin 2011-12:** Model risk management guidance applicable to Copilot as a vendor-provided AI model used in financial decision-making contexts.
 - **GLBA / SEC Reg S-P:** Privacy of consumer financial information requirements that govern how Copilot accesses and processes nonpublic personal information.
 
 ---
@@ -42,7 +42,7 @@ Key regulatory drivers for compliance and audit:
 | [3.5](3.5-finra-2210-compliance.md) | FINRA Rule 2210 Compliance for Copilot-Drafted Communications | Content standards for customer-facing communications, pre-review requirements, supervisory approval workflows | Regulated |
 | [3.6](3.6-supervision-oversight.md) | Supervision and Oversight (FINRA 3110 / SEC Reg BI) | Written supervisory procedures for Copilot usage, qualified supervisor assignment, ongoing supervision, annual testing | Regulated |
 | [3.7](3.7-regulatory-reporting.md) | Regulatory Reporting | Compliance reporting obligations, automated report generation, evidence collection, CFPB UDAAP considerations | Recommended |
-| [3.8](3.8-model-risk-management.md) | Model Risk Management Alignment (OCC 2011-12 / SR 11-7) | MRM framework for Microsoft 365 Copilot, model inventory, validation, ongoing monitoring, fair lending considerations | Regulated |
+| [3.8](3.8-model-risk-management.md) | Model Risk Management Alignment (SR 11-7 / OCC Bulletin 2011-12) | MRM framework for Microsoft 365 Copilot, model inventory, validation, ongoing monitoring, fair lending considerations | Regulated |
 | [3.9](3.9-ai-disclosure-transparency.md) | AI Disclosure, Transparency, and SEC Marketing Rule | AI disclosure requirements, transparency about Copilot usage, SEC Marketing Rule compliance, anti-AI-washing controls | Regulated |
 | [3.10](3.10-sec-reg-sp-privacy.md) | SEC Reg S-P -- Privacy of Consumer Financial Information | Copilot access to consumer financial information, privacy notices, opt-out provisions, NPI safeguards | Regulated |
 | [3.11](3.11-record-keeping.md) | Record Keeping and Books-and-Records Compliance | Comprehensive record keeping for Copilot interactions, WORM storage, metadata preservation, chain of custody | Baseline |

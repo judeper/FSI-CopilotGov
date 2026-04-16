@@ -87,3 +87,4 @@ Common issues and resolution steps for Copilot data retention policy configurati
 
 - [Control 3.1: Copilot Interaction Audit Logging](../3.1/portal-walkthrough.md)
 - [Control 3.3: eDiscovery for Copilot Content](../3.3/portal-walkthrough.md)
+- Back to [Control 3.2](../../../controls/pillar-3-compliance/3.2-data-retention-policies.md)

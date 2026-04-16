@@ -5,7 +5,7 @@ Automation scripts for deploying and managing data retention policies governing 
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph.Compliance`
-- **Permissions:** Compliance Administrator
+- **Permissions:** Purview Compliance Admin
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -201,3 +201,4 @@ if ($failedPolicies.Count -gt 0) {
 
 - See [Verification & Testing](verification-testing.md) to validate retention policies
 - See [Troubleshooting](troubleshooting.md) for retention policy issues
+- Back to [Control 3.2](../../../controls/pillar-3-compliance/3.2-data-retention-policies.md)

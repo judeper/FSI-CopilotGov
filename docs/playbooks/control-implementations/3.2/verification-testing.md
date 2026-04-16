@@ -105,3 +105,4 @@ Test cases and evidence collection procedures to confirm data retention policies
 
 - Review [Troubleshooting](troubleshooting.md) for retention policy issues
 - Proceed to [Control 3.3](../3.3/portal-walkthrough.md) for eDiscovery configuration
+- Back to [Control 3.2](../../../controls/pillar-3-compliance/3.2-data-retention-policies.md)

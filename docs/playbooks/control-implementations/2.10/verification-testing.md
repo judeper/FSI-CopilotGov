@@ -119,7 +119,7 @@ Test cases and evidence collection for validating insider risk detection for Cop
 | FINRA 2026 Oversight Report (GenAI) | Agentic AI supervisory controls | Risky Agents policy and AI usage indicators directly address FINRA's 2026 requirement for supervisory systems covering AI workflow engines |
 | OCC Bulletin 2025-26 | Model risk management | IRM Triage Agent documented as model per SR 11-7; proportionate AI-assisted governance |
 | SEC Regulation S-P | Safeguards for customer data | Detecting data theft patterns helps meet customer data protection obligations |
-| GLBA 501(b) | Monitoring and testing safeguards | IRM provides ongoing monitoring evidence and quarterly testing capability |
+| GLBA §501(b) | Monitoring and testing safeguards | IRM provides ongoing monitoring evidence and quarterly testing capability |
 | Bank Secrecy Act | Suspicious activity monitoring | Copilot and agent usage monitoring supports compliance with suspicious activity reporting |
 | NIST CSF | DE.AE-1 Anomaly detection | Insider risk supports compliance with anomaly detection requirements |
 - Back to [Control 2.10](../../../controls/pillar-2-security/2.10-insider-risk-detection.md)

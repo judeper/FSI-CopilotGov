@@ -450,9 +450,9 @@ The following state regulations may apply but require separate analysis beyond t
 | Priority | Control | Regulation | Why |
 |----------|---------|------------|-----|
 | 1 | 3.8 (Model Risk Documentation) | OCC 2011-12, SR 11-7 | MRM for high-impact Copilot use cases |
-| 2 | 1.1 (Oversharing Assessment) | GLBA 501(b) | Customer information protection |
+| 2 | 1.1 (Oversharing Assessment) | GLBA §501(b) | Customer information protection |
 | 3 | 3.1 (Copilot Audit Logging) | FFIEC | Audit and examination readiness |
-| 4 | 2.1 (DLP Policies) | GLBA 501(b) | Technical safeguards |
+| 4 | 2.1 (DLP Policies) | GLBA §501(b) | Technical safeguards |
 | 5 | 3.7 (CFPB UDAAP Monitoring) | CFPB UDAAP | Consumer protection |
 
 ### Investment Advisers (SEC)
@@ -479,7 +479,7 @@ The following state regulations may apply but require separate analysis beyond t
 |----------|---------|------------|-----|
 | 1 | 2.1 (DLP Policies) | NCUA Part 748 | Security program |
 | 2 | 3.1 (Copilot Audit Logging) | NCUA guidance | Record requirements |
-| 3 | 1.1 (Oversharing Assessment) | GLBA 501(b) | Member information protection |
+| 3 | 1.1 (Oversharing Assessment) | GLBA §501(b) | Member information protection |
 | 4 | 4.5 (Incident Response) | NCUA Part 748 | Security incident procedures |
 | 5 | 3.10 (Privacy Controls) | GLBA, NCUA | Member privacy |
 
@@ -507,7 +507,7 @@ The following state regulations may apply but require separate analysis beyond t
 
 | Regulation | Baseline | Recommended | Regulated |
 |------------|----------|-------------|-----------|
-| GLBA 501(b) | Basic safeguards | Comprehensive DLP | Full security program |
+| GLBA §501(b) | Basic safeguards | Comprehensive DLP | Full security program |
 | OCC 2011-12 / SR 11-7 | N/A | Awareness docs | Formal MRM alignment |
 | FFIEC IT Handbook | Basic controls | IT risk assessment | Full FFIEC alignment |
 | Interagency AI Guidance | Awareness | Vendor assessment | Comprehensive AI governance |
@@ -557,8 +557,8 @@ The following state regulations may apply but require separate analysis beyond t
 | SEC 17a-3/4 | 4 controls | Recordkeeping, eDiscovery |
 | SEC Reg S-P | 5 controls | Privacy, access governance |
 | SEC Reg BI | 3 controls | Supervisory review |
-| SOX 302/404 | 4 controls | Internal controls, audit trail |
-| GLBA 501(b) | 6 controls | Safeguards, vendor management |
+| Sarbanes-Oxley §§302/404 | 4 controls | Internal controls, audit trail |
+| GLBA §501(b) | 6 controls | Safeguards, vendor management |
 | OCC 2011-12 / SR 11-7 | 4 controls | Model risk management |
 | CFPB UDAAP | 4 controls | Consumer protection |
 | FFIEC IT Handbook | 4 controls | IT governance, vendor management |

@@ -63,7 +63,7 @@ Test cases and evidence collection procedures for Copilot impact measurement usi
 |-----------|-------------|----------------------|
 | FFIEC Management Booklet | IT investment effectiveness | Supports compliance with technology ROI measurement |
 | 12 CFR part 30, appendix D (OCC Heightened Standards) | Technology governance | Helps meet expectations for measuring AI technology impact |
-| SOX 404 | IT asset management | Supports governance of IT investment outcomes |
+| Sarbanes-Oxley §404 | IT asset management | Supports governance of IT investment outcomes |
 
 ## Next Steps
 

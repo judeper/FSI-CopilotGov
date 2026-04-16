@@ -93,7 +93,7 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
 - **Root Cause:** Employee monitoring requires careful balancing of security needs with privacy rights and employment law compliance.
 - **Resolution:**
   1. Enable pseudonymization to protect employee identity until investigation threshold
-  2. Document the legal basis for monitoring (regulatory obligation — FINRA Rule 3110, GLBA 501(b), acceptable use policy)
+  2. Document the legal basis for monitoring (regulatory obligation — FINRA Rule 3110, GLBA §501(b), acceptable use policy)
   3. Obtain legal counsel review of the insider risk program scope
   4. Communicate monitoring expectations through the acceptable use policy and training
   5. Limit investigator access to the minimum necessary for triage

@@ -131,7 +131,7 @@ When assessing whether regulatory notification is required, evaluate:
 - Type and volume of data involved
 - Number of individuals affected
 - State breach notification requirements (varies by jurisdiction)
-- GLBA Safeguards Rule notification obligations
+- GLBA §501(b) notification obligations
 - Time-sensitive notification deadlines
 
 Engage Legal Counsel for all notification decisions.

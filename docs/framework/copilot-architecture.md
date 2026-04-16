@@ -477,7 +477,7 @@ For detailed implementation guidance, including Baseline Security Mode configura
 
 - **Examination readiness:** Agent 365 provides a single evidence source for agent inventory, ownership, and usage — supporting FFIEC and OCC examination preparation.
 - **Change control:** Centralized settings reduce the risk of inconsistent agent governance across admin portals.
-- **Third-party oversight:** Partner and third-party agents are visible alongside internal agents, which supports OCC 2013-29 third-party risk management expectations.
+- **Third-party oversight:** Partner and third-party agents are visible alongside internal agents, which supports OCC Bulletin 2023-17 third-party risk management expectations.
 
 For operational governance procedures using Agent 365, see [Control 4.13: Extensibility Governance](../controls/pillar-4-operations/4.13-extensibility-governance.md). For security configuration, see [Control 2.14: Declarative Agents Governance](../controls/pillar-2-security/2.14-declarative-agents-governance.md).
 

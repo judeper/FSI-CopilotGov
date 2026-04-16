@@ -136,7 +136,7 @@ M365 Copilot does not bypass permissions, but it dramatically amplifies the spee
 
 ### 3. Regulatory Alignment
 
-The framework maps controls to US financial regulations including FINRA 4511/3110/2210, SEC 17a-3/4, SOX 302/404, GLBA 501(b), OCC 2011-12, and Fed SR 11-7. Organizations should validate mappings against their specific regulatory obligations.
+The framework maps controls to US financial regulations including FINRA 4511/3110/2210, SEC 17a-3/4, Sarbanes-Oxley §§302/404, GLBA §501(b), OCC 2011-12, and Fed SR 11-7. Organizations should validate mappings against their specific regulatory obligations.
 
 ### 4. Microsoft Platform Foundation
 

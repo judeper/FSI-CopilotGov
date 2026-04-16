@@ -102,10 +102,10 @@ Test cases and evidence collection for validating SharePoint Advanced Management
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| GLBA 501(b) | Safeguards for customer information | DAG reports identify oversharing risks; RAC enforces least-privilege access boundaries for customer data sites |
+| GLBA §501(b) | Safeguards for customer information | DAG reports identify oversharing risks; RAC enforces least-privilege access boundaries for customer data sites |
 | FINRA Rule 3110 | Supervisory systems and WSPs | SAM provides the tooling to implement and monitor supervisory access controls |
 | SEC Regulation S-P | Administrative safeguards | RCD prevents Copilot from surfacing consumer financial data; RAC enforces access boundaries per Regulation S-P |
 | OCC Heightened Standards | IT risk management | SAM lifecycle and governance features support compliance with IT risk management standards |
 | FFIEC IT Handbook | Information security controls | DAG reports and access reviews support periodic access certification; RAC enforces least privilege |
-| SOX 302/404 | Internal controls over financial data access | Site access reviews and RAC support access certification for sites containing financial reporting data |
+| Sarbanes-Oxley §§302/404 | Internal controls over financial data access | Site access reviews and RAC support access certification for sites containing financial reporting data |
 - Back to [Control 1.7: SharePoint Advanced Management](../../../controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md)

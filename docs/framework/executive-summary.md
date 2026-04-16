@@ -57,8 +57,8 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 | **SEC Rule 17a-3/4** | SEC | Recordkeeping for Copilot-generated content | Controls 3.11, 3.3 |
 | **SEC Reg S-P** | SEC | Privacy of consumer financial information accessed by Copilot | Control 3.10 |
 | **SEC Reg BI** | SEC | Supervision and best interest when Copilot assists recommendations | Control 3.6 |
-| **SOX 302/404** | Congress | Internal controls over financial data accessed by Copilot | Controls 3.1, 1.3 |
-| **GLBA 501(b)** | FTC | Safeguards for customer information surfaced by Copilot | Controls 2.1, 2.2 |
+| **Sarbanes-Oxley §§302/404** | Congress | Internal controls over financial data accessed by Copilot | Controls 3.1, 1.3 |
+| **GLBA §501(b)** | FTC | Safeguards for customer information surfaced by Copilot | Controls 2.1, 2.2 |
 | **OCC 2011-12 / SR 11-7** | OCC/Fed | Model risk management considerations for AI-assisted decisions | Control 3.8 |
 | **CFPB UDAAP** | CFPB | Unfair/deceptive practices in Copilot-assisted customer interactions | Control 3.7 |
 | **FFIEC IT Handbook** | FFIEC | IT examination alignment for AI tools | Control 3.13 |
@@ -74,8 +74,8 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 | SEC 17a-3/4 | Basic retention | Searchable archives | WORM-compliant, examination-ready |
 | SEC Reg S-P | Default permissions | Oversharing remediation | Full access governance program |
 | SEC Reg BI | N/A | Supervisory controls | Best interest documentation |
-| SOX 302/404 | Basic access controls | Segregation of duties | Full ICFR integration |
-| GLBA 501(b) | DLP baseline | Sensitivity labels | Comprehensive safeguards |
+| Sarbanes-Oxley §§302/404 | Basic access controls | Segregation of duties | Full ICFR integration |
+| GLBA §501(b) | DLP baseline | Sensitivity labels | Comprehensive safeguards |
 | OCC 2011-12 / SR 11-7 | N/A | Awareness documentation | Formal MRM alignment |
 
 **Note:** "Baseline" represents minimum viable governance. Organizations subject to specific regulations should target "Recommended" or "Regulated" levels for those requirements. Consult legal counsel for your specific obligations.

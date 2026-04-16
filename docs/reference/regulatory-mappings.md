@@ -120,8 +120,8 @@ Requires public companies to maintain internal controls over financial reporting
 | Section | Requirement | Applicable Controls | Level |
 |---------|-------------|-------------------|-------|
 | SOX 302 | CEO/CFO certification of financial reports and internal controls | Control 3.1 (Audit Logging), Control 3.12 (Evidence Collection), Control 4.13 (Extensibility and Agent Operations) | Reg |
-| SOX 404 | Management assessment of internal controls; auditor attestation | Control 3.1 (Audit Logging), Control 3.12 (Evidence Collection), Control 2.1 (DLP), Control 2.8 (Encryption) | Reg |
-| SOX 404 | Change management controls | Control 4.12 (Change Management), Control 4.1 (Copilot Admin Settings) | R |
+| Sarbanes-Oxley §404 | Management assessment of internal controls; auditor attestation | Control 3.1 (Audit Logging), Control 3.12 (Evidence Collection), Control 2.1 (DLP), Control 2.8 (Encryption) | Reg |
+| Sarbanes-Oxley §404 | Change management controls | Control 4.12 (Change Management), Control 4.1 (Copilot Admin Settings) | R |
 
 ---
 

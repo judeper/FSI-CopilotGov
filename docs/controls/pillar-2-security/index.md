@@ -21,20 +21,20 @@ Each control provides three governance levels — **Baseline**, **Recommended**,
 
 | Control | Title | Key Regulatory Refs | Priority |
 |---------|-------|---------------------|----------|
-| [2.1](2.1-dlp-policies-for-copilot.md) | DLP Policies for Microsoft 365 Copilot Interactions | FINRA 4511, SEC Reg S-P, GLBA 501(b), SOX 404 | Critical |
-| [2.2](2.2-sensitivity-labels-classification.md) | Sensitivity Labels and Copilot Content Classification | GLBA 501(b), SOX 404 | Critical |
-| [2.3](2.3-conditional-access-policies.md) | Conditional Access Policies for Copilot Workloads | GLBA 501(b), NYDFS Part 500, FFIEC | Critical |
+| [2.1](2.1-dlp-policies-for-copilot.md) | DLP Policies for Microsoft 365 Copilot Interactions | FINRA 4511, SEC Reg S-P, GLBA §501(b), Sarbanes-Oxley §§302/404 | Critical |
+| [2.2](2.2-sensitivity-labels-classification.md) | Sensitivity Labels and Copilot Content Classification | GLBA §501(b), Sarbanes-Oxley §§302/404 | Critical |
+| [2.3](2.3-conditional-access-policies.md) | Conditional Access Policies for Copilot Workloads | GLBA §501(b), NYDFS Part 500, FFIEC | Critical |
 | [2.4](2.4-information-barriers.md) | Information Barriers for Copilot (Chinese Wall) | SEC Rule 10b-5, FINRA 5280 | Critical |
-| [2.5](2.5-data-minimization-grounding-scope.md) | Data Minimization and Grounding Scope | GLBA 501(b) | High |
-| [2.6](2.6-web-search-controls.md) | Copilot Web Search and Web Grounding Controls | GLBA 501(b) | High |
-| [2.7](2.7-data-residency.md) | Data Residency and Cross-Border Data Flow Governance | GLBA 501(b), GDPR, State Privacy Laws | High |
-| [2.8](2.8-encryption.md) | Encryption (Data in Transit and at Rest) | GLBA 501(b), FFIEC, NYDFS Part 500 | Critical |
-| [2.9](2.9-defender-cloud-apps.md) | Defender for Cloud Apps — Copilot Session Controls | GLBA 501(b), FFIEC | High |
-| [2.10](2.10-insider-risk-detection.md) | Insider Risk Detection for Copilot Usage Patterns | GLBA 501(b), SOX 404, FINRA 3110 | High |
-| [2.11](2.11-copilot-pages-security.md) | Copilot Pages Security and Sharing Controls | GLBA 501(b), FINRA 4511 | High |
-| [2.12](2.12-external-sharing-governance.md) | External Sharing and Guest Access Governance | GLBA 501(b), SEC Reg S-P | High |
-| [2.13](2.13-plugin-connector-security.md) | Plugin and Graph Connector Security Governance | GLBA 501(b), FFIEC | Medium |
-| [2.14](2.14-declarative-agents-governance.md) | Declarative and SharePoint Agents Governance | GLBA 501(b) | Medium |
+| [2.5](2.5-data-minimization-grounding-scope.md) | Data Minimization and Grounding Scope | GLBA §501(b) | High |
+| [2.6](2.6-web-search-controls.md) | Copilot Web Search and Web Grounding Controls | GLBA §501(b) | High |
+| [2.7](2.7-data-residency.md) | Data Residency and Cross-Border Data Flow Governance | GLBA §501(b), GDPR, State Privacy Laws | High |
+| [2.8](2.8-encryption.md) | Encryption (Data in Transit and at Rest) | GLBA §501(b), FFIEC, NYDFS Part 500 | Critical |
+| [2.9](2.9-defender-cloud-apps.md) | Defender for Cloud Apps — Copilot Session Controls | GLBA §501(b), FFIEC | High |
+| [2.10](2.10-insider-risk-detection.md) | Insider Risk Detection for Copilot Usage Patterns | GLBA §501(b), Sarbanes-Oxley §§302/404, FINRA 3110 | High |
+| [2.11](2.11-copilot-pages-security.md) | Copilot Pages Security and Sharing Controls | GLBA §501(b), FINRA 4511 | High |
+| [2.12](2.12-external-sharing-governance.md) | External Sharing and Guest Access Governance | GLBA §501(b), SEC Reg S-P | High |
+| [2.13](2.13-plugin-connector-security.md) | Plugin and Graph Connector Security Governance | GLBA §501(b), FFIEC | Medium |
+| [2.14](2.14-declarative-agents-governance.md) | Declarative and SharePoint Agents Governance | GLBA §501(b) | Medium |
 | [2.15](2.15-network-security.md) | Network Security and Private Connectivity | NYDFS Part 500, FFIEC | Medium |
 
 ---

@@ -11,7 +11,7 @@
 
 Pillar 4 addresses the operational governance and ongoing monitoring controls required to sustain responsible Microsoft 365 Copilot usage in regulated US financial services environments. While Pillars 1-3 focus on readiness, security, and compliance foundations, Pillar 4 addresses what happens after deployment: how the institution manages Copilot settings, monitors usage, handles incidents, governs costs, and adapts to continuous feature changes.
 
-Financial regulators expect that institutions do not merely deploy technology controls -- they demonstrate ongoing operational effectiveness. SOX Section 404 requires evidence of control monitoring, the FFIEC expects continuous risk management, and FINRA Rule 3110 requires supervisory systems that adapt to the firm's evolving business model. Pillar 4 controls provide the operational backbone that transforms static policies into living governance.
+Financial regulators expect that institutions do not merely deploy technology controls -- they demonstrate ongoing operational effectiveness. Sarbanes-Oxley §§302/404 requires evidence of control monitoring, the FFIEC expects continuous risk management, and FINRA Rule 3110 requires supervisory systems that adapt to the firm's evolving business model. Pillar 4 controls provide the operational backbone that transforms static policies into living governance.
 
 These controls span five operational domains: administrative management (Controls 4.1-4.4), analytics and measurement (Controls 4.5-4.8), incident and resilience management (Controls 4.9-4.10), security monitoring (Control 4.11), and lifecycle governance (Controls 4.12-4.13).
 
@@ -26,10 +26,10 @@ Deploying Microsoft 365 Copilot is not a one-time event -- it is the beginning o
 
 Key regulatory drivers for operational governance:
 
-- **SOX Section 404:** Requires ongoing monitoring and testing of internal controls, not just initial implementation. Copilot governance controls must be demonstrably effective throughout the reporting period.
+- **Sarbanes-Oxley §§302/404:** Requires ongoing monitoring and testing of internal controls, not just initial implementation. Copilot governance controls must be demonstrably effective throughout the reporting period.
 - **FFIEC IT Examination Handbook:** Expects institutions to maintain change management, incident response, business continuity, and vendor management programs that cover all deployed technology, including AI services.
-- **FINRA Rule 3110:** Requires supervisory systems that are periodically reviewed and updated. As Copilot usage expands, supervisory coverage must scale accordingly.
-- **GLBA 501(b):** Requires administrative, technical, and physical safeguards -- which must be maintained and monitored, not just established.
+- **FINRA Rule 3110 (supervisory systems and WSPs):** Requires supervisory systems that are periodically reviewed and updated. As Copilot usage expands, supervisory coverage must scale accordingly.
+- **GLBA §501(b):** Requires administrative, technical, and physical safeguards -- which must be maintained and monitored, not just established.
 - **OCC Heightened Standards:** Expects large banks to maintain effective and current risk management frameworks, including for AI technology risks.
 
 ---
@@ -38,19 +38,19 @@ Key regulatory drivers for operational governance:
 
 | Control | Title | Key Regulatory Refs | Priority |
 |---------|-------|---------------------|----------|
-| [4.1](4.1-admin-settings-feature-management.md) | Copilot Admin Settings and Feature Management | SOX 404, FFIEC | Critical |
+| [4.1](4.1-admin-settings-feature-management.md) | Copilot Admin Settings and Feature Management | Sarbanes-Oxley §§302/404, FFIEC | Critical |
 | [4.2](4.2-teams-meetings-governance.md) | Copilot in Teams Meetings Governance | FINRA 3110, FINRA 4511, SEC 17a-4 | Critical |
 | [4.3](4.3-teams-phone-queues.md) | Copilot in Teams Phone and Queues Governance | FINRA 3110, FINRA 4511 | High |
-| [4.4](4.4-viva-suite-governance.md) | Copilot in Viva Suite Governance | GLBA 501(b), Labor Regulations | Medium |
-| [4.5](4.5-usage-analytics.md) | Copilot Usage Analytics and Adoption Reporting | SOX 404, FFIEC | High |
+| [4.4](4.4-viva-suite-governance.md) | Copilot in Viva Suite Governance | GLBA §501(b), Labor Regulations | Medium |
+| [4.5](4.5-usage-analytics.md) | Copilot Usage Analytics and Adoption Reporting | Sarbanes-Oxley §§302/404, FFIEC | High |
 | [4.6](4.6-viva-insights-measurement.md) | Microsoft Viva Insights and Copilot Analytics Impact Measurement | Internal Governance | Medium |
-| [4.7](4.7-feedback-telemetry.md) | Copilot Feedback and Telemetry Data Governance | GLBA 501(b), Privacy Regulations | Medium |
-| [4.8](4.8-cost-allocation.md) | Cost Allocation and License Optimization | SOX 404, FFIEC | Medium |
-| [4.9](4.9-incident-reporting.md) | Incident Reporting and Root Cause Analysis | FINRA 4530, GLBA 501(b), NYDFS 500.17 | Critical |
+| [4.7](4.7-feedback-telemetry.md) | Copilot Feedback and Telemetry Data Governance | GLBA §501(b), Privacy Regulations | Medium |
+| [4.8](4.8-cost-allocation.md) | Cost Allocation and License Optimization | Sarbanes-Oxley §§302/404, FFIEC | Medium |
+| [4.9](4.9-incident-reporting.md) | Incident Reporting and Root Cause Analysis | FINRA 4530, GLBA §501(b), NYDFS 500.17 | Critical |
 | [4.10](4.10-business-continuity.md) | Business Continuity and Disaster Recovery for Copilot Dependency | FFIEC BC/DR, OCC, FINRA 4370 | High |
-| [4.11](4.11-sentinel-integration.md) | Microsoft Sentinel Integration for Copilot Events | FFIEC, SOX 404, NYDFS 500 | High |
-| [4.12](4.12-change-management-rollouts.md) | Change Management for Copilot Feature Rollouts | SOX 404, FFIEC | High |
-| [4.13](4.13-extensibility-governance.md) | Copilot Extensibility and Agent Operations Governance | GLBA 501(b), FFIEC, OCC | High |
+| [4.11](4.11-sentinel-integration.md) | Microsoft Sentinel Integration for Copilot Events | FFIEC, Sarbanes-Oxley §§302/404, NYDFS 500 | High |
+| [4.12](4.12-change-management-rollouts.md) | Change Management for Copilot Feature Rollouts | Sarbanes-Oxley §§302/404, FFIEC | High |
+| [4.13](4.13-extensibility-governance.md) | Copilot Extensibility and Agent Operations Governance | GLBA §501(b), FFIEC, OCC | High |
 
 ---
 

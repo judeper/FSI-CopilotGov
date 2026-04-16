@@ -127,7 +127,7 @@ Segment 4: Compliance
 |-----------|--------|
 | **Institution type** | National bank or state-chartered bank |
 | **Primary regulators** | OCC (national) or state regulator + Fed/FDIC |
-| **Key regulations** | OCC 2011-12 / SR 11-7, GLBA 501(b), FFIEC, SOX 302/404, Interagency AI Guidance 2023 |
+| **Key regulations** | OCC 2011-12 / SR 11-7, GLBA §501(b), FFIEC, Sarbanes-Oxley §§302/404, Interagency AI Guidance 2023 |
 | **Governance level** | Recommended to Regulated (depending on asset size) |
 | **Risk factors** | Model risk management, consumer data protection, IT examination readiness, third-party AI risk |
 | **Typical user groups** | Loan officers, branch operations, commercial banking, treasury, risk management, internal audit |
@@ -137,7 +137,7 @@ Segment 4: Compliance
 | Phase | Controls | Rationale |
 |-------|----------|-----------|
 | **Phase 1: Pre-deployment** | 1.1 (Copilot Readiness Assessment), 1.11 (Organizational Change Management), 1.10 (Vendor Risk Management), 3.8 (Model Risk Management) | Banking examiners expect vendor risk assessment and model risk documentation before AI deployment |
-| **Phase 2: Data protection** | 2.2 (Sensitivity Labels), 2.1 (DLP), 2.3 (Conditional Access), 2.8 (Encryption) | GLBA 501(b) safeguards requirement |
+| **Phase 2: Data protection** | 2.2 (Sensitivity Labels), 2.1 (DLP), 2.3 (Conditional Access), 2.8 (Encryption) | GLBA §501(b) safeguards requirement |
 | **Phase 3: Compliance** | 3.1 (Audit Logging), 3.2 (Retention), 3.13 (FFIEC Alignment), 3.10 (SEC Reg S-P) | Examination readiness and regulatory record-keeping |
 | **Phase 4: Operations** | 4.6 (Copilot Analytics), 4.9 (Incident Reporting), 4.10 (Business Continuity), 4.11 (Sentinel Integration), 4.12 (Change Management) | Ongoing monitoring and operational resilience |
 
@@ -299,7 +299,7 @@ Investment advisers have a fiduciary duty to act in clients' best interests. Cop
 |-----------|--------|
 | **Institution type** | Insurance company (life, property/casualty, or health) |
 | **Primary regulators** | State insurance departments, NAIC (model laws), potentially SEC (variable products) |
-| **Key regulations** | State insurance data privacy laws, NAIC Insurance Data Security Model Law, GLBA 501(b), SOX (if publicly held), state AI regulations |
+| **Key regulations** | State insurance data privacy laws, NAIC Insurance Data Security Model Law, GLBA §501(b), SOX (if publicly held), state AI regulations |
 | **Governance level** | Recommended |
 | **Risk factors** | Policyholder PII, claims data, underwriting data, agent communications, state-by-state regulatory variation |
 | **Typical user groups** | Underwriters, claims adjusters, agents/producers, actuaries, compliance, customer service |

@@ -62,7 +62,7 @@ Test cases and evidence collection procedures to validate audit evidence complet
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FINRA 3120 | Annual supervisory control report with evidence | Supports compliance with evidence-based supervisory attestation |
-| SOX 404 | Internal controls attestation | Helps meet attestation requirements for financial reporting controls |
+| Sarbanes-Oxley §404 | Internal controls attestation | Helps meet attestation requirements for financial reporting controls |
 | FFIEC IT Handbook | Examination evidence production | Supports timely production of IT governance evidence |
 
 ## Next Steps

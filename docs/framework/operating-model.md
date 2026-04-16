@@ -279,7 +279,7 @@ The Copilot Governance Committee provides strategic oversight for M365 Copilot d
 - Annual control effectiveness testing
 - Governance procedure testing (FINRA 3120 alignment)
 - Compliance monitoring validation
-- SOX 404 assessment (if applicable)
+- Sarbanes-Oxley §404 assessment (if applicable)
 - Audit reporting to board/audit committee
 - Finding follow-up and remediation tracking
 

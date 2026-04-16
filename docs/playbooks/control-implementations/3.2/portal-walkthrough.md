@@ -4,7 +4,7 @@ Step-by-step portal configuration for establishing data retention policies that 
 
 ## Prerequisites
 
-- **Role:** Compliance Administrator or Records Management Administrator
+- **Role:** Purview Compliance Admin or Records Management Administrator
 - **License:** Microsoft 365 E5 or E5 Compliance add-on
 - **Access:** Microsoft Purview portal
 
@@ -122,3 +122,4 @@ Threaded Copilot summaries (meeting recaps, conversation summaries) are retained
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for automated retention policy deployment
 - See [Verification & Testing](verification-testing.md) to validate retention policies are applied correctly
+- Back to [Control 3.2](../../../controls/pillar-3-compliance/3.2-data-retention-policies.md)

@@ -4,7 +4,7 @@ Step-by-step portal configuration for enabling comprehensive audit logging of al
 
 ## Prerequisites
 
-- **Role:** Global Administrator or Compliance Administrator
+- **Role:** Entra Global Admin or Purview Compliance Admin
 - **License:** Microsoft 365 E5 or E5 Compliance add-on (or PAYG Audit billing configured)
 - **Access:** Microsoft Purview portal
 
@@ -54,7 +54,7 @@ To surface the expanded audit schema fields (AgentId, AgentName, XPIA, Jailbreak
 5. Click **Save** to apply.
 6. Create a second policy for agent record types:
    - **Record types:** Select `AgentAdminActivity` and `AgentSettingsAdminActivity`
-   - **Duration:** 6 years (SOX 404 IT general controls require multi-year change management records)
+   - **Duration:** 6 years (Sarbanes-Oxley §404 IT general controls require multi-year change management records)
    - **Priority:** Same as the Copilot interaction policy
 
 ### Step 5: Configure Agent-Specific Record Type Navigation
@@ -104,3 +104,4 @@ To search for agent administrative events in the portal:
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for automation of audit log configuration
 - See [Verification & Testing](verification-testing.md) to validate audit logging is operational
+- Back to [Control 3.1](../../../controls/pillar-3-compliance/3.1-copilot-audit-logging.md)

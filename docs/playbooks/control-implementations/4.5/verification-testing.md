@@ -63,7 +63,7 @@ Test cases and evidence collection procedures for Copilot usage analytics and ad
 |-----------|-------------|----------------------|
 | FFIEC Management Booklet | IT investment monitoring | Supports compliance with technology utilization tracking |
 | 12 CFR part 30, appendix D (OCC Heightened Standards) | Technology governance | Helps meet expectations for AI technology adoption oversight |
-| SOX 404 | Internal control over IT assets | Supports IT asset management and utilization controls |
+| Sarbanes-Oxley §404 | Internal control over IT assets | Supports IT asset management and utilization controls |
 
 ## Next Steps
 

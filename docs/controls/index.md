@@ -67,7 +67,7 @@ Audit logging, retention, eDiscovery, communication compliance, and regulatory r
 | 3.5 | [FINRA Rule 2210 Compliance for Copilot-Drafted Communications](pillar-3-compliance/3.5-finra-2210-compliance.md) | Regulated |
 | 3.6 | [Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)](pillar-3-compliance/3.6-supervision-oversight.md) | Regulated |
 | 3.7 | [Regulatory Reporting](pillar-3-compliance/3.7-regulatory-reporting.md) | Recommended |
-| 3.8 | [Model Risk Management Alignment (OCC 2011-12 / SR 11-7)](pillar-3-compliance/3.8-model-risk-management.md) | Regulated |
+| 3.8 | [Model Risk Management Alignment (SR 11-7 / OCC Bulletin 2011-12)](pillar-3-compliance/3.8-model-risk-management.md) | Regulated |
 | 3.9 | [AI Disclosure, Transparency, and SEC Marketing Rule](pillar-3-compliance/3.9-ai-disclosure-transparency.md) | Recommended |
 | 3.10 | [SEC Reg S-P — Privacy of Consumer Financial Information](pillar-3-compliance/3.10-sec-reg-sp-privacy.md) | Regulated |
 | 3.11 | [Record Keeping and Books-and-Records Compliance](pillar-3-compliance/3.11-record-keeping.md) | Baseline |

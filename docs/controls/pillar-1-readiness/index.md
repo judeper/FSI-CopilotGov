@@ -21,10 +21,10 @@ Microsoft 365 Copilot inherits the permissions of the user who invokes it. This 
 
 Key regulatory drivers for pre-deployment readiness:
 
-- **GLBA 501(b):** Requires financial institutions to protect customer information through administrative, technical, and physical safeguards -- which begins with knowing where that information resides and who can access it.
+- **GLBA §501(b):** Requires financial institutions to protect customer information through administrative, technical, and physical safeguards -- which begins with knowing where that information resides and who can access it.
 - **FFIEC IT Handbook:** Expects institutions to conduct risk assessments before deploying new technology, including AI-powered tools.
 - **Interagency AI Guidance (2023):** Calls for appropriate due diligence and risk management before adopting AI services from third-party providers.
-- **SOX 302/404:** Internal control requirements that extend to AI-assisted financial reporting and document generation workflows.
+- **Sarbanes-Oxley §§302/404 (where applicable to ICFR):** Internal control requirements that extend to AI-assisted financial reporting and document generation workflows.
 - **FINRA 3110:** Supervisory obligations that must account for how Copilot may draft or modify regulated communications.
 
 ---

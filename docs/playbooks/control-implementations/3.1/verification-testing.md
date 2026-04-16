@@ -113,3 +113,4 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 
 - Review [Troubleshooting](troubleshooting.md) for common audit logging issues
 - Proceed to [Control 3.2](../3.2/portal-walkthrough.md) for data retention policy configuration
+- Back to [Control 3.1](../../../controls/pillar-3-compliance/3.1-copilot-audit-logging.md)

@@ -92,7 +92,7 @@ Test cases and evidence collection procedures for Copilot governance across the 
 |-----------|-------------|----------------------|
 | FINRA 3110 | Supervision of internal communications | Supports monitoring of AI-assisted Viva Engage communications, including content surfacing through Teams integration |
 | FFIEC Management Booklet, Section II.C | IT risk monitoring — technology usage pattern oversight | Copilot Chat analytics in Viva Insights supports this monitoring expectation |
-| SOX 404 | Internal controls | Supports governance of AI tools affecting business processes |
+| Sarbanes-Oxley §404 | Internal controls | Supports governance of AI tools affecting business processes |
 | EEOC AI Guidance | Non-discriminatory use of AI analytics | Privacy-protected Copilot Chat analytics help ensure individual query data is not used for employment decisions |
 
 ## Next Steps

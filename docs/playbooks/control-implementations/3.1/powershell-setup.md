@@ -5,7 +5,7 @@ Automation scripts for configuring, monitoring, and reporting on Copilot interac
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph.Security`
-- **Permissions:** Compliance Administrator or Global Administrator
+- **Permissions:** Purview Compliance Admin or Entra Global Admin
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -148,7 +148,7 @@ New-UnifiedAuditLogRetentionPolicy `
 # Create 6-year retention policy for agent administrative record types
 New-UnifiedAuditLogRetentionPolicy `
     -Name "FSI-AgentAdmin-6Year-Retention" `
-    -Description "6-year retention for agent admin events per SOX 404 IT general controls" `
+    -Description "6-year retention for agent admin events per Sarbanes-Oxley §404 IT general controls" `
     -RecordTypes @("AgentAdminActivity", "AgentSettingsAdminActivity") `
     -RetentionDuration SixYears `
     -Priority 100
@@ -213,3 +213,4 @@ Write-Host "  Ensure budget alerts are configured in Azure Cost Management for y
 
 - See [Verification & Testing](verification-testing.md) to validate audit log coverage
 - See [Troubleshooting](troubleshooting.md) for common audit logging issues
+- Back to [Control 3.1](../../../controls/pillar-3-compliance/3.1-copilot-audit-logging.md)

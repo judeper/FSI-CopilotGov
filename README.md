@@ -74,8 +74,8 @@ Each control provides tiered implementation guidance:
 | **SEC 17a-3/4** | SEC | Record keeping (3.11), eDiscovery (3.3) |
 | **SEC Reg S-P** | SEC | Privacy of consumer information (3.10) |
 | **SEC Reg BI** | SEC | Supervision and best interest (3.6) |
-| **SOX 302/404** | Congress | Internal controls, audit trail |
-| **GLBA 501(b)** | FTC | Data protection, safeguards |
+| **Sarbanes-Oxley §§302/404** | Congress | Internal controls, audit trail |
+| **GLBA §501(b)** | FTC | Data protection, safeguards |
 | **OCC 2011-12 / SR 11-7** | OCC/Fed | Model risk management (3.8) |
 | **CFPB UDAAP** | CFPB | Unfair/deceptive practices (3.7) |
 | **FFIEC IT Handbook** | FFIEC | IT examination alignment (3.13) |
