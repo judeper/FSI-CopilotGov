@@ -176,7 +176,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 |-------|-----|
 | Manage agents in Microsoft 365 | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps) |
 | Microsoft 365 Copilot agent governance | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/agents-are-apps](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/agents-are-apps) |
-| Copilot agent security and compliance | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/security-compliance](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/security-compliance) |
+| Copilot agent security and compliance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security) |
 
 ---
 
