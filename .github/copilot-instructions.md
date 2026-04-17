@@ -31,14 +31,14 @@ python scripts/verify_controls.py && python scripts/verify_language_rules.py && 
 The framework has three content layers:
 
 - **Framework** (`docs/framework/`) — Strategic governance context (executive summary, architecture, regulatory landscape, operating model)
-- **Controls** (`docs/controls/pillar-{1-4}-*/`) — 57 technical controls across 4 lifecycle pillars specifying *what* to configure and *why*
+- **Controls** (`docs/controls/pillar-{1-4}-*/`) — 58 technical controls across 4 lifecycle pillars specifying *what* to configure and *why*
 - **Playbooks** (`docs/playbooks/`) — control implementation playbooks in `control-implementations/{control-id}/` plus cross-control operational guidance in folders such as `governance-operations/` and `compliance-and-audit/`
 
 Supporting content: `docs/getting-started/` (quick start, checklist, phased rollout), `docs/reference/` (regulatory mappings, glossary, admin toggles, FAQ, external tool references), `docs/start-here.md` (newcomer orientation page).
 
 ### Interactive Assessment Tool
 
-- **Page**: `docs/assessment/index.md` — Governance Scorecard, a browser-based self-assessment across all 57 controls
+- **Page**: `docs/assessment/index.md` — Governance Scorecard, a browser-based self-assessment across all 58 controls
 - **App code**: `docs/javascripts/assessment-app.js` (main app), `docs/javascripts/assessment-loader.js` (bootstrap)
 - **Styles**: `docs/stylesheets/assessment.css`
 - **Data extraction**: `scripts/extract_assessment_data.py` — parses control markdown files to generate `docs/javascripts/assessment-data.json`

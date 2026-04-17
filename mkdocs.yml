@@ -152,6 +152,7 @@ nav:
       - 2.13 Plugin and Connector Security: controls/pillar-2-security/2.13-plugin-connector-security.md
       - 2.14 Declarative Agents Governance: controls/pillar-2-security/2.14-declarative-agents-governance.md
       - 2.15 Network Security: controls/pillar-2-security/2.15-network-security.md
+      - 2.16 Federated Connector and MCP Governance: controls/pillar-2-security/2.16-federated-connector-mcp-governance.md
     - Pillar 3 - Compliance & Audit:
       - Overview: controls/pillar-3-compliance/index.md
       - 3.1 Copilot Audit Logging: controls/pillar-3-compliance/3.1-copilot-audit-logging.md
@@ -488,10 +489,13 @@ nav:
       - Examination Response Guide: playbooks/compliance-and-audit/examination-response-guide.md
     - Incident and Risk:
       - AI Incident Response Playbook: playbooks/incident-and-risk/ai-incident-response-playbook.md
+      - Agent Behavioral Incident Playbook: playbooks/incident-and-risk/agent-behavioral-incident-playbook.md
+      - Teams Copilot Mode Governance: playbooks/incident-and-risk/teams-copilot-mode-governance.md
       - AI Risk Assessment Template: playbooks/incident-and-risk/ai-risk-assessment-template.md
       - Remediation Tracking: playbooks/incident-and-risk/remediation-tracking.md
     - Regulatory Modules:
       - Colorado AI Act Readiness: playbooks/regulatory-modules/colorado-ai-act-readiness.md
+      - State AI Laws Compliance Matrix: playbooks/regulatory-modules/state-ai-laws-compliance-matrix.md
 
   - Reference:
     - Overview: reference/index.md
@@ -505,3 +509,4 @@ nav:
     - Glossary: reference/glossary.md
     - FAQ: reference/faq.md
     - FSI Configuration Examples: reference/fsi-configuration-examples.md
+    - FSI Use-Case Risk Scenarios: reference/fsi-use-case-risk-scenarios.md

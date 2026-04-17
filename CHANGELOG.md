@@ -4,6 +4,27 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.3.4 — 2026-04-17
+
+### New Control, Playbooks, and Reference Content
+
+- **2.16** Federated Copilot Connector and MCP Governance — new Baseline control for governing default-enabled federated connectors, user-credential authentication, data residency, and third-party risk (57 → 58 controls, Pillar 2: 15 → 16 controls)
+
+#### New Playbooks
+- **Agent Behavioral Incident Playbook** — incident response procedures for agent misuse, prompt injection, and runaway behavior
+- **Teams Copilot Mode Governance** — governance playbook for Teams Copilot Mode group chat, covering FINRA 3110/4511, WSPs, retention, and communications compliance
+- **State AI Laws Compliance Matrix** — regulatory module mapping Colorado, Texas, Utah, and Illinois AI laws to framework controls
+
+#### New Reference Content
+- **FSI Use Case Risk Scenarios** — risk matrix by use case (AML, client communications, research, financial reporting, meetings) with control mappings
+
+#### Documentation Updates
+- Updated control count from 57 to 58 across homepage, README, and AI instruction files
+- Added Copilot surface coverage and playbook backlinks to multiple Pillar 2–4 controls
+- Updated `docs/reference/copilot-surfaces-matrix.md` with new surface coverage entries
+
+---
+
 ## v1.3.3 — 2026-04-15
 
 ### AI Council Deep Review — All 57 Controls

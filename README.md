@@ -11,7 +11,7 @@
 
 ## What This Is
 
-A technical documentation framework providing **57 controls** and **224 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
+A technical documentation framework providing **58 controls** and **224 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
 
 This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat (Basic & Premium tiers), Copilot Pages**, and **SharePoint agents** — plus extensibility via **plugins, Graph connectors, declarative agents, and Agents 365**.
 
@@ -42,15 +42,15 @@ This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outloo
 | Layer | Purpose | Content |
 |-------|---------|---------|
 | **Framework** (Strategic) | Board/executive governance context | Executive summary, regulatory landscape, architecture, operating model |
-| **Controls** (Technical) | What to configure and why | 57 controls across 4 lifecycle pillars with FSI regulatory mappings |
+| **Controls** (Technical) | What to configure and why | 58 controls across 4 lifecycle pillars with FSI regulatory mappings |
 | **Playbooks** (Implementation) | How to configure step-by-step | Portal walkthroughs, PowerShell automation, verification, troubleshooting |
 
 ### Four Lifecycle Pillars
 
 | Pillar | Focus | Controls | Primary Admin Portals |
 |--------|-------|----------|-----------------------|
-| **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | 15 | Purview, SharePoint Admin, M365 Admin |
-| **2. Security & Protection** | DLP, sensitivity labels, conditional access, information barriers, Defender | 15 | Purview, Entra, Defender |
+| **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | 16 | Purview, SharePoint Admin, M365 Admin |
+| **2. Security & Protection** | DLP, sensitivity labels, conditional access, information barriers, Defender | 16 | Purview, Entra, Defender |
 | **3. Compliance & Audit** | Audit logging, retention, eDiscovery, FINRA 2210, supervision, regulatory reporting | 13 | Purview, M365 Admin |
 | **4. Operations & Monitoring** | Feature management, per-app toggles, analytics, cost tracking, incident response | 13 | M365 Admin, Viva Insights, Teams Admin |
 
@@ -139,6 +139,7 @@ FSI-CopilotGov/
 │   │   ├── compliance-and-audit/     # Evidence packs, audit readiness
 │   │   ├── incident-and-risk/        # AI incident response
 │   │   └── regulatory-modules/       # State-specific guides
+│   ├── assessment/          # Governance Scorecard (self-assessment tool)
 │   └── reference/          # Quick-reference materials
 ├── scripts/                # CI validation scripts
 └── .github/                # CI/CD workflows
@@ -154,12 +155,12 @@ FSI-CopilotGov/
 | **Pillars** | Security, Management, Reporting, SharePoint | Readiness, Security, Compliance, Operations |
 | **Governance Model** | Zones 1-2-3 (Personal/Team/Enterprise agents) | Org-wide with Baseline/Recommended/Regulated levels |
 | **Key Concepts** | Managed Environments, Connectors, DLP Connector Policies | Semantic Index, Graph grounding, Restricted SharePoint Search, DSPM for AI |
-| **Controls** | 71 | 56 |
+| **Controls** | 71 | 58 |
 | **Playbooks** | 284 | 224 |
 
 Both repositories are **standalone** — no cross-repo dependencies. Where governance topics overlap (e.g., sensitivity labels, audit logging), each repo provides self-contained guidance tailored to its scope.
 
-> **Governance Boundary Note:** The boundary between FSI-CopilotGov and FSI-AgentGov is evolving as agent governance surfaces (Agent 365, agent pinning, agent registry) now appear in the M365 Admin Center alongside Copilot controls. FSI-CopilotGov covers agent governance as it intersects with M365 Copilot admin controls, security, and compliance, while FSI-AgentGov covers custom agent development in Copilot Studio and Agent Builder.
+> **Governance Boundary Note:** Agent governance surfaces (Agent 365, agent pinning, agent registry, multi-agent orchestration) now appear in the M365 Admin Center alongside Copilot controls as GA features. FSI-CopilotGov covers agent governance as it intersects with M365 Copilot admin controls, security, and compliance — including Agent 365 operational governance, Entra Agent ID, and agent-to-agent orchestration security. FSI-AgentGov covers custom agent development, deployment, and lifecycle management in Copilot Studio and Agent Builder.
 
 ---
 

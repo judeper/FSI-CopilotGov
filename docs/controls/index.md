@@ -1,6 +1,6 @@
 # Control Catalog
 
-The FSI Copilot Governance Framework contains **57 controls** organized across four lifecycle-based pillars, providing comprehensive governance coverage for Microsoft 365 Copilot in US financial services.
+The FSI Copilot Governance Framework contains **58 controls** organized across four lifecycle-based pillars, providing comprehensive governance coverage for Microsoft 365 Copilot in US financial services.
 
 ---
 
@@ -27,6 +27,7 @@ Pre-deployment data hygiene, oversharing detection, permission audits, and licen
 | 1.13 | [Extensibility Readiness](pillar-1-readiness/1.13-extensibility-readiness.md) | Recommended |
 | 1.14 | [Item-Level Permission Scanning](pillar-1-readiness/1.14-item-level-permission-scanning.md) | Recommended |
 | 1.15 | [SharePoint Permissions Drift Detection](pillar-1-readiness/1.15-sharepoint-permissions-drift.md) | Recommended |
+| 1.16 | [Copilot Tuning Governance](pillar-1-readiness/1.16-copilot-tuning-governance.md) | Regulated |
 
 ---
 
@@ -51,6 +52,7 @@ DLP, sensitivity labels, conditional access, encryption, information barriers, a
 | 2.13 | [Plugin and Graph Connector Security Governance](pillar-2-security/2.13-plugin-connector-security.md) | Recommended |
 | 2.14 | [Declarative Agents from SharePoint — Creation and Sharing Governance](pillar-2-security/2.14-declarative-agents-governance.md) | Recommended |
 | 2.15 | [Network Security and Private Connectivity](pillar-2-security/2.15-network-security.md) | Regulated |
+| 2.16 | [Federated Copilot Connector and MCP Governance](pillar-2-security/2.16-federated-connector-mcp-governance.md) | Baseline |
 
 ---
 
@@ -102,11 +104,11 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 
 | Pillar | Controls | Baseline | Recommended | Regulated |
 |--------|----------|----------|-------------|-----------|
-| 1. Readiness & Assessment | 15 | 7 | 7 | 1 |
-| 2. Security & Protection | 15 | 6 | 6 | 3 |
+| 1. Readiness & Assessment | 16 | 7 | 7 | 2 |
+| 2. Security & Protection | 16 | 7 | 6 | 3 |
 | 3. Compliance & Audit | 13 | 3 | 5 | 5 |
 | 4. Operations & Monitoring | 13 | 5 | 7 | 1 |
-| **Total** | **56** | **21** | **25** | **10** |
+| **Total** | **58** | **22** | **25** | **11** |
 
 ---
 

@@ -75,6 +75,13 @@ Feature-by-control applicability matrix showing which governance controls apply 
 | **Plugins** | Partial | N/A | Supported | Supported | Partial | Partial | N/A | N/A | Supported |
 | **Graph Connectors** | Partial | Partial | Supported | Supported | Partial | Partial | N/A | N/A | Supported |
 | **Declarative Agents** | Partial | Partial | Supported | Supported | Partial | Partial | Partial | N/A | Supported |
+| **Federated Connectors (MCP)** | Partial | N/A | Supported | Supported | Partial | Partial | N/A | N/A | Supported |
+
+### Browser
+
+| Copilot Surface | DLP | Sensitivity Labels | Conditional Access | Audit Logging | Retention | eDiscovery | Info Barriers | Comm Compliance | Admin Toggles |
+|----------------|-----|-------------------|-------------------|---------------|-----------|------------|--------------|----------------|---------------|
+| **Copilot in Edge** | Partial | N/A | Supported | Supported | Partial | Partial | N/A | N/A | Supported |
 
 ---
 
