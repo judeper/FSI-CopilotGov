@@ -1,6 +1,7 @@
 name: SPA tests
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'docs/javascripts/**'
@@ -22,6 +23,7 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'vitest.config.mjs'
+      - '.github/workflows/spa-tests.yml'
 
 jobs:
   test:
