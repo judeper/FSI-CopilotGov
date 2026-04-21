@@ -564,11 +564,11 @@ The following state regulations may apply but require separate analysis beyond t
 | FFIEC IT Handbook | 4 controls | IT governance, vendor management |
 | Interagency AI Guidance | 4 controls | AI risk management |
 
-**Total:** 57 controls across 4 pillars providing mapped coverage to primary US financial regulations.
+**Total:** 58 controls across 4 pillars providing mapped coverage to primary US financial regulations.
 
 !!! note
     Coverage indicates which framework controls address aspects of each regulation. Actual compliance requires implementation, validation, ongoing maintenance, and legal counsel review.
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

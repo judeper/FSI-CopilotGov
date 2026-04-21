@@ -3,7 +3,7 @@
 Extract assessment data from FSI-CopilotGov control markdown files.
 
 Generates docs/javascripts/assessment-data.json for the Governance Readiness
-Assessment Tool. Parses all 56 controls to extract metadata, verification
+Assessment Tool. Parses all 58 controls to extract metadata, verification
 criteria, governance level requirements, and role assignments.
 
 Also parses:
@@ -33,8 +33,8 @@ CONTROLS_DIR = DOCS_DIR / "controls"
 OUTPUT_PATH = DOCS_DIR / "javascripts" / "assessment-data.json"
 
 PILLARS = {
-    1: {"name": "Readiness & Assessment", "folder": "pillar-1-readiness", "count": 15},
-    2: {"name": "Security & Protection", "folder": "pillar-2-security", "count": 15},
+    1: {"name": "Readiness & Assessment", "folder": "pillar-1-readiness", "count": 16},
+    2: {"name": "Security & Protection", "folder": "pillar-2-security", "count": 16},
     3: {"name": "Compliance & Audit", "folder": "pillar-3-compliance", "count": 13},
     4: {"name": "Operations & Monitoring", "folder": "pillar-4-operations", "count": 13},
 }
@@ -47,8 +47,8 @@ ROLE_CONTROLS = {
     "Entra Global Admin": ["2.3", "2.4", "2.15"],
     "Exchange Online Admin": ["2.8"],
     "Teams Admin": ["4.2", "4.3"],
-    "Security Admin": ["2.6", "2.9", "2.13", "2.14", "4.9", "4.10", "4.11"],
-    "AI Governance Lead": ["1.4", "1.10", "1.13", "3.13", "4.6", "4.13"],
+    "Security Admin": ["2.6", "2.7", "2.9", "2.13", "2.14", "2.16", "4.9", "4.10", "4.11"],
+    "AI Governance Lead": ["1.4", "1.10", "1.13", "1.16", "3.13", "4.6", "4.13"],
 }
 
 # Adoption phase mappings (from adoption roadmap)
@@ -587,9 +587,9 @@ def build_output():
             else:
                 errors.append(f"{pillar_num}.{ctrl_num}")
 
-    # Validate we got all 56 controls
-    if len(controls) != 56:
-        print(f"\nERROR: Expected 56 controls, got {len(controls)}")
+    # Validate we got all 58 controls
+    if len(controls) != 58:
+        print(f"\nERROR: Expected 58 controls, got {len(controls)}")
         if errors:
             print(f"  Missing: {', '.join(errors)}")
         return None

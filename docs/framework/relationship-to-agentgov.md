@@ -28,7 +28,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 | **What it governs** | AI capabilities embedded in M365 apps | Custom AI agents and automated workflows |
 | **Governance model** | Three governance levels: Baseline, Recommended, Regulated | Three governance zones: Zone 1 (Personal), Zone 2 (Team), Zone 3 (Enterprise) |
 | **Pillars** | 1. Readiness & Assessment, 2. Security & Protection, 3. Compliance & Audit, 4. Operations & Monitoring | 1. Security, 2. Management, 3. Reporting, 4. SharePoint |
-| **Controls** | 56 | 71 |
+| **Controls** | 58 | 71 |
 | **Playbooks** | 224 (4 per control) | 284 (4 per control) |
 | **Key concepts** | Semantic Index, Graph grounding, discovery amplification, Restricted SharePoint Search, DSPM for AI | Managed Environments, Connectors, DLP Connector Policies, Agent Lifecycle, Multi-Agent Orchestration |
 | **Primary risk** | Oversharing amplification -- Copilot surfaces content users already have access to, but at unprecedented speed and scale | Unauthorized agent creation -- custom agents that access regulated data without governance |
@@ -97,7 +97,7 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 |  |  Baseline / Recommended    |  |  - ALM Pipelines            |  |
 |  |  / Regulated               |  |                             |  |
 |  |                             |  |  Governance model:          |  |
-|  |  57 controls, 224 books    |  |  Zone 1 / 2 / 3            |  |
+|  |  58 controls, 224 books    |  |  Zone 1 / 2 / 3            |  |
 |  |                             |  |  71 controls, 284 books    |  |
 |  +-----------------------------+  +-----------------------------+  |
 |                                                                    |
@@ -221,4 +221,4 @@ If your organization already uses FSI-AgentGov and is now deploying M365 Copilot
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

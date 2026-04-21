@@ -49,6 +49,10 @@ theme:
 plugins:
   - search
 
+# MkDocs build hooks (v1.4+)
+hooks:
+  - scripts/hooks/copy_assessment_data.py
+
 # Site-wide link validation (MkDocs 1.6+). CI runs `mkdocs build --strict`, so any warnings here will fail the build.
 validation:
   nav:
@@ -64,7 +68,6 @@ validation:
 exclude_docs: |
   images/
   scripts/
-  templates/
   controls/CONTROL-INDEX.md
   javascripts/lib/VENDOR-MANIFEST.md
 
@@ -103,6 +106,12 @@ nav:
     - Start Here: start-here.md
     - Quick Start: getting-started/quick-start.md
     - Implementation Checklist: getting-started/checklist.md
+    - "Homework: Quick Start": getting-started/homework-quickstart.md
+    - "Homework: Baseline": getting-started/homework-baseline.md
+    - "Homework: Recommended": getting-started/homework-recommended.md
+    - "Homework: Regulated": getting-started/homework-regulated.md
+    - Control Setup Template: getting-started/templates/control-setup-template.md
+    - Exception Template: getting-started/templates/exception-template.md
 
   - Framework:
     - Overview: framework/index.md
@@ -510,3 +519,4 @@ nav:
     - FAQ: reference/faq.md
     - FSI Configuration Examples: reference/fsi-configuration-examples.md
     - FSI Use-Case Risk Scenarios: reference/fsi-use-case-risk-scenarios.md
+    - Release Notes v1.4: reference/release-notes-v1.4.md

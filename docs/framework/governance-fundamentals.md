@@ -117,13 +117,13 @@ Copilot closes this gap instantly. Governance must address the permissions gap *
 
 ### Overview
 
-Each of the 57 controls in this framework provides implementation guidance at three governance levels. Organizations select their target level based on regulatory obligations, risk appetite, and institutional type.
+Each of the 58 controls in this framework provides implementation guidance at three governance levels. Organizations select their target level based on regulatory obligations, risk appetite, and institutional type.
 
 | Level | Description | Typical Use | Control Coverage |
 |-------|-------------|-------------|------------------|
 | **Baseline** | Minimum viable governance | Initial Copilot deployment in low-risk environments | ~30 core controls |
 | **Recommended** | Best-practice governance | Most production environments, standard FSI firms | ~45 controls |
-| **Regulated** | Examination-ready, comprehensive governance | FINRA/SEC-regulated broker-dealers, banks with OCC oversight | All 57 controls |
+| **Regulated** | Examination-ready, comprehensive governance | FINRA/SEC-regulated broker-dealers, banks with OCC oversight | All 58 controls |
 
 ### Baseline
 
@@ -443,4 +443,4 @@ This framework is designed to **complement, not replace** existing enterprise go
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

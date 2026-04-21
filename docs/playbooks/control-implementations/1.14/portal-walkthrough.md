@@ -58,5 +58,5 @@ Create a simple scan manifest containing site URL, targeted libraries, owner, ap
 - Use [Verification & Testing](verification-testing.md) to validate that uniquely permissioned items are detected and triaged correctly.
 - Keep [Troubleshooting](troubleshooting.md) available for scan coverage, throttling, and approval-path issues.
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*
 - Back to [Control 1.14](../../../controls/pillar-1-readiness/1.14-item-level-permission-scanning.md)

@@ -2,6 +2,9 @@
 
 Get Microsoft 365 Copilot governance in place for your financial services organization in **2-4 hours** with these five essential steps.
 
+!!! tip "New in v1.4"
+    The interactive assessment now includes an **evidence drawer** for per-control notes and verifyIn links, a **facilitator mode** with workshop prompts, and **solution recommendation cards** that map findings to implementation guidance from the sister FSI-CopilotGov-Solutions catalog. See [Release Notes v1.4](../reference/release-notes-v1.4.md).
+
 !!! info "First time here?"
     If you're not sure this framework fits your situation, read the [Start Here](../start-here.md) page first — it covers what this is, what it's not, and which pillar to begin with.
 
@@ -191,7 +194,7 @@ After completing the five-step quick start, you have **Baseline** governance in 
 
 | Next Step | Description | Reference |
 |-----------|-------------|-----------|
-| **Complete the Implementation Checklist** | Walk through all 57 controls across four pillars | [Implementation Checklist](checklist.md) |
+| **Complete the Implementation Checklist** | Walk through all 58 controls across four pillars | [Implementation Checklist](checklist.md) |
 | **Read the Executive Summary** | Understand the strategic governance context for leadership communication | [Executive Summary](../framework/executive-summary.md) |
 | **Configure Information Barriers** | Required for broker-dealers and firms with material nonpublic information (MNPI) walls | Control 2.4 |
 | **Set up Communication Compliance** | Required for FINRA 3110 supervisory review of Copilot-assisted communications | Control 3.4 |
@@ -217,4 +220,4 @@ After completing the five-step quick start, you have **Baseline** governance in 
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

@@ -1,6 +1,6 @@
 # Governance Scorecard
 
-The Governance Scorecard is an interactive self-assessment tool that helps financial-services organizations evaluate their implementation of the [FSI Copilot Governance Framework](../framework/index.md) across all 57 controls and four lifecycle pillars. It produces a personalized scorecard, gap analysis, and prioritized remediation roadmap.
+The Governance Scorecard is an interactive self-assessment tool that helps financial-services organizations evaluate their implementation of the [FSI Copilot Governance Framework](../framework/index.md) across all 58 controls and four lifecycle pillars. It produces a personalized scorecard, gap analysis, and prioritized remediation roadmap.
 
 !!! warning "Disclaimer"
     This tool supports governance readiness assessment. It does not constitute legal advice, is not a compliance certification, and should not be used as a substitute for professional compliance guidance. Organizations should verify these configurations meet their specific obligations under applicable regulations such as FINRA Rules 4511/3110/2210, SEC Rules 17a-3/17a-4, Reg S-P, Reg BI, SOX, GLBA, OCC guidelines, and FFIEC requirements.

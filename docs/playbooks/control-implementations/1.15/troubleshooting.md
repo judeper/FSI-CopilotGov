@@ -52,5 +52,5 @@ Common issues and resolution steps for permissions-baseline capture, drift scann
 - [PowerShell Setup](powershell-setup.md)
 - [Verification & Testing](verification-testing.md)
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*
 - Back to [Control 1.15](../../../controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md)

@@ -32,7 +32,7 @@ The FSI Copilot Governance Framework uses a three-layer documentation model to s
         v                       v                       v
 +============================================================================+
 |                                                                            |
-|  LAYER 2: CONTROLS  (56 technical controls)                                |
+|  LAYER 2: CONTROLS  (58 technical controls)                                |
 |  What to configure and why                                                 |
 |  Audience: Compliance officers, architects                                 |
 |  Update frequency: Quarterly                                               |
@@ -191,4 +191,4 @@ The three-layer architecture separates:
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

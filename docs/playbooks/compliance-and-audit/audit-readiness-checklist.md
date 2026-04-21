@@ -126,4 +126,4 @@ Prepare responses for these frequently asked examination questions:
 
 *Review and update this checklist annually and after each examination to incorporate lessons learned.*
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

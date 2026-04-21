@@ -411,4 +411,4 @@ Insurance companies face unique challenges due to state-by-state regulatory vari
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

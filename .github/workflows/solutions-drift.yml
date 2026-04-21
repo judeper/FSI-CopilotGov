@@ -1,0 +1,117 @@
+name: Solutions Drift
+
+on:
+  schedule:
+    # Mondays at 09:00 UTC.
+    - cron: "0 9 * * 1"
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - "assessment/data/solutions-lock.json"
+      - "assessment/manifest/controls.json"
+      - "scripts/check_solutions_drift.py"
+      - ".github/workflows/solutions-drift.yml"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    name: Detect solutions-lock drift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout framework repo
+        uses: actions/checkout@v4
+
+      - name: Checkout sister solutions repo
+        uses: actions/checkout@v4
+        with:
+          repository: judeper/FSI-CopilotGov-Solutions
+          ref: main
+          path: sister
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run drift detector (full, JSON)
+        id: drift
+        env:
+          FSI_SOLUTIONS_REPO: ${{ github.workspace }}/sister
+        run: |
+          set -euo pipefail
+          python scripts/check_solutions_drift.py \
+            --mode=full \
+            --sister-repo "$FSI_SOLUTIONS_REPO" \
+            --json > drift.json
+          has_drift=$(python -c "import json; d=json.load(open('drift.json')); print(str(d['hasDrift']).lower())")
+          has_blocking=$(python -c "import json; d=json.load(open('drift.json')); print(str(d['hasBlocking']).lower())")
+          echo "has_drift=${has_drift}" >> "$GITHUB_OUTPUT"
+          echo "has_blocking=${has_blocking}" >> "$GITHUB_OUTPUT"
+
+      - name: Print human-readable summary
+        if: always()
+        env:
+          FSI_SOLUTIONS_REPO: ${{ github.workspace }}/sister
+        run: |
+          python scripts/check_solutions_drift.py \
+            --mode=full \
+            --sister-repo "$FSI_SOLUTIONS_REPO" || true
+
+      - name: Upload drift report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: solutions-drift-report
+          path: drift.json
+          if-no-files-found: warn
+
+      - name: Build issue body
+        if: steps.drift.outputs.has_drift == 'true'
+        run: |
+          set -euo pipefail
+          {
+            echo "## Solutions lock drift detected"
+            echo ""
+            echo "The pinned \`assessment/data/solutions-lock.json\` has drifted from the"
+            echo "current state of \`judeper/FSI-CopilotGov-Solutions@main\`."
+            echo ""
+            if [ "${{ steps.drift.outputs.has_blocking }}" = "true" ]; then
+              echo "**Blocking drift detected** (REMOVED or COVERAGE_DANGLING). cc @judeper"
+              echo ""
+            fi
+            echo "### Summary"
+            echo ""
+            echo '```json'
+            python -c "import json; d=json.load(open('drift.json')); print(json.dumps(d['summary'], indent=2, sort_keys=True))"
+            echo '```'
+            echo ""
+            echo "### Full report"
+            echo ""
+            echo '```json'
+            cat drift.json
+            echo '```'
+            echo ""
+            echo "Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          } > drift-issue.md
+
+      - name: Open or update drift tracking issue
+        if: steps.drift.outputs.has_drift == 'true' && github.event_name != 'pull_request'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "Solutions lock drift detected"
+          content-filepath: drift-issue.md
+          labels: |
+            solutions-drift
+            automation
+
+      - name: Run drift detector (ci mode, enforce blocking)
+        env:
+          FSI_SOLUTIONS_REPO: ${{ github.workspace }}/sister
+        run: |
+          python scripts/check_solutions_drift.py \
+            --mode=ci \
+            --sister-repo "$FSI_SOLUTIONS_REPO"

@@ -39,7 +39,8 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          python-version: '3.12'
+          cache: 'pip'
 
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
 
@@ -51,7 +52,7 @@ jobs:
             mkdocs-material-
 
       - name: Install MkDocs and Material Theme
-        run: pip install mkdocs-material
+        run: pip install mkdocs-material openpyxl
 
       - name: Validate Control Structure
         run: python scripts/verify_controls.py
@@ -61,6 +62,24 @@ jobs:
 
       - name: Generate Assessment Data
         run: python scripts/extract_assessment_data.py
+
+      - name: Generate Manifest (engine schema)
+        run: python assessment/manifest/generate_manifest.py
+
+      - name: Harvest Manifest Extension (SPA fields)
+        run: python scripts/harvest_manifest_extension.py
+
+      - name: Merge Authored Manifest Content
+        run: python scripts/merge_authored_content.py
+
+      - name: Validate Manifest
+        run: python scripts/validate_manifest.py --strict --allow-todo
+
+      - name: Build Checklist Templates (XLSX)
+        run: python scripts/build_checklist_templates.py
+
+      - name: Verify Checklist Templates (XLSX)
+        run: python scripts/verify_excel_templates.py
 
       - name: Validate Documentation
         run: mkdocs build --strict

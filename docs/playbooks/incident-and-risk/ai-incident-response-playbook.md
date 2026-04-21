@@ -140,4 +140,4 @@ Engage Legal Counsel for all notification decisions.
 
 *Test this playbook through tabletop exercises semi-annually. Update based on real incidents and evolving AI capabilities.*
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

@@ -4,6 +4,9 @@
 
 [![Publish Docs](https://github.com/judeper/FSI-CopilotGov/actions/workflows/publish_docs.yml/badge.svg)](https://github.com/judeper/FSI-CopilotGov/actions/workflows/publish_docs.yml)
 [![Link Validation](https://github.com/judeper/FSI-CopilotGov/actions/workflows/link-check.yml/badge.svg)](https://github.com/judeper/FSI-CopilotGov/actions/workflows/link-check.yml)
+[![SPA Tests](https://github.com/judeper/FSI-CopilotGov/actions/workflows/spa-tests.yml/badge.svg)](https://github.com/judeper/FSI-CopilotGov/actions/workflows/spa-tests.yml)
+[![Engine Tests](https://github.com/judeper/FSI-CopilotGov/actions/workflows/engine-tests.yml/badge.svg)](https://github.com/judeper/FSI-CopilotGov/actions/workflows/engine-tests.yml)
+[![Solutions Drift](https://github.com/judeper/FSI-CopilotGov/actions/workflows/solutions-drift.yml/badge.svg)](https://github.com/judeper/FSI-CopilotGov/actions/workflows/solutions-drift.yml)
 
 > **New to this framework? [→ Start Here](docs/start-here.md)** — understand what this is and where to begin.
 
@@ -11,7 +14,7 @@
 
 ## What This Is
 
-A technical documentation framework providing **58 controls** and **224 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
+A technical documentation framework providing **58 controls** and **243 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
 
 This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat (Basic & Premium tiers), Copilot Pages**, and **SharePoint agents** — plus extensibility via **plugins, Graph connectors, declarative agents, and Agents 365**.
 
@@ -83,6 +86,22 @@ Each control provides tiered implementation guidance:
 
 ---
 
+## What's New in v1.4
+
+Released April 2026. Full notes: [Release Notes v1.4](docs/reference/release-notes-v1.4.md).
+
+- **Python assessment engine** (`assessment/engine/`) scores collector evidence against the 58-control manifest.
+- **Evidence collectors** (`assessment/collectors/`) for Microsoft Graph, Purview, SharePoint, and Sentinel.
+- **Schema-validated control manifest** (`assessment/manifest/controls.json`) drives both the engine and the SPA.
+- **Governance Scorecard SPA** upgrades: role filter, quick-start mode (5 foundation controls), sector calibration (8 FSI types), "how to verify" drawer, facilitator mode, zone auto-exclusion, collector evidence import, versioned portal export envelope, inline solutions catalog.
+- **Role checklist templates** (`assessment/templates/*.xlsx`) generated from the manifest.
+- **Solutions integration** — pinned reference to [FSI-CopilotGov-Solutions](https://github.com/judeper/FSI-CopilotGov-Solutions) via `assessment/data/solutions-lock.json`; drift-guarded in CI.
+- **Test suites** — 25+ pytest cases (engine, collectors, drift) and 77+ vitest cases (SPA behaviour).
+- **Monitoring workflows** — scheduled CI watches Microsoft Learn URLs and regulatory sources.
+- **Pre-session homework pages** — per-role preparation guides under `docs/getting-started/`.
+
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -139,10 +158,26 @@ FSI-CopilotGov/
 │   │   ├── compliance-and-audit/     # Evidence packs, audit readiness
 │   │   ├── incident-and-risk/        # AI incident response
 │   │   └── regulatory-modules/       # State-specific guides
-│   ├── assessment/          # Governance Scorecard (self-assessment tool)
-│   └── reference/          # Quick-reference materials
-├── scripts/                # CI validation scripts
-└── .github/                # CI/CD workflows
+│   ├── getting-started/    # Quick start, checklist, homework pages per role
+│   ├── assessment/         # Governance Scorecard SPA entry point
+│   ├── javascripts/        # SPA (assessment-app.js, loader, Chart.js)
+│   ├── stylesheets/        # Site + assessment styles
+│   └── reference/          # Regulatory mappings, release notes, glossary
+├── assessment/
+│   ├── engine/             # Python scoring + reporting (score.py, report.py)
+│   ├── collectors/         # PowerShell evidence collectors (Graph, Purview, SharePoint, Sentinel)
+│   ├── manifest/           # controls.json + generate_manifest.py + authored_content.py
+│   ├── templates/          # XLSX role checklists + governance-maturity dashboard
+│   ├── data/               # solutions-lock.json (pinned to sister repo)
+│   └── tests/              # pytest engine + lock schema suites
+├── tests/spa/              # vitest SPA behaviour suite
+├── scripts/                # Manifest pipeline, solutions integration, monitoring, templates
+├── package.json            # vitest + jsdom (dev-only)
+├── vitest.config.mjs       # SPA test runner config
+├── mkdocs.yml              # Material theme + nav + plugin hooks
+└── .github/workflows/      # publish_docs, link-check, spa-tests, engine-tests,
+                            # manifest-fence, solutions-drift, learn-url-monitor,
+                            # regulatory-monitoring
 ```
 
 ---
@@ -156,7 +191,7 @@ FSI-CopilotGov/
 | **Governance Model** | Zones 1-2-3 (Personal/Team/Enterprise agents) | Org-wide with Baseline/Recommended/Regulated levels |
 | **Key Concepts** | Managed Environments, Connectors, DLP Connector Policies | Semantic Index, Graph grounding, Restricted SharePoint Search, DSPM for AI |
 | **Controls** | 71 | 58 |
-| **Playbooks** | 284 | 224 |
+| **Playbooks** | 284 | 243 |
 
 Both repositories are **standalone** — no cross-repo dependencies. Where governance topics overlap (e.g., sensitivity labels, audit logging), each repo provides self-contained guidance tailored to its scope.
 
@@ -190,4 +225,4 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

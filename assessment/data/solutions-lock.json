@@ -1,0 +1,335 @@
+{
+  "generatedAt": "2026-04-21T22:00:40Z",
+  "schemaVersion": "0.1.0",
+  "solutions": [
+    {
+      "domain": "readiness-data",
+      "id": "01-copilot-readiness-scanner",
+      "name": "Copilot Readiness Assessment Scanner",
+      "prerequisites": [],
+      "repoPath": "solutions/01-copilot-readiness-scanner",
+      "slug": "01-copilot-readiness-scanner",
+      "summary": "Assesses tenant readiness across licensing, identity, Purview, SharePoint, and Copilot-specific data hygiene signals.",
+      "tier": 1,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/01-copilot-readiness-scanner",
+      "verification": [
+        "readiness-scorecard",
+        "data-hygiene-findings",
+        "remediation-plan"
+      ],
+      "version": "0.2.0"
+    },
+    {
+      "domain": "readiness-data",
+      "id": "02-oversharing-risk-assessment",
+      "name": "Oversharing Risk Assessment and Remediation",
+      "prerequisites": [],
+      "repoPath": "solutions/02-oversharing-risk-assessment",
+      "slug": "02-oversharing-risk-assessment",
+      "summary": "Detects overshared SharePoint, Teams, and OneDrive content that could widen Copilot grounding beyond intended audiences.",
+      "tier": 1,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/02-oversharing-risk-assessment",
+      "verification": [
+        "oversharing-findings",
+        "remediation-queue",
+        "site-owner-attestations"
+      ],
+      "version": "0.2.0"
+    },
+    {
+      "domain": "readiness-data",
+      "id": "03-sensitivity-label-auditor",
+      "name": "Sensitivity Label Coverage Auditor",
+      "prerequisites": [],
+      "repoPath": "solutions/03-sensitivity-label-auditor",
+      "slug": "03-sensitivity-label-auditor",
+      "summary": "Measures label coverage across in-scope workloads and identifies unlabeled content that weakens Copilot data protection controls.",
+      "tier": 2,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/03-sensitivity-label-auditor",
+      "verification": [
+        "label-coverage-report",
+        "label-gap-findings",
+        "remediation-manifest"
+      ],
+      "version": "0.2.0"
+    },
+    {
+      "domain": "security-compliance",
+      "id": "04-finra-supervision-workflow",
+      "name": "FINRA Supervision Workflow for Copilot",
+      "prerequisites": [],
+      "repoPath": "solutions/04-finra-supervision-workflow",
+      "slug": "04-finra-supervision-workflow",
+      "summary": "Routes flagged Copilot-assisted communications into a reviewer queue with sampling, escalation, and exception tracking.",
+      "tier": 1,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/04-finra-supervision-workflow",
+      "verification": [
+        "supervision-queue-snapshot",
+        "review-disposition-log",
+        "sampling-summary"
+      ],
+      "version": "0.2.0"
+    },
+    {
+      "domain": "security-compliance",
+      "id": "05-dlp-policy-governance",
+      "name": "DLP Policy Governance for Copilot",
+      "prerequisites": [],
+      "repoPath": "solutions/05-dlp-policy-governance",
+      "slug": "05-dlp-policy-governance",
+      "summary": "Deploys, baselines, and monitors DLP policies that target Copilot prompts, responses, and grounded content access patterns.",
+      "tier": 2,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/05-dlp-policy-governance",
+      "verification": [
+        "dlp-policy-baseline",
+        "policy-drift-findings",
+        "exception-attestations"
+      ],
+      "version": "0.2.0"
+    },
+    {
+      "domain": "security-compliance",
+      "id": "06-audit-trail-manager",
+      "name": "Copilot Interaction Audit Trail Manager",
+      "prerequisites": [],
+      "repoPath": "solutions/06-audit-trail-manager",
+      "slug": "06-audit-trail-manager",
+      "summary": "Configures retention, validates Copilot audit completeness, and packages evidence for books-and-records examinations.",
+      "tier": 1,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/06-audit-trail-manager",
+      "verification": [
+        "audit-log-completeness",
+        "retention-policy-state",
+        "ediscovery-readiness-package"
+      ],
+      "version": "0.2.0"
+    },
+    {
+      "domain": "security-compliance",
+      "id": "07-conditional-access-automation",
+      "name": "Conditional Access Policy Automation for Copilot",
+      "prerequisites": [],
+      "repoPath": "solutions/07-conditional-access-automation",
+      "slug": "07-conditional-access-automation",
+      "summary": "Deploys Conditional Access patterns for Copilot users and watches for policy drift across risk tiers and device states.",
+      "tier": 2,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/07-conditional-access-automation",
+      "verification": [
+        "ca-policy-state",
+        "drift-alert-summary",
+        "access-exception-register"
+      ],
+      "version": "0.2.0"
+    },
+    {
+      "domain": "operations-analytics",
+      "id": "08-license-governance-roi",
+      "name": "License Governance and ROI Tracker",
+      "prerequisites": [],
+      "repoPath": "solutions/08-license-governance-roi",
+      "slug": "08-license-governance-roi",
+      "summary": "Tracks license usage, inactivity, business-value signals, and reallocation opportunities for Copilot subscriptions.",
+      "tier": 2,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/08-license-governance-roi",
+      "verification": [
+        "license-utilization-report",
+        "roi-scorecard",
+        "reallocation-recommendations"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "operations-analytics",
+      "id": "09-feature-management-controller",
+      "name": "Copilot Feature Management Controller",
+      "prerequisites": [],
+      "repoPath": "solutions/09-feature-management-controller",
+      "slug": "09-feature-management-controller",
+      "summary": "Centralizes Copilot feature toggles, rollout rings, and drift monitoring across applications and user cohorts.",
+      "tier": 2,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/09-feature-management-controller",
+      "verification": [
+        "feature-state-baseline",
+        "rollout-ring-history",
+        "drift-findings"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "operations-analytics",
+      "id": "10-connector-plugin-governance",
+      "name": "Copilot Connector and Plugin Governance",
+      "prerequisites": [],
+      "repoPath": "solutions/10-connector-plugin-governance",
+      "slug": "10-connector-plugin-governance",
+      "summary": "Inventories connectors and plugins, routes approval requests, and records data-flow decisions for extensibility scenarios.",
+      "tier": 3,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/10-connector-plugin-governance",
+      "verification": [
+        "connector-inventory",
+        "approval-register",
+        "data-flow-attestations"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "operations-analytics",
+      "id": "11-risk-tiered-rollout",
+      "name": "Risk-Tiered Rollout Automation",
+      "prerequisites": [],
+      "repoPath": "solutions/11-risk-tiered-rollout",
+      "slug": "11-risk-tiered-rollout",
+      "summary": "Sequences Copilot license assignment, prerequisite checks, pilot waves, and expansion gates by risk tier.",
+      "tier": 1,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/11-risk-tiered-rollout",
+      "verification": [
+        "wave-readiness-log",
+        "approval-history",
+        "rollout-health-dashboard"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "operations-analytics",
+      "id": "12-regulatory-compliance-dashboard",
+      "name": "Regulatory Compliance Dashboard",
+      "prerequisites": [],
+      "repoPath": "solutions/12-regulatory-compliance-dashboard",
+      "slug": "12-regulatory-compliance-dashboard",
+      "summary": "Aggregates solution outputs into a control-centric dashboard that highlights implementation state, evidence freshness, and regulatory coverage.",
+      "tier": 1,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/12-regulatory-compliance-dashboard",
+      "verification": [
+        "control-status-snapshot",
+        "framework-coverage-matrix",
+        "dashboard-export"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "regulatory-resilience",
+      "id": "13-dora-resilience-monitor",
+      "name": "DORA Operational Resilience Monitor",
+      "prerequisites": [],
+      "repoPath": "solutions/13-dora-resilience-monitor",
+      "slug": "13-dora-resilience-monitor",
+      "summary": "Monitors Copilot service health, incident classification, resilience evidence, and operational-risk reporting for regulated environments.",
+      "tier": 3,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/13-dora-resilience-monitor",
+      "verification": [
+        "service-health-log",
+        "incident-register",
+        "resilience-test-results"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "regulatory-resilience",
+      "id": "14-communication-compliance-config",
+      "name": "Communication Compliance Configurator",
+      "prerequisites": [],
+      "repoPath": "solutions/14-communication-compliance-config",
+      "slug": "14-communication-compliance-config",
+      "summary": "Publishes communication compliance policy patterns for Copilot-assisted content and tracks reviewer workflows and escalations.",
+      "tier": 3,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/14-communication-compliance-config",
+      "verification": [
+        "policy-template-export",
+        "reviewer-queue-metrics",
+        "lexicon-update-log"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "regulatory-resilience",
+      "id": "15-pages-notebooks-gap-monitor",
+      "name": "Copilot Pages and Notebooks Compliance Gap Monitor",
+      "prerequisites": [],
+      "repoPath": "solutions/15-pages-notebooks-gap-monitor",
+      "slug": "15-pages-notebooks-gap-monitor",
+      "summary": "Surfaces known compliance gaps in Copilot Pages and Notebooks and documents compensating controls until platform coverage improves.",
+      "tier": 3,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/15-pages-notebooks-gap-monitor",
+      "verification": [
+        "gap-findings",
+        "compensating-control-log",
+        "preservation-exception-register"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "readiness-data",
+      "id": "16-item-level-oversharing-scanner",
+      "name": "Item-Level Oversharing Scanner",
+      "prerequisites": [],
+      "repoPath": "solutions/16-item-level-oversharing-scanner",
+      "slug": "16-item-level-oversharing-scanner",
+      "summary": "Scans individual SharePoint items for overshared permissions, applies FSI risk scoring, and provides approval-gated remediation.",
+      "tier": 2,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/16-item-level-oversharing-scanner",
+      "verification": [
+        "item-oversharing-findings",
+        "risk-scored-report",
+        "remediation-actions"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "readiness-data",
+      "id": "17-sharepoint-permissions-drift",
+      "name": "SharePoint Permissions Drift Detection",
+      "prerequisites": [],
+      "repoPath": "solutions/17-sharepoint-permissions-drift",
+      "slug": "17-sharepoint-permissions-drift",
+      "summary": "Captures baseline SharePoint permissions, detects drift over time, and provides approval-gated reversion with examiner-ready evidence.",
+      "tier": 2,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/17-sharepoint-permissions-drift",
+      "verification": [
+        "drift-report",
+        "baseline-snapshot",
+        "reversion-log"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "readiness-data",
+      "id": "18-entra-access-reviews",
+      "name": "Entra Access Reviews Automation",
+      "prerequisites": [],
+      "repoPath": "solutions/18-entra-access-reviews",
+      "slug": "18-entra-access-reviews",
+      "summary": "Automates Entra ID Access Reviews for SharePoint sites, prioritized by risk tier from Solutions 02 and 16.",
+      "tier": 2,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/18-entra-access-reviews",
+      "verification": [
+        "access-review-definitions",
+        "review-decisions",
+        "applied-actions"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "operations-analytics",
+      "id": "19-agent-lifecycle-governance",
+      "name": "Agent Lifecycle and Deployment Governance",
+      "prerequisites": [],
+      "repoPath": "solutions/19-agent-lifecycle-governance",
+      "slug": "19-agent-lifecycle-governance",
+      "summary": "Governs agent lifecycle including request/approval workflows, org-wide sharing restrictions, agent catalog auditing, and deployment gating for Copilot agents in financial services.",
+      "tier": 2,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/19-agent-lifecycle-governance",
+      "verification": [
+        "agent-registry",
+        "approval-register",
+        "sharing-policy-audit"
+      ],
+      "version": "0.1.0"
+    }
+  ],
+  "source": {
+    "commit": "777a3788c3ccb77add207bbd6a1c2786ba640653",
+    "kind": "sister-repo",
+    "ref": "v0.1.0-rc1",
+    "repo": "judeper/FSI-CopilotGov-Solutions"
+  }
+}

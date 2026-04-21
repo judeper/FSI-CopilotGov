@@ -251,4 +251,4 @@ Prohibition under federal consumer financial protection law against unfair, dece
 
 ---
 
-*FSI Copilot Governance Framework v1.3.1 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

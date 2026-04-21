@@ -1,0 +1,4450 @@
+[
+  {
+    "id": "1.1",
+    "title": "Control 1.1: Copilot Readiness Assessment and Data Hygiene",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has a comprehensive pre-deployment readiness assessment of the data environment been completed and documented within the last 12 months?",
+    "name": "Copilot Readiness Assessment and Data Hygiene",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "SR-11-7",
+      "OCC-2023-17",
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.1-copilot-readiness-assessment/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.1/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "01-copilot-readiness-scanner",
+        "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "1.2",
+    "title": "Control 1.2: SharePoint Oversharing Detection and Remediation (DSPM for AI)",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md",
+    "automation": "partial",
+    "collection_methods": [
+      "SharePoint_Graph",
+      "M365Admin"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Have oversharing scans been reviewed and remediation tracked in the last 30 days?",
+    "name": "SharePoint Oversharing Detection and Remediation (DSPM for AI)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "GLBA-501b",
+      "Reg-S-P"
+    ],
+    "priority": "critical",
+    "yesBar": "DSPM for AI is enabled, an oversharing assessment / data risk assessment runs on a documented cadence (weekly or better), findings are triaged into a tracked remediation backlog with named owners, and item-level remediation has been used at least once in the last 30 days for a Copilot-grounded site.",
+    "partialBar": "DSPM is enabled and an assessment has been run, but findings are not yet triaged into a tracked backlog or remediation ownership is not formally assigned.",
+    "noBar": "DSPM for AI is not enabled, no oversharing assessment has been run, or 'Everyone' / 'Everyone Except External Users' (EEEU) sharing exists on Copilot-grounded sites without compensating controls.",
+    "verifyIn": [
+      {
+        "portal": "Microsoft Purview",
+        "path": "Data Security Posture Management > Overview",
+        "url": "https://purview.microsoft.com/datasecurityposturemanagement"
+      },
+      {
+        "portal": "Microsoft Purview",
+        "path": "DSPM for AI > Reports > Oversharing assessments",
+        "url": "https://purview.microsoft.com/aihub"
+      }
+    ],
+    "verifyPowerShell": "Connect-IPPSSession; Get-DlpCompliancePolicy | Where-Object { $_.Name -like '*Copilot*' -or $_.Name -like '*Oversharing*' }",
+    "evidenceExpected": [
+      "DSPM for AI oversharing assessment report (PDF/JSON export)",
+      "Remediation backlog ticket count + closure cadence",
+      "Item-level remediation log entries for the last 30 days",
+      "List of sites with EEEU/Everyone sharing flagged + dispositioned"
+    ],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.2/portal-walkthrough/",
+    "collectorField": "DSPM_OversharingAssessment",
+    "sectorYesBar": {
+      "bank": "DSPM oversharing assessment runs weekly; any site with NPI (account numbers, SSNs, customer financial info) and broad sharing is auto-restricted within 5 business days per GLBA §501(b) safeguards expectations.",
+      "broker-dealer": "Weekly DSPM oversharing scan; sites containing trade blotters, research reports, or MNPI carry information-barrier evidence; remediation closure documented for SEC Reg S-P examiners.",
+      "investment-adviser": "Weekly DSPM oversharing scan; client portfolio documents and private fund records reviewed for least-privilege; remediation evidence retained for SEC OCIE / IA exam response.",
+      "insurance-carrier": "Weekly DSPM scan; PHI/PII-bearing sites (claims, underwriting) auto-restricted; HIPAA + state insurance regulator readiness.",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "Weekly DSPM scan with NCUA Part 748 alignment; member NPI sites carry documented sharing reviews.",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "Has DSPM for AI been enabled, has an oversharing or data risk assessment been run within the last 30 days, and is remediation tracked with named owners?",
+      "followUp": "Open Microsoft Purview > Data Security Posture Management > Reports. Show the most recent oversharing/data-risk-assessment report, pull the top 5 flagged sites, and confirm each has an owner and target date in the remediation backlog.",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "02-oversharing-risk-assessment",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "16-item-level-oversharing-scanner",
+        "tier": 2,
+        "role": "supporting"
+      },
+      {
+        "id": "17-sharepoint-permissions-drift",
+        "tier": 2,
+        "role": "supporting"
+      },
+      {
+        "id": "18-entra-access-reviews",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "1.3",
+    "title": "Control 1.3: Restricted SharePoint Search Configuration",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md",
+    "automation": "full",
+    "collection_methods": [
+      "SharePoint_Graph"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Restricted SharePoint Search Configuration",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "GLBA-501b"
+    ],
+    "priority": "high",
+    "yesBar": "RSS is enabled tenant-wide with a documented allow-list of approved sites (≤100), RCD is used to surgically exclude high-risk sites that cannot be migrated, and there is a documented exit plan to transition off RSS as Purview / SAM long-term controls reach operational maturity.",
+    "partialBar": "RSS is enabled but the allow-list lacks documented review cadence, or RCD is used without a written exception register, or no exit plan to long-term governance exists.",
+    "noBar": "RSS is not enabled and no compensating control (RCD allow-list, Restricted Content Discovery, or item-level scoping) is in place to limit Copilot's tenant-wide search scope.",
+    "verifyIn": [
+      {
+        "portal": "SharePoint Admin Center",
+        "path": "Settings > Search > Restricted SharePoint Search",
+        "url": "https://admin.microsoft.com/sharepoint"
+      }
+    ],
+    "verifyPowerShell": "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; Get-SPOTenant | Select-Object IsRestrictedSPSearchEnabled, RestrictedSearchAllowedList",
+    "evidenceExpected": [
+      "Tenant setting screenshot showing IsRestrictedSPSearchEnabled = $true",
+      "Current allow-list site URLs (≤100) with business owner per site",
+      "RCD exception register (sites surgically excluded outside the allow-list model)",
+      "Documented exit plan / transition target date to long-term Purview+SAM governance"
+    ],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.3-restricted-sharepoint-search/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.3/portal-walkthrough/",
+    "collectorField": "SPO_RestrictedSearchConfig",
+    "sectorYesBar": {
+      "bank": "RSS enabled with allow-list reviewed quarterly; loan-ops, trust, and treasury sites included; deposit/credit account sites carrying NPI excluded until DSPM remediation closes.",
+      "broker-dealer": "RSS enabled; research and investment-banking sites carry RCD exclusion to honor information barriers; allow-list reviewed by supervisory principal monthly.",
+      "investment-adviser": "RSS enabled with allow-list limited to approved client-service and ops sites; private fund / portfolio company sites excluded.",
+      "insurance-carrier": "RSS enabled; claims and underwriting sites with PHI excluded from allow-list; HIPAA business-associate documentation references RSS scope.",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "Is Restricted SharePoint Search enabled, with a curated allow-list of ≤100 sites and a documented review cadence?",
+      "followUp": "Open SharePoint Admin Center > Settings > Search and verify Restricted SharePoint Search is on. Pull the current allow-list, confirm count is within the 100-site limit, and ask the SharePoint Admin who owns the quarterly review and where the allow-list is documented.",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "02-oversharing-risk-assessment",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "16-item-level-oversharing-scanner",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "1.4",
+    "title": "Control 1.4: Semantic Index Governance and Scope Control",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.4-semantic-index-governance.md",
+    "automation": "partial",
+    "collection_methods": [
+      "SharePoint_Graph"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are semantic-index inclusion/exclusion rules reviewed on a documented schedule?",
+    "name": "Semantic Index Governance and Scope Control",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "AI Governance Lead"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.4-semantic-index-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.4/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "02-oversharing-risk-assessment",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "16-item-level-oversharing-scanner",
+        "tier": 2,
+        "role": "supporting"
+      },
+      {
+        "id": "17-sharepoint-permissions-drift",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "1.5",
+    "title": "Control 1.5: Sensitivity Label Taxonomy Review for Copilot",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md",
+    "automation": "partial",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has the sensitivity-label taxonomy been reviewed for AI-readiness in the last 12 months?",
+    "name": "Sensitivity Label Taxonomy Review for Copilot",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b",
+      "Reg-S-P"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.5/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "01-copilot-readiness-scanner",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "03-sensitivity-label-auditor",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "1.6",
+    "title": "Control 1.6: Permission Model Audit (SharePoint, OneDrive, Exchange, Teams, Graph)",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.6-permission-model-audit.md",
+    "automation": "partial",
+    "collection_methods": [
+      "SharePoint_Graph"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has a least-privilege permission audit covering Copilot-grounded sites been completed in the last 90 days?",
+    "name": "Permission Model Audit (SharePoint, OneDrive, Exchange, Teams, Graph)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b",
+      "Reg-S-P"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.6-permission-model-audit/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.6/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "01-copilot-readiness-scanner",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "02-oversharing-risk-assessment",
+        "tier": 1,
+        "role": "supporting"
+      },
+      {
+        "id": "16-item-level-oversharing-scanner",
+        "tier": 2,
+        "role": "supporting"
+      },
+      {
+        "id": "17-sharepoint-permissions-drift",
+        "tier": 2,
+        "role": "supporting"
+      },
+      {
+        "id": "18-entra-access-reviews",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "1.7",
+    "title": "Control 1.7: SharePoint Advanced Management Readiness for Copilot",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md",
+    "automation": "full",
+    "collection_methods": [
+      "SharePoint_Graph"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "SharePoint Advanced Management Readiness for Copilot",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.7-sharepoint-advanced-management/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.7/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "01-copilot-readiness-scanner",
+        "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "1.8",
+    "title": "Control 1.8: Information Architecture Review",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.8-information-architecture-review.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has the information architecture (IA) been reviewed for Copilot-grounding suitability and findings tracked to remediation?",
+    "name": "Information Architecture Review",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.8-information-architecture-review/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.8/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": []
+  },
+  {
+    "id": "1.9",
+    "title": "Control 1.9: License Planning and Copilot Assignment Strategy",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.9-license-planning.md",
+    "automation": "full",
+    "collection_methods": [
+      "M365Admin"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "License Planning and Copilot Assignment Strategy",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.9-license-planning/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.9/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "01-copilot-readiness-scanner",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "08-license-governance-roi",
+        "tier": 2,
+        "role": "supporting"
+      },
+      {
+        "id": "11-risk-tiered-rollout",
+        "tier": 1,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "1.10",
+    "title": "Control 1.10: Vendor Risk Management for Microsoft AI Services",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.10-vendor-risk-management.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has third-party / vendor risk assessment (per OCC Bulletin 2023-17) been completed for Copilot, plug-ins, and connectors used in production?",
+    "name": "Vendor Risk Management for Microsoft AI Services",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "AI Governance Lead"
+    ],
+    "regulatory": [
+      "OCC-2023-17",
+      "FFIEC-IT-Handbook",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.10-vendor-risk-management/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.10/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": []
+  },
+  {
+    "id": "1.11",
+    "title": "Control 1.11: Organizational Change Management and Adoption Planning",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.11-change-management-adoption.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is a documented change-management and adoption plan in place for Copilot rollout, with executive sponsorship?",
+    "name": "Organizational Change Management and Adoption Planning",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin"
+    ],
+    "regulatory": [
+      "OCC-Heightened-Standards",
+      "FFIEC-IT-Handbook"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.11-change-management-adoption/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.11/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "11-risk-tiered-rollout",
+        "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "1.12",
+    "title": "Control 1.12: Training and Awareness Program",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.12-training-awareness.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Have all in-scope users completed Copilot training and acceptable-use acknowledgement in the last 12 months?",
+    "name": "Training and Awareness Program",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "GLBA-501b",
+      "FINRA-3110"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.12-training-awareness/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.12/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "11-risk-tiered-rollout",
+        "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "1.13",
+    "title": "Control 1.13: Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.13-extensibility-readiness.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has an extensibility / agent governance framework (declarative agents, plug-ins, MCP) been formally adopted before enabling extensibility surfaces?",
+    "name": "Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "AI Governance Lead"
+    ],
+    "regulatory": [
+      "OCC-2023-17",
+      "FFIEC-IT-Handbook",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.13-extensibility-readiness/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.13/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "10-connector-plugin-governance",
+        "tier": 3,
+        "role": "primary"
+      },
+      {
+        "id": "19-agent-lifecycle-governance",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "1.14",
+    "title": "Control 1.14: Item-Level Permission Scanning",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.14-item-level-permission-scanning.md",
+    "automation": "partial",
+    "collection_methods": [
+      "SharePoint_Graph"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are item-level permissions on Copilot-grounded knowledge sources scanned and reviewed on a documented cadence?",
+    "name": "Item-Level Permission Scanning",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "GLBA-501b",
+      "SEC-17a-4"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.14-item-level-permission-scanning/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.14/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "16-item-level-oversharing-scanner",
+        "tier": 2,
+        "role": "primary"
+      },
+      {
+        "id": "17-sharepoint-permissions-drift",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "1.15",
+    "title": "Control 1.15: SharePoint Permissions Drift Detection",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md",
+    "automation": "partial",
+    "collection_methods": [
+      "SharePoint_Graph"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is SharePoint permissions drift monitored and reconciled on a documented cadence (RAC / Site Lifecycle Management)?",
+    "name": "SharePoint Permissions Drift Detection",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "GLBA-501b",
+      "SEC-17a-4"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.15-sharepoint-permissions-drift/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.15/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "16-item-level-oversharing-scanner",
+        "tier": 2,
+        "role": "primary"
+      },
+      {
+        "id": "17-sharepoint-permissions-drift",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "1.16",
+    "title": "Control 1.16: Copilot Tuning Governance",
+    "pillar": 1,
+    "pillar_name": "Readiness & Assessment",
+    "source_file": "docs/controls/pillar-1-readiness/1.16-copilot-tuning-governance.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is Copilot Tuning subject to a model-governance review (model risk management, evaluation harness) before publishing tuned models?",
+    "name": "Copilot Tuning Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "AI Governance Lead"
+    ],
+    "regulatory": [
+      "OCC-2011-12",
+      "SR-11-7",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-1-readiness/1.16-copilot-tuning-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/1.16/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": []
+  },
+  {
+    "id": "2.1",
+    "title": "Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.1-dlp-policies-for-copilot.md",
+    "automation": "full",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "DLP Policies for Microsoft 365 Copilot Interactions",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "SOX-302-404",
+      "GLBA-501b",
+      "FINRA-4511",
+      "Reg-S-P"
+    ],
+    "priority": "critical",
+    "yesBar": "Both DLP policy types target the Microsoft 365 Copilot location: (a) label-based response blocking (preventing Copilot from surfacing labeled NPI/MNPI in responses) and (b) SIT-based prompt blocking (preventing users from pasting account numbers, SSNs, or other regulated SITs into prompts). Policies are in Enforce mode with documented owner, override workflow, and match-event review cadence.",
+    "partialBar": "At least one DLP rule targets the Copilot location, but the other policy type is missing, the policy is in test/audit mode only, or match events are not reviewed on a documented cadence.",
+    "noBar": "No DLP policy targets the Microsoft 365 Copilot location, or policies exist but are scoped to a single user / pilot group and not enforced for the Copilot-licensed user population.",
+    "verifyIn": [
+      {
+        "portal": "Microsoft Purview",
+        "path": "Data Loss Prevention > Policies",
+        "url": "https://purview.microsoft.com/datalossprevention/policies"
+      }
+    ],
+    "verifyPowerShell": "Connect-IPPSSession; Get-DlpCompliancePolicy | Where-Object { $_.Workload -like '*Copilot*' } | Select-Object Name, Mode, Enabled, Workload",
+    "evidenceExpected": [
+      "DLP policy export showing 'Microsoft 365 Copilot' location in scope",
+      "Both policy types present: label-based response blocking AND SIT-based prompt blocking",
+      "Policy mode = Enforce (not Test / TestWithNotifications)",
+      "Match-event report from Purview > Activity Explorer for the last 30 days",
+      "Override workflow document showing who can request and approve overrides"
+    ],
+    "controlDocUrl": "/controls/pillar-2-security/2.1-dlp-policies-for-copilot/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.1/portal-walkthrough/",
+    "collectorField": "DLP_CopilotPolicies",
+    "sectorYesBar": {
+      "bank": "Both DLP rule types enforced; SIT set covers ABA routing, account numbers, SSN, ITIN, GLBA NPI; Label-based blocking for 'Confidential — NPI' and 'Highly Confidential — MNPI' labels.",
+      "broker-dealer": "Both rule types enforced; SIT set covers CRD numbers, account numbers, SSN; label-based blocking for Research and IB Confidential labels supporting information-barrier policy.",
+      "investment-adviser": "Both rule types enforced; SIT set covers SSN, account numbers, and adviser-firm-defined SITs for client portfolio identifiers.",
+      "insurance-carrier": "Both rule types enforced; SIT set covers SSN, policy numbers, PHI patterns; label-based blocking for PHI sensitivity labels.",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "Both rule types enforced; SITs cover member account numbers + SSN; label-based blocking aligned to NCUA NPI categories.",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "Are both DLP policy types deployed and enforced for the Microsoft 365 Copilot location — label-based response blocking AND SIT-based prompt blocking?",
+      "followUp": "Open Microsoft Purview > Data Loss Prevention > Policies. Filter by location 'Microsoft 365 Copilot'. Confirm at least two distinct rules exist (one label-based, one SIT-based), both in Enforce mode. Then open Activity Explorer to show match events from the last 30 days are being reviewed.",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "05-dlp-policy-governance",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "2.2",
+    "title": "Control 2.2: Sensitivity Labels and Copilot Content Classification",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.2-sensitivity-labels-classification.md",
+    "automation": "full",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Sensitivity Labels and Copilot Content Classification",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "SOX-302-404",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.2-sensitivity-labels-classification/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.2/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "03-sensitivity-label-auditor",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "2.3",
+    "title": "Control 2.3: Conditional Access Policies for Copilot Workloads",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.3-conditional-access-policies.md",
+    "automation": "full",
+    "collection_methods": [
+      "Graph_API"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Conditional Access Policies for Copilot Workloads",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Entra Global Admin"
+    ],
+    "regulatory": [
+      "FFIEC",
+      "GLBA-501b",
+      "NYDFS-500"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.3-conditional-access-policies/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.3/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "07-conditional-access-automation",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "2.4",
+    "title": "Control 2.4: Information Barriers for Copilot (Chinese Wall)",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.4-information-barriers.md",
+    "automation": "full",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Information Barriers for Copilot (Chinese Wall)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Entra Global Admin"
+    ],
+    "regulatory": [
+      "FINRA-5280",
+      "SEC-10b-5",
+      "Chinese-Wall"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.4-information-barriers/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.4/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": []
+  },
+  {
+    "id": "2.5",
+    "title": "Control 2.5: Data Minimization and Grounding Scope",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.5-data-minimization-grounding-scope.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has data minimization been applied to Copilot grounding scope (per-agent/site limits) and reviewed on a documented cadence?",
+    "name": "Data Minimization and Grounding Scope",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.5-data-minimization-grounding-scope/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.5/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "02-oversharing-risk-assessment",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "16-item-level-oversharing-scanner",
+        "tier": 2,
+        "role": "supporting"
+      },
+      {
+        "id": "17-sharepoint-permissions-drift",
+        "tier": 2,
+        "role": "supporting"
+      },
+      {
+        "id": "18-entra-access-reviews",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "2.6",
+    "title": "Control 2.6: Copilot Web Search and Web Grounding Controls",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.6-web-search-controls.md",
+    "automation": "full",
+    "collection_methods": [
+      "M365Admin"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Copilot Web Search and Web Grounding Controls",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Security Admin"
+    ],
+    "regulatory": [
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.6-web-search-controls/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.6/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "07-conditional-access-automation",
+        "tier": 2,
+        "role": "primary"
+      },
+      {
+        "id": "09-feature-management-controller",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "2.7",
+    "title": "Control 2.7: Data Residency and Cross-Border Data Flow Governance",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.7-data-residency.md",
+    "automation": "full",
+    "collection_methods": [
+      "M365Admin",
+      "Graph_API"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Data Residency and Cross-Border Data Flow Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Security Admin"
+    ],
+    "regulatory": [
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.7-data-residency/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.7/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "12-regulatory-compliance-dashboard",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "13-dora-resilience-monitor",
+        "tier": 3,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "2.8",
+    "title": "Control 2.8: Encryption (Data in Transit and at Rest)",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.8-encryption.md",
+    "automation": "full",
+    "collection_methods": [
+      "Graph_API",
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Encryption (Data in Transit and at Rest)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Exchange Online Admin"
+    ],
+    "regulatory": [
+      "FFIEC",
+      "GLBA-501b",
+      "NYDFS-500"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.8-encryption/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.8/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": []
+  },
+  {
+    "id": "2.9",
+    "title": "Control 2.9: Defender for Cloud Apps — Copilot Session Controls",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.9-defender-cloud-apps.md",
+    "automation": "partial",
+    "collection_methods": [
+      "Defender"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are Defender for Cloud Apps Copilot session policies and anomaly alerts reviewed on a documented cadence?",
+    "name": "Defender for Cloud Apps — Copilot Session Controls",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Security Admin"
+    ],
+    "regulatory": [
+      "FFIEC",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.9-defender-cloud-apps/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.9/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "07-conditional-access-automation",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "2.10",
+    "title": "Control 2.10: Insider Risk Detection for Copilot Usage Patterns",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.10-insider-risk-detection.md",
+    "automation": "partial",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Have any insider-risk alerts touching Copilot interactions been reviewed and dispositioned this quarter?",
+    "name": "Insider Risk Detection for Copilot Usage Patterns",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "SOX-302-404",
+      "GLBA-501b",
+      "FINRA-3110"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.10-insider-risk-detection/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.10/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "12-regulatory-compliance-dashboard",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "14-communication-compliance-config",
+        "tier": 3,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "2.11",
+    "title": "Control 2.11: Copilot Pages Security and Sharing Controls",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.11-copilot-pages-security.md",
+    "automation": "full",
+    "collection_methods": [
+      "M365Admin",
+      "SharePoint_Graph"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Copilot Pages Security and Sharing Controls",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "GLBA-501b",
+      "FINRA-4511"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.11-copilot-pages-security/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.11/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "15-pages-notebooks-gap-monitor",
+        "tier": 3,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "2.12",
+    "title": "Control 2.12: External Sharing and Guest Access Governance",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.12-external-sharing-governance.md",
+    "automation": "full",
+    "collection_methods": [
+      "SharePoint_Graph"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "External Sharing and Guest Access Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "SharePoint Admin"
+    ],
+    "regulatory": [
+      "GLBA-501b",
+      "Reg-S-P"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.12-external-sharing-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.12/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "02-oversharing-risk-assessment",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "18-entra-access-reviews",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "2.13",
+    "title": "Control 2.13: Plugin and Graph Connector Security Governance",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.13-plugin-connector-security.md",
+    "automation": "partial",
+    "collection_methods": [
+      "M365Admin",
+      "Graph_API"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is the plug-in / connector inventory reviewed and approved on a documented cadence, with un-approved connectors blocked?",
+    "name": "Plugin and Graph Connector Security Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Security Admin"
+    ],
+    "regulatory": [
+      "FFIEC",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.13-plugin-connector-security/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.13/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "10-connector-plugin-governance",
+        "tier": 3,
+        "role": "primary"
+      },
+      {
+        "id": "19-agent-lifecycle-governance",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "2.14",
+    "title": "Control 2.14: Declarative and SharePoint Agents Governance",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.14-declarative-agents-governance.md",
+    "automation": "partial",
+    "collection_methods": [
+      "M365Admin",
+      "Graph_API"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are declarative agents subject to a publishing-approval workflow with a maintained inventory?",
+    "name": "Declarative and SharePoint Agents Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Security Admin"
+    ],
+    "regulatory": [
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.14-declarative-agents-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.14/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "10-connector-plugin-governance",
+        "tier": 3,
+        "role": "primary"
+      },
+      {
+        "id": "19-agent-lifecycle-governance",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "2.15",
+    "title": "Control 2.15: Network Security and Private Connectivity",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.15-network-security.md",
+    "automation": "full",
+    "collection_methods": [
+      "Graph_API"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Network Security and Private Connectivity",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Entra Global Admin"
+    ],
+    "regulatory": [
+      "FFIEC",
+      "NYDFS-500"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.15-network-security/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.15/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": []
+  },
+  {
+    "id": "2.16",
+    "title": "Control 2.16: Federated Copilot Connector and Model Context Protocol (MCP) Governance",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.16-federated-connector-mcp-governance.md",
+    "automation": "partial",
+    "collection_methods": [
+      "M365Admin",
+      "Graph_API"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are federated connectors and MCP endpoints subject to a documented approval, allow-list, and review cycle?",
+    "name": "Federated Copilot Connector and Model Context Protocol (MCP) Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Security Admin"
+    ],
+    "regulatory": [
+      "FFIEC",
+      "GLBA",
+      "Reg-S-P"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.16-federated-connector-mcp-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.16/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "10-connector-plugin-governance",
+        "tier": 3,
+        "role": "primary"
+      },
+      {
+        "id": "19-agent-lifecycle-governance",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.1",
+    "title": "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.1-copilot-audit-logging.md",
+    "automation": "full",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Copilot Interaction Audit Logging (Purview Unified Audit Log)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "SOX-302-404",
+      "FINRA-4511",
+      "SEC-17a-3"
+    ],
+    "priority": "critical",
+    "yesBar": "Unified Audit Log is enabled at the tenant level, CopilotInteraction events are queryable via Purview Audit / Search-UnifiedAuditLog, retention is set to meet the firm's regulatory minimum (typically 7 years for FINRA/SEC firms via E5 Audit Premium or PAYG), and audit data flows to an external WORM/SIEM archive on a documented cadence.",
+    "partialBar": "UAL is enabled and CopilotInteraction events are present, but retention is at the E3 default (180 days) without a 7-year plan, or there is no SIEM/WORM archival path documented.",
+    "noBar": "Unified Audit Log is disabled, CopilotInteraction events are not present in audit search, or audit retention is below the firm's regulatory minimum without a remediation plan.",
+    "verifyIn": [
+      {
+        "portal": "Microsoft Purview",
+        "path": "Audit > Search",
+        "url": "https://purview.microsoft.com/audit/auditsearch"
+      },
+      {
+        "portal": "Microsoft Purview",
+        "path": "Audit > Audit retention policies",
+        "url": "https://purview.microsoft.com/audit/auditretentionpolicies"
+      }
+    ],
+    "verifyPowerShell": "Connect-ExchangeOnline; Get-AdminAuditLogConfig | Select-Object UnifiedAuditLogIngestionEnabled; Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-1) -EndDate (Get-Date) -RecordType CopilotInteraction -ResultSize 5",
+    "evidenceExpected": [
+      "Get-AdminAuditLogConfig output showing UnifiedAuditLogIngestionEnabled = True",
+      "Sample Search-UnifiedAuditLog results for RecordType=CopilotInteraction (last 24h)",
+      "Audit retention policy export showing target retention duration per RecordType",
+      "SIEM ingestion connector configuration (e.g., Sentinel M365 Defender connector)",
+      "WORM/external archive runbook with destination and cadence"
+    ],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.1-copilot-audit-logging/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.1/portal-walkthrough/",
+    "collectorField": "Audit_UALCopilotInteraction",
+    "sectorYesBar": {
+      "bank": "UAL on; CopilotInteraction + AgentAdminActivity + AgentSettingsAdminActivity events retained 7 years; SIEM ingestion to bank-managed log lake; aligned to OCC Heightened Standards (12 CFR part 30, appendix D) for monitoring.",
+      "broker-dealer": "UAL on; CopilotInteraction events retained 7 years per SEC Rule 17a-4 where applicable; WORM archive evidence provided to FINRA on exam request; supervisory review of agent events.",
+      "investment-adviser": "UAL on; CopilotInteraction events retained ≥5 years per Investment Advisers Act Rule 204-2; SIEM/archive evidence available for SEC OCIE exams.",
+      "insurance-carrier": "UAL on; CopilotInteraction events retained per state insurance regulator record-keeping minimums; SIEM ingestion for HIPAA security-incident detection.",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "UAL on; CopilotInteraction events retained per NCUA Part 749 record retention; SIEM ingestion for member-data monitoring.",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "Is the Unified Audit Log enabled, are CopilotInteraction events queryable, and is retention set to your firm's regulatory minimum (often 7 years for FINRA/SEC firms)?",
+      "followUp": "Run Get-AdminAuditLogConfig to verify ingestion is on, then Search-UnifiedAuditLog -RecordType CopilotInteraction for the last 24 hours. Open Purview > Audit > Audit retention policies and confirm the policy duration matches the firm's regulatory minimum. Confirm the SIEM/WORM archive destination and cadence.",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "06-audit-trail-manager",
+        "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "3.2",
+    "title": "Control 3.2: Data Retention Policies for Copilot Interactions",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.2-data-retention-policies.md",
+    "automation": "full",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Data Retention Policies for Copilot Interactions",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "SOX",
+      "FINRA-4511",
+      "SEC-17a-4"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.2-data-retention-policies/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.2/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "06-audit-trail-manager",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "15-pages-notebooks-gap-monitor",
+        "tier": 3,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.3",
+    "title": "Control 3.3: eDiscovery for Copilot-Generated Content",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md",
+    "automation": "full",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "eDiscovery for Copilot-Generated Content",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "FINRA-4511",
+      "SEC-17a-4"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.3-ediscovery-copilot-content/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.3/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "06-audit-trail-manager",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "15-pages-notebooks-gap-monitor",
+        "tier": 3,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.4",
+    "title": "Control 3.4: Communication Compliance Monitoring",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.4-communication-compliance.md",
+    "automation": "partial",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has the communication-compliance review queue covering Copilot interactions been reviewed in the last 30 days?",
+    "name": "Communication Compliance Monitoring",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "FINRA-3110",
+      "FINRA-2210",
+      "SEC-Reg-BI"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.4-communication-compliance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.4/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "04-finra-supervision-workflow",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "14-communication-compliance-config",
+        "tier": 3,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.5",
+    "title": "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.5-finra-2210-compliance.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are Copilot outputs used in FINRA Rule 2210 communications subject to documented principal review before use?",
+    "name": "FINRA Rule 2210 Compliance for Copilot-Drafted Communications",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "FINRA-2210",
+      "FINRA-24-09",
+      "SEC-206-4-1",
+      "IAA-206"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.5-finra-2210-compliance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.5/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "04-finra-supervision-workflow",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "14-communication-compliance-config",
+        "tier": 3,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.6",
+    "title": "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.6-supervision-oversight.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is there a designated supervisory principal for Copilot use in regulated workflows, with a documented review cadence (FINRA Rule 3110)?",
+    "name": "Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "FINRA-3110",
+      "FINRA-3120",
+      "FINRA-24-09",
+      "SEC-Reg-BI"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.6-supervision-oversight/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.6/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "04-finra-supervision-workflow",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "14-communication-compliance-config",
+        "tier": 3,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.7",
+    "title": "Control 3.7: Regulatory Reporting (FINRA, SEC, SOX, GLBA, CFPB UDAAP)",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.7-regulatory-reporting.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are Copilot-related regulatory reports (e.g., book/record certifications, AI disclosures) produced on the required cadence?",
+    "name": "Regulatory Reporting (FINRA, SEC, SOX, GLBA, CFPB UDAAP)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "SOX-302-404",
+      "GLBA-501b",
+      "FINRA-4530",
+      "CFPB"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.7-regulatory-reporting/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.7/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "12-regulatory-compliance-dashboard",
+        "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "3.8",
+    "title": "Control 3.8: Model Risk Management Alignment (SR 11-7 / OCC Bulletin 2011-12)",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.8-model-risk-management.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has a model-risk-management review aligned to SR 11-7 / OCC Bulletin 2011-12 been completed for Copilot deployments touching regulated functions?",
+    "name": "Model Risk Management Alignment (SR 11-7 / OCC Bulletin 2011-12)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "OCC-2011-12",
+      "SR-11-7"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.8-model-risk-management/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.8/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "12-regulatory-compliance-dashboard",
+        "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "3.9",
+    "title": "Control 3.9: AI Disclosure, Transparency, and SEC Marketing Rule",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is AI disclosure language presented to customers / counterparties before any Copilot-generated content is shared externally?",
+    "name": "AI Disclosure, Transparency, and SEC Marketing Rule",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "SEC-206-4-1",
+      "SEC-Reg-BI",
+      "SEC-AI-Marketing-Risk-Alert",
+      "State-AI-Disclosure"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.9-ai-disclosure-transparency/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.9/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "14-communication-compliance-config",
+        "tier": 3,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "3.10",
+    "title": "Control 3.10: SEC Reg S-P -- Privacy of Consumer Financial Information",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md",
+    "automation": "partial",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Have SEC Reg S-P / GLBA §501(b) privacy controls been reviewed for Copilot processing of customer NPI?",
+    "name": "SEC Reg S-P -- Privacy of Consumer Financial Information",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "GLBA",
+      "Reg-S-P"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.10-sec-reg-sp-privacy/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.10/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "02-oversharing-risk-assessment",
+        "tier": 1,
+        "role": "primary"
+      },
+      {
+        "id": "05-dlp-policy-governance",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.11",
+    "title": "Control 3.11: Record Keeping and Books-and-Records Compliance (SEC 17a-3/4, FINRA 4511)",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.11-record-keeping.md",
+    "automation": "partial",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are Copilot interactions captured into the firm's books-and-records system per SEC Rule 17a-4 (where applicable)?",
+    "name": "Record Keeping and Books-and-Records Compliance (SEC 17a-3/4, FINRA 4511)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "FINRA-4511",
+      "SEC-17a-4",
+      "SEC-17a-3"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.11-record-keeping/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.11/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "03-sensitivity-label-auditor",
+        "tier": 2,
+        "role": "primary"
+      },
+      {
+        "id": "06-audit-trail-manager",
+        "tier": 1,
+        "role": "supporting"
+      },
+      {
+        "id": "15-pages-notebooks-gap-monitor",
+        "tier": 3,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.12",
+    "title": "Control 3.12: Evidence Collection and Audit Attestation",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.12-evidence-collection.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is there a documented evidence-collection runbook used for Copilot-related audits and exam responses?",
+    "name": "Evidence Collection and Audit Attestation",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Purview Compliance Admin"
+    ],
+    "regulatory": [
+      "SOX-302-404",
+      "FINRA-3120"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.12-evidence-collection/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.12/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "03-sensitivity-label-auditor",
+        "tier": 2,
+        "role": "primary"
+      },
+      {
+        "id": "05-dlp-policy-governance",
+        "tier": 2,
+        "role": "supporting"
+      },
+      {
+        "id": "06-audit-trail-manager",
+        "tier": 1,
+        "role": "supporting"
+      },
+      {
+        "id": "12-regulatory-compliance-dashboard",
+        "tier": 1,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.13",
+    "title": "Control 3.13: FFIEC IT Examination Handbook Alignment",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.13-ffiec-alignment.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has FFIEC IT Handbook alignment (Information Security, Outsourcing, Architecture) been reviewed for Copilot deployment?",
+    "name": "FFIEC IT Examination Handbook Alignment",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "AI Governance Lead"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "FFIEC-Cybersecurity"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.13-ffiec-alignment/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.13/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "12-regulatory-compliance-dashboard",
+        "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.1",
+    "title": "Control 4.1: Copilot Admin Settings and Feature Management",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.1-admin-settings-feature-management.md",
+    "automation": "full",
+    "collection_methods": [
+      "M365Admin"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Copilot Admin Settings and Feature Management",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b"
+    ],
+    "priority": "critical",
+    "yesBar": "Copilot administration is exercised through the AI Administrator role (least privilege), Cloud Policy controls Pages / Notebooks / code preview, billing & PAYG decisions are governed under the same change-management process as feature toggles, and an evidence pack of current settings is captured at each documented review cadence.",
+    "partialBar": "Copilot settings are governed but split across roles inconsistently (M365 Global Admin used routinely instead of AI Administrator), or Cloud Policy / billing decisions are not part of the same change-management workflow.",
+    "noBar": "Copilot settings are managed ad hoc by individual admins without documented change management, or settings drift between admin surfaces (Copilot Settings, Agents, Cloud Policy, Billing) is not tracked.",
+    "verifyIn": [
+      {
+        "portal": "Microsoft 365 Admin Center",
+        "path": "Copilot > Settings",
+        "url": "https://admin.microsoft.com/Adminportal/Home#/copilot"
+      },
+      {
+        "portal": "Microsoft 365 Admin Center",
+        "path": "Agents > All agents",
+        "url": "https://admin.microsoft.com/Adminportal/Home#/agents"
+      },
+      {
+        "portal": "Microsoft 365 Apps Admin Center",
+        "path": "Customization > Policy Management",
+        "url": "https://config.office.com"
+      }
+    ],
+    "verifyPowerShell": "Connect-MgGraph -Scopes RoleManagement.Read.Directory; Get-MgRoleManagementDirectoryRoleDefinition -Filter \"displayName eq 'AI Administrator'\"; Get-MgRoleManagementDirectoryRoleAssignment -Filter \"roleDefinitionId eq '<AI Admin role id>'\"",
+    "evidenceExpected": [
+      "List of users assigned 'AI Administrator' role with last sign-in",
+      "Cloud Policy export covering Copilot Pages / Notebooks / code preview decisions",
+      "Pay-as-you-go (PAYG) services configuration screenshot + budget alert thresholds",
+      "Change-management record (ticket / PR) for the most recent Copilot setting toggle",
+      "Documented review cadence (monthly / quarterly) with evidence-pack template"
+    ],
+    "controlDocUrl": "/controls/pillar-4-operations/4.1-admin-settings-feature-management/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.1/portal-walkthrough/",
+    "collectorField": "M365Admin_CopilotSettings",
+    "sectorYesBar": {
+      "bank": "AI Administrator role used; Cloud Policy locked-down for Pages/Notebooks/code; PAYG budgets aligned to bank cost centers; settings reviewed monthly under SOX IT general controls.",
+      "broker-dealer": "AI Administrator role used; Copilot Settings + Agents reviewed monthly by supervisory principal; Cloud Policy enforces approved Pages/Notebooks behavior for FINRA WSP alignment.",
+      "investment-adviser": "AI Administrator role used; Cloud Policy controls extension surfaces; settings reviewed quarterly with compliance officer.",
+      "insurance-carrier": "AI Administrator role used; Cloud Policy enforces Pages/Notebooks scope for PHI handling units; settings reviewed monthly.",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "Is Copilot administration exercised through the AI Administrator role (not M365 Global Admin), and are Cloud Policy + billing decisions part of the same documented change-management process?",
+      "followUp": "Open Microsoft 365 Admin Center > Roles and confirm who holds AI Administrator. Open Copilot > Settings, Agents > All agents, and config.office.com Customization > Policy Management. Ask for the most recent change-management ticket for a Copilot setting toggle and the documented review cadence.",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "09-feature-management-controller",
+        "tier": 2,
+        "role": "primary"
+      },
+      {
+        "id": "19-agent-lifecycle-governance",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "4.2",
+    "title": "Control 4.2: Copilot in Teams Meetings Governance",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.2-teams-meetings-governance.md",
+    "automation": "full",
+    "collection_methods": [
+      "Teams"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Copilot in Teams Meetings Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin",
+      "Teams Admin"
+    ],
+    "regulatory": [
+      "FINRA-4511",
+      "FINRA-3110",
+      "SEC-17a-4",
+      "Reg-S-P"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.2-teams-meetings-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.2/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "09-feature-management-controller",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.3",
+    "title": "Control 4.3: Copilot in Teams Phone and Queues Governance",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.3-teams-phone-queues.md",
+    "automation": "full",
+    "collection_methods": [
+      "Teams"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": null,
+    "name": "Copilot in Teams Phone and Queues Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin",
+      "Teams Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "GLBA-501b",
+      "FINRA-4511",
+      "FINRA-3110"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.3-teams-phone-queues/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.3/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "09-feature-management-controller",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.4",
+    "title": "Control 4.4: Copilot in Viva Suite Governance",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.4-viva-suite-governance.md",
+    "automation": "partial",
+    "collection_methods": [
+      "VivaInsights",
+      "M365Admin"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is Viva-suite Copilot integration (Insights, Engage, Topics) reviewed on a documented governance cadence?",
+    "name": "Copilot in Viva Suite Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin"
+    ],
+    "regulatory": [
+      "FFIEC",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.4-viva-suite-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.4/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "09-feature-management-controller",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.5",
+    "title": "Control 4.5: Copilot Usage Analytics and Adoption Reporting",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.5-usage-analytics.md",
+    "automation": "partial",
+    "collection_methods": [
+      "M365Admin"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are Copilot usage analytics reported to leadership on a documented cadence with anomalies flagged?",
+    "name": "Copilot Usage Analytics and Adoption Reporting",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.5-usage-analytics/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.5/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "08-license-governance-roi",
+        "tier": 2,
+        "role": "primary"
+      },
+      {
+        "id": "12-regulatory-compliance-dashboard",
+        "tier": 1,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "4.6",
+    "title": "Control 4.6: Microsoft Viva Insights and Copilot Analytics Impact Measurement",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.6-viva-insights-measurement.md",
+    "automation": "partial",
+    "collection_methods": [
+      "VivaInsights"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are Viva Insights Copilot impact reports reviewed on a documented cadence with caveats applied?",
+    "name": "Microsoft Viva Insights and Copilot Analytics Impact Measurement",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "AI Governance Lead"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.6-viva-insights-measurement/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.6/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "08-license-governance-roi",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.7",
+    "title": "Control 4.7: Copilot Feedback and Telemetry Data Governance",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.7-feedback-telemetry.md",
+    "automation": "partial",
+    "collection_methods": [
+      "M365Admin"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is Copilot feedback / thumb-rating telemetry reviewed on a documented cadence and routed to product owners?",
+    "name": "Copilot Feedback and Telemetry Data Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "GLBA-501b",
+      "Reg-S-P"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.7-feedback-telemetry/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.7/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "12-regulatory-compliance-dashboard",
+        "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.8",
+    "title": "Control 4.8: Cost Allocation and License Optimization",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.8-cost-allocation.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is Copilot license cost allocation reviewed and chargeback / showback executed on a documented cadence?",
+    "name": "Cost Allocation and License Optimization",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin"
+    ],
+    "regulatory": [
+      "OCC-Heightened-Standards",
+      "FFIEC-IT-Handbook",
+      "SOX-302-404"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.8-cost-allocation/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.8/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "08-license-governance-roi",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.9",
+    "title": "Control 4.9: Incident Reporting and Root Cause Analysis",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.9-incident-reporting.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is there a documented incident-response process covering Copilot-specific incidents (oversharing, hallucination, prompt injection) with reporting paths?",
+    "name": "Incident Reporting and Root Cause Analysis",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Security Admin"
+    ],
+    "regulatory": [
+      "OCC-Heightened-Standards",
+      "FFIEC-IT-Handbook",
+      "GLBA-501b",
+      "FINRA-4530",
+      "NYDFS-500"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.9-incident-reporting/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.9/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "13-dora-resilience-monitor",
+        "tier": 3,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.10",
+    "title": "Control 4.10: Business Continuity and Disaster Recovery for Copilot Dependency",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.10-business-continuity.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has a business-continuity plan for Copilot-dependent workflows been documented and tested in the last 12 months?",
+    "name": "Business Continuity and Disaster Recovery for Copilot Dependency",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Security Admin"
+    ],
+    "regulatory": [
+      "OCC-Heightened-Standards",
+      "FFIEC-BCM",
+      "GLBA-501b",
+      "FINRA-4370"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.10-business-continuity/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.10/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "13-dora-resilience-monitor",
+        "tier": 3,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.11",
+    "title": "Control 4.11: Microsoft Sentinel Integration for Copilot Events",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.11-sentinel-integration.md",
+    "automation": "partial",
+    "collection_methods": [
+      "Defender"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are Sentinel detections covering Copilot misuse reviewed and tuned on a documented cadence?",
+    "name": "Microsoft Sentinel Integration for Copilot Events",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "Security Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b",
+      "NYDFS-500"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.11-sentinel-integration/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.11/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "13-dora-resilience-monitor",
+        "tier": 3,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "4.12",
+    "title": "Control 4.12: Change Management for Copilot Feature Rollouts",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.12-change-management-rollouts.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are Copilot feature releases (Microsoft-managed and tenant-managed) tracked and risk-reviewed before user enablement?",
+    "name": "Change Management for Copilot Feature Rollouts",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin"
+    ],
+    "regulatory": [
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.12-change-management-rollouts/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.12/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "09-feature-management-controller",
+        "tier": 2,
+        "role": "primary"
+      },
+      {
+        "id": "11-risk-tiered-rollout",
+        "tier": 1,
+        "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "4.13",
+    "title": "Control 4.13: Copilot Extensibility and Agent Operations Governance",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.13-extensibility-governance.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are extensibility surfaces (declarative agents, MCP, plug-ins) governed by an approval and inventory process before publication?",
+    "name": "Copilot Extensibility and Agent Operations Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "AI Governance Lead"
+    ],
+    "regulatory": [
+      "OCC-2023-17",
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.13-extensibility-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.13/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "09-feature-management-controller",
+        "tier": 2,
+        "role": "primary"
+      },
+      {
+        "id": "10-connector-plugin-governance",
+        "tier": 3,
+        "role": "supporting"
+      },
+      {
+        "id": "19-agent-lifecycle-governance",
+        "tier": 2,
+        "role": "supporting"
+      }
+    ]
+  }
+]

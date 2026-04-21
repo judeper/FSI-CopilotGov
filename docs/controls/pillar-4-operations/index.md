@@ -133,4 +133,4 @@ Phase 4: Optimization and Lifecycle (Week 7-8)
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

@@ -433,4 +433,4 @@ These controls must be implemented first as they enable other governance capabil
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

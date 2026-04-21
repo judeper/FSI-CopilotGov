@@ -1,0 +1,48 @@
+name: Manifest Fence
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  fence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: |
+            assessment/requirements.txt
+            scripts/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          pip install -r assessment/requirements.txt
+          pip install -r scripts/requirements.txt
+          pip install mkdocs-material openpyxl
+
+      - name: Verify control structure
+        run: python scripts/verify_controls.py
+
+      - name: Verify language rules
+        run: python scripts/verify_language_rules.py
+
+      - name: Generate manifest (engine schema)
+        run: python assessment/manifest/generate_manifest.py
+
+      - name: Harvest manifest extension (SPA fields)
+        run: python scripts/harvest_manifest_extension.py
+
+      - name: Merge authored manifest content
+        run: python scripts/merge_authored_content.py
+
+      - name: Validate manifest (strict, allow TODO)
+        run: python scripts/validate_manifest.py --strict --allow-todo
+
+      - name: Check solutions-lock is up to date
+        run: python scripts/generate_solutions_lock.py --check

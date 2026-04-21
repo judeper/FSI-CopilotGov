@@ -1,6 +1,6 @@
 # Implementation Checklist
 
-Use this checklist to track implementation of all 57 controls across the four governance pillars. Each item includes its governance level and space for status tracking.
+Use this checklist to track implementation of all 58 controls across the four governance pillars. Each item includes its governance level and space for status tracking.
 
 !!! warning "Disclaimer"
     This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. See [full disclaimer](../disclaimer.md).
@@ -132,6 +132,33 @@ Admin settings, per-app configuration, analytics, Viva governance, cost tracking
 
 ---
 
+## Downloadable checklists
+
+Role-specific Excel checklists and a governance maturity dashboard are
+generated from the manifest by `scripts/build_checklist_templates.py` and
+published under `assessment/templates/` on the site. Each checklist includes
+columns for Control ID, Title, Pillar, Tier (Baseline / Recommended /
+Regulated), Surface(s), Question, Evidence Expected, a Yes / Partial / No
+response cell, and free-form Notes.
+
+- [AI Administrator checklist (.xlsx)](../assessment/templates/ai-administrator-checklist.xlsx)
+- [M365 Global Admin / Copilot Admin checklist (.xlsx)](../assessment/templates/m365-global-admin-or-copilot-admin-checklist.xlsx)
+- [Entra Global Admin checklist (.xlsx)](../assessment/templates/entra-global-admin-checklist.xlsx)
+- [SharePoint Admin checklist (.xlsx)](../assessment/templates/sharepoint-admin-checklist.xlsx)
+- [Purview Compliance Admin checklist (.xlsx)](../assessment/templates/purview-compliance-admin-checklist.xlsx)
+- [Teams Admin checklist (.xlsx)](../assessment/templates/teams-admin-checklist.xlsx)
+- [Security Admin checklist (.xlsx)](../assessment/templates/security-admin-checklist.xlsx)
+- [Compliance Officer checklist (.xlsx)](../assessment/templates/compliance-officer-checklist.xlsx)
+- [Governance maturity dashboard (.xlsx)](../assessment/templates/governance-maturity-dashboard.xlsx)
+
+Markdown templates for documenting per-control setup and exceptions are
+available under `docs/templates/`:
+
+- [Control setup template](./templates/control-setup-template.md)
+- [Exception template](./templates/exception-template.md)
+
+---
+
 ## Tracking Template
 
 Download or copy this checklist into your governance tracking system. Recommended fields for your internal tracker:
@@ -150,4 +177,4 @@ Download or copy this checklist into your governance tracking system. Recommende
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

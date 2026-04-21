@@ -263,4 +263,4 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

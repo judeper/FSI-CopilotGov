@@ -217,4 +217,4 @@ Controls that appear across the most regulations should be prioritized for imple
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

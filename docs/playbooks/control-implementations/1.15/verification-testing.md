@@ -50,5 +50,5 @@ Test cases and evidence collection for validating baseline integrity, drift dete
 - [PowerShell Setup](powershell-setup.md)
 - [Troubleshooting](troubleshooting.md)
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*
 - Back to [Control 1.15](../../../controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md)

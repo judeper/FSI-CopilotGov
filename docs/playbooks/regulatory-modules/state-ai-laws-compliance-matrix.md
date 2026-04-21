@@ -104,4 +104,4 @@ For detailed Colorado-specific guidance, see [Colorado AI Act Readiness](colorad
 
 ---
 
-*FSI Copilot Governance Framework v1.4 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

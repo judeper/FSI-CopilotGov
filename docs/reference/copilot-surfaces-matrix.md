@@ -163,4 +163,4 @@ Governance controls in this matrix apply primarily to **Premium** access where o
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

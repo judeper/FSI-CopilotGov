@@ -106,4 +106,4 @@ For each identified risk, document existing and additional controls:
 
 *Complete this assessment for each new Copilot use case. Store completed assessments in the risk management repository with 7-year retention.*
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

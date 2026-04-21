@@ -100,7 +100,7 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 +-------------------+-------------------+-------------------+-------------------+
 ```
 
-**56 Total Controls** across four lifecycle pillars addressing readiness, security, compliance, and operations for M365 Copilot governance.
+**58 Total Controls** across four lifecycle pillars addressing readiness, security, compliance, and operations for M365 Copilot governance.
 
 ### Three Governance Levels
 
@@ -108,7 +108,7 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 |-------|--------------|-------------|------------------|
 | **Baseline** | Minimum viable governance | Initial Copilot deployment, low-risk environments | ~30 controls |
 | **Recommended** | Best-practice governance | Most production environments | ~45 controls |
-| **Regulated** | Examination-ready governance | FINRA/SEC-regulated, high-risk environments | All 57 controls |
+| **Regulated** | Examination-ready governance | FINRA/SEC-regulated, high-risk environments | All 58 controls |
 
 ---
 
@@ -270,4 +270,4 @@ This framework provides governance guidance and does not constitute legal, regul
 
 ---
 
-*FSI Copilot Governance Framework v1.3 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

@@ -16,6 +16,18 @@
   var STORAGE_KEY = "fsi-copilotgov-assessment";
   var STATE_SCHEMA_VERSION = 2;
   var LEVELS = ["baseline", "recommended", "regulated"];
+  // D1: SPA enhancement storage keys (per-control drawer notes + facilitator toggle).
+  var DRAWER_NOTES_PREFIX = "fsi-copilotgov:notes:";
+  var FACILITATOR_MODE_KEY = "fsi-copilotgov:facilitator-mode";
+  var SOLUTIONS_BASE_URL = "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/";
+  // D2: Collector evidence import storage + status-mapping constants.
+  var COLLECTOR_EVIDENCE_KEY_PREFIX = "fsi-copilotgov:collector-evidence:";
+  var COLLECTOR_STATUS_MAP = { pass: "yes", partial: "partial", fail: "no" };
+  // Severity ranking used when multiple evidence rows disagree on status.
+  var COLLECTOR_STATUS_PRIORITY = { no: 3, partial: 2, yes: 1 };
+  // E: Envelope export schema + identity storage keys.
+  var ENVELOPE_SCHEMA_VERSION = "fsi-copilotgov-envelope/0.1.0";
+  var ENVELOPE_IDENTITY_KEY = "fsi-copilotgov:envelope-identity";
   var STEPS = [
     { id: "welcome", label: "Welcome", num: 1 },
     { id: "scoping", label: "Scope", num: 2 },
@@ -125,6 +137,207 @@
     return STORAGE_KEY + "-state-" + id;
   }
 
+  /* ================================================================
+     D1: AUTHORED-CONTENT HELPERS
+     Centralize TODO-placeholder detection so drawer / facilitator /
+     yes-bar / solution rendering can gracefully degrade on the 53
+     controls whose manifest fields are still TODO markers.
+     ================================================================ */
+  function isTodoString(value) {
+    if (typeof value !== "string") return false;
+    var s = value.trim();
+    if (!s) return true;
+    return /^todo\b/i.test(s) || /^\[todo\b/i.test(s);
+  }
+
+  /**
+   * Return true when `value` is present, non-empty, and not a TODO placeholder.
+   *
+   * - Strings: non-empty and not starting with "TODO".
+   * - Arrays: non-empty and at least one item passes isAuthored.
+   * - Objects: at least one own value passes isAuthored.
+   * - Null / undefined / 0-length: false.
+   */
+  function isAuthored(value) {
+    if (value === null || value === undefined) return false;
+    if (typeof value === "string") return !isTodoString(value);
+    if (Array.isArray(value)) {
+      if (!value.length) return false;
+      for (var i = 0; i < value.length; i++) {
+        if (isAuthored(value[i])) return true;
+      }
+      return false;
+    }
+    if (typeof value === "object") {
+      var keys = Object.keys(value);
+      if (!keys.length) return false;
+      for (var k = 0; k < keys.length; k++) {
+        if (isAuthored(value[keys[k]])) return true;
+      }
+      return false;
+    }
+    return true;
+  }
+
+  /** Return `fallback` when the manifest field is missing or a TODO marker. */
+  function authoredOr(value, fallback) {
+    return isAuthored(value) ? value : fallback;
+  }
+
+  /* ================================================================
+     D2: COLLECTOR EVIDENCE PARSER
+     Transforms a CSV or JSON produced by Collect-Graph / Collect-Purview
+     etc. into an in-memory map the SPA can apply to state.
+     ================================================================ */
+
+  /** Parse a single CSV row respecting double-quoted cells with escaped quotes. */
+  function parseCsvLine(line) {
+    var out = [];
+    var cur = "";
+    var inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line.charAt(i);
+      if (inQ) {
+        if (c === '"' && line.charAt(i + 1) === '"') { cur += '"'; i++; }
+        else if (c === '"') { inQ = false; }
+        else { cur += c; }
+      } else {
+        if (c === '"') inQ = true;
+        else if (c === ',') { out.push(cur); cur = ""; }
+        else cur += c;
+      }
+    }
+    out.push(cur);
+    return out.map(function (x) { return x.trim(); });
+  }
+
+  /**
+   * Parse a collector CSV (schema: control_id,evidence_key,status,raw_value,collected_at)
+   * into a map of { controlId: { status: "yes"|"partial"|"no"|null, evidence: [...] } }.
+   *
+   * - Status is mapped: pass→yes, partial→partial, fail→no. Unknown values are
+   *   skipped (the row still contributes evidence) and emit a console warning.
+   * - When multiple rows map a single control to different statuses, the worst
+   *   severity wins (no > partial > yes) — this matches operator expectations
+   *   that any failing signal should downgrade the aggregate answer.
+   */
+  function parseCollectorCsv(text) {
+    var map = {};
+    if (typeof text !== "string") return map;
+    var body = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    var lines = body.split("\n");
+    // Drop blank and comment lines.
+    var rows = [];
+    for (var i = 0; i < lines.length; i++) {
+      var ln = lines[i];
+      if (!ln || !ln.trim() || /^#/.test(ln.trim())) continue;
+      rows.push(ln);
+    }
+    if (!rows.length) return map;
+
+    var header = parseCsvLine(rows[0]).map(function (h) { return h.toLowerCase(); });
+    var iCtrl = header.indexOf("control_id");
+    var iKey = header.indexOf("evidence_key");
+    var iStatus = header.indexOf("status");
+    var iRaw = header.indexOf("raw_value");
+    var iAt = header.indexOf("collected_at");
+    if (iCtrl < 0) {
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[collector] CSV missing required control_id column");
+      }
+      return map;
+    }
+
+    for (var r = 1; r < rows.length; r++) {
+      var cols = parseCsvLine(rows[r]);
+      var ctrl = cols[iCtrl];
+      if (!ctrl) continue;
+      var statusRaw = iStatus >= 0 ? (cols[iStatus] || "").toLowerCase() : "";
+      var mapped = COLLECTOR_STATUS_MAP[statusRaw] || null;
+      if (statusRaw && !mapped) {
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn("[collector] unknown status '" + statusRaw + "' for " + ctrl + " — row status ignored");
+        }
+      }
+      var entry = map[ctrl] || { status: null, evidence: [] };
+      if (mapped) {
+        var prev = entry.status;
+        if (!prev || (COLLECTOR_STATUS_PRIORITY[mapped] > COLLECTOR_STATUS_PRIORITY[prev])) {
+          entry.status = mapped;
+        }
+      }
+      entry.evidence.push({
+        key: iKey >= 0 ? cols[iKey] || "" : "",
+        raw: iRaw >= 0 ? cols[iRaw] || "" : "",
+        collectedAt: iAt >= 0 ? cols[iAt] || "" : "",
+        status: mapped || statusRaw || "",
+      });
+      map[ctrl] = entry;
+    }
+    return map;
+  }
+
+  /**
+   * Parse a collector JSON payload. Accepts either:
+   *   { "<controlId>": { status, evidence: [...] }, ... }
+   * or a flat array of rows [{ control_id, evidence_key, status, raw_value, collected_at }, ...].
+   */
+  function parseCollectorJson(text) {
+    var parsed;
+    try { parsed = typeof text === "string" ? JSON.parse(text) : text; }
+    catch (_e) { return {}; }
+    if (!parsed || typeof parsed !== "object") return {};
+    if (Array.isArray(parsed)) {
+      // Convert array of rows to CSV-style map.
+      var map = {};
+      parsed.forEach(function (row) {
+        if (!row || typeof row !== "object") return;
+        var ctrl = row.control_id || row.controlId;
+        if (!ctrl) return;
+        var statusRaw = String(row.status || "").toLowerCase();
+        var mapped = COLLECTOR_STATUS_MAP[statusRaw] || null;
+        if (statusRaw && !mapped && typeof console !== "undefined" && console.warn) {
+          console.warn("[collector] unknown status '" + statusRaw + "' for " + ctrl);
+        }
+        var entry = map[ctrl] || { status: null, evidence: [] };
+        if (mapped) {
+          var prev = entry.status;
+          if (!prev || COLLECTOR_STATUS_PRIORITY[mapped] > COLLECTOR_STATUS_PRIORITY[prev]) {
+            entry.status = mapped;
+          }
+        }
+        entry.evidence.push({
+          key: String(row.evidence_key || row.evidenceKey || ""),
+          raw: String(row.raw_value || row.rawValue || ""),
+          collectedAt: String(row.collected_at || row.collectedAt || ""),
+          status: mapped || statusRaw || "",
+        });
+        map[ctrl] = entry;
+      });
+      return map;
+    }
+    // Object-shaped already.
+    var out = {};
+    Object.keys(parsed).forEach(function (ctrl) {
+      var v = parsed[ctrl];
+      if (!v || typeof v !== "object") return;
+      var statusRaw = v.status ? String(v.status).toLowerCase() : "";
+      var mapped = COLLECTOR_STATUS_MAP[statusRaw] || (statusRaw && ["yes", "partial", "no"].indexOf(statusRaw) >= 0 ? statusRaw : null);
+      out[ctrl] = {
+        status: mapped,
+        evidence: Array.isArray(v.evidence) ? v.evidence.map(function (e) {
+          return {
+            key: String((e && (e.key || e.evidence_key)) || ""),
+            raw: String((e && (e.raw || e.raw_value)) || ""),
+            collectedAt: String((e && (e.collectedAt || e.collected_at)) || ""),
+            status: String((e && e.status) || ""),
+          };
+        }) : [],
+      };
+    });
+    return out;
+  }
+
   function findStep(stepId) {
     for (var i = 0; i < STEPS.length; i++) {
       if (STEPS[i].id === stepId) return STEPS[i];
@@ -155,13 +368,25 @@
      ================================================================ */
   function AssessmentApp(container) {
     this.el = container;
-    this.data = null;           // assessment-data.json contents
+    this.data = null;           // assessment-data.json contents (legacy primary)
+    this.manifest = null;       // controls.json — engine-facing manifest (v1.4)
+    this.manifestById = {};     // D1: O(1) lookup of manifest rows by control id
+    this.solutionsLock = null;  // D1: solutions-lock.json contents
+    this.solutionsLockById = {};// D1: O(1) lookup of solution entries by slug
     this.state = null;          // current assessment state
     this.charts = [];           // Chart.js instances to destroy on cleanup
     this.step = "welcome";
     this.message = null;
     this.pendingDeleteId = null;
     this._observers = [];
+    this._drawerCtrlId = null;  // D1: id of control currently shown in drawer
+    this._drawerRoot = null;    // D1: persistent drawer DOM node (survives re-render)
+    this._drawerBackdrop = null;
+    this._drawerPrevFocus = null;
+    this.facilitatorMode = false; // D1: toggled via header button, persisted
+    try {
+      this.facilitatorMode = localStorage.getItem(FACILITATOR_MODE_KEY) === "1";
+    } catch (_e) { /* private mode / disabled storage */ }
     this._debouncedSave = debounce(this.saveToStorage.bind(this), 500);
   }
 
@@ -187,7 +412,63 @@
       var src = scripts[scripts.length - 1].src;
       base = src.substring(0, src.lastIndexOf("/") + 1);
     }
-    return fetch(base + "assessment-data.json")
+
+    // Manifest URL is anchored at site-root (../../assessment/data/...) and
+    // is loaded best-effort — A1 keeps assessment-data.json as the primary
+    // data source. A2/D1 will move SPA rendering onto the manifest.
+    var manifestUrl;
+    try {
+      manifestUrl = new URL("../../assessment/data/controls.json", base).toString();
+    } catch (_e) {
+      manifestUrl = null;
+    }
+
+    var manifestPromise = manifestUrl
+      ? fetch(manifestUrl)
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (m) {
+            if (Array.isArray(m) && m.length) {
+              self.manifest = m;
+              self.manifestById = {};
+              m.forEach(function (row) {
+                if (row && row.id) self.manifestById[row.id] = row;
+              });
+              if (window.console && console.debug) {
+                console.debug("[assessment] manifest loaded: " + m.length + " controls");
+              }
+            }
+          })
+          .catch(function () { /* manifest is optional in A1 */ })
+      : Promise.resolve();
+
+    // D1: solutions-lock.json ships alongside the manifest via the
+    // copy_assessment_data mkdocs hook. Best-effort load — if it fails
+    // the drawer falls back to a "no mappings yet" placeholder.
+    var solutionsLockUrl;
+    try {
+      solutionsLockUrl = new URL("../../assessment/data/solutions-lock.json", base).toString();
+    } catch (_e) {
+      solutionsLockUrl = null;
+    }
+    var solutionsLockPromise = solutionsLockUrl
+      ? fetch(solutionsLockUrl)
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (lock) {
+            if (!lock || typeof lock !== "object") return;
+            self.solutionsLock = lock;
+            self.solutionsLockById = {};
+            var entries = Array.isArray(lock.solutions) ? lock.solutions : [];
+            entries.forEach(function (entry) {
+              if (entry && entry.id) self.solutionsLockById[entry.id] = entry;
+            });
+            if (window.console && console.debug) {
+              console.debug("[assessment] solutions-lock loaded: " + entries.length + " solutions");
+            }
+          })
+          .catch(function () { /* optional */ })
+      : Promise.resolve();
+
+    var dataPromise = fetch(base + "assessment-data.json")
       .then(function (r) {
         if (!r.ok) throw new Error("Failed to load assessment data: " + r.status);
         return r.json();
@@ -200,6 +481,8 @@
           "<p>Could not load assessment data. Run <code>python scripts/extract_assessment_data.py</code> first.</p></div>";
         throw err;
       });
+
+    return Promise.all([manifestPromise, solutionsLockPromise, dataPromise]).then(function () { /* */ });
   };
 
   AssessmentApp.prototype.setMessage = function (type, title, text, details) {
@@ -940,18 +1223,24 @@
       case "phase2":  this.renderPhase2(content); break;
       case "results": this.renderResults(content); break;
       case "export":  this.renderExport(content); break;
+      case "solutions": this.renderSolutionsView(content); break;
     }
     this.el.appendChild(content);
   };
 
   AssessmentApp.prototype.goToStep = function (step) {
-    if (!this.canAccessStep(step) && step !== "welcome") return;
+    // "solutions" is a side-view reachable any time; bypass canAccessStep.
+    if (step !== "solutions" && !this.canAccessStep(step) && step !== "welcome") return;
     this.step = step;
     this.render();
     this.el.scrollIntoView({ behavior: "smooth", block: "start" });
     var heading = this.el.querySelector("[data-step-heading]");
     if (heading) heading.focus();
-    this.announce("Step " + (findStep(step) ? findStep(step).num : "?") + " of " + STEPS.length + ": " + this.getStepLabel(step));
+    if (step === "solutions") {
+      this.announce("Opened solutions catalog");
+    } else {
+      this.announce("Step " + (findStep(step) ? findStep(step).num : "?") + " of " + STEPS.length + ": " + this.getStepLabel(step));
+    }
   };
 
   AssessmentApp.prototype.renderSteps = function () {
@@ -976,6 +1265,16 @@
       }, prefix + s.label);
       nav.appendChild(el);
     });
+    // C3: Solutions catalog side-view — always accessible, not part of the wizard.
+    var solsCurrent = self.step === "solutions";
+    nav.appendChild(h("button", {
+      className: "ag-step-indicator ag-step-solutions" + (solsCurrent ? " active" : ""),
+      type: "button",
+      id: "solutions-nav-btn",
+      title: "Browse the solutions catalog",
+      "aria-current": solsCurrent ? "page" : null,
+      onClick: function () { self.goToStep("solutions"); }
+    }, "🧩 Solutions"));
     return nav;
   };
 
@@ -1084,7 +1383,7 @@
 
     content.appendChild(h("p", { style: "margin-top:1rem;font-weight:600" }, "Governance Level Scoring"));
     content.appendChild(h("p", null,
-      "All 56 controls are assessed at your selected target governance level. " +
+      "All 58 controls are assessed at your selected target governance level. " +
       "Governance levels are cumulative: Recommended includes all Baseline requirements, and Regulated includes all Recommended requirements."));
 
     this.showModal("How Scoring Works", content);
@@ -1257,7 +1556,7 @@
     wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem", "data-step-heading": "true", tabindex: "-1" }, "Assessment Scoping"));
     wrap.appendChild(h("p", { className: "ag-card-subtitle" },
       "Configure the assessment scope for your organization. " +
-      "All 56 controls will be assessed and prioritized based on your profile and target governance level."
+      "All 58 controls will be assessed and prioritized based on your profile and target governance level."
     ));
     wrap.appendChild(h("div", { className: "ag-callout" },
       "Required fields are marked with an asterisk. Browser drafts are saved on this device while you work, but Save to File remains the primary artifact for sharing or archival."
@@ -1521,11 +1820,427 @@
   };
 
   /* ================================================================
+     D1: SPA ENHANCEMENTS — drawer, facilitator, yes-bars, solutions
+     ================================================================ */
+
+  /** Fetch the manifest row for a control id (empty object when missing). */
+  AssessmentApp.prototype.getManifestCtrl = function (id) {
+    if (this.manifestById && this.manifestById[id]) return this.manifestById[id];
+    if (Array.isArray(this.manifest)) {
+      for (var i = 0; i < this.manifest.length; i++) {
+        if (this.manifest[i] && this.manifest[i].id === id) return this.manifest[i];
+      }
+    }
+    return {};
+  };
+
+  /** Drawer notes are stored per-control outside the assessment state. */
+  AssessmentApp.prototype.getDrawerNotes = function (id) {
+    try { return localStorage.getItem(DRAWER_NOTES_PREFIX + id) || ""; }
+    catch (_e) { return ""; }
+  };
+  AssessmentApp.prototype.setDrawerNotes = function (id, text) {
+    try {
+      if (text) localStorage.setItem(DRAWER_NOTES_PREFIX + id, text);
+      else localStorage.removeItem(DRAWER_NOTES_PREFIX + id);
+    } catch (_e) { /* ignore */ }
+  };
+
+  /** Toggle facilitator mode, persist, and re-render. */
+  AssessmentApp.prototype.toggleFacilitatorMode = function () {
+    this.facilitatorMode = !this.facilitatorMode;
+    try { localStorage.setItem(FACILITATOR_MODE_KEY, this.facilitatorMode ? "1" : "0"); }
+    catch (_e) { /* ignore */ }
+    this.render();
+  };
+
+  /**
+   * Render the three sector-calibration yes-bar badges (yes / partial / no)
+   * using manifest `yesBar` / `partialBar` / `noBar` criteria. Hidden
+   * entirely when none of the three fields are authored. Hover text is
+   * provided via `title` so the badges stay compact in the row.
+   */
+  AssessmentApp.prototype.renderYesBarBadges = function (ctrl) {
+    var m = this.getManifestCtrl(ctrl.id);
+    var defs = [
+      { key: "yes",     cls: "yes-bar-badge",     label: "Yes bar",     text: m.yesBar },
+      { key: "partial", cls: "partial-bar-badge", label: "Partial bar", text: m.partialBar },
+      { key: "no",      cls: "no-bar-badge",      label: "No bar",      text: m.noBar },
+    ];
+    var anyAuthored = defs.some(function (d) { return isAuthored(d.text); });
+    if (!anyAuthored && !isAuthored(m.sectorYesBar)) return null;
+
+    var wrap = h("div", { className: "yes-bar-row", "aria-label": "Calibration bars" });
+    defs.forEach(function (d) {
+      if (!isAuthored(d.text)) return;
+      wrap.appendChild(h("span", {
+        className: "yes-bar-badge " + d.cls,
+        title: d.text,
+        "data-bar": d.key,
+      }, d.label));
+    });
+
+    // Sector-specific yes bar (hover preview only when authored for the selected sector).
+    var sector = this.state && this.state.selectedSector;
+    if (sector && m.sectorYesBar && isAuthored(m.sectorYesBar[sector])) {
+      wrap.appendChild(h("span", {
+        className: "yes-bar-badge sector-bar-badge",
+        title: m.sectorYesBar[sector],
+        "data-bar": "sector",
+      }, "Sector: " + sector));
+    }
+
+    // Optional partial/no one-liners below the badges (task spec D1.c).
+    var extras = h("div", { className: "calibration-bar-lines" });
+    if (isAuthored(m.partialBar)) {
+      extras.appendChild(h("div", { className: "calibration-bar-line partial" },
+        [h("strong", null, "Partial: "), document.createTextNode(m.partialBar)]));
+    }
+    if (isAuthored(m.noBar)) {
+      extras.appendChild(h("div", { className: "calibration-bar-line no" },
+        [h("strong", null, "No: "), document.createTextNode(m.noBar)]));
+    }
+    if (extras.childNodes.length) wrap.appendChild(extras);
+
+    return wrap;
+  };
+
+  /**
+   * Render the inline facilitator panel (ask + followUp) shown when
+   * facilitator mode is on. Returns null when the control has no
+   * authored facilitatorNotes.ask (spec: do not render for TODOs).
+   */
+  AssessmentApp.prototype.renderFacilitatorPanel = function (ctrl) {
+    var self = this;
+    var m = this.getManifestCtrl(ctrl.id);
+    var notes = m && m.facilitatorNotes;
+    if (!notes || !isAuthored(notes.ask)) return null;
+
+    var panel = h("div", { className: "facilitator-panel", role: "group",
+      "aria-label": "Facilitator prompts for " + ctrl.id });
+    panel.appendChild(h("div", { className: "facilitator-panel-label" }, "🎤 Facilitator prompt"));
+    panel.appendChild(h("p", { className: "facilitator-ask" }, notes.ask));
+    if (isAuthored(notes.followUp)) {
+      panel.appendChild(h("p", { className: "facilitator-followup" },
+        [h("strong", null, "Follow up: "), document.createTextNode(notes.followUp)]));
+    }
+    if (typeof notes.timeBudgetMinutes === "number" && notes.timeBudgetMinutes > 0) {
+      panel.appendChild(h("p", { className: "facilitator-time" },
+        "Time budget: " + notes.timeBudgetMinutes + " min"));
+    }
+    panel.appendChild(h("button", {
+      className: "ag-btn ag-btn-sm ag-btn-secondary facilitator-next",
+      type: "button",
+      onClick: function () { self.focusNextControlCard(ctrl.id); },
+    }, "Next control →"));
+    return panel;
+  };
+
+  /** Move focus to the next control card (facilitator-mode workshop flow). */
+  AssessmentApp.prototype.focusNextControlCard = function (currentId) {
+    var cards = this.el.querySelectorAll(".ag-control-card");
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].getAttribute("data-control-id") === currentId) {
+        var next = cards[i + 1];
+        if (next) {
+          next.scrollIntoView({ behavior: "smooth", block: "start" });
+          var btn = next.querySelector(".ag-answer-btn");
+          if (btn && btn.focus) btn.focus();
+        }
+        return;
+      }
+    }
+  };
+
+  /**
+   * Render solution recommendation cards for the control using the
+   * solutions-lock metadata. Returns null when no solutions are mapped.
+   */
+  AssessmentApp.prototype.renderSolutionCards = function (ctrl) {
+    var m = this.getManifestCtrl(ctrl.id);
+    var solutions = Array.isArray(m.solutions) ? m.solutions : [];
+    var wrap = h("div", { className: "solution-card-list" });
+    if (!solutions.length) {
+      wrap.appendChild(h("p", { className: "solution-empty" },
+        "No solution mappings yet — manual verification required."));
+      return wrap;
+    }
+    var lock = this.solutionsLockById || {};
+    solutions.forEach(function (s) {
+      if (!s) return;
+      var id = typeof s === "string" ? s : s.id;
+      var tier = typeof s === "object" ? s.tier : null;
+      var role = typeof s === "object" ? s.role : null;
+      var entry = lock[id] || null;
+      var name = entry && entry.name ? entry.name : id;
+      var url = entry && entry.url ? entry.url : (SOLUTIONS_BASE_URL + id);
+      var card = h("a", {
+        className: "solution-card",
+        href: url,
+        target: "_blank",
+        rel: "noopener noreferrer",
+        "data-solution-id": id,
+      });
+      card.appendChild(h("span", { className: "solution-card-name" }, name));
+      var meta = h("span", { className: "solution-card-meta" });
+      if (tier) {
+        meta.appendChild(h("span", { className: "solution-card-tier tier-" + tier },
+          "Tier " + tier));
+      }
+      if (role) {
+        meta.appendChild(h("span", { className: "solution-card-role role-" + role }, role));
+      }
+      if (entry && entry.version) {
+        meta.appendChild(h("span", { className: "solution-card-version" }, "v" + entry.version));
+      }
+      if (meta.childNodes.length) card.appendChild(meta);
+      if (entry && entry.summary) {
+        card.appendChild(h("span", { className: "solution-card-summary" }, entry.summary));
+      }
+      wrap.appendChild(card);
+    });
+    return wrap;
+  };
+
+  /**
+   * Render the evidence drawer body for a control. Graceful-degrades on
+   * TODO fields: missing manual_question/evidence/facilitator fields are
+   * replaced with "content pending" placeholders rather than "undefined".
+   */
+  AssessmentApp.prototype.renderDrawer = function (ctrl) {
+    var self = this;
+    var m = this.getManifestCtrl(ctrl.id);
+    var wrap = h("div", { className: "control-drawer-inner" });
+
+    // Header block
+    var header = h("div", { className: "control-drawer-header" });
+    header.appendChild(h("div", { className: "control-drawer-id" }, ctrl.id));
+    header.appendChild(h("h3", { className: "control-drawer-title" }, ctrl.title));
+    var meta = h("div", { className: "control-drawer-meta" });
+    meta.appendChild(h("span", { className: "control-drawer-pillar" },
+      "Pillar " + ctrl.pillar));
+    if (ctrl.targetLevel) {
+      meta.appendChild(h("span", {
+        className: "control-drawer-tier tier-" + ctrl.targetLevel,
+      }, ctrl.targetLevel));
+    }
+    if (Array.isArray(ctrl.surfaces) && ctrl.surfaces.length) {
+      ctrl.surfaces.slice(0, 4).forEach(function (s) {
+        meta.appendChild(h("span", { className: "control-drawer-surface" }, s));
+      });
+    }
+    header.appendChild(meta);
+    wrap.appendChild(header);
+
+    // Question / objective
+    var questionSec = h("section", { className: "control-drawer-section" });
+    questionSec.appendChild(h("h4", null, "Question"));
+    var question = (m && isAuthored(m.manual_question))
+      ? m.manual_question
+      : (ctrl.title + " (detailed question pending)");
+    questionSec.appendChild(h("p", null, question));
+    wrap.appendChild(questionSec);
+
+    // Verify-in chips
+    var verifyIn = (m && Array.isArray(m.verifyIn)) ? m.verifyIn : [];
+    var verifySec = h("section", { className: "control-drawer-section" });
+    verifySec.appendChild(h("h4", null, "Verify in"));
+    if (verifyIn.length) {
+      var chips = h("div", { className: "verify-in-chips" });
+      verifyIn.forEach(function (entry) {
+        if (!entry) return;
+        var url = typeof entry === "string" ? entry : entry.url;
+        var label = typeof entry === "string"
+          ? entry
+          : (entry.portal ? (entry.portal + (entry.path ? " — " + entry.path : ""))
+                          : (entry.label || entry.name || entry.url || ""));
+        if (!label) return;
+        if (url) {
+          chips.appendChild(h("a", {
+            className: "verify-in-chip",
+            href: url,
+            target: "_blank",
+            rel: "noopener noreferrer",
+          }, label));
+        } else {
+          chips.appendChild(h("span", { className: "verify-in-chip" }, label));
+        }
+      });
+      verifySec.appendChild(chips);
+    } else {
+      verifySec.appendChild(h("p", { className: "control-drawer-pending" },
+        "Portal verification paths being authored."));
+    }
+    wrap.appendChild(verifySec);
+
+    // Evidence expected
+    var evSec = h("section", { className: "control-drawer-section" });
+    evSec.appendChild(h("h4", null, "Evidence expected"));
+    var evidence = (m && Array.isArray(m.evidenceExpected)) ? m.evidenceExpected : [];
+    var authoredEvidence = evidence.filter(function (e) { return isAuthored(e); });
+    if (authoredEvidence.length) {
+      var ul = h("ul", { className: "evidence-list" });
+      authoredEvidence.forEach(function (e) {
+        ul.appendChild(h("li", null, String(e)));
+      });
+      evSec.appendChild(ul);
+    } else {
+      evSec.appendChild(h("p", { className: "control-drawer-pending" },
+        "Evidence list being authored — contact your governance lead for guidance."));
+    }
+    wrap.appendChild(evSec);
+
+    // Facilitator (only when authored — mirrors D1.a spec)
+    if (m && m.facilitatorNotes && isAuthored(m.facilitatorNotes.ask)) {
+      var facSec = h("section", { className: "control-drawer-section" });
+      facSec.appendChild(h("h4", null, "Facilitator prompt"));
+      facSec.appendChild(h("p", { className: "facilitator-ask" }, m.facilitatorNotes.ask));
+      if (isAuthored(m.facilitatorNotes.followUp)) {
+        facSec.appendChild(h("p", { className: "facilitator-followup" },
+          [h("strong", null, "Follow up: "),
+           document.createTextNode(m.facilitatorNotes.followUp)]));
+      }
+      wrap.appendChild(facSec);
+    }
+
+    // D2: Collector evidence (if any rows imported for this control).
+    var ce = this.getCollectorEvidenceFor(ctrl.id);
+    if (ce && ((ce.evidence && ce.evidence.length) || ce.status)) {
+      var ceSec = h("section", { className: "control-drawer-section collector-evidence-section" });
+      ceSec.appendChild(h("h4", null, "Collector evidence"));
+      var metaParts = [];
+      if (ce.runId) metaParts.push("Run: " + ce.runId);
+      if (ce.importedAt) metaParts.push("imported " + fmtDate(ce.importedAt));
+      if (ce.status) metaParts.push("aggregate: " + ce.status);
+      if (metaParts.length) {
+        ceSec.appendChild(h("p", { className: "collector-evidence-meta" }, metaParts.join(" · ")));
+      }
+      var ceList = h("ul", { className: "collector-evidence-list" });
+      (ce.evidence || []).forEach(function (ev) {
+        var li = h("li", { className: "collector-evidence-item" });
+        var keyTxt = ev.key || "(unkeyed)";
+        li.appendChild(h("strong", { className: "collector-evidence-key" }, keyTxt));
+        if (ev.status) {
+          li.appendChild(h("span", { className: "collector-evidence-status status-" + ev.status },
+            " " + ev.status));
+        }
+        if (ev.raw) {
+          li.appendChild(document.createTextNode(" — "));
+          li.appendChild(h("span", { className: "collector-evidence-raw" }, ev.raw));
+        }
+        if (ev.collectedAt) {
+          li.appendChild(h("span", { className: "collector-evidence-at" }, " · " + ev.collectedAt));
+        }
+        ceList.appendChild(li);
+      });
+      ceSec.appendChild(ceList);
+      wrap.appendChild(ceSec);
+    }
+
+    // Recommended solutions (D1.d)
+    var solSec = h("section", { className: "control-drawer-section" });
+    solSec.appendChild(h("h4", null, "Recommended solutions"));
+    solSec.appendChild(this.renderSolutionCards(ctrl));
+    wrap.appendChild(solSec);
+
+    // Personal notes textarea (persists to localStorage).
+    var notesSec = h("section", { className: "control-drawer-section" });
+    notesSec.appendChild(h("h4", null, "Notes"));
+    var notesArea = h("textarea", {
+      className: "ag-textarea control-drawer-notes",
+      id: "control-drawer-notes-" + ctrl.id,
+      placeholder: "Your private notes for this control (stored on this device)…",
+      "aria-label": "Drawer notes for control " + ctrl.id,
+      rows: "4",
+    });
+    notesArea.value = this.getDrawerNotes(ctrl.id);
+    var persistNotes = debounce(function () {
+      self.setDrawerNotes(ctrl.id, notesArea.value);
+    }, 400);
+    notesArea.addEventListener("input", persistNotes);
+    notesSec.appendChild(notesArea);
+    wrap.appendChild(notesSec);
+
+    return wrap;
+  };
+
+  /** Ensure a drawer root + backdrop exist at the app root. */
+  AssessmentApp.prototype._ensureDrawerRoot = function () {
+    if (this._drawerRoot && this._drawerRoot.parentNode) return;
+    var backdrop = h("div", {
+      className: "control-drawer-backdrop",
+      "aria-hidden": "true",
+    });
+    var drawer = h("aside", {
+      className: "control-drawer",
+      role: "dialog",
+      "aria-modal": "true",
+      "aria-label": "Control evidence drawer",
+      "aria-hidden": "true",
+      tabindex: "-1",
+    });
+    var self = this;
+    backdrop.addEventListener("click", function () { self.closeDrawer(); });
+    drawer.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.preventDefault(); self.closeDrawer(); }
+    });
+    this.el.appendChild(backdrop);
+    this.el.appendChild(drawer);
+    this._drawerRoot = drawer;
+    this._drawerBackdrop = backdrop;
+  };
+
+  /** Open the evidence drawer for a control. */
+  AssessmentApp.prototype.openDrawer = function (ctrl) {
+    if (!ctrl) return;
+    this._ensureDrawerRoot();
+    var drawer = this._drawerRoot;
+    drawer.innerHTML = "";
+
+    var header = h("div", { className: "control-drawer-bar" });
+    var closeBtn = h("button", {
+      className: "control-drawer-close",
+      type: "button",
+      "aria-label": "Close evidence drawer",
+    }, "×");
+    var self = this;
+    closeBtn.addEventListener("click", function () { self.closeDrawer(); });
+    header.appendChild(closeBtn);
+    drawer.appendChild(header);
+    drawer.appendChild(this.renderDrawer(ctrl));
+
+    drawer.classList.add("open");
+    drawer.setAttribute("aria-hidden", "false");
+    this._drawerBackdrop.classList.add("open");
+    this._drawerBackdrop.setAttribute("aria-hidden", "false");
+    this._drawerCtrlId = ctrl.id;
+    this._drawerPrevFocus = document.activeElement;
+    closeBtn.focus();
+  };
+
+  AssessmentApp.prototype.closeDrawer = function () {
+    if (!this._drawerRoot) return;
+    this._drawerRoot.classList.remove("open");
+    this._drawerRoot.setAttribute("aria-hidden", "true");
+    if (this._drawerBackdrop) {
+      this._drawerBackdrop.classList.remove("open");
+      this._drawerBackdrop.setAttribute("aria-hidden", "true");
+    }
+    this._drawerCtrlId = null;
+    if (this._drawerPrevFocus && typeof this._drawerPrevFocus.focus === "function") {
+      this._drawerPrevFocus.focus();
+    }
+    this._drawerPrevFocus = null;
+  };
+
+  /* ================================================================
      STEP 3: PHASE 1 — CONTROL-LEVEL ASSESSMENT
      ================================================================ */
   AssessmentApp.prototype.renderPhase1 = function (parent) {
     var self = this;
-    var wrap = h("div");
+    var wrap = h("div", {
+      className: "phase1-wrap" + (this.facilitatorMode ? " facilitator-mode" : ""),
+    });
     var completion = this.getAssessmentCompletion();
     var answered = completion.answered;
     var total = completion.total;
@@ -1577,6 +2292,15 @@
       type: "button",
       onClick: function () { self.showScoringModal(); }
     }, "\u2139 How Scoring Works"));
+    topBtns.appendChild(h("button", {
+      id: "facilitator-toggle",
+      className: "ag-btn ag-btn-sm " + (self.facilitatorMode ? "ag-btn-primary" : "ag-btn-secondary"),
+      type: "button",
+      "aria-pressed": self.facilitatorMode ? "true" : "false",
+      onClick: function () { self.toggleFacilitatorMode(); },
+    }, "🎤 Facilitator Mode: " + (self.facilitatorMode ? "On" : "Off")));
+    // D2: Import collector evidence (CSV/JSON) — button + drop zone live inline.
+    topBtns.appendChild(self.renderCollectorImportControls());
     wrap.appendChild(topBtns);
 
     if (!completion.complete) {
@@ -1690,10 +2414,11 @@
   AssessmentApp.prototype.renderControlCard = function (ctrl) {
     var self = this;
     var resp = this.state.responses[ctrl.id] || {};
-    var cls = "ag-control-card";
+    var cls = "ag-control-card control-row";
     if (resp.answer === "yes") cls += " answered";
     else if (resp.answer === "partial") cls += " partial";
     else if (resp.answer === "no") cls += " gap";
+    if (this.facilitatorMode) cls += " facilitator-active";
 
     var statusMeta = this.getAnswerMeta(resp.answer);
     var card = h("div", { className: cls, "data-control-id": ctrl.id, tabindex: "-1" });
@@ -1717,17 +2442,30 @@
       var pCls = "ag-badge ag-badge-" + ctrl.adoptionPhase.priority.toLowerCase();
       badges.appendChild(h("span", { className: pCls }, "Phase " + ctrl.adoptionPhase.phase + " " + ctrl.adoptionPhase.priority));
     }
-    if (ctrl.solutions.length > 0) {
+    if (ctrl.solutions && ctrl.solutions.length > 0) {
       badges.appendChild(h("span", { className: "ag-badge ag-badge-solution" }, "Automation"));
     }
     left.appendChild(badges);
     header.appendChild(left);
+
+    // D1.a: "View evidence" button opens the slide-in drawer.
+    var drawerBtn = h("button", {
+      className: "control-drawer-trigger",
+      type: "button",
+      "aria-label": "View evidence, verification paths, and solutions for " + ctrl.id,
+      onClick: function (e) { e.stopPropagation(); self.openDrawer(ctrl); },
+    }, "View evidence ›");
+    header.appendChild(drawerBtn);
     card.appendChild(header);
 
     var displayText = ctrl.questionText || ctrl.objective;
-    if (displayText) {
-      card.appendChild(h("div", { className: "ag-control-objective" }, displayText));
+    var m = this.getManifestCtrl(ctrl.id);
+    if (m && isAuthored(m.manual_question)) {
+      displayText = m.manual_question;
+    } else if (!displayText) {
+      displayText = ctrl.title + " (detailed question pending)";
     }
+    card.appendChild(h("div", { className: "ag-control-objective" }, displayText));
 
     var answerGroup = h("div", { className: "ag-answer-group", role: "group", "aria-label": "Implementation status for " + ctrl.id });
     ANSWERS.forEach(function (a) {
@@ -1756,6 +2494,16 @@
       answerGroup.appendChild(btn);
     });
     card.appendChild(answerGroup);
+
+    // D1.c: sector-calibration yes-bar badges (hidden on all-TODO controls).
+    var yesBars = this.renderYesBarBadges(ctrl);
+    if (yesBars) card.appendChild(yesBars);
+
+    // D1.b: facilitator prompts (only when mode is on AND notes authored).
+    if (this.facilitatorMode) {
+      var facPanel = this.renderFacilitatorPanel(ctrl);
+      if (facPanel) card.appendChild(facPanel);
+    }
 
     var notesVisible = !!resp.notes;
     var notesBtn = h("button", {
@@ -2706,15 +3454,22 @@
       "Download your assessment results in various formats."
     ));
     wrap.appendChild(h("div", { className: "ag-callout" },
-      "Use Full Assessment (JSON) to save a shareable snapshot for archival, re-import, or trend comparison. " +
+      "Export a portal-ready governance envelope (.json) for upload to GRC, Purview, or Sentinel portals — " +
+      "this bundles answers, collector evidence, solutions-lock version, and summary scores. " +
+      "Use Load saved envelope to restore a prior export on another device. " +
       "Role-specific delegated sections are exported separately during Drill-Down."
     ));
 
     var grid = h("div", { className: "ag-export-grid" });
 
-    // JSON export
-    grid.appendChild(this.exportCard("JSON", "Full Assessment",
-      "Complete state file for re-import and trend comparison",
+    // E: Portal envelope (primary answer-export).
+    grid.appendChild(this.exportCard("ENV", "Export envelope (.json)",
+      "Portal-ready envelope: answers, collector evidence, summary, and solutions-lock version",
+      function () { self.exportEnvelope(); }));
+
+    // Legacy full-state JSON (kept for trend-compare backwards compatibility).
+    grid.appendChild(this.exportCard("JSON", "Full Assessment (legacy)",
+      "Raw state snapshot used by the trend-compare tool below",
       function () { self.exportJSON(); }));
 
     // Excel export
@@ -2736,6 +3491,19 @@
       }));
 
     wrap.appendChild(grid);
+
+    // E: Load saved envelope — reverse path for envelope round-trip.
+    wrap.appendChild(h("h3", { style: "font-size:1rem;margin-top:2rem" }, "Load saved envelope"));
+    wrap.appendChild(h("p", { className: "ag-card-subtitle" },
+      "Restore a previously-exported envelope JSON to resume assessor work or compare to a baseline."
+    ));
+    var loadBtn = h("button", {
+      className: "ag-btn ag-btn-secondary",
+      type: "button",
+      id: "envelope-import-btn",
+      onClick: function () { self.importEnvelopeFromFile(); },
+    }, "Load saved envelope");
+    wrap.appendChild(loadBtn);
 
     // Trend comparison
     wrap.appendChild(h("h3", { style: "font-size:1rem;margin-top:2rem" }, "Trend Comparison"));
@@ -3101,7 +3869,766 @@
   };
 
   /* ================================================================
-     EXPOSE GLOBALLY
+     D2: COLLECTOR EVIDENCE — apply, clear, persist
      ================================================================ */
+  AssessmentApp.prototype.applyCollectorEvidence = function (map, runId) {
+    if (!this.state) return;
+    this.state.collectorEvidence = this.state.collectorEvidence || {};
+    this.state.collectorPriorAnswers = this.state.collectorPriorAnswers || {};
+    if (runId) this.state.collectorRunId = runId;
+    var importedAt = new Date().toISOString();
+    var self = this;
+    var prefillCount = 0;
+    var evidenceCount = 0;
+    Object.keys(map || {}).forEach(function (ctrlId) {
+      var entry = map[ctrlId];
+      if (!entry) return;
+      self.state.collectorEvidence[ctrlId] = {
+        status: entry.status || null,
+        evidence: Array.isArray(entry.evidence) ? entry.evidence : [],
+        runId: runId || self.state.collectorRunId || "",
+        importedAt: importedAt,
+      };
+      evidenceCount += self.state.collectorEvidence[ctrlId].evidence.length;
+      if (entry.status) {
+        var resp = self.state.responses[ctrlId] || {};
+        if (!Object.prototype.hasOwnProperty.call(self.state.collectorPriorAnswers, ctrlId)) {
+          self.state.collectorPriorAnswers[ctrlId] = resp.answer || null;
+        }
+        resp.answer = entry.status;
+        self.state.responses[ctrlId] = resp;
+        prefillCount++;
+      }
+    });
+    try {
+      if (runId) {
+        localStorage.setItem(COLLECTOR_EVIDENCE_KEY_PREFIX + runId, JSON.stringify({
+          runId: runId,
+          importedAt: importedAt,
+          evidence: this.state.collectorEvidence,
+          priorAnswers: this.state.collectorPriorAnswers,
+        }));
+      }
+    } catch (_e) { /* quota / private mode */ }
+    this.saveToStorage();
+    return { prefillCount: prefillCount, evidenceCount: evidenceCount };
+  };
+
+  AssessmentApp.prototype.clearCollectorEvidence = function () {
+    if (!this.state) return;
+    var prior = this.state.collectorPriorAnswers || {};
+    var self = this;
+    Object.keys(prior).forEach(function (id) {
+      var prev = prior[id];
+      var resp = self.state.responses[id];
+      if (!resp) return;
+      if (prev) {
+        resp.answer = prev;
+      } else {
+        delete resp.answer;
+      }
+      if (!resp.answer && !resp.notes) {
+        delete self.state.responses[id];
+      }
+    });
+    var runId = this.state.collectorRunId;
+    if (runId) {
+      try { localStorage.removeItem(COLLECTOR_EVIDENCE_KEY_PREFIX + runId); } catch (_e) { /* */ }
+    }
+    delete this.state.collectorEvidence;
+    delete this.state.collectorPriorAnswers;
+    delete this.state.collectorRunId;
+    this.saveToStorage();
+  };
+
+  AssessmentApp.prototype.hasCollectorEvidence = function () {
+    return !!(this.state && this.state.collectorEvidence && Object.keys(this.state.collectorEvidence).length);
+  };
+
+  AssessmentApp.prototype.getCollectorEvidenceFor = function (ctrlId) {
+    if (!this.state || !this.state.collectorEvidence) return null;
+    return this.state.collectorEvidence[ctrlId] || null;
+  };
+
+  /** Wire up the import UI: file input + drag-drop zone. Returns the root element. */
+  AssessmentApp.prototype.renderCollectorImportControls = function () {
+    var self = this;
+    var wrap = h("div", { className: "collector-import-controls" });
+
+    var fileInput = h("input", {
+      type: "file",
+      id: "collector-import-input",
+      accept: ".csv,.json,text/csv,application/json",
+      style: "display:none",
+      "aria-hidden": "true",
+    });
+    wrap.appendChild(fileInput);
+
+    var hasEvidence = self.hasCollectorEvidence();
+    var importBtn = h("button", {
+      className: "ag-btn ag-btn-sm ag-btn-secondary collector-import-btn",
+      type: "button",
+      id: "collector-import-btn",
+      "aria-label": "Import collector evidence CSV or JSON",
+      onClick: function () { fileInput.click(); },
+    }, "📥 Import evidence");
+    wrap.appendChild(importBtn);
+
+    if (hasEvidence) {
+      var summary = this.state.collectorRunId ? (" (" + this.state.collectorRunId + ")") : "";
+      wrap.appendChild(h("span", { className: "collector-import-status" },
+        "Collector evidence loaded" + summary));
+      wrap.appendChild(h("button", {
+        className: "ag-btn ag-btn-sm ag-btn-secondary collector-clear-btn",
+        type: "button",
+        id: "collector-clear-btn",
+        onClick: function () { self._confirmClearCollectorEvidence(); },
+      }, "Clear collector evidence"));
+    }
+
+    fileInput.addEventListener("change", function (e) {
+      var files = e.target && e.target.files;
+      if (!files || !files.length) return;
+      self._handleCollectorFile(files[0]);
+      // Reset so re-selecting the same file still triggers change.
+      fileInput.value = "";
+    });
+
+    // Drop-zone: entire wrap accepts drag-drop for convenience.
+    wrap.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      wrap.classList.add("drag-over");
+    });
+    wrap.addEventListener("dragleave", function () { wrap.classList.remove("drag-over"); });
+    wrap.addEventListener("drop", function (e) {
+      e.preventDefault();
+      wrap.classList.remove("drag-over");
+      var files = e.dataTransfer && e.dataTransfer.files;
+      if (!files || !files.length) return;
+      self._handleCollectorFile(files[0]);
+    });
+
+    return wrap;
+  };
+
+  AssessmentApp.prototype._confirmClearCollectorEvidence = function () {
+    if (typeof window !== "undefined" && typeof window.confirm === "function") {
+      if (!window.confirm("Clear all collector evidence and revert any auto-prefilled answers? Your manual answers will be preserved.")) {
+        return;
+      }
+    }
+    this.clearCollectorEvidence();
+    this.setMessage(
+      "success",
+      "Collector evidence cleared",
+      "Auto-prefilled answers have been reverted. Your manual answers were preserved."
+    );
+    this.render();
+  };
+
+  AssessmentApp.prototype._handleCollectorFile = function (file) {
+    if (!file) return;
+    var self = this;
+    var name = file.name || "collector-import";
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      var text = ev.target && ev.target.result ? String(ev.target.result) : "";
+      var map;
+      var looksJson = /\.json$/i.test(name) || /^\s*[{\[]/.test(text);
+      try {
+        map = looksJson ? parseCollectorJson(text) : parseCollectorCsv(text);
+      } catch (err) {
+        self.setMessage("error", "Could not parse collector file",
+          "The file could not be parsed. Confirm it is a collector CSV or JSON export.");
+        return;
+      }
+      var rowCount = Object.keys(map || {}).length;
+      if (!rowCount) {
+        self.setMessage("warning", "No evidence rows found",
+          "The file parsed, but contained no usable rows. Confirm the CSV has a control_id column.");
+        return;
+      }
+      var result = self.applyCollectorEvidence(map, name) || { prefillCount: 0, evidenceCount: 0 };
+      self.setMessage("success", "Collector evidence imported",
+        "Loaded " + rowCount + " control" + (rowCount === 1 ? "" : "s") +
+        " — " + result.prefillCount + " answer" + (result.prefillCount === 1 ? "" : "s") +
+        " auto-prefilled from " + result.evidenceCount + " evidence row" + (result.evidenceCount === 1 ? "" : "s") + ".");
+      self.render();
+    };
+    reader.onerror = function () {
+      self.setMessage("error", "File read error",
+        "Could not read " + name + ". Try again or use a different file.");
+    };
+    reader.readAsText(file);
+  };
+
+  /* ================================================================
+     C3: SOLUTIONS CATALOG VIEW
+     Top-level view listing all 19 solutions from solutions-lock.json,
+     with filters (tier/domain/search), reverse-lookup from manifest
+     showing which controls reference each solution, and a click-to-
+     detail panel.
+     ================================================================ */
+
+  /** Return all manifest rows that reference `solId` (string) in their .solutions array. */
+  AssessmentApp.prototype.getControlsForSolution = function (solId) {
+    if (!this.manifest || !Array.isArray(this.manifest)) return [];
+    return this.manifest.filter(function (m) {
+      if (!m || !Array.isArray(m.solutions)) return false;
+      return m.solutions.some(function (s) {
+        if (typeof s === "string") return s === solId;
+        return s && s.id === solId;
+      });
+    });
+  };
+
+  AssessmentApp.prototype._getSolutionsFilter = function () {
+    return this._solutionsFilter || (this._solutionsFilter = {
+      tier: "all",    // "all" | 1 | 2 | 3
+      domain: "all",  // "all" | domain string
+      search: "",
+      selectedId: null,
+    });
+  };
+
+  AssessmentApp.prototype.renderSolutionsView = function (parent) {
+    var self = this;
+    var wrap = h("div", { className: "solutions-view" });
+    wrap.appendChild(h("h2", {
+      style: "font-size:1.3rem;margin-bottom:0.3rem",
+      "data-step-heading": "true",
+      tabindex: "-1",
+    }, "🧩 Solutions Catalog"));
+
+    var lock = this.solutionsLock;
+    var solutions = (lock && Array.isArray(lock.solutions)) ? lock.solutions : [];
+    if (!solutions.length) {
+      wrap.appendChild(h("p", { className: "solution-empty" },
+        "Solutions catalog not yet loaded. Run mkdocs build to refresh assessment data."));
+      parent.appendChild(wrap);
+      return;
+    }
+
+    wrap.appendChild(h("p", { className: "ag-card-subtitle" },
+      "Catalog of " + solutions.length + " solutions from the FSI-CopilotGov-Solutions sister repo" +
+      (lock && lock.source && lock.source.ref ? " (" + lock.source.ref + ")" : "") +
+      ". Click a card to see which controls it covers."));
+
+    // ----- filter bar -----
+    var filter = this._getSolutionsFilter();
+    var filterBar = h("div", { className: "solutions-filter-bar" });
+    // Tier chips
+    var tierGroup = h("div", { className: "solutions-filter-group", role: "group", "aria-label": "Filter by tier" });
+    tierGroup.appendChild(h("span", { className: "solutions-filter-label" }, "Tier:"));
+    [["all", "All"], [1, "Tier 1"], [2, "Tier 2"], [3, "Tier 3"]].forEach(function (pair) {
+      var val = pair[0];
+      var active = filter.tier === val;
+      tierGroup.appendChild(h("button", {
+        className: "solutions-filter-chip" + (active ? " active" : ""),
+        type: "button",
+        "aria-pressed": active ? "true" : "false",
+        "data-filter-tier": String(val),
+        onClick: function () {
+          filter.tier = val;
+          filter.selectedId = null;
+          self.render();
+        },
+      }, pair[1]));
+    });
+    filterBar.appendChild(tierGroup);
+
+    // Domain chips — built from unique domain values in the catalog.
+    var domains = {};
+    solutions.forEach(function (s) { if (s && s.domain) domains[s.domain] = true; });
+    var domainList = Object.keys(domains).sort();
+    if (domainList.length) {
+      var domGroup = h("div", { className: "solutions-filter-group", role: "group", "aria-label": "Filter by domain" });
+      domGroup.appendChild(h("span", { className: "solutions-filter-label" }, "Domain:"));
+      [["all", "All"]].concat(domainList.map(function (d) { return [d, d]; })).forEach(function (pair) {
+        var val = pair[0];
+        var active = filter.domain === val;
+        domGroup.appendChild(h("button", {
+          className: "solutions-filter-chip" + (active ? " active" : ""),
+          type: "button",
+          "aria-pressed": active ? "true" : "false",
+          "data-filter-domain": String(val),
+          onClick: function () {
+            filter.domain = val;
+            filter.selectedId = null;
+            self.render();
+          },
+        }, pair[1]));
+      });
+      filterBar.appendChild(domGroup);
+    }
+
+    // Search
+    var searchWrap = h("div", { className: "solutions-filter-group solutions-filter-search" });
+    searchWrap.appendChild(h("label", { htmlFor: "solutions-search-input", className: "solutions-filter-label" }, "Search:"));
+    var searchInput = h("input", {
+      type: "search",
+      id: "solutions-search-input",
+      className: "ag-input",
+      placeholder: "name, summary, or slug",
+      value: filter.search,
+    });
+    var runSearch = debounce(function () {
+      filter.search = searchInput.value;
+      filter.selectedId = null;
+      self.render();
+    }, 250);
+    searchInput.addEventListener("input", runSearch);
+    searchWrap.appendChild(searchInput);
+    filterBar.appendChild(searchWrap);
+
+    wrap.appendChild(filterBar);
+
+    // ----- apply filter -----
+    var needle = (filter.search || "").toLowerCase();
+    var filtered = solutions.filter(function (s) {
+      if (!s) return false;
+      if (filter.tier !== "all" && s.tier !== filter.tier) return false;
+      if (filter.domain !== "all" && s.domain !== filter.domain) return false;
+      if (needle) {
+        var hay = [s.id, s.name, s.summary, s.domain].filter(Boolean).join(" ").toLowerCase();
+        if (hay.indexOf(needle) < 0) return false;
+      }
+      return true;
+    });
+
+    wrap.appendChild(h("p", { className: "solutions-count", "aria-live": "polite" },
+      "Showing " + filtered.length + " of " + solutions.length + " solutions"));
+
+    // ----- grid of cards -----
+    var grid = h("div", { className: "solutions-catalog-grid" });
+    filtered.forEach(function (s) {
+      grid.appendChild(self._renderSolutionCatalogCard(s, filter.selectedId === s.id));
+    });
+    wrap.appendChild(grid);
+
+    // ----- detail panel -----
+    if (filter.selectedId) {
+      var selected = solutions.filter(function (x) { return x && x.id === filter.selectedId; })[0];
+      if (selected) {
+        wrap.appendChild(this._renderSolutionDetailPanel(selected));
+      }
+    }
+
+    var btns = h("div", { className: "ag-btn-group", style: "margin-top:1.5rem" });
+    btns.appendChild(h("button", {
+      className: "ag-btn ag-btn-secondary",
+      type: "button",
+      onClick: function () {
+        // Return to phase1 if accessible, otherwise welcome.
+        self.goToStep(self.canAccessStep("phase1") ? "phase1" : "welcome");
+      },
+    }, "Back to assessment"));
+    wrap.appendChild(btns);
+
+    parent.appendChild(wrap);
+  };
+
+  AssessmentApp.prototype._renderSolutionCatalogCard = function (s, selected) {
+    var self = this;
+    var coverage = this.getControlsForSolution(s.id).length;
+    var card = h("button", {
+      className: "solution-catalog-card" + (selected ? " selected" : ""),
+      type: "button",
+      "data-solution-id": s.id,
+      "aria-pressed": selected ? "true" : "false",
+      onClick: function () {
+        var filter = self._getSolutionsFilter();
+        filter.selectedId = (filter.selectedId === s.id) ? null : s.id;
+        self.render();
+      },
+    });
+    card.appendChild(h("div", { className: "solution-catalog-name" }, s.name || s.id));
+    var meta = h("div", { className: "solution-catalog-meta" });
+    if (s.tier) meta.appendChild(h("span", { className: "solution-catalog-tier tier-" + s.tier }, "Tier " + s.tier));
+    if (s.domain) meta.appendChild(h("span", { className: "solution-catalog-domain" }, s.domain));
+    if (s.version) meta.appendChild(h("span", { className: "solution-catalog-version" }, "v" + s.version));
+    card.appendChild(meta);
+    if (s.summary) {
+      card.appendChild(h("p", { className: "solution-catalog-summary" }, s.summary));
+    }
+    card.appendChild(h("span", {
+      className: "solution-catalog-coverage",
+      "data-coverage-count": String(coverage),
+    }, "Covers " + coverage + " of 58 control" + (coverage === 1 ? "" : "s")));
+    return card;
+  };
+
+  AssessmentApp.prototype._renderSolutionDetailPanel = function (s) {
+    var self = this;
+    var panel = h("aside", { className: "solution-detail-panel", role: "region",
+      "aria-label": "Solution detail: " + (s.name || s.id) });
+    var header = h("div", { className: "solution-detail-header" });
+    header.appendChild(h("h3", { className: "solution-detail-title" }, s.name || s.id));
+    if (s.tier) header.appendChild(h("span", { className: "solution-catalog-tier tier-" + s.tier }, "Tier " + s.tier));
+    if (s.domain) header.appendChild(h("span", { className: "solution-catalog-domain" }, s.domain));
+    if (s.version) header.appendChild(h("span", { className: "solution-catalog-version" }, "v" + s.version));
+    panel.appendChild(header);
+
+    if (s.summary) panel.appendChild(h("p", { className: "solution-detail-summary" }, s.summary));
+
+    if (s.url) {
+      panel.appendChild(h("a", {
+        className: "solution-detail-link",
+        href: s.url, target: "_blank", rel: "noopener noreferrer",
+      }, "Open solution repo ↗"));
+    }
+
+    var controls = this.getControlsForSolution(s.id);
+    var ctrlSec = h("div", { className: "solution-detail-controls" });
+    ctrlSec.appendChild(h("h4", null,
+      "Controls covered (" + controls.length + " of 58)"));
+    if (!controls.length) {
+      ctrlSec.appendChild(h("p", { className: "solution-empty" },
+        "This solution is not yet mapped to any manifest controls."));
+    } else {
+      var list = h("ul", { className: "solution-detail-control-list" });
+      controls.forEach(function (m) {
+        var li = h("li", { className: "solution-detail-control-item" });
+        var link = h("a", {
+          href: "#",
+          className: "solution-detail-control-link",
+          "data-control-id": m.id,
+          onClick: function (e) {
+            e.preventDefault();
+            self.jumpToControl(m.id);
+          },
+        }, m.id + " — " + (m.title || m.name || ""));
+        li.appendChild(link);
+        // Show pillar + tier/role for this mapping if available.
+        var meta = h("span", { className: "solution-detail-control-meta" });
+        meta.appendChild(h("span", { className: "solution-detail-control-pillar" }, "P" + m.pillar));
+        var mapping = (m.solutions || []).filter(function (x) {
+          return (typeof x === "string" ? x : x && x.id) === s.id;
+        })[0];
+        if (mapping && typeof mapping === "object") {
+          if (mapping.role) meta.appendChild(h("span", { className: "solution-detail-control-role role-" + mapping.role }, mapping.role));
+          if (mapping.tier) meta.appendChild(h("span", { className: "solution-detail-control-tier tier-" + mapping.tier }, "T" + mapping.tier));
+        }
+        li.appendChild(meta);
+        list.appendChild(li);
+      });
+      ctrlSec.appendChild(list);
+    }
+    panel.appendChild(ctrlSec);
+    return panel;
+  };
+
+  /** Jump to phase1 and scroll/focus on a specific control card. */
+  AssessmentApp.prototype.jumpToControl = function (controlId) {
+    if (!controlId) return;
+    if (!this.canAccessStep("phase1")) {
+      this.setMessage("warning", "Complete scoping first",
+        "Finish the scoping step before jumping into controls.");
+      return;
+    }
+    this.step = "phase1";
+    this.render();
+    var self = this;
+    setTimeout(function () {
+      var row = self.el.querySelector('.control-row[data-control-id="' + controlId + '"]');
+      if (row) {
+        row.scrollIntoView({ behavior: "smooth", block: "center" });
+        row.classList.add("jump-highlight");
+        setTimeout(function () { row.classList.remove("jump-highlight"); }, 1500);
+      }
+    }, 50);
+  };
+
+  /* ================================================================
+     E: PORTAL EXPORT ENVELOPE
+     Builds a portal-upload-ready JSON envelope and supports round-trip
+     re-import for assessor continuity across sessions/devices.
+     ================================================================ */
+  AssessmentApp.prototype.getEnvelopeIdentity = function () {
+    try {
+      var raw = localStorage.getItem(ENVELOPE_IDENTITY_KEY);
+      if (!raw) return { name: "", role: "", org: "" };
+      var parsed = JSON.parse(raw);
+      return {
+        name: String((parsed && parsed.name) || ""),
+        role: String((parsed && parsed.role) || ""),
+        org: String((parsed && parsed.org) || ""),
+      };
+    } catch (_e) {
+      return { name: "", role: "", org: "" };
+    }
+  };
+
+  AssessmentApp.prototype.setEnvelopeIdentity = function (identity) {
+    try {
+      localStorage.setItem(ENVELOPE_IDENTITY_KEY, JSON.stringify({
+        name: String((identity && identity.name) || ""),
+        role: String((identity && identity.role) || ""),
+        org: String((identity && identity.org) || ""),
+      }));
+    } catch (_e) { /* */ }
+  };
+
+  /**
+   * Compose the envelope object for the current state. Pure — no DOM side
+   * effects — so it can be unit-tested without booting the whole SPA.
+   */
+  AssessmentApp.prototype.buildEnvelope = function () {
+    var self = this;
+    var state = this.state || {};
+    var scoping = state.scoping || {};
+    var identity = this.getEnvelopeIdentity();
+    if (!identity.name && scoping.assessorName) identity.name = scoping.assessorName;
+    if (!identity.role && scoping.assessorRole) identity.role = scoping.assessorRole;
+    if (!identity.org && scoping.organizationName) identity.org = scoping.organizationName;
+
+    var tier = this.getTargetLevel ? this.getTargetLevel() : (scoping.targetLevel || "recommended");
+    var pillars = [1, 2, 3, 4];
+
+    var answers = [];
+    var summary = { yes: 0, partial: 0, no: 0, na: 0, unanswered: 0 };
+    var controlsList = (this.data && this.data.controls) ? this.data.controls : [];
+    controlsList.forEach(function (ctrl) {
+      var resp = (state.responses && state.responses[ctrl.id]) || {};
+      var ce = self.getCollectorEvidenceFor ? self.getCollectorEvidenceFor(ctrl.id) : null;
+      if (!resp.answer) summary.unanswered++;
+      else if (resp.answer === "yes") summary.yes++;
+      else if (resp.answer === "partial") summary.partial++;
+      else if (resp.answer === "no") summary.no++;
+      else if (resp.answer === "na") summary.na++;
+      answers.push({
+        controlId: ctrl.id,
+        pillar: ctrl.pillar,
+        answer: resp.answer || null,
+        notes: resp.notes || "",
+        collectorEvidence: ce ? {
+          status: ce.status || null,
+          runId: ce.runId || "",
+          importedAt: ce.importedAt || "",
+          evidence: Array.isArray(ce.evidence) ? ce.evidence.slice() : [],
+        } : null,
+      });
+    });
+
+    var scoreByPillar = {};
+    pillars.forEach(function (p) {
+      try { scoreByPillar[p] = self.getPillarScore ? (self.getPillarScore(p) || 0) : 0; }
+      catch (_e) { scoreByPillar[p] = 0; }
+    });
+    var overall = 0;
+    try { overall = self.getOverallScore ? (self.getOverallScore() || 0) : 0; } catch (_e) { /* */ }
+    var maturityLevel;
+    if (overall >= 80) maturityLevel = "Established";
+    else if (overall >= 50) maturityLevel = "Developing";
+    else if (overall > 0) maturityLevel = "Initial";
+    else maturityLevel = "Not assessed";
+
+    var manifestVersion = "";
+    if (this.solutionsLock && this.solutionsLock.source && this.solutionsLock.source.ref) {
+      manifestVersion = String(this.solutionsLock.source.ref);
+    }
+    if (!manifestVersion && this.data && this.data.frameworkVersion) {
+      manifestVersion = String(this.data.frameworkVersion);
+    }
+
+    var solutionsLock = { ref: "", commit: "" };
+    if (this.solutionsLock && this.solutionsLock.source) {
+      solutionsLock.ref = String(this.solutionsLock.source.ref || "");
+      solutionsLock.commit = String(this.solutionsLock.source.commit || "");
+    }
+
+    return {
+      schemaVersion: ENVELOPE_SCHEMA_VERSION,
+      generatedAt: new Date().toISOString(),
+      assessor: identity,
+      scope: { tier: tier, pillars: pillars },
+      manifest: { version: manifestVersion, controlCount: controlsList.length || 58 },
+      solutionsLock: solutionsLock,
+      answers: answers,
+      summary: {
+        yes: summary.yes,
+        partial: summary.partial,
+        no: summary.no,
+        na: summary.na,
+        unanswered: summary.unanswered,
+        overall: overall,
+        scoreByPillar: scoreByPillar,
+        maturityLevel: maturityLevel,
+      },
+      signatures: {
+        assessorSignedAt: null,
+        facilitatorSignedAt: null,
+      },
+    };
+  };
+
+  /** Apply a previously-exported envelope back into state. */
+  AssessmentApp.prototype.importEnvelope = function (envelope) {
+    if (!envelope || typeof envelope !== "object") {
+      throw new Error("Envelope must be an object");
+    }
+    if (envelope.schemaVersion && String(envelope.schemaVersion).indexOf("fsi-copilotgov-envelope/") !== 0) {
+      throw new Error("Not a CopilotGov envelope: " + envelope.schemaVersion);
+    }
+    if (!this.state) {
+      this.state = this.newState();
+    }
+    var state = this.state;
+    state.responses = state.responses || {};
+    state.collectorEvidence = {};
+    state.collectorPriorAnswers = state.collectorPriorAnswers || {};
+
+    if (envelope.assessor) {
+      this.setEnvelopeIdentity(envelope.assessor);
+      state.scoping = state.scoping || {};
+      if (envelope.assessor.name) state.scoping.assessorName = envelope.assessor.name;
+      if (envelope.assessor.role) state.scoping.assessorRole = envelope.assessor.role;
+      if (envelope.assessor.org) state.scoping.organizationName = envelope.assessor.org;
+    }
+    if (envelope.scope && envelope.scope.tier) {
+      state.scoping = state.scoping || {};
+      state.scoping.targetLevel = normalizeLevel(envelope.scope.tier);
+    }
+
+    var anyCollector = false;
+    var anyRunId = "";
+    (Array.isArray(envelope.answers) ? envelope.answers : []).forEach(function (a) {
+      if (!a || !a.controlId) return;
+      var resp = state.responses[a.controlId] || {};
+      if (a.answer) resp.answer = a.answer;
+      if (typeof a.notes === "string") resp.notes = a.notes;
+      state.responses[a.controlId] = resp;
+      if (a.collectorEvidence) {
+        anyCollector = true;
+        state.collectorEvidence[a.controlId] = {
+          status: a.collectorEvidence.status || null,
+          runId: a.collectorEvidence.runId || "",
+          importedAt: a.collectorEvidence.importedAt || "",
+          evidence: Array.isArray(a.collectorEvidence.evidence) ? a.collectorEvidence.evidence : [],
+        };
+        if (a.collectorEvidence.runId) anyRunId = a.collectorEvidence.runId;
+      }
+    });
+    if (anyCollector && anyRunId) state.collectorRunId = anyRunId;
+    if (!anyCollector) delete state.collectorEvidence;
+    this.saveToStorage();
+    return { controls: (envelope.answers || []).length, collectorRows: anyCollector };
+  };
+
+  AssessmentApp.prototype.exportEnvelope = function () {
+    var self = this;
+    var identity = this.getEnvelopeIdentity();
+    if (!identity.name || !identity.org) {
+      this._promptEnvelopeIdentity(function (id) {
+        self.setEnvelopeIdentity(id);
+        self._finalizeEnvelopeDownload();
+      });
+      return;
+    }
+    this._finalizeEnvelopeDownload();
+  };
+
+  AssessmentApp.prototype._finalizeEnvelopeDownload = function () {
+    var envelope = this.buildEnvelope();
+    var blob = new Blob([JSON.stringify(envelope, null, 2)], { type: "application/json" });
+    var now = new Date();
+    var pad = function (n) { return String(n).length < 2 ? "0" + n : String(n); };
+    var stamp = now.getUTCFullYear() + pad(now.getUTCMonth() + 1) + pad(now.getUTCDate()) + "-" +
+      pad(now.getUTCHours()) + pad(now.getUTCMinutes());
+    downloadBlob(blob, "fsi-copilotgov-assessment-" + stamp + ".json");
+    this.setMessage(
+      "success",
+      "Envelope exported",
+      "Downloaded the portal governance envelope (schema " + ENVELOPE_SCHEMA_VERSION + ")."
+    );
+  };
+
+  AssessmentApp.prototype._promptEnvelopeIdentity = function (onSave) {
+    var self = this;
+    var content = h("div");
+    content.appendChild(h("p", { className: "ag-card-subtitle" },
+      "These identity fields are saved in your browser for future exports. " +
+      "They are embedded in the envelope so portal reviewers know who submitted the assessment."));
+    var form = h("div", { className: "ag-identity-form" });
+    var current = this.getEnvelopeIdentity();
+    var nameIn = h("input", { type: "text", id: "envelope-identity-name", className: "ag-input", value: current.name, placeholder: "e.g., Jane Doe" });
+    var roleIn = h("input", { type: "text", id: "envelope-identity-role", className: "ag-input", value: current.role, placeholder: "e.g., Compliance Lead" });
+    var orgIn  = h("input", { type: "text", id: "envelope-identity-org",  className: "ag-input", value: current.org,  placeholder: "e.g., Acme Bank, N.A." });
+    form.appendChild(h("label", { htmlFor: "envelope-identity-name" }, "Assessor name"));
+    form.appendChild(nameIn);
+    form.appendChild(h("label", { htmlFor: "envelope-identity-role" }, "Role"));
+    form.appendChild(roleIn);
+    form.appendChild(h("label", { htmlFor: "envelope-identity-org" }, "Organization"));
+    form.appendChild(orgIn);
+    content.appendChild(form);
+    var actions = h("div", { className: "ag-btn-group", style: "margin-top:1rem" });
+    actions.appendChild(h("button", {
+      className: "ag-btn ag-btn-primary",
+      type: "button",
+      onClick: function () {
+        var id = { name: nameIn.value.trim(), role: roleIn.value.trim(), org: orgIn.value.trim() };
+        if (!id.name || !id.org) {
+          self.setMessage("warning", "Identity required",
+            "Assessor name and organization are required for portal envelopes.");
+          return;
+        }
+        var backdrop = form.closest ? form.closest(".ag-modal-backdrop") : null;
+        if (backdrop && backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+        onSave(id);
+      },
+    }, "Save and continue"));
+    content.appendChild(actions);
+    this.showModal("Identify the assessor", content);
+  };
+
+  /** Import a saved envelope JSON file via the browser file picker. */
+  AssessmentApp.prototype.importEnvelopeFromFile = function () {
+    var self = this;
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,application/json";
+    input.style.display = "none";
+    input.addEventListener("change", function (e) {
+      var f = e.target.files && e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        try {
+          var parsed = JSON.parse(String(ev.target.result || "{}"));
+          var result = self.importEnvelope(parsed);
+          self.setMessage("success", "Envelope imported",
+            "Restored " + result.controls + " answer rows. Review your progress before exporting again.");
+          self.render();
+        } catch (err) {
+          self.setMessage("error", "Could not import envelope",
+            "The file was not a valid CopilotGov envelope JSON. Details: " + (err && err.message ? err.message : err));
+        }
+      };
+      reader.readAsText(f);
+    });
+    document.body.appendChild(input);
+    input.click();
+    setTimeout(function () { if (input.parentNode) input.parentNode.removeChild(input); }, 500);
+  };
+
   window.AssessmentApp = AssessmentApp;
+  // Test seam: expose AssessmentApp (and D1 helpers) to Node/vitest when present.
+  // No-op in browser.
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      AssessmentApp: AssessmentApp,
+      isAuthored: isAuthored,
+      isTodoString: isTodoString,
+      authoredOr: authoredOr,
+      parseCollectorCsv: parseCollectorCsv,
+      parseCollectorJson: parseCollectorJson,
+      DRAWER_NOTES_PREFIX: DRAWER_NOTES_PREFIX,
+      FACILITATOR_MODE_KEY: FACILITATOR_MODE_KEY,
+      SOLUTIONS_BASE_URL: SOLUTIONS_BASE_URL,
+      COLLECTOR_EVIDENCE_KEY_PREFIX: COLLECTOR_EVIDENCE_KEY_PREFIX,
+      COLLECTOR_STATUS_MAP: COLLECTOR_STATUS_MAP,
+      ENVELOPE_SCHEMA_VERSION: ENVELOPE_SCHEMA_VERSION,
+      ENVELOPE_IDENTITY_KEY: ENVELOPE_IDENTITY_KEY,
+    };
+  }
 })();

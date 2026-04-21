@@ -1,0 +1,105 @@
+name: Regulatory Monitor
+
+on:
+  schedule:
+    # Weekly on Wednesday at 10:00 UTC
+    - cron: '0 10 * * 3'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/regulatory_monitor.py'
+      - 'scripts/monitoring_shared.py'
+      - '.github/workflows/regulatory-monitoring.yml'
+      - 'scripts/requirements.txt'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'scripts/requirements.txt'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Run Regulatory Monitor (PR smoke, dry-run)
+        if: github.event_name == 'pull_request'
+        run: python scripts/regulatory_monitor.py --dry-run
+
+      - name: Run Regulatory Monitor (scheduled / manual)
+        id: monitor
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        run: |
+          set +e
+          python scripts/regulatory_monitor.py
+          EXIT_CODE=$?
+          set -e
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+
+          if [ "$EXIT_CODE" -eq 1 ]; then
+            REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md 2>/dev/null | head -1)
+            if [ -n "$REPORT_FILE" ]; then
+              echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Detect state changes
+        if: github.event_name != 'pull_request'
+        id: diff
+        run: |
+          if [ -n "$(git status --porcelain data/monitor-state.json reports/monitoring/ 2>/dev/null)" ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open / update PR with regulatory findings
+        if: github.event_name != 'pull_request' && steps.diff.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Regulatory Monitor: new findings detected"
+          branch: monitoring/regulatory-${{ github.run_number }}
+          delete-branch: true
+          base: main
+          title: "Regulatory Monitor: new findings (${{ github.run_number }})"
+          labels: |
+            monitoring
+            regulatory
+            needs-review
+            automated
+          body: |
+            ## Regulatory Monitor Report
+
+            Automated weekly scan of Federal Register (SEC, CFTC, OCC, Federal Reserve)
+            and FINRA notices for AI- / FSI-relevant regulatory changes.
+
+            - Report: `${{ steps.monitor.outputs.report_file }}`
+
+            ### Classification tiers
+            - 🔴 **CRITICAL** — Directly mentions AI agents, copilot, or automated advice
+            - 🟠 **HIGH** — References AI/ML/automation or FSI-specific requirements
+            - 🟡 **MEDIUM** — General FSI regulations (indirect AI impact)
+            - ⚪ **NOISE** — No FSI governance relevance
+
+            ### Review instructions
+            1. Open the report for CRITICAL/HIGH items and affected-control keywords.
+            2. Update controls/playbooks where a regulatory change requires it.
+            3. Merge to update the monitoring baseline.
+
+            ---
+            *Automated PR created by `.github/workflows/regulatory-monitoring.yml`.*

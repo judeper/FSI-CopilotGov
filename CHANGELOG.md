@@ -4,6 +4,36 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.4.0 — 2026-04-21
+
+Major feature port from FSI-AgentGov bringing governance assessment parity for M365 Copilot.
+
+### Added
+- Manifest-driven assessment engine with Python scoring and YAML collectors (Phase B)
+- Evidence drawer with verifyIn links and persistent notes (Phase D1)
+- Facilitator mode with per-control ask/followUp prompts (Phase D1)
+- Sector-calibration yes-bars per tier (Phase D1)
+- Solution recommendation cards referencing FSI-CopilotGov-Solutions@v0.1.0-rc1 (Phase C2/D1)
+- Collector evidence import (CSV/JSON drop) (Phase D2)
+- Portal export envelope schema v0.1.0 (Phase E)
+- Solutions catalog view with reverse-lookup and filters (Phase C3)
+- Pre-session homework pages for 14 curated FSI roles (Phase F)
+- Role-specific Excel checklists and governance dashboard (Phase G)
+- Microsoft Learn URL monitoring (Phase I1)
+- Regulatory monitoring (Federal Register + FINRA) (Phase I1)
+- Solutions drift detection with weekly CI (Phase C4)
+- Vitest harness with 60+ SPA tests across 11 files (Phase H1/H2)
+
+### Changed
+- Manifest validator accepts object-shaped solutions entries
+- `merge_authored_content.py` now treats `solutions` as a replace-only field
+
+### Reference
+- [Phased rollout](docs/getting-started/phased-rollout.md)
+- [Homework pages](docs/getting-started/homework-quickstart.md)
+
+---
+
 ## v1.3.4 — 2026-04-17
 
 ### New Control, Playbooks, and Reference Content
