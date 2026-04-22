@@ -24,13 +24,22 @@ jobs:
         run: |
           pip install -r assessment/requirements.txt
           pip install -r scripts/requirements.txt
-          pip install mkdocs-material openpyxl
+          pip install -r requirements.txt openpyxl
 
       - name: Verify control structure
         run: python scripts/verify_controls.py
 
       - name: Verify language rules
         run: python scripts/verify_language_rules.py
+
+      - name: Build content graph (canonical metadata)
+        run: python scripts/build_content_graph.py
+
+      - name: Validate content graph
+        run: python scripts/validate_content_graph.py
+
+      - name: Verify README/AGENTS counts vs content graph
+        run: python scripts/verify_readme_counts.py
 
       - name: Generate manifest (engine schema)
         run: python assessment/manifest/generate_manifest.py

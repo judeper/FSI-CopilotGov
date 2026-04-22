@@ -9,7 +9,7 @@ hide:
 # M365 Copilot Governance for **Financial Services**
 
 Govern Microsoft 365 Copilot with confidence across every M365 application.
-58 controls, 243 playbooks, and regulatory mappings for
+{{ counts.controls }} controls, {{ counts.playbooks_total }} playbooks, and regulatory mappings for
 FINRA, SEC, SOX, and GLBA compliance.
 
 [Get Started](getting-started/quick-start.md){ .md-button .md-button--primary }
@@ -19,15 +19,15 @@ FINRA, SEC, SOX, and GLBA compliance.
 
 <div class="metrics-strip">
   <div class="metric">
-    <span class="metric-number">58</span>
+    <span class="metric-number">{{ counts.controls }}</span>
     <span class="metric-label">Controls</span>
   </div>
   <div class="metric">
-    <span class="metric-number">243</span>
+    <span class="metric-number">{{ counts.playbooks_total }}</span>
     <span class="metric-label">Playbooks</span>
   </div>
   <div class="metric">
-    <span class="metric-number">4</span>
+    <span class="metric-number">{{ counts.pillars }}</span>
     <span class="metric-label">Governance Pillars</span>
   </div>
   <div class="metric">
@@ -83,7 +83,7 @@ FINRA, SEC, SOX, and GLBA compliance.
 
     ---
 
-    Assess your governance posture across all 58 controls
+    Assess your governance posture across all {{ counts.controls }} controls
     with the interactive scorecard tool.
 
     [:material-arrow-right: Start Assessment](assessment/index.md)
@@ -112,7 +112,7 @@ Examination-ready
 </div>
 <div class="arch-arrow">▼</div>
 <div class="arch-layer">
-<div class="arch-label">58 controls across 4 Pillars</div>
+<div class="arch-label">{{ counts.controls }} controls across {{ counts.pillars }} Pillars</div>
 <div class="arch-row">
 <div class="arch-card arch-pillar">
 <strong>Readiness</strong>
@@ -161,7 +161,7 @@ Copilot Chat, Pages
 | Site | Description |
 |------|-------------|
 | [FSI Agent Governance](https://judeper.github.io/FSI-AgentGov/) | For Copilot Studio, Agent Builder, and custom AI agents (71 controls) |
-| [FSI Copilot Governance](https://judeper.github.io/FSI-CopilotGov/) | This site — M365 Copilot governance (58 controls) |
+| [FSI Copilot Governance](https://judeper.github.io/FSI-CopilotGov/) | This site — M365 Copilot governance ({{ counts.controls }} controls) |
 
 ---
 

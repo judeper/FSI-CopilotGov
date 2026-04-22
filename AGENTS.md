@@ -114,6 +114,24 @@ Every control file in `docs/controls/` must include:
 
 Each control provides three governance tiers: **Baseline**, **Recommended**, and **Regulated**.
 
+## Macros (since v1.5.0)
+
+Headline counts (number of controls, playbooks, solutions, pillars) referenced in `README.md`, `docs/index.md`, `AGENTS.md`, and any other narrative content **must be authored as macros**, not hand-typed integers. This prevents drift when the canonical content graph changes.
+
+The site uses [`mkdocs-macros-plugin`](https://mkdocs-macros-plugin.readthedocs.io/), wired up in `mkdocs.yml` against `scripts/macros_module.py`, which loads `assessment/manifest/content-graph.json` (produced by `scripts/build_content_graph.py`) and exposes:
+
+| Variable | Meaning |
+|----------|---------|
+| `{{ counts.controls }}` | Total controls across all pillars |
+| `{{ counts.playbooks_total }}` | All playbooks (control implementations + cross-cutting) |
+| `{{ counts.playbooks_control }}` | Playbooks under `docs/playbooks/control-implementations/` |
+| `{{ counts.playbooks_cross_cutting }}` | Cross-control operational playbooks |
+| `{{ counts.solutions }}` | Solutions referenced from `FSI-CopilotGov-Solutions` |
+| `{{ counts.pillars }}` | Lifecycle pillars (invariant: 4) |
+| `{{ content_graph }}` | Full graph object for advanced templates |
+
+Install the dependency from the root `requirements.txt` (`pip install -r requirements.txt`). If `content-graph.json` is missing, the macros module falls back to zeroed counts so the build still succeeds.
+
 ## FSI Regulatory Language Rules (Critical)
 
 CI enforces strict language rules via `scripts/verify_language_rules.py`. When writing documentation:

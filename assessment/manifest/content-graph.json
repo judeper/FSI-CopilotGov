@@ -1,0 +1,2492 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-04-22T06:21:12Z",
+  "counts": {
+    "controls": 58,
+    "pillars": 4,
+    "playbooks_total": 243,
+    "playbooks_control": 225,
+    "playbooks_cross_cutting": 18,
+    "solutions": 19
+  },
+  "controls": [
+    {
+      "id": "1.1",
+      "pillar": 1,
+      "title": "Control 1.1: Copilot Readiness Assessment and Data Hygiene",
+      "path": "docs/controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md",
+      "last_verified": "2026-04-15",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC IT Handbook (Information Security Booklet)",
+        "SR 11-7 / OCC Bulletin 2011-12",
+        "OCC Bulletin 2023-17",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)"
+      ]
+    },
+    {
+      "id": "1.2",
+      "pillar": 1,
+      "title": "Control 1.2: SharePoint Oversharing Detection and Remediation (DSPM for AI)",
+      "path": "docs/controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md",
+      "last_verified": "2026-04-15",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "SEC Regulation S-P (Rule 248.30)",
+        "FFIEC IT Handbook (Information Security Booklet)"
+      ]
+    },
+    {
+      "id": "1.3",
+      "pillar": 1,
+      "title": "Control 1.3: Restricted SharePoint Search Configuration",
+      "path": "docs/controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md",
+      "last_verified": "2026-04-15",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC IT Handbook (Information Security Booklet)",
+        "Data Minimization Principles"
+      ]
+    },
+    {
+      "id": "1.4",
+      "pillar": 1,
+      "title": "Control 1.4: Semantic Index Governance and Scope Control",
+      "path": "docs/controls/pillar-1-readiness/1.4-semantic-index-governance.md",
+      "last_verified": "2026-04-15",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC IT Handbook (Information Security Booklet)",
+        "Sarbanes-Oxley §§302/404 — where applicable to ICFR"
+      ]
+    },
+    {
+      "id": "1.5",
+      "pillar": 1,
+      "title": "Control 1.5: Sensitivity Label Taxonomy Review for Copilot",
+      "path": "docs/controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md",
+      "last_verified": "2026-04-15",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
+        "FFIEC IT Handbook (Information Security Booklet)",
+        "SEC Regulation S-P"
+      ]
+    },
+    {
+      "id": "1.6",
+      "pillar": 1,
+      "title": "Control 1.6: Permission Model Audit (SharePoint, OneDrive, Exchange, Teams, Graph)",
+      "path": "docs/controls/pillar-1-readiness/1.6-permission-model-audit.md",
+      "last_verified": "2026-04-15",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
+        "FFIEC IT Examination Handbook (Access Control)",
+        "SEC Regulation S-P"
+      ]
+    },
+    {
+      "id": "1.7",
+      "pillar": 1,
+      "title": "Control 1.7: SharePoint Advanced Management Readiness for Copilot",
+      "path": "docs/controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC IT Examination Handbook (Information Security Booklet)"
+      ]
+    },
+    {
+      "id": "1.8",
+      "pillar": 1,
+      "title": "Control 1.8: Information Architecture Review",
+      "path": "docs/controls/pillar-1-readiness/1.8-information-architecture-review.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC IT Handbook (Information Security Booklet)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)"
+      ]
+    },
+    {
+      "id": "1.9",
+      "pillar": 1,
+      "title": "Control 1.9: License Planning and Copilot Assignment Strategy",
+      "path": "docs/controls/pillar-1-readiness/1.9-license-planning.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC IT Handbook (IT Operations)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)"
+      ]
+    },
+    {
+      "id": "1.10",
+      "pillar": 1,
+      "title": "Control 1.10: Vendor Risk Management for Microsoft AI Services",
+      "path": "docs/controls/pillar-1-readiness/1.10-vendor-risk-management.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "OCC Bulletin 2023-17",
+        "Interagency Guidance on Third-Party Relationships (2023)",
+        "FFIEC IT Handbook (Outsourcing Technology Services)",
+        "GLBA §501(b)"
+      ]
+    },
+    {
+      "id": "1.11",
+      "pillar": 1,
+      "title": "Control 1.11: Organizational Change Management and Adoption Planning",
+      "path": "docs/controls/pillar-1-readiness/1.11-change-management-adoption.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "FFIEC IT Handbook (Management)",
+        "Interagency AI Guidance (2023)",
+        "12 CFR part 30",
+        "appendix D (OCC Heightened Standards)"
+      ]
+    },
+    {
+      "id": "1.12",
+      "pillar": 1,
+      "title": "Control 1.12: Training and Awareness Program",
+      "path": "docs/controls/pillar-1-readiness/1.12-training-awareness.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FINRA Rule 3110",
+        "FFIEC IT Handbook (Information Security Booklet)",
+        "Interagency AI Guidance (2023)",
+        "GLBA §501(b)"
+      ]
+    },
+    {
+      "id": "1.13",
+      "pillar": 1,
+      "title": "Control 1.13: Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)",
+      "path": "docs/controls/pillar-1-readiness/1.13-extensibility-readiness.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC IT Handbook (Information Security Booklet)",
+        "OCC Bulletin 2023-17 (Third-Party Relationships)",
+        "Interagency AI Guidance (2023)"
+      ]
+    },
+    {
+      "id": "1.14",
+      "pillar": 1,
+      "title": "Control 1.14: Item-Level Permission Scanning",
+      "path": "docs/controls/pillar-1-readiness/1.14-item-level-permission-scanning.md",
+      "last_verified": "2026-04-15",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "SEC Rule 17a-4",
+        "FFIEC IT Handbook (Access Controls)",
+        "NIST SP 800-53 (AC-3, AC-6, AU-2)"
+      ]
+    },
+    {
+      "id": "1.15",
+      "pillar": 1,
+      "title": "Control 1.15: SharePoint Permissions Drift Detection",
+      "path": "docs/controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md",
+      "last_verified": "2026-04-15",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "SEC Rule 17a-4",
+        "SEC Rule 17a-4(f)",
+        "FFIEC IT Handbook (Access Controls, Change Management)",
+        "NIST SP 800-53 (CM-3, SI-7, AC-6)"
+      ]
+    },
+    {
+      "id": "1.16",
+      "pillar": 1,
+      "title": "Control 1.16: Copilot Tuning Governance",
+      "path": "docs/controls/pillar-1-readiness/1.16-copilot-tuning-governance.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "OCC Bulletin 2011-12 (SR 11-7)",
+        "Interagency RFI on AI (2023)"
+      ]
+    },
+    {
+      "id": "2.1",
+      "pillar": 2,
+      "title": "Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions",
+      "path": "docs/controls/pillar-2-security/2.1-dlp-policies-for-copilot.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "FINRA 4511",
+        "SEC Reg S-P",
+        "GLBA §501(b)",
+        "Sarbanes-Oxley §§302/404"
+      ]
+    },
+    {
+      "id": "2.2",
+      "pillar": 2,
+      "title": "Control 2.2: Sensitivity Labels and Copilot Content Classification",
+      "path": "docs/controls/pillar-2-security/2.2-sensitivity-labels-classification.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "Sarbanes-Oxley §§302/404"
+      ]
+    },
+    {
+      "id": "2.3",
+      "pillar": 2,
+      "title": "Control 2.3: Conditional Access Policies for Copilot Workloads",
+      "path": "docs/controls/pillar-2-security/2.3-conditional-access-policies.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "NYDFS Part 500",
+        "FFIEC"
+      ]
+    },
+    {
+      "id": "2.4",
+      "pillar": 2,
+      "title": "Control 2.4: Information Barriers for Copilot (Chinese Wall)",
+      "path": "docs/controls/pillar-2-security/2.4-information-barriers.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "SEC Rule 10b-5",
+        "FINRA 5280",
+        "Chinese Wall Requirements"
+      ]
+    },
+    {
+      "id": "2.5",
+      "pillar": 2,
+      "title": "Control 2.5: Data Minimization and Grounding Scope",
+      "path": "docs/controls/pillar-2-security/2.5-data-minimization-grounding-scope.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "Data Minimization Principles"
+      ]
+    },
+    {
+      "id": "2.6",
+      "pillar": 2,
+      "title": "Control 2.6: Copilot Web Search and Web Grounding Controls",
+      "path": "docs/controls/pillar-2-security/2.6-web-search-controls.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "Data Residency Considerations"
+      ]
+    },
+    {
+      "id": "2.7",
+      "pillar": 2,
+      "title": "Control 2.7: Data Residency and Cross-Border Data Flow Governance",
+      "path": "docs/controls/pillar-2-security/2.7-data-residency.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "GDPR (if applicable)",
+        "State Privacy Laws"
+      ]
+    },
+    {
+      "id": "2.8",
+      "pillar": 2,
+      "title": "Control 2.8: Encryption (Data in Transit and at Rest)",
+      "path": "docs/controls/pillar-2-security/2.8-encryption.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC",
+        "NYDFS Part 500"
+      ]
+    },
+    {
+      "id": "2.9",
+      "pillar": 2,
+      "title": "Control 2.9: Defender for Cloud Apps — Copilot Session Controls",
+      "path": "docs/controls/pillar-2-security/2.9-defender-cloud-apps.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC"
+      ]
+    },
+    {
+      "id": "2.10",
+      "pillar": 2,
+      "title": "Control 2.10: Insider Risk Detection for Copilot Usage Patterns",
+      "path": "docs/controls/pillar-2-security/2.10-insider-risk-detection.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "Sarbanes-Oxley §§302/404",
+        "FINRA 3110"
+      ]
+    },
+    {
+      "id": "2.11",
+      "pillar": 2,
+      "title": "Control 2.11: Copilot Pages Security and Sharing Controls",
+      "path": "docs/controls/pillar-2-security/2.11-copilot-pages-security.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FINRA 4511"
+      ]
+    },
+    {
+      "id": "2.12",
+      "pillar": 2,
+      "title": "Control 2.12: External Sharing and Guest Access Governance",
+      "path": "docs/controls/pillar-2-security/2.12-external-sharing-governance.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "SEC Reg S-P"
+      ]
+    },
+    {
+      "id": "2.13",
+      "pillar": 2,
+      "title": "Control 2.13: Plugin and Graph Connector Security Governance",
+      "path": "docs/controls/pillar-2-security/2.13-plugin-connector-security.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC"
+      ]
+    },
+    {
+      "id": "2.14",
+      "pillar": 2,
+      "title": "Control 2.14: Declarative and SharePoint Agents Governance",
+      "path": "docs/controls/pillar-2-security/2.14-declarative-agents-governance.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)"
+      ]
+    },
+    {
+      "id": "2.15",
+      "pillar": 2,
+      "title": "Control 2.15: Network Security and Private Connectivity",
+      "path": "docs/controls/pillar-2-security/2.15-network-security.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "NYDFS Part 500",
+        "FFIEC"
+      ]
+    },
+    {
+      "id": "2.16",
+      "pillar": 2,
+      "title": "Control 2.16: Federated Copilot Connector and Model Context Protocol (MCP) Governance",
+      "path": "docs/controls/pillar-2-security/2.16-federated-connector-mcp-governance.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA 501(b)",
+        "Reg S-P",
+        "FFIEC",
+        "OCC Bulletin 2023-17"
+      ]
+    },
+    {
+      "id": "3.1",
+      "pillar": 3,
+      "title": "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)",
+      "path": "docs/controls/pillar-3-compliance/3.1-copilot-audit-logging.md",
+      "last_verified": "2026-03-22",
+      "regulatory_references": [
+        "FINRA 4511 (Books and Records)",
+        "SEC 17a-3/4 (Books and Records)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)"
+      ]
+    },
+    {
+      "id": "3.2",
+      "pillar": 3,
+      "title": "Control 3.2: Data Retention Policies for Copilot Interactions",
+      "path": "docs/controls/pillar-3-compliance/3.2-data-retention-policies.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "FINRA 4511 (Books and Records)",
+        "SEC 17a-4 (Preservation of Records)",
+        "SOX 802 (Criminal Penalties for Altering Documents)"
+      ]
+    },
+    {
+      "id": "3.3",
+      "pillar": 3,
+      "title": "Control 3.3: eDiscovery for Copilot-Generated Content",
+      "path": "docs/controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "SEC 17a-4 (Preservation of Records)",
+        "FINRA 4511 (Books and Records)",
+        "Federal Rules of Civil Procedure (FRCP) Rules 26",
+        "34",
+        "37(e)"
+      ]
+    },
+    {
+      "id": "3.4",
+      "pillar": 3,
+      "title": "Control 3.4: Communication Compliance Monitoring",
+      "path": "docs/controls/pillar-3-compliance/3.4-communication-compliance.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "FINRA 3110 (Supervision)",
+        "FINRA 2210 (Communications with the Public)",
+        "SEC Regulation Best Interest (Reg BI)"
+      ]
+    },
+    {
+      "id": "3.5",
+      "pillar": 3,
+      "title": "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications",
+      "path": "docs/controls/pillar-3-compliance/3.5-finra-2210-compliance.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FINRA 2210 (Communications with the Public)",
+        "FINRA Regulatory Notice 24-09 (AI in Communications)",
+        "SEC Marketing Rule (206(4)-1)",
+        "Investment Advisers Act Section 206"
+      ]
+    },
+    {
+      "id": "3.6",
+      "pillar": 3,
+      "title": "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)",
+      "path": "docs/controls/pillar-3-compliance/3.6-supervision-oversight.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FINRA 3110 (Supervision)",
+        "FINRA 3120 (Supervisory Control System)",
+        "SEC Regulation Best Interest (Reg BI)",
+        "FINRA Regulatory Notice 24-09"
+      ]
+    },
+    {
+      "id": "3.7",
+      "pillar": 3,
+      "title": "Control 3.7: Regulatory Reporting (FINRA, SEC, SOX, GLBA, CFPB UDAAP)",
+      "path": "docs/controls/pillar-3-compliance/3.7-regulatory-reporting.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FINRA 4530 (Reporting Requirements)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR) (Internal Controls)",
+        "GLBA §501(b) (Safeguards)",
+        "CFPB UDAAP (Unfair, Deceptive, Abusive Acts or Practices)"
+      ]
+    },
+    {
+      "id": "3.8",
+      "pillar": 3,
+      "title": "Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI)",
+      "path": "docs/controls/pillar-3-compliance/3.8-model-risk-management.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "SR 26-2 / OCC Bulletin 2026-13 (Revised Guidance on Model Risk Management, April 2026 — supersedes SR 11-7 / OCC Bulletin 2011-12 but explicitly excludes generative and agentic AI; Copilot governance therefore continues to apply SR 11-7 / OCC Bulletin 2011-12 principles as the most recent applicable guidance)",
+        "OCC Bulletin 2025-26 (Model Risk Management — Community Bank Proportionality)",
+        "ECOA (Equal Credit Opportunity Act)",
+        "Fair Housing Act"
+      ]
+    },
+    {
+      "id": "3.9",
+      "pillar": 3,
+      "title": "Control 3.9: AI Disclosure, Transparency, and SEC Marketing Rule",
+      "path": "docs/controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "SEC Marketing Rule (Rule 206(4)-1)",
+        "SEC Regulation Best Interest (Reg BI)",
+        "State AI Disclosure Laws",
+        "SEC Risk Alerts on AI Marketing Claims"
+      ]
+    },
+    {
+      "id": "3.10",
+      "pillar": 3,
+      "title": "Control 3.10: SEC Reg S-P -- Privacy of Consumer Financial Information",
+      "path": "docs/controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "SEC Regulation S-P (17 CFR 248.30)",
+        "GLBA Title V (Privacy)",
+        "SEC Regulation S-ID (Identity Theft Red Flags)"
+      ]
+    },
+    {
+      "id": "3.11",
+      "pillar": 3,
+      "title": "Control 3.11: Record Keeping and Books-and-Records Compliance (SEC 17a-3/4, FINRA 4511)",
+      "path": "docs/controls/pillar-3-compliance/3.11-record-keeping.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "SEC Rule 17a-3 (Records to Be Made)",
+        "SEC Rule 17a-4 (Records to Be Preserved)",
+        "FINRA Rule 4511 (General Requirements)"
+      ]
+    },
+    {
+      "id": "3.12",
+      "pillar": 3,
+      "title": "Control 3.12: Evidence Collection and Audit Attestation",
+      "path": "docs/controls/pillar-3-compliance/3.12-evidence-collection.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
+        "PCAOB Auditing Standards (AS 2201)",
+        "FINRA 3120 (Supervisory Control System)"
+      ]
+    },
+    {
+      "id": "3.13",
+      "pillar": 3,
+      "title": "Control 3.13: FFIEC IT Examination Handbook Alignment",
+      "path": "docs/controls/pillar-3-compliance/3.13-ffiec-alignment.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FFIEC IT Examination Handbook (Information Security, Audit, Management, Operations Booklets)",
+        "FFIEC Cybersecurity Assessment Tool (CAT)"
+      ]
+    },
+    {
+      "id": "4.1",
+      "pillar": 4,
+      "title": "Control 4.1: Copilot Admin Settings and Feature Management",
+      "path": "docs/controls/pillar-4-operations/4.1-admin-settings-feature-management.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "Sarbanes-Oxley §§302/404",
+        "FFIEC IT Examination Handbook",
+        "GLBA §501(b)"
+      ]
+    },
+    {
+      "id": "4.2",
+      "pillar": 4,
+      "title": "Control 4.2: Copilot in Teams Meetings Governance",
+      "path": "docs/controls/pillar-4-operations/4.2-teams-meetings-governance.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FINRA Rule 3110 (Supervision)",
+        "FINRA Rule 4511 (Books and Records)",
+        "SEC Rule 17a-4",
+        "SEC Reg S-P"
+      ]
+    },
+    {
+      "id": "4.3",
+      "pillar": 4,
+      "title": "Control 4.3: Copilot in Teams Phone and Queues Governance",
+      "path": "docs/controls/pillar-4-operations/4.3-teams-phone-queues.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FINRA Rule 3110 (Supervision)",
+        "FINRA Rule 4511 (Books and Records)",
+        "GLBA §501(b)",
+        "FFIEC IT Examination Handbook"
+      ]
+    },
+    {
+      "id": "4.4",
+      "pillar": 4,
+      "title": "Control 4.4: Copilot in Viva Suite Governance",
+      "path": "docs/controls/pillar-4-operations/4.4-viva-suite-governance.md",
+      "last_verified": "2026-04-06",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "Labor Regulations (FLSA, State Privacy Laws)",
+        "EEOC Guidance on AI",
+        "FFIEC"
+      ]
+    },
+    {
+      "id": "4.5",
+      "pillar": 4,
+      "title": "Control 4.5: Copilot Usage Analytics and Adoption Reporting",
+      "path": "docs/controls/pillar-4-operations/4.5-usage-analytics.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
+        "FFIEC IT Examination Handbook",
+        "GLBA §501(b)"
+      ]
+    },
+    {
+      "id": "4.6",
+      "pillar": 4,
+      "title": "Control 4.6: Microsoft Viva Insights and Copilot Analytics Impact Measurement",
+      "path": "docs/controls/pillar-4-operations/4.6-viva-insights-measurement.md",
+      "last_verified": "2026-03-22",
+      "regulatory_references": [
+        "Internal Governance",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
+        "FFIEC IT Examination Handbook"
+      ]
+    },
+    {
+      "id": "4.7",
+      "pillar": 4,
+      "title": "Control 4.7: Copilot Feedback and Telemetry Data Governance",
+      "path": "docs/controls/pillar-4-operations/4.7-feedback-telemetry.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "SEC Reg S-P",
+        "State Privacy Laws",
+        "FFIEC IT Examination Handbook"
+      ]
+    },
+    {
+      "id": "4.8",
+      "pillar": 4,
+      "title": "Control 4.8: Cost Allocation and License Optimization",
+      "path": "docs/controls/pillar-4-operations/4.8-cost-allocation.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "Sarbanes-Oxley §§302/404 (Internal Controls over Financial Reporting)",
+        "12 CFR part 30",
+        "appendix D (OCC Heightened Standards)",
+        "FFIEC IT Examination Handbook"
+      ]
+    },
+    {
+      "id": "4.9",
+      "pillar": 4,
+      "title": "Control 4.9: Incident Reporting and Root Cause Analysis",
+      "path": "docs/controls/pillar-4-operations/4.9-incident-reporting.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FINRA Rule 4530 (Reporting Requirements)",
+        "GLBA §501(b)",
+        "FFIEC IT Examination Handbook",
+        "12 CFR part 30",
+        "appendix D (OCC Heightened Standards)",
+        "NYDFS Part 500.17"
+      ]
+    },
+    {
+      "id": "4.10",
+      "pillar": 4,
+      "title": "Control 4.10: Business Continuity and Disaster Recovery for Copilot Dependency",
+      "path": "docs/controls/pillar-4-operations/4.10-business-continuity.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FFIEC Business Continuity Management Handbook",
+        "12 CFR part 30",
+        "appendix D (OCC Heightened Standards)",
+        "FINRA Rule 4370",
+        "GLBA §501(b)"
+      ]
+    },
+    {
+      "id": "4.11",
+      "pillar": 4,
+      "title": "Control 4.11: Microsoft Sentinel Integration for Copilot Events",
+      "path": "docs/controls/pillar-4-operations/4.11-sentinel-integration.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "FFIEC IT Examination Handbook (Information Security)",
+        "Sarbanes-Oxley §§302/404",
+        "NYDFS Part 500",
+        "GLBA §501(b)"
+      ]
+    },
+    {
+      "id": "4.12",
+      "pillar": 4,
+      "title": "Control 4.12: Change Management for Copilot Feature Rollouts",
+      "path": "docs/controls/pillar-4-operations/4.12-change-management-rollouts.md",
+      "last_verified": "2026-02-17",
+      "regulatory_references": [
+        "Sarbanes-Oxley §§302/404 (ITGC - Change Management)",
+        "FFIEC IT Examination Handbook",
+        "GLBA §501(b)"
+      ]
+    },
+    {
+      "id": "4.13",
+      "pillar": 4,
+      "title": "Control 4.13: Copilot Extensibility and Agent Operations Governance",
+      "path": "docs/controls/pillar-4-operations/4.13-extensibility-governance.md",
+      "last_verified": "2026-04-09",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "FFIEC IT Examination Handbook",
+        "Sarbanes-Oxley §§302/404",
+        "OCC Bulletin 2023-17"
+      ]
+    }
+  ],
+  "playbooks": [
+    {
+      "path": "docs/playbooks/compliance-and-audit/audit-readiness-checklist.md",
+      "type": "cross-cutting",
+      "category": "compliance-and-audit"
+    },
+    {
+      "path": "docs/playbooks/compliance-and-audit/evidence-pack-assembly.md",
+      "type": "cross-cutting",
+      "category": "compliance-and-audit"
+    },
+    {
+      "path": "docs/playbooks/compliance-and-audit/examination-response-guide.md",
+      "type": "cross-cutting",
+      "category": "compliance-and-audit"
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.1/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.1/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.1/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.1/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.10/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.10/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.10/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.10/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.11/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.11/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.11/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.11/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.12/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.12/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.12/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.12/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.13/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.13/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.13/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.13/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.14/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.14/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.14/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.14/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.15/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.15/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.15/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.15/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.2/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.2/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.2/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.2/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.3/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.3/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.3/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.3/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.4/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.4/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.4/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.4/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.5/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.5/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.5/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.5/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.6/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.6/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.6/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.6/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.7/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.7/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.7/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.7/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.8/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.8/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.8/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.8/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.9/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.9/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.9/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.9/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.1/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.1/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.1/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.1/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.10/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.10/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.10/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.10/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.11/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.11/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.11/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.11/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.12/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.12/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.12/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.12/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.13/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.13/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.13/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.13/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.14/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.14/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.14/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.14/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.15/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.15/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.15/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.15/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.2/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.2/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.2/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.2/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.3/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.3/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.3/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.3/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.4/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.4/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.4/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.4/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.5/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.5/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.5/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.5/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.6/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.6/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.6/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.6/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.7/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.7/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.7/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.7/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.8/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.8/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.8/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.8/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.9/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.9/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.9/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.9/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.1/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.1/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.1/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.1/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.10/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.10/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.10/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.10/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.11/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.11/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.11/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.11/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.12/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.12/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.12/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.12/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.13/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.13/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.13/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.13/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.2/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.2/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.2/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.2/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.3/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.3/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.3/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.3/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.4/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.4/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.4/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.4/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.5/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.5/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.5/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.5/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.6/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.6/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.6/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.6/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.7/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.7/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.7/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.7/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.8/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.8/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.8/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.8/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.9/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.9/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.9/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.9/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.1/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.1/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.1/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.1/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.1"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.10/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.10/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.10/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.10/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.10"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.11/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.11/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.11/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.11/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.11"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.12/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.12/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.12/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.12/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.12"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.13/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.13/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.13/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.13/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.2/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.2/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.2/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.2/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.2"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.3/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.3/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.3/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.3/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.3"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.4/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.4/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.4/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.4/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.4"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.5/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.5/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.5/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.5/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.5"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.6/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.6/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.6/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.6/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.6"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.7/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.7/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.7/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.7/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.7"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.8/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.8/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.8/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.8/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.8"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.9/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.9/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.9/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.9/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.9"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/index.md",
+      "type": "control-implementation",
+      "control_refs": []
+    },
+    {
+      "path": "docs/playbooks/getting-started/phase-0-governance-setup.md",
+      "type": "cross-cutting",
+      "category": "getting-started"
+    },
+    {
+      "path": "docs/playbooks/getting-started/phase-1-pilot-deployment.md",
+      "type": "cross-cutting",
+      "category": "getting-started"
+    },
+    {
+      "path": "docs/playbooks/getting-started/phase-2-expansion.md",
+      "type": "cross-cutting",
+      "category": "getting-started"
+    },
+    {
+      "path": "docs/playbooks/governance-operations/escalation-matrix.md",
+      "type": "cross-cutting",
+      "category": "governance-operations"
+    },
+    {
+      "path": "docs/playbooks/governance-operations/governance-operating-calendar.md",
+      "type": "cross-cutting",
+      "category": "governance-operations"
+    },
+    {
+      "path": "docs/playbooks/governance-operations/microsoft-open-source-copilot-analytics-tools.md",
+      "type": "cross-cutting",
+      "category": "governance-operations"
+    },
+    {
+      "path": "docs/playbooks/governance-operations/raci-governance-template.md",
+      "type": "cross-cutting",
+      "category": "governance-operations"
+    },
+    {
+      "path": "docs/playbooks/incident-and-risk/agent-behavioral-incident-playbook.md",
+      "type": "cross-cutting",
+      "category": "incident-and-risk"
+    },
+    {
+      "path": "docs/playbooks/incident-and-risk/ai-incident-response-playbook.md",
+      "type": "cross-cutting",
+      "category": "incident-and-risk"
+    },
+    {
+      "path": "docs/playbooks/incident-and-risk/ai-risk-assessment-template.md",
+      "type": "cross-cutting",
+      "category": "incident-and-risk"
+    },
+    {
+      "path": "docs/playbooks/incident-and-risk/remediation-tracking.md",
+      "type": "cross-cutting",
+      "category": "incident-and-risk"
+    },
+    {
+      "path": "docs/playbooks/incident-and-risk/teams-copilot-mode-governance.md",
+      "type": "cross-cutting",
+      "category": "incident-and-risk"
+    },
+    {
+      "path": "docs/playbooks/index.md",
+      "type": "cross-cutting",
+      "category": "overview"
+    },
+    {
+      "path": "docs/playbooks/regulatory-modules/colorado-ai-act-readiness.md",
+      "type": "cross-cutting",
+      "category": "regulatory-modules"
+    },
+    {
+      "path": "docs/playbooks/regulatory-modules/state-ai-laws-compliance-matrix.md",
+      "type": "cross-cutting",
+      "category": "regulatory-modules"
+    }
+  ],
+  "solutions": [
+    {
+      "id": "01-copilot-readiness-scanner",
+      "version": "0.2.0",
+      "control_coverage": []
+    },
+    {
+      "id": "02-oversharing-risk-assessment",
+      "version": "0.2.0",
+      "control_coverage": []
+    },
+    {
+      "id": "03-sensitivity-label-auditor",
+      "version": "0.2.0",
+      "control_coverage": []
+    },
+    {
+      "id": "04-finra-supervision-workflow",
+      "version": "0.2.0",
+      "control_coverage": []
+    },
+    {
+      "id": "05-dlp-policy-governance",
+      "version": "0.2.0",
+      "control_coverage": []
+    },
+    {
+      "id": "06-audit-trail-manager",
+      "version": "0.2.0",
+      "control_coverage": []
+    },
+    {
+      "id": "07-conditional-access-automation",
+      "version": "0.2.0",
+      "control_coverage": []
+    },
+    {
+      "id": "08-license-governance-roi",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "09-feature-management-controller",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "10-connector-plugin-governance",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "11-risk-tiered-rollout",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "12-regulatory-compliance-dashboard",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "13-dora-resilience-monitor",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "14-communication-compliance-config",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "15-pages-notebooks-gap-monitor",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "16-item-level-oversharing-scanner",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "17-sharepoint-permissions-drift",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "18-entra-access-reviews",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "19-copilot-tuning-governance",
+      "version": "0.1.0",
+      "control_coverage": []
+    }
+  ]
+}

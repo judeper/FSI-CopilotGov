@@ -52,13 +52,22 @@ jobs:
             mkdocs-material-
 
       - name: Install MkDocs and Material Theme
-        run: pip install mkdocs-material openpyxl
+        run: pip install -r requirements.txt openpyxl jsonschema
 
       - name: Validate Control Structure
         run: python scripts/verify_controls.py
 
       - name: Validate Language Rules
         run: python scripts/verify_language_rules.py
+
+      - name: Build Content Graph (canonical metadata)
+        run: python scripts/build_content_graph.py
+
+      - name: Validate Content Graph
+        run: python scripts/validate_content_graph.py
+
+      - name: Verify README/AGENTS Counts vs Content Graph
+        run: python scripts/verify_readme_counts.py
 
       - name: Generate Assessment Data
         run: python scripts/extract_assessment_data.py

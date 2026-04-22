@@ -4,6 +4,28 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.5.0 — 2026-04-22
+
+### Added — Canonical Content Graph (Phase V; eliminates the headline-counts drift class)
+- **`scripts/build_content_graph.py`** — walks `docs/controls/`, `docs/playbooks/`, and `assessment/data/solutions-lock.json` and emits `assessment/manifest/content-graph.json` as the single source of truth for framework metadata (control IDs, pillars, playbook paths and types, solution coverage, headline counts).
+- **`assessment/manifest/content-graph.schema.json`** — JSON Schema (draft 2020-12) defining the canonical shape.
+- **`scripts/validate_content_graph.py`** — schema + business-rules validator (control-id uniqueness, orphan-ref detection, count integrity, pillar bounds).
+- **`scripts/verify_readme_counts.py`** — anchors hand-typed counts in `README.md` and `AGENTS.md` (which GitHub renders directly and cannot use mkdocs macros) to the content graph; CI fails on drift.
+- **`scripts/test_content_graph_smoke.py`** and **`scripts/test_macros_smoke.py`** — pytest smoke coverage for the new infrastructure.
+- **`mkdocs-macros-plugin`** dependency (root `requirements.txt`); configured in `mkdocs.yml`.
+- **`scripts/macros_module.py`** — mkdocs-macros entry point; exposes `counts.controls`, `counts.playbooks_total`, `counts.playbooks_control`, `counts.playbooks_cross_cutting`, `counts.solutions`, `counts.pillars`, and the full `content_graph` namespace to all `docs/` markdown.
+- **CI gates** — `Publish Docs` and `manifest-fence` workflows now build and validate the content graph and verify README/AGENTS counts before mkdocs build.
+- **AGENTS.md `## Macros (since v1.5.0)`** — documents the macros convention; future contributors must use `{{ counts.* }}` in `docs/` rather than typing integers.
+
+### Changed
+- `docs/index.md` and `docs/start-here.md` — hand-typed counts (58, 243, 4) replaced with macro variables. Future control or playbook additions automatically propagate to the homepage hero, metric strip, architecture label, and orientation tables on the next build.
+
+### Notes
+- This release is doc/infrastructure only. No control or playbook content changed. No sister-repo coupling yet (planned for Phase X / sister `v0.6.0`).
+- Phases W (eliminate `authored_content.py` Python override anti-pattern), X (sister-repo content-graph coupling), Y (automated playbook classifier), and Z (new control surfaces) are scoped in session plan files for follow-up releases.
+
+---
+
 ## [Unreleased]
 
 ### Fixed

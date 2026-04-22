@@ -48,6 +48,9 @@ theme:
 
 plugins:
   - search
+  - macros:
+      module_name: scripts/macros_module
+      include_dir: docs
 
 # MkDocs build hooks (v1.4+)
 hooks:
