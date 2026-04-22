@@ -96,7 +96,10 @@ describe("Phase E portal export envelope", () => {
     expect(env.scope.pillars).toEqual([1, 2, 3, 4]);
     expect(env.scope.tier).toBe("recommended");
     expect(env.manifest.controlCount).toBe(58);
-    expect(env.solutionsLock.ref).toBe("v0.1.0-rc1");
+    // ref is whatever generate_solutions_lock.PINNED_REF currently emits;
+    // assert against the on-disk lock to stay version-agnostic.
+    const lockRef = JSON.parse(readFileSync(LOCK_PATH, "utf8")).source.ref;
+    expect(env.solutionsLock.ref).toBe(lockRef);
     expect(env.solutionsLock.commit).toMatch(/^[0-9a-f]{40}$/);
     expect(Array.isArray(env.answers)).toBe(true);
     expect(env.answers).toHaveLength(58);

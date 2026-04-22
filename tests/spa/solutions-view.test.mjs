@@ -5,29 +5,29 @@ import { initApp } from "./_bootstrap.mjs";
 async function init() { return initApp({ step: "solutions" }); }
 
 describe("solutions catalog view (edge cases)", () => {
-  it("renders all 19 solutions as catalog cards with a coverage badge each", async () => {
+  it("renders all 20 solutions as catalog cards with a coverage badge each", async () => {
     const { document } = await init();
     const cards = document.querySelectorAll(".solution-catalog-card");
-    expect(cards.length).toBe(19);
+    expect(cards.length).toBe(20);
     cards.forEach((c) => {
       expect(c.querySelector(".solution-catalog-coverage")).not.toBeNull();
       expect(c.getAttribute("data-solution-id")).toBeTruthy();
     });
   });
 
-  it("tier chips narrow to exactly the tier's solutions and empty-search shows all 19", async () => {
+  it("tier chips narrow to exactly the tier's solutions and empty-search shows all 20", async () => {
     const { document } = await init();
     const t1 = document.querySelector('.solutions-filter-chip[data-filter-tier="1"]');
     t1.click();
     const tier1Cards = document.querySelectorAll(".solution-catalog-card");
     expect(tier1Cards.length).toBeGreaterThan(0);
-    expect(tier1Cards.length).toBeLessThan(19);
+    expect(tier1Cards.length).toBeLessThan(20);
     tier1Cards.forEach((c) => {
       expect(c.querySelector(".tier-1")).not.toBeNull();
     });
     // Reset.
     document.querySelector('.solutions-filter-chip[data-filter-tier="all"]').click();
-    expect(document.querySelectorAll(".solution-catalog-card").length).toBe(19);
+    expect(document.querySelectorAll(".solution-catalog-card").length).toBe(20);
   });
 
   it("tier + domain filters compose (intersection)", async () => {
@@ -76,7 +76,7 @@ describe("solutions catalog view (edge cases)", () => {
     f.search = "";
     app.render();
     cards = app.el.querySelectorAll(".solution-catalog-card");
-    expect(cards.length).toBe(19);
+    expect(cards.length).toBe(20);
   });
 
   it("reverse-lookup for 01-copilot-readiness-scanner returns ≥ 1 controls with well-formed ids", async () => {

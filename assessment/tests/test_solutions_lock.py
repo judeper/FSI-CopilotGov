@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 import pytest
@@ -11,8 +12,16 @@ ROOT = Path(__file__).resolve().parents[2]
 LOCK = ROOT / "assessment" / "data" / "solutions-lock.json"
 MANIFEST = ROOT / "assessment" / "manifest" / "controls.json"
 
+# Make scripts/ importable so we can assert against the canonical PINNED_REF
+# constant rather than hardcoding a version string in the test.
+sys.path.insert(0, str(ROOT / "scripts"))
+import generate_solutions_lock  # noqa: E402
+
 EXPECTED_SCHEMA = "0.1.0"
-EXPECTED_SOLUTION_COUNT = 19
+# Sister repo catalog currently lists both `19-copilot-tuning-governance`
+# and `19-agent-lifecycle-governance` (a known sister-repo-internal
+# duplicate, tracked as a follow-up). Update when sister deduplicates.
+EXPECTED_SOLUTION_COUNT = 20
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
@@ -33,7 +42,7 @@ def manifest() -> list[dict]:
 def test_lock_schema(lock: dict) -> None:
     assert lock["schemaVersion"] == EXPECTED_SCHEMA
     assert lock["source"]["repo"] == "judeper/FSI-CopilotGov-Solutions"
-    assert lock["source"]["ref"].startswith("v0.1.0")
+    assert lock["source"]["ref"] == generate_solutions_lock.PINNED_REF
 
 
 def test_lock_has_all_solutions(lock: dict) -> None:

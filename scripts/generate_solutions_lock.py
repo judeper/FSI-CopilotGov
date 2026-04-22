@@ -16,7 +16,7 @@ Shape of the emitted lock:
       "generatedAt": "<ISO UTC>",
       "source": {
         "repo": "judeper/FSI-CopilotGov-Solutions",
-        "ref": "v0.1.0-rc1",
+        "ref": "v0.4.1",
         "commit": "<sha>"
       },
       "solutions": [ /* deep-copied from source */ ]
@@ -56,7 +56,7 @@ SISTER_REPO_SLUG = "judeper/FSI-CopilotGov-Solutions"
 EXPECTED_SCHEMA = "0.1.0"
 # The pinned ref that the v1.4 framework targets. Update in lock-step
 # with the sister repo release cadence.
-PINNED_REF = "v0.1.0-rc1"
+PINNED_REF = "v0.4.1"
 
 
 def _git(sister_repo: Path, *args: str) -> str | None:
@@ -72,8 +72,12 @@ def _git(sister_repo: Path, *args: str) -> str | None:
 
 
 def _resolve_commit(sister_repo: Path) -> str | None:
-    """Resolve the commit SHA of the pinned ref in the sister repo."""
-    return _git(sister_repo, "rev-parse", PINNED_REF)
+    """Resolve the commit SHA of the pinned ref in the sister repo.
+
+    Uses ``rev-list -n 1`` so annotated tags dereference to their target
+    commit (``rev-parse`` would return the tag object SHA instead).
+    """
+    return _git(sister_repo, "rev-list", "-n", "1", PINNED_REF)
 
 
 def _load_source_solutions(sister_repo: Path) -> tuple[list[dict], str | None]:

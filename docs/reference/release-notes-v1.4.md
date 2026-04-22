@@ -33,7 +33,7 @@ None of these additions replace existing controls, citations, or regulatory guid
 ## Known Limitations
 
 - 53 of 58 controls still have TODO markers in sector-calibration yes-bars, partial bars, and facilitator notes. Quick-start controls (1.2, 1.3, 2.1, 3.1, 4.1) are fully authored.
-- Sister repo FSI-CopilotGov-Solutions is pinned at RC tag `v0.1.0-rc1`. Final `v0.1.0` tag will follow CopilotGov v1.4.0 release.
+- Sister repo FSI-CopilotGov-Solutions was pinned at RC tag `v0.1.0-rc1` for the v1.4.0 release. As of post-release maintenance, the pin has been updated to `v0.4.1` — see [CHANGELOG](https://github.com/judeper/FSI-CopilotGov/blob/main/CHANGELOG.md) for the repin notes.
 
 ## See Also
 
