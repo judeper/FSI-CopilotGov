@@ -4,6 +4,23 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## [1.6.1] - 2026-04-22
+
+### Fixed
+
+Post-tag follow-ups required for v1.6.0 to be functionally complete in the engine and SPA layers (initial v1.6.0 tag at `6a18fbe` only covered the docs/manifest layer; engine + SPA wiring landed afterward on `main`).
+
+- **Engine manifest** (`assessment/manifest/generate_manifest.py`) — added 4 new control entries (3.8a, 2.17, 3.14, 4.14) to the engine-facing CONTROLS list. Without this, the assessment engine and SPA manifest-loader stayed at 58 controls.
+- **Solutions drift coverage** (`assessment/manifest/authored_content.py`) — added `_SOLUTIONS_BY_CONTROL` entries mapping 2.17→Sol21, 3.8a→Sol20, 3.14→Sol22, 4.14→Sol23. Without this, `check_solutions_drift` reported 4 COVERAGE_ORPHANs.
+- **Assessment SPA control parsing** (`scripts/extract_assessment_data.py`) — refactored to discover control files from disk (instead of integer ranges) and loosened H1 regex to `\d+\.\d+[a-z]?` so `3.8a` is parsed correctly.
+- **SPA literal counts** (`docs/javascripts/assessment-app.js`) — two `"of 58"` strings updated to `"of 62"` in the solutions catalog badge.
+- **Validation tooling** — `scripts/validate_manifest.py`, `scripts/validate_content_graph.py`, `scripts/test_content_graph_smoke.py`, `assessment/tests/test_engine_smoke.py`, `assessment/tests/test_solutions_lock.py`, and 7 SPA tests bumped hardcoded counts (58→62, 19→23) and per-pillar distribution (16/16/13/13 → 16/17/15/14); regex `^[1-4]\.\d+$` → `^[1-4]\.\d+[a-z]?$` to accept alpha-suffixed IDs.
+- **XLSX templates** (`assessment/templates/*.xlsx`) — regenerated for 62 controls; `verify_excel_templates.py` patched to recognize `3.8a`-style IDs.
+- **Link checker** (`mlc-config.json`) — extended ignore list for `learn.microsoft.com` paths used in the new control files plus `sr1107.htm` (case-sensitive 404 from CI runners).
+- **Cross-reference link fixes** — Control 2.17 now points to `pillar-1-readiness/1.10-vendor-risk-management.md` (was non-existent `pillar-1-foundation/1.10-agent-authoring-governance.md`); Control 3.14 now points to actual filenames for 3.2 and 3.11 cross-refs.
+
+---
+
 ## [1.6.0] - 2026-04-22
 
 ### Added
