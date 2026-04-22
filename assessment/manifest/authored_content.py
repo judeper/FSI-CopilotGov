@@ -541,7 +541,6 @@ _SOLUTIONS_BY_CONTROL: dict[str, list[dict]] = {
     ],
     '1.13': [
         {"id": '10-connector-plugin-governance', "tier": 3, "role": 'primary'},
-        {"id": '19-agent-lifecycle-governance', "tier": 2, "role": 'supporting'},
     ],
     '1.14': [
         {"id": '16-item-level-oversharing-scanner', "tier": 2, "role": 'primary'},
@@ -551,7 +550,9 @@ _SOLUTIONS_BY_CONTROL: dict[str, list[dict]] = {
         {"id": '16-item-level-oversharing-scanner', "tier": 2, "role": 'primary'},
         {"id": '17-sharepoint-permissions-drift', "tier": 2, "role": 'supporting'},
     ],
-    '1.16': [],
+    '1.16': [
+        {"id": '19-copilot-tuning-governance', "tier": 2, "role": 'primary'},
+    ],
     '2.1': [
         {"id": '05-dlp-policy-governance', "tier": 2, "role": 'primary'},
     ],
@@ -593,16 +594,13 @@ _SOLUTIONS_BY_CONTROL: dict[str, list[dict]] = {
     ],
     '2.13': [
         {"id": '10-connector-plugin-governance', "tier": 3, "role": 'primary'},
-        {"id": '19-agent-lifecycle-governance', "tier": 2, "role": 'supporting'},
     ],
     '2.14': [
         {"id": '10-connector-plugin-governance', "tier": 3, "role": 'primary'},
-        {"id": '19-agent-lifecycle-governance', "tier": 2, "role": 'supporting'},
     ],
     '2.15': [],
     '2.16': [
         {"id": '10-connector-plugin-governance', "tier": 3, "role": 'primary'},
-        {"id": '19-agent-lifecycle-governance', "tier": 2, "role": 'supporting'},
     ],
     '3.1': [
         {"id": '06-audit-trail-manager', "tier": 1, "role": 'primary'},
@@ -632,6 +630,7 @@ _SOLUTIONS_BY_CONTROL: dict[str, list[dict]] = {
     ],
     '3.8': [
         {"id": '12-regulatory-compliance-dashboard', "tier": 1, "role": 'primary'},
+        {"id": '19-copilot-tuning-governance', "tier": 2, "role": 'supporting'},
     ],
     '3.9': [
         {"id": '14-communication-compliance-config', "tier": 3, "role": 'primary'},
@@ -656,7 +655,6 @@ _SOLUTIONS_BY_CONTROL: dict[str, list[dict]] = {
     ],
     '4.1': [
         {"id": '09-feature-management-controller', "tier": 2, "role": 'primary'},
-        {"id": '19-agent-lifecycle-governance', "tier": 2, "role": 'supporting'},
     ],
     '4.2': [
         {"id": '09-feature-management-controller', "tier": 2, "role": 'primary'},
@@ -696,7 +694,6 @@ _SOLUTIONS_BY_CONTROL: dict[str, list[dict]] = {
     '4.13': [
         {"id": '09-feature-management-controller', "tier": 2, "role": 'primary'},
         {"id": '10-connector-plugin-governance', "tier": 3, "role": 'supporting'},
-        {"id": '19-agent-lifecycle-governance', "tier": 2, "role": 'supporting'},
     ],
 }
 

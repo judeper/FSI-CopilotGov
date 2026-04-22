@@ -1015,11 +1015,6 @@
         "id": "10-connector-plugin-governance",
         "tier": 3,
         "role": "primary"
-      },
-      {
-        "id": "19-agent-lifecycle-governance",
-        "tier": 2,
-        "role": "supporting"
       }
     ]
   },
@@ -1242,7 +1237,13 @@
       "followUp": "TODO: follow-up hint",
       "timeBudgetMinutes": 5
     },
-    "solutions": []
+    "solutions": [
+      {
+        "id": "19-copilot-tuning-governance",
+        "tier": 2,
+        "role": "primary"
+      }
+    ]
   },
   {
     "id": "2.1",
@@ -2217,11 +2218,6 @@
         "id": "10-connector-plugin-governance",
         "tier": 3,
         "role": "primary"
-      },
-      {
-        "id": "19-agent-lifecycle-governance",
-        "tier": 2,
-        "role": "supporting"
       }
     ]
   },
@@ -2294,11 +2290,6 @@
         "id": "10-connector-plugin-governance",
         "tier": 3,
         "role": "primary"
-      },
-      {
-        "id": "19-agent-lifecycle-governance",
-        "tier": 2,
-        "role": "supporting"
       }
     ]
   },
@@ -2439,11 +2430,6 @@
         "id": "10-connector-plugin-governance",
         "tier": 3,
         "role": "primary"
-      },
-      {
-        "id": "19-agent-lifecycle-governance",
-        "tier": 2,
-        "role": "supporting"
       }
     ]
   },
@@ -3063,6 +3049,11 @@
         "id": "12-regulatory-compliance-dashboard",
         "tier": 1,
         "role": "primary"
+      },
+      {
+        "id": "19-copilot-tuning-governance",
+        "tier": 2,
+        "role": "supporting"
       }
     ]
   },
@@ -3545,11 +3536,6 @@
         "id": "09-feature-management-controller",
         "tier": 2,
         "role": "primary"
-      },
-      {
-        "id": "19-agent-lifecycle-governance",
-        "tier": 2,
-        "role": "supporting"
       }
     ]
   },
@@ -4438,11 +4424,6 @@
       {
         "id": "10-connector-plugin-governance",
         "tier": 3,
-        "role": "supporting"
-      },
-      {
-        "id": "19-agent-lifecycle-governance",
-        "tier": 2,
         "role": "supporting"
       }
     ]
