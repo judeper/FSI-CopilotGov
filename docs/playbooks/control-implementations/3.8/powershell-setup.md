@@ -1,4 +1,4 @@
-# Control 3.8: Model Risk Management Alignment (OCC 2011-12 / SR 11-7) — PowerShell Setup
+# Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI) — PowerShell Setup
 
 Automation scripts for collecting AI inventory data, verifying the Copilot control environment, and exporting usage metrics that feed MRM ongoing monitoring per OCC 2011-12 and SR 11-7.
 

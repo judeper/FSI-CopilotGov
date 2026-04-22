@@ -1,4 +1,4 @@
-# Control 3.8: Model Risk Management Alignment (OCC 2011-12 / SR 11-7) — Portal Walkthrough
+# Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI) — Portal Walkthrough
 
 Step-by-step portal configuration for aligning Microsoft 365 Copilot governance with OCC Bulletin 2011-12, OCC Bulletin 2025-26 (proportionality), and Federal Reserve SR 11-7 model risk management requirements.
 

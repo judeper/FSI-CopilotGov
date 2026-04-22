@@ -1,4 +1,4 @@
-# Control 3.8: Model Risk Management Alignment (OCC 2011-12 / SR 11-7) — Verification & Testing
+# Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI) — Verification & Testing
 
 Test cases and evidence collection procedures to validate alignment with OCC and Federal Reserve model risk management requirements for Copilot.
 

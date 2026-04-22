@@ -29,7 +29,7 @@ Copilot used to assist analysts in reviewing suspicious activity reports (SARs),
 | **NPI exposure** | AML investigation data contains customer NPI that Copilot must not surface to unauthorized users | [3.10 Reg S-P Privacy](../controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md), [2.4 Information Barriers](../controls/pillar-2-security/2.4-information-barriers.md) |
 | **Retention** | Investigation records and Copilot-generated summaries must be retained per BSA retention requirements (5 years for SARs) | [3.2 Data Retention](../controls/pillar-3-compliance/3.2-data-retention-policies.md) |
 
-**Regulatory references:** Bank Secrecy Act (BSA), FinCEN guidance, OCC Bulletin 2011-12 (SR 11-7)
+**Regulatory references:** Bank Secrecy Act (BSA), FinCEN guidance, SR 26-2 / OCC Bulletin 2026-13 (April 2026; excludes generative AI — Copilot governance applies SR 11-7 / OCC Bulletin 2011-12 principles per [Control 3.8](../controls/pillar-3-compliance/3.8-model-risk-management.md))
 
 ---
 
@@ -58,11 +58,11 @@ Copilot used to summarize market data, draft research reports, analyze financial
 |-------------|-------------|-------------------|
 | **Chinese wall enforcement** | Research analysts using Copilot must not access investment banking deal information — information barriers are critical | [2.4 Information Barriers](../controls/pillar-2-security/2.4-information-barriers.md) |
 | **Web grounding risk** | Copilot web search grounding may introduce unvetted external data into research analysis | [2.6 Web Search Controls](../controls/pillar-2-security/2.6-web-search-controls.md) |
-| **Model risk** | AI-assisted investment analysis is subject to model risk management requirements under SR 11-7 / OCC Bulletin 2011-12 | [3.8 Model Risk Management](../controls/pillar-3-compliance/3.8-model-risk-management.md) |
+| **Model risk** | AI-assisted investment analysis is subject to model risk management requirements under SR 26-2 / OCC Bulletin 2026-13 (April 2026; excludes generative AI — Copilot governance continues applying SR 11-7 / OCC Bulletin 2011-12 principles) | [3.8 Model Risk Management](../controls/pillar-3-compliance/3.8-model-risk-management.md) |
 | **Data accuracy** | Copilot may hallucinate financial data or misrepresent source material — verification workflows are essential | [1.4 Semantic Index Governance](../controls/pillar-1-readiness/1.4-semantic-index-governance.md) |
 | **Trading ahead** | Research generated with Copilot assistance must follow FINRA Rule 5280 timing requirements | [2.4 Information Barriers](../controls/pillar-2-security/2.4-information-barriers.md) |
 
-**Regulatory references:** FINRA Rule 5280, FINRA Rule 2241/2242, SR 11-7 / OCC Bulletin 2011-12
+**Regulatory references:** FINRA Rule 5280, FINRA Rule 2241/2242, SR 26-2 / OCC Bulletin 2026-13 (excludes generative AI; Copilot governance applies SR 11-7 / OCC Bulletin 2011-12 principles per [Control 3.8](../controls/pillar-3-compliance/3.8-model-risk-management.md))
 
 ---
 

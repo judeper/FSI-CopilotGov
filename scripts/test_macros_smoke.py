@@ -28,3 +28,26 @@ def test_define_env_sets_counts():
     assert isinstance(counts, dict)
     # 'pillars' is invariant (always 4) and present in both real graph and fallback.
     assert "pillars" in counts
+
+
+def test_define_env_exposes_playbook_classifications():
+    macros = _load_macros_module()
+    env = SimpleNamespace(variables={})
+    macros.define_env(env)
+
+    by_cat = env.variables["playbooks_by_category"]
+    by_pillar = env.variables["playbooks_by_pillar"]
+
+    assert isinstance(by_cat, dict)
+    assert isinstance(by_pillar, dict)
+
+    # control-implementations is the largest cross-cutting bucket once the
+    # graph is populated; allow zero in fallback mode.
+    counts = env.variables["counts"]
+    if counts.get("playbooks_total", 0) > 0:
+        assert "control-implementations" in by_cat
+        assert sum(by_cat.values()) == counts["playbooks_total"]
+        # Pillar buckets should map to 'pillar-1'..'pillar-4'.
+        for key in by_pillar:
+            assert key.startswith("pillar-")
+

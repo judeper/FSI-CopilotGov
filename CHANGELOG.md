@@ -4,6 +4,33 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.5.2 — 2026-04-22
+
+### Added — Phase X (CG side) + Phase Y + Phase U.C.2
+
+- **Phase X — Sister-graph repin.** `scripts/generate_solutions_lock.py` now pins to `FSI-CopilotGov-Solutions@v0.6.0` (was v0.5.1). The sister release introduces a canonical `solutions-graph.json` with per-solution `controlCoverage`, framework-control union, tier counts, and doc-file counts — laying the groundwork for cross-repo content-graph coupling.
+- **Phase Y — Playbook classifier macros.** `scripts/macros_module.py` now exposes two derived Jinja variables:
+    - `playbooks_by_category` — counts per content category (`control-implementations`, `compliance-and-audit`, `governance-operations`, `incident-and-risk`, `regulatory-modules`, `getting-started`, `overview`).
+    - `playbooks_by_pillar` — counts of control-implementation playbooks per pillar (`pillar-1`..`pillar-4`).
+
+  Templates can render category/pillar breakdowns without re-deriving classification. Backed by a new smoke test in `scripts/test_macros_smoke.py`.
+
+### Changed — Phase U.C.2 MRM citation sweep
+
+- Heading-only sweep across files that referenced **SR 11-7 / OCC Bulletin 2011-12** as the primary MRM authority. They now lead with **SR 26-2 / OCC Bulletin 2026-13** (April 2026) as the current interagency framework, with a one-line clarifier noting the genAI exclusion and that Copilot governance continues applying SR 11-7 / OCC Bulletin 2011-12 principles per Control 3.8. Body prose untouched (the SR 11-7 principles remain the operative framework for Copilot pending genAI-specific guidance):
+    - `docs/reference/regulatory-mappings.md` — section heading.
+    - `docs/reference/fsi-use-case-risk-scenarios.md` — three Regulatory references lines and the Investment Research model-risk row.
+    - `docs/playbooks/regulatory-modules/state-ai-laws-compliance-matrix.md` — 3.8 link annotation.
+    - `docs/playbooks/control-implementations/3.8/{portal-walkthrough,powershell-setup,verification-testing,troubleshooting}.md` — page titles.
+    - `docs/controls/pillar-4-operations/4.13-extensibility-governance.md` — auditability/lineage callout MRM reference.
+
+### Notes
+
+- Doc + infrastructure release. No new controls or playbooks; framework counts unchanged at **58 controls / 243 playbooks / 4 pillars / 19 sister solutions**.
+- `assessment/data/solutions-lock.json` regenerated against sister `v0.6.0` (commit `446d5d9`).
+
+---
+
 ## v1.5.1 — 2026-04-22
 
 ### Added — Policy resolutions (Phase W; closes Issue #3 + U.C.1 DORA)

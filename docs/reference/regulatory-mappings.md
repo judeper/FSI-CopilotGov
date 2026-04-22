@@ -137,7 +137,7 @@ Requires financial institutions to develop, implement, and maintain a comprehens
 
 ---
 
-## OCC Bulletin 2011-12 / Fed SR 11-7 — Model Risk Management
+## OCC Bulletin 2011-12 / Fed SR 11-7 — Model Risk Management (legacy citations; superseded April 2026 by SR 26-2 / OCC Bulletin 2026-13, which excludes generative and agentic AI — Copilot governance therefore continues to apply SR 11-7 / OCC Bulletin 2011-12 principles as the most recent applicable guidance, see [Control 3.8](../controls/pillar-3-compliance/3.8-model-risk-management.md))
 
 Provides guidance on model risk management for banking organizations.
 

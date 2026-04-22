@@ -1,4 +1,4 @@
-# Control 3.8: Model Risk Management Alignment (OCC 2011-12 / SR 11-7) — Troubleshooting
+# Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI) — Troubleshooting
 
 Common issues and resolution steps for model risk management compliance related to Copilot.
 
