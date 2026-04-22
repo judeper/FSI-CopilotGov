@@ -134,7 +134,7 @@ Use these validated citations consistently across all controls and playbooks:
 |-------|----------|----------|-----|
 | Third-party risk (OCC) | OCC Bulletin 2023-17 | OCC Bulletin 2013-29 | 2013-29 was rescinded/superseded by 2023-17 |
 | GLBA for banks/broker-dealers | GLBA §501(b) | GLBA Safeguards Rule | FTC Safeguards Rule applies to non-bank FTC-regulated institutions only |
-| Model risk management | SR 11-7 / OCC Bulletin 2011-12 | OCC SR 11-7 | SR 11-7 is a Federal Reserve issuance; OCC counterpart is Bulletin 2011-12 |
+| Model risk management | SR 11-7 / OCC Bulletin 2011-12 (interim — applicable to genAI per the 2026-13 exclusion) | OCC SR 11-7 | SR 11-7 is a Federal Reserve issuance; OCC counterpart is Bulletin 2011-12. Note: SR 26-2 / OCC Bulletin 2026-13 (April 2026) supersede SR 11-7 / 2011-12 for traditional models but **explicitly exclude generative and agentic AI**, so Copilot governance continues to apply the 2011-12 principles as the most recent applicable interagency guidance. |
 | OCC Heightened Standards | 12 CFR part 30, appendix D (OCC Heightened Standards) | OCC Heightened Standards | Formal citation required |
 | FINRA supervision | FINRA Rule 3110 — supervisory systems and WSPs | FINRA Rule 3110 — access controls / records organization | Rule 3110 is about supervision, not direct access controls |
 | SOX applicability | Sarbanes-Oxley §§302/404 — where applicable to ICFR | SOX 302/404 — blanket applicability | Only applies where AI tools affect financial reporting controls |
