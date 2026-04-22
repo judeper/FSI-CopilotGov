@@ -3,7 +3,7 @@
 Loads `assessment/manifest/content-graph.json`, validates it against
 `content-graph.schema.json`, and enforces business rules:
 
-  * All 58 controls are present.
+  * All 62 controls are present.
   * Control IDs are unique.
   * Every playbook ``control_refs`` entry points at a known control.
   * Every solution ``control_coverage`` entry points at a known control.
@@ -23,7 +23,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 GRAPH_PATH = REPO_ROOT / "assessment" / "manifest" / "content-graph.json"
 SCHEMA_PATH = REPO_ROOT / "assessment" / "manifest" / "content-graph.schema.json"
 
-EXPECTED_CONTROL_COUNT = 58
+EXPECTED_CONTROL_COUNT = 62
 
 
 def _load_json(path: Path) -> dict:

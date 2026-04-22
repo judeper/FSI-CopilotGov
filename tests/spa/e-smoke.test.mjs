@@ -95,18 +95,18 @@ describe("Phase E portal export envelope", () => {
     expect(env.schemaVersion).toBe("fsi-copilotgov-envelope/0.1.0");
     expect(env.scope.pillars).toEqual([1, 2, 3, 4]);
     expect(env.scope.tier).toBe("recommended");
-    expect(env.manifest.controlCount).toBe(58);
+    expect(env.manifest.controlCount).toBe(62);
     // ref is whatever generate_solutions_lock.PINNED_REF currently emits;
     // assert against the on-disk lock to stay version-agnostic.
     const lockRef = JSON.parse(readFileSync(LOCK_PATH, "utf8")).source.ref;
     expect(env.solutionsLock.ref).toBe(lockRef);
     expect(env.solutionsLock.commit).toMatch(/^[0-9a-f]{40}$/);
     expect(Array.isArray(env.answers)).toBe(true);
-    expect(env.answers).toHaveLength(58);
+    expect(env.answers).toHaveLength(62);
     expect(env.summary.yes).toBe(1);
     expect(env.summary.partial).toBe(1);
     expect(env.summary.no).toBe(1);
-    expect(env.summary.unanswered).toBe(55);
+    expect(env.summary.unanswered).toBe(59);
     expect(env.signatures).toEqual({ assessorSignedAt: null, facilitatorSignedAt: null });
     // Identity folded from scoping when envelope-identity-store is empty.
     expect(env.assessor.name).toBe("Jane Doe");
@@ -144,7 +144,7 @@ describe("Phase E portal export envelope", () => {
     // Verify the fresh app has no answers.
     expect(Object.keys(app2.state.responses)).toHaveLength(0);
     const result = app2.importEnvelope(env);
-    expect(result.controls).toBe(58);
+    expect(result.controls).toBe(62);
 
     expect(app2.state.responses["1.2"].answer).toBe("yes");
     expect(app2.state.responses["1.2"].notes).toBe("dlp active");

@@ -6,9 +6,9 @@ import { dirname, join } from "node:path";
 const here = dirname(fileURLToPath(import.meta.url));
 const MANIFEST_PATH = join(here, "..", "..", "assessment", "manifest", "controls.json");
 
-// FSI-CopilotGov ships 58 controls (16/16/13/13 across pillars 1-4).
-const EXPECTED_CONTROL_COUNT = 58;
-const EXPECTED_PER_PILLAR = { 1: 16, 2: 16, 3: 13, 4: 13 };
+// FSI-CopilotGov ships 62 controls (16/17/15/14 across pillars 1-4).
+const EXPECTED_CONTROL_COUNT = 62;
+const EXPECTED_PER_PILLAR = { 1: 16, 2: 17, 3: 15, 4: 14 };
 
 describe("manifest/controls.json", () => {
   const manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));
@@ -27,7 +27,7 @@ describe("manifest/controls.json", () => {
   it("every control has id, title, pillar, and a solutions array", () => {
     for (const c of manifest) {
       expect(typeof c.id, `id for ${JSON.stringify(c).slice(0, 80)}`).toBe("string");
-      expect(c.id).toMatch(/^[1-4]\.\d+$/);
+      expect(c.id).toMatch(/^[1-4]\.\d+[a-z]?$/);
       expect(typeof c.title, `title for ${c.id}`).toBe("string");
       expect(c.title.length).toBeGreaterThan(0);
       expect([1, 2, 3, 4]).toContain(c.pillar);

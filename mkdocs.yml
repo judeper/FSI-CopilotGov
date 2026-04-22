@@ -165,6 +165,7 @@ nav:
       - 2.14 Declarative Agents Governance: controls/pillar-2-security/2.14-declarative-agents-governance.md
       - 2.15 Network Security: controls/pillar-2-security/2.15-network-security.md
       - 2.16 Federated Connector and MCP Governance: controls/pillar-2-security/2.16-federated-connector-mcp-governance.md
+      - 2.17 Cross-Tenant Agent Federation: controls/pillar-2-security/2.17-cross-tenant-agent-federation.md
     - Pillar 3 - Compliance & Audit:
       - Overview: controls/pillar-3-compliance/index.md
       - 3.1 Copilot Audit Logging: controls/pillar-3-compliance/3.1-copilot-audit-logging.md
@@ -175,11 +176,13 @@ nav:
       - 3.6 Supervision and Oversight: controls/pillar-3-compliance/3.6-supervision-oversight.md
       - 3.7 Regulatory Reporting: controls/pillar-3-compliance/3.7-regulatory-reporting.md
       - 3.8 Model Risk Management: controls/pillar-3-compliance/3.8-model-risk-management.md
+      - 3.8a Generative AI Model Governance: controls/pillar-3-compliance/3.8a-generative-ai-model-governance.md
       - 3.9 AI Disclosure and Transparency: controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md
       - 3.10 SEC Reg S-P Privacy: controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md
       - 3.11 Record Keeping: controls/pillar-3-compliance/3.11-record-keeping.md
       - 3.12 Evidence Collection: controls/pillar-3-compliance/3.12-evidence-collection.md
       - 3.13 FFIEC Alignment: controls/pillar-3-compliance/3.13-ffiec-alignment.md
+      - 3.14 Copilot Pages and Notebooks Retention: controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md
     - Pillar 4 - Operations & Monitoring:
       - Overview: controls/pillar-4-operations/index.md
       - 4.1 Admin Settings and Feature Management: controls/pillar-4-operations/4.1-admin-settings-feature-management.md
@@ -195,6 +198,7 @@ nav:
       - 4.11 Sentinel Integration: controls/pillar-4-operations/4.11-sentinel-integration.md
       - 4.12 Change Management for Rollouts: controls/pillar-4-operations/4.12-change-management-rollouts.md
       - 4.13 Extensibility Governance: controls/pillar-4-operations/4.13-extensibility-governance.md
+      - 4.14 Copilot Studio Agent Lifecycle: controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md
 
   - Governance Scorecard: assessment/index.md
 

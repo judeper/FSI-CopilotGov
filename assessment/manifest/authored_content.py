@@ -695,6 +695,18 @@ _SOLUTIONS_BY_CONTROL: dict[str, list[dict]] = {
         {"id": '09-feature-management-controller', "tier": 2, "role": 'primary'},
         {"id": '10-connector-plugin-governance', "tier": 3, "role": 'supporting'},
     ],
+    '2.17': [
+        {"id": '21-cross-tenant-agent-federation-auditor', "tier": 3, "role": 'primary'},
+    ],
+    '3.8a': [
+        {"id": '20-generative-ai-model-governance-monitor', "tier": 3, "role": 'primary'},
+    ],
+    '3.14': [
+        {"id": '22-pages-notebooks-retention-tracker', "tier": 3, "role": 'primary'},
+    ],
+    '4.14': [
+        {"id": '23-copilot-studio-lifecycle-tracker', "tier": 3, "role": 'primary'},
+    ],
 }
 
 

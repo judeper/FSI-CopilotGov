@@ -2434,6 +2434,79 @@
     ]
   },
   {
+    "id": "2.17",
+    "title": "Control 2.17: Cross-Tenant Agent Federation (MCP and Entra Agent ID)",
+    "pillar": 2,
+    "pillar_name": "Security & Data Protection",
+    "source_file": "docs/controls/pillar-2-security/2.17-cross-tenant-agent-federation.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are cross-tenant Entra Agent ID trust relationships, MCP federated server attestations, and Copilot Studio multi-tenant publishings subject to documented approval and review?",
+    "name": "Cross-Tenant Agent Federation (MCP and Entra Agent ID)",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "TODO: assign per ROLE_CONTROLS"
+    ],
+    "regulatory": [
+      "OCC-2023-17",
+      "FFIEC-IT-Handbook",
+      "GLBA-501b",
+      "FINRA-3110",
+      "Reg-S-P"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-2-security/2.17-cross-tenant-agent-federation/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/2.17/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "21-cross-tenant-agent-federation-auditor",
+        "tier": 3,
+        "role": "primary"
+      }
+    ]
+  },
+  {
     "id": "3.1",
     "title": "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)",
     "pillar": 3,
@@ -2984,7 +3057,7 @@
   },
   {
     "id": "3.8",
-    "title": "Control 3.8: Model Risk Management Alignment (SR 11-7 / OCC Bulletin 2011-12)",
+    "title": "Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI)",
     "pillar": 3,
     "pillar_name": "Compliance & Records",
     "source_file": "docs/controls/pillar-3-compliance/3.8-model-risk-management.md",
@@ -3054,6 +3127,77 @@
         "id": "19-copilot-tuning-governance",
         "tier": 2,
         "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "3.8a",
+    "title": "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.8a-generative-ai-model-governance.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Has a generative-AI model-governance review (NIST AI RMF 1.0 / ISO/IEC 42001, addressing the SR 26-2 / OCC 2026-13 generative-AI exclusion) been completed for Copilot?",
+    "name": "Generative AI Model Governance for Microsoft 365 Copilot",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "TODO: assign per ROLE_CONTROLS"
+    ],
+    "regulatory": [
+      "SR-11-7",
+      "OCC-2011-12",
+      "NIST-AI-RMF"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.8a-generative-ai-model-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.8a/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "20-generative-ai-model-governance-monitor",
+        "tier": 3,
+        "role": "primary"
       }
     ]
   },
@@ -3440,6 +3584,79 @@
       {
         "id": "12-regulatory-compliance-dashboard",
         "tier": 1,
+        "role": "primary"
+      }
+    ]
+  },
+  {
+    "id": "3.14",
+    "title": "Control 3.14: Copilot Pages and Notebooks Retention and Provenance",
+    "pillar": 3,
+    "pillar_name": "Compliance & Records",
+    "source_file": "docs/controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md",
+    "automation": "partial",
+    "collection_methods": [
+      "Purview_PowerShell"
+    ],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Are branch-aware Copilot Pages, Notebook section-level coverage, and Loop component provenance addressed in retention and records-management policies?",
+    "name": "Copilot Pages and Notebooks Retention and Provenance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "TODO: assign per ROLE_CONTROLS"
+    ],
+    "regulatory": [
+      "SOX-302-404",
+      "FINRA-4511",
+      "SEC-17a-4"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.14/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "22-pages-notebooks-retention-tracker",
+        "tier": 3,
         "role": "primary"
       }
     ]
@@ -4425,6 +4642,79 @@
         "id": "10-connector-plugin-governance",
         "tier": 3,
         "role": "supporting"
+      }
+    ]
+  },
+  {
+    "id": "4.14",
+    "title": "Control 4.14: Copilot Studio Agent Lifecycle Governance",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is the Copilot Studio agent lifecycle (authoring → testing → publishing → versioning → deprecation) governed with documented evidence at each gate?",
+    "name": "Copilot Studio Agent Lifecycle Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "TODO: assign per ROLE_CONTROLS"
+    ],
+    "regulatory": [
+      "OCC-2023-17",
+      "OCC-Heightened-Standards",
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "FINRA-3110"
+    ],
+    "priority": "TODO: critical|high|medium|low",
+    "yesBar": "TODO: concise pass criteria",
+    "partialBar": "TODO: partial coverage criteria",
+    "noBar": "TODO: fail criteria",
+    "verifyIn": [],
+    "verifyPowerShell": "",
+    "evidenceExpected": [],
+    "controlDocUrl": "/controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.14/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "TODO: sector-specific yes-bar",
+      "broker-dealer": "TODO: sector-specific yes-bar",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "TODO: facilitator question",
+      "followUp": "TODO: follow-up hint",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": [
+      {
+        "id": "23-copilot-studio-lifecycle-tracker",
+        "tier": 3,
+        "role": "primary"
       }
     ]
   }

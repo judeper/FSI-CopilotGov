@@ -1,13 +1,13 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-04-22T16:10:20Z",
+  "generatedAt": "2026-04-22T17:07:52Z",
   "counts": {
-    "controls": 58,
+    "controls": 62,
     "pillars": 4,
     "playbooks_total": 243,
     "playbooks_control": 225,
     "playbooks_cross_cutting": 18,
-    "solutions": 19
+    "solutions": 23
   },
   "controls": [
     {
@@ -397,6 +397,20 @@
       ]
     },
     {
+      "id": "2.17",
+      "pillar": 2,
+      "title": "Control 2.17: Cross-Tenant Agent Federation (MCP and Entra Agent ID)",
+      "path": "docs/controls/pillar-2-security/2.17-cross-tenant-agent-federation.md",
+      "last_verified": "2026-04-22",
+      "regulatory_references": [
+        "GLBA §501(b)",
+        "SEC Reg S-P (248.30)",
+        "FFIEC IT Handbook (Information Security Booklet)",
+        "OCC Bulletin 2023-17 (Third-Party Relationships: Risk Management)",
+        "FINRA Rule 3110 (supervisory systems and WSPs)"
+      ]
+    },
+    {
       "id": "3.1",
       "pillar": 3,
       "title": "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)",
@@ -556,6 +570,33 @@
       "regulatory_references": [
         "FFIEC IT Examination Handbook (Information Security, Audit, Management, Operations Booklets)",
         "FFIEC Cybersecurity Assessment Tool (CAT)"
+      ]
+    },
+    {
+      "id": "3.14",
+      "pillar": 3,
+      "title": "Control 3.14: Copilot Pages and Notebooks Retention and Provenance",
+      "path": "docs/controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md",
+      "last_verified": "2026-04-22",
+      "regulatory_references": [
+        "SEC Rule 17a-4 (where applicable to required broker-dealer records)",
+        "FINRA Rule 4511(a)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
+        "Federal Reserve SR 21-14 (record retention principles)"
+      ]
+    },
+    {
+      "id": "3.8a",
+      "pillar": 3,
+      "title": "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot",
+      "path": "docs/controls/pillar-3-compliance/3.8a-generative-ai-model-governance.md",
+      "last_verified": "2026-04-22",
+      "regulatory_references": [
+        "SR 26-2 / OCC Bulletin 2026-13 (April 2026 interagency guidance — Copilot excluded as generative AI; this control applies SR 11-7 / OCC Bulletin 2011-12 principles synthesized with NIST AI RMF 1.0 and ISO/IEC 42001 as the most-recent applicable interim framework)",
+        "NIST AI RMF 1.0",
+        "ISO/IEC 42001 (AI Management Systems)",
+        "Federal Reserve SR 11-7 (interim principles)",
+        "OCC Bulletin 2011-12 (interim principles)"
       ]
     },
     {
@@ -724,6 +765,21 @@
         "FFIEC IT Examination Handbook",
         "Sarbanes-Oxley §§302/404",
         "OCC Bulletin 2023-17"
+      ]
+    },
+    {
+      "id": "4.14",
+      "pillar": 4,
+      "title": "Control 4.14: Copilot Studio Agent Lifecycle Governance",
+      "path": "docs/controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md",
+      "last_verified": "2026-04-22",
+      "regulatory_references": [
+        "FFIEC IT Handbook (Operations Booklet)",
+        "FINRA Rule 3110 (supervisory systems and WSPs)",
+        "OCC Bulletin 2023-17 (Third-Party Relationships: Risk Management)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
+        "12 CFR part 30",
+        "appendix D (OCC Heightened Standards)"
       ]
     }
   ],
@@ -2485,6 +2541,26 @@
     },
     {
       "id": "19-copilot-tuning-governance",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "20-generative-ai-model-governance-monitor",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "21-cross-tenant-agent-federation-auditor",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "22-pages-notebooks-retention-tracker",
+      "version": "0.1.0",
+      "control_coverage": []
+    },
+    {
+      "id": "23-copilot-studio-lifecycle-tracker",
       "version": "0.1.0",
       "control_coverage": []
     }

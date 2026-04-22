@@ -42,7 +42,7 @@
         "required": ["id", "pillar", "title", "path", "regulatory_references"],
         "additionalProperties": false,
         "properties": {
-          "id": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+$"},
+          "id": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+[a-z]?$"},
           "pillar": {"type": "integer", "minimum": 1, "maximum": 4},
           "title": {"type": "string"},
           "path": {"type": "string"},

@@ -1,5 +1,5 @@
 // Phase C3 smoke test — SPA Solutions catalog view.
-// - Renders 19 solution cards (from solutions-lock.json).
+// - renders 23 solution cards (from solutions-lock.json).
 // - Click a card → detail panel with control reverse-lookup
 // - Reverse lookup accurate: solution 01-copilot-readiness-scanner covers ≥ 2 controls
 // - Tier filter narrows the visible list
@@ -81,10 +81,10 @@ describe("Phase C3 SPA solutions catalog", () => {
     expect(btn.textContent).toContain("Solutions");
   });
 
-  it("solutions view renders 19 catalog cards", async () => {
+  it("solutions view renders 23 catalog cards", async () => {
     const { document } = await initApp();
     const cards = document.querySelectorAll(".solution-catalog-card");
-    expect(cards.length).toBe(19);
+    expect(cards.length).toBe(23);
   });
 
   it("reverse-lookup: 01-copilot-readiness-scanner covers ≥ 2 controls", async () => {
@@ -115,7 +115,7 @@ describe("Phase C3 SPA solutions catalog", () => {
   it("tier filter narrows the visible list", async () => {
     const { document } = await initApp();
     const allCards = document.querySelectorAll(".solution-catalog-card");
-    expect(allCards.length).toBe(19);
+    expect(allCards.length).toBe(23);
     const tier1Btn = document.querySelector('.solutions-filter-chip[data-filter-tier="1"]');
     expect(tier1Btn).not.toBeNull();
     tier1Btn.click();
@@ -128,7 +128,7 @@ describe("Phase C3 SPA solutions catalog", () => {
     });
     // Reset to All.
     document.querySelector('.solutions-filter-chip[data-filter-tier="all"]').click();
-    expect(document.querySelectorAll(".solution-catalog-card").length).toBe(19);
+    expect(document.querySelectorAll(".solution-catalog-card").length).toBe(23);
   });
 
   it("coverage badge reflects reverse-lookup count", async () => {
@@ -138,6 +138,6 @@ describe("Phase C3 SPA solutions catalog", () => {
     expect(badge).not.toBeNull();
     const actual = app.getControlsForSolution("01-copilot-readiness-scanner").length;
     expect(badge.getAttribute("data-coverage-count")).toBe(String(actual));
-    expect(badge.textContent).toMatch(/Covers \d+ of 58/);
+    expect(badge.textContent).toMatch(/Covers \d+ of 62/);
   });
 });

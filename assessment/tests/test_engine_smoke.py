@@ -4,7 +4,7 @@ These tests verify that ``assessment/engine/score.py``:
 
 * loads the live ``assessment/manifest/controls.json`` manifest
 * runs end-to-end against an empty collected/ directory
-* scores all 58 controls without crashing
+* scores all 62 controls without crashing
 * produces a well-formed scores.json envelope
 
 A separate test suite (extensible) covers per-evaluator semantics with
@@ -26,10 +26,10 @@ sys.path.insert(0, str(ENGINE_DIR))
 import score as score_mod  # noqa: E402
 
 
-def test_manifest_exists_and_has_58_controls():
+def test_manifest_exists_and_has_62_controls():
     data = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert isinstance(data, list)
-    assert len(data) == 58
+    assert len(data) == 62
 
 
 @pytest.mark.parametrize("zone", [1, 2, 3])
@@ -46,23 +46,23 @@ def test_engine_runs_against_empty_collected_dir(tmp_path, zone):
     )
 
     assert output.is_file()
-    assert result["_metadata"]["total_controls"] == 58
+    assert result["_metadata"]["total_controls"] == 62
     assert result["_metadata"]["zone"] == zone
     # All controls scored; auto+manual must equal total
     assert (
         result["_metadata"]["auto_scored"]
         + result["_metadata"]["needs_manual"]
-        == 58
+        == 62
     )
     # Average maturity is a float in [0, 4]
     avg = result["summary"]["average_maturity"]
     assert 0.0 <= avg <= 4.0
-    # Per-pillar distribution is exactly 16/16/13/13
+    # Per-pillar distribution is exactly 16/17/15/14
     by_pillar = result["summary"]["by_pillar"]
     assert by_pillar["1"]["controls"] == 16
-    assert by_pillar["2"]["controls"] == 16
-    assert by_pillar["3"]["controls"] == 13
-    assert by_pillar["4"]["controls"] == 13
+    assert by_pillar["2"]["controls"] == 17
+    assert by_pillar["3"]["controls"] == 15
+    assert by_pillar["4"]["controls"] == 14
 
 
 def test_engine_handles_envelope_shape(tmp_path):
@@ -115,3 +115,4 @@ def test_compute_maturity_threshold_logic():
     assert label == "Recommended"
     score, _, _ = score_mod.compute_maturity(5, 3, thresholds)
     assert score == 3
+

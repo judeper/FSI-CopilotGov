@@ -4,6 +4,22 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## [1.6.0] - 2026-04-22
+
+### Added
+- **Control 3.8a: Generative AI Model Governance** — extends Control 3.8 (Model Risk Management) with explicit generative AI governance addressing the SR 26-2 / OCC Bulletin 2026-13 generative AI exclusion. Synthesizes SR 11-7, NIST AI RMF 1.0, and ISO/IEC 42001.
+- **Control 2.17: Cross-Tenant Agent Federation** — governs cross-tenant Entra Agent ID trust, MCP federated server attestation, and Copilot Studio multi-tenant publishing. Extends Control 2.16 to multi-tenant scenarios.
+- **Control 3.14: Copilot Pages and Notebooks Retention and Provenance** — governs branch-aware Pages retention, Notebook section-level coverage, and Loop component provenance. Extends Control 3.2 (data retention) for these mutable artifact types.
+- **Control 4.14: Copilot Studio Agent Lifecycle** — governs authoring → testing → publishing → versioning → deprecation evidence for Copilot Studio agents. Distinguished from Control 1.10 (initial approval gate), 1.16 (tuning), and 4.13 (extensibility).
+- Cross-reference notes added to Controls 3.8, 3.2, 2.16, 4.13 pointing readers to the new controls.
+
+### Changed
+- Framework grew from 58 to **62 controls**. README.md, AGENTS.md, and content-graph regenerated to reflect new counts.
+- `assessment/manifest/content-graph.schema.json` — `controls[].id` regex extended to allow lowercase suffix (e.g., `3.8a`).
+- Sister Solutions repo repinned from v0.6.0 → **v0.7.0** (adds Solutions 20-23 covering the new controls).
+
+---
+
 ## v1.5.2 — 2026-04-22
 
 ### Added — Phase X (CG side) + Phase Y + Phase U.C.2

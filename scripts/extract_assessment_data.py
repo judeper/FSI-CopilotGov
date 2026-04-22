@@ -34,9 +34,9 @@ OUTPUT_PATH = DOCS_DIR / "javascripts" / "assessment-data.json"
 
 PILLARS = {
     1: {"name": "Readiness & Assessment", "folder": "pillar-1-readiness", "count": 16},
-    2: {"name": "Security & Protection", "folder": "pillar-2-security", "count": 16},
-    3: {"name": "Compliance & Audit", "folder": "pillar-3-compliance", "count": 13},
-    4: {"name": "Operations & Monitoring", "folder": "pillar-4-operations", "count": 13},
+    2: {"name": "Security & Protection", "folder": "pillar-2-security", "count": 17},
+    3: {"name": "Compliance & Audit", "folder": "pillar-3-compliance", "count": 15},
+    4: {"name": "Operations & Monitoring", "folder": "pillar-4-operations", "count": 14},
 }
 
 # Role-to-control assignments (hardcoded — CopilotGov has no structured role sections)
@@ -173,7 +173,7 @@ def parse_metadata(content):
 
     # Control title: "# Control 1.1: Copilot Readiness Assessment..."
     title_match = re.search(
-        r"^#\s+Control\s+(\d+\.\d+)[:\-]\s+(.+)$", content, re.MULTILINE
+        r"^#\s+Control\s+(\d+\.\d+[a-z]?)[:\-]\s*(.+)$", content, re.MULTILINE
     )
     if title_match:
         meta["id"] = title_match.group(1)
@@ -580,16 +580,28 @@ def build_output():
     errors = []
 
     for pillar_num, pillar_data in PILLARS.items():
-        for ctrl_num in range(1, pillar_data["count"] + 1):
+        folder = CONTROLS_DIR / pillar_data["folder"]
+        files = sorted(folder.glob(f"{pillar_num}.*-*.md"))
+        ctrl_nums = []
+        for f in files:
+            # Filename like "3.8a-generative-ai-model-governance.md" -> ctrl_num "8a"
+            stem = f.stem  # e.g. "3.8a-generative-ai-model-governance"
+            head = stem.split("-", 1)[0]  # "3.8a"
+            if "." not in head:
+                continue
+            _, cn = head.split(".", 1)
+            ctrl_nums.append(cn)
+
+        for ctrl_num in ctrl_nums:
             control = parse_control(pillar_num, ctrl_num)
             if control:
                 controls.append(control)
             else:
                 errors.append(f"{pillar_num}.{ctrl_num}")
 
-    # Validate we got all 58 controls
-    if len(controls) != 58:
-        print(f"\nERROR: Expected 58 controls, got {len(controls)}")
+    # Validate we got all 62 controls
+    if len(controls) != 62:
+        print(f"\nERROR: Expected 62 controls, got {len(controls)}")
         if errors:
             print(f"  Missing: {', '.join(errors)}")
         return None

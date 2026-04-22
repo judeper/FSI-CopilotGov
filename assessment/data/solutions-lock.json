@@ -325,12 +325,84 @@
         "risk-assessments"
       ],
       "version": "0.1.0"
+    },
+    {
+      "domain": "regulatory-resilience",
+      "id": "20-generative-ai-model-governance-monitor",
+      "name": "Generative AI Model Governance Monitor",
+      "prerequisites": [],
+      "repoPath": "solutions/20-generative-ai-model-governance-monitor",
+      "slug": "20-generative-ai-model-governance-monitor",
+      "summary": "Provides a documentation-first model risk management monitoring pattern for Copilot, applying SR 11-7 / OCC Bulletin 2011-12 principles to fill the generative AI exclusion in SR 26-2 / OCC Bulletin 2026-13 and align with NIST AI RMF 1.0 and ISO/IEC 42001.",
+      "tier": 3,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/20-generative-ai-model-governance-monitor",
+      "verification": [
+        "copilot-model-inventory",
+        "validation-summary",
+        "ongoing-monitoring-log",
+        "third-party-due-diligence"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "security-compliance",
+      "id": "21-cross-tenant-agent-federation-auditor",
+      "name": "Cross-Tenant Agent Federation Auditor",
+      "prerequisites": [],
+      "repoPath": "solutions/21-cross-tenant-agent-federation-auditor",
+      "slug": "21-cross-tenant-agent-federation-auditor",
+      "summary": "Documentation-first auditor for cross-tenant Copilot agent invocation, Microsoft Entra Agent ID federated trust, MCP federated server attestation, and multi-tenant Copilot Studio publishing controls.",
+      "tier": 3,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/21-cross-tenant-agent-federation-auditor",
+      "verification": [
+        "agent-federation-inventory",
+        "cross-tenant-trust-assessment",
+        "mcp-trust-relationship-log",
+        "agent-id-attestation-evidence"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "regulatory-resilience",
+      "id": "22-pages-notebooks-retention-tracker",
+      "name": "Pages and Notebooks Retention Tracker",
+      "prerequisites": [],
+      "repoPath": "solutions/22-pages-notebooks-retention-tracker",
+      "slug": "22-pages-notebooks-retention-tracker",
+      "summary": "Documentation-first tracker for Copilot Pages branch-aware retention, OneNote Notebook section-level retention coverage, and Loop component provenance, supporting records-management evidence collection for collaborative Copilot artifacts.",
+      "tier": 3,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/22-pages-notebooks-retention-tracker",
+      "verification": [
+        "pages-retention-inventory",
+        "notebook-retention-log",
+        "loop-component-lineage",
+        "branching-event-log"
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "domain": "operations-analytics",
+      "id": "23-copilot-studio-lifecycle-tracker",
+      "name": "Copilot Studio Agent Lifecycle Tracker",
+      "prerequisites": [],
+      "repoPath": "solutions/23-copilot-studio-lifecycle-tracker",
+      "slug": "23-copilot-studio-lifecycle-tracker",
+      "summary": "Documentation-first governance tracker for the Copilot Studio agent lifecycle — authoring, testing, publishing approval, version history, and deprecation evidence — packaged for supervisory and audit review.",
+      "tier": 3,
+      "url": "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/23-copilot-studio-lifecycle-tracker",
+      "verification": [
+        "agent-lifecycle-inventory",
+        "publishing-approval-log",
+        "version-history",
+        "deprecation-evidence"
+      ],
+      "version": "0.1.0"
     }
   ],
   "source": {
-    "commit": "446d5d90e40501604709c73657391d0fb50d8950",
+    "commit": "b1a5c6886c4504ce037c97f7d83a32d8faf2df21",
     "kind": "sister-repo",
-    "ref": "v0.6.0",
+    "ref": "v0.7.0",
     "repo": "judeper/FSI-CopilotGov-Solutions"
   }
 }

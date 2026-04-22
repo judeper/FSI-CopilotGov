@@ -21,7 +21,7 @@ M365 Copilot scope:
 
 * No PPAC / Power Platform collectors (Copilot stack only).
 * Pillar names: Readiness, Security, Compliance, Operations.
-* 58 controls across 4 pillars (16 / 16 / 13 / 13).
+* 62 controls across 4 pillars (16 / 17 / 15 / 14).
 """
 from __future__ import annotations
 
@@ -102,6 +102,7 @@ CONTROLS = [
     ("2.14", "2.14-declarative-agents-governance.md",          2, "partial", ["M365Admin", "Graph_API"], "Are declarative agents subject to a publishing-approval workflow with a maintained inventory?"),
     ("2.15", "2.15-network-security.md",                       2, "full",    ["Graph_API"], None),
     ("2.16", "2.16-federated-connector-mcp-governance.md",     2, "partial", ["M365Admin", "Graph_API"], "Are federated connectors and MCP endpoints subject to a documented approval, allow-list, and review cycle?"),
+    ("2.17", "2.17-cross-tenant-agent-federation.md",          2, "manual",  [], "Are cross-tenant Entra Agent ID trust relationships, MCP federated server attestations, and Copilot Studio multi-tenant publishings subject to documented approval and review?"),
     # ---------------------------------------------------------------
     # Pillar 3 — Compliance & Records (13)
     # ---------------------------------------------------------------
@@ -113,11 +114,13 @@ CONTROLS = [
     ("3.6",  "3.6-supervision-oversight.md",                   3, "manual",  [], "Is there a designated supervisory principal for Copilot use in regulated workflows, with a documented review cadence (FINRA Rule 3110)?"),
     ("3.7",  "3.7-regulatory-reporting.md",                    3, "manual",  [], "Are Copilot-related regulatory reports (e.g., book/record certifications, AI disclosures) produced on the required cadence?"),
     ("3.8",  "3.8-model-risk-management.md",                   3, "manual",  [], "Has a model-risk-management review aligned to SR 11-7 / OCC Bulletin 2011-12 been completed for Copilot deployments touching regulated functions?"),
+    ("3.8a", "3.8a-generative-ai-model-governance.md",         3, "manual",  [], "Has a generative-AI model-governance review (NIST AI RMF 1.0 / ISO/IEC 42001, addressing the SR 26-2 / OCC 2026-13 generative-AI exclusion) been completed for Copilot?"),
     ("3.9",  "3.9-ai-disclosure-transparency.md",              3, "manual",  [], "Is AI disclosure language presented to customers / counterparties before any Copilot-generated content is shared externally?"),
     ("3.10", "3.10-sec-reg-sp-privacy.md",                     3, "partial", ["Purview_PowerShell"], "Have SEC Reg S-P / GLBA §501(b) privacy controls been reviewed for Copilot processing of customer NPI?"),
     ("3.11", "3.11-record-keeping.md",                         3, "partial", ["Purview_PowerShell"], "Are Copilot interactions captured into the firm's books-and-records system per SEC Rule 17a-4 (where applicable)?"),
     ("3.12", "3.12-evidence-collection.md",                    3, "manual",  [], "Is there a documented evidence-collection runbook used for Copilot-related audits and exam responses?"),
     ("3.13", "3.13-ffiec-alignment.md",                        3, "manual",  [], "Has FFIEC IT Handbook alignment (Information Security, Outsourcing, Architecture) been reviewed for Copilot deployment?"),
+    ("3.14", "3.14-copilot-pages-notebooks-retention.md",      3, "partial", ["Purview_PowerShell"], "Are branch-aware Copilot Pages, Notebook section-level coverage, and Loop component provenance addressed in retention and records-management policies?"),
     # ---------------------------------------------------------------
     # Pillar 4 — Operations & Lifecycle (13)
     # ---------------------------------------------------------------
@@ -134,6 +137,7 @@ CONTROLS = [
     ("4.11", "4.11-sentinel-integration.md",                   4, "partial", ["Defender"], "Are Sentinel detections covering Copilot misuse reviewed and tuned on a documented cadence?"),
     ("4.12", "4.12-change-management-rollouts.md",             4, "manual",  [], "Are Copilot feature releases (Microsoft-managed and tenant-managed) tracked and risk-reviewed before user enablement?"),
     ("4.13", "4.13-extensibility-governance.md",               4, "manual",  [], "Are extensibility surfaces (declarative agents, MCP, plug-ins) governed by an approval and inventory process before publication?"),
+    ("4.14", "4.14-copilot-studio-agent-lifecycle.md",         4, "manual",  [], "Is the Copilot Studio agent lifecycle (authoring → testing → publishing → versioning → deprecation) governed with documented evidence at each gate?"),
 ]
 
 

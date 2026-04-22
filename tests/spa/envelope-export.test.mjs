@@ -8,13 +8,13 @@ describe("envelope export / import (edge cases)", () => {
     const { app } = await initApp({ step: "export" });
     const env = app.buildEnvelope();
     expect(env.schemaVersion).toBe("fsi-copilotgov-envelope/0.1.0");
-    expect(env.answers).toHaveLength(58);
+    expect(env.answers).toHaveLength(62);
     expect(env.answers.every((a) => a.answer === null)).toBe(true);
     expect(env.summary.yes).toBe(0);
     expect(env.summary.partial).toBe(0);
     expect(env.summary.no).toBe(0);
     expect(env.summary.na).toBe(0);
-    expect(env.summary.unanswered).toBe(58);
+    expect(env.summary.unanswered).toBe(62);
     expect(env.summary.overall).toBe(0);
     expect(env.summary.maturityLevel).toBe("Not assessed");
   });
@@ -25,7 +25,7 @@ describe("envelope export / import (edge cases)", () => {
     app.state.responses["1.2"] = { answer: "yes", notes: "" };
     const env = app.buildEnvelope();
     expect(env.summary.yes).toBe(1);
-    expect(env.summary.unanswered).toBe(57);
+    expect(env.summary.unanswered).toBe(61);
     expect(env.summary.scoreByPillar).toBeTypeOf("object");
     // Pillars 2-4 unanswered → their scores are zero (not undefined).
     [2, 3, 4].forEach((p) => {

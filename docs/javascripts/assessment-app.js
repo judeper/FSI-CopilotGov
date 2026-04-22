@@ -1,4 +1,4 @@
-﻿/**
+/**
  * FSI-CopilotGov Governance Scorecard
  *
  * Client-side SPA that walks users through a scoped assessment of the
@@ -4254,7 +4254,7 @@
     card.appendChild(h("span", {
       className: "solution-catalog-coverage",
       "data-coverage-count": String(coverage),
-    }, "Covers " + coverage + " of 58 control" + (coverage === 1 ? "" : "s")));
+    }, "Covers " + coverage + " of 62 control" + (coverage === 1 ? "" : "s")));
     return card;
   };
 
@@ -4281,7 +4281,7 @@
     var controls = this.getControlsForSolution(s.id);
     var ctrlSec = h("div", { className: "solution-detail-controls" });
     ctrlSec.appendChild(h("h4", null,
-      "Controls covered (" + controls.length + " of 58)"));
+      "Controls covered (" + controls.length + " of 62)"));
     if (!controls.length) {
       ctrlSec.appendChild(h("p", { className: "solution-empty" },
         "This solution is not yet mapped to any manifest controls."));

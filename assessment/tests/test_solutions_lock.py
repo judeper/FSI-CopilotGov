@@ -21,7 +21,7 @@ EXPECTED_SCHEMA = "0.1.0"
 # Sister repo catalog currently lists both `19-copilot-tuning-governance`
 # and `19-agent-lifecycle-governance` (a known sister-repo-internal
 # duplicate, tracked as a follow-up). Update when sister deduplicates.
-EXPECTED_SOLUTION_COUNT = 19
+EXPECTED_SOLUTION_COUNT = 23
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 

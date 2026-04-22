@@ -13,8 +13,8 @@ describe("manifest + solutions-lock integrity (H2)", () => {
   const manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));
   const lock = JSON.parse(readFileSync(LOCK_PATH, "utf8"));
 
-  it("all 58 controls have the required core fields", () => {
-    expect(manifest.length).toBe(58);
+  it("all 62 controls have the required core fields", () => {
+    expect(manifest.length).toBe(62);
     const required = ["id", "title", "pillar", "zonesApplicable", "automation", "solutions"];
     for (const c of manifest) {
       for (const field of required) {
@@ -88,7 +88,7 @@ describe("manifest + solutions-lock integrity (H2)", () => {
     const ids = manifest.map((c) => c.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) {
-      expect(id).toMatch(/^[1-4]\.\d+$/);
+      expect(id).toMatch(/^[1-4]\.\d+[a-z]?$/);
     }
   });
 });
