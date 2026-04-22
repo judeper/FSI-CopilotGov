@@ -4,6 +4,23 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## v1.5.1 — 2026-04-22
+
+### Added — Policy resolutions (Phase W; closes Issue #3 + U.C.1 DORA)
+- **Control 3.8 — "Future direction" callout** — commits to a forward-looking control **3.8a (Generative AI Model Governance)** to be authored when **either** the Federal Reserve, OCC, or FDIC issues genAI-specific MRM guidance (filling the SR 26-2 / OCC 2026-13 exclusion), **or by 2027-Q1**, whichever comes first. Resolves Issue [#3](https://github.com/judeper/FSI-CopilotGov/issues/3) with the **hybrid roadmap** posture (Option C). Documents the watch list for SR letters and OCC bulletins (publication channels outside the Federal Register).
+- **`docs/framework/regulatory-framework.md` — "Cross-jurisdictional solutions (DORA)" callout** — clarifies that the framework is scoped to **US financial services regulation** and that Solution 13 (DORA Operational Resilience Monitor) in the companion sister repository is provided as a courtesy for US-headquartered organizations with EU operations or for organizations operating directly in the EU. Resolves U.C.1 DORA scoping decision: status-quo + scope clarifier (rather than drop or expand framework scope to EU).
+
+### Changed
+- `assessment/data/solutions-lock.json` — repinned to sister `v0.5.1` (commit `3b528ea`) which carries the matching DORA scope clarifier in `solutions/13-dora-resilience-monitor/README.md`.
+- `scripts/generate_solutions_lock.py` — `PINNED_REF` bumped to `v0.5.1`.
+
+### Notes
+- Both decisions are defensible to a regulatory examiner: the hybrid 3.8a roadmap demonstrates the framework is tracking the SR 26-2 / OCC 2026-13 supersession; the DORA clarifier confirms scope discipline.
+- No new controls, playbooks, or solutions. Headline counts unchanged (58 controls, 243 playbooks, 19 solutions, 4 pillars).
+- Issue [#3](https://github.com/judeper/FSI-CopilotGov/issues/3) closed with this release.
+
+---
+
 ## v1.5.0 — 2026-04-22
 
 ### Added — Canonical Content Graph (Phase V; eliminates the headline-counts drift class)

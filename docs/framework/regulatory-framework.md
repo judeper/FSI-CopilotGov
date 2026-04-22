@@ -14,6 +14,9 @@ This document maps the FSI Copilot Governance Framework controls to applicable U
 !!! info "Emerging International Considerations"
     While the EU AI Act is outside the primary scope of this US-focused framework, Microsoft Purview is expanding AI data lineage tracking capabilities in response to EU AI Act requirements. These capabilities -- including AI interaction provenance and data flow documentation -- may benefit US FSI organizations' own audit and examination readiness posture. Organizations with international operations should monitor how EU AI Act obligations intersect with their US regulatory programs.
 
+!!! info "Cross-jurisdictional solutions (DORA)"
+    The framework is scoped to **US financial services regulation**. The companion solutions repository ([FSI-CopilotGov-Solutions](https://github.com/judeper/FSI-CopilotGov-Solutions)) includes **Solution 13 — DORA Operational Resilience Monitor**, which addresses the EU Digital Operational Resilience Act (Regulation (EU) 2022/2554). Solution 13 is provided as a courtesy for US-headquartered organizations whose EU operations or subsidiaries are subject to DORA; it is **not** part of the core US-FSI framework scope. Organizations operating exclusively in the US can disregard Solution 13. Organizations with EU operations should treat DORA compliance as a separate workstream coordinated with EU legal counsel, and should not rely on the US framework alone to satisfy DORA obligations.
+
 ---
 
 ## Primary US Financial Regulations

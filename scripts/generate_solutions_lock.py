@@ -16,7 +16,7 @@ Shape of the emitted lock:
       "generatedAt": "<ISO UTC>",
       "source": {
         "repo": "judeper/FSI-CopilotGov-Solutions",
-        "ref": "v0.5.0",
+        "ref": "v0.5.1",
         "commit": "<sha>"
       },
       "solutions": [ /* deep-copied from source */ ]
@@ -56,7 +56,7 @@ SISTER_REPO_SLUG = "judeper/FSI-CopilotGov-Solutions"
 EXPECTED_SCHEMA = "0.1.0"
 # The pinned ref that the v1.4 framework targets. Update in lock-step
 # with the sister repo release cadence.
-PINNED_REF = "v0.5.0"
+PINNED_REF = "v0.5.1"
 
 
 def _git(sister_repo: Path, *args: str) -> str | None:

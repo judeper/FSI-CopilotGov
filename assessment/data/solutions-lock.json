@@ -328,9 +328,9 @@
     }
   ],
   "source": {
-    "commit": "e74a2bd3fb0df8b99a5db41feda30c7137302cad",
+    "commit": "3b528ea8a028f8cf1a125f1d2e12391d8eb27f86",
     "kind": "sister-repo",
-    "ref": "v0.5.0",
+    "ref": "v0.5.1",
     "repo": "judeper/FSI-CopilotGov-Solutions"
   }
 }
