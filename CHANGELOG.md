@@ -12,7 +12,14 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
   - `controls/pillar-2-security/2.16-federated-connector-mcp-governance.md` — replaced 3 occurrences of rescinded **OCC Bulletin 2013-29** with current **OCC Bulletin 2023-17 (Third-Party Relationships: Risk Management)**.
   - `controls/pillar-4-operations/4.13-extensibility-governance.md` and `reference/fsi-use-case-risk-scenarios.md` and `playbooks/regulatory-modules/state-ai-laws-compliance-matrix.md` — corrected "OCC SR 11-7" attributions to the canonical paired citation **SR 11-7 / OCC Bulletin 2011-12** (SR 11-7 is a Federal Reserve issuance; OCC Bulletin 2011-12 is the OCC counterpart).
   - `playbooks/control-implementations/3.10/portal-walkthrough.md` and `verification-testing.md` — replaced "FTC Safeguards Rule" line items with the correct authority **GLBA §501(b)**. Reg S-P (SEC Rule 248.30) implements GLBA §501(b) for SEC-regulated broker-dealers; the FTC Safeguards Rule is a separate implementing regulation that applies only to FTC-jurisdiction institutions and is not the operative authority for SEC-regulated entities.
+- **Dead URL:** `controls/pillar-3-compliance/3.8-model-risk-management.md` — replaced the dead Federal Reserve `sr1107.htm` URL with the live **SR 26-2** URL.
+
+### Added
+- **Regulatory update notice on Control 3.8 (Model Risk Management):** A prominent callout at the top of the control documents that on **April 17, 2026**, Federal Reserve / OCC / FDIC jointly issued **SR 26-2** and **OCC Bulletin 2026-13** (*Revised Guidance on Model Risk Management*), which supersede SR 11-7 / OCC Bulletin 2011-12. The revised interagency guidance **explicitly excludes generative and agentic AI models pending further regulatory consideration**. Because Microsoft 365 Copilot is a generative AI system, the operative MRM expectations for Copilot remain undefined under the revised framework; this control therefore continues to map to the SR 11-7 / OCC Bulletin 2011-12 principles as the most recent applicable guidance, supplemented by institution-specific policy. Organizations should monitor for forthcoming agency guidance on generative AI MRM.
+
+### Notes
 - Acknowledgement: the headline-counts drift (56/57/58 controls; 224/228/243 playbooks across README, AGENTS, and index pages) is a recurring class of issue caused by hand-typed metadata. A canonical content graph (Phase U.D.3-lite) is planned to render counts from a single source.
+- A broader citation modernization sweep (replacing all SR 11-7 / OCC 2011-12 references with paired SR 26-2 / OCC 2026-13 citations) is **deferred** pending decision on whether to update the project's regulatory-citation canon (AGENTS.md). Tracked in session plan files.
 
 ---
 
