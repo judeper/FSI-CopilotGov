@@ -32,6 +32,27 @@
     },
     {
       "pattern": "^https://ithandbook\\.ffiec\\.gov"
+    },
+    {
+      "pattern": "^https://learn\\.microsoft\\.com/microsoft-copilot-studio"
+    },
+    {
+      "pattern": "^https://learn\\.microsoft\\.com/microsoft-365-copilot/microsoft-365-copilot-pages"
+    },
+    {
+      "pattern": "^https://learn\\.microsoft\\.com/microsoft-365/loop"
+    },
+    {
+      "pattern": "^https://learn\\.microsoft\\.com/microsoft-365/compliance/retention-policies-onedrive"
+    },
+    {
+      "pattern": "^https://learn\\.microsoft\\.com/power-platform/admin/inventory"
+    },
+    {
+      "pattern": "^https://learn\\.microsoft\\.com/entra/identity/enterprise-apps/agent-id-overview"
+    },
+    {
+      "pattern": "^https://www\\.federalreserve\\.gov/supervisionreg/srletters/sr1107\\.htm"
     }
   ],
   "timeout": "10s",

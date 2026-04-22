@@ -13,6 +13,7 @@ Exits 0 on success, 1 otherwise.
 from __future__ import annotations
 
 import json
+import re
 import sys
 import zipfile
 from pathlib import Path
@@ -74,7 +75,7 @@ def count_control_rows(ws, header_row: int) -> int:
             continue
         s = str(cid).strip()
         parts = s.split(".")
-        if len(parts) == 2 and all(p.isdigit() for p in parts):
+        if len(parts) == 2 and parts[0].isdigit() and re.match(r"^\d+[a-z]?$", parts[1]):
             n += 1
     return n
 
