@@ -4,6 +4,18 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## [Unreleased]
+
+### Fixed
+- **Drift correction:** `docs/index.md` now reports 243 playbooks (was 224). The framework actually publishes 225 control-implementation playbooks plus 18 cross-cutting playbooks (e.g., governance-operations, regulatory-modules) for a total of 243.
+- **Citation remediation (regulator escalation):** Replaced rescinded/incorrect regulatory citations across multiple control and reference pages.
+  - `controls/pillar-2-security/2.16-federated-connector-mcp-governance.md` — replaced 3 occurrences of rescinded **OCC Bulletin 2013-29** with current **OCC Bulletin 2023-17 (Third-Party Relationships: Risk Management)**.
+  - `controls/pillar-4-operations/4.13-extensibility-governance.md` and `reference/fsi-use-case-risk-scenarios.md` and `playbooks/regulatory-modules/state-ai-laws-compliance-matrix.md` — corrected "OCC SR 11-7" attributions to the canonical paired citation **SR 11-7 / OCC Bulletin 2011-12** (SR 11-7 is a Federal Reserve issuance; OCC Bulletin 2011-12 is the OCC counterpart).
+  - `playbooks/control-implementations/3.10/portal-walkthrough.md` and `verification-testing.md` — replaced "FTC Safeguards Rule" line items with the correct authority **GLBA §501(b)**. Reg S-P (SEC Rule 248.30) implements GLBA §501(b) for SEC-regulated broker-dealers; the FTC Safeguards Rule is a separate implementing regulation that applies only to FTC-jurisdiction institutions and is not the operative authority for SEC-regulated entities.
+- Acknowledgement: the headline-counts drift (56/57/58 controls; 224/228/243 playbooks across README, AGENTS, and index pages) is a recurring class of issue caused by hand-typed metadata. A canonical content graph (Phase U.D.3-lite) is planned to render counts from a single source.
+
+---
+
 ## v1.4.0 — 2026-04-21
 
 Major feature port from FSI-AgentGov bringing governance assessment parity for M365 Copilot.

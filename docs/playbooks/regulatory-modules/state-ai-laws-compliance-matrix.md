@@ -96,7 +96,7 @@ For detailed Colorado-specific guidance, see [Colorado AI Act Readiness](colorad
 
 ## Related Controls
 
-- [3.8 Model Risk Management](../../controls/pillar-3-compliance/3.8-model-risk-management.md) — OCC SR 11-7 alignment
+- [3.8 Model Risk Management](../../controls/pillar-3-compliance/3.8-model-risk-management.md) — SR 11-7 / OCC Bulletin 2011-12 alignment
 - [3.9 AI Disclosure and Transparency](../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md) — Federal disclosure requirements
 - [3.12 Evidence Collection](../../controls/pillar-3-compliance/3.12-evidence-collection.md) — Examination readiness documentation
 - [3.10 SEC Reg S-P Privacy](../../controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md) — Federal privacy framework

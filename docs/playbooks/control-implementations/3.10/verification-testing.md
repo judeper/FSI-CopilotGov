@@ -91,7 +91,7 @@ Test cases and evidence collection procedures to validate privacy controls for c
 | SEC Reg S-P Rule 248.30(a)(4) | Written incident response program | Test 4 verifies existence and completeness of written IRP |
 | SEC Reg S-P Rule 30 | Safeguard customer records | Supports compliance with NPI safeguarding in AI interactions |
 | GLBA Title V | Financial privacy | Helps meet privacy requirements for consumer financial information |
-| FTC Safeguards Rule | Information security program | Supports requirements for protecting customer information |
+| GLBA §501(b) | Safeguards provision for NPI | Supports requirements for protecting customer information at banks and broker-dealers (statutory basis for SEC Reg S-P safeguards; the FTC Safeguards Rule is a separate implementing regulation outside SEC jurisdiction) |
 
 ## Next Steps
 

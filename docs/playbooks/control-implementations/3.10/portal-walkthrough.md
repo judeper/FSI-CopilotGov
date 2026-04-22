@@ -114,7 +114,7 @@ The amended Reg S-P requires a written incident response program addressing unau
 - **SEC Reg S-P Rule 248.30(a)(4)** — Mandatory written incident response program; Copilot-specific scenarios must be included
 - **SEC Reg S-P (Rule 30)** — Supports compliance with safeguarding requirements for customer records and information
 - **GLBA Title V** — Helps meet financial privacy requirements for nonpublic personal information
-- **FTC Safeguards Rule** — Supports information security program requirements
+- **GLBA §501(b)** — Helps meet safeguards provisions for nonpublic personal information at banks and broker-dealers (the statutory authority for SEC Reg S-P safeguards for SEC-regulated entities; the FTC Safeguards Rule is a separate implementing regulation that applies to FTC-jurisdiction institutions, not to SEC-regulated broker-dealers)
 
 ## Next Steps
 

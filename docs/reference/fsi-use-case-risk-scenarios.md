@@ -58,11 +58,11 @@ Copilot used to summarize market data, draft research reports, analyze financial
 |-------------|-------------|-------------------|
 | **Chinese wall enforcement** | Research analysts using Copilot must not access investment banking deal information — information barriers are critical | [2.4 Information Barriers](../controls/pillar-2-security/2.4-information-barriers.md) |
 | **Web grounding risk** | Copilot web search grounding may introduce unvetted external data into research analysis | [2.6 Web Search Controls](../controls/pillar-2-security/2.6-web-search-controls.md) |
-| **Model risk** | AI-assisted investment analysis is subject to model risk management requirements under OCC SR 11-7 | [3.8 Model Risk Management](../controls/pillar-3-compliance/3.8-model-risk-management.md) |
+| **Model risk** | AI-assisted investment analysis is subject to model risk management requirements under SR 11-7 / OCC Bulletin 2011-12 | [3.8 Model Risk Management](../controls/pillar-3-compliance/3.8-model-risk-management.md) |
 | **Data accuracy** | Copilot may hallucinate financial data or misrepresent source material — verification workflows are essential | [1.4 Semantic Index Governance](../controls/pillar-1-readiness/1.4-semantic-index-governance.md) |
 | **Trading ahead** | Research generated with Copilot assistance must follow FINRA Rule 5280 timing requirements | [2.4 Information Barriers](../controls/pillar-2-security/2.4-information-barriers.md) |
 
-**Regulatory references:** FINRA Rule 5280, FINRA Rule 2241/2242, OCC SR 11-7
+**Regulatory references:** FINRA Rule 5280, FINRA Rule 2241/2242, SR 11-7 / OCC Bulletin 2011-12
 
 ---
 
@@ -101,9 +101,9 @@ Copilot in Teams meetings generating transcripts, summaries, action items, and v
 
 | Use Case | Critical Controls | Key Regulations |
 |----------|------------------|-----------------|
-| **AML/Fraud** | 3.8, 3.1, 3.11, 2.4, 3.10 | BSA, OCC SR 11-7 |
+| **AML/Fraud** | 3.8, 3.1, 3.11, 2.4, 3.10 | BSA, SR 11-7 / OCC 2011-12 |
 | **Client Communications** | 3.5, 3.6, 3.4, 3.11, 2.1, 3.9 | FINRA 2210, Reg BI |
-| **Investment Research** | 2.4, 2.6, 3.8, 1.4 | FINRA 5280, OCC SR 11-7 |
+| **Investment Research** | 2.4, 2.6, 3.8, 1.4 | FINRA 5280, SR 11-7 / OCC 2011-12 |
 | **Financial Reporting** | 3.12, 3.1, 2.4, 3.2 | SOX 302/404 |
 | **Meetings** | 4.2, 3.2, 2.2, 3.6 | FINRA 4511, FINRA 3110 |
 

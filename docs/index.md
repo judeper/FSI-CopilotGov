@@ -9,7 +9,7 @@ hide:
 # M365 Copilot Governance for **Financial Services**
 
 Govern Microsoft 365 Copilot with confidence across every M365 application.
-58 controls, 224 playbooks, and regulatory mappings for
+58 controls, 243 playbooks, and regulatory mappings for
 FINRA, SEC, SOX, and GLBA compliance.
 
 [Get Started](getting-started/quick-start.md){ .md-button .md-button--primary }
@@ -23,7 +23,7 @@ FINRA, SEC, SOX, and GLBA compliance.
     <span class="metric-label">Controls</span>
   </div>
   <div class="metric">
-    <span class="metric-number">224</span>
+    <span class="metric-number">243</span>
     <span class="metric-label">Playbooks</span>
   </div>
   <div class="metric">
