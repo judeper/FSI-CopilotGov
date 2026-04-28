@@ -97,7 +97,7 @@ Released April 2026. Full notes: [Release Notes v1.4](docs/reference/release-not
 - **Role checklist templates** (`assessment/templates/*.xlsx`) generated from the manifest.
 - **Solutions integration** — pinned reference to [FSI-CopilotGov-Solutions](https://github.com/judeper/FSI-CopilotGov-Solutions) via `assessment/data/solutions-lock.json`; drift-guarded in CI.
 - **Test suites** — 25+ pytest cases (engine, collectors, drift) and 77+ vitest cases (SPA behaviour).
-- **Monitoring workflows** — scheduled CI watches Microsoft Learn URLs and regulatory sources.
+- **Monitoring workflows** — scheduled daily CI (10:00 UTC) watches Microsoft Learn URLs and regulatory sources, opening a PR when content drift is detected.
 - **Pre-session homework pages** — per-role preparation guides under `docs/getting-started/`.
 
 ---

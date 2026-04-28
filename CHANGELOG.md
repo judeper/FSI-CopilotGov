@@ -4,6 +4,26 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## [1.6.2] - 2026-04-28
+
+### Changed
+
+- **Monitoring cadence: weekly → daily.** `.github/workflows/learn-url-monitor.yml` and `.github/workflows/regulatory-monitoring.yml` now run daily at 10:00 UTC (previously Tue / Wed weekly). Daily detection of upstream Microsoft Learn or regulatory drift, with PR creation rate-limited by the underlying scripts' no-op-on-no-change behaviour.
+- **`AGENTS.md`** and **`.github/copilot-instructions.md`** workflow inventory updated to reflect the daily cadence.
+- **`README.md`** monitoring-workflows bullet specifies "scheduled daily CI (10:00 UTC)".
+
+### Fixed
+
+- **PR creation by GitHub Actions was blocked by repo policy** (`Settings → Actions → General → Workflow permissions → "Allow GitHub Actions to create and approve pull requests"` was OFF). Both monitor workflows had been detecting changes and pushing branches but failing at the PR-create step (`##[error]GitHub Actions is not permitted to create or approve pull requests`) for several runs (Learn ~7h before fix, Regulatory ~6 days before fix). Setting flipped via `gh api PUT /repos/.../actions/permissions/workflow`. End-to-end verified by manual `workflow_dispatch` of both monitors immediately after the fix.
+
+### Operational
+
+- Cleared two stale `monitoring/*` branches that had accumulated while PR-create was blocked. Preserved the genuine `reports/monitoring/regulatory-changes-2026-04-22.md` findings report from the older stale branch (cherry-picked into the same commit as the cadence change).
+- Merged the first successful daily PRs as baseline updates: **PR #5** (Learn — 1012-line baseline initialization of Microsoft Learn URL content hashes) and **PR #6** (Regulatory — 101 items: 0 CRITICAL, 0 HIGH, 3 MEDIUM, 98 NOISE; no controls action required, the SEC Consolidated Audit Trail concept release is at the earliest stage of rulemaking).
+- Ran `git fetch --prune` and `git gc --prune=now --aggressive` to clear stale remote-tracking refs and 39 dangling objects.
+
+---
+
 ## [1.6.1] - 2026-04-22
 
 ### Fixed
