@@ -2,8 +2,8 @@ name: Microsoft Learn URL Monitor
 
 on:
   schedule:
-    # Weekly on Tuesday at 10:00 UTC
-    - cron: '0 10 * * 2'
+    # Daily at 10:00 UTC
+    - cron: '0 10 * * *'
   workflow_dispatch:
   pull_request:
     paths:
@@ -86,10 +86,10 @@ jobs:
           body: |
             ## Microsoft Learn URL Monitor
 
-            Automated weekly check of Microsoft Learn URLs referenced by
+            Automated daily check of Microsoft Learn URLs referenced by
             FSI-CopilotGov controls and playbooks.
 
-            - Changes detected: `${{ steps.monitor.outputs.exit_code == '1' && 'yes' || 'no (weekly baseline refresh)' }}`
+            - Changes detected: `${{ steps.monitor.outputs.exit_code == '1' && 'yes' || 'no (daily baseline refresh)' }}`
             - Report: `${{ steps.monitor.outputs.report_file }}`
 
             ### Files modified

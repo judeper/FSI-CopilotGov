@@ -167,8 +167,8 @@ GitHub Actions workflows in `.github/workflows/`:
 4. **`engine-tests.yml`** — runs `pytest` for the engine, collectors, drift, and monitoring smoke tests.
 5. **`manifest-fence.yml`** — blocks PRs that change `controls.json` without a matching authored-content update.
 6. **`solutions-drift.yml`** — scheduled + PR: fails if `solutions-lock.json` drifts vs the pinned sister-repo tag/SHA.
-7. **`learn-url-monitor.yml`** — scheduled: runs `learn_monitor.py`; opens an issue/PR when Microsoft Learn URLs change.
-8. **`regulatory-monitoring.yml`** — scheduled: runs `regulatory_monitor.py`; opens an issue when watched regulatory sources change.
+7. **`learn-url-monitor.yml`** — scheduled daily (10:00 UTC): runs `learn_monitor.py`; opens an issue/PR when Microsoft Learn URLs change.
+8. **`regulatory-monitoring.yml`** — scheduled daily (10:00 UTC): runs `regulatory_monitor.py`; opens an issue when watched regulatory sources change.
 
 All workflows block commits containing internal-only artifacts (PDFs, TXT, JSON in `docs/reference/` or `docs/controls/`, and files like `docs/HANDOFF.md`).
 

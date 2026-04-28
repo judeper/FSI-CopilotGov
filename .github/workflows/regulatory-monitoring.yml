@@ -2,8 +2,8 @@ name: Regulatory Monitor
 
 on:
   schedule:
-    # Weekly on Wednesday at 10:00 UTC
-    - cron: '0 10 * * 3'
+    # Daily at 10:00 UTC
+    - cron: '0 10 * * *'
   workflow_dispatch:
   pull_request:
     paths:
@@ -85,7 +85,7 @@ jobs:
           body: |
             ## Regulatory Monitor Report
 
-            Automated weekly scan of Federal Register (SEC, CFTC, OCC, Federal Reserve)
+            Automated daily scan of Federal Register (SEC, CFTC, OCC, Federal Reserve)
             and FINRA notices for AI- / FSI-relevant regulatory changes.
 
             - Report: `${{ steps.monitor.outputs.report_file }}`
