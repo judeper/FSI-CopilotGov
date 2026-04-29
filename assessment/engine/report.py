@@ -301,13 +301,20 @@ def prepare_report_data(
 
 
 def generate_prefilled_md(data: dict) -> str:
-    env = Environment(keep_trailing_newline=True)
+    # nosec B701 — autoescape is intentionally off: these templates render
+    # Markdown reports for human review, not HTML. Auto-escaping would
+    # corrupt every ``<``, ``>``, and ``&`` in control titles, regulatory
+    # citations, and verification-criteria text. Inputs come from the
+    # repo-owned ``controls.json`` manifest, not from user input.
+    env = Environment(keep_trailing_newline=True, autoescape=False)  # nosec B701
     template = env.from_string(PREFILLED_TEMPLATE)
     return template.render(**data)
 
 
 def generate_questionnaire_md(data: dict) -> str:
-    env = Environment(keep_trailing_newline=True)
+    # nosec B701 — see generate_prefilled_md(): Markdown output, manifest-only
+    # inputs, no HTML escaping required.
+    env = Environment(keep_trailing_newline=True, autoescape=False)  # nosec B701
     template = env.from_string(QUESTIONNAIRE_TEMPLATE)
     return template.render(**data)
 
