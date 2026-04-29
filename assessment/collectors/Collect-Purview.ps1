@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Collects Microsoft Purview compliance configuration data for FSI Agent Governance assessment.
+    Collects Microsoft Purview compliance configuration data for the FSI-CopilotGov assessment engine.
 
 .DESCRIPTION
     Enumerates audit log configuration, DLP compliance policies, retention policies,
@@ -35,7 +35,7 @@
     eDiscovery, insider risk, DSPM, sensitivity labels, and endpoint DLP.
 
 .NOTES
-    Part of the FSI Agent Governance Assessment Engine — Purview Collector.
+    Part of the FSI-CopilotGov Assessment Engine — Purview Collector. (Engine lineage ported from FSI-AgentGov v1.4.)
     Requires ExchangeOnlineManagement module for Connect-IPPSSession.
     Exit codes: 0 = success, 1 = partial failure (some sections null), 2 = total failure.
     Version: 1.0.0

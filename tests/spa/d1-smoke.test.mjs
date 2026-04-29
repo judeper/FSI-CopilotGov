@@ -166,7 +166,7 @@ describe("D1 SPA smoke", () => {
     app.openDrawer(ctrl);
     const drawer = document.querySelector(".control-drawer");
     const cards = drawer.querySelectorAll(".solution-card");
-    // Control 1.2 maps to 4 solutions in the manifest.
+    // FSI-CopilotGov: Control 1.2 maps to multiple solutions in the manifest (count derived from solutions-lock.json).
     expect(cards.length).toBeGreaterThanOrEqual(1);
     const first = cards[0];
     expect(first.getAttribute("href")).toMatch(/^https:\/\/github\.com/);

@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""FSI-AgentGov Assessment Report Generator.
+"""FSI-CopilotGov Assessment Report Generator.
 
 Reads scored assessment results and the control manifest, then produces:
 
 1. ``assessment-prefilled.md``  — full compliance report with evidence
 2. ``manual-questionnaire.md``  — questions requiring stakeholder interview
 3. ``assessment-summary.json``  — machine-readable summary
+
+(Engine lineage: ported from FSI-AgentGov v1.4 — see ``assessment/README.md``
+for the heritage note.)
 
 Usage::
 
@@ -24,7 +27,7 @@ from pathlib import Path
 
 from jinja2 import Environment
 
-log = logging.getLogger("fsi-agentgov-report")
+log = logging.getLogger("fsi-copilotgov-report")
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -48,7 +51,7 @@ MATURITY_LABELS: dict[int, str] = {
 # Jinja2 inline templates
 # ---------------------------------------------------------------------------
 
-PREFILLED_TEMPLATE = r"""# FSI-AgentGov Automated Assessment
+PREFILLED_TEMPLATE = r"""# FSI-CopilotGov Automated Assessment
 
 **Customer:** {{ customer }}
 **Assessment Date:** {{ date }}
@@ -81,7 +84,7 @@ PREFILLED_TEMPLATE = r"""# FSI-AgentGov Automated Assessment
 {% endfor %}
 """
 
-QUESTIONNAIRE_TEMPLATE = r"""# FSI-AgentGov Manual Assessment Questions
+QUESTIONNAIRE_TEMPLATE = r"""# FSI-CopilotGov Manual Assessment Questions
 
 **Assessor:** _______________
 **Date:** _______________
@@ -348,7 +351,7 @@ def generate_summary_json(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="FSI-AgentGov Assessment Report Generator",
+        description="FSI-CopilotGov Assessment Report Generator",
     )
     parser.add_argument(
         "--scores",

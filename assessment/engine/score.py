@@ -31,10 +31,30 @@ log = logging.getLogger("fsi-copilotgov-score")
 # Constants
 # ---------------------------------------------------------------------------
 
-# Reserved app-id used historically by AgentGov CA-policy evaluators. Kept
-# here as a constant so future Copilot-app CA evaluators can be added in
-# the same shape.
-COPILOT_STUDIO_APP_ID = "96ff4394-9197-43aa-b393-6a41652e21f8"
+# ---------------------------------------------------------------------------
+# Legacy AgentGov constants (quarantined)
+# ---------------------------------------------------------------------------
+# The following identifier and its associated evaluators
+# (``_eval_ca_policy_targets_copilot_studio``, ``_eval_ca_policy_requires_mfa``)
+# were ported from FSI-AgentGov v1.4 and reference the *Copilot Studio* first-
+# party app ID — which is NOT in the FSI-CopilotGov scope (M365 Copilot
+# surfaces only). They are intentionally retained here, behind the
+# ``LEGACY_AGENTGOV_*`` naming, so that:
+#
+#   1. The historical evaluator shape is preserved as a template for any
+#      future Copilot-app CA-policy evaluators added to FSI-CopilotGov.
+#   2. Hybrid tenants that adopt both frameworks side-by-side can still call
+#      these helpers explicitly without duplicating the constant elsewhere.
+#
+# No control in ``assessment/manifest/controls.json`` references these
+# evaluators today; they are unreachable via the standard scoring entry point.
+# Removing them is safe — they are kept only for the documented reasons above.
+LEGACY_AGENTGOV_COPILOT_STUDIO_APP_ID = "96ff4394-9197-43aa-b393-6a41652e21f8"
+
+# Backwards-compatible alias retained so that any external caller that imported
+# the original symbol continues to function. New code should reference the
+# ``LEGACY_AGENTGOV_*`` name to make the AgentGov heritage explicit.
+COPILOT_STUDIO_APP_ID = LEGACY_AGENTGOV_COPILOT_STUDIO_APP_ID
 
 MATURITY_LABELS: dict[int, str] = {
     0: "Not Implemented",
@@ -611,7 +631,7 @@ def compute_summary(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="FSI-AgentGov Assessment Scoring Engine",
+        description="FSI-CopilotGov Assessment Scoring Engine",
     )
     parser.add_argument(
         "--manifest",

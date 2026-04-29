@@ -14,7 +14,7 @@
 
 ## What This Is
 
-A technical documentation framework providing **62 controls** and **243 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
+A technical documentation framework providing **62 controls** and **263 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments. (Counts in published documentation are rendered from the canonical `assessment/manifest/content-graph.json`; this README is plain GitHub Markdown and quotes the same numbers verbatim.)
 
 This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat (Basic & Premium tiers), Copilot Pages**, and **SharePoint agents** — plus extensibility via **plugins, Graph connectors, declarative agents, and Agents 365**.
 
@@ -149,8 +149,8 @@ FSI-CopilotGov/
 │   ├── controls/           # Layer 2: Technical control specifications
 │   │   ├── pillar-1-readiness/    # 16 controls
 │   │   ├── pillar-2-security/     # 16 controls
-│   │   ├── pillar-3-compliance/   # 13 controls
-│   │   └── pillar-4-operations/   # 13 controls
+│   │   ├── pillar-3-compliance/   # 15 controls
+│   │   └── pillar-4-operations/   # 14 controls
 │   ├── playbooks/          # Layer 3: Implementation procedures
 │   │   ├── control-implementations/  # 4 playbooks per control
 │   │   ├── getting-started/          # Phased deployment guides

@@ -91,7 +91,7 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 |     PILLAR 1      |     PILLAR 2      |     PILLAR 3      |     PILLAR 4      |
 |    Readiness &    |    Security &     |   Compliance &    |   Operations &    |
 |    Assessment     |    Protection     |      Audit        |    Monitoring     |
-|   (16 controls)   |   (16 controls)   |   (13 controls)   |   (13 controls)   |
+|   (16 controls)   |   (17 controls)   |   (15 controls)   |   (14 controls)   |
 +-------------------+-------------------+-------------------+-------------------+
 | Data hygiene,     | DLP, labels,      | Audit logging,    | Feature toggles,  |
 | oversharing,      | conditional       | retention,        | analytics, cost,  |
@@ -100,15 +100,15 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 +-------------------+-------------------+-------------------+-------------------+
 ```
 
-**58 Total Controls** across four lifecycle pillars addressing readiness, security, compliance, and operations for M365 Copilot governance.
+**{{ counts.controls }} Total Controls** across four lifecycle pillars addressing readiness, security, compliance, and operations for M365 Copilot governance.
 
 ### Three Governance Levels
 
 | Level | Risk Posture | Typical Use | Control Coverage |
 |-------|--------------|-------------|------------------|
-| **Baseline** | Minimum viable governance | Initial Copilot deployment, low-risk environments | ~30 controls |
-| **Recommended** | Best-practice governance | Most production environments | ~45 controls |
-| **Regulated** | Examination-ready governance | FINRA/SEC-regulated, high-risk environments | All 58 controls |
+| **Baseline** | Minimum viable governance | Initial Copilot deployment, low-risk environments | Foundation subset |
+| **Recommended** | Best-practice governance | Most production environments | Most controls |
+| **Regulated** | Examination-ready governance | FINRA/SEC-regulated, high-risk environments | All {{ counts.controls }} controls |
 
 ---
 

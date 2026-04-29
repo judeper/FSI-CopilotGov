@@ -3,8 +3,9 @@
 Extract assessment data from FSI-CopilotGov control markdown files.
 
 Generates docs/javascripts/assessment-data.json for the Governance Readiness
-Assessment Tool. Parses all 58 controls to extract metadata, verification
-criteria, governance level requirements, and role assignments.
+Assessment Tool. Parses every control file under docs/controls/ to extract
+metadata, verification criteria, governance level requirements, and role
+assignments (control count is derived at runtime, not hard-coded).
 
 Also parses:
 - docs/reference/regulatory-mappings.md   → regulation-to-control matrix

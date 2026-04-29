@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-04-22T17:07:52Z",
+  "generatedAt": "2026-04-29T23:05:20Z",
   "counts": {
     "controls": 62,
     "pillars": 4,
-    "playbooks_total": 243,
-    "playbooks_control": 225,
+    "playbooks_total": 263,
+    "playbooks_control": 245,
     "playbooks_cross_cutting": 18,
     "solutions": 23
   },
@@ -996,6 +996,34 @@
       ]
     },
     {
+      "path": "docs/playbooks/control-implementations/1.16/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.16/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.16/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/1.16/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "1.16"
+      ]
+    },
+    {
       "path": "docs/playbooks/control-implementations/1.2/portal-walkthrough.md",
       "type": "control-implementation",
       "control_refs": [
@@ -1416,6 +1444,62 @@
       ]
     },
     {
+      "path": "docs/playbooks/control-implementations/2.16/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.16/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.16/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.16/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.17/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.17"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.17/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.17"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.17/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.17"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/2.17/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "2.17"
+      ]
+    },
+    {
       "path": "docs/playbooks/control-implementations/2.2/portal-walkthrough.md",
       "type": "control-implementation",
       "control_refs": [
@@ -1780,6 +1864,34 @@
       ]
     },
     {
+      "path": "docs/playbooks/control-implementations/3.14/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.14/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.14/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/3.14/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "3.14"
+      ]
+    },
+    {
       "path": "docs/playbooks/control-implementations/3.2/portal-walkthrough.md",
       "type": "control-implementation",
       "control_refs": [
@@ -2141,6 +2253,34 @@
       "type": "control-implementation",
       "control_refs": [
         "4.13"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.14/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.14/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.14/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.14/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.14"
       ]
     },
     {

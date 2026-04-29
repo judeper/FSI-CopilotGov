@@ -1,0 +1,88 @@
+name: Security Scan
+
+# Runs supply-chain and SAST checks across the Python tooling, the SPA bundle,
+# and the PowerShell collectors. Fails CI on high-severity findings; lower
+# findings surface as workflow annotations for triage.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 10 * * 1"  # weekly Monday 10:00 UTC
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  python-audit:
+    name: pip-audit + bandit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pip-audit bandit
+
+      - name: pip-audit (vulnerability scan)
+        run: pip-audit --strict --progress-spinner=off || pip-audit --progress-spinner=off
+        continue-on-error: false
+
+      - name: Bandit (Python SAST)
+        run: |
+          bandit -r assessment/engine assessment/manifest scripts \
+            --severity-level medium \
+            --confidence-level medium \
+            -x assessment/tests,scripts/test_*.py \
+            -f txt
+
+  powershell-analyze:
+    name: PSScriptAnalyzer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+
+      - name: Analyze collectors
+        shell: pwsh
+        run: |
+          $results = Invoke-ScriptAnalyzer `
+            -Path assessment/collectors `
+            -Recurse `
+            -Severity @('Error','Warning') `
+            -ExcludeRule PSAvoidUsingWriteHost,PSUseShouldProcessForStateChangingFunctions
+          $results | Format-Table -AutoSize
+          $errors = @($results | Where-Object { $_.Severity -eq 'Error' })
+          if ($errors.Count -gt 0) {
+            Write-Error "PSScriptAnalyzer found $($errors.Count) error-level findings."
+            exit 1
+          }
+
+  npm-audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - name: Install
+        run: npm ci || npm install
+      - name: Audit (high severity gate)
+        run: npm audit --omit=dev --audit-level=high

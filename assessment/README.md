@@ -1,15 +1,23 @@
 # FSI-CopilotGov Assessment Engine
 
 Python-based scoring engine and PowerShell collectors for the FSI-CopilotGov
-governance framework. Adapted from FSI-AgentGov v1.4 with Power Platform
-Admin Center (PPAC) collectors and evaluators removed — this repository is
-scoped to Microsoft 365 Copilot surfaces.
+governance framework.
+
+> **Heritage.** The engine was ported from FSI-AgentGov v1.4 in v1.4.0 of this
+> repository. PPAC (Power Platform Admin Center) collectors and evaluators
+> have been removed because FSI-CopilotGov is scoped to Microsoft 365 Copilot
+> surfaces (Word, Excel, PowerPoint, Outlook, Teams, OneDrive, SharePoint,
+> Copilot Chat, Copilot Pages, declarative agents, Agents 365). Power Platform
+> and Copilot Studio governance live in the companion FSI-AgentGov framework.
+> A single dead-code constant (``LEGACY_AGENTGOV_COPILOT_STUDIO_APP_ID`` in
+> ``engine/score.py``) is retained as a labelled quarantine block to preserve
+> the AgentGov evaluator shape — see the inline comment for the rationale.
 
 ## Layout
 
 | Path | Purpose |
 |------|---------|
-| `manifest/controls.json` | 58-control manifest (engine + SPA fields) |
+| `manifest/controls.json` | Control manifest consumed by the engine and SPA (count derived at load time) |
 | `manifest/generate_manifest.py` | Engine-schema generator (idempotent) |
 | `manifest/authored_content.py` | Hand-authored SPA-extension content |
 | `engine/score.py` | Scoring engine — emits `scores.json` |
@@ -60,7 +68,7 @@ python assessment/engine/report.py `
 
 * The engine accepts both manifest shapes — a flat JSON list (CopilotGov
   current shape) and the `{"version": ..., "controls": [...]}` envelope
-  used historically by AgentGov.
+  used historically by FSI-AgentGov.
 * Controls with empty `checks[]` (most CopilotGov controls today) score
   maturity 0 with confidence "low" — this is expected until per-control
   check authoring lands in a follow-up sprint.

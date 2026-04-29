@@ -1,0 +1,52 @@
+# Dependabot configuration for FSI-CopilotGov.
+#
+# Tracks Python (pip) for the docs build + assessment engine, npm for the SPA
+# vitest suite, and GitHub Actions for workflow base images / actions.
+#
+# Schedule: weekly on Mondays. Grouped to keep PR noise bounded.
+
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      python-tooling:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "pip"
+    directory: "/scripts"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      python-scripts:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      js-tooling:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      gha:
+        patterns:
+          - "*"

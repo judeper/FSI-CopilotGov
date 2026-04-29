@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Collects Microsoft Sentinel / Log Analytics configuration data for FSI Agent Governance assessment.
+    Collects Microsoft Sentinel / Log Analytics configuration data for the FSI-CopilotGov assessment engine.
 
 .DESCRIPTION
     Validates Sentinel workspace existence, enumerates data connectors (Office 365,
@@ -42,7 +42,7 @@
     sentinel.json — JSON file with workspace details, data connectors, and KQL audit check results.
 
 .NOTES
-    Part of the FSI Agent Governance Assessment Engine — Sentinel Collector.
+    Part of the FSI-CopilotGov Assessment Engine — Sentinel Collector. (Engine lineage ported from FSI-AgentGov v1.4.)
     Requires Az.OperationalInsights module.
     Exit codes: 0 = success, 1 = partial failure (some sections null), 2 = total failure.
     Version: 1.0.0

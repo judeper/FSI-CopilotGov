@@ -57,6 +57,24 @@ See [Relationship to AgentGov](relationship-to-agentgov.md) for detailed scope b
 
 ---
 
+## What This Framework Does *Not* Cover
+
+FSI-CopilotGov is intentionally scoped to the **Microsoft 365 Copilot surface** — tenant configuration, data-source posture, audit/eDiscovery, supervision, and admin-managed extensibility. The following adjacent governance domains are **out of scope** here and live in companion frameworks or your existing programs:
+
+| Out of scope | Where it lives |
+|---|---|
+| Copilot Studio agents, declarative agents, Agent Builder, custom pro-code agents — registration, risk tiering, environment zoning, model-card review, lifecycle promotion | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) |
+| Power Platform ALM (solutions, environment variables, connection references, `deploymentSettings.template.json`, managed-solution promotion, `pac cli`) | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) and Microsoft's [Copilot Studio ALM guidance](https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/alm) |
+| Agent registry, model cards, Responsible-AI evaluation packets, SR 11-7-style model-risk evidence | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) (planned) |
+| Power Platform DLP policies (connector classification, environment routing) | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) |
+| Tenant identity/Conditional Access design, privileged identity management, network segmentation | Your existing Entra and security-engineering programs |
+| Records management, supervisory policy authoring, regulatory exam response | Your compliance / legal / RIM programs (this framework provides the *evidence plumbing*, not the policy text) |
+| Production runtime code, deployable accelerators | Out of scope for both this repo and FSI-AgentGov; treat both as documentation-first |
+
+When a control here brushes against an out-of-scope topic (e.g., extensibility readiness, declarative agents, federated MCP), look for the inline **"Scope boundary: FSI-CopilotGov vs FSI-AgentGov"** callout near the top of the control page.
+
+---
+
 ## Discovery Amplification
 
 **Discovery amplification** is the central governance challenge for M365 Copilot in financial services.
@@ -117,13 +135,13 @@ Copilot closes this gap instantly. Governance must address the permissions gap *
 
 ### Overview
 
-Each of the 58 controls in this framework provides implementation guidance at three governance levels. Organizations select their target level based on regulatory obligations, risk appetite, and institutional type.
+Each of the {{ counts.controls }} controls in this framework provides implementation guidance at three governance levels. Organizations select their target level based on regulatory obligations, risk appetite, and institutional type.
 
 | Level | Description | Typical Use | Control Coverage |
 |-------|-------------|-------------|------------------|
-| **Baseline** | Minimum viable governance | Initial Copilot deployment in low-risk environments | ~30 core controls |
-| **Recommended** | Best-practice governance | Most production environments, standard FSI firms | ~45 controls |
-| **Regulated** | Examination-ready, comprehensive governance | FINRA/SEC-regulated broker-dealers, banks with OCC oversight | All 58 controls |
+| **Baseline** | Minimum viable governance | Initial Copilot deployment in low-risk environments | Foundation subset |
+| **Recommended** | Best-practice governance | Most production environments, standard FSI firms | Most controls |
+| **Regulated** | Examination-ready, comprehensive governance | FINRA/SEC-regulated broker-dealers, banks with OCC oversight | All {{ counts.controls }} controls |
 
 ### Baseline
 
@@ -367,7 +385,7 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 | 2.14 | Declarative and SharePoint Agents Governance | -- | Required | Required |
 | 2.15 | Network Security and Private Connectivity | Required | Required | Required |
 
-### Pillar 3: Compliance & Audit (13 controls)
+### Pillar 3: Compliance & Audit (15 controls)
 
 | Control | Name | Baseline | Recommended | Regulated |
 |---------|------|----------|-------------|-----------|
@@ -385,7 +403,7 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 | 3.12 | Evidence Collection and Audit Attestation | -- | -- | Required |
 | 3.13 | FFIEC IT Examination Handbook Alignment | -- | -- | Required |
 
-### Pillar 4: Operations & Monitoring (13 controls)
+### Pillar 4: Operations & Monitoring (14 controls)
 
 | Control | Name | Baseline | Recommended | Regulated |
 |---------|------|----------|-------------|-----------|

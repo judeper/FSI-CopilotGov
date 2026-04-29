@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Collects Microsoft Graph / Entra ID configuration data for FSI Agent Governance assessment.
+    Collects Microsoft Graph / Entra ID configuration data for the FSI-CopilotGov assessment engine.
 
 .DESCRIPTION
     Enumerates Conditional Access policies, FSI-Agent security groups, privileged role
@@ -34,7 +34,7 @@
     service principals, information barriers, and tenant settings.
 
 .NOTES
-    Part of the FSI Agent Governance Assessment Engine — Graph Collector.
+    Part of the FSI-CopilotGov Assessment Engine — Graph Collector. (Engine lineage ported from FSI-AgentGov v1.4.)
     Required Graph scopes: Policy.Read.All, Group.Read.All, Directory.Read.All, AuditLog.Read.All.
     Exit codes: 0 = success, 1 = partial failure (some sections null), 2 = total failure.
     Version: 1.0.0

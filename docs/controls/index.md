@@ -1,6 +1,6 @@
 # Control Catalog
 
-The FSI Copilot Governance Framework contains **58 controls** organized across four lifecycle-based pillars, providing comprehensive governance coverage for Microsoft 365 Copilot in US financial services.
+The FSI Copilot Governance Framework contains **{{ counts.controls }} controls** organized across four lifecycle-based pillars, providing comprehensive governance coverage for Microsoft 365 Copilot in US financial services.
 
 ---
 
@@ -31,7 +31,7 @@ Pre-deployment data hygiene, oversharing detection, permission audits, and licen
 
 ---
 
-### Pillar 2: Security & Protection (16 controls)
+### Pillar 2: Security & Protection (17 controls)
 
 DLP, sensitivity labels, conditional access, encryption, information barriers, and Defender integration.
 
@@ -53,10 +53,11 @@ DLP, sensitivity labels, conditional access, encryption, information barriers, a
 | 2.14 | [Declarative Agents from SharePoint — Creation and Sharing Governance](pillar-2-security/2.14-declarative-agents-governance.md) | Recommended |
 | 2.15 | [Network Security and Private Connectivity](pillar-2-security/2.15-network-security.md) | Regulated |
 | 2.16 | [Federated Copilot Connector and MCP Governance](pillar-2-security/2.16-federated-connector-mcp-governance.md) | Baseline |
+| 2.17 | [Cross-Tenant Agent Federation (MCP and Entra Agent ID)](pillar-2-security/2.17-cross-tenant-agent-federation.md) | Recommended |
 
 ---
 
-### Pillar 3: Compliance & Audit (13 Controls)
+### Pillar 3: Compliance & Audit (15 Controls)
 
 Audit logging, retention, eDiscovery, communication compliance, and regulatory reporting.
 
@@ -70,15 +71,17 @@ Audit logging, retention, eDiscovery, communication compliance, and regulatory r
 | 3.6 | [Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)](pillar-3-compliance/3.6-supervision-oversight.md) | Regulated |
 | 3.7 | [Regulatory Reporting](pillar-3-compliance/3.7-regulatory-reporting.md) | Recommended |
 | 3.8 | [Model Risk Management Alignment (SR 11-7 / OCC Bulletin 2011-12)](pillar-3-compliance/3.8-model-risk-management.md) | Regulated |
+| 3.8a | [Generative AI Model Governance for Microsoft 365 Copilot](pillar-3-compliance/3.8a-generative-ai-model-governance.md) | Regulated |
 | 3.9 | [AI Disclosure, Transparency, and SEC Marketing Rule](pillar-3-compliance/3.9-ai-disclosure-transparency.md) | Recommended |
 | 3.10 | [SEC Reg S-P — Privacy of Consumer Financial Information](pillar-3-compliance/3.10-sec-reg-sp-privacy.md) | Regulated |
 | 3.11 | [Record Keeping and Books-and-Records Compliance](pillar-3-compliance/3.11-record-keeping.md) | Baseline |
 | 3.12 | [Evidence Collection and Audit Attestation](pillar-3-compliance/3.12-evidence-collection.md) | Recommended |
 | 3.13 | [FFIEC IT Examination Handbook Alignment](pillar-3-compliance/3.13-ffiec-alignment.md) | Regulated |
+| 3.14 | [Copilot Pages and Notebooks Retention and Provenance](pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md) | Recommended |
 
 ---
 
-### Pillar 4: Operations & Monitoring (13 Controls)
+### Pillar 4: Operations & Monitoring (14 Controls)
 
 Feature management, per-app toggles, usage analytics, cost tracking, and incident response.
 
@@ -97,6 +100,7 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 | 4.11 | [Microsoft Sentinel Integration for Copilot Events](pillar-4-operations/4.11-sentinel-integration.md) | Regulated |
 | 4.12 | [Change Management for Copilot Feature Rollouts](pillar-4-operations/4.12-change-management-rollouts.md) | Baseline |
 | 4.13 | [Copilot Extensibility Governance](pillar-4-operations/4.13-extensibility-governance.md) | Recommended |
+| 4.14 | [Copilot Studio Agent Lifecycle Governance](pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md) | Recommended |
 
 ---
 
@@ -105,10 +109,10 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 | Pillar | Controls | Baseline | Recommended | Regulated |
 |--------|----------|----------|-------------|-----------|
 | 1. Readiness & Assessment | 16 | 7 | 7 | 2 |
-| 2. Security & Protection | 16 | 7 | 6 | 3 |
-| 3. Compliance & Audit | 13 | 3 | 5 | 5 |
-| 4. Operations & Monitoring | 13 | 5 | 7 | 1 |
-| **Total** | **58** | **22** | **25** | **11** |
+| 2. Security & Protection | 17 | 7 | 7 | 3 |
+| 3. Compliance & Audit | 15 | 3 | 6 | 6 |
+| 4. Operations & Monitoring | 14 | 5 | 8 | 1 |
+| **Total** | **{{ counts.controls }}** | **22** | **28** | **12** |
 
 ---
 

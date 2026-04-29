@@ -1,6 +1,6 @@
 # Implementation Checklist
 
-Use this checklist to track implementation of all 58 controls across the four governance pillars. Each item includes its governance level and space for status tracking.
+Use this checklist to track implementation of all {{ counts.controls }} controls across the four governance pillars. Each item includes its governance level and space for status tracking.
 
 !!! warning "Disclaimer"
     This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. See [full disclaimer](../disclaimer.md).
@@ -43,10 +43,13 @@ Pre-deployment data hygiene, oversharing remediation, permissions audit, sensiti
 | [ ] | 1.11 | Change Management and Adoption | R | | | Organizational change management framework for Copilot rollout and adoption |
 | [ ] | 1.12 | Training and Awareness | B | | | Role-based training on responsible AI use, data sensitivity, prompt hygiene, and regulatory boundaries |
 | [ ] | 1.13 | Extensibility Readiness | Reg | | | Pre-deployment assessment for Graph connectors, plugins, and declarative agents |
+| [ ] | 1.14 | Item-Level Permission Scanning | R | | | Detect over-permissioned items at file/folder level beyond site-wide oversharing scans |
+| [ ] | 1.15 | SharePoint Permissions Drift Detection | R | | | Detect drift in SharePoint permissions over time and trigger remediation workflows |
+| [ ] | 1.16 | Copilot Tuning Governance | Reg | | | Governance over Copilot tuning (model fine-tuning) approvals, evaluation, and lifecycle |
 
 ---
 
-## Pillar 2: Security and Protection (16 controls)
+## Pillar 2: Security and Protection (17 controls)
 
 DLP, sensitivity labels, conditional access, information barriers, data minimization, encryption, Defender integration, and extensibility security.
 
@@ -69,10 +72,12 @@ DLP, sensitivity labels, conditional access, information barriers, data minimiza
 | [ ] | — | **Agent 365 Settings Review** | R | | | Review Agent 365 centralized governance settings and maintain a complete agent inventory across all agent types (declarative, Copilot Studio, third-party) |
 | [ ] | — | **Third-Party Model Provider Policy** | R | | | Review and document third-party model provider policy — verify the setting is disabled (default) unless a vendor risk assessment is completed and governance approval is obtained |
 | [ ] | 2.15 | Network Security | Reg | | | Network-level security controls, private connectivity options, and traffic inspection for Copilot |
+| [ ] | 2.16 | Federated Connector and MCP Governance | B | | | Governance over federated Copilot connectors and MCP server enablement within a single tenant |
+| [ ] | 2.17 | Cross-Tenant Agent Federation | R | | | Governance over cross-tenant agent invocation via Entra Agent ID and federated MCP servers |
 
 ---
 
-## Pillar 3: Compliance and Audit (13 Controls)
+## Pillar 3: Compliance and Audit (15 Controls)
 
 Audit logging, retention, eDiscovery, communication compliance, FINRA/SEC record-keeping, supervisory review, model risk management, and regulatory reporting.
 
@@ -86,15 +91,17 @@ Audit logging, retention, eDiscovery, communication compliance, FINRA/SEC record
 | [ ] | 3.6 | Supervision and Oversight | Reg | | | Written supervisory procedures and qualified supervisor assignment for Copilot usage (FINRA 3110) |
 | [ ] | 3.7 | Regulatory Reporting | R | | | Compliance reporting obligations, automated report generation, and CFPB UDAAP considerations |
 | [ ] | 3.8 | Model Risk Management | Reg | | | MRM framework alignment (OCC 2011-12 / SR 11-7) for Copilot as vendor-provided AI model |
+| [ ] | 3.8a | Generative AI Model Governance | Reg | | | GenAI overlay synthesizing SR 11-7 / 2011-12 with NIST AI RMF and ISO/IEC 42001 (post-SR 26-2 transition) |
 | [ ] | 3.9 | AI Disclosure and Transparency | Reg | | | AI disclosure requirements, SEC Marketing Rule compliance, and anti-AI-washing controls |
 | [ ] | 3.10 | SEC Reg S-P Privacy | Reg | | | Copilot access to consumer financial information and NPI safeguard requirements |
 | [ ] | 3.11 | Record Keeping | B | | | SEC 17a-3/4 and FINRA 4511 record-keeping for Copilot interactions (WORM, metadata, chain of custody) |
 | [ ] | 3.12 | Evidence Collection | R | | | Standardized evidence collection workflows and attestation procedures for examinations |
 | [ ] | 3.13 | FFIEC Alignment | R | | | Mapping to FFIEC IT Examination Handbook booklets and Cybersecurity Assessment Tool |
+| [ ] | 3.14 | Copilot Pages and Notebooks Retention and Provenance | R | | | Retention, versioning, and provenance for Copilot Pages, OneNote Notebooks, and Loop components |
 
 ---
 
-## Pillar 4: Operations and Monitoring (13 Controls)
+## Pillar 4: Operations and Monitoring (14 Controls)
 
 Admin settings, per-app configuration, analytics, Viva governance, cost tracking, incident response, Sentinel SIEM, and change management.
 
@@ -113,6 +120,7 @@ Admin settings, per-app configuration, analytics, Viva governance, cost tracking
 | [ ] | 4.11 | Sentinel Integration | Reg | | | Sentinel data connectors, KQL detection queries, alert rules, workbooks, and SOAR playbooks |
 | [ ] | 4.12 | Change Management for Rollouts | R | | | Message Center monitoring, feature update impact assessment, and targeted release ring management |
 | [ ] | 4.13 | Extensibility Governance | R | | | Ongoing lifecycle governance for deployed plugins, Graph connectors, and declarative agents |
+| [ ] | 4.14 | Copilot Studio Agent Lifecycle Governance | R | | | End-to-end lifecycle governance for Copilot Studio agents (authoring, testing, publishing, versioning, deprecation) |
 
 ---
 
@@ -120,15 +128,15 @@ Admin settings, per-app configuration, analytics, Viva governance, cost tracking
 
 | Level | Pillar 1 | Pillar 2 | Pillar 3 | Pillar 4 | Total |
 |-------|----------|----------|----------|----------|-------|
-| **Baseline (B)** | 6 | 5 | 3 | 3 | **17** |
-| **Recommended (R)** | 5 | 8 | 5 | 9 | **27** |
-| **Regulated (Reg)** | 2 | 2 | 5 | 1 | **10** |
-| **Pillar Total** | **13** | **15** | **13** | **13** | **54** |
+| **Baseline (B)** | 6 | 6 | 3 | 3 | **18** |
+| **Recommended (R)** | 7 | 8 | 6 | 10 | **31** |
+| **Regulated (Reg)** | 3 | 3 | 6 | 1 | **13** |
+| **Pillar Total** | **16** | **17** | **15** | **14** | **{{ counts.controls }}** |
 
 !!! tip "Implementation Priority"
-    - **Phase 1 (Pre-deployment):** All Baseline controls (17 controls)
-    - **Phase 2 (Early production):** All Recommended controls (27 controls)
-    - **Phase 3 (Maturity):** All Regulated controls (10 controls)
+    - **Phase 1 (Pre-deployment):** All Baseline controls
+    - **Phase 2 (Early production):** All Recommended controls
+    - **Phase 3 (Maturity):** All Regulated controls
 
 ---
 

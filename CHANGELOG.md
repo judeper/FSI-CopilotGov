@@ -4,6 +4,132 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## [1.7.0] - 2026-04-29
+
+Response to the external repository critique. This release lands credibility
+fixes (count drift, AgentGov heritage cleanup, scope-boundary visibility),
+enterprise-grade repo hardening (CodeQL, Dependabot, security scan,
+PSScriptAnalyzer, SBOM, expanded SECURITY.md), and a deeper engine/SPA test
+suite.
+
+### Phase A — Credibility fixes
+
+- **Authored 5 missing playbook sets** (controls **1.16, 2.16, 2.17, 3.14,
+  4.14**) — 4 files each (`portal-walkthrough`, `powershell-setup`,
+  `verification-testing`, `troubleshooting`) plus nav wiring in
+  `mkdocs.yml`. Playbook total moves from 243 → **263** (245 control
+  implementations + 18 cross-cutting).
+- **New count drift detector** (`scripts/verify_count_consistency.py`) +
+  smoke test (`scripts/test_verify_count_consistency.py`). Wired into
+  `publish_docs.yml`. Catches hand-typed control / playbook / solution /
+  pillar numbers that disagree with `content-graph.json`.
+- **Macro adoption** — replaced ~55 hard-coded count occurrences across
+  `README.md`, `docs/index.md`, `docs/controls/index.md`,
+  `docs/assessment/index.md`, `docs/getting-started/checklist.md`,
+  `docs/getting-started/quick-start.md`, every `docs/framework/*.md` page,
+  `docs/playbooks/index.md`, `docs/playbooks/control-implementations/index.md`,
+  and `docs/reference/faq.md` with `{{ counts.controls }}`,
+  `{{ counts.playbooks_total }}`, etc. Per-pillar literal counts updated
+  to **16 / 17 / 15 / 14 = 62**.
+- **SPA + extractor de-numerified** — `docs/javascripts/assessment-app.js`
+  and `scripts/extract_assessment_data.py` no longer carry hand-typed
+  control counts.
+- **`.github/copilot-instructions.md`** brought into alignment with
+  `AGENTS.md` (62 controls, 263 playbooks).
+
+### Phase B — AgentGov heritage cleanup
+
+- **Engine self-identification** renamed in `assessment/engine/score.py`,
+  `assessment/engine/report.py`, the `PREFILLED_TEMPLATE` /
+  `QUESTIONNAIRE_TEMPLATE` titles, all argparse descriptions, and the
+  Python loggers (`fsi-copilotgov-score`, `fsi-copilotgov-report`).
+- **Quarantined `COPILOT_STUDIO_APP_ID`** behind
+  `LEGACY_AGENTGOV_COPILOT_STUDIO_APP_ID` with an explanatory comment
+  block; back-compat alias retained so external callers don't break.
+- **Collector PowerShell headers** — all four `Collect-*.ps1` `.SYNOPSIS` /
+  `.NOTES` blocks rewritten to "FSI-CopilotGov" with a single-line lineage
+  parenthetical.
+- **`assessment/README.md` heritage callout** explaining the v1.4 port
+  lineage so the rename is auditable rather than silent.
+
+### Phase C — Scope-boundary visibility
+
+- **Reusable `{{ agentgov_boundary() }}` macro** registered via
+  `scripts/macros_module.py`. Renders an inline "Scope boundary:
+  FSI-CopilotGov vs FSI-AgentGov" callout pointing readers to the
+  companion framework for agent-level governance.
+- **Boundary callout injected** at the top of every control that brushes
+  against Copilot Studio / declarative agents / Agent 365 surfaces:
+  **1.13, 2.13, 2.14, 2.16, 2.17, 4.1, 4.13**.
+- **"What This Framework Does *Not* Cover"** section added to both
+  `docs/framework/governance-fundamentals.md` and the homepage
+  (`docs/index.md`), enumerating Copilot Studio, Power Platform ALM,
+  Power Platform DLP, identity/CA design, RIM/supervisory authoring, and
+  production runtime as out-of-scope domains.
+
+### Phase D — Repo hardening
+
+- **`.github/CODEOWNERS`** mapping controls, playbooks, framework prose,
+  assessment code, scripts, workflows, and security-sensitive paths to the
+  repository owner.
+- **`.github/dependabot.yml`** — weekly Monday updates for `pip` (root +
+  `scripts/`), `npm`, and `github-actions`. Grouped to bound PR noise.
+- **`.github/workflows/codeql.yml`** — Python + JavaScript SAST on every
+  push/PR and weekly Tuesday at 09:00 UTC, with the
+  `security-and-quality` query suite.
+- **`.github/workflows/security-scan.yml`** running `pip-audit`, `bandit`
+  (medium severity gate), `npm audit` (high severity gate), and
+  `Invoke-ScriptAnalyzer` against `assessment/collectors/`. Weekly Monday
+  at 10:00 UTC + on push/PR.
+- **SBOM generation** added to `publish_docs.yml` via
+  `anchore/sbom-action@v0` (SPDX-JSON), attached to the GitHub Pages
+  deploy artifact at `site/fsi-copilotgov-sbom.spdx.json`.
+- **`SECURITY.md` expanded** with a Supported Versions table, GitHub
+  Private Vulnerability Reporting workflow, response targets
+  (acknowledge / triage / fix / disclosure), explicit scope and
+  out-of-scope sections, and a hardening-posture summary.
+
+### Phase E — Test depth
+
+- **`assessment/tests/test_engine_fixtures.py`** — deterministic scoring
+  fixtures (passing / failing / mixed synthetic tenants) pinning
+  evaluator semantics for `audit_log_enabled`,
+  `copilot_retention_policy_exists`, `grounding_sources_approved`,
+  and `no_external_sharing_on_grounding`. Plus manifest-vs-docs
+  invariants (every control has a doc page and a playbook directory; no
+  orphaned playbook directories) — handles the `3.8a` sub-control
+  parent-directory fallback.
+- **`tests/spa/count-snapshot.test.mjs`** — pins the manifest /
+  content-graph / SPA-data triple in lockstep so any single regeneration
+  drift fails CI.
+- **`scripts/test_content_graph_smoke.py`** expected counts updated
+  (`playbooks_total` 243 → 263, `playbooks_control` 225 → 245).
+
+### Validation
+
+Full local gate sweep passes:
+
+| Check | Result |
+|---|---|
+| `verify_controls.py` | 62 controls, 0 errors |
+| `verify_language_rules.py` | 360 files, 0 violations |
+| `validate_manifest.py --strict --allow-todo` | green |
+| `verify_count_consistency.py` | 414 files scanned, no drift |
+| `mkdocs build --strict` | green |
+| `pytest assessment/tests scripts -q` | **47 passed** |
+| `vitest run` | **84 passed** (12 test files) |
+
+### Out of scope (handled in `FSI-CopilotGov-Solutions`)
+
+Power Platform ALM templates, `deploymentSettings.template.json`,
+environment-variable schemas, connection-reference templates, agent
+registry / model-card / Responsible AI / model-risk evidence schemas,
+per-solution managed-deployment runbooks, `pac cli` guidance, and the
+DORA ICT third-party register template. These are tracked separately in
+the companion repo.
+
+---
+
 ## [1.6.2] - 2026-04-28
 
 ### Changed

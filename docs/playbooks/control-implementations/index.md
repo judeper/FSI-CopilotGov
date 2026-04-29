@@ -25,10 +25,11 @@ Pre-deployment controls that establish the foundation for secure M365 Copilot ad
 | 1.13 | Extensibility Readiness | [Portal](1.13/portal-walkthrough.md) / [PowerShell](1.13/powershell-setup.md) / [Verification](1.13/verification-testing.md) / [Troubleshooting](1.13/troubleshooting.md) |
 | 1.14 | Item-Level Permission Scanning | [Portal](1.14/portal-walkthrough.md) / [PowerShell](1.14/powershell-setup.md) / [Verification](1.14/verification-testing.md) / [Troubleshooting](1.14/troubleshooting.md) |
 | 1.15 | SharePoint Permissions Drift Detection | [Portal](1.15/portal-walkthrough.md) / [PowerShell](1.15/powershell-setup.md) / [Verification](1.15/verification-testing.md) / [Troubleshooting](1.15/troubleshooting.md) |
+| 1.16 | Copilot Tuning Governance | [Portal](1.16/portal-walkthrough.md) / [PowerShell](1.16/powershell-setup.md) / [Verification](1.16/verification-testing.md) / [Troubleshooting](1.16/troubleshooting.md) |
 
 ---
 
-## Pillar 2: Security and Protection (16 controls)
+## Pillar 2: Security and Protection (17 controls)
 
 Runtime controls that protect data, enforce policies, and govern Copilot interactions.
 
@@ -49,10 +50,12 @@ Runtime controls that protect data, enforce policies, and govern Copilot interac
 | 2.13 | Plugin and Graph Connector Security | [Portal](2.13/portal-walkthrough.md) / [PowerShell](2.13/powershell-setup.md) / [Verification](2.13/verification-testing.md) / [Troubleshooting](2.13/troubleshooting.md) |
 | 2.14 | Declarative Agents from SharePoint Governance | [Portal](2.14/portal-walkthrough.md) / [PowerShell](2.14/powershell-setup.md) / [Verification](2.14/verification-testing.md) / [Troubleshooting](2.14/troubleshooting.md) |
 | 2.15 | Network Security and Private Connectivity | [Portal](2.15/portal-walkthrough.md) / [PowerShell](2.15/powershell-setup.md) / [Verification](2.15/verification-testing.md) / [Troubleshooting](2.15/troubleshooting.md) |
+| 2.16 | Federated Copilot Connector and MCP Governance | [Portal](2.16/portal-walkthrough.md) / [PowerShell](2.16/powershell-setup.md) / [Verification](2.16/verification-testing.md) / [Troubleshooting](2.16/troubleshooting.md) |
+| 2.17 | Cross-Tenant Agent Federation (MCP and Entra Agent ID) | [Portal](2.17/portal-walkthrough.md) / [PowerShell](2.17/powershell-setup.md) / [Verification](2.17/verification-testing.md) / [Troubleshooting](2.17/troubleshooting.md) |
 
 ---
 
-## Pillar 3: Compliance and Audit (13 Controls)
+## Pillar 3: Compliance and Audit (15 Controls)
 
 Audit logging, retention, eDiscovery, regulatory record-keeping, supervisory review, and compliance monitoring controls.
 
@@ -71,10 +74,11 @@ Audit logging, retention, eDiscovery, regulatory record-keeping, supervisory rev
 | 3.11 | Record Keeping and Retention (SEC 17a-3/4) | [Portal](3.11/portal-walkthrough.md) / [PowerShell](3.11/powershell-setup.md) / [Verification](3.11/verification-testing.md) / [Troubleshooting](3.11/troubleshooting.md) |
 | 3.12 | Evidence Collection and Audit Packages | [Portal](3.12/portal-walkthrough.md) / [PowerShell](3.12/powershell-setup.md) / [Verification](3.12/verification-testing.md) / [Troubleshooting](3.12/troubleshooting.md) |
 | 3.13 | FFIEC IT Examination Alignment | [Portal](3.13/portal-walkthrough.md) / [PowerShell](3.13/powershell-setup.md) / [Verification](3.13/verification-testing.md) / [Troubleshooting](3.13/troubleshooting.md) |
+| 3.14 | Copilot Pages and Notebooks Retention and Provenance | [Portal](3.14/portal-walkthrough.md) / [PowerShell](3.14/powershell-setup.md) / [Verification](3.14/verification-testing.md) / [Troubleshooting](3.14/troubleshooting.md) |
 
 ---
 
-## Pillar 4: Operations and Monitoring (13 Controls)
+## Pillar 4: Operations and Monitoring (14 Controls)
 
 Feature management, per-app configuration, analytics, cost tracking, incident response, and business continuity controls.
 
@@ -93,6 +97,7 @@ Feature management, per-app configuration, analytics, cost tracking, incident re
 | 4.11 | Sentinel Integration | [Portal](4.11/portal-walkthrough.md) / [PowerShell](4.11/powershell-setup.md) / [Verification](4.11/verification-testing.md) / [Troubleshooting](4.11/troubleshooting.md) |
 | 4.12 | Change Management for Rollouts | [Portal](4.12/portal-walkthrough.md) / [PowerShell](4.12/powershell-setup.md) / [Verification](4.12/verification-testing.md) / [Troubleshooting](4.12/troubleshooting.md) |
 | 4.13 | Extensibility Governance | [Portal](4.13/portal-walkthrough.md) / [PowerShell](4.13/powershell-setup.md) / [Verification](4.13/verification-testing.md) / [Troubleshooting](4.13/troubleshooting.md) |
+| 4.14 | Copilot Studio Agent Lifecycle Governance | [Portal](4.14/portal-walkthrough.md) / [PowerShell](4.14/powershell-setup.md) / [Verification](4.14/verification-testing.md) / [Troubleshooting](4.14/troubleshooting.md) |
 
 ---
 

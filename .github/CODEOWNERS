@@ -1,0 +1,33 @@
+# FSI-CopilotGov CODEOWNERS
+#
+# This file declares default reviewers for paths in the repository. PRs that
+# change owned paths require approval from the listed owners. The repository
+# owner is the canonical reviewer for governance content; subject-matter areas
+# may delegate as the contributor base grows.
+#
+# Syntax: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/about-code-owners
+
+# Default owner for everything not matched below.
+*                                       @judeper
+
+# Control framework — controls, playbooks, framework prose
+/docs/controls/                         @judeper
+/docs/playbooks/                        @judeper
+/docs/framework/                        @judeper
+/docs/getting-started/                  @judeper
+/docs/reference/                        @judeper
+
+# Assessment engine, collectors, and manifest pipeline
+/assessment/                            @judeper
+/scripts/                               @judeper
+
+# CI/CD, supply-chain, and security configuration
+/.github/                               @judeper
+/.github/workflows/                     @judeper
+/.github/dependabot.yml                 @judeper
+/.github/CODEOWNERS                     @judeper
+/SECURITY.md                            @judeper
+
+# SPA + tests
+/docs/javascripts/                      @judeper
+/tests/                                 @judeper

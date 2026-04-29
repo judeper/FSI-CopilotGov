@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Collects SharePoint Online configuration data for FSI Agent Governance assessment.
+    Collects SharePoint Online configuration data for the FSI-CopilotGov assessment engine.
 
 .DESCRIPTION
     Enumerates SharePoint site inventory, external sharing settings, retention labels,
@@ -38,7 +38,7 @@
     guest access, item-level permissions, and grounding scope analysis.
 
 .NOTES
-    Part of the FSI Agent Governance Assessment Engine — SharePoint Collector.
+    Part of the FSI-CopilotGov Assessment Engine — SharePoint Collector. (Engine lineage ported from FSI-AgentGov v1.4.)
     Required Graph scopes: Sites.Read.All, Files.Read.All.
     Exit codes: 0 = success, 1 = partial failure (some sections null), 2 = total failure.
     Version: 1.0.0

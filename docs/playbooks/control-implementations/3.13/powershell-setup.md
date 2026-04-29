@@ -135,9 +135,9 @@ $labelSummary
 
 ### Control Framework
 - Pillar 1: Readiness and Assessment (16 controls)
-- Pillar 2: Security and Protection (16 controls)
-- Pillar 3: Compliance and Audit (13 controls)
-- Pillar 4: Operations and Monitoring (13 controls)
+- Pillar 2: Security and Protection (17 controls)
+- Pillar 3: Compliance and Audit (15 controls)
+- Pillar 4: Operations and Monitoring (14 controls)
 "@
 
 $governanceReport | Out-File "FFIEC_GovernanceReport_$(Get-Date -Format 'yyyyMMdd').md" -Encoding UTF8

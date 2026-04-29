@@ -6,7 +6,7 @@
 
 ## Overview
 
-Pillar 3 establishes the compliance monitoring, regulatory record-keeping, and audit readiness posture required for operating Microsoft 365 Copilot in a regulated financial services environment. These 13 controls address the critical ongoing compliance activities that help reduce risk from inadequate audit trails, insufficient supervision, missing retention policies, and regulatory examination gaps.
+Pillar 3 establishes the compliance monitoring, regulatory record-keeping, and audit readiness posture required for operating Microsoft 365 Copilot in a regulated financial services environment. These 15 controls address the critical ongoing compliance activities that help reduce risk from inadequate audit trails, insufficient supervision, missing retention policies, and regulatory examination gaps.
 
 Financial regulators expect that institutions maintain comprehensive records of AI-assisted activities, supervise the use of AI tools in client-facing communications, and demonstrate examination readiness. The controls in this pillar provide a structured approach to audit logging, data retention, eDiscovery, communication compliance, FINRA supervision, regulatory reporting, and evidence collection for Microsoft 365 Copilot.
 

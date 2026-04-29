@@ -124,11 +124,11 @@ Examination-ready
 </div>
 <div class="arch-card arch-pillar">
 <strong>Compliance</strong>
-13 Controls
+15 Controls
 </div>
 <div class="arch-card arch-pillar">
 <strong>Operations</strong>
-13 Controls
+14 Controls
 </div>
 </div>
 </div>
@@ -160,8 +160,20 @@ Copilot Chat, Pages
 
 | Site | Description |
 |------|-------------|
-| [FSI Agent Governance](https://judeper.github.io/FSI-AgentGov/) | For Copilot Studio, Agent Builder, and custom AI agents (71 controls) |
+| [FSI Agent Governance](https://judeper.github.io/FSI-AgentGov/) | For Copilot Studio, Agent Builder, and custom AI agents (FSI-AgentGov: 71 controls) |
 | [FSI Copilot Governance](https://judeper.github.io/FSI-CopilotGov/) | This site — M365 Copilot governance ({{ counts.controls }} controls) |
+
+### What This Framework Does *Not* Cover
+
+This framework governs the **Microsoft 365 Copilot surface only**. The following adjacent domains are explicitly **out of scope** here:
+
+- **Copilot Studio agents, declarative agents, Agent Builder, custom pro-code agents** — agent registration, risk tiering, environment zoning, model-card review → covered by [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov).
+- **Power Platform ALM** — solutions, environment variables, connection references, `deploymentSettings.template.json`, managed-solution promotion, `pac cli` → covered by FSI-AgentGov + Microsoft's [Copilot Studio ALM guidance](https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/alm).
+- **Power Platform DLP** (connector classification, environment routing) → covered by FSI-AgentGov.
+- **Tenant identity / Conditional Access design**, privileged identity management, network segmentation → owned by your existing Entra and security-engineering programs.
+- **Records-management, supervisory-policy authoring, exam-response procedures** → owned by your compliance, legal, and RIM programs (this framework provides the *evidence plumbing*, not the policy text).
+
+See [Governance Fundamentals → What This Framework Does Not Cover](framework/governance-fundamentals.md#what-this-framework-does-not-cover) for the full table, and [Relationship to FSI-AgentGov](framework/relationship-to-agentgov.md) for the boundary map.
 
 ---
 

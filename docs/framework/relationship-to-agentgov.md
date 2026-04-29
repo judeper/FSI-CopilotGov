@@ -97,8 +97,8 @@ Both repositories are **standalone** -- no cross-repo dependencies. Where govern
 |  |  Baseline / Recommended    |  |  - ALM Pipelines            |  |
 |  |  / Regulated               |  |                             |  |
 |  |                             |  |  Governance model:          |  |
-|  |  58 controls, 224 books    |  |  Zone 1 / 2 / 3            |  |
-|  |                             |  |  71 controls, 284 books    |  |
+|  |  62 controls, 263 books    |  |  Zone 1 / 2 / 3            |  |
+|  |                             |  |  71 controls (FSI-AgentGov)|  |
 |  +-----------------------------+  +-----------------------------+  |
 |                                                                    |
 |  SHARED TOPICS (each repo provides self-contained guidance):       |

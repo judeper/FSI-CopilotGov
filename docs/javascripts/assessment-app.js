@@ -1383,7 +1383,7 @@
 
     content.appendChild(h("p", { style: "margin-top:1rem;font-weight:600" }, "Governance Level Scoring"));
     content.appendChild(h("p", null,
-      "All 58 controls are assessed at your selected target governance level. " +
+      "All controls are assessed at your selected target governance level. " +
       "Governance levels are cumulative: Recommended includes all Baseline requirements, and Regulated includes all Recommended requirements."));
 
     this.showModal("How Scoring Works", content);
@@ -1556,7 +1556,7 @@
     wrap.appendChild(h("h2", { style: "font-size:1.3rem;margin-bottom:0.3rem", "data-step-heading": "true", tabindex: "-1" }, "Assessment Scoping"));
     wrap.appendChild(h("p", { className: "ag-card-subtitle" },
       "Configure the assessment scope for your organization. " +
-      "All 58 controls will be assessed and prioritized based on your profile and target governance level."
+      "All controls in the manifest will be assessed and prioritized based on your profile and target governance level."
     ));
     wrap.appendChild(h("div", { className: "ag-callout" },
       "Required fields are marked with an asterisk. Browser drafts are saved on this device while you work, but Save to File remains the primary artifact for sharing or archival."
@@ -4064,7 +4064,8 @@
 
   /* ================================================================
      C3: SOLUTIONS CATALOG VIEW
-     Top-level view listing all 19 solutions from solutions-lock.json,
+     Top-level view listing every solution from solutions-lock.json
+     (count is derived from the loaded manifest at runtime, not hard-coded),
      with filters (tier/domain/search), reverse-lookup from manifest
      showing which controls reference each solution, and a click-to-
      detail panel.

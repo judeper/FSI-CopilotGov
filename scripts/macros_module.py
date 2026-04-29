@@ -74,3 +74,28 @@ def define_env(env):
     env.variables["playbooks_by_category"] = by_category
     env.variables["playbooks_by_pillar"] = by_pillar
 
+    def agentgov_boundary():
+        """Reusable scope-boundary callout shown on pages that brush against
+        Copilot Studio / declarative agents / Agent 365 surfaces. Keeps the
+        FSI-CopilotGov vs FSI-AgentGov boundary visible at point of use."""
+        return (
+            '!!! info "Scope boundary: FSI-CopilotGov vs FSI-AgentGov"\n'
+            '    This control governs the **Microsoft 365 Copilot surface only** — '
+            'tenant-level configuration, data-source posture, audit/eDiscovery, and '
+            'admin-managed extensibility. Governance of the **agents themselves** '
+            '(Copilot Studio agents, declarative agents, Agent Builder, custom '
+            'pro-code agents) — including agent registration, risk tiering, '
+            'environment zoning, model-card review, and lifecycle promotion — '
+            'lives in the companion '
+            '[FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) framework. '
+            'See [Relationship to FSI-AgentGov](../../framework/relationship-to-agentgov.md) '
+            'for the full boundary map.\n'
+        )
+
+    # Register as a Jinja macro under mkdocs-macros (which provides .macro);
+    # gracefully degrade for unit-test stubs that pass a bare SimpleNamespace.
+    if hasattr(env, "macro"):
+        env.macro(agentgov_boundary)
+    else:
+        env.variables["agentgov_boundary"] = agentgov_boundary
+

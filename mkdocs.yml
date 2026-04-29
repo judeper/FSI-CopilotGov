@@ -282,6 +282,11 @@ nav:
           - PowerShell Setup: playbooks/control-implementations/1.15/powershell-setup.md
           - Verification: playbooks/control-implementations/1.15/verification-testing.md
           - Troubleshooting: playbooks/control-implementations/1.15/troubleshooting.md
+        - 1.16 Copilot Tuning Governance:
+          - Portal Walkthrough: playbooks/control-implementations/1.16/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/1.16/powershell-setup.md
+          - Verification: playbooks/control-implementations/1.16/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/1.16/troubleshooting.md
       - Pillar 2 - Security & Protection:
         - 2.1 DLP Policies:
           - Portal Walkthrough: playbooks/control-implementations/2.1/portal-walkthrough.md
@@ -358,6 +363,16 @@ nav:
           - PowerShell Setup: playbooks/control-implementations/2.15/powershell-setup.md
           - Verification: playbooks/control-implementations/2.15/verification-testing.md
           - Troubleshooting: playbooks/control-implementations/2.15/troubleshooting.md
+        - 2.16 Federated Connector and MCP Governance:
+          - Portal Walkthrough: playbooks/control-implementations/2.16/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.16/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.16/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.16/troubleshooting.md
+        - 2.17 Cross-Tenant Agent Federation:
+          - Portal Walkthrough: playbooks/control-implementations/2.17/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/2.17/powershell-setup.md
+          - Verification: playbooks/control-implementations/2.17/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/2.17/troubleshooting.md
       - Pillar 3 - Compliance & Audit:
         - 3.1 Audit Logging:
           - Portal Walkthrough: playbooks/control-implementations/3.1/portal-walkthrough.md
@@ -424,6 +439,11 @@ nav:
           - PowerShell Setup: playbooks/control-implementations/3.13/powershell-setup.md
           - Verification: playbooks/control-implementations/3.13/verification-testing.md
           - Troubleshooting: playbooks/control-implementations/3.13/troubleshooting.md
+        - 3.14 Copilot Pages and Notebooks Retention:
+          - Portal Walkthrough: playbooks/control-implementations/3.14/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/3.14/powershell-setup.md
+          - Verification: playbooks/control-implementations/3.14/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/3.14/troubleshooting.md
       - Pillar 4 - Operations & Monitoring:
         - 4.1 Admin Settings:
           - Portal Walkthrough: playbooks/control-implementations/4.1/portal-walkthrough.md
@@ -490,6 +510,11 @@ nav:
           - PowerShell Setup: playbooks/control-implementations/4.13/powershell-setup.md
           - Verification: playbooks/control-implementations/4.13/verification-testing.md
           - Troubleshooting: playbooks/control-implementations/4.13/troubleshooting.md
+        - 4.14 Copilot Studio Agent Lifecycle:
+          - Portal Walkthrough: playbooks/control-implementations/4.14/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.14/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.14/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.14/troubleshooting.md
     - Getting Started:
       - Phase 0 - Governance Setup: playbooks/getting-started/phase-0-governance-setup.md
       - Phase 1 - Pilot Deployment: playbooks/getting-started/phase-1-pilot-deployment.md

@@ -69,6 +69,9 @@ jobs:
       - name: Verify README/AGENTS Counts vs Content Graph
         run: python scripts/verify_readme_counts.py
 
+      - name: Verify Count Consistency Across Docs/SPA
+        run: python scripts/verify_count_consistency.py
+
       - name: Generate Assessment Data
         run: python scripts/extract_assessment_data.py
 
@@ -92,6 +95,14 @@ jobs:
 
       - name: Validate Documentation
         run: mkdocs build --strict
+
+      - name: Generate SBOM (SPDX)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          artifact-name: fsi-copilotgov-sbom.spdx.json
+          output-file: ./site/fsi-copilotgov-sbom.spdx.json
 
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force

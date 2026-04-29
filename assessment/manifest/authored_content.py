@@ -16,7 +16,8 @@ Phase A3 covers the 5 quick-start controls:
 * 3.1  — Copilot Audit Logging (Purview UAL)
 * 4.1  — Copilot Admin Settings & Feature Management
 
-Subsequent phases will extend AUTHORED with the remaining 53 controls.
+Subsequent phases will extend AUTHORED with the remaining controls in the
+manifest (the count is derived from the loaded manifest length, not hard-coded).
 
 The merge is **idempotent**: only fields present in this dict overwrite
 manifest values, and only when the manifest value is missing or starts
