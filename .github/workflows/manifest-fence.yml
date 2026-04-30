@@ -54,4 +54,9 @@ jobs:
         run: python scripts/validate_manifest.py --strict --allow-todo
 
       - name: Check solutions-lock is up to date
+        # Skip on dependabot PRs: the script needs the sister repo
+        # FSI-CopilotGov-Solutions, which dependabot runners can't access.
+        # Solutions-lock drift is enforced on every other PR + scheduled
+        # by the dedicated Solutions Drift workflow.
+        if: github.actor != 'dependabot[bot]'
         run: python scripts/generate_solutions_lock.py --check
