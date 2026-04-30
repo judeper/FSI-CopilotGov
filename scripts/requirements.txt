@@ -2,9 +2,9 @@
 # Install with: pip install -r scripts/requirements.txt
 
 # Required for monitoring scripts (learn_monitor.py, regulatory_monitor.py)
-requests>=2.32.0
-beautifulsoup4>=4.12.0
-pyyaml>=6.0
+requests>=2.33.1
+beautifulsoup4>=4.14.3
+pyyaml>=6.0.3
 
 # Required for content-graph validation (validate_content_graph.py)
-jsonschema>=4.21.0
+jsonschema>=4.26.0
