@@ -4,6 +4,42 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## [1.7.1] - 2026-04-30
+
+Post-release CI hardening and dependency refresh. No content or framework changes.
+
+### Fixed
+
+- **Bandit B701 (Jinja `autoescape=False`)** on `assessment/engine/report.py`:
+  the two `Environment(...)` instances now set `autoescape=False` explicitly with
+  a `# nosec B701` justification — the templates render Markdown (not HTML) and
+  consume only repo-owned manifest data, so HTML escaping is intentionally off.
+  Resolves the only finding from the new `Security Scan` workflow shipped in
+  1.7.0.
+- **Manifest Fence on Dependabot PRs**: the `Check solutions-lock is up to date`
+  step in `.github/workflows/manifest-fence.yml` now skips when the actor is
+  `dependabot[bot]`. The step calls `generate_solutions_lock.py --check`, which
+  needs read access to the sister repo; Dependabot's token does not have that
+  scope. Solutions-lock drift continues to be enforced on every other PR and on
+  the daily schedule by the dedicated `Solutions Drift` workflow.
+
+### Dependencies
+
+- **GitHub Actions** (gha group, major bumps): `actions/checkout` v4 → v6,
+  `github/codeql-action` v3 → v4, `actions/upload-artifact` v4 → v7,
+  `peter-evans/create-pull-request` v6 → v8, `actions/setup-node` v4 → v6,
+  `actions/setup-python` v5 → v6, `actions/cache` v4 → v5,
+  `peter-evans/create-issue-from-file` v5 → v6. Smoke-tested via manual
+  `workflow_dispatch` of `learn-url-monitor`, `regulatory-monitoring`, and
+  `solutions-drift` after merge — all green.
+- **Python tooling** (7 bumps) and **python-scripts** runtime deps (4 bumps).
+- **JS dev tooling** (3 bumps): vitest + jsdom group.
+- **Monitor baselines refreshed** for 2026-04-29 and 2026-04-30 (Federal
+  Register + FINRA + Microsoft Learn URL hashes). All findings classified as
+  NOISE — no governance-impacting changes detected.
+
+---
+
 ## [1.7.0] - 2026-04-29
 
 Response to the external repository critique. This release lands credibility
