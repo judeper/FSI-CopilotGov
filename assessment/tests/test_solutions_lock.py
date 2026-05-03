@@ -88,3 +88,35 @@ def test_primary_role_position(manifest: list[dict]) -> None:
             for rest in sols[1:]:
                 if isinstance(rest, dict) and "role" in rest:
                     assert rest["role"] == "supporting", (ctrl["id"], rest)
+
+
+def test_bootstrap_roundtrip(tmp_path: Path) -> None:
+    """Bootstrap-only path must produce byte-identical output for ``--check``.
+
+    Pins the CI fix that lets ``generate_solutions_lock.py --check`` pass on
+    runners that cannot reach the sister repo, so long as
+    ``solutions-lock.bootstrap.json`` is a verbatim snapshot of a known-good
+    lock. Regression guard: if a future change to the script causes
+    bootstrap-derived output to diverge from the lock (e.g., always stamping
+    ``kind: bootstrap``), this test will fail.
+    """
+    bootstrap = ROOT / "assessment" / "data" / "solutions-lock.bootstrap.json"
+    if not bootstrap.exists():
+        pytest.skip("no bootstrap file committed")
+
+    # Bootstrap must mirror the lock so byte-equality holds.
+    lock_text = LOCK.read_text(encoding="utf-8")
+    bs_text = bootstrap.read_text(encoding="utf-8")
+    assert bs_text == lock_text, (
+        "bootstrap drifted from lock; regenerate with "
+        "`Copy-Item assessment/data/solutions-lock.json "
+        "assessment/data/solutions-lock.bootstrap.json` after lock changes."
+    )
+
+    # Force the script down the bootstrap path by pointing ``--sister-repo``
+    # at a non-existent directory. ``DEFAULT_SISTER_REPO`` is captured at
+    # module import, so an env-var override would be too late here.
+    rc = generate_solutions_lock.main(
+        ["--sister-repo", str(tmp_path / "no-sister-repo"), "--check"]
+    )
+    assert rc == 0, "bootstrap-only --check must succeed"

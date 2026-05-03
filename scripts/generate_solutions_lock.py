@@ -28,7 +28,10 @@ The script is:
   default path ``C:\\dev\\FSI-CopilotGov-Solutions``.
 * **Graceful** — if the sister repo is not present, a bootstrap file
   at ``assessment/data/solutions-lock.bootstrap.json`` is used as a
-  fallback (useful for CI or fresh checkouts).
+  fallback (useful for CI or fresh checkouts). The bootstrap mirrors
+  the lock shape — typically a verbatim snapshot of a known-good
+  ``solutions-lock.json`` — so its ``source`` block (including
+  ``kind: sister-repo``) round-trips byte-for-byte through ``--check``.
 * **Idempotent** — pass ``--now <ISO timestamp>`` for byte-identical
   output in tests. When reading a lock file that already exists, the
   prior ``generatedAt`` is reused so re-running after a no-op change
@@ -101,13 +104,20 @@ def _load_source_solutions(sister_repo: Path) -> tuple[list[dict], str | None]:
     return copy.deepcopy(sols), _resolve_commit(sister_repo)
 
 
-def _load_bootstrap() -> tuple[list[dict], str | None] | None:
+def _load_bootstrap() -> tuple[list[dict], dict] | None:
+    """Return ``(solutions, source)`` from the bootstrap, or ``None`` if absent.
+
+    The bootstrap file mirrors the ``solutions-lock.json`` shape so it can be
+    a verbatim snapshot of a known-good lock. ``source.kind`` is preserved
+    when present so byte-for-byte ``--check`` succeeds in CI environments
+    that cannot reach the sister repo.
+    """
     if not BOOTSTRAP.exists():
         return None
     data = json.loads(BOOTSTRAP.read_text(encoding="utf-8"))
     sols = data.get("solutions") or []
-    commit = (data.get("source") or {}).get("commit")
-    return copy.deepcopy(sols), commit
+    src = data.get("source") or {}
+    return copy.deepcopy(sols), copy.deepcopy(src)
 
 
 def _prior_generated_at(out_path: Path) -> str | None:
@@ -128,7 +138,12 @@ def build_lock(
 ) -> dict:
     try:
         solutions, commit = _load_source_solutions(sister_repo)
-        source_kind = "sister-repo"
+        source = {
+            "repo": SISTER_REPO_SLUG,
+            "ref": PINNED_REF,
+            "commit": commit or "",
+            "kind": "sister-repo",
+        }
     except FileNotFoundError:
         bootstrap = _load_bootstrap()
         if bootstrap is None:
@@ -137,8 +152,17 @@ def build_lock(
                 f"bootstrap file at {BOOTSTRAP}. Set FSI_SOLUTIONS_REPO "
                 f"or provide a bootstrap lock."
             )
-        solutions, commit = bootstrap
-        source_kind = "bootstrap"
+        solutions, bs_source = bootstrap
+        # Preserve the bootstrap's recorded source so a snapshot of a
+        # sister-repo-derived lock round-trips byte-for-byte through
+        # ``--check``. Defaults fill in for older minimal bootstraps that
+        # only carried ``commit``.
+        source = {
+            "repo": bs_source.get("repo") or SISTER_REPO_SLUG,
+            "ref": bs_source.get("ref") or PINNED_REF,
+            "commit": bs_source.get("commit") or "",
+            "kind": bs_source.get("kind") or "bootstrap",
+        }
         print(f"WARN: using bootstrap lock ({BOOTSTRAP}) — sister repo not present.")
 
     if now is None:
@@ -153,12 +177,7 @@ def build_lock(
     lock = {
         "schemaVersion": EXPECTED_SCHEMA,
         "generatedAt": now,
-        "source": {
-            "repo": SISTER_REPO_SLUG,
-            "ref": PINNED_REF,
-            "commit": commit or "",
-            "kind": source_kind,
-        },
+        "source": source,
         "solutions": solutions,
     }
     return lock
