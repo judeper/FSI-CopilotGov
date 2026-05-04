@@ -142,14 +142,14 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 ---
 
-## DSPM for AI (Data Security Posture Management for AI)
+## DSPM (Data Security Posture Management) and DSPM for AI (classic)
 
 | Topic | URL |
 |-------|-----|
-| DSPM for AI overview | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
-| Get started with DSPM for AI | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-considerations](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview-considerations) |
-| DSPM for AI policies | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
-| DSPM for AI data assessments | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
+| DSPM for AI (classic) overview | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
+| Get started with DSPM for AI (classic) | [https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations](https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations) |
+| DSPM for AI (classic) policies | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
+| DSPM for AI (classic) data assessments | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
 | Learn about DSPM | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about](https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about) |
 | DSPM data risk assessments (oversharing) | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing](https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing) |
 | eDiscovery changes announcement | [https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084](https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084) |
