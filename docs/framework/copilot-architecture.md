@@ -606,7 +606,7 @@ Microsoft's **[Secure and Govern Microsoft 365 Copilot](https://learn.microsoft.
 2. **Set up guardrails** — Establish secure defaults at provisioning, configure DLP for Copilot grounding and prompts, enable Insider Risk Management with Adaptive Protection, and continuously enforce via DSPM Activity Explorer
 3. **Meet regulations** — Assess AI compliance gaps via Compliance Manager, define audit and retention requirements for Copilot interactions, and improve data hygiene with site lifecycle management and Microsoft 365 Archive
 
-This framework's {{ counts.controls }} controls map comprehensively to all three blueprint pillars. See the **[Configure guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/configure-secure-governed-data-foundation-microsoft-365-copilot)** for step-by-step implementation and the **[Purview Secure by Default deployment model](https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-securebydefault-intro)** for the recommended labeling strategy.
+This framework's {{ counts.controls }} controls map comprehensively to all three blueprint pillars. See the **[Configure guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/configure-secure-governed-data-foundation-microsoft-365-copilot)** for step-by-step implementation and the **[Purview Secure by Default deployment model](https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-secure-by-default-intro)** for the recommended labeling strategy.
 
 ---
 

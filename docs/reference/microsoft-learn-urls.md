@@ -11,14 +11,14 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| Microsoft 365 Copilot overview | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-overview](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-overview) |
-| Microsoft 365 Copilot setup guide | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-setup](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-setup) |
-| Manage Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-public-web-access](https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-public-web-access) |
-| Microsoft 365 Copilot requirements | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements) |
-| Data, privacy, and security for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy) |
-| Microsoft 365 Copilot adoption guide | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources) |
+| Microsoft 365 Copilot overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview) |
+| Microsoft 365 Copilot setup guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-setup](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-setup) |
+| Manage Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/manage-public-web-access](https://learn.microsoft.com/en-us/microsoft-365/copilot/manage-public-web-access) |
+| Microsoft 365 Copilot requirements | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-requirements](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-requirements) |
+| Data, privacy, and security for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-privacy](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-privacy) |
+| Microsoft 365 Copilot adoption guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-enablement-resources](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-enablement-resources) |
 | Copilot in Teams meetings | [https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription](https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription) |
-| Copilot usage reports | [https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage](https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage) |
+| Copilot usage reports | [https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage?view=o365-worldwide) |
 | Semantic Index for Copilot | [https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot](https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot) |
 | Microsoft 365 Copilot release notes | [https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes](https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes) |
 | What's new in Microsoft Purview | [https://learn.microsoft.com/en-us/purview/whats-new](https://learn.microsoft.com/en-us/purview/whats-new) |
@@ -39,8 +39,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Create and deploy a DLP policy | [https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy](https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy) |
 | DLP policy reference | [https://learn.microsoft.com/en-us/purview/dlp-policy-reference](https://learn.microsoft.com/en-us/purview/dlp-policy-reference) |
 | DLP for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about](https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about) |
-| Sensitive information type entity definitions | [https://learn.microsoft.com/en-us/purview/sensitive-information-type-entity-definitions](https://learn.microsoft.com/en-us/purview/sensitive-information-type-entity-definitions) |
-| Custom sensitive information types | [https://learn.microsoft.com/en-us/purview/create-a-custom-sensitive-information-type](https://learn.microsoft.com/en-us/purview/create-a-custom-sensitive-information-type) |
+| Sensitive information type entity definitions | [https://learn.microsoft.com/en-us/purview/sit-sensitive-information-type-entity-definitions](https://learn.microsoft.com/en-us/purview/sit-sensitive-information-type-entity-definitions) |
+| Custom sensitive information types | [https://learn.microsoft.com/en-us/purview/sit-create-a-custom-sensitive-information-type](https://learn.microsoft.com/en-us/purview/sit-create-a-custom-sensitive-information-type) |
 | Endpoint DLP | [https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about](https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about) |
 | DLP policy tips reference | [https://learn.microsoft.com/en-us/purview/dlp-policy-tips-reference](https://learn.microsoft.com/en-us/purview/dlp-policy-tips-reference) |
 
@@ -58,7 +58,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Encryption with sensitivity labels | [https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels](https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels) |
 | Mandatory labeling | [https://learn.microsoft.com/en-us/purview/sensitivity-labels-office-apps#require-users-to-apply-a-label](https://learn.microsoft.com/en-us/purview/sensitivity-labels-office-apps#require-users-to-apply-a-label) |
 | Sensitivity labels for Teams, Groups, and sites | [https://learn.microsoft.com/en-us/purview/sensitivity-labels-teams-groups-sites](https://learn.microsoft.com/en-us/purview/sensitivity-labels-teams-groups-sites) |
-| Purview Secure by Default deployment model | [https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-securebydefault-intro](https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-securebydefault-intro) |
+| Purview Secure by Default deployment model | [https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-secure-by-default-intro](https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-secure-by-default-intro) |
 
 ---
 
@@ -67,9 +67,9 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Topic | URL |
 |-------|-----|
 | Microsoft Purview Audit overview | [https://learn.microsoft.com/en-us/purview/audit-solutions-overview](https://learn.microsoft.com/en-us/purview/audit-solutions-overview) |
-| Audit (Standard) | [https://learn.microsoft.com/en-us/purview/audit-standard-setup](https://learn.microsoft.com/en-us/purview/audit-standard-setup) |
-| Audit (Premium) | [https://learn.microsoft.com/en-us/purview/audit-premium](https://learn.microsoft.com/en-us/purview/audit-premium) |
-| Search the audit log | [https://learn.microsoft.com/en-us/purview/audit-log-search](https://learn.microsoft.com/en-us/purview/audit-log-search) |
+| Audit (Standard) | [https://learn.microsoft.com/en-us/purview/audit-get-started](https://learn.microsoft.com/en-us/purview/audit-get-started) |
+| Audit (Premium) | [https://learn.microsoft.com/en-us/purview/audit-solutions-overview](https://learn.microsoft.com/en-us/purview/audit-solutions-overview) |
+| Search the audit log | [https://learn.microsoft.com/en-us/purview/audit-search](https://learn.microsoft.com/en-us/purview/audit-search) |
 | Audit log activities | [https://learn.microsoft.com/en-us/purview/audit-log-activities](https://learn.microsoft.com/en-us/purview/audit-log-activities) |
 | Manage audit log retention policies | [https://learn.microsoft.com/en-us/purview/audit-log-retention-policies](https://learn.microsoft.com/en-us/purview/audit-log-retention-policies) |
 | Learn about retention policies | [https://learn.microsoft.com/en-us/purview/retention](https://learn.microsoft.com/en-us/purview/retention) |
@@ -83,9 +83,9 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| Manage Copilot Pages and Notebooks | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration) |
-| Copilot Pages and Notebooks compliance summary | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary) |
-| Purview management for SharePoint Embedded containers | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management) |
+| Manage Copilot Pages and Notebooks | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration?view=o365-worldwide) |
+| Copilot Pages and Notebooks compliance summary | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide) |
+| Purview management for SharePoint Embedded containers | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management?view=o365-worldwide) |
 
 ---
 
@@ -96,9 +96,9 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | What is Conditional Access? | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview](https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview) |
 | Plan a Conditional Access deployment | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/plan-conditional-access](https://learn.microsoft.com/en-us/entra/identity/conditional-access/plan-conditional-access) |
 | Common Conditional Access policies | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-conditional-access-policy-common](https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-conditional-access-policy-common) |
-| Require compliant devices | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device](https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device) |
-| Sign-in risk-based policies | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-risk](https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-risk) |
-| Block access by location | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-location](https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-location) |
+| Require compliant devices | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-alt-all-users-compliant-hybrid-or-mfa](https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-alt-all-users-compliant-hybrid-or-mfa) |
+| Sign-in risk-based policies | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-risk-based-sign-in](https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-risk-based-sign-in) |
+| Block access by location | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-block-by-location](https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-block-by-location) |
 
 ---
 
@@ -109,9 +109,9 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Learn about information barriers | [https://learn.microsoft.com/en-us/purview/information-barriers](https://learn.microsoft.com/en-us/purview/information-barriers) |
 | Get started with information barriers | [https://learn.microsoft.com/en-us/purview/information-barriers-policies](https://learn.microsoft.com/en-us/purview/information-barriers-policies) |
 | Define IB policies | [https://learn.microsoft.com/en-us/purview/information-barriers-policies](https://learn.microsoft.com/en-us/purview/information-barriers-policies) |
-| Information barriers in Teams | [https://learn.microsoft.com/en-us/microsoftteams/information-barriers-in-teams](https://learn.microsoft.com/en-us/microsoftteams/information-barriers-in-teams) |
-| Information barriers in SharePoint | [https://learn.microsoft.com/en-us/sharepoint/information-barriers](https://learn.microsoft.com/en-us/sharepoint/information-barriers) |
-| Information barriers in OneDrive | [https://learn.microsoft.com/en-us/onedrive/information-barriers](https://learn.microsoft.com/en-us/onedrive/information-barriers) |
+| Information barriers in Teams | [https://learn.microsoft.com/en-us/purview/information-barriers-teams](https://learn.microsoft.com/en-us/purview/information-barriers-teams) |
+| Information barriers in SharePoint | [https://learn.microsoft.com/en-us/purview/information-barriers-sharepoint](https://learn.microsoft.com/en-us/purview/information-barriers-sharepoint) |
+| Information barriers in OneDrive | [https://learn.microsoft.com/en-us/purview/information-barriers-onedrive](https://learn.microsoft.com/en-us/purview/information-barriers-onedrive) |
 
 ---
 
@@ -160,10 +160,10 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| Copilot extensibility overview | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/) |
-| Manage plugins for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-plugins-for-copilot-in-integrated-apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-plugins-for-copilot-in-integrated-apps) |
-| Microsoft Graph connectors overview | [https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview](https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview) |
-| Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent) |
+| Copilot extensibility overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/) |
+| Manage plugins for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide) |
+| Microsoft Graph connectors overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-copilot-connector?toc=%2Fgraph%2Ftoc.json](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-copilot-connector?toc=%2Fgraph%2Ftoc.json) |
+| Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent) |
 | Get ready for Copilot with SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management](https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management) |
 | Copilot Tuning admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide) |
 | M365 Agents admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide) |
@@ -174,8 +174,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| Manage agents in Microsoft 365 | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps) |
-| Microsoft 365 Copilot agent governance | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/agents-are-apps](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/agents-are-apps) |
+| Manage agents in Microsoft 365 | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide) |
+| Microsoft 365 Copilot agent governance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps) |
 | Copilot agent security and compliance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security) |
 
 ---
@@ -206,8 +206,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Topic | URL |
 |-------|-----|
 | Microsoft Sentinel overview | [https://learn.microsoft.com/en-us/azure/sentinel/overview](https://learn.microsoft.com/en-us/azure/sentinel/overview) |
-| Connect Microsoft 365 data | [https://learn.microsoft.com/en-us/azure/sentinel/data-connectors/office-365](https://learn.microsoft.com/en-us/azure/sentinel/data-connectors/office-365) |
-| Create analytics rules | [https://learn.microsoft.com/en-us/azure/sentinel/detect-threats-custom](https://learn.microsoft.com/en-us/azure/sentinel/detect-threats-custom) |
+| Connect Microsoft 365 data | [https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365](https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365) |
+| Create analytics rules | [https://learn.microsoft.com/en-us/azure/sentinel/create-analytics-rules](https://learn.microsoft.com/en-us/azure/sentinel/create-analytics-rules) |
 | Create workbooks | [https://learn.microsoft.com/en-us/azure/sentinel/monitor-your-data](https://learn.microsoft.com/en-us/azure/sentinel/monitor-your-data) |
 
 ---
@@ -216,7 +216,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| SharePoint admin center overview | [https://learn.microsoft.com/en-us/sharepoint/get-started-new-admin-center](https://learn.microsoft.com/en-us/sharepoint/get-started-new-admin-center) |
+| SharePoint admin center overview | [https://learn.microsoft.com/en-us/sharepoint/manage-sites-in-new-admin-center](https://learn.microsoft.com/en-us/sharepoint/manage-sites-in-new-admin-center) |
 | Manage sharing settings | [https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off](https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off) |
 | Restricted SharePoint Search | [https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search](https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search) |
 | SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/advanced-management](https://learn.microsoft.com/en-us/sharepoint/advanced-management) |
@@ -245,7 +245,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| Microsoft 365 Archive overview | [https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview](https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview) |
+| Microsoft 365 Archive overview | [https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview?view=o365-worldwide) |
 
 ---
 
