@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-04-29T23:05:20Z",
+  "generatedAt": "2026-05-04T00:14:47Z",
   "counts": {
     "controls": 62,
     "pillars": 4,
@@ -29,7 +29,7 @@
       "pillar": 1,
       "title": "Control 1.2: SharePoint Oversharing Detection and Remediation (DSPM for AI)",
       "path": "docs/controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md",
-      "last_verified": "2026-04-15",
+      "last_verified": "2026-05-03",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Regulation S-P (Rule 248.30)",
@@ -41,7 +41,7 @@
       "pillar": 1,
       "title": "Control 1.3: Restricted SharePoint Search Configuration",
       "path": "docs/controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md",
-      "last_verified": "2026-04-15",
+      "last_verified": "2026-05-03",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -165,7 +165,7 @@
       "pillar": 1,
       "title": "Control 1.13: Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)",
       "path": "docs/controls/pillar-1-readiness/1.13-extensibility-readiness.md",
-      "last_verified": "2026-04-09",
+      "last_verified": "2026-05-03",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -178,7 +178,7 @@
       "pillar": 1,
       "title": "Control 1.14: Item-Level Permission Scanning",
       "path": "docs/controls/pillar-1-readiness/1.14-item-level-permission-scanning.md",
-      "last_verified": "2026-04-15",
+      "last_verified": "2026-05-03",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Rule 17a-4",
