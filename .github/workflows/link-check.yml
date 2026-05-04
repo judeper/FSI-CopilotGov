@@ -32,6 +32,7 @@ jobs:
           config-file: '.github/workflows/mlc-config.json'
           folder-path: 'docs/'
           file-extension: '.md'
+          base-branch: 'main'
           check-modified-files-only: ${{ github.event_name == 'pull_request' && 'yes' || 'no' }}
 
   control-consistency:
