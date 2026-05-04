@@ -164,7 +164,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Manage plugins for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-plugins-for-copilot-in-integrated-apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-plugins-for-copilot-in-integrated-apps) |
 | Microsoft Graph connectors overview | [https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview](https://learn.microsoft.com/en-us/graph/connecting-external-content-connectors-overview) |
 | Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-declarative-agent) |
-| SharePoint agents | [https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-best-practices](https://learn.microsoft.com/en-us/sharepoint/sharepoint-copilot-best-practices) |
+| Get ready for Copilot with SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management](https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management) |
 | Copilot Tuning admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide) |
 | M365 Agents admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide) |
 
