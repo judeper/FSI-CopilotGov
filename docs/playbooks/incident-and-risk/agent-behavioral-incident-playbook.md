@@ -32,7 +32,7 @@ This supplements the [AI Incident Response Playbook](ai-incident-response-playbo
 - Purview audit log shows agent accessing content in restricted SharePoint sites or across information barrier segments
 - Defender XDR agent threat detection alert triggers for anomalous agent data access patterns
 - User reports Copilot response containing data from an unrelated business unit or system
-- Agent Insight Report shows agent accessing sites outside its approved scope
+- SharePoint **Insights report on agents** shows an unexpected spike in agent creation on sensitive sites — note that this report is built from the SharePoint `FileCreated` and `FileRenamed` audit events for agent artifacts, so it surfaces agent **creation** activity (not runtime data-access events). Use it as a *creation-side* signal to identify candidate scope-violation investigations, then confirm runtime access with Purview audit logs and Defender XDR.
 
 **Immediate actions:**
 
@@ -85,7 +85,7 @@ This supplements the [AI Incident Response Playbook](ai-incident-response-playbo
 - PAYG billing alerts trigger for unexpected compute consumption
 - Audit log shows a high volume of agent actions in a short time period
 - Users report receiving a large volume of agent-generated notifications or outputs
-- Agent Insight Report shows abnormal activity volumes
+- SharePoint **Insights report on agents** shows an abnormal spike in agent **creation** volume on a site (the report is built from `FileCreated` / `FileRenamed` audit events for agent artifacts, not runtime invocation counts) — pair with Purview audit logs and Defender XDR signals to confirm runaway invocation patterns
 
 **Immediate actions:**
 
@@ -115,7 +115,7 @@ Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) `
 
 | Assessment Area | Questions to Answer | Evidence Source |
 |----------------|-------------------|----------------|
-| **Data scope** | What data did the agent access? Was any of it NPI, MNPI, or restricted? | Purview audit logs, Agent Insight Report |
+| **Data scope** | What data did the agent access? Was any of it NPI, MNPI, or restricted? | Purview audit logs (runtime access); SharePoint Insights report on agents (agent-creation hotspots only) |
 | **Action scope** | What actions did the agent take? Were any external-facing? | Audit logs, Power Automate flow logs |
 | **User impact** | Which users interacted with or were affected by the agent? | Audit logs, user reports |
 | **Regulatory impact** | Does this trigger notification obligations under Reg S-P, FINRA, or state laws? | Legal/compliance assessment |

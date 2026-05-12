@@ -37,44 +37,47 @@ Step-by-step portal configuration for governing plugins, Graph connectors, and a
 2. Review sharing controls.
 3. Review user access scope and any templates used in publication workflows.
 
-### Step 4: Configure Integrated Apps Governance
+### Step 4: Configure Integrated Apps Governance (Legacy App Inventory)
 
 **Portal:** Microsoft 365 Admin Center
 **Path:** Settings > Integrated apps
 
+> **Note:** As of the current Microsoft 365 admin center experience, agent and plugin governance is centered on the **Agents** node and the Agent 365 control plane (Steps 1–3). Use **Settings > Integrated apps** for the legacy app inventory and to triage user requests for apps not yet surfaced through the Agents catalog — do not treat Integrated apps as the primary plugin governance flow.
+
 1. Navigate to the Integrated apps settings.
-2. Review the current list of deployed apps and plugins.
+2. Review the current list of deployed apps and plugins for legacy inventory completeness.
 3. Configure the app governance settings:
-   - **User consent settings** — Block user consent; require admin approval for all apps
-   - **App catalog** — Curate the list of approved apps available to Copilot users
-   - **Third-party app access** — Restrict to a pre-approved list for FSI environments
-4. Document the approved plugin catalog with business justification for each.
+    - **User consent settings** — Block user consent; require admin approval for all apps
+    - **App catalog** — Curate the list of approved apps available to Copilot users
+    - **Third-party app access** — Restrict to a pre-approved list for FSI environments
+4. Reconcile the Integrated apps inventory against the Agent registry (Step 2) so that legacy plugin deployments are tracked alongside the current Agent 365 inventory.
 
-### Step 5: Establish Plugin Approval Workflow
-
-**Portal:** Microsoft 365 Admin Center
-**Path:** Settings > Integrated apps > User requests
-
-1. Enable the user request workflow for new app/plugin requests.
-2. Configure the approval chain:
-   - First-level: IT team reviews technical requirements and security posture
-   - Second-level: Compliance team reviews regulatory and data protection impact
-   - Third-level: Business owner confirms business justification
-3. Set SLA for approval decisions (5 business days recommended).
-4. Create a standardized Plugin Risk Assessment template.
-
-### Step 6: Configure Copilot Plugin Access Controls
+### Step 5: Establish Plugin and Agent Approval Workflow
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Agents > Settings and Settings > Integrated apps
+**Path:** Agents > Tools > Requests (where licensed) and Settings > Integrated apps > User requests (legacy)
 
-1. Navigate to the Copilot plugin settings.
+1. For agent tools and MCP servers (where the **Agents > Tools** surface is available — currently Frontier tenants), use the **Requests** tab to triage MCP server registration requests; **Approve** (which prompts for the Entra permission consent the server requires) or **Reject** with documented rationale.
+2. For legacy plugin and integrated-app requests, enable the user request workflow in **Settings > Integrated apps > User requests**.
+3. Configure the approval chain (applies to both surfaces):
+    - First-level: IT team reviews technical requirements and security posture
+    - Second-level: Compliance team reviews regulatory and data protection impact
+    - Third-level: Business owner confirms business justification
+4. Set SLA for approval decisions (5 business days recommended).
+5. Create a standardized Plugin / Tool Risk Assessment template that covers requested Entra permission scopes, data flows, and vendor attestations.
+
+### Step 6: Configure Copilot Plugin and Tool Access Controls
+
+**Portal:** Microsoft 365 Admin Center
+**Path:** Agents > Settings (primary) and Settings > Integrated apps (legacy inventory)
+
+1. From **Agents > Settings**, scope plugin and tool availability via **Allowed agent types**, **Sharing**, and **User access** so that approved plugins and MCP-based tools reach only the intended user populations.
 2. Configure plugin availability:
-   - **First-party Microsoft plugins** — Enable approved plugins, disable non-essential ones
-   - **Third-party plugins** — Block all or allow only from the approved list
-   - **Custom plugins (line-of-business)** — Enable with governance controls
-3. Set plugin access by user group (not all users need all plugins).
-4. Document which plugins are approved and for which user groups.
+    - **First-party Microsoft plugins / agents** — Enable approved items; disable non-essential ones
+    - **Third-party plugins / external publisher agents** — Block all or allow only from the approved list
+    - **Custom plugins (line-of-business)** — Enable with governance controls
+3. Set plugin and tool access by user group (not all users need all plugins or MCP servers).
+4. Document which plugins, agents, and MCP-based tools are approved and for which user groups.
 
 ### Step 7: Configure Graph Connector Governance
 
