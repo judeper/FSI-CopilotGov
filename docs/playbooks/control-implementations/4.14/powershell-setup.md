@@ -6,12 +6,13 @@ Automation workflow for inventorying Copilot Studio agents across environments, 
 
 - PowerShell 7+
 - `Microsoft.Graph` (AuditLog.Read.All)
-- `Microsoft.PowerApps.Administration.PowerShell` for Copilot Studio environment / agent inventory
+- `Microsoft.PowerApps.Administration.PowerShell` for Power Platform environment inventory
 - `ExchangeOnlineManagement` for unified-audit-log queries
 - Power Platform Administrator (read-only) and M365 Global Reader (or equivalent)
 - Approved evidence-retention path
+- Tenant-approved Copilot Studio agent inventory export or API source
 
-> **Important:** Copilot Studio agent operations exposed through Power Platform admin cmdlets continue to evolve. Validate cmdlet availability before automating.
+> **Important:** Do not rely on undocumented Copilot-specific Power Platform cmdlets for evidence collection. Validate the inventory source in your tenant and reconcile it with Purview Audit results before automating.
 
 ## Script Flow
 
@@ -20,16 +21,20 @@ Automation workflow for inventorying Copilot Studio agents across environments, 
 ```powershell
 Add-PowerAppsAccount
 
-$environments = Get-AdminPowerAppEnvironment
+$environments = Get-AdminPowerAppEnvironment |
+  Select-Object EnvironmentName, DisplayName, EnvironmentType
 
-$agents = foreach ($env in $environments) {
-  Get-AdminPowerAppCopilot -EnvironmentName $env.EnvironmentName -ErrorAction SilentlyContinue |
-    Select-Object @{n='EnvironmentName';e={$env.DisplayName}},
-                  @{n='EnvironmentType';e={$env.EnvironmentType}},
-                  Name, DisplayName, Owner, CreatedTime, LastModifiedTime, LifecycleStage
-}
+$environments | Export-Csv .\artifacts\4.14\power-platform-environments.csv -NoTypeInformation
 
-$agents | Export-Csv .\artifacts\4.14\copilot-studio-agents.csv -NoTypeInformation
+# Source this file from a tenant-approved Copilot Studio export, CMDB, or validated API.
+# Required columns: EnvironmentName, EnvironmentType, Name, DisplayName, Owner,
+# CreatedTime, LastModifiedTime, LifecycleStage.
+$agents = Import-Csv .\config\copilot-studio-agent-inventory.csv
+
+$agents |
+  Select-Object EnvironmentName, EnvironmentType, Name, DisplayName, Owner,
+                CreatedTime, LastModifiedTime, LifecycleStage |
+  Export-Csv .\artifacts\4.14\copilot-studio-agents.csv -NoTypeInformation
 ```
 
 ### Script 2: Pull publishing, version, and lifecycle audit events
@@ -40,10 +45,27 @@ Connect-ExchangeOnline -ShowBanner:$false
 $start = (Get-Date).AddDays(-30)
 $end   = Get-Date
 
+$copilotStudioOperations = @(
+  'BotComponentUpdated',
+  'BotComponentDeleted',
+  'PublishBot',
+  'BotEnvironmentVariableUpdated',
+  'AgentInstalled',
+  'AgentUninstalled'
+)
+
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
-  -Operations 'CopilotStudioAgentCreated','CopilotStudioAgentPublished','CopilotStudioAgentVersionPublished','CopilotStudioAgentDeprecated','CopilotStudioAgentDeleted','CopilotStudioApprovalRecorded' `
+  -RecordType 'MicrosoftCopilotStudio' `
+  -Operations $copilotStudioOperations `
   -ResultSize 5000 |
   Export-Csv .\artifacts\4.14\agent-lifecycle-audit.csv -NoTypeInformation
+
+$agent365Operations = @('AgentRegistered','AgentDeregistered','AgentSettingsModified')
+
+Search-UnifiedAuditLog -StartDate $start -EndDate $end `
+  -Operations $agent365Operations `
+  -ResultSize 5000 |
+  Export-Csv .\artifacts\4.14\agent-365-admin-audit.csv -NoTypeInformation
 ```
 
 ### Script 3: Reconcile published agents against the register
@@ -61,18 +83,25 @@ $register |
   Export-Csv .\artifacts\4.14\register-only-agents.csv -NoTypeInformation
 ```
 
-### Script 4: Build a per-agent version history
+### Script 4: Build a per-agent change history
 
 ```powershell
 $audit = Import-Csv .\artifacts\4.14\agent-lifecycle-audit.csv
 
 $audit |
-  Where-Object { $_.Operations -in @('CopilotStudioAgentPublished','CopilotStudioAgentVersionPublished') } |
-  Select-Object CreationDate, UserIds,
-                @{n='AgentName';e={ ($_.AuditData | ConvertFrom-Json).AgentName }},
-                @{n='Version';e={   ($_.AuditData | ConvertFrom-Json).Version   }},
-                @{n='Approver';e={  ($_.AuditData | ConvertFrom-Json).Approver  }} |
-  Export-Csv .\artifacts\4.14\agent-version-history.csv -NoTypeInformation
+  Where-Object { $_.Operations -in @('PublishBot','BotComponentUpdated','BotEnvironmentVariableUpdated','AgentInstalled','AgentUninstalled') } |
+  ForEach-Object {
+    $data = $_.AuditData | ConvertFrom-Json
+    [pscustomobject]@{
+      CreationDate = $_.CreationDate
+      UserIds      = $_.UserIds
+      Operation    = $_.Operations
+      AgentName    = $data.AgentName ?? $data.BotName ?? $data.BotSchemaName
+      AgentId      = $data.AgentId ?? $data.BotId
+      Component    = $data.BotComponentSchemaName ?? $data.BotComponentType
+    }
+  } |
+  Export-Csv .\artifacts\4.14\agent-change-history.csv -NoTypeInformation
 ```
 
 ### Script 5: Package evidence
@@ -90,7 +119,7 @@ Compress-Archive -Path .\artifacts\4.14\* `
 | Agent inventory snapshot | Monthly | Detects new agents and stage transitions |
 | Lifecycle audit pull | Weekly | Aligns with the supervisory review cadence |
 | Register reconciliation | Monthly | Identifies unregistered published agents and stale register entries |
-| Version-history report | Quarterly | Feeds the lifecycle attestation |
+| Change-history report | Quarterly | Feeds the lifecycle attestation |
 | Deprecation drill | Annually | Validates the end-of-life playbook |
 
 ## Next Steps

@@ -100,15 +100,39 @@ This supplements the [AI Incident Response Playbook](ai-incident-response-playbo
 ### Step 1: Evidence Collection
 
 ```powershell
-# Search for agent-specific audit events
-Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) `
-  -RecordType "CopilotInteraction" -ResultSize 5000 |
-  Where-Object { $_.AuditData -like "*AgentId*" } |
-  Export-Csv -Path "agent-incident-audit.csv" -NoTypeInformation
+$start = (Get-Date).AddDays(-7)
+$end = Get-Date
 
-# Search for agent admin activity events
-Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) `
-  -Operations "AgentAdminActivity" -ResultSize 5000
+# Search for Agent 365 runtime events: invocation, tool calls, and inference calls.
+$runtimeOperations = @('AIInvokeAgent','AIExecuteTool','AIInferenceCall')
+Search-UnifiedAuditLog -StartDate $start -EndDate $end `
+  -RecordType "CopilotInteraction" `
+  -Operations $runtimeOperations `
+  -ResultSize 5000 |
+  Where-Object { $_.AuditData -like "*AgentId*" } |
+  Export-Csv -Path "agent-incident-runtime-audit.csv" -NoTypeInformation
+
+# Search for Agent 365 registration and settings changes.
+$agentAdminOperations = @('AgentRegistered','AgentDeregistered','AgentSettingsModified')
+Search-UnifiedAuditLog -StartDate $start -EndDate $end `
+  -Operations $agentAdminOperations `
+  -ResultSize 5000 |
+  Export-Csv -Path "agent-incident-admin-audit.csv" -NoTypeInformation
+
+# Search for Copilot Studio authoring and lifecycle events.
+$copilotStudioOperations = @(
+  'BotComponentUpdated',
+  'BotComponentDeleted',
+  'PublishBot',
+  'BotEnvironmentVariableUpdated',
+  'AgentInstalled',
+  'AgentUninstalled'
+)
+Search-UnifiedAuditLog -StartDate $start -EndDate $end `
+  -RecordType "MicrosoftCopilotStudio" `
+  -Operations $copilotStudioOperations `
+  -ResultSize 5000 |
+  Export-Csv -Path "agent-incident-copilot-studio-audit.csv" -NoTypeInformation
 ```
 
 ### Step 2: Impact Assessment
