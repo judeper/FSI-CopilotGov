@@ -217,23 +217,25 @@ AUTHORED: dict[str, dict] = {
     "2.1": {
         "priority": "critical",
         "yesBar": (
-            "Both DLP policy types target the Microsoft 365 Copilot location: "
-            "(a) label-based response blocking (preventing Copilot from "
-            "surfacing labeled NPI/MNPI in responses) and (b) SIT-based "
-            "prompt blocking (preventing users from pasting account numbers, "
-            "SSNs, or other regulated SITs into prompts). Policies are in "
-            "Enforce mode with documented owner, override workflow, and "
-            "match-event review cadence."
+            "DLP controls target the Microsoft 365 Copilot and Copilot Chat "
+            "location and cover all three current Copilot scenarios: "
+            "(a) sensitivity-label files/emails excluded from Copilot response "
+            "processing, (b) SIT-based prompt processing blocked for regulated "
+            "data, and (c) SIT-based external web search / web grounding blocked. "
+            "Policies are in Enforce mode with documented owner, override "
+            "workflow, and match-event review cadence."
         ),
         "partialBar": (
-            "At least one DLP rule targets the Copilot location, but the "
-            "other policy type is missing, the policy is in test/audit mode "
-            "only, or match events are not reviewed on a documented cadence."
+            "At least one DLP rule targets the Microsoft 365 Copilot and "
+            "Copilot Chat location, but sensitivity-label content processing, "
+            "SIT prompt processing, or SIT external web-search restriction is "
+            "missing; the policy is in test/audit mode only; or match events "
+            "are not reviewed on a documented cadence."
         ),
         "noBar": (
-            "No DLP policy targets the Microsoft 365 Copilot location, or "
-            "policies exist but are scoped to a single user / pilot group "
-            "and not enforced for the Copilot-licensed user population."
+            "No DLP policy targets the Microsoft 365 Copilot and Copilot Chat "
+            "location, or policies exist but are scoped to a single user / "
+            "pilot group and not enforced for the approved Copilot user population."
         ),
         "verifyIn": [
             {
@@ -241,15 +243,23 @@ AUTHORED: dict[str, dict] = {
                 "path": "Data Loss Prevention > Policies",
                 "url": "https://purview.microsoft.com/datalossprevention/policies",
             },
+            {
+                "portal": "M365 Admin Center",
+                "path": "Copilot > Settings > Web Content",
+                "url": "https://admin.microsoft.com/AdminPortal/Home#/copilot/settings/webcontent",
+            },
         ],
         "verifyPowerShell": (
             "Connect-IPPSSession; "
-            "Get-DlpCompliancePolicy | Where-Object { $_.Workload -like '*Copilot*' } | "
-            "Select-Object Name, Mode, Enabled, Workload"
+            "Get-DlpCompliancePolicy | Where-Object { "
+            "$_.EnforcementPlanes -contains 'CopilotExperiences' -or "
+            "$_.Locations -match '470f2276-e011-4e9d-a6ec-20768be3a4b0' } | "
+            "Select-Object Name, Mode, Enabled, Locations, EnforcementPlanes"
         ),
         "evidenceExpected": [
-            "DLP policy export showing 'Microsoft 365 Copilot' location in scope",
-            "Both policy types present: label-based response blocking AND SIT-based prompt blocking",
+            "DLP policy export showing 'Microsoft 365 Copilot and Copilot Chat' location or CopilotExperiences enforcement plane in scope",
+            "Three Copilot DLP scenarios present: sensitivity-label content processing, SIT prompt processing, and SIT external web-search restriction",
+            "M365 Admin Center Web Content setting evidence showing web search scoped per approved user/group",
             "Policy mode = Enforce (not Test / TestWithNotifications)",
             "Match-event report from Purview > Activity Explorer for the last 30 days",
             "Override workflow document showing who can request and approve overrides",
@@ -257,42 +267,48 @@ AUTHORED: dict[str, dict] = {
         "collectorField": "DLP_CopilotPolicies",
         "sectorYesBar": _sector_map(
             bank=(
-                "Both DLP rule types enforced; SIT set covers ABA routing, "
-                "account numbers, SSN, ITIN, GLBA NPI; Label-based blocking "
-                "for 'Confidential — NPI' and 'Highly Confidential — MNPI' labels."
+                "All three Copilot DLP scenarios enforced; SIT set covers ABA "
+                "routing, account numbers, SSN, ITIN, and GLBA §501(b) NPI; "
+                "label and external web-search rules cover customer NPI and MNPI labels."
             ),
             broker_dealer=(
-                "Both rule types enforced; SIT set covers CRD numbers, "
-                "account numbers, SSN; label-based blocking for Research "
-                "and IB Confidential labels supporting information-barrier policy."
+                "All three scenarios enforced; SIT set covers CRD numbers, "
+                "account numbers, SSN; label and web-search rules align with "
+                "Research and IB Confidential labels supporting information-barrier policy."
             ),
             investment_adviser=(
-                "Both rule types enforced; SIT set covers SSN, account numbers, "
-                "and adviser-firm-defined SITs for client portfolio identifiers."
+                "All three scenarios enforced; SIT set covers SSN, account numbers, "
+                "and adviser-firm-defined SITs for client portfolio identifiers, "
+                "including external web-search restrictions for those SITs."
             ),
             insurance_carrier=(
-                "Both rule types enforced; SIT set covers SSN, policy numbers, "
-                "PHI patterns; label-based blocking for PHI sensitivity labels."
+                "All three scenarios enforced; SIT set covers SSN, policy numbers, "
+                "and PHI patterns; label and web-search rules align with PHI "
+                "sensitivity labels."
             ),
             credit_union=(
-                "Both rule types enforced; SITs cover member account numbers "
-                "+ SSN; label-based blocking aligned to NCUA NPI categories."
+                "All three scenarios enforced; SITs cover member account numbers "
+                "+ SSN; label and web-search rules align to NCUA NPI categories."
             ),
         ),
         "facilitatorNotes": {
             "ask": (
-                "Are both DLP policy types deployed and enforced for the "
-                "Microsoft 365 Copilot location — label-based response "
-                "blocking AND SIT-based prompt blocking?"
+                "Are Copilot DLP controls enforced for the Microsoft 365 Copilot "
+                "and Copilot Chat location across sensitivity-label content, "
+                "SIT prompt processing, and external web search / web grounding?"
             ),
             "followUp": (
                 "Open Microsoft Purview > Data Loss Prevention > Policies. "
-                "Filter by location 'Microsoft 365 Copilot'. Confirm at least "
-                "two distinct rules exist (one label-based, one SIT-based), "
-                "both in Enforce mode. Then open Activity Explorer to show "
-                "match events from the last 30 days are being reviewed."
+                "Filter by location 'Microsoft 365 Copilot and Copilot Chat' "
+                "or policies using the CopilotExperiences enforcement plane. "
+                "Confirm three rule/action patterns exist: sensitivity-label "
+                "content processing, SIT prompt processing, and SIT external "
+                "web-search restriction, all in Enforce mode. Then open "
+                "M365 Admin Center > Copilot > Settings > Web Content "
+                "to verify web search is scoped to approved users/groups, and "
+                "use Activity Explorer to show match events from the last 30 days."
             ),
-            "timeBudgetMinutes": 10,
+            "timeBudgetMinutes": 12,
         },
     },
     # ---------------------------------------------------------------
