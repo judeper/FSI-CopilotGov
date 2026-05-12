@@ -212,8 +212,22 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Manage agents in Microsoft 365 | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide) |
 | Microsoft 365 Copilot agent governance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps) |
 | Copilot agent security and compliance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security) |
+| Microsoft Entra Agent ID documentation | [https://learn.microsoft.com/en-us/entra/agent-id/](https://learn.microsoft.com/en-us/entra/agent-id/) |
 | Microsoft Entra Agent ID overview | [https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id](https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id) |
 | Microsoft Entra agent identity concepts | [https://learn.microsoft.com/en-us/entra/agent-id/what-are-agent-identities](https://learn.microsoft.com/en-us/entra/agent-id/what-are-agent-identities) |
+| What's new in Microsoft Entra Agent ID | [https://learn.microsoft.com/en-us/entra/agent-id/whats-new-agent-id](https://learn.microsoft.com/en-us/entra/agent-id/whats-new-agent-id) |
+| Manage Microsoft Entra agent identities | [https://learn.microsoft.com/en-us/entra/agent-id/manage-agent-identities-admin](https://learn.microsoft.com/en-us/entra/agent-id/manage-agent-identities-admin) |
+| Microsoft Entra security for AI overview | [https://learn.microsoft.com/en-us/entra/agent-id/security-for-ai-overview](https://learn.microsoft.com/en-us/entra/agent-id/security-for-ai-overview) |
+| Microsoft Entra Agent identity platform | [https://learn.microsoft.com/en-us/entra/agent-id/what-is-agent-id-platform](https://learn.microsoft.com/en-us/entra/agent-id/what-is-agent-id-platform) |
+| Integrate third-party agents with Microsoft Entra Agent ID | [https://learn.microsoft.com/en-us/entra/agent-id/configure-third-party-agents](https://learn.microsoft.com/en-us/entra/agent-id/configure-third-party-agents) |
+| Microsoft Entra Agent ID sign-in and audit logs | [https://learn.microsoft.com/en-us/entra/agent-id/sign-in-audit-logs-agents](https://learn.microsoft.com/en-us/entra/agent-id/sign-in-audit-logs-agents) |
+| Conditional Access for agent identities | [https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id](https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id) |
+| Identity Protection for agents | [https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents](https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents) |
+| Microsoft Entra ID Governance for agent identities | [https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview](https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview) |
+| Network controls for Copilot Studio agents | [https://learn.microsoft.com/en-us/entra/global-secure-access/concept-secure-web-ai-gateway-agents](https://learn.microsoft.com/en-us/entra/global-secure-access/concept-secure-web-ai-gateway-agents) |
+| Agent Registry convergence with Microsoft Agent 365 | [https://learn.microsoft.com/en-us/entra/agent-id/agent-registry-convergence](https://learn.microsoft.com/en-us/entra/agent-id/agent-registry-convergence) |
+| Microsoft Entra Agent ID best practices | [https://learn.microsoft.com/en-us/entra/agent-id/best-practices-agent-id](https://learn.microsoft.com/en-us/entra/agent-id/best-practices-agent-id) |
+| Microsoft Entra Cross-Tenant Access Settings | [https://learn.microsoft.com/en-us/entra/external-id/cross-tenant-access-overview](https://learn.microsoft.com/en-us/entra/external-id/cross-tenant-access-overview) |
 | Manage federated connector availability | [https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/manage-federated-connectors](https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/manage-federated-connectors) |
 
 ---
