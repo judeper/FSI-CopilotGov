@@ -60,7 +60,10 @@ Microsoft 365 Copilot is not a standalone product -- it is an orchestration laye
 |                   +--------+--------+                              |
 |                   |  Large Language  |                              |
 |                   |  Model (LLM)    |                              |
-|                   |  Azure OpenAI   |                              |
+|                   |  Microsoft-hosted|                              |
+|                   |  OpenAI plus     |                              |
+|                   |  optional 3P     |                              |
+|                   |  models          |                              |
 |                   +--------+--------+                              |
 |                            |                                       |
 |                            v                                       |
@@ -88,7 +91,7 @@ Microsoft 365 Copilot is not a standalone product -- it is an orchestration laye
 | **Copilot Orchestrator** | Receives user prompt, coordinates retrieval, manages LLM interaction | Prompt preprocessing applies Responsible AI filters |
 | **Microsoft Graph** | Provides access to user's M365 content (files, emails, chats, meetings) | Access scoped to user's existing permissions |
 | **Semantic Index** | Pre-built search index of tenant content for fast retrieval | Indexes everything the user can access; governance must address permission scope |
-| **LLM (Azure OpenAI)** | Generates response based on grounded prompt | Tenant data not used for model training; processed in Azure boundary |
+| **LLM (foundation models)** | Generates response based on grounded prompt. Default path uses Microsoft-hosted OpenAI models within Microsoft's managed Azure boundary; optional providers include Anthropic (Microsoft subprocessor since January 7, 2026) and xAI (independent provider, opt-in for Copilot Studio). | Tenant prompts, responses, and Microsoft Graph data are not used to train foundation LLMs. **Microsoft-hosted OpenAI**: processed in Microsoft-managed Azure boundary under the Product Terms / DPA, with EU Data Boundary and in-country LLM processing commitments where applicable. **Anthropic**: provided under the Microsoft Product Terms and DPA, but **out of scope for the EU Data Boundary and in-country LLM processing commitments**; on by default for most commercial-cloud customers (excluding EU/EFTA and UK); not available in GCC, GCC High, DoD, or other sovereign clouds. **xAI**: hosted by xAI **outside Microsoft-managed environments and audit controls** under xAI's separate Terms of Service and Data Processing Addendum — Microsoft Product Terms, DPA, data residency commitments, audit and compliance requirements, SLAs, and the Customer Copyright Commitment do not apply. |
 | **Responsible AI layer** | Pre- and post-processing safety filters | Content safety, harmful content blocking, citation generation |
 | **Web Search (Bing)** | Optional grounding from web content | May send contextual queries externally; controllable via admin settings |
 
@@ -195,7 +198,8 @@ Microsoft 365 Copilot uses a Retrieval-Augmented Generation (RAG) pipeline to pr
 |     [App context (current document, meeting, email)]               |
 |                |                                                   |
 |                v                                                   |
-|  5. LLM INFERENCE (Azure OpenAI)                                   |
+|  5. LLM INFERENCE (Microsoft-hosted OpenAI by default;            |
+|     optional Anthropic subprocessor or xAI independent provider)  |
 |     - Process grounded prompt                                      |
 |     - Generate response                                            |
 |     - Include citation markers                                     |
