@@ -25,7 +25,7 @@ Key regulatory drivers for pre-deployment readiness:
 - **FFIEC IT Handbook:** Expects institutions to conduct risk assessments before deploying new technology, including AI-powered tools.
 - **Interagency AI Guidance (2023):** Calls for appropriate due diligence and risk management before adopting AI services from third-party providers.
 - **Sarbanes-Oxley §§302/404 (where applicable to ICFR):** Internal control requirements that extend to AI-assisted financial reporting and document generation workflows.
-- **FINRA 3110:** Supervisory obligations that must account for how Copilot may draft or modify regulated communications.
+- **FINRA Rule 3110 — supervisory systems and WSPs:** Supervisory obligations that must account for how Copilot may draft or modify regulated communications.
 
 ---
 
@@ -48,6 +48,7 @@ Key regulatory drivers for pre-deployment readiness:
 | [1.13](1.13-extensibility-readiness.md) | Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents) | Pre-deployment assessment for Copilot extensibility features including Graph connectors, plugins, and declarative agents | Regulated |
 | [1.14](1.14-item-level-permission-scanning.md) | Item-Level Permission Scanning | Extend oversharing detection to individual files and folders with unique permissions that site-level tools miss, addressing the gap between site-level DAG and Copilot's file-level content surfacing | Recommended |
 | [1.15](1.15-sharepoint-permissions-drift.md) | SharePoint Permissions Drift Detection | Establish permissions baselines and continuous drift detection to identify unauthorized or unintended permission changes that expand Copilot's data surface | Recommended |
+| [1.16](1.16-copilot-tuning-governance.md) | Copilot Tuning Governance | Assess eligibility, default availability, snapshot lifecycle, Search/Graph index coverage, and data residency limits before enabling Copilot Tuning | Regulated |
 
 ---
 
@@ -71,7 +72,8 @@ Phase 2: Remediation (Week 3-4)
 Phase 3: Configuration (Week 5-6)
 ├── Control 1.3  Restricted SharePoint Search
 ├── Control 1.4  Semantic Index Governance
-└── Control 1.9  License Planning and Assignment Strategy
+├── Control 1.9  License Planning and Assignment Strategy
+└── Control 1.16 Copilot Tuning Governance
 
 Phase 4: Organizational Readiness (Week 7-8)
 ├── Control 1.10 Vendor Risk Management
@@ -91,6 +93,7 @@ Pillar 1 controls are primarily foundational and have few intra-pillar dependenc
 | 1.2 Oversharing Detection | 2.x DLP Policies | Oversharing findings inform DLP rule creation |
 | 1.14 Item-Level Scanning | 1.2 Oversharing Detection, 2.x DLP Policies | Item-level findings extend site-level oversharing remediation |
 | 1.15 Permissions Drift | 1.2 Oversharing Detection, 2.x Conditional Access | Drift findings feed ongoing access control governance |
+| 1.16 Copilot Tuning | 1.4 Semantic Index, 2.x DLP Policies, 3.x Audit Controls | Tuning eligibility, Search/Graph index coverage, snapshot policy gaps, and audit requirements inform tuning approvals |
 | 1.5 Sensitivity Labels | 2.x Label Enforcement | Label taxonomy must be defined before enforcement |
 | 1.6 Permission Audit | 2.x Conditional Access | Permission findings inform access policies |
 | 1.9 License Planning | All Pillars | Licensing determines which governance tools are available |
