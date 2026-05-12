@@ -59,7 +59,7 @@ Edit with Copilot (formerly Agent Mode) is an iterative document creation experi
 
 FSI organizations should review whether web-sourced content meets their governance and supervision requirements, particularly for client-facing document generation.
 
-**Relevant controls:** Control 4.1 (Copilot Admin Settings), Control 1.13 (User Training)
+**Relevant controls:** Control 4.1 (Copilot Admin Settings), Control 1.12 (Training and Awareness Program)
 
 ---
 
@@ -221,7 +221,7 @@ Copilot, like all large language models, can generate inaccurate or "hallucinate
 - **Communication Compliance (Control 3.4):** Flags Copilot-assisted communications for supervisory review before they reach clients
 - **FINRA 2210 review process (Control 3.5):** Principal pre-approval requirements for Copilot-drafted retail communications
 - **Model Risk Management (Control 3.8):** Documents Copilot in the model inventory with risk assessment and validation procedures
-- **User Training (Control 1.13):** Educates users that Copilot output must be reviewed and validated before use in any business context
+- **Training and Awareness (Control 1.12):** Educates users that Copilot output must be reviewed and validated before use in any business context
 
 **Key principle:** Copilot is an assistant, not an autonomous agent. Users remain responsible for reviewing and validating all Copilot-generated content before using it in business contexts.
 

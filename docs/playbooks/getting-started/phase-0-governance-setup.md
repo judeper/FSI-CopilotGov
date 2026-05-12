@@ -64,7 +64,7 @@ Complete all prerequisite governance, security, and compliance steps so that the
     - AI Governance Lead (may be a new role)
     - Legal representative
     - Business unit representatives from pilot departments
-    - M365 Global Administrator
+    - M365 Global Admin
 
 2. **Draft committee charter** documenting:
     - Purpose and scope (M365 Copilot governance decisions)

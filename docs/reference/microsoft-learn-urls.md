@@ -3,7 +3,7 @@
 Curated list of Microsoft Learn documentation URLs organized by governance topic. Use these references for detailed product documentation, configuration guides, and API references.
 
 !!! warning "Disclaimer"
-    This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. URLs are current as of April 2026; Microsoft may update or relocate documentation. See [full disclaimer](../disclaimer.md).
+    This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. URLs are current as of May 2026; Microsoft may update or relocate documentation. See [full disclaimer](../disclaimer.md).
 
 ---
 
