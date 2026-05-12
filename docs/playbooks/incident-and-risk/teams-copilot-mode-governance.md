@@ -16,8 +16,9 @@ Teams Copilot Mode transforms the Copilot 1:1 chat experience into a group colla
 | Characteristic | Standard Copilot Chat | Teams Copilot Mode |
 |---------------|----------------------|-------------------|
 | **Participants** | Single user + Copilot | Multiple users + Copilot |
-| **Visibility** | User sees only their interactions | All participants see all interactions and responses |
-| **Data grounding** | Based on individual user's Microsoft Graph access | May surface data accessible to any participant |
+| **Visibility** | User sees only their interactions | Chat members see Copilot responses that are shared to the chat |
+| **Data grounding** | Based on individual user's Microsoft Graph access | Grounded in the prompter's Microsoft Graph access; if Copilot uses sources not available to all chat members, the prompter sees a private preview and must Approve or Reject sharing before the response is posted to the chat |
+| **Licensing to interact** | Copilot license required | Copilot license required to add Copilot or @mention it; unlicensed chat members can read shared Copilot responses but cannot prompt Copilot |
 | **Record type** | Individual Copilot interaction | Group communication — potentially subject to FINRA 3110 |
 | **Retention** | Microsoft Copilot experiences retention policy | Teams chat retention policy + Copilot experiences policy |
 
@@ -29,9 +30,10 @@ Teams Copilot Mode transforms the Copilot 1:1 chat experience into a group colla
 
 FINRA Rule 3110(b)(4) requires firms to establish written supervisory procedures for each type of business activity in which the firm engages. Teams Copilot Mode creates a new type of business communication where:
 
-1. **Multiple registered representatives** may discuss client matters, investment recommendations, or market views with Copilot generating AI-assisted responses visible to all participants
-2. **Copilot responses** in group context may incorporate data from multiple participants' Microsoft Graph access, potentially surfacing information that not all participants should see
-3. **Group AI interactions** may constitute correspondence or retail communications under FINRA Rule 2210 depending on how the output is used
+1. **Multiple registered representatives** may discuss client matters, investment recommendations, or market views with Copilot generating AI-assisted responses that are shared to the chat
+2. **Copilot responses** are grounded in the data of the user who asked the question. When the response uses web sources or content all chat members can already access, it is shared automatically; when Copilot uses sources not available to every chat member, the prompter receives a private preview and must Approve or Reject before the response is posted to the chat — supervisors should treat the prompter as the responsible owner of any approved disclosure
+3. **Licensing boundary** — adding Copilot to a chat or @mentioning it requires a Microsoft 365 Copilot license. Chat members without a Copilot license can read responses initiated by licensed users but cannot prompt Copilot themselves; supervisors should account for this when scoping who can introduce Copilot into a regulated conversation
+4. **Group AI interactions** may constitute correspondence or retail communications under FINRA Rule 2210 depending on how the output is used
 
 ### Supervisory Procedures Checklist
 
