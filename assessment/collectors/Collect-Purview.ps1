@@ -80,7 +80,13 @@ Import-Module ExchangeOnlineManagement -ErrorAction Stop
 Write-Verbose "Loaded ExchangeOnlineManagement module."
 
 # ─── Authentication ──────────────────────────────────────────────────
-# Connect-IPPSSession for Security & Compliance PowerShell.
+# Connect-IPPSSession for Security & Compliance PowerShell (used for most cmdlets).
+# Connect-ExchangeOnline (best effort) is required for an accurate
+# UnifiedAuditLogIngestionEnabled reading — Microsoft documents that the value
+# returned by Get-AdminAuditLogConfig in Security & Compliance PowerShell is
+# always False, and the cmdlet must be invoked from Exchange Online PowerShell
+# to obtain the real tenant setting.
+# Reference: https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/get-adminauditlogconfig?view=exchange-ps
 # Interactive: user sign-in prompt. SP: certificate-based app auth.
 Write-Verbose "Authenticating to Security & Compliance Center in $AuthMode mode..."
 
@@ -99,6 +105,25 @@ else {
 
 Write-Verbose "Security & Compliance authentication successful."
 
+# Best-effort Exchange Online connection for the audit-ingestion flag only.
+# Failures here are non-fatal: the rest of the collection runs from IPPS.
+$exoConnected = $false
+try {
+    Write-Verbose "Authenticating to Exchange Online (required for accurate UnifiedAuditLogIngestionEnabled)..."
+    if ($AuthMode -eq 'Interactive') {
+        Connect-ExchangeOnline -ShowBanner:$false -ErrorAction Stop
+    }
+    else {
+        Connect-ExchangeOnline -AppId $ClientId -Organization "$TenantId" -ShowBanner:$false -ErrorAction Stop
+    }
+    $exoConnected = $true
+    Write-Verbose "Exchange Online authentication successful."
+}
+catch {
+    $warnings.Add("Exchange Online connection failed; UnifiedAuditLogIngestionEnabled will be reported as null because the value returned from Security & Compliance PowerShell is always False. Error: $($_.Exception.Message)")
+    Write-Warning $warnings[-1]
+}
+
 # ═══════════════════════════════════════════════════════════════════════
 # Section 1: Audit Log Configuration
 # Supports: Controls 3.1 (Audit Logging), 3.2 (Audit Retention)
@@ -109,7 +134,28 @@ try {
     Write-Verbose "Section 1: Collecting audit log configuration..."
 
     $adminAuditConfig = Get-AdminAuditLogConfig -ErrorAction Stop
-    $unifiedAuditEnabled = $adminAuditConfig.UnifiedAuditLogIngestionEnabled
+
+    # UnifiedAuditLogIngestionEnabled is reliable only from Exchange Online PowerShell.
+    # In Security & Compliance PowerShell (IPPS) the value is always False per Microsoft Learn:
+    # https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/get-adminauditlogconfig?view=exchange-ps
+    # Read it from EXO when available; otherwise emit null so downstream consumers
+    # do not treat the IPPS-side False as authoritative.
+    $unifiedAuditEnabled = $null
+    $unifiedAuditSource = 'Unavailable'
+    if ($exoConnected) {
+        try {
+            $exoAuditConfig = Get-AdminAuditLogConfig -ErrorAction Stop
+            $unifiedAuditEnabled = $exoAuditConfig.UnifiedAuditLogIngestionEnabled
+            $unifiedAuditSource = 'ExchangeOnline'
+        }
+        catch {
+            $warnings.Add("Get-AdminAuditLogConfig from Exchange Online failed; UnifiedAuditLogIngestionEnabled left null: $($_.Exception.Message)")
+            Write-Warning $warnings[-1]
+        }
+    }
+    else {
+        $warnings.Add("Exchange Online not connected; UnifiedAuditLogIngestionEnabled set to null because Security & Compliance PowerShell always returns False for this property.")
+    }
 
     # Audit configuration policies (audit plan tier)
     $auditPolicies = $null
@@ -128,11 +174,12 @@ try {
     }
 
     $auditConfig = [PSCustomObject]@{
-        UnifiedAuditLogIngestionEnabled = $unifiedAuditEnabled
-        AdminAuditLogAgeLimit           = $adminAuditConfig.AdminAuditLogAgeLimit
-        AuditConfigurationPolicies      = $auditPolicies
+        UnifiedAuditLogIngestionEnabled       = $unifiedAuditEnabled
+        UnifiedAuditLogIngestionEnabledSource = $unifiedAuditSource
+        AdminAuditLogAgeLimit                 = $adminAuditConfig.AdminAuditLogAgeLimit
+        AuditConfigurationPolicies            = $auditPolicies
     }
-    Write-Verbose "  Audit config collected. Unified audit enabled: $unifiedAuditEnabled"
+    Write-Verbose "  Audit config collected. Unified audit enabled: $unifiedAuditEnabled (source: $unifiedAuditSource)"
 }
 catch {
     $warnings.Add("Section 1 (Audit Config) failed: $($_.Exception.Message)")
