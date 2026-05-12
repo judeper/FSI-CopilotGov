@@ -1,11 +1,11 @@
-# Control 3.4: Communication Compliance Monitoring — PowerShell Setup
+# Control 3.4: Communication Compliance Monitoring — PowerShell Validation
 
-Automation scripts for deploying and managing communication compliance policies that monitor Copilot-assisted communications, including reporting on IRM integration status and indicator flow.
+PowerShell validation scripts for inventorying existing Microsoft Purview Communication Compliance policies and reporting on review/audit telemetry after policies are configured in the portal. Create and manage Communication Compliance policies in the Microsoft Purview portal; PowerShell is not supported for policy creation or management.
 
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement` (Security & Compliance PowerShell)
-- **Permissions:** Purview Compliance Admin or Communication Compliance Admin
+- **Permissions:** Purview Compliance Admin or Communication Compliance Admin for portal configuration; audit-search permissions for reporting scripts
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -15,14 +15,16 @@ Import-Module ExchangeOnlineManagement
 Connect-IPPSSession -UserPrincipalName admin@contoso.com
 ```
 
+!!! note "Policy management is portal-only"
+    Use Microsoft Purview portal controls to create or change Communication Compliance policies, including Exchange Online, Microsoft Teams, Viva Engage, and Microsoft 365 Copilot / Copilot Chat locations. Even if Exchange PowerShell exposes `New-SupervisoryReviewPolicyV2 -CopilotPolicy` in your tenant, do not use it for standard policy provisioning; use the PowerShell examples below for read-only inventory and audit validation only.
+
 ## Scripts
 
 ### Script 1: Inventory Microsoft Purview Communication Compliance Policies
 
 ```powershell
-# Retrieve existing communication compliance (supervisory review) policies
-# Communication compliance is managed via Security & Compliance PowerShell,
-# not via the Microsoft Graph API
+# Read-only inventory of existing communication compliance (supervisory review) policies.
+# Create and manage policies in the Microsoft Purview portal, not through PowerShell.
 
 $policies = Get-SupervisoryReviewPolicyV2
 
@@ -74,7 +76,7 @@ foreach ($days in $periods) {
 
     $matches = Search-UnifiedAuditLog `
         -StartDate $start -EndDate $end `
-        -Operations "SupervisionPolicyMatch" `
+        -Operations "SupervisionRuleMatch" `
         -ResultSize 5000
 
     $results += [PSCustomObject]@{
@@ -121,7 +123,7 @@ if ($irmCcEvents.Count -eq 0) {
 $pendingReviews = Search-UnifiedAuditLog `
     -StartDate (Get-Date).AddDays(-30) `
     -EndDate (Get-Date) `
-    -Operations "SupervisionPolicyMatch" `
+    -Operations "SupervisionRuleMatch" `
     -ResultSize 5000
 
 $pendingByUser = $pendingReviews | Group-Object UserIds |
@@ -145,6 +147,7 @@ $pendingByUser | Export-Csv "PendingReviews_$(Get-Date -Format 'yyyyMMdd').csv" 
 
 ## Next Steps
 
+- Create or change policies in the Microsoft Purview portal using [Communication Compliance policy management](https://learn.microsoft.com/en-us/purview/communication-compliance-policies)
 - See [Verification & Testing](verification-testing.md) to validate communication compliance
 - See [Troubleshooting](troubleshooting.md) for common policy issues
 - Back to [Control 3.4](../../../controls/pillar-3-compliance/3.4-communication-compliance.md)
