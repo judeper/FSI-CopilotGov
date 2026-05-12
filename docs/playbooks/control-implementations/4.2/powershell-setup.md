@@ -1,6 +1,6 @@
 # Control 4.2: Copilot in Teams Meetings Governance — PowerShell Setup
 
-Automation scripts for configuring and managing Copilot governance in Microsoft Teams meetings, including the critical remediation for Microsoft's late April 2026 EnabledWithTranscript default change.
+Automation scripts for configuring and managing Copilot governance in Microsoft Teams meetings, including enforcement of the `EnabledWithTranscript` setting for FSI recordkeeping requirements.
 
 ## Prerequisites
 
@@ -20,15 +20,18 @@ Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
 
 ## Scripts
 
-### Script 1: Enforce EnabledWithTranscript (Critical Remediation)
+### Script 1: Enforce EnabledWithTranscript (FSI Recordkeeping Baseline)
 
-This script addresses the late April 2026 Microsoft default change from `EnabledWithTranscript` to `Enabled`. Run this script immediately for any Teams environment where recordkeeping obligations apply.
+Microsoft documents `EnabledWithTranscript` as the default value of the `-Copilot` parameter on `Set-CsTeamsMeetingPolicy`. With `EnabledWithTranscript`, organizers cannot change the per-meeting Copilot value — Copilot defaults to **During and after the meeting** and saved transcripts are required. This script enforces that setting on the FSI regulated meeting policy and confirms it across all meeting policies, which supports FINRA Rule 4511 books-and-records expectations and FINRA Rule 3110 supervisory review.
+
+For the supported `-Copilot` values (`Enabled`, `EnabledWithTranscript`, `EnabledWithTranscriptDefaultOn`, `Disabled`) and the corresponding admin center labels, see [Manage Microsoft 365 Copilot in Teams meetings and events](https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription).
 
 ```powershell
 # ============================================================
-# CRITICAL REMEDIATION: Teams Copilot Default Change (Late April 2026)
-# Microsoft changed default from EnabledWithTranscript to Enabled.
-# This script enforces EnabledWithTranscript for FSI compliance.
+# Enforce EnabledWithTranscript on the FSI regulated meeting policy.
+# EnabledWithTranscript is the documented default for the -Copilot
+# parameter on Set-CsTeamsMeetingPolicy and is required for FSI
+# recordkeeping (Copilot only runs when a transcript is captured).
 # ============================================================
 
 Import-Module MicrosoftTeams
@@ -38,9 +41,9 @@ Connect-MicrosoftTeams
 Write-Host "=== Current Meeting Policy Copilot Settings ===" -ForegroundColor Cyan
 $allPolicies = Get-CsTeamsMeetingPolicy
 foreach ($policy in $allPolicies) {
-    $copilotStatus = $policy.CopilotWithoutTranscript
-    $flagged = if ($copilotStatus -ne "Disabled") { " <-- ACTION REQUIRED" } else { "" }
-    Write-Host "Policy: $($policy.Identity) | CopilotWithoutTranscript: $copilotStatus$flagged"
+    $copilotStatus = $policy.Copilot
+    $flagged = if ($copilotStatus -notin @("EnabledWithTranscript", "Disabled")) { " <-- ACTION REQUIRED" } else { "" }
+    Write-Host "Policy: $($policy.Identity) | Copilot: $copilotStatus$flagged"
 }
 
 # Step 2: Create or update FSI-Regulated-Policy
@@ -54,23 +57,22 @@ if (-not $existingPolicy) {
     Write-Host "`nUpdating existing policy: $policyName" -ForegroundColor Yellow
 }
 
-# Enforce EnabledWithTranscript: Copilot cannot run without transcription
+# Enforce EnabledWithTranscript: Copilot only runs when transcription is captured.
 Set-CsTeamsMeetingPolicy -Identity $policyName `
     -AllowTranscription $true `
     -AllowCloudRecording $true `
     -RecordingStorageMode "OneDriveForBusiness" `
-    -Copilot "EnabledWithTranscript" `
-    -CopilotWithoutTranscript "Disabled"
+    -Copilot "EnabledWithTranscript"
 
 # Step 3: Verify the setting
 $verifyPolicy = Get-CsTeamsMeetingPolicy -Identity $policyName
 Write-Host "`n=== Verification ===" -ForegroundColor Cyan
 Write-Host "Policy: $policyName"
-Write-Host "CopilotWithoutTranscript: $($verifyPolicy.CopilotWithoutTranscript)"
-if ($verifyPolicy.CopilotWithoutTranscript -eq "Disabled") {
-    Write-Host "PASS: EnabledWithTranscript enforced — Copilot requires transcription." -ForegroundColor Green
+Write-Host "Copilot: $($verifyPolicy.Copilot)"
+if ($verifyPolicy.Copilot -eq "EnabledWithTranscript") {
+    Write-Host "PASS: EnabledWithTranscript enforced — Copilot requires a saved transcript." -ForegroundColor Green
 } else {
-    Write-Host "FAIL: CopilotWithoutTranscript is NOT Disabled. Review policy settings." -ForegroundColor Red
+    Write-Host "FAIL: Copilot is NOT EnabledWithTranscript. Review policy settings." -ForegroundColor Red
 }
 ```
 
@@ -108,7 +110,6 @@ Set-CsTeamsMeetingPolicy -Identity $mnpiPolicyName `
     -AllowTranscription $false `
     -AllowCloudRecording $false `
     -Copilot "Disabled" `
-    -CopilotWithoutTranscript "Disabled" `
     -AllowMeetingCoach $false
 
 Write-Host "MNPI meeting policy created: $mnpiPolicyName (Copilot DISABLED)" -ForegroundColor Yellow
@@ -117,7 +118,9 @@ Write-Host "MNPI meeting policy created: $mnpiPolicyName (Copilot DISABLED)" -Fo
 ### Script 4: Verify EnabledWithTranscript Across All Policies (Compliance Audit)
 
 ```powershell
-# Audit all Teams meeting policies for Copilot transcript enforcement compliance
+# Audit all Teams meeting policies for Copilot transcript enforcement.
+# A policy is considered FSI-compliant only when its -Copilot value is
+# EnabledWithTranscript (transcript required) or Disabled (Copilot off).
 Write-Host "=== Teams Meeting Policy Copilot Audit ===" -ForegroundColor Cyan
 Write-Host "Date: $(Get-Date -Format 'yyyy-MM-dd HH:mm')`n"
 
@@ -127,11 +130,10 @@ $nonCompliant = @()
 
 foreach ($policy in $allPolicies) {
     $status = [PSCustomObject]@{
-        PolicyName              = $policy.Identity
-        CopilotSetting          = $policy.Copilot
-        CopilotWithoutTranscript = $policy.CopilotWithoutTranscript
-        AllowTranscription      = $policy.AllowTranscription
-        Compliant               = ($policy.CopilotWithoutTranscript -eq "Disabled" -or $policy.Copilot -eq "Disabled")
+        PolicyName         = $policy.Identity
+        CopilotSetting     = $policy.Copilot
+        AllowTranscription = $policy.AllowTranscription
+        Compliant          = ($policy.Copilot -in @("EnabledWithTranscript", "Disabled"))
     }
 
     if ($status.Compliant) {
@@ -145,14 +147,14 @@ if ($nonCompliant.Count -gt 0) {
     Write-Host "NON-COMPLIANT POLICIES (ACTION REQUIRED):" -ForegroundColor Red
     $nonCompliant | Format-Table -AutoSize
 } else {
-    Write-Host "All meeting policies comply with EnabledWithTranscript requirement." -ForegroundColor Green
+    Write-Host "All meeting policies comply with the EnabledWithTranscript requirement." -ForegroundColor Green
 }
 
 Write-Host "`nCompliant policies:" -ForegroundColor Green
 $compliant | Format-Table -AutoSize
 
 # Export audit results
-$allPolicies | Select-Object Identity, Copilot, CopilotWithoutTranscript, AllowTranscription |
+$allPolicies | Select-Object Identity, Copilot, AllowTranscription |
     Export-Csv "TeamsMeetingPolicyAudit_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 Write-Host "`nAudit exported to TeamsMeetingPolicyAudit_$(Get-Date -Format 'yyyyMMdd').csv"
 ```
@@ -185,7 +187,7 @@ $meetingEvents | Select-Object CreationDate, UserIds, Operations |
 
 | Task | Frequency | Script |
 |------|-----------|--------|
-| EnabledWithTranscript remediation | Immediate (run once; re-run after policy changes) | Script 1 |
+| EnabledWithTranscript baseline enforcement | Run once; re-run after meeting-policy changes | Script 1 |
 | Policy assignment to user groups | As needed | Script 2 |
 | Compliance audit of all policies | Monthly | Script 4 |
 | Meeting Copilot usage report | Weekly | Script 5 |
