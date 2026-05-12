@@ -22,15 +22,23 @@ Review how declarative agents work: users can create custom Copilot agents scope
 
 > **Entra Agent ID:** Agents can now be assigned an **Entra Agent ID** for identity management, enabling organizations to treat agents as managed identities within Entra ID. This supports conditional access policies, audit attribution, and permission management for agents. Organizations should evaluate whether agent identity management through Entra Agent ID is appropriate for their governance model.
 
-### Step 2: Configure Agent Creation Policies
+### Step 2: Configure Agent Access, Sharing, and Lifecycle Rules
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Agents > Settings > User access
+**Path:** Admin Center > Agents > Settings
 
-Configure who can create declarative agents:
-- Restrict agent creation to specific groups (e.g., IT team, approved power users)
-- Disable agent creation for general users until governance processes are established
-- Require approval for agent publication to the organization
+The **Agents > Settings** page exposes several distinct controls — each governs a different aspect of the agent lifecycle and they should not be confused with one another:
+
+- **Allowed agent types** — controls which categories of agents (Microsoft, organization-published, external publisher) appear in the agent catalog and can be installed by users. Use this to disallow external-publisher agents until vendor risk assessment is complete.
+- **Agent management rules** — bulk lifecycle actions for tenant administrators. Current rules include "Install Microsoft (1P) agents" and "Reassign ownerless agents created with Agent Builder to manager" (Entra-hierarchy based). Use these for scaled governance instead of per-agent manual intervention.
+- **Security templates** — preset policies, rules, and allow lists applied to new AI agents to enforce consistency.
+- **Sharing** — controls whether (and which groups of) users can share agents organization-wide. **Note:** sharing controls apply only to agents built with Microsoft 365 Copilot Agent Builder; SharePoint agents and other agent types are governed through their own publishing surfaces.
+- **User access** — controls how users *access and install* agents (All users / No users / Specific users or groups). This setting governs **consumption**, not **creation**. Restricting User access to a pilot group is a useful Baseline lever, but it does not restrict who can build a new declarative agent — that is gated by Copilot license, Agent Builder availability, and SharePoint agent permissions on source sites (see Step 3).
+
+For Baseline governance:
+- Set **User access** to a small pilot group while the governance framework is being established
+- Set **Allowed agent types** to Microsoft and organization-published only
+- Disable broad **Sharing** for Agent Builder agents until an approval workflow exists
 
 ### Step 3: Review Agent Data Access Scope
 
