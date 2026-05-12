@@ -10,7 +10,7 @@ Test cases and evidence collection procedures to confirm data retention policies
 - **Steps:**
   1. Run `Get-RetentionCompliancePolicy | Where-Object { $_.Name -like "*Copilot*" }`.
   2. Verify each policy shows `Enabled: True` and `DistributionStatus: Success`.
-  3. Confirm the `CopilotLocation` is set for policies targeting the Microsoft Copilot experiences location.
+  3. Confirm the Microsoft Copilot experiences policy exists in the Purview portal; current retention policy PowerShell syntax does not expose a Copilot-specific location switch for creating that policy.
   4. Confirm `TeamsChannelLocation` and `TeamsChatLocation` are set for Teams retention policies.
 - **Expected Result:** All FSI Copilot retention policies are deployed and distributed successfully, including the Microsoft Copilot experiences policy.
 - **Evidence:** PowerShell output showing policy status and distribution.

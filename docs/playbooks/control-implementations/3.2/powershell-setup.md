@@ -17,42 +17,23 @@ Connect-IPPSSession -UserPrincipalName admin@contoso.com
 
 ## Scripts
 
-### Script 1: Create Microsoft Copilot Experiences Retention Policy
+### Script 1: Record Microsoft Copilot Experiences Retention Policy (Portal-Managed)
+
+Create the Microsoft Copilot experiences retention policies in the Purview portal because current retention policy PowerShell syntax does not expose a Copilot-specific location switch for this retention location. Use **Data lifecycle management** > **Microsoft 365** > **Retention policies** and retain portal evidence with the records management schedule.
 
 ```powershell
-# Create retention policy targeting the Microsoft Copilot experiences location
-# This is the primary retention target for M365 Copilot Chat history, meeting recaps,
-# and Copilot interactions across Word/Excel/PowerPoint/Outlook/Teams
-New-RetentionCompliancePolicy `
-    -Name "FSI-Copilot-Experiences-Retention" `
-    -Comment "Retains Microsoft Copilot experiences content per FSI regulatory requirements" `
-    -CopilotLocation "All" `
-    -Enabled $true
+# Export evidence for portal-created Microsoft Copilot experiences policies by name.
+# Create FSI-Copilot-Experiences-Retention-3Year in the Purview portal for baseline deployments.
+# For regulated deployments, create FSI-Copilot-Experiences-Retention-6Year in the portal.
+$copilotExperiencePolicyNames = @(
+    "FSI-Copilot-Experiences-Retention-3Year",
+    "FSI-Copilot-Experiences-Retention-6Year"
+)
 
-New-RetentionComplianceRule `
-    -Name "FSI-Copilot-Experiences-3yr" `
-    -Policy "FSI-Copilot-Experiences-Retention" `
-    -RetentionDuration 1095 `
-    -RetentionComplianceAction Keep `
-    -RetentionDurationDisplayHint Years
-
-Write-Host "Microsoft Copilot experiences retention policy created: 3-year retention" -ForegroundColor Green
-
-# For regulated deployments requiring 6-year retention:
-New-RetentionCompliancePolicy `
-    -Name "FSI-Copilot-Experiences-Retention-6yr" `
-    -Comment "6-year retention for Copilot experiences content per SEC Rule 17a-4(a)" `
-    -CopilotLocation "All" `
-    -Enabled $true
-
-New-RetentionComplianceRule `
-    -Name "FSI-Copilot-Experiences-6yr" `
-    -Policy "FSI-Copilot-Experiences-Retention-6yr" `
-    -RetentionDuration 2190 `
-    -RetentionComplianceAction Keep `
-    -RetentionDurationDisplayHint Years
-
-Write-Host "6-year Copilot experiences retention policy created" -ForegroundColor Green
+foreach ($policyName in $copilotExperiencePolicyNames) {
+    Get-RetentionCompliancePolicy -Identity $policyName -ErrorAction SilentlyContinue |
+        Select-Object Name, Enabled, DistributionStatus
+}
 ```
 
 ### Script 2: Create Content Retention Policies
@@ -97,23 +78,25 @@ Write-Host "Teams retention policy created: 3-year retention" -ForegroundColor G
 ### Script 3: Report on Existing Retention Policies
 
 ```powershell
-# Generate a report of all retention policies relevant to Copilot
+# Generate a report of all retention policies relevant to Copilot.
+# Microsoft Copilot experiences policies are portal-managed; match them by approved names.
 $policies = Get-RetentionCompliancePolicy | Where-Object {
-    $_.Name -like "*Copilot*" -or $_.CopilotLocation -ne $null
+    $_.Name -like "*Copilot*" -or $_.Comment -like "*Copilot*"
 }
 
 foreach ($policy in $policies) {
     $rules = Get-RetentionComplianceRule -Policy $policy.Name
     [PSCustomObject]@{
-        PolicyName        = $policy.Name
-        Enabled           = $policy.Enabled
+        PolicyName         = $policy.Name
+        Enabled            = $policy.Enabled
         DistributionStatus = $policy.DistributionStatus
-        CopilotLocation   = $policy.CopilotLocation
         SharePointLocation = $policy.SharePointLocation
-        ExchangeLocation  = $policy.ExchangeLocation
-        TeamsLocation     = $policy.TeamsChannelLocation
-        RetentionDays     = ($rules | Select-Object -First 1).RetentionDuration
-        Action            = ($rules | Select-Object -First 1).RetentionComplianceAction
+        OneDriveLocation   = $policy.OneDriveLocation
+        ExchangeLocation   = $policy.ExchangeLocation
+        TeamsLocation      = $policy.TeamsChannelLocation
+        ModernGroupLocation = $policy.ModernGroupLocation
+        RetentionDays      = ($rules | Select-Object -First 1).RetentionDuration
+        Action             = ($rules | Select-Object -First 1).RetentionComplianceAction
     }
 } | Format-Table -AutoSize
 ```
@@ -130,16 +113,16 @@ New-ComplianceTag `
     -RetentionType CreationAgeInDays `
     -IsRecordLabel $true
 
-# Publish the label policy — include Microsoft Copilot experiences location
+# Publish the label policy to PowerShell-supported workload locations.
+# Add Microsoft Copilot experiences through the Purview portal if the label must apply there.
 New-RetentionCompliancePolicy `
     -Name "Publish-Copilot-Retention-Labels" `
     -RetentionComplianceTag "FSI-Copilot-Regulatory-Record-6yr" `
     -SharePointLocation "All" `
     -ExchangeLocation "All" `
-    -CopilotLocation "All" `
     -Enabled $true
 
-Write-Host "Retention label created and published to Copilot experiences and other locations" -ForegroundColor Green
+Write-Host "Retention label created and published to PowerShell-supported workload locations" -ForegroundColor Green
 ```
 
 ### Script 5: Verify Threaded Summary Retention Coverage
@@ -151,18 +134,18 @@ $teamsPolicies = Get-RetentionCompliancePolicy | Where-Object {
 }
 
 $copilotExpPolicies = Get-RetentionCompliancePolicy | Where-Object {
-    $_.CopilotLocation -ne $null
+    $_.Name -like "*Copilot-Experiences*"
 }
 
 Write-Host "=== Threaded Summary Retention Coverage Check ===" -ForegroundColor Cyan
 Write-Host "Teams retention policies (covers meeting content and embedded summaries): $($teamsPolicies.Count)" -ForegroundColor $(if ($teamsPolicies.Count -gt 0) { "Green" } else { "Red" })
-Write-Host "Copilot experiences policies (covers Copilot-generated summaries): $($copilotExpPolicies.Count)" -ForegroundColor $(if ($copilotExpPolicies.Count -gt 0) { "Green" } else { "Red" })
+Write-Host "Portal-managed Copilot experiences policies (matched by approved names): $($copilotExpPolicies.Count)" -ForegroundColor $(if ($copilotExpPolicies.Count -gt 0) { "Green" } else { "Red" })
 
 if ($teamsPolicies.Count -eq 0) {
     Write-Warning "No Teams retention policy found — threaded summaries in Teams may not be retained"
 }
 if ($copilotExpPolicies.Count -eq 0) {
-    Write-Warning "No Copilot experiences retention policy found — Copilot-generated summaries may not be retained"
+    Write-Warning "No Copilot experiences retention policy found by approved name — verify portal evidence for Copilot-generated summaries"
 }
 
 # FINRA Rule 4511(c) requires preservation in format compliant with applicable regulations
