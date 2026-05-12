@@ -143,21 +143,23 @@ AUTHORED: dict[str, dict] = {
     "1.3": {
         "priority": "high",
         "yesBar": (
-            "RSS is enabled tenant-wide with a documented allow-list of "
-            "approved sites (≤100), RCD is used to surgically exclude "
-            "high-risk sites that cannot be migrated, and there is a "
-            "documented exit plan to transition off RSS as Purview / SAM "
-            "long-term controls reach operational maturity."
+            "RSS is enabled tenant-wide as a short-term scoping control with "
+            "a documented allow-list of approved sites (≤100), RCD is used "
+            "for targeted high-risk sites, and there is a documented exit "
+            "plan to transition to long-term Purview / SAM governance. The "
+            "assessment notes that RSS and RCD do not change user permissions "
+            "or replace labels, RBAC, or DLP."
         ),
         "partialBar": (
             "RSS is enabled but the allow-list lacks documented review "
-            "cadence, or RCD is used without a written exception register, "
-            "or no exit plan to long-term governance exists."
+            "cadence, exceptions for recently accessed or Teams/Outlook-shared "
+            "sites are not tracked, RCD is used without a written exception "
+            "register, or no exit plan to long-term governance exists."
         ),
         "noBar": (
-            "RSS is not enabled and no compensating control (RCD allow-list, "
-            "Restricted Content Discovery, or item-level scoping) is in "
-            "place to limit Copilot's tenant-wide search scope."
+            "RSS is not enabled and no compensating control (RCD targeted "
+            "exclusions, Purview / SAM access governance, or item-level "
+            "scoping) is in place to limit Copilot's tenant-wide search scope."
         ),
         "verifyIn": [
             {
@@ -168,12 +170,15 @@ AUTHORED: dict[str, dict] = {
         ],
         "verifyPowerShell": (
             "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; "
-            "Get-SPOTenant | Select-Object IsRestrictedSPSearchEnabled, RestrictedSearchAllowedList"
+            "Get-SPOTenantRestrictedSearchMode; "
+            "Get-SPOTenantRestrictedSearchAllowedList; "
+            "Get-SPOSite -Identity https://<site-url> | "
+            "Select-Object Url, RestrictContentOrgWideSearch"
         ),
         "evidenceExpected": [
-            "Tenant setting screenshot showing IsRestrictedSPSearchEnabled = $true",
+            "PowerShell output showing Get-SPOTenantRestrictedSearchMode returns Enabled",
             "Current allow-list site URLs (≤100) with business owner per site",
-            "RCD exception register (sites surgically excluded outside the allow-list model)",
+            "RCD exception register for targeted site-level exclusions",
             "Documented exit plan / transition target date to long-term Purview+SAM governance",
         ],
         "collectorField": "SPO_RestrictedSearchConfig",
@@ -204,9 +209,10 @@ AUTHORED: dict[str, dict] = {
             ),
             "followUp": (
                 "Open SharePoint Admin Center > Settings > Search and verify "
-                "Restricted SharePoint Search is on. Pull the current allow-list, "
-                "confirm count is within the 100-site limit, and ask the SharePoint "
-                "Admin who owns the quarterly review and where the allow-list is documented."
+                "Restricted SharePoint Search is on. Run Get-SPOTenantRestrictedSearchMode "
+                "and Get-SPOTenantRestrictedSearchAllowedList, confirm count is within "
+                "the 100-site limit, and ask the SharePoint Admin who owns the "
+                "quarterly review and where recently accessed/shared exceptions are documented."
             ),
             "timeBudgetMinutes": 6,
         },
