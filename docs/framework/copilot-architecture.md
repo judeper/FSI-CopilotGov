@@ -6,7 +6,7 @@ Technical deep-dive into Microsoft 365 Copilot architecture, data flows, and gov
 
 ## Overview
 
-Understanding the M365 Copilot architecture is essential for effective governance. This document describes how Copilot processes prompts, retrieves content, generates responses, and where governance controls intersect the data flow.
+Understanding the Microsoft 365 Copilot architecture is essential for effective governance. This document describes how Copilot processes prompts, retrieves content, generates responses, and where governance controls intersect the data flow.
 
 !!! info "Architecture Currency"
     Microsoft 365 Copilot architecture evolves with platform updates. This document reflects the architecture as of April 2026. Organizations should monitor Microsoft's official documentation for changes.
@@ -15,11 +15,11 @@ Understanding the M365 Copilot architecture is essential for effective governanc
 
 ## Microsoft 365 Copilot Architecture Overview
 
-Microsoft 365 Copilot is not a standalone product -- it is an orchestration layer that sits between the user, the Microsoft Graph, the Semantic Index, and a large language model (LLM).
+Microsoft 365 Copilot is not a standalone product -- it uses **Microsoft 365 Brain** as the orchestration layer between the user, Microsoft Graph, the Semantic Index, Microsoft 365 Copilot Search, optional web grounding, and large language models (LLMs).
 
 ```
 +------------------------------------------------------------------+
-|                    M365 COPILOT ARCHITECTURE                       |
+|              MICROSOFT 365 COPILOT ARCHITECTURE                    |
 |                                                                    |
 |  +------------+                                                    |
 |  |    User    |  Prompt: "Summarize the Q4 earnings deck"          |
@@ -27,9 +27,9 @@ Microsoft 365 Copilot is not a standalone product -- it is an orchestration laye
 |        |                                                           |
 |        v                                                           |
 |  +-----+------+                                                    |
-|  | Copilot    |  Responsible AI filters                            |
-|  | Orchest-   |  Content safety checks                             |
-|  | rator      |  Prompt preprocessing                              |
+|  | Microsoft  |  Responsible AI filters                            |
+|  | 365 Brain  |  Content safety checks                             |
+|  | Orchestr.  |  Prompt preprocessing                              |
 |  +-----+------+                                                    |
 |        |                                                           |
 |        +-------------------+-------------------+                   |
@@ -88,10 +88,11 @@ Microsoft 365 Copilot is not a standalone product -- it is an orchestration laye
 
 | Component | Function | Governance Relevance |
 |-----------|----------|---------------------|
-| **Copilot Orchestrator** | Receives user prompt, coordinates retrieval, manages LLM interaction | Prompt preprocessing applies Responsible AI filters |
-| **Microsoft Graph** | Provides access to user's M365 content (files, emails, chats, meetings) | Access scoped to user's existing permissions |
-| **Semantic Index** | Pre-built search index of tenant content for fast retrieval | Indexes everything the user can access; governance must address permission scope |
-| **LLM (foundation models)** | Generates response based on grounded prompt. Default path uses Microsoft-hosted OpenAI models within Microsoft's managed Azure boundary; optional providers include Anthropic (Microsoft subprocessor since January 7, 2026) and xAI (independent provider, opt-in for Copilot Studio). | Tenant prompts, responses, and Microsoft Graph data are not used to train foundation LLMs. **Microsoft-hosted OpenAI**: processed in Microsoft-managed Azure boundary under the Product Terms / DPA, with EU Data Boundary and in-country LLM processing commitments where applicable. **Anthropic**: provided under the Microsoft Product Terms and DPA, but **out of scope for the EU Data Boundary and in-country LLM processing commitments**; on by default for most commercial-cloud customers (excluding EU/EFTA and UK); not available in GCC, GCC High, DoD, or other sovereign clouds. **xAI**: hosted by xAI **outside Microsoft-managed environments and audit controls** under xAI's separate Terms of Service and Data Processing Addendum — Microsoft Product Terms, DPA, data residency commitments, audit and compliance requirements, SLAs, and the Customer Copyright Commitment do not apply. |
+| **Microsoft 365 Brain (Copilot Orchestrator)** | Receives user prompt, coordinates retrieval, search, tool calls, and LLM interaction | Prompt preprocessing applies Responsible AI filters; orchestration choices determine which grounding sources are used |
+| **Microsoft Graph** | Provides access to user's Microsoft 365 content (files, emails, chats, meetings) | Access scoped to user's existing permissions |
+| **Semantic Index** | Pre-built search index of tenant content for fast retrieval | Indexes content the user can access; governance must address permission scope |
+| **Microsoft 365 Copilot Search** | Search module and admin-managed retrieval surface in the Microsoft 365 Copilot app, including Microsoft 365 and configured third-party data sources | Govern result sources, authoritative sites, connectors, and eligible users through Microsoft 365 admin settings |
+| **LLM (foundation models)** | Generates response based on grounded prompt. Default path uses Microsoft-hosted OpenAI models within Microsoft's managed Azure boundary; optional providers include Anthropic Claude through Microsoft 365 Copilot Premium and xAI Grok in preview where enabled. | Tenant prompts, responses, and Microsoft Graph data are not used to train foundation LLMs. **Microsoft-hosted OpenAI**: processed in Microsoft-managed Azure boundary under the Product Terms / DPA, with EU Data Boundary and in-country LLM processing commitments where applicable. **Anthropic Claude**: provided under the Microsoft Product Terms and DPA, but **out of scope for the EU Data Boundary and in-country LLM processing commitments**; on by default for most commercial-cloud customers (excluding EU/EFTA and UK); not available in GCC, GCC High, DoD, or other sovereign clouds. **xAI Grok (preview)**: hosted by xAI **outside Microsoft-managed environments and audit controls** under xAI's separate Terms of Service and Data Processing Addendum — Microsoft Product Terms, DPA, data residency commitments, audit and compliance requirements, SLAs, and the Customer Copyright Commitment do not apply. |
 | **Responsible AI layer** | Pre- and post-processing safety filters | Content safety, harmful content blocking, citation generation |
 | **Web Search (Bing)** | Optional grounding from web content | May send contextual queries externally; controllable via admin settings |
 
@@ -118,7 +119,7 @@ The Semantic Index is a critical component for governance because it determines 
 
 ### How the Semantic Index Works
 
-1. **Crawling:** The Semantic Index continuously crawls M365 content accessible via Microsoft Graph
+1. **Crawling:** The Semantic Index continuously crawls Microsoft 365 content accessible via Microsoft Graph
 2. **Embedding:** Content is converted to vector embeddings (numerical representations of meaning)
 3. **Indexing:** Embeddings are stored in a per-user index scoped to that user's permissions
 4. **Retrieval:** When Copilot receives a prompt, the Semantic Index provides semantically relevant content
@@ -138,13 +139,28 @@ The Semantic Index is a critical component for governance because it determines 
 
 ---
 
+## Microsoft 365 Copilot Search
+
+Microsoft 365 Copilot Search is the Search module in the Microsoft 365 Copilot app for users with eligible Microsoft 365 Copilot licenses. The Microsoft 365 admin center includes a Copilot Search admin experience to manage, customize, and optimize search across the organization. Search results can include Microsoft 365 content and configured third-party data sources, including Graph connector content, subject to the user's existing permissions and source access controls.
+
+### Governance Implications
+
+| Implication | Risk | Mitigation |
+|-------------|------|------------|
+| **Authoritative source ranking** | Low-quality or outdated sites may rank alongside approved sources | Maintain authoritative source designations and content-owner review cycles |
+| **Third-party data sources** | Connector content can broaden what users discover through Copilot Search | Review Graph connector ACL mapping, source ownership, and data classification (Control 2.13) |
+| **Eligible-user access** | Search availability follows Microsoft 365 Copilot licensing and admin configuration | Align Copilot Search rollout with license assignment and training plans |
+| **Search analytics** | Query and result telemetry may reveal sensitive business interests | Limit admin access and review audit/telemetry handling procedures |
+
+---
+
 ## Graph Grounding
 
-Graph grounding is the process by which the Copilot Orchestrator retrieves relevant content from the Microsoft Graph to provide context for the LLM.
+Graph grounding is the process by which Microsoft 365 Brain (the Copilot Orchestrator) retrieves relevant content from the Microsoft Graph to provide context for the LLM.
 
 ### How Graph Grounding Works
 
-1. **Query formulation:** The orchestrator converts the user's natural language prompt into one or more Graph API queries
+1. **Query formulation:** Microsoft 365 Brain converts the user's natural language prompt into one or more Graph API queries or search requests
 2. **Permission-scoped search:** Queries execute within the user's security context -- only content the user has permission to access is returned
 3. **Relevance ranking:** Results are ranked by semantic relevance to the prompt
 4. **Content extraction:** Relevant passages are extracted from documents, emails, and messages
@@ -154,7 +170,7 @@ Graph grounding is the process by which the Copilot Orchestrator retrieves relev
 
 Microsoft 365 Copilot operates under a strict no-elevated-access principle:
 
-- Copilot **never** accesses content the user cannot access directly through M365 applications
+- Copilot **never** accesses content the user cannot access directly through Microsoft 365 applications
 - Copilot uses the user's delegated token for all Graph API calls
 - If a user's access to a document is revoked, Copilot immediately loses access to that document
 - Admin-level access is not used for content retrieval
@@ -183,8 +199,8 @@ Microsoft 365 Copilot uses a Retrieval-Augmented Generation (RAG) pipeline to pr
 |     - Metaprompt injection (system instructions)                   |
 |                |                                                   |
 |                v                                                   |
-|  3. RETRIEVAL (Graph Grounding)                                    |
-|     - Query Semantic Index for relevant content                    |
+|  3. RETRIEVAL (Graph Grounding / Copilot Search)                   |
+|     - Query Semantic Index and Copilot Search for relevant content |
 |     - Search Microsoft Graph for matching documents                |
 |     - Retrieve user's emails, files, meeting transcripts           |
 |     - Apply permission boundary (user context only)                |
@@ -315,15 +331,15 @@ When web search (web grounding) is enabled, Copilot may query Bing to supplement
 |---------------|------|------------|
 | **Query content** | Search queries derived from prompts may contain sensitive context (client names, deal terms) | Disable web search for Regulated users (Control 2.7) |
 | **External data quality** | Web results may be outdated, inaccurate, or misleading | User training on verifying Copilot outputs |
-| **Data residency** | Web search queries are processed by Bing (separate from M365 data boundary) | Evaluate against data residency requirements |
+| **Data residency** | Web search queries are processed by Bing (separate from the Microsoft 365 data boundary) | Evaluate against data residency requirements |
 | **Audit trail** | Web-grounded responses are logged but the specific search queries may not be separately retained | Monitor Microsoft updates on web search logging |
 
 ### Admin Controls for Web Search
 
 | Setting | Location | Options |
 |---------|----------|---------|
-| Web search in Copilot | M365 Admin Center > Copilot | Enable / Disable (tenant-wide or per-group) |
-| Optional connected experiences | M365 Apps admin > Privacy | Controls web-connected features |
+| Web search in Copilot | Microsoft 365 admin center > Copilot | Enable / Disable (tenant-wide or per-group) |
+| Optional connected experiences | Microsoft 365 Apps admin center > Privacy | Controls web-connected features |
 
 **FSI Recommendation:** Disable web search for users in Regulated environments. For Recommended environments, evaluate on a case-by-case basis. For Baseline, enable with user guidance.
 
@@ -335,7 +351,7 @@ Copilot Pages is an AI-native content surface that allows users to collaborate o
 
 ### How Copilot Pages Work
 
-1. User generates content via Copilot (in Microsoft 365 Copilot Chat or any M365 app)
+1. User generates content via Copilot (in Microsoft 365 Copilot Chat or a supported Microsoft 365 app)
 2. User promotes the response to a "Page" for collaboration
 3. The Page is stored in the user's SharePoint Embedded container (shared platform with Copilot Notebooks and Loop My workspace)
 4. Other users can be invited to collaborate on the Page
@@ -347,7 +363,7 @@ Copilot Pages is an AI-native content surface that allows users to collaborate o
 |---------|------|---------|
 | **Storage location** | Pages may store sensitive content in SharePoint Embedded without appropriate classification or lifecycle controls | Sensitivity labels (2.2), auto-labeling (2.3) |
 | **Sharing scope** | Pages can be shared broadly, potentially duplicating regulated content | Sharing governance (1.11), DLP (2.1) |
-| **Retention** | Pages must be subject to the same retention policies as other M365 content | Retention policies (3.2) |
+| **Retention** | Pages must be subject to the same retention policies as other Microsoft 365 content | Retention policies (3.2) |
 | **eDiscovery** | Pages must be discoverable for regulatory examination | eDiscovery configuration (3.3) |
 | **Audit** | Page creation, sharing, and editing must generate audit events | Audit logging (3.1) |
 
@@ -355,7 +371,7 @@ Copilot Pages is an AI-native content surface that allows users to collaborate o
 
 ## Plugin and Graph Connector Data Flow
 
-Copilot's data reach can be extended beyond native M365 content through plugins and Graph connectors.
+Copilot's data reach can be extended beyond native Microsoft 365 content through plugins and Graph connectors.
 
 ### Graph Connectors
 
@@ -386,9 +402,9 @@ Copilot plugins extend functionality by allowing Copilot to interact with extern
 
 | Plugin Type | Data Flow | Governance Consideration |
 |-------------|-----------|------------------------|
-| **Message extensions** | Copilot sends structured queries to external APIs | Data leaves M365 boundary; evaluate per plugin |
+| **Message extensions** | Copilot sends structured queries to external APIs | Data leaves the Microsoft 365 boundary; evaluate per plugin |
 | **API plugins** | Real-time API calls to external services | Authentication, data classification, audit |
-| **Declarative agents** | Custom Copilot experiences with scoped instructions and data | Governance overlaps with FSI-AgentGov |
+| **Declarative agents** | Custom Copilot experiences with scoped instructions and data | SharePoint declarative agents and Microsoft 365 deployment controls are in scope here; Copilot Studio build and ALM governance lives in FSI-AgentGov |
 
 ### Plugin Governance Controls
 
@@ -403,24 +419,24 @@ Copilot plugins extend functionality by allowing Copilot to interact with extern
 
 ## Declarative Agent Architecture
 
-Declarative agents are custom Copilot experiences built from SharePoint content, custom instructions, and scoped capabilities.
+Declarative agents are configuration-defined Copilot experiences built from scoped content, custom instructions, and approved capabilities. SharePoint declarative agents and Agent 365 inventory/policy oversight are in scope for this framework; detailed Copilot Studio and Power Platform build lifecycle governance belongs in FSI-AgentGov.
 
 ### How Declarative Agents Work
 
-1. Administrator or user creates a declarative agent in the M365 Admin Center or SharePoint
+1. Administrator or user creates a declarative agent in the Microsoft 365 admin center or SharePoint
 2. The agent is scoped to specific SharePoint sites, instructions, and capabilities
 3. Users interact with the agent through the Copilot interface
-4. The agent retrieves content only from its configured sources (plus user's general M365 access)
+4. The agent retrieves content only from its configured sources (plus the user's general Microsoft 365 access where the host experience allows it)
 
 ### Governance Boundary
 
 Declarative agents from SharePoint are within scope of this framework (FSI-CopilotGov) when they:
 
 - Are built using SharePoint content as the knowledge base
-- Operate within the M365 Copilot interface
+- Operate within the Microsoft 365 Copilot interface
 - Do not require Copilot Studio or Power Platform
 
-Declarative agents built in Copilot Studio or Agent Builder fall under [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov).
+Detailed build, environment, model-card, and lifecycle promotion governance for Copilot Studio or Agent Builder agents falls under [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov). Agent 365 inventory, policy, and Microsoft 365 deployment controls remain relevant here when those agents are deployed into the Microsoft 365 Copilot estate.
 
 ### Governance Controls for Declarative Agents
 
@@ -438,13 +454,13 @@ See Control 4.10 for detailed declarative agent governance requirements.
 
 ## Copilot Control System (Administrative Governance Surface)
 
-The **Copilot Control System** is Microsoft's February 2026 branding for the consolidated administrative governance surface across Microsoft 365 Copilot. Previously, administrators had to navigate across multiple admin centers (M365 Admin Center, Teams Admin Center, Exchange Admin Center, SharePoint Admin Center, and Microsoft Purview) to manage Copilot settings. The Copilot Control System unifies these distributed controls into a coherent governance experience accessible primarily through **M365 Admin Center > Copilot**.
+The **Copilot Control System** is Microsoft's February 2026 branding for the consolidated administrative governance surface across Microsoft 365 Copilot. Previously, administrators had to navigate across multiple admin centers (Microsoft 365 admin center, Microsoft Teams admin center, Exchange admin center, SharePoint admin center, and Microsoft Purview) to manage Copilot settings. The Copilot Control System unifies these distributed controls into a coherent governance experience accessible primarily through **Microsoft 365 admin center > Copilot**.
 
 ### What the Copilot Control System Consolidates
 
 | Capability | Previous Location | Copilot Control System Location |
 |------------|------------------|-------------------------------|
-| **Global Copilot toggle** | M365 Admin Center (Copilot section) | MAC > Copilot (unchanged) |
+| **Global Copilot toggle** | Microsoft 365 admin center (Copilot section) | MAC > Copilot (unchanged) |
 | **Per-application feature toggles** | Individual app admin centers | Progressively migrating to MAC > Copilot |
 | **Baseline Security Mode** | N/A (new capability) | MAC > Settings > Org settings > Security & privacy |
 | **Copilot overview dashboard** | N/A (new capability) | MAC > Copilot > Overview |
@@ -466,7 +482,7 @@ For detailed implementation guidance, including Baseline Security Mode configura
 
 ## Agent 365 Platform
 
-**Agent 365** is Microsoft's centralized platform for monitoring, managing, and configuring Copilot agents across M365 apps, Copilot Studio, and third-party integrations. It extends the Agents control plane in the Microsoft 365 admin center into a unified governance hub that spans the full agent lifecycle.
+**Agent 365** is Microsoft's centralized platform for monitoring, managing, and configuring Copilot agents across Microsoft 365 apps, Copilot Studio, and third-party integrations. It extends the Agents control plane in the Microsoft 365 admin center into a unified governance hub that spans the full agent lifecycle.
 
 ### What Agent 365 Adds
 
@@ -475,7 +491,7 @@ For detailed implementation guidance, including Baseline Security Mode configura
 | **Unified agent inventory** | Single view of all agents — Microsoft first-party, organization-published, partner, and Copilot Studio agents | Supports compliance inventory and ownership tracking across agent sources |
 | **Agent usage analytics** | Telemetry on sessions, active users, runtime, and exception rates per agent | Aids in identifying material agent dependencies and operational risk |
 | **Centralized policy controls** | Allowed types, sharing rules, user access, and template governance in one surface | Reduces configuration drift by consolidating previously distributed settings |
-| **Cross-platform visibility** | Agents from M365, Copilot Studio, and third-party integrations appear in the same registry | Helps address third-party risk and lifecycle management for all agent sources |
+| **Cross-platform visibility** | Agents from Microsoft 365, Copilot Studio, and third-party integrations appear in the same registry | Helps address third-party risk and lifecycle management for all agent sources |
 
 ### Governance Implications
 
@@ -549,7 +565,7 @@ Organizations should verify Work IQ configuration and scope as part of their Cop
 
 | Concern | Risk | Mitigation |
 |---------|------|------------|
-| **Autonomous data access** | Cowork may access content across multiple M365 sources during multi-step execution | Copilot Cowork operates within the user's existing permission boundary; oversharing remediation (Controls 1.1-1.3) remains critical |
+| **Autonomous data access** | Cowork may access content across multiple Microsoft 365 sources during multi-step execution | Copilot Cowork operates within the user's existing permission boundary; oversharing remediation (Controls 1.1-1.3) remains critical |
 | **Extended processing scope** | Multi-step tasks may accumulate and combine data from sources that individually are appropriate but collectively create sensitivity | Review Cowork task outputs before distribution; apply sensitivity labels to generated artifacts |
 | **Reduced human oversight** | Autonomous execution reduces the frequency of human review compared to single-turn interactions | Establish organizational policies for when Cowork is appropriate vs. when manual Copilot interaction is required |
 | **Audit attribution** | Multi-step tasks generate multiple Copilot interactions attributed to a single delegated workflow | Verify that Unified Audit Log captures Cowork task events with sufficient detail for regulatory record-keeping |
@@ -573,11 +589,13 @@ For FSI environments, organizations should document which business functions are
 
 | Data Type | Location | Notes |
 |-----------|----------|-------|
-| **User content** (files, emails, chats) | Per M365 data residency settings | Stored in tenant's geographic region |
+| **User content** (files, emails, chats) | Per Microsoft 365 data residency settings | Stored in tenant's geographic region |
 | **Semantic Index** | Co-located with tenant data | Follows tenant data residency |
-| **LLM processing** | Azure region (may differ from tenant region) | Processed in Azure OpenAI boundary |
-| **Web search queries** | Bing service (global) | Separate from M365 data boundary |
-| **Audit logs** | Per M365 audit log residency | Stored in tenant's compliance boundary |
+| **Microsoft 365 Copilot Search** | Microsoft 365 service boundary plus configured connector sources | Results inherit Microsoft 365 permissions; connector source data follows source-system residency |
+| **LLM processing** | Azure region (may differ from tenant region) | Processed in Azure OpenAI boundary for the default Microsoft-hosted path |
+| **Third-party model provider processing** | Provider-specific boundary | Anthropic Claude through Microsoft 365 Copilot Premium follows Microsoft Product Terms/DPA but has separate data-boundary commitments; xAI Grok preview follows xAI terms where enabled |
+| **Web search queries** | Bing service (global) | Separate from Microsoft 365 data boundary |
+| **Audit logs** | Per Microsoft 365 audit log residency | Stored in tenant's compliance boundary |
 
 !!! warning "LLM Processing Location"
     LLM inference may occur in Azure regions different from the tenant's primary data location. Microsoft publishes data processing location details in the Product Terms and Data Protection Addendum. Organizations with strict data residency requirements should review these terms and consult with Microsoft.
@@ -588,12 +606,15 @@ For FSI environments, organizations should document which business functions are
 
 | Architecture Component | Primary Governance Concern | Key Controls |
 |-----------------------|---------------------------|--------------|
-| Semantic Index | Indexes all accessible content; oversharing is amplified | 1.1, 1.2, 1.3, 1.4 |
+| Microsoft 365 Brain | Orchestrates retrieval, search, tools, and LLM interaction across Copilot experiences | 3.1, 4.1 |
+| Semantic Index | Indexes accessible content; oversharing is amplified | 1.1, 1.2, 1.3, 1.4 |
+| Microsoft 365 Copilot Search | Search surface over Microsoft 365 and configured third-party data sources; result and source governance | 1.1, 1.13, 2.13 |
 | Graph Grounding | Permission-scoped but inherits permission problems | 1.2, 1.6, 2.2 |
 | Web Search | External data flow; query may contain sensitive context | 2.7 |
 | LLM Processing | Hallucination risk; no model training on tenant data | 3.5, 3.7 |
-| Copilot Pages | New content surface requiring classification and retention | 3.2, 4.8 |
-| Plugins / Connectors | Extended data reach beyond M365 | 2.8, 4.10 |
+| Third-party model providers | Provider-specific terms, data residency, and audit commitments for Anthropic Claude and xAI Grok preview | 1.10, 2.7 |
+| Copilot Pages and Notebooks | New content surfaces requiring classification, retention, and lifecycle controls | 2.11, 3.2 |
+| Plugins / Connectors | Extended data reach beyond Microsoft 365 | 2.13, 4.13 |
 | Audit Events | Copilot interactions logged for regulatory record-keeping | 3.1, 3.2 |
 | Responsible AI | Microsoft-managed; organizations layer additional controls | DLP, communication compliance |
 | Copilot Control System | Unified admin surface for all Copilot settings; configuration drift and SOX evidence | 4.1 |
