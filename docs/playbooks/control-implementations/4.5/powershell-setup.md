@@ -8,6 +8,8 @@ Automation scripts for generating Copilot usage analytics and adoption reports.
 - **Permissions:** Reports.Read.All
 - **PowerShell:** Version 7.x recommended
 
+> **Current Learn status:** Microsoft Learn documents `getMicrosoft365CopilotUsageUserDetail` examples under Microsoft Graph `/beta`; `/beta` APIs are subject to change and are not supported for production applications. Use these exports for governed reporting, validate the Graph version selector before productionizing automation, and use the Microsoft 365 admin center path **Reports > Microsoft 365 Copilot Usage** as the portal fallback for tenant-level metrics.
+
 ## Connect to Required Services
 
 ```powershell
@@ -21,16 +23,19 @@ Connect-MgGraph -Scopes "Reports.Read.All"
 
 ```powershell
 # Generate Copilot usage summary from Microsoft Graph reports
-$period = "D30"  # D7, D30, D90, D180
+# Microsoft Learn examples currently use /beta for this Copilot usage API.
+$period = "D30"  # D7, D30, D90, D180, ALL
+$reportDate = Get-Date -Format 'yyyyMMdd'
+$outputPath = "CopilotUsageDetail_$reportDate.csv"
 
 $usageReport = Invoke-MgGraphRequest -Method GET `
-    -Uri "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUsageUserDetail(period='$period')" `
-    -OutputFilePath "CopilotUsageDetail_$(Get-Date -Format 'yyyyMMdd').csv"
+    -Uri "https://graph.microsoft.com/beta/reports/getMicrosoft365CopilotUsageUserDetail(period='$period')?`$format=text/csv" `
+    -OutputFilePath $outputPath
 
 Write-Host "Copilot usage detail report downloaded" -ForegroundColor Green
 
 # Parse the CSV for summary statistics
-$data = Import-Csv "CopilotUsageDetail_$(Get-Date -Format 'yyyyMMdd').csv"
+$data = Import-Csv $outputPath
 $totalUsers = $data.Count
 $activeUsers = ($data | Where-Object { $_.'Last Activity Date' -ne '' }).Count
 
@@ -99,11 +104,12 @@ $periods = @("D7", "D30", "D90")
 $trends = @()
 
 foreach ($period in $periods) {
+    $outputPath = "temp_$period.csv"
     $report = Invoke-MgGraphRequest -Method GET `
-        -Uri "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUsageUserDetail(period='$period')" `
-        -OutputFilePath "temp_$period.csv"
+        -Uri "https://graph.microsoft.com/beta/reports/getMicrosoft365CopilotUsageUserDetail(period='$period')?`$format=text/csv" `
+        -OutputFilePath $outputPath
 
-    $data = Import-Csv "temp_$period.csv"
+    $data = Import-Csv $outputPath
     $total = $data.Count
     $active = ($data | Where-Object { $_.'Last Activity Date' -ne '' }).Count
 
@@ -127,6 +133,8 @@ $trends | Format-Table -AutoSize
 | Application usage breakdown | Monthly | Script 2 |
 | Department adoption report | Monthly | Script 3 |
 | Trend analysis | Monthly | Script 4 |
+
+> **Retention note:** Copilot analytics in the Microsoft 365 admin center and Viva Insights dashboard are designed around recent activity windows (28 days by default for admin-center reporting). Schedule exports or retain audit evidence where configured if regulated reporting requires longer trend history.
 
 ## Next Steps
 

@@ -4,24 +4,27 @@ Step-by-step portal configuration for using Microsoft Viva Insights to measure t
 
 ## Prerequisites
 
-- **Role:** Viva Insights Administrator, Entra Global Admin
-- **License:** Microsoft Viva Insights, Microsoft 365 E5 with Copilot add-on
-- **Access:** Viva Insights Advanced portal, Microsoft 365 Admin Center
+- **Role:** Viva Insights Administrator or authorized dashboard viewer; M365 Global Admin for tenant reporting and access management
+- **License:** Microsoft 365 or Office 365 business/enterprise subscription with an active Exchange Online account. A paid Viva Insights license or Microsoft 365 Copilot license is not required to view the dashboard, but analyzed Copilot populations and enhanced features depend on assigned Copilot or Viva Insights license counts.
+- **Access:** Viva Insights web app, Microsoft 365 admin center
 
 ## Steps
 
-### Step 1: Enable Copilot Impact Dashboard in Viva Insights
+### Step 1: Open the Microsoft Copilot Dashboard in Viva Insights
 
-**Portal:** Viva Insights Advanced
-**Path:** Analyst experience > Copilot dashboard
+**Portal:** Viva Insights web app
+**Path:** Left navigation > Copilot Dashboard
 
-1. Navigate to the Viva Insights advanced analyst experience.
-2. Locate the Copilot impact dashboard (pre-built template).
-3. Verify data sources are connected and populating:
+1. Navigate to the Viva Insights web app and select **Copilot Dashboard** from the left navigation.
+2. Validate feature availability against the tenant's assigned license counts:
+   - At least one assigned Copilot license starts Copilot Dashboard data processing and includes Microsoft 365 Copilot adoption insights.
+   - At least 50 assigned Copilot licenses or 50 assigned Viva Insights licenses unlocks richer team/manager views, agent-related insights, benchmarks, intelligent summaries, delegation support, and survey data where available.
+3. Compare dashboard metrics with Microsoft 365 admin center **Reports > Microsoft 365 Copilot Usage** for tenant-level adoption reporting.
+4. Verify data sources are connected and populating:
    - Copilot interaction data
    - Collaboration patterns (meetings, email, chat)
    - Focus time metrics
-4. Configure the dashboard date range and user scope.
+5. Configure the dashboard date range and user scope. Dashboard readiness, adoption, and impact data reflects the previous 28 days and can lag by up to six days.
 
 ### Step 2: Configure Privacy and Data Access Controls
 
@@ -38,8 +41,8 @@ Step-by-step portal configuration for using Microsoft Viva Insights to measure t
 
 ### Step 3: Create Custom Copilot Impact Queries
 
-**Portal:** Viva Insights Advanced
-**Path:** Analyst experience > Custom queries
+**Portal:** Viva Insights advanced insights (where licensed)
+**Path:** Advanced insights > Custom queries
 
 1. Create custom queries to measure Copilot-specific impact:
    - **Time savings:** Compare meeting duration and frequency pre/post Copilot adoption
@@ -50,8 +53,8 @@ Step-by-step portal configuration for using Microsoft Viva Insights to measure t
 
 ### Step 4: Configure Executive Reporting Dashboard
 
-**Portal:** Viva Insights / Power BI
-**Path:** Analyst experience > Reports > Export to Power BI
+**Portal:** Viva Insights advanced insights / Power BI (where licensed)
+**Path:** Reports or Power BI export
 
 1. Create an executive-level Copilot ROI dashboard with key metrics:
    - Estimated time saved per user per week
