@@ -11,12 +11,12 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| Microsoft 365 Copilot overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview) |
-| Microsoft 365 Copilot setup guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-setup](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-setup) |
-| Manage Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/manage-public-web-access](https://learn.microsoft.com/en-us/microsoft-365/copilot/manage-public-web-access) |
-| Microsoft 365 Copilot requirements | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-requirements](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-requirements) |
-| Data, privacy, and security for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-privacy](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-privacy) |
-| Microsoft 365 Copilot adoption guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-enablement-resources](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-enablement-resources) |
+| Microsoft 365 Copilot overview | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-overview](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-overview) |
+| Microsoft 365 Copilot setup guide | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-setup](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-setup) |
+| Manage Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-public-web-access](https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-public-web-access) |
+| Microsoft 365 Copilot requirements | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements) |
+| Data, privacy, and security for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy) |
+| Microsoft 365 Copilot adoption guide | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources) |
 | Copilot in Teams meetings | [https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription](https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription) |
 | Copilot usage reports | [https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage?view=o365-worldwide) |
 | Semantic Index for Copilot | [https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot](https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot) |
@@ -27,6 +27,9 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Secure and Govern Copilot blueprint | [https://learn.microsoft.com/en-us/microsoft-365/copilot/secure-govern-copilot-foundational-deployment-guidance](https://learn.microsoft.com/en-us/microsoft-365/copilot/secure-govern-copilot-foundational-deployment-guidance) |
 | Configure secure and governed Copilot foundation | [https://learn.microsoft.com/en-us/microsoft-365/copilot/configure-secure-governed-data-foundation-microsoft-365-copilot](https://learn.microsoft.com/en-us/microsoft-365/copilot/configure-secure-governed-data-foundation-microsoft-365-copilot) |
 | Use Purview for Copilot data security | [https://learn.microsoft.com/en-us/purview/ai-m365-copilot](https://learn.microsoft.com/en-us/purview/ai-m365-copilot) |
+| Connect to xAI models | [https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-models](https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-models) |
+| Anthropic as a Microsoft subprocessor | [https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor](https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor) |
+| Assign AI provider access to users and groups | [https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-ai-provider-user-sec-group-access](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-ai-provider-user-sec-group-access) |
 
 ---
 
@@ -86,6 +89,17 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Manage Copilot Pages and Notebooks | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration?view=o365-worldwide) |
 | Copilot Pages and Notebooks compliance summary | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide) |
 | Purview management for SharePoint Embedded containers | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management?view=o365-worldwide) |
+
+---
+
+## Copilot Cowork
+
+| Topic | URL |
+|-------|-----|
+| Copilot Cowork overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/) |
+| Get started with Copilot Cowork | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started) |
+| Copilot Cowork admin and governance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance) |
+| Copilot Cowork FAQ | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq) |
 
 ---
 
@@ -164,9 +178,25 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Manage plugins for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide) |
 | Microsoft Graph connectors overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-copilot-connector?toc=%2Fgraph%2Ftoc.json](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-copilot-connector?toc=%2Fgraph%2Ftoc.json) |
 | Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent) |
+| Build agents with Agent Builder | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-build-agents](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-build-agents) |
+| Agent Builder capabilities | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder) |
 | Get ready for Copilot with SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management](https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management) |
 | Copilot Tuning admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide) |
 | M365 Agents admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide) |
+
+---
+
+## Copilot Studio
+
+| Topic | URL |
+|-------|-----|
+| Microsoft Copilot Studio documentation | [https://learn.microsoft.com/en-us/microsoft-copilot-studio/](https://learn.microsoft.com/en-us/microsoft-copilot-studio/) |
+| Copilot Studio ALM strategy | [https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/alm](https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/alm) |
+| Publish and deploy Copilot Studio agents | [https://learn.microsoft.com/en-us/microsoft-copilot-studio/publication-fundamentals-publish-channels](https://learn.microsoft.com/en-us/microsoft-copilot-studio/publication-fundamentals-publish-channels) |
+| Adaptive cards in Copilot Studio topics | [https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-ask-a-question#add-an-adaptive-card](https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-ask-a-question#add-an-adaptive-card) |
+| Model Context Protocol in Copilot Studio | [https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp) |
+| Connect an existing MCP server to an agent | [https://learn.microsoft.com/en-us/microsoft-copilot-studio/mcp-add-existing-server-to-agent](https://learn.microsoft.com/en-us/microsoft-copilot-studio/mcp-add-existing-server-to-agent) |
+| Select an agent model | [https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-select-agent-model](https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-select-agent-model) |
 
 ---
 
@@ -174,9 +204,17 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
+| Microsoft Agent 365 overview | [https://learn.microsoft.com/en-us/microsoft-agent-365/overview](https://learn.microsoft.com/en-us/microsoft-agent-365/overview) |
+| Agent management in Microsoft 365 admin center | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview?view=o365-worldwide) |
+| Agent registry in Microsoft 365 admin center | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry?view=o365-worldwide) |
+| Agent settings in Microsoft 365 admin center | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-settings?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-settings?view=o365-worldwide) |
+| Microsoft Agent 365 registry sync | [https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-registry](https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-registry) |
 | Manage agents in Microsoft 365 | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide) |
 | Microsoft 365 Copilot agent governance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps) |
 | Copilot agent security and compliance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security) |
+| Microsoft Entra Agent ID overview | [https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id](https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id) |
+| Microsoft Entra agent identity concepts | [https://learn.microsoft.com/en-us/entra/agent-id/what-are-agent-identities](https://learn.microsoft.com/en-us/entra/agent-id/what-are-agent-identities) |
+| Manage federated connector availability | [https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/manage-federated-connectors](https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/manage-federated-connectors) |
 
 ---
 
@@ -198,6 +236,8 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Microsoft Purview Compliance Manager | [https://learn.microsoft.com/en-us/purview/compliance-manager](https://learn.microsoft.com/en-us/purview/compliance-manager) |
 | Compliance Manager improvement actions | [https://learn.microsoft.com/en-us/purview/compliance-manager-improvement-actions](https://learn.microsoft.com/en-us/purview/compliance-manager-improvement-actions) |
 | Update improvement actions | [https://learn.microsoft.com/en-us/purview/compliance-manager-update-actions](https://learn.microsoft.com/en-us/purview/compliance-manager-update-actions) |
+| Build and manage Compliance Manager assessments | [https://learn.microsoft.com/en-us/purview/compliance-manager-assessments](https://learn.microsoft.com/en-us/purview/compliance-manager-assessments) |
+| Compliance Manager regulations and templates | [https://learn.microsoft.com/en-us/purview/compliance-manager-regulations](https://learn.microsoft.com/en-us/purview/compliance-manager-regulations) |
 
 ---
 
