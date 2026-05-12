@@ -12,9 +12,16 @@ on:
       - '.github/workflows/regulatory-monitoring.yml'
       - 'scripts/requirements.txt'
 
+# Serialize same-workflow runs so cleanup of prior PRs doesn't race a
+# concurrent run that just opened a newer PR (see #48).
+concurrency:
+  group: regulatory-monitor
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
+  issues: write  # required for `gh pr comment` (PR comments are issue comments)
 
 jobs:
   monitor:
@@ -68,6 +75,7 @@ jobs:
           fi
 
       - name: Open / update PR with regulatory findings
+        id: cpr
         if: github.event_name != 'pull_request' && steps.diff.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
@@ -103,3 +111,45 @@ jobs:
 
             ---
             *Automated PR created by `.github/workflows/regulatory-monitoring.yml`.*
+
+      - name: Close prior superseded Regulatory Monitor PRs
+        if: github.event_name != 'pull_request' && steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          NEW_PR: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          set -uo pipefail
+          # Identify our own monitor PRs by multiple invariants — labels alone
+          # are too broad (humans can edit them). See issue #48.
+          mapfile -t prior < <(gh pr list \
+            --repo "$REPO" \
+            --state open \
+            --label regulatory \
+            --label automated \
+            --base main \
+            --json number,headRefName,author,title \
+            --jq ".[] |
+              select(.number < ($NEW_PR | tonumber)) |
+              select(.headRefName | startswith(\"monitoring/regulatory-\")) |
+              select(.author.login == \"github-actions[bot]\") |
+              select(.title | startswith(\"Regulatory Monitor:\")) |
+              .number")
+
+          if [ "${#prior[@]}" -eq 0 ]; then
+            echo "No prior Regulatory Monitor PRs to supersede."
+            exit 0
+          fi
+
+          echo "Superseding ${#prior[@]} prior Regulatory Monitor PR(s) with #${NEW_PR}..."
+          for n in "${prior[@]}"; do
+            [ -z "$n" ] && continue
+            if ! gh pr comment "$n" --repo "$REPO" --body "Superseded by #${NEW_PR}. The dated report file remains reachable on this PR's branch until cleanup."; then
+              echo "::warning::Failed to comment on PR #${n}"
+            fi
+            # Close without --delete-branch so dated reports stay reachable
+            # for any future consolidation cleanup.
+            if ! gh pr close "$n" --repo "$REPO"; then
+              echo "::warning::Failed to close PR #${n}"
+            fi
+          done
