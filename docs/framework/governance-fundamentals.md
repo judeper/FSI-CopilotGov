@@ -6,7 +6,7 @@ Core concepts and principles for Microsoft 365 Copilot governance in financial s
 
 ## Framework Overview
 
-The FSI Copilot Governance Framework provides complete guidance for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments.
+The FSI Copilot Governance Framework provides complete guidance for governing Microsoft 365 Copilot across Microsoft 365 applications in regulated US financial services environments.
 
 **Version:** 1.2.1 (March 2026)
 **Target Audience:** US Financial Services Organizations
@@ -24,12 +24,14 @@ The FSI Copilot Governance Framework provides complete guidance for governing Mi
 
 This framework provides governance guidance for:
 
-- **Microsoft 365 Copilot** -- the AI assistant embedded across M365 applications
-- **Microsoft 365 Copilot Chat** -- the cross-application Copilot experience
-- **Copilot Pages** -- AI-generated collaborative content surfaces
-- **Copilot in Teams** -- meeting transcription, recap, and chat assistance
-- **Copilot extensibility** -- plugins, Graph connectors, declarative agents from SharePoint
-- **Agent 365** -- the enterprise platform for managing AI agent lifecycle, identity (Entra Agent ID), and governance across the M365 ecosystem
+- **Microsoft 365 Copilot** -- the AI assistant embedded across Microsoft 365 applications
+- **Copilot Chat (Basic and Premium)** -- web-grounded chat for Basic users and Microsoft Graph-grounded experiences for licensed Premium users
+- **Microsoft 365 Copilot Search** -- Search module and admin-managed retrieval experience in the Microsoft 365 Copilot app
+- **Copilot Pages and Copilot Notebooks** -- AI-generated collaborative content surfaces stored in SharePoint Embedded
+- **Edit with Copilot (Agent Mode), Copilot Cowork, Researcher, and Analyst** -- AI-native work surfaces that create or transform business content
+- **Copilot in Teams, Teams Phone, and Teams Queues** -- meeting, calling, chat, and queue assistance experiences
+- **Copilot extensibility** -- plugins, Graph connectors, SharePoint declarative agents, and Microsoft 365 deployment controls for Copilot Studio agents
+- **Agent 365** -- the enterprise platform for managing AI agent lifecycle, identity (Entra Agent ID), and governance across the Microsoft 365 ecosystem
 
 ### What This Framework Does NOT Cover
 
@@ -53,7 +55,7 @@ See [Relationship to AgentGov](relationship-to-agentgov.md) for detailed scope b
 | **Foundational IT controls** | Network security, endpoint protection, backup/recovery assumed in place |
 
 !!! info "Copilot Chat Basic vs. Premium Licensing"
-    Effective April 15, 2026, Microsoft offers Copilot Chat in two tiers: **Basic** (included with M365 licenses, web-only grounding) and **Premium** (per-user license, full M365 data access via Microsoft Graph). Organizations must govern both populations -- Basic users can generate AI-assisted content that enters regulated workflows despite lacking full tenant data access, while Premium users carry the full discovery amplification risk profile. Governance controls, training requirements, and supervisory procedures should account for this licensing distinction.
+    Effective April 15, 2026, Microsoft offers Copilot Chat in two tiers: **Basic** (included with Microsoft 365 licenses, web grounding and user-provided organizational data) and **Premium** (per-user license, full Microsoft 365 data access via Microsoft Graph). Organizations must govern both populations -- Basic users can generate AI-assisted content that enters regulated workflows despite lacking full tenant Graph grounding, while Premium users carry the full discovery amplification risk profile. Governance controls, training requirements, and supervisory procedures should account for this licensing distinction.
 
 ---
 
@@ -63,7 +65,7 @@ FSI-CopilotGov is intentionally scoped to the **Microsoft 365 Copilot surface** 
 
 | Out of scope | Where it lives |
 |---|---|
-| Copilot Studio agents, declarative agents, Agent Builder, custom pro-code agents — registration, risk tiering, environment zoning, model-card review, lifecycle promotion | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) |
+| Copilot Studio and Agent Builder agent build/lifecycle governance — Power Platform environment zoning, custom or pro-code agent ALM, model-card review, tool approval, and lifecycle promotion | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) |
 | Power Platform ALM (solutions, environment variables, connection references, `deploymentSettings.template.json`, managed-solution promotion, `pac cli`) | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) and Microsoft's [Copilot Studio ALM guidance](https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/alm) |
 | Agent registry, model cards, Responsible-AI evaluation packets, SR 11-7-style model-risk evidence | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) (planned) |
 | Power Platform DLP policies (connector classification, environment routing) | [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov) |
@@ -71,13 +73,15 @@ FSI-CopilotGov is intentionally scoped to the **Microsoft 365 Copilot surface** 
 | Records management, supervisory policy authoring, regulatory exam response | Your compliance / legal / RIM programs (this framework provides the *evidence plumbing*, not the policy text) |
 | Production runtime code, deployable accelerators | Out of scope for both this repo and FSI-AgentGov; treat both as documentation-first |
 
+SharePoint declarative agents, Agent 365 inventory/policy controls, and Microsoft 365 deployment visibility for Copilot Studio agents remain in scope here because they affect the Microsoft 365 Copilot tenant posture. FSI-AgentGov owns detailed agent design, build, model-card, environment, and lifecycle promotion governance.
+
 When a control here brushes against an out-of-scope topic (e.g., extensibility readiness, declarative agents, federated MCP), look for the inline **"Scope boundary: FSI-CopilotGov vs FSI-AgentGov"** callout near the top of the control page.
 
 ---
 
 ## Discovery Amplification
 
-**Discovery amplification** is the central governance challenge for M365 Copilot in financial services.
+**Discovery amplification** is the central governance challenge for Microsoft 365 Copilot in financial services.
 
 ### The Concept
 
@@ -145,14 +149,14 @@ Each of the {{ counts.controls }} controls in this framework provides implementa
 
 ### Baseline
 
-**Target audience:** Organizations deploying M365 Copilot for the first time, or those in low-risk / non-customer-facing environments.
+**Target audience:** Organizations deploying Microsoft 365 Copilot for the first time, or those in low-risk / non-customer-facing environments.
 
 **Characteristics:**
 
 - Core data hygiene controls (oversharing assessment, basic permissions review)
-- Default M365 audit logging enabled
+- Default Microsoft 365 audit logging enabled
 - Basic DLP policies for sensitive data types
-- Standard M365 retention policies
+- Standard Microsoft 365 retention policies
 - Copilot feature toggles configured per organizational policy
 - User awareness training
 
@@ -215,7 +219,7 @@ Each of the {{ counts.controls }} controls in this framework provides implementa
 
 ## Shared Responsibility Model
 
-M365 Copilot governance operates under a shared responsibility model between Microsoft and the deploying organization.
+Microsoft 365 Copilot governance operates under a shared responsibility model between Microsoft and the deploying organization.
 
 ### Microsoft Responsibilities
 
@@ -302,7 +306,7 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 |--------|-----------|
 | Microsoft Purview portal | Purview |
 | Microsoft Entra admin center | Entra |
-| Microsoft 365 admin center | M365 Admin |
+| Microsoft 365 admin center | Microsoft 365 Admin |
 | SharePoint admin center | SharePoint Admin |
 | Microsoft Teams admin center | Teams Admin |
 | Microsoft Defender portal | Defender |
