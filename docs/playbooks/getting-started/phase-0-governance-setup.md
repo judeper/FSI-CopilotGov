@@ -43,7 +43,7 @@ Complete all prerequisite governance, security, and compliance steps so that the
 
 | Day | Activity | Owner |
 |-----|----------|-------|
-| 16-17 | Configure per-app Copilot toggles in M365 Admin Center (Step 6) | M365 Global Admin |
+| 16-17 | Configure Copilot Control System baseline settings and web-grounding policy (Step 6) | M365 Global Admin |
 | 18-19 | Assign pilot group licenses and validate technical configuration (Step 7) | M365 Global Admin |
 | 20 | Phase 0 governance review and sign-off | AI Governance Committee |
 
@@ -208,33 +208,45 @@ See also: [Control 1.5 -- Sensitivity Label Taxonomy Review](../control-implemen
 
 ---
 
-### Step 6: Configure Per-App Copilot Toggles in M365 Admin Center
+### Step 6: Configure Copilot Control System and Web-Grounding Controls
 
-**Why:** M365 Admin Center provides granular toggles to enable or disable Copilot capabilities on a per-application basis. During Phase 0, configure toggles to match the approved pilot scope.
+**Why:** The Copilot Control System provides centralized access to Microsoft 365 Copilot admin features, including license status, data security and compliance controls, plugin permissions, user feedback, and the use of web data as grounding data. During Phase 0, baseline scoping should include the web-grounding decision before pilot licenses are assigned.
 
-**Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Copilot > Settings
+**Portals:** Microsoft 365 admin center; Cloud Policy service for Microsoft 365
+**Paths:** Microsoft 365 admin center > Copilot; Copilot > Settings > Web Content (or **Web search and web content**); config.office.com
 
 **Actions:**
 
-1. **Review available Copilot toggles** for each M365 application:
-    - Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner
-    - Microsoft 365 Copilot Chat
-    - Copilot Pages
+1. **Review the Copilot Control System baseline** in Microsoft 365 admin center > Copilot:
+    - Copilot license assignment status for the planned pilot population
+    - Data security and compliance controls surfaced for Copilot
+    - Plugin, agent, and permission settings
+    - Feedback and reporting settings
+    - Web data grounding status
+
+2. **Document pilot scoping decisions** for the current Copilot surfaces:
+    - Microsoft 365 Copilot Chat (Basic and Premium where applicable)
+    - Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, and Planner experiences
+    - Copilot Pages and Notebooks, including Copilot Cowork co-authoring experiences
+    - Declarative agents, SharePoint agents, plugins, and connectors
     - Web search / web grounding
 
-2. **Determine which applications to enable for pilot:**
-    - Start with lower-risk applications (Word, Excel, PowerPoint) for initial pilot
-    - Defer higher-risk applications (Microsoft 365 Copilot Chat, Copilot Pages) until DLP and information barrier controls are validated
-    - Disable web search grounding if external data sourcing is a compliance concern
+3. **Configure web grounding through Cloud Policy**:
+    - Create or update the Cloud Policy configuration scoped to the pilot and exception groups
+    - Search for **Allow web search in Copilot**
+    - Select the governance-approved option for Microsoft 365 Copilot, Microsoft 365 Copilot Chat, and Work/Web mode behavior
+    - Assign the policy to the approved security groups and verify policy propagation before pilot testing
 
-3. **Configure toggles according to governance committee decisions**
+4. **Review web content settings in the Copilot Control System**:
+    - Navigate to Copilot > Settings > Web Content (or **Web search and web content** in some tenant UI versions)
+    - Confirm the displayed web-grounding state aligns with the Cloud Policy decision
+    - Configure or review excluded domains if the governance committee approved selective domain blocking
 
-4. **Document the configuration** including rationale for each toggle setting
+5. **Document the configuration** including rationale, approver, assigned groups, policy option, UI path observed in the tenant, and next review date
 
-**Deliverable:** Per-app toggle configuration document with governance committee approval
+**Deliverable:** Copilot Control System baseline record and Cloud Policy web-grounding decision with governance committee approval
 
-See also: [Control 4.1 -- Admin Settings and Feature Management](../../controls/pillar-4-operations/4.1-admin-settings-feature-management.md)
+See also: [Control 2.6 -- Copilot Web Search and Web Grounding Controls](../../controls/pillar-2-security/2.6-web-search-controls.md), [Control 4.1 -- Admin Settings and Feature Management](../../controls/pillar-4-operations/4.1-admin-settings-feature-management.md)
 
 ---
 
@@ -286,7 +298,7 @@ See also: [Control 4.1 -- Admin Settings and Feature Management](../../controls/
 | 6 | Audit log retention configured (minimum 3 years) | [ ] |
 | 7 | Sensitivity label taxonomy reviewed and updated | [ ] |
 | 8 | Label coverage at or above 85% for pilot scope | [ ] |
-| 9 | Per-app Copilot toggles configured per governance decisions | [ ] |
+| 9 | Copilot Control System baseline and web-grounding policy configured per governance decisions | [ ] |
 | 10 | Pilot group created and licenses assigned | [ ] |
 | 11 | Pilot users completed Copilot training | [ ] |
 | 12 | Governance committee sign-off on Phase 0 completion | [ ] |
@@ -302,7 +314,7 @@ Phase 0 is complete when:
 - [ ] Baseline DLP policies are enforced for Copilot interactions
 - [ ] Unified Audit Log captures Copilot events with appropriate retention
 - [ ] Sensitivity label coverage meets the 85% threshold for pilot scope
-- [ ] Per-app toggles are configured and documented
+- [ ] Copilot Control System baseline and web-grounding policy are configured and documented
 - [ ] Pilot group is licensed with all participants trained
 - [ ] Governance committee has formally approved Phase 1 launch
 
