@@ -137,24 +137,32 @@ if ($jailbreakEvents.Count -gt 0) {
 ### Script 6: Create Audit Retention Policies
 
 ```powershell
-# Create 6-year retention policy for Copilot interactions (FSI regulated — SEC Rule 17a-4(a))
+# Create the longest-supported audit retention policy for Copilot interactions.
+# New-UnifiedAuditLogRetentionPolicy -RetentionDuration accepts ThreeMonths,
+# SixMonths, NineMonths, TwelveMonths, or TenYears (Microsoft Learn:
+# https://learn.microsoft.com/en-us/powershell/module/exchange/new-unifiedauditlogretentionpolicy?view=exchange-ps).
+# "SixYears" is NOT a supported value — use TenYears for FSI deployments that
+# need to help meet the SEC Rule 17a-4(a) six-year minimum (10-year retention
+# safely covers the 6-year obligation under FINRA Rule 4511 and SEC 17a-4(a)).
 New-UnifiedAuditLogRetentionPolicy `
-    -Name "FSI-Copilot-6Year-Retention" `
-    -Description "6-year retention for Copilot interactions per SEC Rule 17a-4(a) and FINRA 4511" `
+    -Name "FSI-Copilot-10Year-Retention" `
+    -Description "10-year retention for Copilot interactions (helps meet SEC Rule 17a-4(a) six-year preservation and FINRA Rule 4511 books-and-records requirements)" `
     -RecordTypes CopilotInteraction `
-    -RetentionDuration SixYears `
+    -RetentionDuration TenYears `
     -Priority 100
 
-# Create 6-year retention policy for agent administrative record types
+# Create 10-year retention policy for agent administrative record types
 New-UnifiedAuditLogRetentionPolicy `
-    -Name "FSI-AgentAdmin-6Year-Retention" `
-    -Description "6-year retention for agent admin events per Sarbanes-Oxley §404 IT general controls" `
+    -Name "FSI-AgentAdmin-10Year-Retention" `
+    -Description "10-year retention for agent admin events (helps meet Sarbanes-Oxley §§302/404 IT general control evidence preservation, where applicable to ICFR)" `
     -RecordTypes @("AgentAdminActivity", "AgentSettingsAdminActivity") `
-    -RetentionDuration SixYears `
+    -RetentionDuration TenYears `
     -Priority 100
 
 Write-Host "Audit retention policies created" -ForegroundColor Green
 ```
+
+> **Portal-only durations:** The Microsoft Purview portal also exposes 7 days, 30 days, 6 months, 9 months, 1 year, 3 years, 5 years, and 7 years as audit retention duration options — these are portal-only choices and are not surfaced as PowerShell `-RetentionDuration` enum values. Organizations that prefer a 7-year retention period (closer to the 6-year regulatory minimum) should configure those policies through the portal rather than PowerShell.
 
 ### Script 7: Daily Copilot Activity Summary Report
 
