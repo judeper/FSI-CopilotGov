@@ -192,7 +192,7 @@ The Copilot Governance Committee provides strategic oversight for M365 Copilot d
 
 ---
 
-### 4. M365 / Purview Administrator
+### 4. M365 / Purview Admin
 
 **Accountability:** Technical implementation and operation of Copilot governance controls
 
@@ -209,7 +209,7 @@ The Copilot Governance Committee provides strategic oversight for M365 Copilot d
 
 ---
 
-### 5. SharePoint Administrator
+### 5. SharePoint Admin
 
 **Accountability:** SharePoint governance for Copilot data access
 
@@ -225,7 +225,7 @@ The Copilot Governance Committee provides strategic oversight for M365 Copilot d
 
 ---
 
-### 6. Entra / Identity Administrator
+### 6. Entra / Identity Admin
 
 **Accountability:** Identity and access security for Copilot users
 
@@ -240,7 +240,7 @@ The Copilot Governance Committee provides strategic oversight for M365 Copilot d
 
 ---
 
-### 7. Teams Administrator
+### 7. Teams Admin
 
 **Accountability:** Teams-specific Copilot controls
 

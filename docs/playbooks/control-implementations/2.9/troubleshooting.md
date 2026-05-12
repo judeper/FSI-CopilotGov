@@ -11,7 +11,7 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 - **Resolution:**
   1. Verify Conditional Access App Control is enabled for Microsoft 365 in Defender settings
   2. Check the Conditional Access policy routes traffic through Defender for Cloud Apps
-  3. Verify the user's session was proxied (check for the MCAS proxy indicator in the browser)
+  3. Verify the user's session was proxied (check for the Defender for Cloud Apps session control indicator in the browser)
   4. Allow 24 hours for activity data to appear in the log
 
 ### Issue 2: Session Control Causing Performance Issues
@@ -70,7 +70,7 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 
 ## Diagnostic Steps
 
-1. **Verify proxy routing:** Check browser URL for MCAS proxy indicators during Copilot use
+1. **Verify proxy routing:** Check browser URL for Defender for Cloud Apps session control indicators during Copilot use
 2. **Check policy status:** Defender > Policies > verify all session policies are "Enabled"
 3. **Review activity log:** Search for any Copilot-related activities in the last 24 hours
 4. **Test detection:** Use a test document with known sensitive data patterns
