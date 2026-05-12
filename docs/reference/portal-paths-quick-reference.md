@@ -239,17 +239,24 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 
 ## Microsoft Sentinel
 
-**Base URL:** [https://portal.azure.com](https://portal.azure.com) (Azure portal)
+**Recommended base URL:** [https://security.microsoft.com](https://security.microsoft.com) (Microsoft Defender portal)
 
-| Setting | Navigation Path | Direct URL |
-|---------|----------------|------------|
-| Sentinel workspace | Azure portal > Microsoft Sentinel > [workspace] | Workspace-specific URL |
-| Data connectors | Microsoft Sentinel > Data connectors | Workspace-specific URL |
-| Analytics rules | Microsoft Sentinel > Analytics | Workspace-specific URL |
-| Workbooks | Microsoft Sentinel > Workbooks | Workspace-specific URL |
-| Incidents | Microsoft Sentinel > Incidents | Workspace-specific URL |
-| Hunting queries | Microsoft Sentinel > Hunting | Workspace-specific URL |
-| Microsoft 365 connector | Data connectors > Microsoft 365 | Workspace-specific URL |
+**Legacy transition URL:** [https://portal.azure.com](https://portal.azure.com) (Azure portal for existing workspaces during transition)
+
+!!! note "Defender portal is the primary Sentinel path"
+    Microsoft Learn states Microsoft Sentinel is generally available in the Microsoft Defender portal, many new customers are automatically onboarded and redirected there starting in July 2025, and Azure portal support for Sentinel ends after March 31, 2027. Use Defender portal paths as the recommended FSI operating baseline while documenting Azure portal paths for legacy workspace transition.
+
+| Setting | Recommended Defender portal path | Legacy Azure portal path | Direct URL |
+|---------|----------------------------------|--------------------------|------------|
+| Sentinel workspace overview | Microsoft Sentinel > Overview | Azure portal > Microsoft Sentinel > [workspace] | `https://security.microsoft.com` |
+| Data connectors | Microsoft Sentinel > Configuration > Data connectors | Microsoft Sentinel > Data connectors | Workspace-specific URL |
+| Microsoft 365 connector | Microsoft Sentinel > Configuration > Data connectors > Microsoft 365 | Data connectors > Microsoft 365 | Workspace-specific URL |
+| Analytics rules | Microsoft Sentinel > Configuration > Analytics | Microsoft Sentinel > Analytics | Workspace-specific URL |
+| Automation rules | Microsoft Sentinel > Configuration > Automation | Microsoft Sentinel > Automation | Workspace-specific URL |
+| Watchlists | Microsoft Sentinel > Configuration > Watchlists | Microsoft Sentinel > Watchlists | Workspace-specific URL |
+| Workbooks | Microsoft Sentinel > Threat management > Workbooks | Microsoft Sentinel > Workbooks | Workspace-specific URL |
+| Incidents | Investigation & response > Incidents & alerts > Incidents | Microsoft Sentinel > Incidents | `https://security.microsoft.com/incidents` |
+| Hunting queries | Microsoft Sentinel > Threat management > Hunting; Investigation & response > Hunting > Advanced hunting | Microsoft Sentinel > Hunting | Workspace-specific URL |
 
 ---
 
@@ -258,7 +265,7 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 1. **Bookmark frequently used paths** — Copilot settings, DLP policies, and audit log search are accessed repeatedly during implementation
 2. **Use direct URLs** where provided — avoids navigating through multiple menu levels
 3. **SharePoint Admin Center URLs are tenant-specific** — replace `<tenant>` with your organization's tenant name
-4. **Microsoft is consolidating portals** — the new Purview portal (`purview.microsoft.com`) is gradually replacing the legacy compliance portal (`compliance.microsoft.com`); both work during transition
+4. **Microsoft is consolidating portals** — the new Purview portal (`purview.microsoft.com`) is gradually replacing the legacy compliance portal (`compliance.microsoft.com`); Microsoft Sentinel is transitioning from Azure portal to Defender portal by March 31, 2027
 5. **Some paths require specific admin roles** — if a path is inaccessible, verify your role assignment in Entra admin center
 
 ---

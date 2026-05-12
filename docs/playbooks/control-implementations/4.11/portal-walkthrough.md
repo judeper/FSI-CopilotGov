@@ -6,29 +6,35 @@ Step-by-step portal configuration for integrating Microsoft 365 Copilot events i
 
 - **Role:** Security Administrator, Sentinel Contributor
 - **License:** Microsoft 365 E5, Microsoft Sentinel
-- **Access:** Azure Portal (Sentinel workspace), Microsoft Purview
+- **Access:** Microsoft Defender portal (primary Sentinel workspace experience), Azure portal (legacy transition), Microsoft Purview
+
+!!! note "Microsoft Defender portal transition"
+    Microsoft Learn states Microsoft Sentinel is generally available in the Microsoft Defender portal and that Azure portal support for Sentinel ends after March 31, 2027. Use the Defender portal (`https://security.microsoft.com`) as the recommended FSI operating path for unified incident management; retain Azure portal paths only for legacy workspaces during transition.
 
 ## Steps
 
 ### Step 1: Connect Microsoft 365 Data Connector in Sentinel
 
-**Portal:** Azure Portal
-**Path:** Microsoft Sentinel > Data connectors > Microsoft 365
+**Portal:** Microsoft Defender portal (recommended primary path)
+**Path:** Microsoft Sentinel > Configuration > Data connectors > Microsoft 365
+**Legacy Azure path:** Azure portal > Microsoft Sentinel > Data connectors > Microsoft 365
 
-1. Navigate to the Sentinel workspace in the Azure Portal.
-2. Go to **Data connectors** and locate the **Microsoft 365** connector.
+1. In the Microsoft Defender portal (`https://security.microsoft.com`), open **Microsoft Sentinel** and select the target workspace.
+2. Go to **Configuration > Data connectors** and locate the **Microsoft 365** connector.
 3. Click **Open connector page** and enable the following data types:
    - Exchange Online audit logs
    - SharePoint Online audit logs
    - Teams audit logs
 4. Verify the connector status shows "Connected" and data is flowing.
+5. For workspaces not yet transitioned, use the legacy Azure portal path until migration is complete.
 
 ### Step 2: Enable Microsoft Purview Connector for Copilot Events
 
-**Portal:** Azure Portal
-**Path:** Microsoft Sentinel > Data connectors > Microsoft Purview (Preview)
+**Portal:** Microsoft Defender portal (recommended primary path)
+**Path:** Microsoft Sentinel > Configuration > Data connectors > Microsoft Purview (Preview)
+**Legacy Azure path:** Azure portal > Microsoft Sentinel > Data connectors > Microsoft Purview (Preview)
 
-1. Locate the **Microsoft Purview** data connector.
+1. In **Microsoft Sentinel > Configuration > Data connectors**, locate the **Microsoft Purview** data connector.
 2. Enable the connector to ingest Copilot-specific audit events.
 3. Configure the data types to include:
    - CopilotInteraction events
@@ -38,21 +44,26 @@ Step-by-step portal configuration for integrating Microsoft 365 Copilot events i
 
 ### Step 3: Create Copilot-Specific Analytics Rules
 
-**Portal:** Azure Portal
-**Path:** Microsoft Sentinel > Analytics > Create rule
+**Portal:** Microsoft Defender portal (recommended primary path)
+**Path:** Microsoft Sentinel > Configuration > Analytics
+**Related paths:** Microsoft Sentinel > Configuration > Automation; Microsoft Sentinel > Configuration > Watchlists
+**Legacy Azure path:** Azure portal > Microsoft Sentinel > Analytics
 
 1. Create analytics rules for Copilot security monitoring:
    - **Unusual Copilot access pattern** — Detect Copilot usage from unusual locations or devices
    - **High-volume data extraction via Copilot** — Detect potential data exfiltration through excessive Copilot queries
    - **Copilot access to sensitive content** — Alert when Copilot interactions involve highly classified content
    - **After-hours Copilot usage** — Detect Copilot usage outside normal business hours
-2. Set severity levels and configure automated response actions.
-3. Map each rule to MITRE ATT&CK techniques where applicable.
+2. Set severity levels and configure automated response actions with **Microsoft Sentinel > Configuration > Automation** where appropriate.
+3. Use **Microsoft Sentinel > Configuration > Watchlists** to reference high-value assets, service accounts, or restricted data sets in rules where applicable.
+4. Map each rule to MITRE ATT&CK techniques where applicable.
 
 ### Step 4: Create Copilot Monitoring Workbook
 
-**Portal:** Azure Portal
-**Path:** Microsoft Sentinel > Workbooks > Add workbook
+**Portal:** Microsoft Defender portal (recommended primary path)
+**Path:** Microsoft Sentinel > Threat management > Workbooks
+**Related hunting paths:** Microsoft Sentinel > Threat management > Hunting; Investigation & response > Hunting > Advanced hunting
+**Legacy Azure path:** Azure portal > Microsoft Sentinel > Workbooks
 
 1. Create a workbook titled "Copilot Security and Governance Dashboard".
 2. Add the following visualizations:
@@ -61,7 +72,8 @@ Step-by-step portal configuration for integrating Microsoft 365 Copilot events i
    - DLP incidents related to Copilot
    - Geographic distribution of Copilot usage
    - Anomaly detection alerts
-3. Share the workbook with the security operations and compliance teams.
+3. Use **Threat management > Hunting** or **Advanced hunting** to validate KQL queries that support the workbook and related investigations.
+4. Share the workbook with the security operations and compliance teams.
 
 ## FSI Recommendations
 
