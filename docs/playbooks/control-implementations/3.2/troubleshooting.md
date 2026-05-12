@@ -29,8 +29,8 @@ Common issues and resolution steps for Copilot data retention policy configurati
 - **Symptoms:** Existing retention policies that targeted the legacy Copilot interaction location do not appear to cover content in the restructured Microsoft Copilot experiences category.
 - **Root Cause:** When Microsoft restructured the retention location categories (consolidating various Copilot locations into Microsoft Copilot experiences, Enterprise AI Apps, and Other AI Apps), existing policies targeting legacy location names may have required updating.
 - **Resolution:**
-  1. Review existing Copilot-related retention policies: `Get-RetentionCompliancePolicy | Where-Object { $_.Name -like "*Copilot*" } | Select Name, CopilotLocation, DistributionStatus`
-  2. If `CopilotLocation` shows a legacy value or is null for policies that should cover Copilot experiences, update the policy to target the current Microsoft Copilot experiences location.
+  1. Review existing Copilot-related retention policies by name and workload scope: `Get-RetentionCompliancePolicy | Where-Object { $_.Name -like "*Copilot*" } | Select Name, Enabled, DistributionStatus, ExchangeLocation, SharePointLocation, OneDriveLocation, TeamsChannelLocation, TeamsChatLocation, ModernGroupLocation`
+  2. If a policy that should cover Microsoft Copilot experiences is missing from the portal or only references a legacy location label, create a new portal-managed policy targeting the current Microsoft Copilot experiences location.
   3. Create a new policy with the current location name if updating the existing policy causes distribution errors.
   4. Verify coverage by running a Content Search targeting the Microsoft Copilot experiences location and confirming Copilot Chat history is returned.
 
