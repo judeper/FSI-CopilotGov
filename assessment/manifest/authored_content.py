@@ -75,12 +75,12 @@ AUTHORED: dict[str, dict] = {
         ),
         "verifyIn": [
             {
-                "portal": "Microsoft Purview",
+                "portal": "Microsoft Purview portal",
                 "path": "Data Security Posture Management > Overview",
                 "url": "https://purview.microsoft.com/datasecurityposturemanagement",
             },
             {
-                "portal": "Microsoft Purview",
+                "portal": "Microsoft Purview portal",
                 "path": "DSPM for AI > Reports > Oversharing assessments",
                 "url": "https://purview.microsoft.com/aihub",
             },
@@ -129,7 +129,7 @@ AUTHORED: dict[str, dict] = {
                 "remediation tracked with named owners?"
             ),
             "followUp": (
-                "Open Microsoft Purview > Data Security Posture Management > "
+                "Open Microsoft Purview portal > Data Security Posture Management > "
                 "Reports. Show the most recent oversharing/data-risk-assessment "
                 "report, pull the top 5 flagged sites, and confirm each has "
                 "an owner and target date in the remediation backlog."
@@ -163,7 +163,7 @@ AUTHORED: dict[str, dict] = {
         ),
         "verifyIn": [
             {
-                "portal": "SharePoint Admin Center",
+                "portal": "SharePoint admin center",
                 "path": "Settings > Search > Restricted SharePoint Search",
                 "url": "https://admin.microsoft.com/sharepoint",
             },
@@ -208,7 +208,7 @@ AUTHORED: dict[str, dict] = {
                 "allow-list of ≤100 sites and a documented review cadence?"
             ),
             "followUp": (
-                "Open SharePoint Admin Center > Settings > Search and verify "
+                "Open SharePoint admin center > Settings > Search and verify "
                 "Restricted SharePoint Search is on. Run Get-SPOTenantRestrictedSearchMode "
                 "and Get-SPOTenantRestrictedSearchAllowedList, confirm count is within "
                 "the 100-site limit, and ask the SharePoint Admin who owns the "
@@ -245,12 +245,12 @@ AUTHORED: dict[str, dict] = {
         ),
         "verifyIn": [
             {
-                "portal": "Microsoft Purview",
+                "portal": "Microsoft Purview portal",
                 "path": "Data Loss Prevention > Policies",
                 "url": "https://purview.microsoft.com/datalossprevention/policies",
             },
             {
-                "portal": "M365 Admin Center",
+                "portal": "Microsoft 365 admin center",
                 "path": "Copilot > Settings > Web Content",
                 "url": "https://admin.microsoft.com/AdminPortal/Home#/copilot/settings/webcontent",
             },
@@ -265,9 +265,9 @@ AUTHORED: dict[str, dict] = {
         "evidenceExpected": [
             "DLP policy export showing 'Microsoft 365 Copilot and Copilot Chat' location or CopilotExperiences enforcement plane in scope",
             "Three Copilot DLP scenarios present: sensitivity-label content processing, SIT prompt processing, and SIT external web-search restriction",
-            "M365 Admin Center Web Content setting evidence showing web search scoped per approved user/group",
+            "Microsoft 365 admin center Web Content setting evidence showing web search scoped per approved user/group",
             "Policy mode = Enforce (not Test / TestWithNotifications)",
-            "Match-event report from Purview > Activity Explorer for the last 30 days",
+            "Match-event report from Microsoft Purview portal > Activity Explorer for the last 30 days",
             "Override workflow document showing who can request and approve overrides",
         ],
         "collectorField": "DLP_CopilotPolicies",
@@ -304,13 +304,13 @@ AUTHORED: dict[str, dict] = {
                 "SIT prompt processing, and external web search / web grounding?"
             ),
             "followUp": (
-                "Open Microsoft Purview > Data Loss Prevention > Policies. "
+                "Open Microsoft Purview portal > Data Loss Prevention > Policies. "
                 "Filter by location 'Microsoft 365 Copilot and Copilot Chat' "
                 "or policies using the CopilotExperiences enforcement plane. "
                 "Confirm three rule/action patterns exist: sensitivity-label "
                 "content processing, SIT prompt processing, and SIT external "
                 "web-search restriction, all in Enforce mode. Then open "
-                "M365 Admin Center > Copilot > Settings > Web Content "
+                "Microsoft 365 admin center > Copilot > Settings > Web Content "
                 "to verify web search is scoped to approved users/groups, and "
                 "use Activity Explorer to show match events from the last 30 days."
             ),
@@ -342,12 +342,12 @@ AUTHORED: dict[str, dict] = {
         ),
         "verifyIn": [
             {
-                "portal": "Microsoft Purview",
+                "portal": "Microsoft Purview portal",
                 "path": "Audit > Search",
                 "url": "https://purview.microsoft.com/audit/auditsearch",
             },
             {
-                "portal": "Microsoft Purview",
+                "portal": "Microsoft Purview portal",
                 "path": "Audit > Audit retention policies",
                 "url": "https://purview.microsoft.com/audit/auditretentionpolicies",
             },
@@ -402,7 +402,7 @@ AUTHORED: dict[str, dict] = {
             "followUp": (
                 "Run Get-AdminAuditLogConfig to verify ingestion is on, then "
                 "Search-UnifiedAuditLog -RecordType CopilotInteraction for the "
-                "last 24 hours. Open Purview > Audit > Audit retention policies "
+                "last 24 hours. Open Microsoft Purview portal > Audit > Audit retention policies "
                 "and confirm the policy duration matches the firm's regulatory "
                 "minimum. Confirm the SIEM/WORM archive destination and cadence."
             ),
@@ -436,17 +436,17 @@ AUTHORED: dict[str, dict] = {
         ),
         "verifyIn": [
             {
-                "portal": "Microsoft 365 Admin Center",
+                "portal": "Microsoft 365 admin center",
                 "path": "Copilot > Settings",
                 "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
             },
             {
-                "portal": "Microsoft 365 Admin Center",
+                "portal": "Microsoft 365 admin center",
                 "path": "Agents > All agents",
                 "url": "https://admin.microsoft.com/Adminportal/Home#/agents",
             },
             {
-                "portal": "Microsoft 365 Apps Admin Center",
+                "portal": "Microsoft 365 Apps admin center",
                 "path": "Customization > Policy Management",
                 "url": "https://config.office.com",
             },
@@ -492,7 +492,7 @@ AUTHORED: dict[str, dict] = {
                 "change-management process?"
             ),
             "followUp": (
-                "Open Microsoft 365 Admin Center > Roles and confirm who "
+                "Open Microsoft 365 admin center > Roles and confirm who "
                 "holds AI Administrator. Open Copilot > Settings, Agents > "
                 "All agents, and config.office.com Customization > Policy "
                 "Management. Ask for the most recent change-management ticket "
