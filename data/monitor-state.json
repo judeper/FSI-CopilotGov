@@ -1646,14 +1646,14 @@
         "2026-09472": "sha256:f0a06ed7c86aa06eba0cec2b865c3ef41bf75292beebd8d0487d8e2fbfc545e4",
         "2026-09471": "sha256:3a605a94eb18c7455e7b4daa8b413c1edfc66f67f01803d5a36f26ecf6433fa0"
       },
-      "last_run": "2026-05-17T10:58:01.726281+00:00",
-      "last_checked": "2026-05-17"
+      "last_run": "2026-05-18T12:58:51.784569+00:00",
+      "last_checked": "2026-05-18"
     },
     "regulatory-finra": {
       "entries": {
         "FINRA 26-10": "sha256:ab71def0075c51f2d70a00315ee1de99a6a71ee9ba20c2ef35e143ee08ccc6a3"
       },
-      "last_run": "2026-05-17T10:58:02.073980+00:00"
+      "last_run": "2026-05-18T12:58:51.957247+00:00"
     }
   }
 }
