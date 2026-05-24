@@ -63,7 +63,7 @@
         },
         "jsonPath": {
           "type": "string",
-          "description": "JSONPath or dot-notation path into the collected JSON where the evidence lives (e.g. auditConfig.UnifiedAuditLogIngestionEnabled)."
+          "description": "JSONPath or dot-notation path into the collected JSON where the evidence lives (e.g. audit_config.UnifiedAuditLogIngestionEnabled)."
         },
         "evaluator": {
           "type": "string",

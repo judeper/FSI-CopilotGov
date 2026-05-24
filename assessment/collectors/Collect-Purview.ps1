@@ -450,15 +450,15 @@ catch {
 # Build Output
 # ═══════════════════════════════════════════════════════════════════════
 $result = [ordered]@{
-    auditConfig              = $auditConfig
-    dlpCompliancePolicies    = $dlpCompliancePolicies
-    retentionPolicies        = $retentionPolicies
-    communicationCompliance  = $communicationCompliance
-    eDiscoveryCases          = $eDiscoveryCases
-    insiderRiskPolicies      = $insiderRiskPolicies
-    dspmForAi                = $dspmForAi
-    sensitivityLabelPolicies = $sensitivityLabelPolicies
-    endpointDlp              = $endpointDlp
+    audit_config               = $auditConfig
+    dlp_compliance_policies    = $dlpCompliancePolicies
+    retention_policies         = $retentionPolicies
+    communication_compliance   = $communicationCompliance
+    e_discovery_cases          = $eDiscoveryCases
+    insider_risk_policies      = $insiderRiskPolicies
+    dspm_for_ai                = $dspmForAi
+    sensitivity_label_policies = $sensitivityLabelPolicies
+    endpoint_dlp               = $endpointDlp
     _metadata                = [ordered]@{
         collector   = 'Collect-Purview'
         timestamp   = (Get-Date -Format 'o')
