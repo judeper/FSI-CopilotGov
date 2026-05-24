@@ -283,9 +283,9 @@ catch {
 # Build Output
 # ═══════════════════════════════════════════════════════════════════════
 $result = [ordered]@{
-    workspace       = $workspaceInfo
-    dataConnectors  = $dataConnectors
-    kqlAuditCheck   = $kqlAuditCheck
+    workspace         = $workspaceInfo
+    data_connectors   = $dataConnectors
+    kql_audit_check   = $kqlAuditCheck
     _metadata       = [ordered]@{
         collector       = 'Collect-Sentinel'
         timestamp       = (Get-Date -Format 'o')

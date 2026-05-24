@@ -434,12 +434,12 @@ catch {
 # Build Output
 # ═══════════════════════════════════════════════════════════════════════
 $result = [ordered]@{
-    siteInventory          = $siteInventory
-    externalSharing        = $externalSharing
-    retentionLabels        = $retentionLabels
-    guestAccess            = $guestAccess
-    itemLevelPermissions   = $itemLevelPermissions
-    groundingCrossRef      = $groundingCrossRef
+    site_inventory           = $siteInventory
+    external_sharing         = $externalSharing
+    retention_labels         = $retentionLabels
+    guest_access             = $guestAccess
+    item_level_permissions   = $itemLevelPermissions
+    grounding_scope          = $groundingCrossRef
     _metadata              = [ordered]@{
         collector            = 'Collect-SharePoint'
         timestamp            = (Get-Date -Format 'o')

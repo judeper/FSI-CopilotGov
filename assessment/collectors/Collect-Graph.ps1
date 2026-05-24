@@ -324,12 +324,12 @@ catch {
 # Build Output
 # ═══════════════════════════════════════════════════════════════════════
 $result = [ordered]@{
-    conditionalAccessPolicies  = $conditionalAccessPolicies
-    fsiSecurityGroups          = $fsiSecurityGroups
-    informationBarriers        = $informationBarriers
-    privilegedRoleAssignments  = $privilegedRoleAssignments
-    copilotServicePrincipals   = $copilotServicePrincipals
-    tenantSecuritySettings     = $tenantSecuritySettings
+    conditional_access_policies  = $conditionalAccessPolicies
+    fsi_security_groups          = $fsiSecurityGroups
+    information_barriers         = $informationBarriers
+    privileged_role_assignments  = $privilegedRoleAssignments
+    copilot_service_principals   = $copilotServicePrincipals
+    tenant_security_settings     = $tenantSecuritySettings
     _metadata                  = [ordered]@{
         collector   = 'Collect-Graph'
         timestamp   = (Get-Date -Format 'o')
