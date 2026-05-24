@@ -25,6 +25,15 @@
   var COLLECTOR_STATUS_MAP = { pass: "yes", partial: "partial", fail: "no" };
   // Severity ranking used when multiple evidence rows disagree on status.
   var COLLECTOR_STATUS_PRIORITY = { no: 3, partial: 2, yes: 1 };
+  // Map SPA institution-type values to manifest sectorYesBar keys.
+  var INST_TO_SECTOR = {
+    "bank": "bank",
+    "broker-dealer": "broker-dealer",
+    "adviser": "investment-adviser",
+    "dual-registered": "broker-dealer",
+    "insurance": "insurance-carrier",
+    "credit-union": "credit-union",
+  };
   // E: Envelope export schema + identity storage keys.
   var ENVELOPE_SCHEMA_VERSION = "fsi-copilotgov-envelope/0.1.0";
   var ENVELOPE_IDENTITY_KEY = "fsi-copilotgov:envelope-identity";
@@ -802,6 +811,10 @@
     clean.dataVersion = this.data && this.data.version ? String(this.data.version) : clean.dataVersion;
     clean.frameworkVersion = this.data && this.data.frameworkVersion ? String(this.data.frameworkVersion) : clean.frameworkVersion;
     clean.lastStep = this.getDefaultResumeStep(clean);
+    // Derive sector from institution type for sector-calibration bars.
+    clean.selectedSector = parsed.selectedSector
+      || INST_TO_SECTOR[clean.scoping.institutionType]
+      || "";
     return clean;
   };
 
@@ -1593,6 +1606,8 @@
     ];
     form.appendChild(this.selectField("Institution Type", instOptions, sc.institutionType, function (v) {
       sc.institutionType = v;
+      // Map institution type to manifest sector key for sector-calibration bars.
+      self.state.selectedSector = INST_TO_SECTOR[v] || "";
       // Auto-populate regulations
       var inst = self.data.institutionTypes[v];
       if (inst) sc.regulations = inst.regulations.slice();
