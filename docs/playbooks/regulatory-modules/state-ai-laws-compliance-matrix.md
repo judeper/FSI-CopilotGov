@@ -7,6 +7,9 @@ Compliance considerations for state-level AI legislation applicable to Microsoft
 
 ---
 
+!!! info "Educational Reference"
+    This matrix is a simplified educational reference. State AI legislation evolves rapidly — consult current sources and legal counsel.
+
 ## Overview
 
 As of 2026, several US states have enacted or are advancing AI-specific legislation that may apply to financial institutions using Microsoft 365 Copilot. FSI organizations operating across state lines must assess compliance obligations in each jurisdiction where they operate.
@@ -37,12 +40,7 @@ For detailed Colorado-specific guidance, see [Colorado AI Act Readiness](colorad
 
 **Effective date:** September 1, 2025
 **Status:** Enacted
-
-**Key requirements for FSI Copilot deployments:**
-
-- Deployers of "high-risk AI systems" must conduct impact assessments
-- Governance framework requirements for organizations deploying AI in consequential decisions
-- Transparency and notification requirements for AI-generated content used in decision-making
+**Topic:** AI governance and transparency requirements for deployers of high-risk AI systems.
 
 **Applicable controls:** [3.8 Model Risk Management](../../controls/pillar-3-compliance/3.8-model-risk-management.md), [3.9 AI Disclosure](../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md), [3.12 Evidence Collection](../../controls/pillar-3-compliance/3.12-evidence-collection.md)
 
@@ -50,12 +48,7 @@ For detailed Colorado-specific guidance, see [Colorado AI Act Readiness](colorad
 
 **Effective date:** May 1, 2024
 **Status:** Enacted, in effect
-
-**Key requirements for FSI Copilot deployments:**
-
-- Disclosure requirements when AI is used in regulated transactions
-- Prohibits AI use to engage in certain deceptive practices
-- Establishes an AI learning laboratory program for regulatory experimentation
+**Topic:** AI disclosure requirements and prohibition on deceptive AI practices in regulated transactions.
 
 **Applicable controls:** [3.9 AI Disclosure](../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md)
 
@@ -64,16 +57,12 @@ For detailed Colorado-specific guidance, see [Colorado AI Act Readiness](colorad
 **Illinois Artificial Intelligence Video Interview Act (820 ILCS 42)**
 **Effective date:** January 1, 2020 (already in effect)
 **Status:** Enacted, in effect
-
-If Copilot is used to analyze or assist with video interview processes at financial institutions with Illinois operations, specific consent and notification requirements apply.
+**Topic:** Consent and notification requirements for AI-assisted video interviews.
 
 **Illinois Employee AI Act (HB 3773)**
 **Effective date:** January 1, 2026
 **Status:** Enacted
-
-Requires employers to provide notice to employees and applicants when AI is used in employment-related decisions (recruitment, hiring, discipline, discharge, and terms/conditions of employment). Employers using AI for these purposes must test for disparate impact. Violations are enforceable under the Illinois Human Rights Act.
-
-**Relevance to Copilot:** If Copilot or Copilot-powered agents are used to draft performance reviews, summarize candidate materials, or assist with employment decisions, the HB 3773 notice and testing requirements may apply.
+**Topic:** Notice and disparate-impact testing requirements for AI used in employment decisions.
 
 **Applicable controls:** [3.9 AI Disclosure](../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md), [4.4 Viva Suite Governance](../../controls/pillar-4-operations/4.4-viva-suite-governance.md)
 
@@ -82,13 +71,10 @@ Requires employers to provide notice to employees and applicants when AI is used
 **California AB 2013 (AI Transparency Act)**
 **Effective date:** January 1, 2026
 **Status:** Enacted
-
-Requires developers and deployers of AI systems to provide transparency disclosures about AI-generated content, including information about training data and system capabilities.
+**Topic:** Transparency disclosure requirements for AI-generated content and system capabilities.
 
 **California SB 1047 (Safe and Secure Innovation for Frontier AI Models Act)**
 **Status:** **Vetoed** by Governor Newsom, September 2024
-
-SB 1047 would have imposed safety testing and incident reporting on developers of large AI models. The veto cited concerns about the bill's broad scope and potential impact on AI innovation. Organizations should monitor successor proposals.
 
 **Applicable controls:** [3.9 AI Disclosure](../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md)
 
@@ -96,14 +82,7 @@ SB 1047 would have imposed safety testing and incident reporting on developers o
 
 **Effective date:** July 5, 2023
 **Status:** Enacted, in effect
-
-**Key requirements for FSI Copilot deployments:**
-
-- Applies to "automated employment decision tools" (AEDTs) used in hiring or promotion within New York City
-- Requires an annual independent bias audit of the AEDT and public disclosure of audit results
-- Candidates and employees must be notified that an AEDT is being used and informed of data categories collected
-
-**Relevance to Copilot:** If Copilot or Viva-based tools assist with employment decisions for NYC-based roles (screening resumes, summarizing candidate qualifications, drafting interview evaluations), the AEDT requirements may be triggered.
+**Topic:** Requirements for automated employment decision tools (AEDTs), including bias audits and candidate notification.
 
 **Applicable controls:** [3.9 AI Disclosure](../../controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md), [3.8 Model Risk Management](../../controls/pillar-3-compliance/3.8-model-risk-management.md)
 
@@ -121,8 +100,8 @@ SB 1047 would have imposed safety testing and incident reporting on developers o
 | Record keeping | Required | Required | N/A | Required (video) | Required | N/A | Required (audit results) |
 | Effective date | June 30, 2026 | Sept 1, 2025 | May 1, 2024 | Jan 1, 2020 | Jan 1, 2026 | Jan 1, 2026 | July 5, 2023 |
 
-!!! note "Vetoed and Superseded Proposals"
-    Several significant state AI bills have been vetoed or superseded. Notably, **California SB 1047** (Safe and Secure Innovation for Frontier AI Models Act) was vetoed by Governor Newsom in September 2024. While these proposals do not impose current compliance obligations, they signal regulatory direction and may inform successor legislation. FSI organizations should track vetoed proposals to anticipate future requirements. Other pending or proposed bills in Connecticut, Maryland, Virginia, and additional states are advancing through legislative processes — monitor through the firm's regulatory monitoring program (Control 4.12).
+!!! note "Vetoed and Pending Proposals"
+    Several state AI bills have been vetoed or remain pending — notably **California SB 1047**, vetoed in September 2024. These do not impose current obligations but may inform future legislation. Monitor developments through your firm's regulatory monitoring program (Control 4.12).
 
 ---
 

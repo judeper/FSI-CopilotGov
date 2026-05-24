@@ -35,12 +35,7 @@ Microsoft 365 Copilot use cases that may fall under the Colorado AI Act:
 
 ### Federal Banking Regulator Exemption
 
-The Colorado AI Act includes an exemption for entities regulated by federal banking regulators — specifically the Office of the Comptroller of the Currency (OCC), Federal Deposit Insurance Corporation (FDIC), and the Federal Reserve. Banks and depository institutions supervised by these agencies may fall outside the Act's scope.
-
-However, **broker-dealers, investment advisers, and insurance entities** are generally not supervised by federal banking regulators and likely remain subject to the Act's requirements. Organizations should verify their specific regulatory status with legal counsel before relying on this exemption.
-
-!!! note "Scope Verification"
-    The federal banking regulator exemption does not extend to all financial services entities. Consult legal counsel to determine whether your organization qualifies for this exemption based on your primary regulator.
+The Colorado AI Act includes provisions for entities regulated by federal banking regulators. Consult legal counsel for applicability to your institution.
 
 ## Key Requirements for Deployers
 
