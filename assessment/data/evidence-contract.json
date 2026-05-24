@@ -1,0 +1,259 @@
+{
+  "schemaVersion": "1.0.0",
+  "sources": {
+    "graph": {
+      "filename": "graph.json",
+      "collector": "Collect-Graph.ps1",
+      "description": "Microsoft Graph / Entra ID: Conditional Access, security groups, privileged roles, service principals, tenant settings."
+    },
+    "purview": {
+      "filename": "purview.json",
+      "collector": "Collect-Purview.ps1",
+      "description": "Microsoft Purview: audit config, DLP policies, retention, communication compliance, eDiscovery, insider risk, DSPM, sensitivity labels."
+    },
+    "sharepoint": {
+      "filename": "sharepoint.json",
+      "collector": "Collect-SharePoint.ps1",
+      "description": "SharePoint Online: site inventory, sharing settings, retention labels, guest access, item-level permissions."
+    },
+    "sentinel": {
+      "filename": "sentinel.json",
+      "collector": "Collect-Sentinel.ps1",
+      "description": "Microsoft Sentinel: workspace config, data connectors, KQL audit queries for CopilotInteraction events."
+    }
+  },
+  "mappings": [
+    {
+      "controlId": "1.2",
+      "collectorField": "DSPM_OversharingAssessment",
+      "source": "purview",
+      "jsonPath": "dSPMForAI",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "DSPM for AI oversharing assessment presence"
+    },
+    {
+      "controlId": "1.3",
+      "collectorField": "SPO_RestrictedSearchConfig",
+      "source": "sharepoint",
+      "jsonPath": "groundingScope",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Restricted SharePoint Search configuration"
+    },
+    {
+      "controlId": "1.4",
+      "collectorField": "SPO_SemanticIndexScope",
+      "source": "sharepoint",
+      "jsonPath": "groundingScope",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Semantic index scope governance"
+    },
+    {
+      "controlId": "1.5",
+      "collectorField": "Purview_SensitivityLabelTaxonomy",
+      "source": "purview",
+      "jsonPath": "sensitivityLabels",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Sensitivity label taxonomy for Copilot"
+    },
+    {
+      "controlId": "1.6",
+      "collectorField": "SPO_PermissionAudit",
+      "source": "sharepoint",
+      "jsonPath": "itemPermissions",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Permission model audit for Copilot-grounded sites"
+    },
+    {
+      "controlId": "1.7",
+      "collectorField": "SPO_AdvancedManagement",
+      "source": "sharepoint",
+      "jsonPath": "siteInventory",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "SharePoint Advanced Management configuration"
+    },
+    {
+      "controlId": "1.14",
+      "collectorField": "SPO_ItemLevelPermissions",
+      "source": "sharepoint",
+      "jsonPath": "itemPermissions",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Item-level permission scan results"
+    },
+    {
+      "controlId": "1.15",
+      "collectorField": "SPO_PermissionsDrift",
+      "source": "sharepoint",
+      "jsonPath": "externalSharing",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "SharePoint permissions drift monitoring"
+    },
+    {
+      "controlId": "2.1",
+      "collectorField": "DLP_CopilotPolicies",
+      "source": "purview",
+      "jsonPath": "dlpPolicies",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "DLP policies targeting Copilot location"
+    },
+    {
+      "controlId": "2.2",
+      "collectorField": "Purview_SensitivityLabels",
+      "source": "purview",
+      "jsonPath": "sensitivityLabels",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Sensitivity labels applied to Copilot content"
+    },
+    {
+      "controlId": "2.3",
+      "collectorField": "Graph_ConditionalAccessPolicies",
+      "source": "graph",
+      "jsonPath": "conditionalAccessPolicies",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Conditional Access policies for Copilot workloads"
+    },
+    {
+      "controlId": "2.4",
+      "collectorField": "Graph_InformationBarriers",
+      "source": "graph",
+      "jsonPath": "informationBarriers",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Information Barrier policies"
+    },
+    {
+      "controlId": "2.8",
+      "collectorField": "Graph_EncryptionSettings",
+      "source": "graph",
+      "jsonPath": "tenantSettings",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Tenant encryption configuration"
+    },
+    {
+      "controlId": "2.10",
+      "collectorField": "Purview_InsiderRiskPolicies",
+      "source": "purview",
+      "jsonPath": "insiderRiskPolicies",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Insider risk policies covering Copilot usage"
+    },
+    {
+      "controlId": "2.11",
+      "collectorField": "SPO_PagesSharing",
+      "source": "sharepoint",
+      "jsonPath": "externalSharing",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Copilot Pages sharing controls"
+    },
+    {
+      "controlId": "2.12",
+      "collectorField": "SPO_ExternalSharing",
+      "source": "sharepoint",
+      "jsonPath": "externalSharing",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "External sharing and guest access settings"
+    },
+    {
+      "controlId": "2.13",
+      "collectorField": "Graph_PluginConnectorInventory",
+      "source": "graph",
+      "jsonPath": "copilotStudioServicePrincipals",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Plugin and Graph Connector inventory"
+    },
+    {
+      "controlId": "2.14",
+      "collectorField": "Graph_DeclarativeAgents",
+      "source": "graph",
+      "jsonPath": "copilotStudioServicePrincipals",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Declarative agent governance inventory"
+    },
+    {
+      "controlId": "2.15",
+      "collectorField": "Graph_NetworkSecurity",
+      "source": "graph",
+      "jsonPath": "conditionalAccessPolicies",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Network security and private connectivity policies"
+    },
+    {
+      "controlId": "2.16",
+      "collectorField": "Graph_MCPGovernance",
+      "source": "graph",
+      "jsonPath": "copilotStudioServicePrincipals",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "MCP and federated connector governance"
+    },
+    {
+      "controlId": "3.1",
+      "collectorField": "Audit_UALCopilotInteraction",
+      "source": "purview",
+      "jsonPath": "auditConfig.UnifiedAuditLogIngestionEnabled",
+      "evaluator": "boolean_true",
+      "evidenceKey": "Unified Audit Log enabled with CopilotInteraction events"
+    },
+    {
+      "controlId": "3.2",
+      "collectorField": "Purview_RetentionPolicies",
+      "source": "purview",
+      "jsonPath": "retentionPolicies",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Retention policies covering Copilot interactions"
+    },
+    {
+      "controlId": "3.3",
+      "collectorField": "Purview_eDiscoveryCases",
+      "source": "purview",
+      "jsonPath": "eDiscoveryCases",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "eDiscovery cases with Copilot content scope"
+    },
+    {
+      "controlId": "3.4",
+      "collectorField": "Purview_CommCompliancePolicies",
+      "source": "purview",
+      "jsonPath": "communicationCompliance",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Communication compliance policies covering Copilot"
+    },
+    {
+      "controlId": "3.10",
+      "collectorField": "Purview_RegSP_PrivacyPolicies",
+      "source": "purview",
+      "jsonPath": "dlpPolicies",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Privacy controls for consumer financial information"
+    },
+    {
+      "controlId": "3.11",
+      "collectorField": "Purview_BooksAndRecords",
+      "source": "purview",
+      "jsonPath": "retentionPolicies",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Books-and-records retention for Copilot interactions"
+    },
+    {
+      "controlId": "3.14",
+      "collectorField": "Purview_PagesRetention",
+      "source": "purview",
+      "jsonPath": "retentionPolicies",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Pages and Notebooks retention policies"
+    },
+    {
+      "controlId": "4.1",
+      "collectorField": "M365Admin_CopilotSettings",
+      "source": "graph",
+      "jsonPath": "privilegedRoles",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Copilot admin settings and role assignments"
+    },
+    {
+      "controlId": "4.11",
+      "collectorField": "Sentinel_CopilotDetections",
+      "source": "sentinel",
+      "jsonPath": "alertRules",
+      "evaluator": "exists_non_empty",
+      "evidenceKey": "Sentinel detection rules for Copilot events"
+    }
+  ]
+}
