@@ -1,3 +1,5 @@
+<!-- Educational reference only — not legal advice. Verify all citations against current regulations. -->
+
 # Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information — Portal Walkthrough
 
 Step-by-step portal configuration for implementing privacy controls that support compliance with SEC Regulation S-P (including the 2023 amendments) when using Microsoft 365 Copilot with consumer financial information.
@@ -76,24 +78,19 @@ The amended Reg S-P requires a written incident response program addressing unau
    - Set alert severity to High for SSN/account credential exposure; Medium for other NPI types
    - Configure alerts to route to the designated Privacy Officer and Compliance team
 
-3. **Establish the 72-hour vendor notification workflow (Reg S-P Rule 248.30(a)(3)):**
-   - Document Microsoft as the service provider requiring notification for Copilot-related NPI incidents
-   - Identify the Microsoft notification channel: Microsoft Security Response Center (MSRC) for security incidents; Microsoft 365 admin portal for service-level incidents
-   - Create a notification template for Microsoft with: incident description, NPI categories involved, estimated scope, and containment status
-   - The 72-hour clock starts at detection — document how "detection" is defined (alert trigger, user report, DLP match) to ensure consistent timing
-   - Assign a named individual responsible for executing the Microsoft notification within the 72-hour window
+3. **Verify service provider notification arrangements (Reg S-P Rule 248.30(a)(3)):**
+   - Verify that service provider agreements require Microsoft to notify the institution within 72 hours of becoming aware of unauthorized access to customer information
+   - Document the institution's process for receiving and acting on service provider notifications
 
 4. **Set up the incident response notification timeline:**
-   - Internal escalation: 4 hours from detection → Privacy Officer + Compliance
-   - Executive notification: 24 hours from detection → Chief Compliance Officer + Legal
-   - Service provider (Microsoft) notification: 72 hours from detection → per documented procedure above
-   - Customer notification: 30 days from awareness → per Reg S-P requirement
+   - Internal escalation: Per the institution's incident response procedures
+   - Customer notification: Per amended Reg S-P requirements
 
 ### Step 6: Test the Incident Response Program Configuration
 
 1. Conduct a tabletop exercise simulating a Copilot NPI incident.
-2. Walk through each stage of the notification timeline: internal escalation → executive notification → Microsoft 72-hour notification → customer notification.
-3. Verify that the designated Microsoft notification contact and template are accessible within the 72-hour window.
+2. Walk through each stage of the incident response procedures per the institution's written program.
+3. Verify that service provider notification arrangements are documented and tested.
 4. Document the exercise outcomes and any gaps identified.
 5. Update the IRP based on exercise findings.
 
@@ -105,12 +102,12 @@ The amended Reg S-P requires a written incident response program addressing unau
 | Information barriers | Optional | Business unit boundaries | Full segregation |
 | NPI detection in Copilot | Audit only | Warn users | Block and log |
 | Privacy impact assessment | Annual | Semi-annual | Annual + event-driven |
-| Written incident response program | Required (Rule 248.30(a)(4)) | With Copilot scenarios and 72-hour notification procedure | With tabletop exercise documentation |
-| 72-hour vendor notification readiness | Document procedure | Test in tabletop | Quarterly drill |
+| Written incident response program | Required (Rule 248.30(a)(4)) | With Copilot scenarios | With tabletop exercise documentation |
+| Service provider notification requirement | Verify agreements | Test in tabletop | Quarterly drill |
 
 ## Regulatory Alignment
 
-- **SEC Reg S-P Rule 248.30(a)(3)** — 72-hour vendor notification requirement for unauthorized NPI access; Microsoft notification procedure required for Copilot incidents
+- **SEC Reg S-P Rule 248.30(a)(3)** — Requires institutions to adopt policies requiring service providers to notify the institution within 72 hours of unauthorized access to customer information
 - **SEC Reg S-P Rule 248.30(a)(4)** — Mandatory written incident response program; Copilot-specific scenarios must be included
 - **SEC Reg S-P (Rule 30)** — Supports compliance with safeguarding requirements for customer records and information
 - **GLBA Title V** — Helps meet financial privacy requirements for nonpublic personal information
