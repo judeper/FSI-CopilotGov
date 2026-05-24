@@ -1,3 +1,5 @@
+<!-- Educational reference only — not legal advice. Verify all citations against current regulations. -->
+
 # Regulatory Mappings
 
 Complete regulation-to-control mapping table for the FSI Copilot Governance Framework. Use this reference to identify which controls support compliance with each regulatory requirement.
@@ -94,7 +96,7 @@ Requires broker-dealers, investment companies, and investment advisers to protec
 | 248.30(a) | Policies and procedures to protect customer records and information | Control 3.10 (SEC Reg S-P), Control 2.1 (DLP Policies), Control 2.8 (Encryption) | R |
 | 248.30(a) | Protection against unauthorized access or use | Control 2.3 (Conditional Access), Control 2.4 (Information Barriers), Control 1.1 (Copilot Readiness Assessment), Control 1.14 (Item-Level Permission Scanning) | R / Reg |
 | 248.30(b) | Disposal of consumer information | Control 3.2 (Retention Policies), Control 1.7 (SharePoint Advanced Management) | R |
-| 248.30(a)(3)–(4) | Reg S-P 2023 amendments — mandatory incident response program and 72-hour vendor notification; service providers must notify covered institutions of unauthorized access to customer information within 72 hours of detection, including Copilot-related NPI incidents (staggered compliance: large entities June 2025, small entities December 2025 — both now in effect) | Control 3.10 (SEC Reg S-P), Control 4.9 (Incident Reporting) | Reg |
+| 248.30(a)(3)–(4) | Reg S-P amendments — mandatory incident response program and service provider notification requirement; the amended rule requires covered institutions to adopt policies requiring service providers to notify the institution within 72 hours of becoming aware of unauthorized access to customer information, including Copilot-related NPI incidents | Control 3.10 (SEC Reg S-P), Control 4.9 (Incident Reporting) | Reg |
 
 ---
 
@@ -108,8 +110,6 @@ Requires broker-dealers to act in the best interest of retail customers when rec
 | 240.15l-1(a)(2)(ii) | Care obligation — reasonable diligence, care, and skill | Control 3.6 (Supervision and Oversight), Control 3.8 (Model Risk Management) | Reg |
 | 240.15l-1(a)(2)(iii) | Conflict of interest obligation | Control 2.4 (Information Barriers), Control 3.6 (Supervision and Oversight) | Reg |
 | 240.15l-1(a)(2)(iv) | Compliance obligation — policies and procedures | Control 1.12 (Training and Awareness), Control 4.12 (Change Management) | Reg |
-| SEC v. Delphia / Global Predictions (March 2024) | Enforcement precedent — SEC charged firms with false and misleading statements about purported AI use in investment processes; combined $400K penalties established that "AI washing" in client-facing materials violates Investment Advisers Act Section 206 antifraud provisions | Control 3.5 (FINRA 2210 Compliance) | Reg |
-| SEC 2026 Examination Priorities | SEC 2026 examination priorities include focused review of how registered entities govern internal AI tools; examiners will assess AI tool inventories, supervisory procedures specific to AI-assisted activities, and evidence of ongoing monitoring of AI-generated outputs including annual testing per FINRA 3120(b). **:material-alert: Unverified — verify exact content of SEC 2026 Examination Priorities and FINRA 3120(b) annual testing reference when published.** | Control 3.6 (Supervision and Oversight) | Reg |
 
 ---
 
@@ -149,7 +149,6 @@ Provides guidance on model risk management for banking organizations.
 | Model Governance | Board and senior management oversight | Control 1.12 (Training and Awareness), Control 4.13 (Extensibility and Agent Operations) | Reg |
 | Documentation | Maintain comprehensive model documentation | Control 3.8 (Model Risk Management), Control 3.12 (Evidence Collection) | Reg |
 | Vendor Models | Assess third-party model risk | Control 1.10 (Vendor Risk Management), Control 3.8 (Model Risk Management) | Reg |
-| OCC Bulletin 2025-26 | Proportionality guidance — community banks and smaller institutions may apply simplified MRM (model inventory registration, basic output monitoring, vendor due diligence) commensurate with size, complexity, and risk profile; larger institutions with client-facing Copilot deployments apply full OCC 2011-12 / SR 11-7 framework. **:material-alert: Unverified — verify OCC Bulletin 2025-26 number and publication status.** | Control 3.8 (Model Risk Management) | Reg |
 
 ---
 
@@ -212,7 +211,7 @@ Controls that appear across the most regulations should be prioritized for imple
 | Control 1.12 (Training and Awareness) | 4 | FINRA 3110, Reg BI, OCC 2011-12, Interagency AI |
 | Control 3.12 (Evidence Collection) | 4 | SEC 17a-3, SEC 17a-4, SOX, OCC 2011-12 |
 | Control 3.4 (Communication Compliance) | 5 | FINRA 3110, 2210, SEC 17a-3, SEC 17a-4 (off-channel enforcement), CFPB UDAAP |
-| Control 3.5 (FINRA 2210 Compliance) | 4 | FINRA 2210, SEC Reg BI (Delphia enforcement precedent), CFPB UDAAP, Interagency AI |
+| Control 3.5 (FINRA 2210 Compliance) | 4 | FINRA 2210, SEC Reg BI, CFPB UDAAP, Interagency AI |
 | Control 3.7 (Regulatory Reporting) | 3 | FINRA 2210, CFPB UDAAP, Interagency AI |
 
 ---
