@@ -289,9 +289,6 @@ This document maps the FSI Copilot Governance Framework controls to applicable U
 
 **Overview:** Provides guidance on model risk management (MRM) for banks using models in decision-making. Requires model validation, ongoing monitoring, governance, and independent validation.
 
-!!! info "OCC Bulletin 2025-26: MRM Proportionality"
-    OCC Bulletin 2025-26 reinforces the proportionality principle for model risk management: the rigor of MRM controls should be commensurate with the risk posed by the model's use case. For general-purpose AI productivity tools like M365 Copilot, this means MRM obligations scale with how the tool's outputs are used — casual productivity assistance requires lighter governance than AI-assisted investment recommendations or credit decisions.
-
 **Key Requirements for M365 Copilot:**
 
 Model risk management applicability to M365 Copilot depends on how Copilot outputs are used:
