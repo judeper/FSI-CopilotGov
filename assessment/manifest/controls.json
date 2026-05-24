@@ -340,12 +340,12 @@
     "sectorYesBar": {
       "bank": "Semantic index scoped to exclude NPI-bearing sites without compensating DLP controls; scope reviewed quarterly by information-security team.",
       "broker-dealer": "Research and MNPI sites governed by information barriers; semantic-index exclusions reviewed by supervisory principal.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "investment-adviser": "Index scope reviewed for client portfolio and private fund document sites; exclusions aligned to SEC Reg S-P NPI handling.",
+      "insurance-carrier": "Index scope excludes claims and underwriting sites with PHI/PII unless compensating DLP controls are in place.",
+      "insurance-wholesale": "Index scope excludes policyholder data sites; exclusions reviewed per applicable state insurance data privacy requirements.",
+      "credit-union": "Index scope reviewed for member NPI sites per NCUA Part 748 expectations; exclusions documented with business justification.",
+      "holding-company": "Index scope reviewed across subsidiary entities; exclusions aligned to each subsidiary's regulatory requirements.",
+      "other": "Index scope reviewed and exclusions documented with business justification per organization's data governance policy."
     },
     "facilitatorNotes": {
       "ask": "Are semantic-index inclusion/exclusion rules documented and reviewed on a scheduled cadence?",
@@ -633,12 +633,12 @@
     "sectorYesBar": {
       "bank": "SAM enabled; RAC applied to NPI sites; site lifecycle management enforced with quarterly review.",
       "broker-dealer": "SAM enabled; RCD applied to research and MNPI sites; RAC used to enforce information barriers at site level.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "investment-adviser": "SAM enabled; RAC applied to client portfolio sites; site lifecycle reviewed quarterly by compliance.",
+      "insurance-carrier": "SAM enabled; RAC applied to claims and PHI/PII sites; site lifecycle aligned to data retention requirements.",
+      "insurance-wholesale": "SAM enabled; RAC applied to policyholder data sites; site lifecycle aligned to state insurance requirements.",
+      "credit-union": "SAM enabled; RAC applied to member NPI sites per NCUA Part 748; site lifecycle reviewed semi-annually.",
+      "holding-company": "SAM enabled across subsidiary tenants; RAC/RCD applied per subsidiary regulatory requirements.",
+      "other": "SAM enabled and configured per organization's data governance policy; RAC/RCD applied to sensitive sites."
     },
     "facilitatorNotes": {
       "ask": "Are SharePoint Advanced Management features (RAC, RCD, site lifecycle) enabled and configured for Copilot-grounded sites?",
@@ -1547,10 +1547,10 @@
       "broker-dealer": "Labels align with information-barrier segments (Research Confidential, IB Confidential, Client Confidential); auto-labeling covers trade blotters and research reports.",
       "investment-adviser": "Labels cover client portfolio data and private fund documents; auto-labeling aligned to SEC Reg S-P NPI categories.",
       "insurance-carrier": "Labels cover PHI and PII classifications; auto-labeling enforced for claims and underwriting document libraries.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "Labels cover policyholder PII and underwriting data; auto-labeling aligned to applicable state insurance privacy requirements.",
       "credit-union": "Labels cover member NPI per NCUA Part 748; auto-labeling configured for member-facing document sites.",
-      "holding-company": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "holding-company": "Labels applied consistently across subsidiary entities; auto-labeling policies scoped per subsidiary regulatory requirements.",
+      "other": "Labels applied per organization's data classification policy; auto-labeling configured for high-risk content types."
     },
     "facilitatorNotes": {
       "ask": "Are sensitivity labels published and enforced across all Copilot-eligible workloads with auto-labeling for high-risk content?",
@@ -2488,13 +2488,13 @@
     "collectorField": "Graph_PluginConnectorInventory",
     "sectorYesBar": {
       "bank": "Connector risk classification aligned to OCC Bulletin 2023-17; each connector assessed for NPI data-flow risk.",
-      "broker-dealer": "TODO: sector-specific yes-bar",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "broker-dealer": "Connector inventory reviewed by supervisory principal; data-flow assessments cover MNPI exposure per FINRA guidance.",
+      "investment-adviser": "Connectors assessed for client data exposure per SEC Reg S-P; approved connectors reviewed quarterly by CCO.",
+      "insurance-carrier": "Connector data-flow assessments cover PHI/PII exposure; risk classification aligned to NYDFS Part 500.",
+      "insurance-wholesale": "Connector inventory includes policyholder data-flow assessments; reviewed per state insurance requirements.",
+      "credit-union": "Connector inventory maintained per NCUA examination expectations; unapproved connectors blocked.",
+      "holding-company": "Connector governance applied across subsidiary entities; risk classification aligned to subsidiary-specific regulatory requirements.",
+      "other": "Connector inventory maintained and reviewed per organization's third-party risk management policy."
     },
     "facilitatorNotes": {
       "ask": "Is the plug-in and connector inventory reviewed and approved on a documented cadence with unapproved connectors blocked?",
@@ -2559,7 +2559,7 @@
         "url": "https://admin.microsoft.com/Adminportal/Home#/agents"
       }
     ],
-    "verifyPowerShell": "",
+    "verifyPowerShell": "Connect-MgGraph -Scopes Application.Read.All; Get-MgServicePrincipal -Filter \"tags/any(t:t eq 'CopilotAgent')\" | Select-Object DisplayName, AppId, AccountEnabled",
     "evidenceExpected": [
       "Declarative agent inventory with owner and risk classification",
       "Publishing-approval workflow documentation",
@@ -2571,13 +2571,13 @@
     "collectorField": "Graph_DeclarativeAgents",
     "sectorYesBar": {
       "bank": "Agent governance aligned to OCC Bulletin 2023-17; each agent risk-classified and approved by information-security.",
-      "broker-dealer": "TODO: sector-specific yes-bar",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "broker-dealer": "Agent inventory reviewed by supervisory principal per FINRA Rule 3110; publishing approval required before registered-representative use.",
+      "investment-adviser": "Agent governance aligned to SEC investment adviser supervisory obligations; data-source scope documented per agent.",
+      "insurance-carrier": "Agent risk classification covers PHI/PII data-source access; approval workflow aligned to NYDFS Part 500.",
+      "insurance-wholesale": "Agent inventory includes policyholder data-access scope; approval per applicable state insurance requirements.",
+      "credit-union": "Agent inventory maintained per NCUA expectations; publishing approval documented.",
+      "holding-company": "Agent governance applied across subsidiary entities; risk classification per subsidiary regulatory context.",
+      "other": "Agent inventory maintained with documented risk classification and owner assignment."
     },
     "facilitatorNotes": {
       "ask": "Are declarative agents subject to a publishing-approval workflow with a maintained inventory?",
@@ -3481,7 +3481,13 @@
     "yesBar": "A model-risk-management review aligned to SR 11-7 / OCC Bulletin 2011-12 has been completed for Copilot deployments touching regulated functions. The review documents model limitations, validation methodology, and ongoing monitoring.",
     "partialBar": "Model risk management is acknowledged but a formal review has not been completed, or the review does not cover all regulated functions using Copilot.",
     "noBar": "No model-risk-management review has been performed for Copilot deployments.",
-    "verifyIn": [],
+    "verifyIn": [
+      {
+        "portal": "Internal GRC platform",
+        "path": "Model inventory > Copilot / AI models",
+        "url": "https://purview.microsoft.com/compliancemanager"
+      }
+    ],
     "verifyPowerShell": "",
     "evidenceExpected": [
       "Model risk management review document for Copilot",
@@ -3491,16 +3497,16 @@
     ],
     "controlDocUrl": "/controls/pillar-3-compliance/3.8-model-risk-management/",
     "portalPlaybookUrl": "/playbooks/control-implementations/3.8/portal-walkthrough/",
-    "collectorField": "",
+    "collectorField": "Compliance_ModelRiskReview",
     "sectorYesBar": {
       "bank": "MRM review aligned to SR 11-7 / OCC Bulletin 2011-12; Copilot entered in model inventory with validation schedule.",
       "broker-dealer": "MRM review completed for Copilot use in client-facing functions; validation cadence aligned to FINRA guidance.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "investment-adviser": "MRM review covers Copilot use in advisory and portfolio management functions; documentation retained for SEC exam.",
+      "insurance-carrier": "MRM review covers Copilot use in underwriting and claims; model limitations documented per NYDFS Part 500.",
+      "insurance-wholesale": "MRM review covers Copilot use in policyholder-facing functions; documentation per state regulatory requirements.",
+      "credit-union": "MRM review aligned to NCUA expectations for AI/ML model governance; Copilot in model inventory.",
+      "holding-company": "MRM review covers Copilot across subsidiary entities; consolidated model inventory maintained.",
+      "other": "MRM review completed per organization's model governance policy; validation methodology and monitoring documented."
     },
     "facilitatorNotes": {
       "ask": "Has a model-risk-management review aligned to SR 11-7 / OCC Bulletin 2011-12 been completed for Copilot?",
@@ -3562,7 +3568,13 @@
     "yesBar": "A generative-AI model-governance review (NIST AI RMF 1.0 / ISO/IEC 42001) has been completed for Copilot, addressing the SR 26-2 / OCC Bulletin 2026-13 generative-AI exclusion. Governance covers bias testing, safety evaluation, and responsible-AI principles.",
     "partialBar": "Generative-AI governance is in progress but the review is incomplete, or not all NIST AI RMF categories are addressed.",
     "noBar": "No generative-AI model-governance review has been completed for Copilot.",
-    "verifyIn": [],
+    "verifyIn": [
+      {
+        "portal": "Internal GRC platform",
+        "path": "AI governance > Generative AI reviews",
+        "url": "https://purview.microsoft.com/compliancemanager"
+      }
+    ],
     "verifyPowerShell": "",
     "evidenceExpected": [
       "Generative-AI governance review document for Copilot",
@@ -3572,16 +3584,16 @@
     ],
     "controlDocUrl": "/controls/pillar-3-compliance/3.8a-generative-ai-model-governance/",
     "portalPlaybookUrl": "/playbooks/control-implementations/3.8a/portal-walkthrough/",
-    "collectorField": "",
+    "collectorField": "Compliance_GenAIGovernance",
     "sectorYesBar": {
       "bank": "GenAI governance aligned to NIST AI RMF 1.0; addresses SR 26-2 / OCC 2026-13 explicit exclusion of generative AI by continuing to apply SR 11-7 / OCC 2011-12 principles.",
-      "broker-dealer": "TODO: sector-specific yes-bar",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "broker-dealer": "GenAI governance completed for Copilot use in client-facing and trading functions; NIST AI RMF alignment documented for FINRA exam readiness.",
+      "investment-adviser": "GenAI governance covers Copilot use in advisory functions; bias testing includes client-communication scenarios.",
+      "insurance-carrier": "GenAI governance covers Copilot use in underwriting and claims; bias testing per NYDFS fair lending requirements.",
+      "insurance-wholesale": "GenAI governance covers policyholder-facing Copilot use; bias testing per applicable state insurance requirements.",
+      "credit-union": "GenAI governance aligned to NCUA expectations; NIST AI RMF categories reviewed for member-facing Copilot use.",
+      "holding-company": "GenAI governance covers Copilot across subsidiary entities; NIST AI RMF alignment at enterprise level.",
+      "other": "GenAI governance review completed per organization's AI policy; NIST AI RMF 1.0 alignment documented."
     },
     "facilitatorNotes": {
       "ask": "Has a generative-AI model-governance review been completed for Copilot addressing the SR 26-2 genAI exclusion?",
@@ -3736,12 +3748,12 @@
     "sectorYesBar": {
       "bank": "Privacy controls reviewed for Copilot NPI processing per GLBA §501(b); DLP policies cover NPI SITs in Copilot location.",
       "broker-dealer": "SEC Reg S-P compliance reviewed for Copilot; NPI DLP policies cover account numbers, SSN, and client identifiers.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "investment-adviser": "SEC Reg S-P privacy controls reviewed for Copilot processing of client NPI; DLP policies cover advisory account data.",
+      "insurance-carrier": "Privacy controls reviewed for Copilot processing of PHI/PII; DLP policies cover HIPAA and state privacy requirements.",
+      "insurance-wholesale": "Privacy controls reviewed for policyholder NPI processing; DLP policies per applicable state insurance privacy laws.",
+      "credit-union": "Privacy controls reviewed for Copilot NPI processing per NCUA Part 748; DLP covers member account identifiers.",
+      "holding-company": "Privacy controls reviewed across subsidiary entities; DLP policies aligned to each subsidiary's privacy obligations.",
+      "other": "Privacy controls reviewed for Copilot per organization's data privacy policy; DLP policies cover sensitive personal data."
     },
     "facilitatorNotes": {
       "ask": "Have SEC Reg S-P / GLBA §501(b) privacy controls been reviewed for Copilot processing of customer NPI?",
@@ -5169,7 +5181,7 @@
         "url": "https://admin.microsoft.com/Adminportal/Home#/agents"
       }
     ],
-    "verifyPowerShell": "",
+    "verifyPowerShell": "Connect-MgGraph -Scopes Application.Read.All; Get-MgServicePrincipal -All | Where-Object { $_.Tags -contains 'CopilotAgent' -or $_.Tags -contains 'WindowsAzureActiveDirectoryIntegratedApp' } | Select-Object DisplayName, AppId, AccountEnabled",
     "evidenceExpected": [
       "Agent and plug-in inventory with operational status",
       "Approval workflow for new extensibility surface publication",
@@ -5181,13 +5193,13 @@
     "collectorField": "M365Admin_AgentOperations",
     "sectorYesBar": {
       "bank": "Agent operations governance aligned to OCC Bulletin 2023-17 third-party risk requirements for AI agents.",
-      "broker-dealer": "TODO: sector-specific yes-bar",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "broker-dealer": "Agent operations reviewed by supervisory principal per FINRA Rule 3110; error rates monitored for client-facing agents.",
+      "investment-adviser": "Agent operations monitoring covers advisory-function agents; usage patterns reviewed quarterly by CCO.",
+      "insurance-carrier": "Agent operations monitoring covers claims and underwriting agents; error rates tracked per NYDFS Part 500.",
+      "insurance-wholesale": "Agent operations monitoring covers policyholder-facing agents; operational metrics per state requirements.",
+      "credit-union": "Agent operations governance per NCUA expectations; operational monitoring for member-facing agents.",
+      "holding-company": "Agent operations governance applied across subsidiary entities; consolidated operational monitoring.",
+      "other": "Agent operations monitored per organization's operational governance policy; health and error rates tracked."
     },
     "facilitatorNotes": {
       "ask": "Are extensibility surfaces governed by an approval and inventory process with operational monitoring?",

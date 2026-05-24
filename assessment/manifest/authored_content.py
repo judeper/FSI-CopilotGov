@@ -341,6 +341,30 @@ AUTHORED: dict[str, dict] = {
                 "Research and MNPI sites governed by information barriers; "
                 "semantic-index exclusions reviewed by supervisory principal."
             ),
+            investment_adviser=(
+                "Index scope reviewed for client portfolio and private fund "
+                "document sites; exclusions aligned to SEC Reg S-P NPI handling."
+            ),
+            insurance_carrier=(
+                "Index scope excludes claims and underwriting sites with PHI/PII "
+                "unless compensating DLP controls are in place."
+            ),
+            credit_union=(
+                "Index scope reviewed for member NPI sites per NCUA Part 748 "
+                "expectations; exclusions documented with business justification."
+            ),
+            holding_company=(
+                "Index scope reviewed across subsidiary entities; exclusions "
+                "aligned to each subsidiary's regulatory requirements."
+            ),
+            insurance_wholesale=(
+                "Index scope excludes policyholder data sites; exclusions "
+                "reviewed per applicable state insurance data privacy requirements."
+            ),
+            other=(
+                "Index scope reviewed and exclusions documented with business "
+                "justification per organization's data governance policy."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -544,6 +568,30 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "SAM enabled; RCD applied to research and MNPI sites; "
                 "RAC used to enforce information barriers at site level."
+            ),
+            investment_adviser=(
+                "SAM enabled; RAC applied to client portfolio sites; "
+                "site lifecycle reviewed quarterly by compliance."
+            ),
+            insurance_carrier=(
+                "SAM enabled; RAC applied to claims and PHI/PII sites; "
+                "site lifecycle aligned to data retention requirements."
+            ),
+            credit_union=(
+                "SAM enabled; RAC applied to member NPI sites per NCUA "
+                "Part 748; site lifecycle reviewed semi-annually."
+            ),
+            holding_company=(
+                "SAM enabled across subsidiary tenants; RAC/RCD applied "
+                "per subsidiary regulatory requirements."
+            ),
+            insurance_wholesale=(
+                "SAM enabled; RAC applied to policyholder data sites; "
+                "site lifecycle aligned to state insurance requirements."
+            ),
+            other=(
+                "SAM enabled and configured per organization's data "
+                "governance policy; RAC/RCD applied to sensitive sites."
             ),
         ),
         "facilitatorNotes": {
@@ -1212,6 +1260,20 @@ AUTHORED: dict[str, dict] = {
             credit_union=(
                 "Labels cover member NPI per NCUA Part 748; auto-labeling "
                 "configured for member-facing document sites."
+            ),
+            holding_company=(
+                "Labels applied consistently across subsidiary entities; "
+                "auto-labeling policies scoped per subsidiary regulatory "
+                "requirements."
+            ),
+            insurance_wholesale=(
+                "Labels cover policyholder PII and underwriting data; "
+                "auto-labeling aligned to applicable state insurance "
+                "privacy requirements."
+            ),
+            other=(
+                "Labels applied per organization's data classification policy; "
+                "auto-labeling configured for high-risk content types."
             ),
         ),
         "facilitatorNotes": {
@@ -1882,6 +1944,36 @@ AUTHORED: dict[str, dict] = {
                 "Connector risk classification aligned to OCC Bulletin "
                 "2023-17; each connector assessed for NPI data-flow risk."
             ),
+            broker_dealer=(
+                "Connector inventory reviewed by supervisory principal; "
+                "data-flow assessments cover MNPI exposure per FINRA "
+                "guidance."
+            ),
+            investment_adviser=(
+                "Connectors assessed for client data exposure per SEC "
+                "Reg S-P; approved connectors reviewed quarterly by CCO."
+            ),
+            insurance_carrier=(
+                "Connector data-flow assessments cover PHI/PII exposure; "
+                "risk classification aligned to NYDFS Part 500."
+            ),
+            credit_union=(
+                "Connector inventory maintained per NCUA examination "
+                "expectations; unapproved connectors blocked."
+            ),
+            holding_company=(
+                "Connector governance applied across subsidiary entities; "
+                "risk classification aligned to subsidiary-specific "
+                "regulatory requirements."
+            ),
+            insurance_wholesale=(
+                "Connector inventory includes policyholder data-flow "
+                "assessments; reviewed per state insurance requirements."
+            ),
+            other=(
+                "Connector inventory maintained and reviewed per "
+                "organization's third-party risk management policy."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -1922,7 +2014,12 @@ AUTHORED: dict[str, dict] = {
                 "url": "https://admin.microsoft.com/Adminportal/Home#/agents",
             },
         ],
-        "verifyPowerShell": "",
+        "verifyPowerShell": (
+            "Connect-MgGraph -Scopes Application.Read.All; "
+            "Get-MgServicePrincipal -Filter \"tags/any(t:t eq "
+            "'CopilotAgent')\" | Select-Object DisplayName, AppId, "
+            "AccountEnabled"
+        ),
         "evidenceExpected": [
             "Declarative agent inventory with owner and risk classification",
             "Publishing-approval workflow documentation",
@@ -1934,6 +2031,36 @@ AUTHORED: dict[str, dict] = {
             bank=(
                 "Agent governance aligned to OCC Bulletin 2023-17; each "
                 "agent risk-classified and approved by information-security."
+            ),
+            broker_dealer=(
+                "Agent inventory reviewed by supervisory principal per "
+                "FINRA Rule 3110; publishing approval required before "
+                "registered-representative use."
+            ),
+            investment_adviser=(
+                "Agent governance aligned to SEC investment adviser "
+                "supervisory obligations; data-source scope documented "
+                "per agent."
+            ),
+            insurance_carrier=(
+                "Agent risk classification covers PHI/PII data-source "
+                "access; approval workflow aligned to NYDFS Part 500."
+            ),
+            credit_union=(
+                "Agent inventory maintained per NCUA expectations; "
+                "publishing approval documented."
+            ),
+            holding_company=(
+                "Agent governance applied across subsidiary entities; "
+                "risk classification per subsidiary regulatory context."
+            ),
+            insurance_wholesale=(
+                "Agent inventory includes policyholder data-access scope; "
+                "approval per applicable state insurance requirements."
+            ),
+            other=(
+                "Agent inventory maintained with documented risk "
+                "classification and owner assignment."
             ),
         ),
         "facilitatorNotes": {
@@ -2584,7 +2711,13 @@ AUTHORED: dict[str, dict] = {
             "No model-risk-management review has been performed for "
             "Copilot deployments."
         ),
-        "verifyIn": [],
+        "verifyIn": [
+            {
+                "portal": "Internal GRC platform",
+                "path": "Model inventory > Copilot / AI models",
+                "url": "https://purview.microsoft.com/compliancemanager",
+            },
+        ],
         "verifyPowerShell": "",
         "evidenceExpected": [
             "Model risk management review document for Copilot",
@@ -2592,7 +2725,7 @@ AUTHORED: dict[str, dict] = {
             "Ongoing monitoring plan for model performance",
             "Model inventory entry for Copilot (if applicable)",
         ],
-        "collectorField": "",
+        "collectorField": "Compliance_ModelRiskReview",
         "sectorYesBar": _sector_map(
             bank=(
                 "MRM review aligned to SR 11-7 / OCC Bulletin 2011-12; "
@@ -2601,6 +2734,30 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "MRM review completed for Copilot use in client-facing "
                 "functions; validation cadence aligned to FINRA guidance."
+            ),
+            investment_adviser=(
+                "MRM review covers Copilot use in advisory and portfolio "
+                "management functions; documentation retained for SEC exam."
+            ),
+            insurance_carrier=(
+                "MRM review covers Copilot use in underwriting and claims; "
+                "model limitations documented per NYDFS Part 500."
+            ),
+            credit_union=(
+                "MRM review aligned to NCUA expectations for AI/ML model "
+                "governance; Copilot in model inventory."
+            ),
+            holding_company=(
+                "MRM review covers Copilot across subsidiary entities; "
+                "consolidated model inventory maintained."
+            ),
+            insurance_wholesale=(
+                "MRM review covers Copilot use in policyholder-facing "
+                "functions; documentation per state regulatory requirements."
+            ),
+            other=(
+                "MRM review completed per organization's model governance "
+                "policy; validation methodology and monitoring documented."
             ),
         ),
         "facilitatorNotes": {
@@ -2635,7 +2792,13 @@ AUTHORED: dict[str, dict] = {
             "No generative-AI model-governance review has been completed "
             "for Copilot."
         ),
-        "verifyIn": [],
+        "verifyIn": [
+            {
+                "portal": "Internal GRC platform",
+                "path": "AI governance > Generative AI reviews",
+                "url": "https://purview.microsoft.com/compliancemanager",
+            },
+        ],
         "verifyPowerShell": "",
         "evidenceExpected": [
             "Generative-AI governance review document for Copilot",
@@ -2643,12 +2806,41 @@ AUTHORED: dict[str, dict] = {
             "Bias testing and safety evaluation results",
             "Responsible-AI principles adoption evidence",
         ],
-        "collectorField": "",
+        "collectorField": "Compliance_GenAIGovernance",
         "sectorYesBar": _sector_map(
             bank=(
                 "GenAI governance aligned to NIST AI RMF 1.0; addresses "
                 "SR 26-2 / OCC 2026-13 explicit exclusion of generative AI "
                 "by continuing to apply SR 11-7 / OCC 2011-12 principles."
+            ),
+            broker_dealer=(
+                "GenAI governance completed for Copilot use in client-facing "
+                "and trading functions; NIST AI RMF alignment documented "
+                "for FINRA exam readiness."
+            ),
+            investment_adviser=(
+                "GenAI governance covers Copilot use in advisory functions; "
+                "bias testing includes client-communication scenarios."
+            ),
+            insurance_carrier=(
+                "GenAI governance covers Copilot use in underwriting and "
+                "claims; bias testing per NYDFS fair lending requirements."
+            ),
+            credit_union=(
+                "GenAI governance aligned to NCUA expectations; NIST AI RMF "
+                "categories reviewed for member-facing Copilot use."
+            ),
+            holding_company=(
+                "GenAI governance covers Copilot across subsidiary entities; "
+                "NIST AI RMF alignment at enterprise level."
+            ),
+            insurance_wholesale=(
+                "GenAI governance covers policyholder-facing Copilot use; "
+                "bias testing per applicable state insurance requirements."
+            ),
+            other=(
+                "GenAI governance review completed per organization's AI "
+                "policy; NIST AI RMF 1.0 alignment documented."
             ),
         ),
         "facilitatorNotes": {
@@ -2763,6 +2955,30 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "SEC Reg S-P compliance reviewed for Copilot; NPI DLP "
                 "policies cover account numbers, SSN, and client identifiers."
+            ),
+            investment_adviser=(
+                "SEC Reg S-P privacy controls reviewed for Copilot processing "
+                "of client NPI; DLP policies cover advisory account data."
+            ),
+            insurance_carrier=(
+                "Privacy controls reviewed for Copilot processing of PHI/PII; "
+                "DLP policies cover HIPAA and state privacy requirements."
+            ),
+            credit_union=(
+                "Privacy controls reviewed for Copilot NPI processing per "
+                "NCUA Part 748; DLP covers member account identifiers."
+            ),
+            holding_company=(
+                "Privacy controls reviewed across subsidiary entities; DLP "
+                "policies aligned to each subsidiary's privacy obligations."
+            ),
+            insurance_wholesale=(
+                "Privacy controls reviewed for policyholder NPI processing; "
+                "DLP policies per applicable state insurance privacy laws."
+            ),
+            other=(
+                "Privacy controls reviewed for Copilot per organization's "
+                "data privacy policy; DLP policies cover sensitive personal data."
             ),
         ),
         "facilitatorNotes": {
@@ -3712,7 +3928,13 @@ AUTHORED: dict[str, dict] = {
                 "url": "https://admin.microsoft.com/Adminportal/Home#/agents",
             },
         ],
-        "verifyPowerShell": "",
+        "verifyPowerShell": (
+            "Connect-MgGraph -Scopes Application.Read.All; "
+            "Get-MgServicePrincipal -All | Where-Object { "
+            "$_.Tags -contains 'CopilotAgent' -or "
+            "$_.Tags -contains 'WindowsAzureActiveDirectoryIntegratedApp' } | "
+            "Select-Object DisplayName, AppId, AccountEnabled"
+        ),
         "evidenceExpected": [
             "Agent and plug-in inventory with operational status",
             "Approval workflow for new extensibility surface publication",
@@ -3724,6 +3946,35 @@ AUTHORED: dict[str, dict] = {
             bank=(
                 "Agent operations governance aligned to OCC Bulletin 2023-17 "
                 "third-party risk requirements for AI agents."
+            ),
+            broker_dealer=(
+                "Agent operations reviewed by supervisory principal per "
+                "FINRA Rule 3110; error rates monitored for client-facing "
+                "agents."
+            ),
+            investment_adviser=(
+                "Agent operations monitoring covers advisory-function agents; "
+                "usage patterns reviewed quarterly by CCO."
+            ),
+            insurance_carrier=(
+                "Agent operations monitoring covers claims and underwriting "
+                "agents; error rates tracked per NYDFS Part 500."
+            ),
+            credit_union=(
+                "Agent operations governance per NCUA expectations; "
+                "operational monitoring for member-facing agents."
+            ),
+            holding_company=(
+                "Agent operations governance applied across subsidiary "
+                "entities; consolidated operational monitoring."
+            ),
+            insurance_wholesale=(
+                "Agent operations monitoring covers policyholder-facing "
+                "agents; operational metrics per state requirements."
+            ),
+            other=(
+                "Agent operations monitored per organization's operational "
+                "governance policy; health and error rates tracked."
             ),
         ),
         "facilitatorNotes": {

@@ -223,6 +223,8 @@ def _validate_spa(c: dict, strict: bool, allow_todo: bool) -> tuple[list[str], l
     vi = c["verifyIn"]
     if not isinstance(vi, list):
         add(f"{cid}: verifyIn must be a list")
+    elif not vi:
+        add(f"{cid}: verifyIn is empty", severity="todo")
     else:
         for i, entry in enumerate(vi):
             if not isinstance(entry, dict):
@@ -236,10 +238,14 @@ def _validate_spa(c: dict, strict: bool, allow_todo: bool) -> tuple[list[str], l
 
     if not isinstance(c["verifyPowerShell"], str):
         add(f"{cid}: verifyPowerShell must be a string")
+    elif not c["verifyPowerShell"].strip():
+        add(f"{cid}: verifyPowerShell is empty", severity="todo")
 
     ee = c["evidenceExpected"]
     if not isinstance(ee, list) or not all(isinstance(x, str) for x in ee):
         add(f"{cid}: evidenceExpected must be a list of strings")
+    elif not ee:
+        add(f"{cid}: evidenceExpected is empty", severity="todo")
 
     for k in ("controlDocUrl", "portalPlaybookUrl"):
         v = c[k]
@@ -250,6 +256,8 @@ def _validate_spa(c: dict, strict: bool, allow_todo: bool) -> tuple[list[str], l
 
     if not isinstance(c["collectorField"], str):
         add(f"{cid}: collectorField must be a string")
+    elif not c["collectorField"].strip():
+        add(f"{cid}: collectorField is empty", severity="todo")
 
     syb = c["sectorYesBar"]
     if not isinstance(syb, dict):
