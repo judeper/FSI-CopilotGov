@@ -251,6 +251,16 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Governance Considerations** | Notebooks are stored in SharePoint Embedded containers. Governance requires sensitivity labeling, retention policies covering SharePoint Embedded, eDiscovery inclusion, and sharing controls analogous to Copilot Pages. |
 | **Key Controls** | 2.11 (Copilot Pages governance — applies similarly), 2.2 (Sensitivity labels), 3.2 (Retention), 1.11 (Sharing governance) |
 
+### Microsoft 365 Copilot Search
+
+| Attribute | Details |
+|-----------|---------|
+| **Copilot Capabilities** | AI-powered search from within the Microsoft 365 Copilot app — returns enriched, contextual results from organizational data with Copilot-generated summaries and follow-up suggestions |
+| **Data Sources** | Microsoft Graph (SharePoint, OneDrive, Exchange, Teams), Semantic Index, tenant-scoped organizational content |
+| **Governance Considerations** | Copilot Search operates within the Copilot app and uses the user's Microsoft Graph permissions to surface organizational content. Like Copilot Chat, it amplifies discovery of content the user already has access to, but the search-focused interface may encourage more targeted data retrieval. Restricted SharePoint Search limits the grounding scope. DLP applies to content returned by Copilot Search but does not inspect data at the search source — source-level DLP should be configured separately. |
+| **Key Controls** | 1.1 (Oversharing assessment), 1.4 (Restricted SharePoint Search), 2.1 (DLP), 2.2 (Sensitivity labels), 3.1 (Audit logging) |
+| **Access** | Premium only (requires Copilot license). |
+
 ### Agent Mode / Edit with Copilot
 
 | Attribute | Details |
@@ -280,6 +290,16 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Governance Considerations** | Researcher and Analyst are embedded first-party experiences within the Microsoft 365 Copilot Chat interface — they are **not** installable agents and are not managed through the Agent Registry. They coexist with agents and inherit Copilot Chat governance capabilities, but access decisions should be documented separately. Researcher outputs may combine web and organizational data, increasing review requirements for regulated use. Analyst generates and executes Python code, creating executable content risk similar to Excel Copilot. |
 | **Key Controls** | 3.1 (Audit logging), 2.7 (Web search controls — Researcher), 3.8 (Model risk — if outputs inform regulated decisions), 2.1 (DLP) |
 | **Access** | Premium only (requires Copilot license). |
+
+### Copilot Tuning (preview)
+
+| Attribute | Details |
+|-----------|---------|
+| **Copilot Capabilities** | Organizations provide curated SharePoint document sets that Microsoft uses to create a tuned model snapshot, producing a custom Copilot experience that reflects institutional terminology, policies, and domain knowledge |
+| **Data Sources** | Admin-selected SharePoint document libraries containing the tuning corpus; tuned model outputs draw on both the tuning snapshot and the user's standard Microsoft Graph-accessible content |
+| **Governance Considerations** | Copilot Tuning introduces model-risk and training-data governance requirements not present in other surfaces. The tuning corpus may contain sensitive or regulated content — organizations should review sensitivity labels, DLP classification, and data-owner authorization before including documents. Tuned-model snapshots are point-in-time artifacts; updates to source documents do not automatically propagate to the tuned model. Incident scenarios unique to tuning include inadvertent inclusion of restricted data in the training set, snapshot exposure to unauthorized user populations, and drift between the tuned model's knowledge and current organizational policy. Organizations should document tuning approvals, corpus lineage, and snapshot versioning as part of their model-risk inventory (Control 3.8). |
+| **Key Controls** | 3.8 (Model risk management), 2.2 (Sensitivity labels — review before tuning), 2.1 (DLP — source data classification), 3.1 (Audit logging), 1.1 (Oversharing assessment — tuning corpus scope) |
+| **Access** | Premium only — available during preview to eligible tenants with at least 5,000 Microsoft 365 Copilot licenses. |
 
 !!! info "Basic vs Premium Surface Access"
     Microsoft distinguishes between **Basic** (available to all M365 users without a Copilot license) and **Premium** (requires a Microsoft 365 Copilot license) surface access. Basic access provides Copilot capabilities grounded only in web data, while Premium access enables grounding in organizational data via Microsoft Graph. Governance teams should map which surfaces are available at each access tier and adjust controls accordingly — Basic users generate less organizational data risk but may still produce content requiring supervision.
@@ -324,7 +344,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | Tier | Risk Level | Surfaces | Governance Priority |
 |------|-----------|----------|-------------------|
 | **Tier 1 (Highest)** | High | Microsoft 365 Copilot Chat, Outlook, Teams, Copilot Cowork | Full governance at all levels |
-| **Tier 2** | Medium-High | Word, Excel, PowerPoint, SharePoint, Copilot Pages, Agent Mode / Edit with Copilot, Researcher, Analyst | Sensitivity labels, DLP, audit |
+| **Tier 2** | Medium-High | Word, Excel, PowerPoint, SharePoint, Copilot Pages, Copilot Search, Agent Mode / Edit with Copilot, Copilot Tuning (preview), Researcher, Analyst | Sensitivity labels, DLP, audit |
 | **Tier 3** | Medium | OneNote, Loop, OneDrive, Stream, Plugins, Connectors | Standard governance, monitoring |
 | **Tier 4** | Lower | Whiteboard, Forms, Planner, Viva suite | Baseline governance, awareness |
 
@@ -340,6 +360,9 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | PowerPoint | Required | Required | Required | Required | If client-facing | Required |
 | SharePoint | Required | Required | Required | Required | -- | **Critical** |
 | Copilot Pages | Required | Required | Required | Required | -- | Required |
+| Copilot Search | Required | Required | Required | Required | -- | Required |
+| Copilot Cowork | Required | Required | Required | Required | Recommended | Required |
+| Copilot Tuning | Required | Recommended | Recommended | Recommended | -- | Recommended |
 | Plugins | Required | Recommended | -- | Required | -- | -- |
 | Viva suite | Required | Recommended | -- | Recommended | -- | -- |
 

@@ -73,6 +73,22 @@ FSI organizations should evaluate the data handling, residency, and regulatory i
 
 ---
 
+### What is Copilot Tuning and what governance does it require?
+
+**Copilot Tuning** (currently in preview) allows organizations to provide curated SharePoint document sets that Microsoft uses to create a tuned Copilot model reflecting institutional terminology, policies, and domain knowledge. Tuning is available only to eligible tenants with at least 5,000 Microsoft 365 Copilot licenses.
+
+**Key governance considerations:**
+
+- **Tuning corpus review:** Before including any documents in the tuning corpus, review them for sensitivity labels, DLP classification, and data-owner authorization. The tuning corpus becomes embedded in a model snapshot — data included in tuning may surface in responses to any user with access to the tuned Copilot experience.
+- **Model-risk documentation:** Add the tuned model to the firm's model-risk inventory per Control 3.8 (Model Risk Management). Document the tuning corpus contents, approval chain, snapshot version, and intended user population.
+- **Snapshot governance:** Tuned-model snapshots are point-in-time artifacts. Source document updates do not automatically propagate to the tuned model. Organizations should document snapshot refresh cadence and version history.
+- **Incident readiness:** Prepare for tuning-specific incidents including inadvertent inclusion of restricted data in the training set, snapshot exposure to unintended user populations, and drift between the tuned model's knowledge and current organizational policy. See the [AI Incident Response Playbook](../playbooks/incident-and-risk/ai-incident-response-playbook.md) for tuning-specific incident procedures.
+- **License verification:** Confirm tenant eligibility and review the Copilot Tuning preview terms before activation.
+
+**Relevant controls:** Control 3.8 (Model Risk Management), Control 2.2 (Sensitivity Labels), Control 2.1 (DLP), Control 4.1 (Copilot Admin Settings)
+
+---
+
 ### Do Information Barriers apply to Copilot Pages and Notebooks?
 
 **No.** Information Barriers are currently **not** supported for SharePoint Embedded content, which includes Copilot Pages and Copilot Notebooks. This is a significant consideration for FSI organizations with Chinese wall requirements.
@@ -286,6 +302,56 @@ Microsoft regularly updates Microsoft 365 Copilot with new features, changed beh
 **Governance response:** Control 4.12 (Change Management for Copilot Updates) provides a structured process for evaluating, testing, and approving Copilot feature changes in your environment.
 
 **Key risk:** New Copilot features often default to "On." When Microsoft releases a new capability, it may be available to users before your governance team has evaluated it. The governance calendar (Control 4.12) should include regular review of Message Center notifications for Copilot-related changes.
+
+---
+
+## Emerging AI Laws
+
+### How do state AI laws affect Copilot deployments in financial services?
+
+Several US states have enacted or are advancing AI-specific legislation that may apply to FSI organizations using Microsoft 365 Copilot, particularly when Copilot outputs inform consequential decisions such as lending, underwriting, employment, or client recommendations.
+
+**Key state laws to monitor (as of mid-2026):**
+
+- **Colorado AI Act (SB 24-205, amended SB 25B-004)** — effective June 30, 2026. Requires risk management programs, impact assessments, and consumer notification for deployers of high-risk AI systems. See [Colorado AI Act Readiness](../playbooks/regulatory-modules/colorado-ai-act-readiness.md).
+- **Texas Responsible AI Governance Act (HB 1709)** — effective September 1, 2025. Requires impact assessments and governance frameworks for high-risk AI deployments.
+- **Illinois AI Video Interview Act (820 ILCS 42)** — in effect since 2020. Applies if Copilot assists with video interview analysis.
+- **Illinois HB 3773 (Employee AI Act)** — enacted, effective January 1, 2026. Requires notice to employees and applicants when AI is used in employment decisions; mandates that employers using AI for employment purposes must test for disparate impact.
+- **California AB 2013 (AI Transparency Act)** — enacted September 2024. Requires transparency disclosures for AI-generated content; SB 1047 (the broader Safe and Secure Innovation for Frontier AI Models Act) was **vetoed** by the governor in September 2024.
+- **New York City Local Law 144** — in effect since July 2023. Requires annual bias audits and public disclosure for automated employment decision tools used in New York City hiring.
+- **Utah Artificial Intelligence Policy Act (SB 149)** — in effect since May 2024. Requires disclosure when AI is used in regulated consumer transactions.
+
+Multi-state FSI organizations should map which state AI laws apply to each Copilot use case and implement a unified compliance approach that satisfies the most stringent requirements. See the [State AI Laws Compliance Matrix](../playbooks/regulatory-modules/state-ai-laws-compliance-matrix.md) for a detailed comparison.
+
+**Relevant controls:** Control 3.8 (Model Risk Management), Control 3.9 (AI Disclosure and Transparency), Control 3.12 (Evidence Collection)
+
+---
+
+### Does the EU AI Act apply to US financial institutions using Copilot?
+
+The EU AI Act may have **extraterritorial reach** for US FSI organizations in specific scenarios:
+
+- **EU customers or employees:** If a US institution uses Copilot to process data about EU data subjects (customers or employees located in the EU), certain transparency and risk-management obligations may apply.
+- **EU operations or subsidiaries:** US-headquartered organizations with EU-regulated subsidiaries are directly subject to the EU AI Act through those entities.
+- **Output deployed in the EU:** If Copilot-generated content (reports, analyses, recommendations) is used to make decisions affecting individuals in the EU, the Act's requirements for high-risk AI systems may be triggered.
+
+While this framework focuses on US financial regulation, organizations with EU exposure should coordinate with EU legal counsel. Microsoft Purview is expanding AI data lineage tracking capabilities in response to EU AI Act requirements; these capabilities may also benefit US FSI audit readiness.
+
+For DORA (Digital Operational Resilience Act) considerations, see Solution 13 in the [FSI-CopilotGov-Solutions](https://github.com/judeper/FSI-CopilotGov-Solutions) companion repository.
+
+**Relevant controls:** Control 3.8 (Model Risk Management), Control 2.7 (Data Residency and Cross-Border Data Flow)
+
+---
+
+### What happened to California SB 1047 and similar vetoed AI proposals?
+
+California SB 1047 (Safe and Secure Innovation for Frontier AI Models Act) was **vetoed** by Governor Newsom in September 2024. The bill would have imposed safety testing and incident reporting obligations on developers of large AI models. While SB 1047 does not apply, California has enacted other AI-related legislation — notably **AB 2013 (AI Transparency Act)**, which requires transparency disclosures for AI-generated content.
+
+Other proposals have been introduced in multiple states (including New York's proposed AI accountability bills and similar measures in Connecticut, Maryland, and Virginia) but have not yet been enacted. FSI organizations should track these developments through their regulatory monitoring processes.
+
+The [State AI Laws Compliance Matrix](../playbooks/regulatory-modules/state-ai-laws-compliance-matrix.md) tracks both enacted laws and significant vetoed or pending proposals.
+
+**Relevant controls:** Control 3.9 (AI Disclosure and Transparency), Control 4.12 (Change Management — regulatory monitoring)
 
 ---
 
