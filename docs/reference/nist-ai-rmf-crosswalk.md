@@ -111,6 +111,7 @@ Allocate resources to mapped and measured risks on a regular basis, including re
 | | MANAGE 2.3 | Procedures are followed to respond to and recover from identified AI incidents | Control 4.9 (Incident Reporting), Control 4.10 (Business Continuity) |
 | | MANAGE 2.4 | Mechanisms are in place for deactivation of AI systems exhibiting anomalous behavior | Control 4.1 (Copilot Admin Settings), Control 4.2 (Teams Meetings Governance) — ability to disable Copilot rapidly |
 | **MANAGE 3** — AI risks and benefits from third-party resources are managed | MANAGE 3.1 | AI risks from third-party resources are managed | Control 1.10 (Vendor Risk Management), Control 4.13 (Extensibility and Agent Operations), Control 3.8 (Model Risk Management) |
+| | MANAGE 3.1 | Generative AI model governance for third-party AI services | Control 3.8a (Generative AI Model Governance) — *placeholder: detailed NIST AI RMF mapping needed* |
 | | MANAGE 3.2 | Pre-trained models and third-party data are monitored | Control 4.12 (Change Management), Control 3.9 (AI Disclosure and Transparency) |
 | **MANAGE 4** — Risk treatments are documented and monitored | MANAGE 4.1 | Post-deployment AI system monitoring is carried out | Control 3.9 (AI Disclosure and Transparency), Control 4.6 (Copilot Analytics), Control 4.11 (Sentinel Integration), Control 3.1 (Audit Logging) |
 | | MANAGE 4.2 | Measurable activities for continual improvement are integrated into AI system updates | Control 4.12 (Change Management) |
