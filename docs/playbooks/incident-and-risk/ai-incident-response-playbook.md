@@ -53,6 +53,18 @@ Copilot-specific incident response procedures for financial services organizatio
 
 **Severity:** P2 or P3 depending on the use of the inaccurate content
 
+### Category 5: Copilot Tuning Incident
+
+**Definition:** A Copilot Tuning-related event where training data, model snapshots, or tuned-model outputs create data exposure, compliance, or model-risk concerns.
+
+**Examples:**
+- Restricted or MNPI-classified documents inadvertently included in a tuning corpus
+- A tuned-model snapshot is deployed to a user population broader than the approved scope
+- Tuned-model outputs reflect stale organizational policies because the snapshot was not refreshed after a material policy change
+- Tuning corpus selection bypasses data-owner authorization or sensitivity label review
+
+**Severity:** P1 if restricted/MNPI data was included in the corpus and the tuned model is broadly deployed; P2 for scope or staleness issues; P3 for process failures caught before deployment
+
 ## Response Procedures
 
 ### Phase 1: Detection and Triage (0-1 hour)
@@ -82,6 +94,13 @@ Copilot-specific incident response procedures for financial services organizatio
 - Preserve all audit logs and interaction records
 - Notify HR and Legal per your investigation procedures
 - Do not alert the user until investigation guidance from Legal
+
+**Copilot Tuning containment:**
+- Deactivate the tuned model immediately — remove from all user assignments in M365 Admin Center > Copilot > Copilot Tuning
+- Preserve the tuning corpus metadata, approval records, and snapshot version documentation
+- Assess which documents were included in the tuning corpus and whether any contained restricted, MNPI, or improperly classified content
+- Determine the user population that had access to the tuned model and the duration of exposure
+- If restricted data was embedded in the snapshot, treat as a data exposure incident and follow Category 1 containment in parallel
 
 ### Phase 3: Investigation (4-48 hours)
 

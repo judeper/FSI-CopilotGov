@@ -537,6 +537,7 @@ nav:
     - Regulatory Modules:
       - Colorado AI Act Readiness: playbooks/regulatory-modules/colorado-ai-act-readiness.md
       - State AI Laws Compliance Matrix: playbooks/regulatory-modules/state-ai-laws-compliance-matrix.md
+      - SR 26-2 / OCC 2026-13 Readiness: playbooks/regulatory-modules/sr-26-2-occ-2026-13-readiness.md
 
   - Reference:
     - Overview: reference/index.md
