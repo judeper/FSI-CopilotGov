@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-04T00:14:47Z",
+  "generatedAt": "2026-05-24T02:30:18Z",
   "counts": {
     "controls": 62,
     "pillars": 4,
@@ -78,7 +78,7 @@
       "pillar": 1,
       "title": "Control 1.6: Permission Model Audit (SharePoint, OneDrive, Exchange, Teams, Graph)",
       "path": "docs/controls/pillar-1-readiness/1.6-permission-model-audit.md",
-      "last_verified": "2026-04-15",
+      "last_verified": "2026-05-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
@@ -205,10 +205,10 @@
       "pillar": 1,
       "title": "Control 1.16: Copilot Tuning Governance",
       "path": "docs/controls/pillar-1-readiness/1.16-copilot-tuning-governance.md",
-      "last_verified": "2026-04-09",
+      "last_verified": "2026-05-12",
       "regulatory_references": [
         "GLBA §501(b)",
-        "OCC Bulletin 2011-12 (SR 11-7)",
+        "SR 11-7 / OCC Bulletin 2011-12 (interim — applicable to genAI per the 2026-13 exclusion)",
         "Interagency RFI on AI (2023)"
       ]
     },
@@ -415,7 +415,7 @@
       "pillar": 3,
       "title": "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)",
       "path": "docs/controls/pillar-3-compliance/3.1-copilot-audit-logging.md",
-      "last_verified": "2026-03-22",
+      "last_verified": "2026-05-12",
       "regulatory_references": [
         "FINRA 4511 (Books and Records)",
         "SEC 17a-3/4 (Books and Records)",
@@ -439,7 +439,7 @@
       "pillar": 3,
       "title": "Control 3.3: eDiscovery for Copilot-Generated Content",
       "path": "docs/controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md",
-      "last_verified": "2026-04-09",
+      "last_verified": "2026-05-12",
       "regulatory_references": [
         "SEC 17a-4 (Preservation of Records)",
         "FINRA 4511 (Books and Records)",
@@ -467,7 +467,9 @@
       "path": "docs/controls/pillar-3-compliance/3.5-finra-2210-compliance.md",
       "last_verified": "2026-02-17",
       "regulatory_references": [
-        "FINRA 2210 (Communications with the Public)",
+        "FINRA Rule 2210 (Communications with the Public)",
+        "FINRA Rule 3110 — supervisory systems and WSPs",
+        "SEC Rule 17a-4 — required broker-dealer records only",
         "FINRA Regulatory Notice 24-09 (AI in Communications)",
         "SEC Marketing Rule (206(4)-1)",
         "Investment Advisers Act Section 206"
@@ -530,7 +532,7 @@
       "pillar": 3,
       "title": "Control 3.10: SEC Reg S-P -- Privacy of Consumer Financial Information",
       "path": "docs/controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md",
-      "last_verified": "2026-02-17",
+      "last_verified": "2026-05-12",
       "regulatory_references": [
         "SEC Regulation S-P (17 CFR 248.30)",
         "GLBA Title V (Privacy)",
@@ -772,7 +774,7 @@
       "pillar": 4,
       "title": "Control 4.14: Copilot Studio Agent Lifecycle Governance",
       "path": "docs/controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md",
-      "last_verified": "2026-04-22",
+      "last_verified": "2026-05-12",
       "regulatory_references": [
         "FFIEC IT Handbook (Operations Booklet)",
         "FINRA Rule 3110 (supervisory systems and WSPs)",

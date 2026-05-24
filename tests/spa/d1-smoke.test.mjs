@@ -137,19 +137,15 @@ describe("D1 SPA smoke", () => {
     });
   });
 
-  it("opens the evidence drawer on click and graceful-degrades on TODO fields", async () => {
+  it("opens the evidence drawer on click and shows authored fields", async () => {
     const { app, document } = await initApp();
-    // TODO control (1.1 has yesBar = TODO)
+    // Control 1.1 is now fully authored with yesBar, facilitatorNotes, etc.
     const row11 = document.querySelector('.control-row[data-control-id="1.1"]');
     const ctrl11 = app.data.controls.find((c) => c.id === "1.1");
     app.openDrawer(ctrl11);
     const drawer = document.querySelector(".control-drawer.open");
     expect(drawer).not.toBeNull();
-    // Pending placeholder should appear for TODO evidence.
-    const pending = drawer.querySelector(".control-drawer-pending");
-    expect(pending).not.toBeNull();
-    // Solution-empty text should appear when solutions is empty OR a solution-card
-    // exists when populated. Control 1.1 has 1 authored solution.
+    // Solution card should appear (1.1 has 1 authored solution).
     const card = drawer.querySelector(".solution-card");
     expect(card).not.toBeNull();
     // "undefined" literal should never leak into drawer text.
@@ -176,18 +172,18 @@ describe("D1 SPA smoke", () => {
     expect(first.querySelector(".solution-card-role")).not.toBeNull();
   });
 
-  it("facilitator mode toggle adds expanded panels on authored controls", async () => {
+  it("facilitator mode toggle adds expanded panels on all authored controls", async () => {
     const { app, document } = await initApp({ facilitator: true });
     expect(app.facilitatorMode).toBe(true);
     const wrap = document.querySelector(".phase1-wrap.facilitator-mode");
     expect(wrap).not.toBeNull();
-    // Authored control 1.2 has facilitatorNotes.ask populated.
+    // All controls are now authored — 1.1 and 1.2 both have facilitatorNotes.
     const row12 = document.querySelector('.control-row[data-control-id="1.2"]');
     expect(row12.querySelector(".facilitator-panel")).not.toBeNull();
     expect(row12.querySelector(".facilitator-next")).not.toBeNull();
-    // TODO control 1.1 must NOT render a facilitator panel (graceful degrade).
+    // Control 1.1 is now fully authored and should also render a facilitator panel.
     const row11 = document.querySelector('.control-row[data-control-id="1.1"]');
-    expect(row11.querySelector(".facilitator-panel")).toBeNull();
+    expect(row11.querySelector(".facilitator-panel")).not.toBeNull();
   });
 
   it("drawer notes persist to localStorage under the documented key", async () => {

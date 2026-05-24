@@ -29,19 +29,13 @@ describe("facilitator mode", () => {
     expect(btn2.classList.contains("ag-btn-primary")).toBe(true);
   });
 
-  it("suppresses the facilitator panel for TODO facilitatorNotes.ask", async () => {
+  it("renders facilitator panels for all authored controls", async () => {
     const { document } = await initApp({ facilitator: true });
-    // Authored (should render): 1.2, 1.3, 2.1, 3.1, 4.1.
-    ["1.2", "1.3", "2.1", "3.1", "4.1"].forEach((id) => {
+    // All 62 controls are now authored — every control should render a panel.
+    ["1.1", "1.2", "1.3", "1.4", "2.1", "2.2", "2.3", "3.1", "3.2", "4.1", "4.2", "4.13"].forEach((id) => {
       const row = document.querySelector(`.control-row[data-control-id="${id}"]`);
       expect(row, `row ${id}`).not.toBeNull();
       expect(row.querySelector(".facilitator-panel"), `panel ${id}`).not.toBeNull();
-    });
-    // TODO (should NOT render): several arbitrary non-authored controls.
-    ["1.1", "1.4", "2.2", "2.3", "3.2", "4.2", "4.13"].forEach((id) => {
-      const row = document.querySelector(`.control-row[data-control-id="${id}"]`);
-      expect(row, `row ${id}`).not.toBeNull();
-      expect(row.querySelector(".facilitator-panel"), `panel suppressed for TODO ${id}`).toBeNull();
     });
   });
 

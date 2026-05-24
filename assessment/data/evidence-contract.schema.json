@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/judeper/FSI-CopilotGov/assessment/data/evidence-contract.schema.json",
+  "title": "FSI-CopilotGov Collector Evidence Contract",
+  "description": "Normalized schema mapping raw collector JSON output to control_id / evidence_key / status rows consumed by the assessment engine and SPA importer.",
+  "type": "object",
+  "required": ["schemaVersion", "sources", "mappings"],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Semantic version of the evidence contract schema."
+    },
+    "sources": {
+      "type": "object",
+      "description": "Collector source definitions keyed by source name (graph, purview, sharepoint, sentinel).",
+      "additionalProperties": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "mappings": {
+      "type": "array",
+      "description": "Array of evidence mappings from collector output paths to control/evidence rows.",
+      "items": {
+        "$ref": "#/$defs/mapping"
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["filename", "collector"],
+      "properties": {
+        "filename": {
+          "type": "string",
+          "description": "Expected filename in the collected/ directory (e.g. graph.json)."
+        },
+        "collector": {
+          "type": "string",
+          "description": "PowerShell collector script name (e.g. Collect-Graph.ps1)."
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "required": ["controlId", "collectorField", "source", "jsonPath", "evaluator"],
+      "properties": {
+        "controlId": {
+          "type": "string",
+          "description": "Control ID this evidence row maps to (e.g. 1.2, 3.1)."
+        },
+        "collectorField": {
+          "type": "string",
+          "description": "Canonical field name used in authored_content.py and the SPA (e.g. DSPM_OversharingAssessment)."
+        },
+        "source": {
+          "type": "string",
+          "description": "Source key (graph, purview, sharepoint, sentinel).",
+          "enum": ["graph", "purview", "sharepoint", "sentinel"]
+        },
+        "jsonPath": {
+          "type": "string",
+          "description": "JSONPath or dot-notation path into the collected JSON where the evidence lives (e.g. auditConfig.UnifiedAuditLogIngestionEnabled)."
+        },
+        "evaluator": {
+          "type": "string",
+          "description": "Engine evaluator function name or rule that converts the raw value to pass/partial/fail.",
+          "enum": [
+            "boolean_true",
+            "exists_non_empty",
+            "count_gte",
+            "contains_keyword",
+            "policy_mode_enforce",
+            "array_has_item",
+            "manual"
+          ]
+        },
+        "evaluatorArgs": {
+          "type": "object",
+          "description": "Optional arguments for the evaluator (e.g. threshold for count_gte, keyword for contains_keyword).",
+          "additionalProperties": true
+        },
+        "evidenceKey": {
+          "type": "string",
+          "description": "Human-readable key for reporting (e.g. 'UAL enabled', 'DLP Copilot policy count')."
+        },
+        "status": {
+          "type": "string",
+          "description": "Default status when collector data is unavailable.",
+          "enum": ["unknown", "not_collected"],
+          "default": "not_collected"
+        }
+      }
+    }
+  }
+}

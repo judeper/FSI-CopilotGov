@@ -140,7 +140,7 @@
   /* ================================================================
      D1: AUTHORED-CONTENT HELPERS
      Centralize TODO-placeholder detection so drawer / facilitator /
-     yes-bar / solution rendering can gracefully degrade on the 53
+     yes-bar / solution rendering can gracefully degrade on
      controls whose manifest fields are still TODO markers.
      ================================================================ */
   function isTodoString(value) {
@@ -4443,7 +4443,7 @@
       generatedAt: new Date().toISOString(),
       assessor: identity,
       scope: { tier: tier, pillars: pillars },
-      manifest: { version: manifestVersion, controlCount: controlsList.length || 58 },
+      manifest: { version: manifestVersion, controlCount: controlsList.length || 62 },
       solutionsLock: solutionsLock,
       answers: answers,
       summary: {
