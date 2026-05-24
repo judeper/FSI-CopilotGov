@@ -2,7 +2,7 @@
 # Install with: pip install -r scripts/requirements.txt
 
 # Required for monitoring scripts (learn_monitor.py, regulatory_monitor.py)
-requests>=2.33.1
+requests>=2.34.2
 beautifulsoup4>=4.14.3
 pyyaml>=6.0.3
 
