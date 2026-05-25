@@ -140,7 +140,7 @@ if ($jailbreakEvents.Count -gt 0) {
 # Create the longest-supported audit retention policy for Copilot interactions.
 # New-UnifiedAuditLogRetentionPolicy -RetentionDuration accepts ThreeMonths,
 # SixMonths, NineMonths, TwelveMonths, or TenYears (Microsoft Learn:
-# https://learn.microsoft.com/en-us/powershell/module/exchange/new-unifiedauditlogretentionpolicy?view=exchange-ps).
+# https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/new-unifiedauditlogretentionpolicy?view=exchange-ps).
 # "SixYears" is NOT a supported value — use TenYears for FSI deployments that
 # need to help meet the SEC Rule 17a-4(a) six-year minimum (10-year retention
 # safely covers the 6-year obligation under FINRA Rule 4511 and SEC 17a-4(a)).

@@ -127,8 +127,8 @@ Phase 4: Optimization and Lifecycle (Week 7-8)
 - [Pillar 2: Security & Protection](../pillar-2-security/index.md)
 - [Pillar 3: Compliance & Audit](../pillar-3-compliance/index.md)
 - [Microsoft 365 Admin Center](https://admin.microsoft.com)
-- [Microsoft Sentinel Documentation](https://learn.microsoft.com/azure/sentinel/overview)
-- [Microsoft Viva Insights](https://learn.microsoft.com/viva/insights/)
+- [Microsoft Sentinel Documentation](https://learn.microsoft.com/en-us/azure/sentinel/overview)
+- [Microsoft Viva Insights](https://learn.microsoft.com/en-us/viva/insights/)
 - [Framework Executive Summary](../../framework/index.md)
 
 ---

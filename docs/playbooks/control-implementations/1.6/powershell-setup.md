@@ -30,7 +30,7 @@ Save the returned Client ID — you will need it for all `Connect-PnPOnline` cal
 ### Required Roles
 
 - SharePoint Admin and Global Reader roles (for SPO and Graph scripts)
-- Exchange Administrator role (for Exchange scripts)
+- Exchange Online Admin role (for Exchange scripts)
 
 ## Scripts
 
