@@ -66,7 +66,7 @@ All examination responses must:
 |-------|-------------|
 | "This guarantees compliance with..." | "This control supports compliance with..." |
 | "We [promise] that..." | "This control helps meet the requirement for..." |
-| "This ensures compliance with..." | "This control helps prevent..." |
+| "This ensures compliance with..." | "This control supports compliance with..." |
 | "We have eliminated the risk of..." | "This control reduces the risk of..." |
 | "Copilot cannot access..." | "Copilot access is restricted by [specific control]..." |
 

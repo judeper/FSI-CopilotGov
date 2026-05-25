@@ -89,4 +89,4 @@ For initial deployment, FSI organizations should consider restricting Copilot Mo
 
 ---
 
-*FSI Copilot Governance Framework v1.4 - April 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*
