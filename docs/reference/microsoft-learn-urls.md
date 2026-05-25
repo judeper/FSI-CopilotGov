@@ -11,12 +11,12 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| Microsoft 365 Copilot overview | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-overview](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-overview) |
-| Microsoft 365 Copilot setup guide | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-setup](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-setup) |
-| Manage Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-public-web-access](https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-public-web-access) |
-| Microsoft 365 Copilot requirements | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements) |
-| Data, privacy, and security for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy) |
-| Microsoft 365 Copilot adoption guide | [https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-enablement-resources) |
+| Microsoft 365 Copilot overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview) |
+| Microsoft 365 Copilot setup guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-setup](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-setup) |
+| Manage Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/manage-public-web-access](https://learn.microsoft.com/en-us/microsoft-365/copilot/manage-public-web-access) |
+| Microsoft 365 Copilot requirements | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-requirements](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-requirements) |
+| Data, privacy, and security for Microsoft 365 Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-privacy](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-privacy) |
+| Microsoft 365 Copilot adoption guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-enablement-resources](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-enablement-resources) |
 | Copilot in Teams meetings | [https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription](https://learn.microsoft.com/en-us/microsoftteams/copilot-teams-transcription) |
 | Copilot usage reports | [https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage?view=o365-worldwide) |
 | Semantic Index for Copilot | [https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot](https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot) |
@@ -88,7 +88,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 |-------|-----|
 | Manage Copilot Pages and Notebooks | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration?view=o365-worldwide) |
 | Copilot Pages and Notebooks compliance summary | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide) |
-| Purview management for SharePoint Embedded containers | [https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-loop-purview-management?view=o365-worldwide) |
+| Purview management for SharePoint Embedded containers | [https://learn.microsoft.com/en-us/microsoft-365/loop/purview-management?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/loop/purview-management?view=o365-worldwide) |
 
 ---
 
