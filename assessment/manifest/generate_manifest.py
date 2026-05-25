@@ -84,7 +84,7 @@ CONTROLS = [
     ("1.15", "1.15-sharepoint-permissions-drift.md",           1, "partial", ["SharePoint_Graph"], "Is SharePoint permissions drift monitored and reconciled on a documented cadence (RAC / Site Lifecycle Management)?"),
     ("1.16", "1.16-copilot-tuning-governance.md",              1, "manual",  [], "Is Copilot Tuning subject to a model-governance review (model risk management, evaluation harness) before publishing tuned models?"),
     # ---------------------------------------------------------------
-    # Pillar 2 — Security & Data Protection (16)
+    # Pillar 2 — Security & Data Protection (17)
     # ---------------------------------------------------------------
     ("2.1",  "2.1-dlp-policies-for-copilot.md",                2, "full",    ["Purview_PowerShell"], None),
     ("2.2",  "2.2-sensitivity-labels-classification.md",       2, "full",    ["Purview_PowerShell"], None),

@@ -15,9 +15,9 @@ VALIDATE_SCRIPT = REPO_ROOT / "scripts" / "validate_content_graph.py"
 EXPECTED = {
     "controls": 62,
     "pillars": 4,
-    "playbooks_total": 263,
+    "playbooks_total": 264,
     "playbooks_control": 245,
-    "playbooks_cross_cutting": 18,
+    "playbooks_cross_cutting": 19,
     "solutions": 23,
 }
 
