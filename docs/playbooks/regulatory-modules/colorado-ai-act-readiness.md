@@ -2,6 +2,9 @@
 
 Compliance considerations for Colorado SB 24-205 (Colorado Artificial Intelligence Act) as it applies to Microsoft 365 Copilot deployments in financial services organizations.
 
+!!! warning "Disclaimer"
+    This module is provided for informational purposes only and does not constitute legal or regulatory advice. State AI legislation is evolving — consult legal counsel for specific compliance requirements.
+
 ---
 
 ## Overview
@@ -152,3 +155,5 @@ The Colorado AI Act regulatory landscape is evolving:
 ---
 
 *This module provides general compliance guidance. Consult legal counsel for organization-specific compliance advice. Review and update as the regulatory landscape evolves.*
+
+*FSI Copilot Governance Framework v1.4.0 - April 2026*

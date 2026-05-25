@@ -328,4 +328,4 @@ Phase 0 is complete when:
 
 ---
 
-*FSI Copilot Governance Framework v1.1 -- February 2026*
+*FSI Copilot Governance Framework v1.4.0 - April 2026*
