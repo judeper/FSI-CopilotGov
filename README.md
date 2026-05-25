@@ -14,7 +14,7 @@
 
 ## What This Is
 
-A technical documentation framework providing **62 controls** and **263 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments. (Counts in published documentation are rendered from the canonical `assessment/manifest/content-graph.json`; this README is plain GitHub Markdown and quotes the same numbers verbatim.)
+A technical documentation framework providing **62 controls** and **264 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments. (Counts in published documentation are rendered from the canonical `assessment/manifest/content-graph.json`; this README is plain GitHub Markdown and quotes the same numbers verbatim.)
 
 This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat (Basic & Premium tiers), Copilot Pages**, and **SharePoint agents** — plus extensibility via **plugins, Graph connectors, declarative agents, and Agents 365**.
 

@@ -103,7 +103,11 @@ API_SOURCE_MAP: dict[str, str] = {
 COLLECTION_METHOD_SOURCE: dict[str, str | None] = {
     "Graph_API": "graph",
     "Purview_PowerShell": "purview",
-    "SharePoint_PnP": "sharepoint",
+    "SharePoint_Graph": "sharepoint",
+    "M365Admin": "graph",
+    "Teams": "graph",
+    "Defender": "sentinel",
+    "VivaInsights": "graph",
     "Sentinel": "sentinel",
     "Manual": None,
 }
