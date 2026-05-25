@@ -4,7 +4,7 @@ Step-by-step portal configuration for securing Copilot plugins and Microsoft Gra
 
 ## Prerequisites
 
-- Teams Administrator and Entra Global Admin roles
+- Teams Admin and Entra Global Admin roles
 - Microsoft 365 Admin Center and Teams Admin Center access
 - Plugin security review process approved by governance committee
 

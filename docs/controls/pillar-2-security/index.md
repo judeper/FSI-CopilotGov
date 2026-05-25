@@ -80,5 +80,5 @@ The following regulations are addressed by Pillar 2 controls:
 - [Pillar 1: Readiness & Assessment](../pillar-1-readiness/index.md)
 - [Pillar 3: Compliance & Audit](../pillar-3-compliance/index.md)
 - [Pillar 4: Operations & Monitoring](../pillar-4-operations/index.md)
-- [Microsoft 365 Copilot Security Documentation](https://learn.microsoft.com/microsoft-365-copilot/microsoft-365-copilot-privacy)
-- [Microsoft Purview Data Security for AI](https://learn.microsoft.com/purview/ai-microsoft-purview)
+- [Microsoft 365 Copilot Security Documentation](https://learn.microsoft.com/en-us/microsoft-365-copilot/microsoft-365-copilot-privacy)
+- [Microsoft Purview Data Security for AI](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview)

@@ -6,7 +6,7 @@ Automation scripts for managing plugin and Graph connector security.
 
 - Microsoft Teams PowerShell module
 - Microsoft Graph PowerShell SDK
-- Teams Administrator and Entra Global Admin roles
+- Teams Admin and Entra Global Admin roles
 
 ## Scripts
 

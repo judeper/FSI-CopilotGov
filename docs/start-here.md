@@ -21,7 +21,7 @@
 - Deploying **custom AI agents** built in Copilot Studio or Agent Builder → see [FSI-AgentGov](https://github.com/judeper/FSI-AgentGov)
 - Looking for **prompt engineering guides** or how to *use* Copilot features as an end user → see [Microsoft Adoption Hub](https://adoption.microsoft.com/en-us/copilot/)
 - Working in a **non-regulated industry** — this framework's controls are calibrated for financial services regulatory obligations and may be overly restrictive for other industries
-- Trying to understand **what Microsoft 365 Copilot is** — start with [Microsoft's official docs](https://learn.microsoft.com/en-us/copilot/microsoft-365/)
+- Trying to understand **what Microsoft 365 Copilot is** — start with [Microsoft's official docs](https://learn.microsoft.com/en-us/microsoft-365/copilot/)
 
 ---
 

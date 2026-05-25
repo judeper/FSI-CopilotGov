@@ -21,7 +21,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
 - **Root Cause:** The readiness assessment requires specific licensing and tenant configuration to generate data. Data may not populate until Copilot licenses are assigned to at least one user or the assessment service has not completed its initial scan.
 - **Resolution:**
   1. Verify at least one Microsoft 365 Copilot license exists in the tenant (even if unassigned)
-  2. Check that the signed-in account has Global Administrator or Global Reader role
+  2. Check that the signed-in account has Entra Global Admin or Global Reader role
   3. Wait 48-72 hours after initial license provisioning for data to populate
   4. If data remains unavailable, open a Microsoft support ticket referencing the Copilot readiness service
 
@@ -43,7 +43,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
   1. For interactive sessions: Run `Connect-MgGraph -Scopes "Sites.Read.All"` and consent to permissions
   2. For automated execution: Register an Entra ID app with certificate authentication and required API permissions
   3. Verify the app registration has admin consent for required Graph API scopes
-  4. For SPO Management Shell: Confirm the account has SharePoint Administrator role
+  4. For SPO Management Shell: Confirm the account has SharePoint Admin role
 
 ### Issue 5: Label Coverage Report Shows Unexpectedly Low Numbers
 

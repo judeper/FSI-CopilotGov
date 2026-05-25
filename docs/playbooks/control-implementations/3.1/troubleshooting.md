@@ -104,7 +104,7 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
 
 ## Related Resources
 
-- [Microsoft Purview Audit documentation](https://learn.microsoft.com/purview/audit-solutions-overview)
+- [Microsoft Purview Audit documentation](https://learn.microsoft.com/en-us/purview/audit-solutions-overview)
 - [Control 3.2: Data Retention Policies](../3.2/portal-walkthrough.md)
 - [Control 3.12: Evidence Collection](../3.12/portal-walkthrough.md)
 - Back to [Control 3.1](../../../controls/pillar-3-compliance/3.1-copilot-audit-logging.md)
