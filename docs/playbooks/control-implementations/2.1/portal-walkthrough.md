@@ -4,7 +4,7 @@ Step-by-step portal configuration for deploying Data Loss Prevention policies th
 
 ## Prerequisites
 
-- Microsoft Purview Purview Compliance Admin role
+- Purview Compliance Admin role
 - Microsoft 365 E5 or E5 Compliance license
 - Sensitivity information types defined for FSI data (account numbers, SSNs, financial data)
 - Sensitivity label taxonomy deployed (see Control 2.2 — label-based DLP depends on labels)

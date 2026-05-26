@@ -2,7 +2,7 @@
 
 **Pillar Focus:** Protecting sensitive financial data and enforcing security boundaries across all Microsoft 365 Copilot surfaces.
 
-**Controls:** 15
+**Controls:** 17
 **Primary Admin Portals:** Microsoft Purview, Microsoft Entra, Microsoft Defender
 
 ---
@@ -36,6 +36,8 @@ Each control provides three governance levels — **Baseline**, **Recommended**,
 | [2.13](2.13-plugin-connector-security.md) | Plugin and Graph Connector Security Governance | GLBA §501(b), FFIEC | Medium |
 | [2.14](2.14-declarative-agents-governance.md) | Declarative and SharePoint Agents Governance | GLBA §501(b) | Medium |
 | [2.15](2.15-network-security.md) | Network Security and Private Connectivity | NYDFS Part 500, FFIEC | Medium |
+| [2.16](2.16-federated-connector-mcp-governance.md) | Federated Copilot Connector and MCP Governance | GLBA §501(b), SEC Reg S-P, FFIEC, OCC Bulletin 2023-17 | Medium |
+| [2.17](2.17-cross-tenant-agent-federation.md) | Cross-Tenant Agent Federation (MCP and Entra Agent ID) | GLBA §501(b), SEC Reg S-P, FFIEC, OCC Bulletin 2023-17, FINRA 3110 | Medium |
 
 ---
 
@@ -45,15 +47,16 @@ The following regulations are addressed by Pillar 2 controls:
 
 | Regulation | Section | Controls |
 |------------|---------|----------|
-| **GLBA** | 501(b) — Safeguards Rule | 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 2.12, 2.13, 2.14 |
+| **GLBA** | 501(b) — Safeguards Rule | 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 2.12, 2.13, 2.14, 2.16, 2.17 |
 | **FINRA** | Rule 4511 — Books and Records | 2.1, 2.11 |
 | **FINRA** | Rule 5280 — Trading Ahead of Research | 2.4 |
-| **FINRA** | Rule 3110 — Supervision | 2.10 |
-| **SEC** | Reg S-P — Privacy | 2.1, 2.12 |
+| **FINRA** | Rule 3110 — Supervision | 2.10, 2.17 |
+| **SEC** | Reg S-P — Privacy | 2.1, 2.12, 2.16, 2.17 |
 | **SEC** | Rule 10b-5 — Fraud/Manipulation | 2.4 |
 | **SOX** | Section 404 — Internal Controls | 2.1, 2.2, 2.10 |
 | **NYDFS** | Part 500 — Cybersecurity | 2.3, 2.8, 2.15 |
-| **FFIEC** | IT Examination Handbook | 2.3, 2.8, 2.9, 2.13, 2.15 |
+| **FFIEC** | IT Examination Handbook | 2.3, 2.8, 2.9, 2.13, 2.15, 2.16, 2.17 |
+| **OCC** | Bulletin 2023-17 — Third-Party Relationships | 2.16, 2.17 |
 
 ---
 
@@ -65,7 +68,7 @@ The following regulations are addressed by Pillar 2 controls:
 2. **Data Boundary** (Controls 2.5-2.8): Configure grounding scope, web search, data residency, and encryption to establish the data perimeter.
 3. **Detection & Response** (Controls 2.9-2.10): Enable Defender for Cloud Apps session controls and insider risk detection for Copilot-specific monitoring.
 4. **Collaboration Surfaces** (Controls 2.11-2.12): Secure Copilot Pages and external sharing before broad rollout.
-5. **Extensibility** (Controls 2.13-2.15): Govern plugins, declarative agents, and network connectivity as the deployment matures.
+5. **Extensibility & Federation** (Controls 2.13-2.17): Govern plugins, declarative agents, network connectivity, federated connectors, and cross-tenant agent federation as the deployment matures.
 
 ### Dependencies
 

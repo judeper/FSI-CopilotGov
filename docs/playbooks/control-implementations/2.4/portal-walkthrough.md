@@ -4,7 +4,7 @@ Step-by-step portal configuration for implementing Information Barriers that enf
 
 ## Prerequisites
 
-- Microsoft Purview Purview Compliance Admin role
+- Purview Compliance Admin role
 - Microsoft 365 E5 or E5 Compliance license
 - Entra ID user attributes populated (department, segment identifiers)
 - Chinese Wall policy requirements documented by compliance team
