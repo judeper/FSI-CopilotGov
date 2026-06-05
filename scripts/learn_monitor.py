@@ -141,7 +141,11 @@ def parse_watchlist(watchlist_path: Path) -> list[URLEntry]:
     urls = []
     current_section = "Unknown"
 
-    # Sections to skip (not Learn URLs)
+    # Defensive section skip-list. Note: the row regex below only matches
+    # https://learn.microsoft.com URLs, so non-Learn sections (e.g. the
+    # GitHub-hosted "Microsoft Open Source Tools" table) are already excluded
+    # by the URL filter. These names are kept as forward-compatible guards in
+    # case a future Learn URL is ever added under one of these sections.
     skip_sections = [
         "Admin Portals",
         "Microsoft Open Source Tools",

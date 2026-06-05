@@ -57,7 +57,6 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Get started with sensitivity labels | [https://learn.microsoft.com/en-us/purview/get-started-with-sensitivity-labels](https://learn.microsoft.com/en-us/purview/get-started-with-sensitivity-labels) |
 | Create and configure sensitivity labels | [https://learn.microsoft.com/en-us/purview/create-sensitivity-labels](https://learn.microsoft.com/en-us/purview/create-sensitivity-labels) |
 | Apply sensitivity labels automatically | [https://learn.microsoft.com/en-us/purview/apply-sensitivity-label-automatically](https://learn.microsoft.com/en-us/purview/apply-sensitivity-label-automatically) |
-| Sensitivity label inheritance in Copilot | [https://learn.microsoft.com/en-us/purview/sensitivity-labels](https://learn.microsoft.com/en-us/purview/sensitivity-labels) |
 | Encryption with sensitivity labels | [https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels](https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels) |
 | Mandatory labeling | [https://learn.microsoft.com/en-us/purview/sensitivity-labels-office-apps#require-users-to-apply-a-label](https://learn.microsoft.com/en-us/purview/sensitivity-labels-office-apps#require-users-to-apply-a-label) |
 | Sensitivity labels for Teams, Groups, and sites | [https://learn.microsoft.com/en-us/purview/sensitivity-labels-teams-groups-sites](https://learn.microsoft.com/en-us/purview/sensitivity-labels-teams-groups-sites) |
@@ -71,7 +70,6 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 |-------|-----|
 | Microsoft Purview Audit overview | [https://learn.microsoft.com/en-us/purview/audit-solutions-overview](https://learn.microsoft.com/en-us/purview/audit-solutions-overview) |
 | Audit (Standard) | [https://learn.microsoft.com/en-us/purview/audit-get-started](https://learn.microsoft.com/en-us/purview/audit-get-started) |
-| Audit (Premium) | [https://learn.microsoft.com/en-us/purview/audit-solutions-overview](https://learn.microsoft.com/en-us/purview/audit-solutions-overview) |
 | Search the audit log | [https://learn.microsoft.com/en-us/purview/audit-search](https://learn.microsoft.com/en-us/purview/audit-search) |
 | Audit log activities | [https://learn.microsoft.com/en-us/purview/audit-log-activities](https://learn.microsoft.com/en-us/purview/audit-log-activities) |
 | Manage audit log retention policies | [https://learn.microsoft.com/en-us/purview/audit-log-retention-policies](https://learn.microsoft.com/en-us/purview/audit-log-retention-policies) |
@@ -122,7 +120,6 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 |-------|-----|
 | Learn about information barriers | [https://learn.microsoft.com/en-us/purview/information-barriers](https://learn.microsoft.com/en-us/purview/information-barriers) |
 | Get started with information barriers | [https://learn.microsoft.com/en-us/purview/information-barriers-policies](https://learn.microsoft.com/en-us/purview/information-barriers-policies) |
-| Define IB policies | [https://learn.microsoft.com/en-us/purview/information-barriers-policies](https://learn.microsoft.com/en-us/purview/information-barriers-policies) |
 | Information barriers in Teams | [https://learn.microsoft.com/en-us/purview/information-barriers-teams](https://learn.microsoft.com/en-us/purview/information-barriers-teams) |
 | Information barriers in SharePoint | [https://learn.microsoft.com/en-us/purview/information-barriers-sharepoint](https://learn.microsoft.com/en-us/purview/information-barriers-sharepoint) |
 | Information barriers in OneDrive | [https://learn.microsoft.com/en-us/purview/information-barriers-onedrive](https://learn.microsoft.com/en-us/purview/information-barriers-onedrive) |
@@ -141,6 +138,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Review sets | [https://learn.microsoft.com/en-us/purview/ediscovery-review-set-search](https://learn.microsoft.com/en-us/purview/ediscovery-review-set-search) |
 | Export and download content | [https://learn.microsoft.com/en-us/purview/ediscovery-export-content](https://learn.microsoft.com/en-us/purview/ediscovery-export-content) |
 | Search Copilot data in eDiscovery | [https://learn.microsoft.com/en-us/purview/edisc-search-copilot-data](https://learn.microsoft.com/en-us/purview/edisc-search-copilot-data) |
+| eDiscovery legacy solutions (classic retirement, Aug 31 2025) | [https://learn.microsoft.com/en-us/purview/ediscovery-legacy-solutions](https://learn.microsoft.com/en-us/purview/ediscovery-legacy-solutions) |
 
 ---
 
@@ -162,8 +160,6 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 |-------|-----|
 | DSPM for AI (classic) overview | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
 | Get started with DSPM for AI (classic) | [https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations](https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations) |
-| DSPM for AI (classic) policies | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
-| DSPM for AI (classic) data assessments | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
 | Learn about DSPM | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about](https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about) |
 | DSPM data risk assessments (oversharing) | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing](https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing) |
 | eDiscovery changes announcement | [https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084](https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084) |
@@ -180,7 +176,6 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent) |
 | Build agents with Agent Builder | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-build-agents](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-build-agents) |
 | Agent Builder capabilities | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder) |
-| Get ready for Copilot with SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management](https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management) |
 | Copilot Tuning admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide) |
 | M365 Agents admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide) |
 
@@ -274,6 +269,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Manage sharing settings | [https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off](https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off) |
 | Restricted SharePoint Search | [https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search](https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search) |
 | SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/advanced-management](https://learn.microsoft.com/en-us/sharepoint/advanced-management) |
+| Get ready for Copilot with SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management](https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management) |
 | Data access governance reports | [https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports](https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports) |
 | Agent insights report in SharePoint | [https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents](https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents) |
 | AI in SharePoint (preview) | [https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started](https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started) |

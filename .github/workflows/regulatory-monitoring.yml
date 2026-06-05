@@ -132,7 +132,7 @@ jobs:
             --jq ".[] |
               select(.number < ($NEW_PR | tonumber)) |
               select(.headRefName | startswith(\"monitoring/regulatory-\")) |
-              select(.author.login == \"github-actions[bot]\") |
+              select(.author.login == \"app/github-actions\" or .author.login == \"github-actions[bot]\") |
               select(.title | startswith(\"Regulatory Monitor:\")) |
               .number")
 
