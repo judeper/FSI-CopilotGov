@@ -138,7 +138,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Review sets | [https://learn.microsoft.com/en-us/purview/ediscovery-review-set-search](https://learn.microsoft.com/en-us/purview/ediscovery-review-set-search) |
 | Export and download content | [https://learn.microsoft.com/en-us/purview/ediscovery-export-content](https://learn.microsoft.com/en-us/purview/ediscovery-export-content) |
 | Search Copilot data in eDiscovery | [https://learn.microsoft.com/en-us/purview/edisc-search-copilot-data](https://learn.microsoft.com/en-us/purview/edisc-search-copilot-data) |
-| eDiscovery legacy solutions (classic retirement, Aug 31 2025) | [https://learn.microsoft.com/en-us/purview/ediscovery-legacy-solutions](https://learn.microsoft.com/en-us/purview/ediscovery-legacy-solutions) |
+| eDiscovery notable changes (classic experiences retired Aug 31 2025) | [https://learn.microsoft.com/en-us/purview/edisc](https://learn.microsoft.com/en-us/purview/edisc) |
 
 ---
 

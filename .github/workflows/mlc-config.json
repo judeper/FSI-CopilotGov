@@ -53,6 +53,9 @@
     },
     {
       "pattern": "^https://www\\.federalreserve\\.gov/supervisionreg/srletters/sr1107\\.htm"
+    },
+    {
+      "pattern": "^https://www\\.occ\\.gov/news-issuances/bulletins/2011/bulletin-2011-12\\.html"
     }
   ],
   "timeout": "10s",
