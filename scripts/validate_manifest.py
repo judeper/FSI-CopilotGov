@@ -35,10 +35,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_DEFAULT = ROOT / "assessment" / "manifest" / "controls.json"
+GRAPH_DEFAULT = ROOT / "assessment" / "manifest" / "content-graph.json"
 DOCS_BASE = ROOT / "docs"
 
-EXPECTED_COUNT = 63
-EXPECTED_BY_PILLAR = {1: 16, 2: 17, 3: 15, 4: 15}
 PILLARS = {1, 2, 3, 4}
 AUTOMATION_VALUES = {"full", "partial", "manual"}
 
@@ -346,23 +345,58 @@ def main() -> int:
     all_errors: list[str] = []
     all_warnings: list[str] = []
 
-    if len(controls) != EXPECTED_COUNT:
-        all_errors.append(f"expected {EXPECTED_COUNT} controls, got {len(controls)}")
+    # Cross-check the manifest against the canonical content graph (derived by
+    # an independent filesystem walk in build_content_graph.py). Comparing ID
+    # *sets* and per-control pillar -- not just counts -- catches a control
+    # present in one source but missing/renamed in the other, which a bare
+    # count check would miss.
+    # Under --strict, the cross-check is mandatory: an absent/unreadable graph
+    # means we cannot verify the manifest, which is a failure, not a warning.
+    # (Without --strict it degrades to a warning so the validator stays usable
+    # before the graph has been built.)
+    _graph_missing = all_errors if args.strict else all_warnings
+    graph_ids: set[str] | None = None
+    graph_pillar: dict[str, int] = {}
+    if GRAPH_DEFAULT.is_file():
+        try:
+            graph = json.loads(GRAPH_DEFAULT.read_text(encoding="utf-8"))
+            graph_controls = graph.get("controls", [])
+            graph_ids = {c.get("id") for c in graph_controls}
+            graph_pillar = {c.get("id"): c.get("pillar") for c in graph_controls}
+        except (json.JSONDecodeError, OSError) as exc:
+            _graph_missing.append(f"could not read content graph for cross-check: {exc}")
+    else:
+        _graph_missing.append(
+            "content-graph.json not found; cannot run manifest-vs-graph cross-check "
+            "(run: python scripts/build_content_graph.py)"
+        )
 
     ids = [c.get("id") for c in controls]
     if len(set(ids)) != len(ids):
         dupes = sorted({i for i in ids if ids.count(i) > 1})
         all_errors.append(f"duplicate control ids: {dupes}")
 
-    actual_by_pillar: dict[int, int] = {}
-    for c in controls:
-        if isinstance(c, dict) and isinstance(c.get("pillar"), int):
-            actual_by_pillar[c["pillar"]] = actual_by_pillar.get(c["pillar"], 0) + 1
-    for p, expected in EXPECTED_BY_PILLAR.items():
-        if actual_by_pillar.get(p, 0) != expected:
+    if graph_ids is not None:
+        manifest_ids = set(ids)
+        missing_from_manifest = sorted(graph_ids - manifest_ids)
+        extra_in_manifest = sorted(manifest_ids - graph_ids)
+        if missing_from_manifest:
             all_errors.append(
-                f"pillar {p}: expected {expected} controls, got {actual_by_pillar.get(p, 0)}"
+                "controls in docs/content-graph but missing from manifest: "
+                f"{missing_from_manifest}"
             )
+        if extra_in_manifest:
+            all_errors.append(
+                "controls in manifest but not in docs/content-graph: "
+                f"{extra_in_manifest}"
+            )
+        for c in controls:
+            cid = c.get("id")
+            if cid in graph_pillar and c.get("pillar") != graph_pillar[cid]:
+                all_errors.append(
+                    f"control {cid}: pillar {c.get('pillar')!r} disagrees with "
+                    f"content-graph pillar {graph_pillar[cid]!r}"
+                )
 
     for c in controls:
         if not isinstance(c, dict):

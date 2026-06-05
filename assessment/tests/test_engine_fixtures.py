@@ -30,6 +30,8 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ENGINE_DIR = REPO_ROOT / "assessment" / "engine"
 MANIFEST = REPO_ROOT / "assessment" / "manifest" / "controls.json"
+CONTENT_GRAPH = REPO_ROOT / "assessment" / "manifest" / "content-graph.json"
+COUNTS = json.loads(CONTENT_GRAPH.read_text(encoding="utf-8"))["counts"]
 DOCS_CONTROLS = REPO_ROOT / "docs" / "controls"
 DOCS_PLAYBOOKS = REPO_ROOT / "docs" / "playbooks" / "control-implementations"
 
@@ -187,9 +189,9 @@ def test_engine_e2e_against_synthetic_tenant(tmp_path, shape, payload_factory):
     )
 
     md = result["_metadata"]
-    assert md["total_controls"] == 63
+    assert md["total_controls"] == COUNTS["controls"]
     assert md["zone"] == 2
-    assert md["auto_scored"] + md["needs_manual"] == 63
+    assert md["auto_scored"] + md["needs_manual"] == COUNTS["controls"]
 
     avg = result["summary"]["average_maturity"]
     assert 0.0 <= avg <= 4.0

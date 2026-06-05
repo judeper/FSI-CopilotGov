@@ -8,13 +8,15 @@ const here = dirname(fileURLToPath(import.meta.url));
 const REPO = join(here, "..", "..");
 const MANIFEST_PATH = join(REPO, "assessment", "manifest", "controls.json");
 const LOCK_PATH = join(REPO, "assessment", "data", "solutions-lock.json");
+const GRAPH_PATH = join(REPO, "assessment", "manifest", "content-graph.json");
 
 describe("manifest + solutions-lock integrity (H2)", () => {
   const manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));
   const lock = JSON.parse(readFileSync(LOCK_PATH, "utf8"));
+  const graph = JSON.parse(readFileSync(GRAPH_PATH, "utf8"));
 
-  it("all 63 controls have the required core fields", () => {
-    expect(manifest.length).toBe(63);
+  it("manifest control count matches content-graph and every control has core fields", () => {
+    expect(manifest.length).toBe(graph.counts.controls);
     const required = ["id", "title", "pillar", "zonesApplicable", "automation", "solutions"];
     for (const c of manifest) {
       for (const field of required) {

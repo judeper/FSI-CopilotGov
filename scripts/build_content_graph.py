@@ -10,8 +10,10 @@ Stdlib only -- no external dependencies.
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -197,12 +199,19 @@ def build_graph() -> dict:
     pb_ctrl = sum(1 for p in playbooks if p["type"] == "control-implementation")
     pb_cross = sum(1 for p in playbooks if p["type"] == "cross-cutting")
 
+    by_pillar: dict[str, int] = {}
+    for c in controls:
+        key = str(c["pillar"])
+        by_pillar[key] = by_pillar.get(key, 0) + 1
+    by_pillar = {k: by_pillar[k] for k in sorted(by_pillar, key=int)}
+
     return {
         "schemaVersion": SCHEMA_VERSION,
         "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "counts": {
             "controls": len(controls),
             "pillars": len(pillars),
+            "by_pillar": by_pillar,
             "playbooks_total": len(playbooks),
             "playbooks_control": pb_ctrl,
             "playbooks_cross_cutting": pb_cross,
@@ -215,7 +224,42 @@ def build_graph() -> dict:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Verify the committed content-graph.json is up to date "
+        "(ignoring generatedAt) without rewriting it. Exit 1 if stale.",
+    )
+    args = parser.parse_args()
+
     graph = build_graph()
+
+    if args.check:
+        if not OUTPUT_PATH.is_file():
+            print(
+                f"ERROR: {OUTPUT_PATH.relative_to(REPO_ROOT).as_posix()} is missing; "
+                "run: python scripts/build_content_graph.py",
+                file=sys.stderr,
+            )
+            return 1
+        committed = json.loads(OUTPUT_PATH.read_text(encoding="utf-8"))
+        fresh = dict(graph)
+        committed_cmp = dict(committed)
+        # generatedAt is intentionally non-deterministic; exclude from compare.
+        fresh.pop("generatedAt", None)
+        committed_cmp.pop("generatedAt", None)
+        if fresh != committed_cmp:
+            print(
+                "Content graph is STALE -- committed content-graph.json does not "
+                "match the documentation tree.\n"
+                "Fix: python scripts/build_content_graph.py  (then commit the result)",
+                file=sys.stderr,
+            )
+            return 1
+        print("Content graph is up to date.")
+        return 0
+
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(
         json.dumps(graph, indent=2, ensure_ascii=False) + "\n",

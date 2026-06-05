@@ -5,10 +5,15 @@ import { dirname, join } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const MANIFEST_PATH = join(here, "..", "..", "assessment", "manifest", "controls.json");
+const GRAPH_PATH = join(here, "..", "..", "assessment", "manifest", "content-graph.json");
 
-// FSI-CopilotGov ships 63 controls (16/17/15/15 across pillars 1-4).
-const EXPECTED_CONTROL_COUNT = 63;
-const EXPECTED_PER_PILLAR = { 1: 16, 2: 17, 3: 15, 4: 15 };
+// Canonical counts come from the content graph (the single source of truth);
+// the manifest is asserted to match it rather than against hardcoded literals.
+const GRAPH = JSON.parse(readFileSync(GRAPH_PATH, "utf8"));
+const EXPECTED_CONTROL_COUNT = GRAPH.counts.controls;
+const EXPECTED_PER_PILLAR = Object.fromEntries(
+  Object.entries(GRAPH.counts.by_pillar).map(([k, v]) => [Number(k), v])
+);
 
 describe("manifest/controls.json", () => {
   const manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));

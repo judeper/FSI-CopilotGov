@@ -83,6 +83,7 @@ describe("Phase E portal export envelope", () => {
 
   it("buildEnvelope returns a schema-valid envelope with top-level keys", async () => {
     const { app } = await initApp();
+    const total = app.data.controls.length;
     app.state.responses["1.2"] = { answer: "yes", notes: "dlp active" };
     app.state.responses["2.1"] = { answer: "partial", notes: "partial CA coverage" };
     app.state.responses["3.1"] = { answer: "no", notes: "" };
@@ -95,18 +96,18 @@ describe("Phase E portal export envelope", () => {
     expect(env.schemaVersion).toBe("fsi-copilotgov-envelope/0.1.0");
     expect(env.scope.pillars).toEqual([1, 2, 3, 4]);
     expect(env.scope.tier).toBe("recommended");
-    expect(env.manifest.controlCount).toBe(63);
+    expect(env.manifest.controlCount).toBe(total);
     // ref is whatever generate_solutions_lock.PINNED_REF currently emits;
     // assert against the on-disk lock to stay version-agnostic.
     const lockRef = JSON.parse(readFileSync(LOCK_PATH, "utf8")).source.ref;
     expect(env.solutionsLock.ref).toBe(lockRef);
     expect(env.solutionsLock.commit).toMatch(/^[0-9a-f]{40}$/);
     expect(Array.isArray(env.answers)).toBe(true);
-    expect(env.answers).toHaveLength(63);
+    expect(env.answers).toHaveLength(total);
     expect(env.summary.yes).toBe(1);
     expect(env.summary.partial).toBe(1);
     expect(env.summary.no).toBe(1);
-    expect(env.summary.unanswered).toBe(60);
+    expect(env.summary.unanswered).toBe(total - 3);
     expect(env.signatures).toEqual({ assessorSignedAt: null, facilitatorSignedAt: null });
     // Identity folded from scoping when envelope-identity-store is empty.
     expect(env.assessor.name).toBe("Jane Doe");
@@ -134,6 +135,7 @@ describe("Phase E portal export envelope", () => {
 
   it("importEnvelope round-trips 3 mock answers", async () => {
     const { app } = await initApp();
+    const total = app.data.controls.length;
     app.state.responses["1.2"] = { answer: "yes", notes: "dlp active" };
     app.state.responses["2.1"] = { answer: "partial", notes: "3 of 5 scopes" };
     app.state.responses["3.1"] = { answer: "no", notes: "no policy" };
@@ -144,7 +146,7 @@ describe("Phase E portal export envelope", () => {
     // Verify the fresh app has no answers.
     expect(Object.keys(app2.state.responses)).toHaveLength(0);
     const result = app2.importEnvelope(env);
-    expect(result.controls).toBe(63);
+    expect(result.controls).toBe(total);
 
     expect(app2.state.responses["1.2"].answer).toBe("yes");
     expect(app2.state.responses["1.2"].notes).toBe("dlp active");

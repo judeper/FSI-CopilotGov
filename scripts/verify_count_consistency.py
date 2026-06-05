@@ -11,9 +11,9 @@ fails when the integer is not in the allowed set derived from
 ``assessment/manifest/content-graph.json``.
 
 Intentional historical references (CHANGELOG, dated release notes, this file
-itself, the verifier's own test) are exempted. Per-pillar control counts (16,
-17, 15) are allowed everywhere because they describe sub-totals that are
-also derived from the graph.
+itself, the verifier's own test) are exempted. Per-pillar control counts are
+allowed everywhere because they describe sub-totals that are also derived from
+the graph's ``by_pillar`` block.
 """
 from __future__ import annotations
 
@@ -82,9 +82,10 @@ def _load_allowed() -> dict[str, set[int]]:
             "run 'python scripts/build_content_graph.py' first."
         )
     counts = json.loads(GRAPH_PATH.read_text(encoding="utf-8"))["counts"]
+    per_pillar = {int(v) for v in counts.get("by_pillar", {}).values()}
     return {
-        # Total controls plus the per-pillar sub-totals (also derived from graph).
-        "controls":  {counts["controls"], 16, 17, 15},
+        # Total controls plus the per-pillar sub-totals (all derived from graph).
+        "controls":  {counts["controls"], *per_pillar},
         # Total playbooks plus the control-implementation and cross-cutting sub-totals.
         "playbooks": {
             counts["playbooks_total"],

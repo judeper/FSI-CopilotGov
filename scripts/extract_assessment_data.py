@@ -34,10 +34,10 @@ CONTROLS_DIR = DOCS_DIR / "controls"
 OUTPUT_PATH = DOCS_DIR / "javascripts" / "assessment-data.json"
 
 PILLARS = {
-    1: {"name": "Readiness & Assessment", "folder": "pillar-1-readiness", "count": 16},
-    2: {"name": "Security & Protection", "folder": "pillar-2-security", "count": 17},
-    3: {"name": "Compliance & Audit", "folder": "pillar-3-compliance", "count": 15},
-    4: {"name": "Operations & Monitoring", "folder": "pillar-4-operations", "count": 15},
+    1: {"name": "Readiness & Assessment", "folder": "pillar-1-readiness"},
+    2: {"name": "Security & Protection", "folder": "pillar-2-security"},
+    3: {"name": "Compliance & Audit", "folder": "pillar-3-compliance"},
+    4: {"name": "Operations & Monitoring", "folder": "pillar-4-operations"},
 }
 
 # Role-to-control assignments (hardcoded — CopilotGov has no structured role sections)
@@ -609,11 +609,11 @@ def build_output():
             else:
                 errors.append(f"{pillar_num}.{ctrl_num}")
 
-    # Validate we got all 63 controls
-    if len(controls) != 63:
-        print(f"\nERROR: Expected 63 controls, got {len(controls)}")
-        if errors:
-            print(f"  Missing: {', '.join(errors)}")
+    # Validate every control file parsed cleanly (no hardcoded total -- the
+    # canonical count lives in content-graph.json / the smoke tripwire).
+    if errors:
+        print(f"\nERROR: {len(errors)} control(s) failed to parse")
+        print(f"  Missing: {', '.join(errors)}")
         return None
 
     # Validate required fields
@@ -629,13 +629,19 @@ def build_output():
     # Parse regulatory mappings
     reg_mappings = parse_regulatory_mappings()
 
+    by_pillar_count: dict[int, int] = {}
+    for ctrl in controls:
+        pnum = ctrl.get("pillar")
+        if isinstance(pnum, int):
+            by_pillar_count[pnum] = by_pillar_count.get(pnum, 0) + 1
+
     output = {
         "version": "1.0.0",
         "generatedAt": None,  # Set at write time
         "frameworkVersion": "1.1",
         "totalControls": len(controls),
         "pillars": {
-            str(k): {"name": v["name"], "controlCount": v["count"]}
+            str(k): {"name": v["name"], "controlCount": by_pillar_count.get(k, 0)}
             for k, v in PILLARS.items()
         },
         "controls": controls,

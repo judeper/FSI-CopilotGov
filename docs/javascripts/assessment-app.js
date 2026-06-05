@@ -2,7 +2,7 @@
  * FSI-CopilotGov Governance Scorecard
  *
  * Client-side SPA that walks users through a scoped assessment of the
- * 54-control governance framework and produces scorecards, gap analysis,
+ * FSI Copilot Governance Framework and produces scorecards, gap analysis,
  * and remediation roadmaps.
  *
  * @version 1.0.0
@@ -1409,9 +1409,10 @@
     var self = this;
     var wrap = h("div", { className: "ag-welcome" });
 
+    var totalControls = (this.data && this.data.controls) ? this.data.controls.length : 0;
     wrap.appendChild(h("h2", { "data-step-heading": "true", tabindex: "-1" }, "Governance Scorecard"));
     wrap.appendChild(h("p", null,
-      "Assess your organization's readiness across the 54-control FSI Copilot Governance Framework. " +
+      "Assess your organization's readiness across the " + totalControls + "-control FSI Copilot Governance Framework. " +
       "This tool helps identify gaps and generates a personalized remediation roadmap."
     ));
 
@@ -4267,10 +4268,11 @@
     if (s.summary) {
       card.appendChild(h("p", { className: "solution-catalog-summary" }, s.summary));
     }
+    var totalControls = (self.data && self.data.controls) ? self.data.controls.length : 0;
     card.appendChild(h("span", {
       className: "solution-catalog-coverage",
       "data-coverage-count": String(coverage),
-    }, "Covers " + coverage + " of 63 control" + (coverage === 1 ? "" : "s")));
+    }, "Covers " + coverage + " of " + totalControls + " control" + (coverage === 1 ? "" : "s")));
     return card;
   };
 
@@ -4295,9 +4297,10 @@
     }
 
     var controls = this.getControlsForSolution(s.id);
+    var totalControls = (self.data && self.data.controls) ? self.data.controls.length : 0;
     var ctrlSec = h("div", { className: "solution-detail-controls" });
     ctrlSec.appendChild(h("h4", null,
-      "Controls covered (" + controls.length + " of 63)"));
+      "Controls covered (" + controls.length + " of " + totalControls + ")"));
     if (!controls.length) {
       ctrlSec.appendChild(h("p", { className: "solution-empty" },
         "This solution is not yet mapped to any manifest controls."));
@@ -4458,7 +4461,7 @@
       generatedAt: new Date().toISOString(),
       assessor: identity,
       scope: { tier: tier, pillars: pillars },
-      manifest: { version: manifestVersion, controlCount: controlsList.length || 63 },
+      manifest: { version: manifestVersion, controlCount: controlsList.length },
       solutionsLock: solutionsLock,
       answers: answers,
       summary: {

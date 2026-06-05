@@ -6,7 +6,7 @@ The FSI Copilot Governance Framework contains **{{ counts.controls }} controls**
 
 ## Control Index
 
-### Pillar 1: Readiness & Assessment (16 controls)
+### Pillar 1: Readiness & Assessment ({{ pillar_count(1) }} controls)
 
 Pre-deployment data hygiene, oversharing detection, permission audits, and license planning.
 
@@ -31,7 +31,7 @@ Pre-deployment data hygiene, oversharing detection, permission audits, and licen
 
 ---
 
-### Pillar 2: Security & Protection (17 controls)
+### Pillar 2: Security & Protection ({{ pillar_count(2) }} controls)
 
 DLP, sensitivity labels, conditional access, encryption, information barriers, and Defender integration.
 
@@ -57,7 +57,7 @@ DLP, sensitivity labels, conditional access, encryption, information barriers, a
 
 ---
 
-### Pillar 3: Compliance & Audit (15 Controls)
+### Pillar 3: Compliance & Audit ({{ pillar_count(3) }} Controls)
 
 Audit logging, retention, eDiscovery, communication compliance, and regulatory reporting.
 
@@ -81,7 +81,7 @@ Audit logging, retention, eDiscovery, communication compliance, and regulatory r
 
 ---
 
-### Pillar 4: Operations & Monitoring (15 Controls)
+### Pillar 4: Operations & Monitoring ({{ pillar_count(4) }} Controls)
 
 Feature management, per-app toggles, usage analytics, cost tracking, and incident response.
 

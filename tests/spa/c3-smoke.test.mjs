@@ -81,10 +81,10 @@ describe("Phase C3 SPA solutions catalog", () => {
     expect(btn.textContent).toContain("Solutions");
   });
 
-  it("solutions view renders 23 catalog cards", async () => {
-    const { document } = await initApp();
+  it("solutions view renders every solution as a catalog card", async () => {
+    const { document, app } = await initApp();
     const cards = document.querySelectorAll(".solution-catalog-card");
-    expect(cards.length).toBe(23);
+    expect(cards.length).toBe(app.solutionsLock.solutions.length);
   });
 
   it("reverse-lookup: 01-copilot-readiness-scanner covers ≥ 2 controls", async () => {
@@ -113,9 +113,10 @@ describe("Phase C3 SPA solutions catalog", () => {
   });
 
   it("tier filter narrows the visible list", async () => {
-    const { document } = await initApp();
+    const { document, app } = await initApp();
+    const totalSolutions = app.solutionsLock.solutions.length;
     const allCards = document.querySelectorAll(".solution-catalog-card");
-    expect(allCards.length).toBe(23);
+    expect(allCards.length).toBe(totalSolutions);
     const tier1Btn = document.querySelector('.solutions-filter-chip[data-filter-tier="1"]');
     expect(tier1Btn).not.toBeNull();
     tier1Btn.click();
@@ -128,7 +129,7 @@ describe("Phase C3 SPA solutions catalog", () => {
     });
     // Reset to All.
     document.querySelector('.solutions-filter-chip[data-filter-tier="all"]').click();
-    expect(document.querySelectorAll(".solution-catalog-card").length).toBe(23);
+    expect(document.querySelectorAll(".solution-catalog-card").length).toBe(totalSolutions);
   });
 
   it("coverage badge reflects reverse-lookup count", async () => {
@@ -138,6 +139,6 @@ describe("Phase C3 SPA solutions catalog", () => {
     expect(badge).not.toBeNull();
     const actual = app.getControlsForSolution("01-copilot-readiness-scanner").length;
     expect(badge.getAttribute("data-coverage-count")).toBe(String(actual));
-    expect(badge.textContent).toMatch(/Covers \d+ of 63/);
+    expect(badge.textContent).toMatch(/Covers \d+ of \d+/);
   });
 });
