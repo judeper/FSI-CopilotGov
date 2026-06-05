@@ -4270,7 +4270,7 @@
     card.appendChild(h("span", {
       className: "solution-catalog-coverage",
       "data-coverage-count": String(coverage),
-    }, "Covers " + coverage + " of 62 control" + (coverage === 1 ? "" : "s")));
+    }, "Covers " + coverage + " of 63 control" + (coverage === 1 ? "" : "s")));
     return card;
   };
 
@@ -4297,7 +4297,7 @@
     var controls = this.getControlsForSolution(s.id);
     var ctrlSec = h("div", { className: "solution-detail-controls" });
     ctrlSec.appendChild(h("h4", null,
-      "Controls covered (" + controls.length + " of 62)"));
+      "Controls covered (" + controls.length + " of 63)"));
     if (!controls.length) {
       ctrlSec.appendChild(h("p", { className: "solution-empty" },
         "This solution is not yet mapped to any manifest controls."));
@@ -4458,7 +4458,7 @@
       generatedAt: new Date().toISOString(),
       assessor: identity,
       scope: { tier: tier, pillars: pillars },
-      manifest: { version: manifestVersion, controlCount: controlsList.length || 62 },
+      manifest: { version: manifestVersion, controlCount: controlsList.length || 63 },
       solutionsLock: solutionsLock,
       answers: answers,
       summary: {

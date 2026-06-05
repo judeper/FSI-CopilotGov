@@ -31,8 +31,8 @@ describe("facilitator mode", () => {
 
   it("renders facilitator panels for all authored controls", async () => {
     const { document } = await initApp({ facilitator: true });
-    // All 62 controls are now authored — every control should render a panel.
-    ["1.1", "1.2", "1.3", "1.4", "2.1", "2.2", "2.3", "3.1", "3.2", "4.1", "4.2", "4.13"].forEach((id) => {
+    // All 63 controls are now authored — every control should render a panel.
+    ["1.1", "1.2", "1.3", "1.4", "2.1", "2.2", "2.3", "3.1", "3.2", "4.1", "4.2", "4.13", "4.15"].forEach((id) => {
       const row = document.querySelector(`.control-row[data-control-id="${id}"]`);
       expect(row, `row ${id}`).not.toBeNull();
       expect(row.querySelector(".facilitator-panel"), `panel ${id}`).not.toBeNull();

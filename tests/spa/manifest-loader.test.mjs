@@ -6,9 +6,9 @@ import { dirname, join } from "node:path";
 const here = dirname(fileURLToPath(import.meta.url));
 const MANIFEST_PATH = join(here, "..", "..", "assessment", "manifest", "controls.json");
 
-// FSI-CopilotGov ships 62 controls (16/17/15/14 across pillars 1-4).
-const EXPECTED_CONTROL_COUNT = 62;
-const EXPECTED_PER_PILLAR = { 1: 16, 2: 17, 3: 15, 4: 14 };
+// FSI-CopilotGov ships 63 controls (16/17/15/15 across pillars 1-4).
+const EXPECTED_CONTROL_COUNT = 63;
+const EXPECTED_PER_PILLAR = { 1: 16, 2: 17, 3: 15, 4: 15 };
 
 describe("manifest/controls.json", () => {
   const manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));

@@ -97,6 +97,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Copilot Cowork overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/) |
 | Get started with Copilot Cowork | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started) |
 | Copilot Cowork admin and governance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance) |
+| Manage Copilot Cowork plugins | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins) |
 | Copilot Cowork FAQ | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq) |
 
 ---

@@ -78,7 +78,7 @@ Audit logging, retention, eDiscovery, regulatory record-keeping, supervisory rev
 
 ---
 
-## Pillar 4: Operations and Monitoring (14 Controls)
+## Pillar 4: Operations and Monitoring (15 Controls)
 
 Feature management, per-app configuration, analytics, cost tracking, incident response, and business continuity controls.
 
@@ -98,6 +98,7 @@ Feature management, per-app configuration, analytics, cost tracking, incident re
 | 4.12 | Change Management for Rollouts | [Portal](4.12/portal-walkthrough.md) / [PowerShell](4.12/powershell-setup.md) / [Verification](4.12/verification-testing.md) / [Troubleshooting](4.12/troubleshooting.md) |
 | 4.13 | Extensibility Governance | [Portal](4.13/portal-walkthrough.md) / [PowerShell](4.13/powershell-setup.md) / [Verification](4.13/verification-testing.md) / [Troubleshooting](4.13/troubleshooting.md) |
 | 4.14 | Copilot Studio Agent Lifecycle Governance | [Portal](4.14/portal-walkthrough.md) / [PowerShell](4.14/powershell-setup.md) / [Verification](4.14/verification-testing.md) / [Troubleshooting](4.14/troubleshooting.md) |
+| 4.15 | Copilot Cowork Governance | [Portal](4.15/portal-walkthrough.md) / [PowerShell](4.15/powershell-setup.md) / [Verification](4.15/verification-testing.md) / [Troubleshooting](4.15/troubleshooting.md) |
 
 ---
 

@@ -20,7 +20,7 @@ Every control in the framework has four dedicated playbooks:
 - [Pillar 1 — Readiness & Assessment](control-implementations/index.md#pillar-1-readiness-and-assessment-16-controls) (16 controls)
 - [Pillar 2 — Security & Protection](control-implementations/index.md#pillar-2-security-and-protection-17-controls) (17 controls)
 - [Pillar 3 — Compliance & Audit](control-implementations/index.md#pillar-3-compliance-and-audit-15-controls) (15 controls)
-- [Pillar 4 — Operations & Monitoring](control-implementations/index.md#pillar-4-operations-and-monitoring-14-controls) (14 controls)
+- [Pillar 4 — Operations & Monitoring](control-implementations/index.md#pillar-4-operations-and-monitoring-15-controls) (15 controls)
 
 ---
 

@@ -407,7 +407,7 @@ Controls are mapped to specific regulatory requirements (e.g., FINRA 4511, SEC 1
 | 3.12 | Evidence Collection and Audit Attestation | -- | -- | Required |
 | 3.13 | FFIEC IT Examination Handbook Alignment | -- | -- | Required |
 
-### Pillar 4: Operations & Monitoring (14 controls)
+### Pillar 4: Operations & Monitoring (15 controls)
 
 | Control | Name | Baseline | Recommended | Regulated |
 |---------|------|----------|-------------|-----------|

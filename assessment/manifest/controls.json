@@ -5302,5 +5302,84 @@
         "role": "primary"
       }
     ]
+  },
+  {
+    "id": "4.15",
+    "title": "Control 4.15: Copilot Cowork Governance",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.15-copilot-cowork-governance.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is Microsoft 365 Copilot Cowork (Frontier preview) governed with deliberate availability, plugin, and supervision decisions before broad enablement?",
+    "name": "Copilot Cowork Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin",
+      "AI Governance Lead"
+    ],
+    "regulatory": [
+      "OCC-Heightened-Standards",
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b",
+      "FINRA-3110"
+    ],
+    "priority": "high",
+    "yesBar": "Microsoft 365 Copilot Cowork availability is set deliberately (scoped to approved groups or blocked) rather than left at the default of all users, with Frontier enrollment, plugin inventory, deployment/pinning approvals, and supervision coverage documented.",
+    "partialBar": "Some Cowork governance exists but availability, plugin inventory, or supervision/audit coverage is not fully documented or approved.",
+    "noBar": "Cowork is left at its default availability with no documented governance, plugin inventory, or supervision review.",
+    "verifyIn": [
+      {
+        "portal": "Microsoft 365 admin center",
+        "path": "Copilot > Agents > All agents > Cowork",
+        "url": "https://admin.microsoft.com/Adminportal/Home#/agents"
+      }
+    ],
+    "verifyPowerShell": "",
+    "evidenceExpected": [
+      "Frontier preview enrollment record for tenant and admin accounts",
+      "Cowork availability configuration (scoped group or blocked) with approval",
+      "Approved Cowork plugin inventory and connector authentication records",
+      "Deployment/pinning approvals and supervision/audit coverage evidence"
+    ],
+    "controlDocUrl": "/controls/pillar-4-operations/4.15-copilot-cowork-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.15/portal-walkthrough/",
+    "collectorField": "M365Admin_CoworkGovernance",
+    "sectorYesBar": {
+      "bank": "Cowork adoption treated as a change-control and operational-risk event aligned to the FFIEC IT Examination Handbook and OCC Heightened Standards (12 CFR part 30, appendix D).",
+      "broker-dealer": "Cowork availability for registered reps gated on supervisory review of agentic outputs per FINRA Rule 3110 before enablement.",
+      "investment-adviser": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "TODO: sector-specific yes-bar",
+      "insurance-wholesale": "TODO: sector-specific yes-bar",
+      "credit-union": "TODO: sector-specific yes-bar",
+      "holding-company": "TODO: sector-specific yes-bar",
+      "other": "TODO: sector-specific yes-bar"
+    },
+    "facilitatorNotes": {
+      "ask": "Is Copilot Cowork governed with deliberate availability, plugin, and supervision decisions before broad enablement?",
+      "followUp": "Confirm Frontier enrollment, that availability is scoped (not default-all), and that plugins and audit coverage are documented.",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": []
   }
 ]

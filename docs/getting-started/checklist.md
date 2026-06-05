@@ -101,7 +101,7 @@ Audit logging, retention, eDiscovery, communication compliance, FINRA/SEC record
 
 ---
 
-## Pillar 4: Operations and Monitoring (14 Controls)
+## Pillar 4: Operations and Monitoring (15 Controls)
 
 Admin settings, per-app configuration, analytics, Viva governance, cost tracking, incident response, Sentinel SIEM, and change management.
 
@@ -121,6 +121,7 @@ Admin settings, per-app configuration, analytics, Viva governance, cost tracking
 | [ ] | 4.12 | Change Management for Rollouts | R | | | Message Center monitoring, feature update impact assessment, and targeted release ring management |
 | [ ] | 4.13 | Extensibility Governance | R | | | Ongoing lifecycle governance for deployed plugins, Graph connectors, and declarative agents |
 | [ ] | 4.14 | Copilot Studio Agent Lifecycle Governance | R | | | End-to-end lifecycle governance for Copilot Studio agents (authoring, testing, publishing, versioning, deprecation) |
+| [ ] | 4.15 | Copilot Cowork Governance | R | | | Governance for Microsoft 365 Copilot Cowork (Frontier preview): availability scoping, plugin inventory, deployment/pinning approvals, and supervision coverage |
 
 ---
 
@@ -129,9 +130,9 @@ Admin settings, per-app configuration, analytics, Viva governance, cost tracking
 | Level | Pillar 1 | Pillar 2 | Pillar 3 | Pillar 4 | Total |
 |-------|----------|----------|----------|----------|-------|
 | **Baseline (B)** | 6 | 6 | 3 | 3 | **18** |
-| **Recommended (R)** | 7 | 8 | 6 | 10 | **31** |
+| **Recommended (R)** | 7 | 8 | 6 | 11 | **32** |
 | **Regulated (Reg)** | 3 | 3 | 6 | 1 | **13** |
-| **Pillar Total** | **16** | **17** | **15** | **14** | **{{ counts.controls }}** |
+| **Pillar Total** | **16** | **17** | **15** | **15** | **{{ counts.controls }}** |
 
 !!! tip "Implementation Priority"
     - **Phase 1 (Pre-deployment):** All Baseline controls

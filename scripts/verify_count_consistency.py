@@ -12,7 +12,7 @@ fails when the integer is not in the allowed set derived from
 
 Intentional historical references (CHANGELOG, dated release notes, this file
 itself, the verifier's own test) are exempted. Per-pillar control counts (16,
-17, 15, 14) are allowed everywhere because they describe sub-totals that are
+17, 15) are allowed everywhere because they describe sub-totals that are
 also derived from the graph.
 """
 from __future__ import annotations
@@ -84,7 +84,7 @@ def _load_allowed() -> dict[str, set[int]]:
     counts = json.loads(GRAPH_PATH.read_text(encoding="utf-8"))["counts"]
     return {
         # Total controls plus the per-pillar sub-totals (also derived from graph).
-        "controls":  {counts["controls"], 16, 17, 15, 14},
+        "controls":  {counts["controls"], 16, 17, 15},
         # Total playbooks plus the control-implementation and cross-cutting sub-totals.
         "playbooks": {
             counts["playbooks_total"],

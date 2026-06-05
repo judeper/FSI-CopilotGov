@@ -116,13 +116,13 @@ describe("D1 SPA smoke", () => {
     expect(isAuthored({ a: "TODO: x", b: "real" })).toBe(true);
   });
 
-  it("renders 62 control rows with drawer trigger + yes-bar badges when authored", async () => {
+  it("renders 63 control rows with drawer trigger + yes-bar badges when authored", async () => {
     const { document } = await initApp();
     const rows = document.querySelectorAll(".control-row");
-    expect(rows.length).toBe(62);
+    expect(rows.length).toBe(63);
     // Drawer trigger on every row
     const triggers = document.querySelectorAll(".control-drawer-trigger");
-    expect(triggers.length).toBe(62);
+    expect(triggers.length).toBe(63);
     // Facilitator toggle exists in Phase 1
     const facBtn = document.getElementById("facilitator-toggle");
     expect(facBtn).not.toBeNull();

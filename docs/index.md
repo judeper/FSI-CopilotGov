@@ -128,7 +128,7 @@ Examination-ready
 </div>
 <div class="arch-card arch-pillar">
 <strong>Operations</strong>
-14 Controls
+15 Controls
 </div>
 </div>
 </div>
