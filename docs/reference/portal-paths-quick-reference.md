@@ -205,6 +205,9 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 | Site creation settings | Settings > Site creation | Tenant-specific URL |
 | Restricted SharePoint Search | Settings > Search > Restricted SharePoint Search | Tenant-specific URL |
 | Copilot agents (SharePoint) | Settings > Copilot agents | Tenant-specific URL |
+| Data Access Governance reports | Reports > Data access governance | Tenant-specific URL |
+| Catalog management | Reports > Catalog management | Tenant-specific URL |
+| Agent access insights | Reports > Agent access insights | Tenant-specific URL |
 | Content type hub | Content services > Content type gallery | Tenant-specific URL |
 | Term store | Content services > Term store | Tenant-specific URL |
 | Migration center | Migration > Migration center | Tenant-specific URL |

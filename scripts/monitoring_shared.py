@@ -288,10 +288,17 @@ def find_affected_controls(url: str, docs_dir: Path) -> dict:
                 except Exception:
                     continue
 
-    # Scan playbooks
-    playbooks_dir = docs_dir / 'playbooks' / 'control-implementations'
-    if playbooks_dir.exists():
-        for control_dir in playbooks_dir.glob('*'):
+    # Scan playbooks — control-implementation playbooks are keyed by their
+    # control directory (e.g. "2.1"); cross-cutting operational playbooks
+    # (governance-operations, compliance-and-audit, incident-and-risk,
+    # regulatory-modules, getting-started) live in sibling folders and were
+    # previously invisible to the monitor. Scan both.
+    playbooks_root = docs_dir / 'playbooks'
+    impl_dir = playbooks_root / 'control-implementations'
+    if impl_dir.exists():
+        for control_dir in impl_dir.glob('*'):
+            if not control_dir.is_dir():
+                continue
             for playbook_file in control_dir.glob('*.md'):
                 try:
                     content = playbook_file.read_text(encoding='utf-8')
@@ -303,6 +310,26 @@ def find_affected_controls(url: str, docs_dir: Path) -> dict:
                             'playbook_type': playbook_type,
                             'file_path': str(playbook_file.relative_to(docs_dir)),
                             'priority': priority,
+                        })
+                except Exception:
+                    continue
+
+    # Cross-cutting playbook folders (everything under playbooks/ except
+    # control-implementations). These have no control_id, so key them by the
+    # cross-cutting folder name and scan recursively.
+    if playbooks_root.exists():
+        for section_dir in sorted(playbooks_root.glob('*')):
+            if not section_dir.is_dir() or section_dir.name == 'control-implementations':
+                continue
+            for playbook_file in section_dir.rglob('*.md'):
+                try:
+                    content = playbook_file.read_text(encoding='utf-8')
+                    if url in content:
+                        affected['playbooks'].append({
+                            'control_id': section_dir.name,
+                            'playbook_type': playbook_file.stem,
+                            'file_path': str(playbook_file.relative_to(docs_dir)),
+                            'priority': CLASSIFICATION_HIGH,
                         })
                 except Exception:
                     continue

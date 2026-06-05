@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-25T23:38:35Z",
+  "generatedAt": "2026-06-05T15:17:41Z",
   "counts": {
     "controls": 62,
     "pillars": 4,
@@ -15,7 +15,7 @@
       "pillar": 1,
       "title": "Control 1.1: Copilot Readiness Assessment and Data Hygiene",
       "path": "docs/controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -29,7 +29,7 @@
       "pillar": 1,
       "title": "Control 1.2: SharePoint Oversharing Detection and Remediation (DSPM for AI)",
       "path": "docs/controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Regulation S-P (Rule 248.30)",
@@ -41,7 +41,7 @@
       "pillar": 1,
       "title": "Control 1.3: Restricted SharePoint Search Configuration",
       "path": "docs/controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -53,7 +53,7 @@
       "pillar": 1,
       "title": "Control 1.4: Semantic Index Governance and Scope Control",
       "path": "docs/controls/pillar-1-readiness/1.4-semantic-index-governance.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -65,7 +65,7 @@
       "pillar": 1,
       "title": "Control 1.5: Sensitivity Label Taxonomy Review for Copilot",
       "path": "docs/controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
@@ -91,7 +91,7 @@
       "pillar": 1,
       "title": "Control 1.7: SharePoint Advanced Management Readiness for Copilot",
       "path": "docs/controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Examination Handbook (Information Security Booklet)"
@@ -102,7 +102,7 @@
       "pillar": 1,
       "title": "Control 1.8: Information Architecture Review",
       "path": "docs/controls/pillar-1-readiness/1.8-information-architecture-review.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -126,7 +126,7 @@
       "pillar": 1,
       "title": "Control 1.10: Vendor Risk Management for Microsoft AI Services",
       "path": "docs/controls/pillar-1-readiness/1.10-vendor-risk-management.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "OCC Bulletin 2023-17",
         "Interagency Guidance on Third-Party Relationships (2023)",
@@ -139,7 +139,7 @@
       "pillar": 1,
       "title": "Control 1.11: Organizational Change Management and Adoption Planning",
       "path": "docs/controls/pillar-1-readiness/1.11-change-management-adoption.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "FFIEC IT Handbook (Management)",
         "Interagency AI Guidance (2023)",
@@ -152,7 +152,7 @@
       "pillar": 1,
       "title": "Control 1.12: Training and Awareness Program",
       "path": "docs/controls/pillar-1-readiness/1.12-training-awareness.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "FINRA Rule 3110",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -178,7 +178,7 @@
       "pillar": 1,
       "title": "Control 1.14: Item-Level Permission Scanning",
       "path": "docs/controls/pillar-1-readiness/1.14-item-level-permission-scanning.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Rule 17a-4",
@@ -191,7 +191,7 @@
       "pillar": 1,
       "title": "Control 1.15: SharePoint Permissions Drift Detection",
       "path": "docs/controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Rule 17a-4",
@@ -205,7 +205,7 @@
       "pillar": 1,
       "title": "Control 1.16: Copilot Tuning Governance",
       "path": "docs/controls/pillar-1-readiness/1.16-copilot-tuning-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "GLBA §501(b)",
         "SR 11-7 / OCC Bulletin 2011-12 (interim — applicable to genAI per the 2026-13 exclusion)",
@@ -217,7 +217,7 @@
       "pillar": 2,
       "title": "Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions",
       "path": "docs/controls/pillar-2-security/2.1-dlp-policies-for-copilot.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "FINRA 4511",
         "SEC Reg S-P",
@@ -241,7 +241,7 @@
       "pillar": 2,
       "title": "Control 2.3: Conditional Access Policies for Copilot Workloads",
       "path": "docs/controls/pillar-2-security/2.3-conditional-access-policies.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "GLBA §501(b)",
         "NYDFS Part 500",
@@ -253,7 +253,7 @@
       "pillar": 2,
       "title": "Control 2.4: Information Barriers for Copilot (Chinese Wall)",
       "path": "docs/controls/pillar-2-security/2.4-information-barriers.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "SEC Rule 10b-5",
         "FINRA 5280",
@@ -276,7 +276,7 @@
       "pillar": 2,
       "title": "Control 2.6: Copilot Web Search and Web Grounding Controls",
       "path": "docs/controls/pillar-2-security/2.6-web-search-controls.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "Data Residency Considerations"
@@ -367,7 +367,7 @@
       "pillar": 2,
       "title": "Control 2.14: Declarative and SharePoint Agents Governance",
       "path": "docs/controls/pillar-2-security/2.14-declarative-agents-governance.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "GLBA §501(b)"
       ]
@@ -388,7 +388,7 @@
       "pillar": 2,
       "title": "Control 2.16: Federated Copilot Connector and Model Context Protocol (MCP) Governance",
       "path": "docs/controls/pillar-2-security/2.16-federated-connector-mcp-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P",
@@ -401,7 +401,7 @@
       "pillar": 2,
       "title": "Control 2.17: Cross-Tenant Agent Federation (MCP and Entra Agent ID)",
       "path": "docs/controls/pillar-2-security/2.17-cross-tenant-agent-federation.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P (248.30)",
@@ -439,7 +439,7 @@
       "pillar": 3,
       "title": "Control 3.3: eDiscovery for Copilot-Generated Content",
       "path": "docs/controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "SEC 17a-4 (Preservation of Records)",
         "FINRA 4511 (Books and Records)",
@@ -465,7 +465,7 @@
       "pillar": 3,
       "title": "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications",
       "path": "docs/controls/pillar-3-compliance/3.5-finra-2210-compliance.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "FINRA Rule 2210 (Communications with the Public)",
         "FINRA Rule 3110 — supervisory systems and WSPs",
@@ -480,7 +480,7 @@
       "pillar": 3,
       "title": "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)",
       "path": "docs/controls/pillar-3-compliance/3.6-supervision-oversight.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "FINRA 3110 (Supervision)",
         "FINRA 3120 (Supervisory Control System)",
@@ -493,7 +493,7 @@
       "pillar": 3,
       "title": "Control 3.7: Regulatory Reporting (FINRA, SEC, SOX, GLBA, CFPB UDAAP)",
       "path": "docs/controls/pillar-3-compliance/3.7-regulatory-reporting.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "FINRA 4530 (Reporting Requirements)",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR) (Internal Controls)",
@@ -506,7 +506,7 @@
       "pillar": 3,
       "title": "Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI)",
       "path": "docs/controls/pillar-3-compliance/3.8-model-risk-management.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "SR 26-2 / OCC Bulletin 2026-13 (Revised Guidance on Model Risk Management, April 2026 — supersedes SR 11-7 / OCC Bulletin 2011-12 but explicitly excludes generative and agentic AI; Copilot governance therefore continues to apply SR 11-7 / OCC Bulletin 2011-12 principles as the most recent applicable guidance)",
         "OCC Bulletin 2025-26 (Model Risk Management — Community Bank Proportionality)",
@@ -519,7 +519,7 @@
       "pillar": 3,
       "title": "Control 3.9: AI Disclosure, Transparency, and SEC Marketing Rule",
       "path": "docs/controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "SEC Marketing Rule (Rule 206(4)-1)",
         "SEC Regulation Best Interest (Reg BI)",
@@ -532,7 +532,7 @@
       "pillar": 3,
       "title": "Control 3.10: SEC Reg S-P -- Privacy of Consumer Financial Information",
       "path": "docs/controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "SEC Regulation S-P (17 CFR 248.30)",
         "GLBA Title V (Privacy)",
@@ -544,7 +544,7 @@
       "pillar": 3,
       "title": "Control 3.11: Record Keeping and Books-and-Records Compliance (SEC 17a-3/4, FINRA 4511)",
       "path": "docs/controls/pillar-3-compliance/3.11-record-keeping.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "SEC Rule 17a-3 (Records to Be Made)",
         "SEC Rule 17a-4 (Records to Be Preserved)",
@@ -556,7 +556,7 @@
       "pillar": 3,
       "title": "Control 3.12: Evidence Collection and Audit Attestation",
       "path": "docs/controls/pillar-3-compliance/3.12-evidence-collection.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
         "PCAOB Auditing Standards (AS 2201)",
@@ -568,7 +568,7 @@
       "pillar": 3,
       "title": "Control 3.13: FFIEC IT Examination Handbook Alignment",
       "path": "docs/controls/pillar-3-compliance/3.13-ffiec-alignment.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "FFIEC IT Examination Handbook (Information Security, Audit, Management, Operations Booklets)",
         "FFIEC Cybersecurity Assessment Tool (CAT)"
@@ -707,7 +707,7 @@
       "pillar": 4,
       "title": "Control 4.9: Incident Reporting and Root Cause Analysis",
       "path": "docs/controls/pillar-4-operations/4.9-incident-reporting.md",
-      "last_verified": "2026-05-24",
+      "last_verified": "2026-05-25",
       "regulatory_references": [
         "FINRA Rule 4530 (Reporting Requirements)",
         "GLBA §501(b)",
@@ -736,7 +736,7 @@
       "pillar": 4,
       "title": "Control 4.11: Microsoft Sentinel Integration for Copilot Events",
       "path": "docs/controls/pillar-4-operations/4.11-sentinel-integration.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "FFIEC IT Examination Handbook (Information Security)",
         "Sarbanes-Oxley §§302/404",
@@ -774,7 +774,7 @@
       "pillar": 4,
       "title": "Control 4.14: Copilot Studio Agent Lifecycle Governance",
       "path": "docs/controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-05",
       "regulatory_references": [
         "FFIEC IT Handbook (Operations Booklet)",
         "FINRA Rule 3110 (supervisory systems and WSPs)",
