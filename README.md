@@ -53,9 +53,9 @@ This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outloo
 | Pillar | Focus | Controls | Primary Admin Portals |
 |--------|-------|----------|-----------------------|
 | **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | 16 | Purview, SharePoint Admin, M365 Admin |
-| **2. Security & Protection** | DLP, sensitivity labels, conditional access, information barriers, Defender | 16 | Purview, Entra, Defender |
-| **3. Compliance & Audit** | Audit logging, retention, eDiscovery, FINRA 2210, supervision, regulatory reporting | 13 | Purview, M365 Admin |
-| **4. Operations & Monitoring** | Feature management, per-app toggles, analytics, cost tracking, incident response | 13 | M365 Admin, Viva Insights, Teams Admin |
+| **2. Security & Protection** | DLP, sensitivity labels, conditional access, information barriers, Defender | 17 | Purview, Entra, Defender |
+| **3. Compliance & Audit** | Audit logging, retention, eDiscovery, FINRA 2210, supervision, regulatory reporting | 15 | Purview, M365 Admin |
+| **4. Operations & Monitoring** | Feature management, per-app toggles, analytics, cost tracking, incident response | 15 | M365 Admin, Viva Insights, Teams Admin |
 
 ### Three Governance Levels
 
@@ -148,7 +148,7 @@ FSI-CopilotGov/
 │   ├── framework/          # Layer 1: Strategic governance documents
 │   ├── controls/           # Layer 2: Technical control specifications
 │   │   ├── pillar-1-readiness/    # 16 controls
-│   │   ├── pillar-2-security/     # 16 controls
+│   │   ├── pillar-2-security/     # 17 controls
 │   │   ├── pillar-3-compliance/   # 15 controls
 │   │   └── pillar-4-operations/   # 15 controls
 │   ├── playbooks/          # Layer 3: Implementation procedures
@@ -190,8 +190,8 @@ FSI-CopilotGov/
 | **Pillars** | Security, Management, Reporting, SharePoint | Readiness, Security, Compliance, Operations |
 | **Governance Model** | Zones 1-2-3 (Personal/Team/Enterprise agents) | Org-wide with Baseline/Recommended/Regulated levels |
 | **Key Concepts** | Managed Environments, Connectors, DLP Connector Policies | Semantic Index, Graph grounding, Restricted SharePoint Search, DSPM for AI |
-| **Controls** | 71 | 58 |
-| **Playbooks** | 284 | 243 |
+| **Controls** | 71 | 63 |
+| **Playbooks** | 284 | 268 |
 
 Both repositories are **standalone** — no cross-repo dependencies. Where governance topics overlap (e.g., sensitivity labels, audit logging), each repo provides self-contained guidance tailored to its scope.
 

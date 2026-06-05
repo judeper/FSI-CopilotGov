@@ -4,7 +4,7 @@ These tests verify that ``assessment/engine/score.py``:
 
 * loads the live ``assessment/manifest/controls.json`` manifest
 * runs end-to-end against an empty collected/ directory
-* scores all 63 controls without crashing
+* scores every control without crashing
 * produces a well-formed scores.json envelope
 
 A separate test suite (extensible) covers per-evaluator semantics with
@@ -21,15 +21,20 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ENGINE_DIR = REPO_ROOT / "assessment" / "engine"
 MANIFEST = REPO_ROOT / "assessment" / "manifest" / "controls.json"
+CONTENT_GRAPH = REPO_ROOT / "assessment" / "manifest" / "content-graph.json"
+
+# Canonical counts come from the content graph (single source of truth);
+# tests assert engine output against it rather than hardcoded literals.
+COUNTS = json.loads(CONTENT_GRAPH.read_text(encoding="utf-8"))["counts"]
 
 sys.path.insert(0, str(ENGINE_DIR))
 import score as score_mod  # noqa: E402
 
 
-def test_manifest_exists_and_has_63_controls():
+def test_manifest_matches_content_graph_count():
     data = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert isinstance(data, list)
-    assert len(data) == 63
+    assert len(data) == COUNTS["controls"]
 
 
 @pytest.mark.parametrize("zone", [1, 2, 3])
@@ -46,23 +51,21 @@ def test_engine_runs_against_empty_collected_dir(tmp_path, zone):
     )
 
     assert output.is_file()
-    assert result["_metadata"]["total_controls"] == 63
+    assert result["_metadata"]["total_controls"] == COUNTS["controls"]
     assert result["_metadata"]["zone"] == zone
     # All controls scored; auto+manual must equal total
     assert (
         result["_metadata"]["auto_scored"]
         + result["_metadata"]["needs_manual"]
-        == 63
+        == COUNTS["controls"]
     )
     # Average maturity is a float in [0, 4]
     avg = result["summary"]["average_maturity"]
     assert 0.0 <= avg <= 4.0
-    # Per-pillar distribution is exactly 16/17/15/15
+    # Per-pillar distribution matches the content graph's by_pillar.
     by_pillar = result["summary"]["by_pillar"]
-    assert by_pillar["1"]["controls"] == 16
-    assert by_pillar["2"]["controls"] == 17
-    assert by_pillar["3"]["controls"] == 15
-    assert by_pillar["4"]["controls"] == 15
+    for pillar, expected in COUNTS["by_pillar"].items():
+        assert by_pillar[pillar]["controls"] == expected
 
 
 def test_engine_handles_envelope_shape(tmp_path):

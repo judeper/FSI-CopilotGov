@@ -3,7 +3,6 @@
 Loads `assessment/manifest/content-graph.json`, validates it against
 `content-graph.schema.json`, and enforces business rules:
 
-  * All 63 controls are present.
   * Control IDs are unique.
   * Every playbook ``control_refs`` entry points at a known control.
   * Every solution ``control_coverage`` entry points at a known control.
@@ -22,8 +21,6 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 GRAPH_PATH = REPO_ROOT / "assessment" / "manifest" / "content-graph.json"
 SCHEMA_PATH = REPO_ROOT / "assessment" / "manifest" / "content-graph.schema.json"
-
-EXPECTED_CONTROL_COUNT = 63
 
 
 def _load_json(path: Path) -> dict:
@@ -52,11 +49,6 @@ def validate(graph: dict, schema: dict) -> list[str]:
     playbooks = graph.get("playbooks", [])
     solutions = graph.get("solutions", [])
     counts = graph.get("counts", {})
-
-    if len(controls) != EXPECTED_CONTROL_COUNT:
-        errors.append(
-            f"expected {EXPECTED_CONTROL_COUNT} controls, found {len(controls)}"
-        )
 
     ids: list[str] = [c.get("id", "") for c in controls]
     seen: set[str] = set()
@@ -90,9 +82,14 @@ def validate(graph: dict, schema: dict) -> list[str]:
 
     pb_ctrl = sum(1 for p in playbooks if p.get("type") == "control-implementation")
     pb_cross = sum(1 for p in playbooks if p.get("type") == "cross-cutting")
+    by_pillar: dict[str, int] = {}
+    for c in controls:
+        key = str(c.get("pillar"))
+        by_pillar[key] = by_pillar.get(key, 0) + 1
     expected_counts = {
         "controls": len(controls),
         "pillars": len({c.get("pillar") for c in controls}),
+        "by_pillar": {k: by_pillar[k] for k in sorted(by_pillar, key=int)},
         "playbooks_total": len(playbooks),
         "playbooks_control": pb_ctrl,
         "playbooks_cross_cutting": pb_cross,

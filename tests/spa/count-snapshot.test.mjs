@@ -47,14 +47,15 @@ describe("count snapshot — manifest / content-graph / SPA data agree", () => {
     }
   });
 
-  it("per-pillar control counts match expected distribution (16/17/15/15)", () => {
+  it("per-pillar control counts match content-graph counts.by_pillar", () => {
     const byPillar = MANIFEST.reduce((acc, c) => {
       acc[c.pillar] = (acc[c.pillar] || 0) + 1;
       return acc;
     }, {});
-    expect(byPillar[1]).toBe(16);
-    expect(byPillar[2]).toBe(17);
-    expect(byPillar[3]).toBe(15);
-    expect(byPillar[4]).toBe(15);
+    const expected = GRAPH.counts.by_pillar;
+    expect(Object.keys(expected).length).toBeGreaterThan(0);
+    for (const [pillar, n] of Object.entries(expected)) {
+      expect(byPillar[Number(pillar)], `pillar ${pillar}`).toBe(n);
+    }
   });
 });

@@ -20,6 +20,7 @@
       "required": [
         "controls",
         "pillars",
+        "by_pillar",
         "playbooks_total",
         "playbooks_control",
         "playbooks_cross_cutting",
@@ -29,6 +30,14 @@
       "properties": {
         "controls": {"type": "integer", "minimum": 0},
         "pillars": {"type": "integer", "minimum": 0},
+        "by_pillar": {
+          "type": "object",
+          "description": "Control count per pillar, keyed by pillar number as a string.",
+          "patternProperties": {
+            "^[1-9][0-9]*$": {"type": "integer", "minimum": 0}
+          },
+          "additionalProperties": false
+        },
         "playbooks_total": {"type": "integer", "minimum": 0},
         "playbooks_control": {"type": "integer", "minimum": 0},
         "playbooks_cross_cutting": {"type": "integer", "minimum": 0},

@@ -5,29 +5,30 @@ import { initApp } from "./_bootstrap.mjs";
 async function init() { return initApp({ step: "solutions" }); }
 
 describe("solutions catalog view (edge cases)", () => {
-  it("renders all 23 solutions as catalog cards with a coverage badge each", async () => {
-    const { document } = await init();
+  it("renders all solutions as catalog cards with a coverage badge each", async () => {
+    const { document, app } = await init();
     const cards = document.querySelectorAll(".solution-catalog-card");
-    expect(cards.length).toBe(23);
+    expect(cards.length).toBe(app.solutionsLock.solutions.length);
     cards.forEach((c) => {
       expect(c.querySelector(".solution-catalog-coverage")).not.toBeNull();
       expect(c.getAttribute("data-solution-id")).toBeTruthy();
     });
   });
 
-  it("tier chips narrow to exactly the tier's solutions and empty-search shows all 23", async () => {
-    const { document } = await init();
+  it("tier chips narrow to exactly the tier's solutions and empty-search shows all", async () => {
+    const { document, app } = await init();
+    const totalSolutions = app.solutionsLock.solutions.length;
     const t1 = document.querySelector('.solutions-filter-chip[data-filter-tier="1"]');
     t1.click();
     const tier1Cards = document.querySelectorAll(".solution-catalog-card");
     expect(tier1Cards.length).toBeGreaterThan(0);
-    expect(tier1Cards.length).toBeLessThan(23);
+    expect(tier1Cards.length).toBeLessThan(totalSolutions);
     tier1Cards.forEach((c) => {
       expect(c.querySelector(".tier-1")).not.toBeNull();
     });
     // Reset.
     document.querySelector('.solutions-filter-chip[data-filter-tier="all"]').click();
-    expect(document.querySelectorAll(".solution-catalog-card").length).toBe(23);
+    expect(document.querySelectorAll(".solution-catalog-card").length).toBe(totalSolutions);
   });
 
   it("tier + domain filters compose (intersection)", async () => {
@@ -76,7 +77,7 @@ describe("solutions catalog view (edge cases)", () => {
     f.search = "";
     app.render();
     cards = app.el.querySelectorAll(".solution-catalog-card");
-    expect(cards.length).toBe(23);
+    expect(cards.length).toBe(app.solutionsLock.solutions.length);
   });
 
   it("reverse-lookup for 01-copilot-readiness-scanner returns ≥ 1 controls with well-formed ids", async () => {
@@ -97,7 +98,7 @@ describe("solutions catalog view (edge cases)", () => {
       const badge = card.querySelector(".solution-catalog-coverage");
       const expected = String(app.getControlsForSolution(sid).length);
       expect(badge.getAttribute("data-coverage-count"), `coverage ${sid}`).toBe(expected);
-      expect(badge.textContent).toMatch(/Covers \d+ of 63/);
+      expect(badge.textContent).toMatch(/Covers \d+ of \d+/);
     });
   });
 

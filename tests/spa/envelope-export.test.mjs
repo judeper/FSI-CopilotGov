@@ -6,26 +6,28 @@ import { initApp } from "./_bootstrap.mjs";
 describe("envelope export / import (edge cases)", () => {
   it("empty assessment exports a valid envelope with all-zero summary", async () => {
     const { app } = await initApp({ step: "export" });
+    const total = app.data.controls.length;
     const env = app.buildEnvelope();
     expect(env.schemaVersion).toBe("fsi-copilotgov-envelope/0.1.0");
-    expect(env.answers).toHaveLength(63);
+    expect(env.answers).toHaveLength(total);
     expect(env.answers.every((a) => a.answer === null)).toBe(true);
     expect(env.summary.yes).toBe(0);
     expect(env.summary.partial).toBe(0);
     expect(env.summary.no).toBe(0);
     expect(env.summary.na).toBe(0);
-    expect(env.summary.unanswered).toBe(63);
+    expect(env.summary.unanswered).toBe(total);
     expect(env.summary.overall).toBe(0);
     expect(env.summary.maturityLevel).toBe("Not assessed");
   });
 
   it("partial (Pillar 1 only) export reports per-pillar scores with zero for unanswered pillars", async () => {
     const { app } = await initApp({ step: "export" });
+    const total = app.data.controls.length;
     // Answer one Pillar-1 control yes; leave Pillars 2/3/4 untouched.
     app.state.responses["1.2"] = { answer: "yes", notes: "" };
     const env = app.buildEnvelope();
     expect(env.summary.yes).toBe(1);
-    expect(env.summary.unanswered).toBe(62);
+    expect(env.summary.unanswered).toBe(total - 1);
     expect(env.summary.scoreByPillar).toBeTypeOf("object");
     // Pillars 2-4 unanswered → their scores are zero (not undefined).
     [2, 3, 4].forEach((p) => {

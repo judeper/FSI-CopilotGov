@@ -23,7 +23,7 @@ Use this checklist to track implementation of all {{ counts.controls }} controls
 
 ---
 
-## Pillar 1: Readiness and Assessment (16 controls)
+## Pillar 1: Readiness and Assessment ({{ pillar_count(1) }} controls)
 
 Pre-deployment data hygiene, oversharing remediation, permissions audit, sensitivity label review, licensing, vendor risk, change management, and extensibility readiness.
 
@@ -49,7 +49,7 @@ Pre-deployment data hygiene, oversharing remediation, permissions audit, sensiti
 
 ---
 
-## Pillar 2: Security and Protection (17 controls)
+## Pillar 2: Security and Protection ({{ pillar_count(2) }} controls)
 
 DLP, sensitivity labels, conditional access, information barriers, data minimization, encryption, Defender integration, and extensibility security.
 
@@ -77,7 +77,7 @@ DLP, sensitivity labels, conditional access, information barriers, data minimiza
 
 ---
 
-## Pillar 3: Compliance and Audit (15 Controls)
+## Pillar 3: Compliance and Audit ({{ pillar_count(3) }} Controls)
 
 Audit logging, retention, eDiscovery, communication compliance, FINRA/SEC record-keeping, supervisory review, model risk management, and regulatory reporting.
 
@@ -101,7 +101,7 @@ Audit logging, retention, eDiscovery, communication compliance, FINRA/SEC record
 
 ---
 
-## Pillar 4: Operations and Monitoring (15 Controls)
+## Pillar 4: Operations and Monitoring ({{ pillar_count(4) }} Controls)
 
 Admin settings, per-app configuration, analytics, Viva governance, cost tracking, incident response, Sentinel SIEM, and change management.
 
@@ -132,7 +132,7 @@ Admin settings, per-app configuration, analytics, Viva governance, cost tracking
 | **Baseline (B)** | 6 | 6 | 3 | 3 | **18** |
 | **Recommended (R)** | 7 | 8 | 6 | 11 | **32** |
 | **Regulated (Reg)** | 3 | 3 | 6 | 1 | **13** |
-| **Pillar Total** | **16** | **17** | **15** | **15** | **{{ counts.controls }}** |
+| **Pillar Total** | **{{ pillar_count(1) }}** | **{{ pillar_count(2) }}** | **{{ pillar_count(3) }}** | **{{ pillar_count(4) }}** | **{{ counts.controls }}** |
 
 !!! tip "Implementation Priority"
     - **Phase 1 (Pre-deployment):** All Baseline controls

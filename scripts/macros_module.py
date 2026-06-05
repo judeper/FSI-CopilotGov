@@ -25,6 +25,7 @@ GRAPH_PATH = Path(__file__).parent.parent / "assessment" / "manifest" / "content
 _FALLBACK_GRAPH = {
     "counts": {
         "controls": 0,
+        "by_pillar": {},
         "playbooks_total": 0,
         "playbooks_control": 0,
         "playbooks_cross_cutting": 0,
@@ -98,4 +99,16 @@ def define_env(env):
         env.macro(agentgov_boundary)
     else:
         env.variables["agentgov_boundary"] = agentgov_boundary
+
+    def pillar_count(pillar) -> int:
+        """Control count for a given pillar number, sourced from the content
+        graph's ``counts.by_pillar`` so per-pillar prose never hardcodes a
+        literal. Returns 0 if the pillar is unknown."""
+        by_pillar = (graph.get("counts", {}) or {}).get("by_pillar", {}) or {}
+        return int(by_pillar.get(str(pillar), 0))
+
+    if hasattr(env, "macro"):
+        env.macro(pillar_count)
+    else:
+        env.variables["pillar_count"] = pillar_count
 

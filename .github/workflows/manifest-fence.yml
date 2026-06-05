@@ -32,11 +32,14 @@ jobs:
       - name: Verify language rules
         run: python scripts/verify_language_rules.py
 
-      - name: Build content graph (canonical metadata)
-        run: python scripts/build_content_graph.py
+      - name: Check content graph is up to date (canonical metadata)
+        run: python scripts/build_content_graph.py --check
 
       - name: Validate content graph
         run: python scripts/validate_content_graph.py
+
+      - name: Content graph tripwire (explicit count check)
+        run: pytest scripts/test_content_graph_smoke.py -v
 
       - name: Verify README/AGENTS counts vs content graph
         run: python scripts/verify_readme_counts.py

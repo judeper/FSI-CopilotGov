@@ -11,6 +11,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 LOCK = ROOT / "assessment" / "data" / "solutions-lock.json"
 MANIFEST = ROOT / "assessment" / "manifest" / "controls.json"
+CONTENT_GRAPH = ROOT / "assessment" / "manifest" / "content-graph.json"
 
 # Make scripts/ importable so we can assert against the canonical PINNED_REF
 # constant rather than hardcoding a version string in the test.
@@ -18,10 +19,15 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import generate_solutions_lock  # noqa: E402
 
 EXPECTED_SCHEMA = "0.1.0"
-# Sister repo catalog currently lists both `19-copilot-tuning-governance`
-# and `19-agent-lifecycle-governance` (a known sister-repo-internal
-# duplicate, tracked as a follow-up). Update when sister deduplicates.
-EXPECTED_SOLUTION_COUNT = 23
+# Solution count is derived from the canonical content graph (built from the
+# same lock) so it stays a cross-check against the committed graph rather than a
+# scattered literal. The single explicit literal lives in the content-graph
+# smoke tripwire. The sister repo catalog currently lists both
+# `19-copilot-tuning-governance` and `19-agent-lifecycle-governance` (a known
+# sister-repo-internal duplicate, tracked as a follow-up).
+EXPECTED_SOLUTION_COUNT = json.loads(
+    CONTENT_GRAPH.read_text(encoding="utf-8")
+)["counts"]["solutions"]
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
