@@ -21,7 +21,7 @@ M365 Copilot scope:
 
 * No PPAC / Power Platform collectors (Copilot stack only).
 * Pillar names: Readiness, Security, Compliance, Operations.
-* 62 controls across 4 pillars (16 / 17 / 15 / 14).
+* 63 controls across 4 pillars (16 / 17 / 15 / 15).
 """
 from __future__ import annotations
 
@@ -138,6 +138,7 @@ CONTROLS = [
     ("4.12", "4.12-change-management-rollouts.md",             4, "manual",  [], "Are Copilot feature releases (Microsoft-managed and tenant-managed) tracked and risk-reviewed before user enablement?"),
     ("4.13", "4.13-extensibility-governance.md",               4, "manual",  [], "Are extensibility surfaces (declarative agents, MCP, plug-ins) governed by an approval and inventory process before publication?"),
     ("4.14", "4.14-copilot-studio-agent-lifecycle.md",         4, "manual",  [], "Is the Copilot Studio agent lifecycle (authoring → testing → publishing → versioning → deprecation) governed with documented evidence at each gate?"),
+    ("4.15", "4.15-copilot-cowork-governance.md",              4, "manual",  [], "Is Microsoft 365 Copilot Cowork (Frontier preview) governed with deliberate availability, plugin, and supervision decisions before broad enablement?"),
 ]
 
 

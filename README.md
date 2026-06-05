@@ -14,7 +14,7 @@
 
 ## What This Is
 
-A technical documentation framework providing **62 controls** and **264 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments. (Counts in published documentation are rendered from the canonical `assessment/manifest/content-graph.json`; this README is plain GitHub Markdown and quotes the same numbers verbatim.)
+A technical documentation framework providing **63 controls** and **268 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments. (Counts in published documentation are rendered from the canonical `assessment/manifest/content-graph.json`; this README is plain GitHub Markdown and quotes the same numbers verbatim.)
 
 This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat (Basic & Premium tiers), Copilot Pages**, and **SharePoint agents** — plus extensibility via **plugins, Graph connectors, declarative agents, and Agents 365**.
 
@@ -45,7 +45,7 @@ This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outloo
 | Layer | Purpose | Content |
 |-------|---------|---------|
 | **Framework** (Strategic) | Board/executive governance context | Executive summary, regulatory landscape, architecture, operating model |
-| **Controls** (Technical) | What to configure and why | 62 controls across 4 lifecycle pillars with FSI regulatory mappings |
+| **Controls** (Technical) | What to configure and why | 63 controls across 4 lifecycle pillars with FSI regulatory mappings |
 | **Playbooks** (Implementation) | How to configure step-by-step | Portal walkthroughs, PowerShell automation, verification, troubleshooting |
 
 ### Four Lifecycle Pillars
@@ -90,7 +90,7 @@ Each control provides tiered implementation guidance:
 
 Released April 2026. Full notes: [Release Notes v1.4](docs/reference/release-notes-v1.4.md).
 
-- **Python assessment engine** (`assessment/engine/`) scores collector evidence against the 62-control manifest.
+- **Python assessment engine** (`assessment/engine/`) scores collector evidence against the 63-control manifest.
 - **Evidence collectors** (`assessment/collectors/`) for Microsoft Graph, Purview, SharePoint, and Sentinel.
 - **Schema-validated control manifest** (`assessment/manifest/controls.json`) drives both the engine and the SPA.
 - **Governance Scorecard SPA** upgrades: role filter, quick-start mode (5 foundation controls), sector calibration (8 FSI types), "how to verify" drawer, facilitator mode, zone auto-exclusion, collector evidence import, versioned portal export envelope, inline solutions catalog.
@@ -150,7 +150,7 @@ FSI-CopilotGov/
 │   │   ├── pillar-1-readiness/    # 16 controls
 │   │   ├── pillar-2-security/     # 16 controls
 │   │   ├── pillar-3-compliance/   # 15 controls
-│   │   └── pillar-4-operations/   # 14 controls
+│   │   └── pillar-4-operations/   # 15 controls
 │   ├── playbooks/          # Layer 3: Implementation procedures
 │   │   ├── control-implementations/  # 4 playbooks per control
 │   │   ├── getting-started/          # Phased deployment guides

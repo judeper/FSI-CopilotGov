@@ -187,9 +187,9 @@ def test_engine_e2e_against_synthetic_tenant(tmp_path, shape, payload_factory):
     )
 
     md = result["_metadata"]
-    assert md["total_controls"] == 62
+    assert md["total_controls"] == 63
     assert md["zone"] == 2
-    assert md["auto_scored"] + md["needs_manual"] == 62
+    assert md["auto_scored"] + md["needs_manual"] == 63
 
     avg = result["summary"]["average_maturity"]
     assert 0.0 <= avg <= 4.0

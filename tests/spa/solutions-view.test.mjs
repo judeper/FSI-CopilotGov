@@ -97,7 +97,7 @@ describe("solutions catalog view (edge cases)", () => {
       const badge = card.querySelector(".solution-catalog-coverage");
       const expected = String(app.getControlsForSolution(sid).length);
       expect(badge.getAttribute("data-coverage-count"), `coverage ${sid}`).toBe(expected);
-      expect(badge.textContent).toMatch(/Covers \d+ of 62/);
+      expect(badge.textContent).toMatch(/Covers \d+ of 63/);
     });
   });
 

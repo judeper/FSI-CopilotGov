@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-06-05T15:17:41Z",
+  "generatedAt": "2026-06-05T19:23:37Z",
   "counts": {
-    "controls": 62,
+    "controls": 63,
     "pillars": 4,
-    "playbooks_total": 264,
-    "playbooks_control": 245,
+    "playbooks_total": 268,
+    "playbooks_control": 249,
     "playbooks_cross_cutting": 19,
     "solutions": 23
   },
@@ -782,6 +782,20 @@
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
         "12 CFR part 30",
         "appendix D (OCC Heightened Standards)"
+      ]
+    },
+    {
+      "id": "4.15",
+      "pillar": 4,
+      "title": "Control 4.15: Copilot Cowork Governance",
+      "path": "docs/controls/pillar-4-operations/4.15-copilot-cowork-governance.md",
+      "last_verified": "2026-05-25",
+      "regulatory_references": [
+        "FFIEC IT Examination Handbook",
+        "GLBA §501(b)",
+        "Sarbanes-Oxley §§302/404",
+        "OCC Heightened Standards (12 CFR part 30, appendix D)",
+        "FINRA Rule 3110"
       ]
     }
   ],
@@ -2283,6 +2297,34 @@
       "type": "control-implementation",
       "control_refs": [
         "4.14"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.15/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.15/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.15/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.15/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.15"
       ]
     },
     {

@@ -13,10 +13,10 @@ BUILD_SCRIPT = REPO_ROOT / "scripts" / "build_content_graph.py"
 VALIDATE_SCRIPT = REPO_ROOT / "scripts" / "validate_content_graph.py"
 
 EXPECTED = {
-    "controls": 62,
+    "controls": 63,
     "pillars": 4,
-    "playbooks_total": 264,
-    "playbooks_control": 245,
+    "playbooks_total": 268,
+    "playbooks_control": 249,
     "playbooks_cross_cutting": 19,
     "solutions": 23,
 }

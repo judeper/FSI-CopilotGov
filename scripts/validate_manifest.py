@@ -37,8 +37,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_DEFAULT = ROOT / "assessment" / "manifest" / "controls.json"
 DOCS_BASE = ROOT / "docs"
 
-EXPECTED_COUNT = 62
-EXPECTED_BY_PILLAR = {1: 16, 2: 17, 3: 15, 4: 14}
+EXPECTED_COUNT = 63
+EXPECTED_BY_PILLAR = {1: 16, 2: 17, 3: 15, 4: 15}
 PILLARS = {1, 2, 3, 4}
 AUTOMATION_VALUES = {"full", "partial", "manual"}
 

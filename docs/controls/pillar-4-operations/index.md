@@ -2,7 +2,7 @@
 
 **Pillar Focus:** Operational governance, ongoing monitoring, and lifecycle management of Microsoft 365 Copilot in financial services environments.
 
-**Controls:** 14
+**Controls:** 15
 **Primary Admin Portals:** M365 Admin Center, Microsoft Sentinel, Microsoft Viva Insights, Teams Admin Center
 
 ---
@@ -13,7 +13,7 @@ Pillar 4 addresses the operational governance and ongoing monitoring controls re
 
 Financial regulators expect that institutions do not merely deploy technology controls -- they demonstrate ongoing operational effectiveness. Sarbanes-Oxley §§302/404 requires evidence of control monitoring, the FFIEC expects continuous risk management, and FINRA Rule 3110 requires supervisory systems that adapt to the firm's evolving business model. Pillar 4 controls provide the operational backbone that transforms static policies into living governance.
 
-These controls span five operational domains: administrative management (Controls 4.1-4.4), analytics and measurement (Controls 4.5-4.8), incident and resilience management (Controls 4.9-4.10), security monitoring (Control 4.11), and lifecycle governance (Controls 4.12-4.14).
+These controls span five operational domains: administrative management (Controls 4.1-4.4), analytics and measurement (Controls 4.5-4.8), incident and resilience management (Controls 4.9-4.10), security monitoring (Control 4.11), and lifecycle governance (Controls 4.12-4.15).
 
 !!! warning "Disclaimer"
     This framework is provided for informational purposes only and does not constitute legal, regulatory, or compliance advice. See [full disclaimer](../../disclaimer.md).
@@ -52,6 +52,7 @@ Key regulatory drivers for operational governance:
 | [4.12](4.12-change-management-rollouts.md) | Change Management for Copilot Feature Rollouts | Sarbanes-Oxley §§302/404, FFIEC | High |
 | [4.13](4.13-extensibility-governance.md) | Copilot Extensibility and Agent Operations Governance | GLBA §501(b), FFIEC, OCC | High |
 | [4.14](4.14-copilot-studio-agent-lifecycle.md) | Copilot Studio Agent Lifecycle Governance | FFIEC, FINRA 3110, OCC, SOX | High |
+| [4.15](4.15-copilot-cowork-governance.md) | Copilot Cowork Governance | FFIEC, GLBA §501(b), SOX §§302/404, OCC, FINRA 3110 | High |
 
 ---
 
@@ -61,16 +62,16 @@ The following regulations are addressed by Pillar 4 controls:
 
 | Regulation | Section | Controls |
 |------------|---------|----------|
-| **SOX** | Section 404 -- Internal Controls | 4.1, 4.5, 4.6, 4.8, 4.11, 4.12, 4.13, 4.14 |
-| **FFIEC** | IT Examination Handbook | 4.1, 4.5, 4.8, 4.10, 4.11, 4.12, 4.13, 4.14 |
-| **FINRA** | Rule 3110 -- Supervision | 4.2, 4.3, 4.14 |
+| **SOX** | Section 404 -- Internal Controls | 4.1, 4.5, 4.6, 4.8, 4.11, 4.12, 4.13, 4.14, 4.15 |
+| **FFIEC** | IT Examination Handbook | 4.1, 4.5, 4.8, 4.10, 4.11, 4.12, 4.13, 4.14, 4.15 |
+| **FINRA** | Rule 3110 -- Supervision | 4.2, 4.3, 4.14, 4.15 |
 | **FINRA** | Rule 4511 -- Books and Records | 4.2, 4.3 |
 | **FINRA** | Rule 4370 -- Business Continuity Plans | 4.10 |
 | **FINRA** | Rule 4530 -- Reporting Requirements | 4.9 |
 | **SEC** | Rule 17a-4 -- Retention | 4.2 |
-| **GLBA** | §501(b) | 4.3, 4.4, 4.7, 4.9, 4.11, 4.13 |
+| **GLBA** | §501(b) | 4.3, 4.4, 4.7, 4.9, 4.11, 4.13, 4.15 |
 | **NYDFS** | Part 500 -- Cybersecurity | 4.9, 4.11 |
-| **OCC** | Heightened Standards / 12 CFR 30 | 4.9, 4.10, 4.13, 4.14 |
+| **OCC** | Heightened Standards / 12 CFR 30 | 4.9, 4.10, 4.13, 4.14, 4.15 |
 
 ---
 
@@ -99,7 +100,8 @@ Phase 4: Optimization and Lifecycle (Week 7-8)
 ├── Control 4.6  Viva Insights Impact Measurement
 ├── Control 4.8  Cost Allocation and License Optimization
 ├── Control 4.13 Extensibility Governance
-└── Control 4.14 Copilot Studio Agent Lifecycle Governance
+├── Control 4.14 Copilot Studio Agent Lifecycle Governance
+└── Control 4.15 Copilot Cowork Governance
 ```
 
 ### Dependencies
@@ -122,6 +124,7 @@ Phase 4: Optimization and Lifecycle (Week 7-8)
 | 4.12 Change Management | 4.1 Admin Settings | Changes assessed against admin settings baseline |
 | 4.13 Extensibility | 1.13 Readiness, 2.13 Security | Lifecycle governance builds on readiness and security assessment |
 | 4.14 Copilot Studio | 1.10 Vendor Risk, 4.13 Extensibility | Studio lifecycle complements extensibility governance |
+| 4.15 Copilot Cowork | 1.10 Vendor Risk, 4.13 Extensibility | Preview agentic capability governed alongside extensibility and vendor-risk intake |
 
 ---
 

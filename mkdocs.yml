@@ -199,6 +199,7 @@ nav:
       - 4.12 Change Management for Rollouts: controls/pillar-4-operations/4.12-change-management-rollouts.md
       - 4.13 Extensibility Governance: controls/pillar-4-operations/4.13-extensibility-governance.md
       - 4.14 Copilot Studio Agent Lifecycle: controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md
+      - 4.15 Copilot Cowork Governance: controls/pillar-4-operations/4.15-copilot-cowork-governance.md
 
   - Governance Scorecard: assessment/index.md
 
@@ -515,6 +516,11 @@ nav:
           - PowerShell Setup: playbooks/control-implementations/4.14/powershell-setup.md
           - Verification: playbooks/control-implementations/4.14/verification-testing.md
           - Troubleshooting: playbooks/control-implementations/4.14/troubleshooting.md
+        - 4.15 Copilot Cowork Governance:
+          - Portal Walkthrough: playbooks/control-implementations/4.15/portal-walkthrough.md
+          - PowerShell Setup: playbooks/control-implementations/4.15/powershell-setup.md
+          - Verification: playbooks/control-implementations/4.15/verification-testing.md
+          - Troubleshooting: playbooks/control-implementations/4.15/troubleshooting.md
     - Getting Started:
       - Phase 0 - Governance Setup: playbooks/getting-started/phase-0-governance-setup.md
       - Phase 1 - Pilot Deployment: playbooks/getting-started/phase-1-pilot-deployment.md

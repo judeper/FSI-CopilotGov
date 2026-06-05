@@ -37,19 +37,19 @@ PILLARS = {
     1: {"name": "Readiness & Assessment", "folder": "pillar-1-readiness", "count": 16},
     2: {"name": "Security & Protection", "folder": "pillar-2-security", "count": 17},
     3: {"name": "Compliance & Audit", "folder": "pillar-3-compliance", "count": 15},
-    4: {"name": "Operations & Monitoring", "folder": "pillar-4-operations", "count": 14},
+    4: {"name": "Operations & Monitoring", "folder": "pillar-4-operations", "count": 15},
 }
 
 # Role-to-control assignments (hardcoded — CopilotGov has no structured role sections)
 ROLE_CONTROLS = {
-    "M365 Global Admin": ["1.9", "1.11", "1.12", "4.1", "4.2", "4.3", "4.4", "4.5", "4.7", "4.8", "4.12"],
+    "M365 Global Admin": ["1.9", "1.11", "1.12", "4.1", "4.2", "4.3", "4.4", "4.5", "4.7", "4.8", "4.12", "4.15"],
     "Purview Compliance Admin": ["1.5", "2.1", "2.2", "2.5", "2.10", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"],
     "SharePoint Admin": ["1.1", "1.2", "1.3", "1.6", "1.7", "1.8", "1.14", "1.15", "2.11", "2.12"],
     "Entra Global Admin": ["2.3", "2.4", "2.15"],
     "Exchange Online Admin": ["2.8"],
     "Teams Admin": ["4.2", "4.3"],
     "Security Admin": ["2.6", "2.7", "2.9", "2.13", "2.14", "2.16", "4.9", "4.10", "4.11"],
-    "AI Governance Lead": ["1.4", "1.10", "1.13", "1.16", "3.13", "4.6", "4.13"],
+    "AI Governance Lead": ["1.4", "1.10", "1.13", "1.16", "3.13", "4.6", "4.13", "4.15"],
 }
 
 # Adoption phase mappings (from adoption roadmap)
@@ -89,6 +89,7 @@ PHASE_CONTROLS = {
             "4.3": "Medium", "4.4": "Medium", "4.6": "Medium",
             "4.7": "Medium", "4.8": "Medium", "4.9": "Medium",
             "4.10": "Medium", "4.11": "Medium", "4.12": "Medium", "4.13": "Medium",
+            "4.14": "Medium", "4.15": "Medium",
         },
     },
 }
@@ -511,12 +512,20 @@ def parse_control(pillar_num, ctrl_num):
     assigned_roles = get_roles_for_control(control_id)
     question_text = generate_question_text(objective)
 
-    # Build playbook paths
+    # Build playbook paths — only emit links for playbooks that exist on disk
+    # so preview-feature controls without authored playbooks (e.g. 4.15) don't
+    # render dead links in the SPA.
+    _playbook_dir = DOCS_DIR / "playbooks" / "control-implementations" / control_id
+    _playbook_files = {
+        "portalWalkthrough": "portal-walkthrough",
+        "powershellSetup": "powershell-setup",
+        "verificationTesting": "verification-testing",
+        "troubleshooting": "troubleshooting",
+    }
     playbooks = {
-        "portalWalkthrough": f"playbooks/control-implementations/{control_id}/portal-walkthrough/",
-        "powershellSetup": f"playbooks/control-implementations/{control_id}/powershell-setup/",
-        "verificationTesting": f"playbooks/control-implementations/{control_id}/verification-testing/",
-        "troubleshooting": f"playbooks/control-implementations/{control_id}/troubleshooting/",
+        key: f"playbooks/control-implementations/{control_id}/{slug}/"
+        for key, slug in _playbook_files.items()
+        if (_playbook_dir / f"{slug}.md").exists()
     }
 
     return {
@@ -600,9 +609,9 @@ def build_output():
             else:
                 errors.append(f"{pillar_num}.{ctrl_num}")
 
-    # Validate we got all 62 controls
-    if len(controls) != 62:
-        print(f"\nERROR: Expected 62 controls, got {len(controls)}")
+    # Validate we got all 63 controls
+    if len(controls) != 63:
+        print(f"\nERROR: Expected 63 controls, got {len(controls)}")
         if errors:
             print(f"  Missing: {', '.join(errors)}")
         return None

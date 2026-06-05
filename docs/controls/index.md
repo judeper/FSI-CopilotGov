@@ -81,7 +81,7 @@ Audit logging, retention, eDiscovery, communication compliance, and regulatory r
 
 ---
 
-### Pillar 4: Operations & Monitoring (14 Controls)
+### Pillar 4: Operations & Monitoring (15 Controls)
 
 Feature management, per-app toggles, usage analytics, cost tracking, and incident response.
 
@@ -101,6 +101,7 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 | 4.12 | [Change Management for Copilot Feature Rollouts](pillar-4-operations/4.12-change-management-rollouts.md) | Baseline |
 | 4.13 | [Copilot Extensibility Governance](pillar-4-operations/4.13-extensibility-governance.md) | Recommended |
 | 4.14 | [Copilot Studio Agent Lifecycle Governance](pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md) | Recommended |
+| 4.15 | [Copilot Cowork Governance](pillar-4-operations/4.15-copilot-cowork-governance.md) | Recommended |
 
 ---
 
@@ -111,8 +112,8 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 | 1. Readiness & Assessment | 16 | 7 | 7 | 2 |
 | 2. Security & Protection | 17 | 7 | 7 | 3 |
 | 3. Compliance & Audit | 15 | 3 | 6 | 6 |
-| 4. Operations & Monitoring | 14 | 5 | 8 | 1 |
-| **Total** | **{{ counts.controls }}** | **22** | **28** | **12** |
+| 4. Operations & Monitoring | 15 | 5 | 9 | 1 |
+| **Total** | **{{ counts.controls }}** | **22** | **29** | **12** |
 
 ---
 

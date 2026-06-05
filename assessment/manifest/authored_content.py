@@ -1,4 +1,4 @@
-"""Authored manifest content for all 62 controls.
+"""Authored manifest content for all 63 controls.
 
 This module contains hand-authored values for the SPA-extension fields
 that require human judgment (yesBar/partialBar/noBar, priority,
@@ -8,12 +8,12 @@ evidenceExpected, collectorField).
 Used by ``scripts/merge_authored_content.py`` to overlay these values
 on top of the harvested manifest, replacing TODO placeholders.
 
-All 62 controls across the four governance pillars are covered:
+All 63 controls across the four governance pillars are covered:
 
 * Pillar 1 (Readiness): 16 controls (1.1–1.16)
 * Pillar 2 (Security): 17 controls (2.1–2.17)
 * Pillar 3 (Compliance): 15 controls (3.1–3.14 + 3.8a)
-* Pillar 4 (Operations): 14 controls (4.1–4.14)
+* Pillar 4 (Operations): 15 controls (4.1–4.15)
 
 The merge is **idempotent**: only fields present in this dict overwrite
 manifest values, and only when the manifest value is missing or starts
@@ -4045,6 +4045,63 @@ AUTHORED: dict[str, dict] = {
             "timeBudgetMinutes": 6,
         },
     },
+    # ---------------------------------------------------------------
+    # 4.15 — Copilot Cowork Governance
+    # ---------------------------------------------------------------
+    "4.15": {
+        "priority": "high",
+        "yesBar": (
+            "Microsoft 365 Copilot Cowork availability is set deliberately "
+            "(scoped to approved groups or blocked) rather than left at the "
+            "default of all users, with Frontier enrollment, plugin inventory, "
+            "deployment/pinning approvals, and supervision coverage documented."
+        ),
+        "partialBar": (
+            "Some Cowork governance exists but availability, plugin inventory, "
+            "or supervision/audit coverage is not fully documented or approved."
+        ),
+        "noBar": (
+            "Cowork is left at its default availability with no documented "
+            "governance, plugin inventory, or supervision review."
+        ),
+        "verifyIn": [
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Copilot > Agents > All agents > Cowork",
+                "url": "https://admin.microsoft.com/Adminportal/Home#/agents",
+            },
+        ],
+        "verifyPowerShell": "",
+        "evidenceExpected": [
+            "Frontier preview enrollment record for tenant and admin accounts",
+            "Cowork availability configuration (scoped group or blocked) with approval",
+            "Approved Cowork plugin inventory and connector authentication records",
+            "Deployment/pinning approvals and supervision/audit coverage evidence",
+        ],
+        "collectorField": "M365Admin_CoworkGovernance",
+        "sectorYesBar": _sector_map(
+            bank=(
+                "Cowork adoption treated as a change-control and operational-risk "
+                "event aligned to the FFIEC IT Examination Handbook and OCC "
+                "Heightened Standards (12 CFR part 30, appendix D)."
+            ),
+            broker_dealer=(
+                "Cowork availability for registered reps gated on supervisory "
+                "review of agentic outputs per FINRA Rule 3110 before enablement."
+            ),
+        ),
+        "facilitatorNotes": {
+            "ask": (
+                "Is Copilot Cowork governed with deliberate availability, plugin, "
+                "and supervision decisions before broad enablement?"
+            ),
+            "followUp": (
+                "Confirm Frontier enrollment, that availability is scoped (not "
+                "default-all), and that plugins and audit coverage are documented."
+            ),
+            "timeBudgetMinutes": 6,
+        },
+    },
 }
 
 # ---------------------------------------------------------------
@@ -4274,6 +4331,7 @@ _SOLUTIONS_BY_CONTROL: dict[str, list[dict]] = {
     '4.14': [
         {"id": '23-copilot-studio-lifecycle-tracker', "tier": 3, "role": 'primary'},
     ],
+    '4.15': [],
 }
 
 

@@ -47,7 +47,7 @@ The FSI Copilot Governance Framework uses a three-layer documentation model to s
 |  | Pillar 4:        |                                                      |
 |  | Operations &     |                                                      |
 |  | Monitoring       |                                                      |
-|  | (14 controls)    |                                                      |
+|  | (15 controls)    |                                                      |
 |  +------------------+                                                      |
 |                                                                            |
 +============================================================================+
@@ -77,7 +77,7 @@ This separation provides governance stability while allowing rapid updates to im
 |     PILLAR 1      |     PILLAR 2      |     PILLAR 3      |     PILLAR 4      |
 |    Readiness &    |    Security &     |   Compliance &    |   Operations &    |
 |    Assessment     |    Protection     |      Audit        |    Monitoring     |
-|   (16 controls)   |   (17 controls)   |   (15 controls)   |   (14 controls)   |
+|   (16 controls)   |   (17 controls)   |   (15 controls)   |   (15 controls)   |
 +-------------------+-------------------+-------------------+-------------------+
 | Data hygiene,     | DLP, labels,      | Audit logging,    | Feature toggles,  |
 | oversharing,      | conditional       | retention,        | analytics, cost,  |

@@ -138,6 +138,6 @@ describe("Phase C3 SPA solutions catalog", () => {
     expect(badge).not.toBeNull();
     const actual = app.getControlsForSolution("01-copilot-readiness-scanner").length;
     expect(badge.getAttribute("data-coverage-count")).toBe(String(actual));
-    expect(badge.textContent).toMatch(/Covers \d+ of 62/);
+    expect(badge.textContent).toMatch(/Covers \d+ of 63/);
   });
 });
