@@ -12,7 +12,7 @@ fails when the integer is not in the allowed set derived from
 
 Intentional historical references (CHANGELOG, dated release notes, this file
 itself, the verifier's own test) are exempted. Per-pillar control counts (16,
-17, 15, 14) are allowed everywhere because they describe sub-totals that are
+17, 15) are allowed everywhere because they describe sub-totals that are
 also derived from the graph.
 """
 from __future__ import annotations

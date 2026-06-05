@@ -513,8 +513,8 @@ def parse_control(pillar_num, ctrl_num):
     question_text = generate_question_text(objective)
 
     # Build playbook paths — only emit links for playbooks that exist on disk
-    # so preview-feature controls without authored playbooks (e.g. 4.15) don't
-    # render dead links in the SPA.
+    # so any control without an authored playbook file doesn't render a dead
+    # link in the SPA.
     _playbook_dir = DOCS_DIR / "playbooks" / "control-implementations" / control_id
     _playbook_files = {
         "portalWalkthrough": "portal-walkthrough",

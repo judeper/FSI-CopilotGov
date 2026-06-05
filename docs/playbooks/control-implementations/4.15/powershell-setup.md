@@ -47,7 +47,9 @@ Connect-MgGraph -Scopes 'Group.Read.All'
 $approvedGroupId = (Import-Csv .\config\cowork-availability-decision.csv).ApprovedGroupId | Select-Object -First 1
 
 $members = Get-MgGroupMember -GroupId $approvedGroupId -All |
-  Select-Object Id, @{n='Display';e={ $_.AdditionalProperties.displayName }}
+  Select-Object Id,
+    @{n='Display';e={ $_.AdditionalProperties.displayName }},
+    @{n='UserPrincipalName';e={ $_.AdditionalProperties.userPrincipalName }}
 
 $members | Export-Csv .\artifacts\4.15\cowork-approved-members.csv -NoTypeInformation
 ```
@@ -75,7 +77,9 @@ $audit |
 
 ```powershell
 $activity = Import-Csv .\artifacts\4.15\cowork-install-activity.csv
-$approved = (Import-Csv .\artifacts\4.15\cowork-approved-members.csv).Id
+# Reconcile on UPN: Search-UnifiedAuditLog emits UserIds as a UPN/email,
+# so compare against the approved members' UserPrincipalName (not the GUID Id).
+$approved = (Import-Csv .\artifacts\4.15\cowork-approved-members.csv).UserPrincipalName
 
 $activity |
   Where-Object { $_.Operation -eq 'AgentInstalled' -and $approved -notcontains $_.UserIds } |
