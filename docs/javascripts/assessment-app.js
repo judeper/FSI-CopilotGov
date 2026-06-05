@@ -4268,10 +4268,11 @@
     if (s.summary) {
       card.appendChild(h("p", { className: "solution-catalog-summary" }, s.summary));
     }
+    var totalControls = (self.data && self.data.controls) ? self.data.controls.length : 0;
     card.appendChild(h("span", {
       className: "solution-catalog-coverage",
       "data-coverage-count": String(coverage),
-    }, "Covers " + coverage + " of " + self.data.controls.length + " control" + (coverage === 1 ? "" : "s")));
+    }, "Covers " + coverage + " of " + totalControls + " control" + (coverage === 1 ? "" : "s")));
     return card;
   };
 
@@ -4296,9 +4297,10 @@
     }
 
     var controls = this.getControlsForSolution(s.id);
+    var totalControls = (self.data && self.data.controls) ? self.data.controls.length : 0;
     var ctrlSec = h("div", { className: "solution-detail-controls" });
     ctrlSec.appendChild(h("h4", null,
-      "Controls covered (" + controls.length + " of " + self.data.controls.length + ")"));
+      "Controls covered (" + controls.length + " of " + totalControls + ")"));
     if (!controls.length) {
       ctrlSec.appendChild(h("p", { className: "solution-empty" },
         "This solution is not yet mapped to any manifest controls."));

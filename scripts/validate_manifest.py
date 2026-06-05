@@ -350,6 +350,11 @@ def main() -> int:
     # *sets* and per-control pillar -- not just counts -- catches a control
     # present in one source but missing/renamed in the other, which a bare
     # count check would miss.
+    # Under --strict, the cross-check is mandatory: an absent/unreadable graph
+    # means we cannot verify the manifest, which is a failure, not a warning.
+    # (Without --strict it degrades to a warning so the validator stays usable
+    # before the graph has been built.)
+    _graph_missing = all_errors if args.strict else all_warnings
     graph_ids: set[str] | None = None
     graph_pillar: dict[str, int] = {}
     if GRAPH_DEFAULT.is_file():
@@ -359,10 +364,10 @@ def main() -> int:
             graph_ids = {c.get("id") for c in graph_controls}
             graph_pillar = {c.get("id"): c.get("pillar") for c in graph_controls}
         except (json.JSONDecodeError, OSError) as exc:
-            all_warnings.append(f"could not read content graph for cross-check: {exc}")
+            _graph_missing.append(f"could not read content graph for cross-check: {exc}")
     else:
-        all_warnings.append(
-            "content-graph.json not found; skipping manifest-vs-graph cross-check "
+        _graph_missing.append(
+            "content-graph.json not found; cannot run manifest-vs-graph cross-check "
             "(run: python scripts/build_content_graph.py)"
         )
 
