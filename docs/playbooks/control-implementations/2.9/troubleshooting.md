@@ -48,7 +48,7 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 ### Issue 5: Agent Threat Detection Alerts Not Appearing
 
 - **Symptoms:** Copilot agents are deployed but no agent-related alerts appear in Defender XDR; the Incidents & alerts view shows no agent incidents despite agent activity
-- **Root Cause:** Agent threat detection may require specific licensing (Defender for Office 365 P2 or Microsoft 365 Defender) and may need to be explicitly enabled for agent workloads. Agent coverage was added in September 2025 and may require feature updates in older tenants.
+- **Root Cause:** Agent threat detection may require specific licensing (Defender for Office 365 P2 or Microsoft Defender XDR) and may need to be explicitly enabled for agent workloads. Agent coverage was added in September 2025 and may require feature updates in older tenants.
 - **Resolution:**
   1. Verify the tenant has the required Defender XDR license tier for agent threat detection (included in M365 E5 Security or Defender for Office 365 P2)
   2. Navigate to Defender portal > Settings > Microsoft Defender XDR and confirm unified XDR is enabled
