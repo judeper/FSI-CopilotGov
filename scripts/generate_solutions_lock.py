@@ -83,15 +83,35 @@ def _resolve_commit(sister_repo: Path) -> str | None:
     return _git(sister_repo, "rev-list", "-n", "1", PINNED_REF)
 
 
-def _load_source_solutions(sister_repo: Path) -> tuple[list[dict], str | None]:
-    """Return (solutions list, resolved commit) from the sister repo.
+def _read_pinned_solutions_json(sister_repo: Path) -> str:
+    """Return the raw ``solutions.json`` text for the pinned ref.
 
-    Raises ``FileNotFoundError`` if the sister repo is missing.
+    Reads the file content at ``PINNED_REF`` via ``git show`` so generation is
+    deterministic against the pinned tag regardless of the sister repo's
+    current working-tree state (which may be far ahead of the pin). Falls back
+    to the working-tree file only when the pinned ref cannot be read — e.g. a
+    shallow clone that does not have the tag.
+
+    Raises ``FileNotFoundError`` if neither source is available.
     """
+    pinned = _git(sister_repo, "show", f"{PINNED_REF}:solutions.json")
+    if pinned is not None:
+        return pinned
     src = sister_repo / "solutions.json"
     if not src.exists():
         raise FileNotFoundError(src)
-    data = json.loads(src.read_text(encoding="utf-8"))
+    return src.read_text(encoding="utf-8")
+
+
+def _load_source_solutions(sister_repo: Path) -> tuple[list[dict], str | None]:
+    """Return (solutions list, resolved commit) from the sister repo.
+
+    The payload is read from the pinned ref (``PINNED_REF``), not the working
+    tree, so the generated lock stays consistent with the recorded commit.
+
+    Raises ``FileNotFoundError`` if the sister repo is missing.
+    """
+    data = json.loads(_read_pinned_solutions_json(sister_repo))
     sv = data.get("schemaVersion")
     if sv != EXPECTED_SCHEMA:
         raise SystemExit(
