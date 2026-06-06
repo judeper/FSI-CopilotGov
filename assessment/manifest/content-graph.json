@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-06-06T17:10:04Z",
+  "generatedAt": "2026-06-06T23:51:25Z",
   "counts": {
     "controls": 63,
     "pillars": 4,
@@ -585,7 +585,7 @@
       "pillar": 3,
       "title": "Control 3.14: Copilot Pages and Notebooks Retention and Provenance",
       "path": "docs/controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-06",
       "regulatory_references": [
         "SEC Rule 17a-4 (where applicable to required broker-dealer records)",
         "FINRA Rule 4511(a)",
