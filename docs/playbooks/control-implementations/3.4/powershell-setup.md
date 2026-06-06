@@ -30,7 +30,7 @@ $policies = Get-SupervisoryReviewPolicyV2
 
 if ($policies.Count -eq 0) {
     Write-Host "No communication compliance policies found." -ForegroundColor Yellow
-    Write-Host "Create policies in the Microsoft Purview compliance portal under Communication Compliance."
+    Write-Host "Create policies in the Microsoft Purview portal under Communication Compliance."
 } else {
     Write-Host "Communication Compliance Policies:" -ForegroundColor Green
     $policies | Select-Object Name, Enabled, CreatedBy, LastModifiedDateTime |
