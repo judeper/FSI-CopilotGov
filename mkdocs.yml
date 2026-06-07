@@ -55,6 +55,7 @@ plugins:
 # MkDocs build hooks (v1.4+)
 hooks:
   - scripts/hooks/copy_assessment_data.py
+  - scripts/hooks/version_json.py
 
 # Site-wide link validation (MkDocs 1.6+). CI runs `mkdocs build --strict`, so any warnings here will fail the build.
 validation:
