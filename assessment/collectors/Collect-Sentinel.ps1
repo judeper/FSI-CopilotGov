@@ -234,7 +234,12 @@ try {
     Write-Verbose "Section 3: Running KQL audit check for CopilotInteraction records..."
 
     if ($workspaceInfo) {
-        $kqlQuery = 'AuditLogs | where OperationName contains "CopilotInteraction" | where TimeGenerated > ago(7d) | count'
+        # Copilot interaction audit records carry Operation/RecordType "CopilotInteraction"
+        # in the unified audit log. The Microsoft 365 (Office 365) data connector — verified
+        # in Section 2 — ingests these into the OfficeActivity table (column: Operation).
+        # The Microsoft Entra ID "AuditLogs" table / "OperationName" column do NOT contain
+        # Copilot interaction records.
+        $kqlQuery = 'OfficeActivity | where Operation == "CopilotInteraction" | where TimeGenerated > ago(7d) | count'
 
         $queryResult = Invoke-AzOperationalInsightsQuery `
             -WorkspaceId $workspaceInfo.WorkspaceId `
