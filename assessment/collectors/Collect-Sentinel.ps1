@@ -234,7 +234,18 @@ try {
     Write-Verbose "Section 3: Running KQL audit check for CopilotInteraction records..."
 
     if ($workspaceInfo) {
-        $kqlQuery = 'AuditLogs | where OperationName contains "CopilotInteraction" | where TimeGenerated > ago(7d) | count'
+        # Copilot interaction audit records carry Operation/RecordType "CopilotInteraction"
+        # (RecordType 261) in the unified audit log under the Audit.General content type.
+        # IMPORTANT: the Microsoft 365 (Office 365) Sentinel data connector streams only the
+        # Exchange, SharePoint, and Teams workloads into the OfficeActivity table — it does NOT
+        # ingest the Audit.General content type. CopilotInteraction records are therefore absent
+        # from OfficeActivity unless a custom Audit.General ingestion pipeline (e.g. the Office
+        # 365 Management Activity API) is configured. The Microsoft Entra ID "AuditLogs" table
+        # likewise does not contain Copilot interaction records.
+        # We still probe OfficeActivity: a non-zero count is positive evidence that such a custom
+        # pipeline exists, but a zero count means "not collected via this path" — it does NOT mean
+        # "no Copilot activity occurred".
+        $kqlQuery = 'OfficeActivity | where Operation == "CopilotInteraction" | where TimeGenerated > ago(7d) | count'
 
         $queryResult = Invoke-AzOperationalInsightsQuery `
             -WorkspaceId $workspaceInfo.WorkspaceId `
@@ -259,10 +270,11 @@ try {
             HasRecords      = ($recordCount -gt 0)
             QueryTimeRange  = '7 days'
             ExecutedAt      = (Get-Date -Format 'o')
+            CollectionCaveat = 'CopilotInteraction (RecordType 261) belongs to the Audit.General content type, which the Exchange/SharePoint/Teams Office 365 connector does not ingest into OfficeActivity. A RecordCount of 0 does NOT imply absence of Copilot activity — it typically means Audit.General is not being ingested via this path. Use a custom Audit.General pipeline, Microsoft Purview Audit, or Search-UnifiedAuditLog to evidence Copilot interactions.'
         }
 
         if ($recordCount -eq 0) {
-            $warnings.Add("Section 3: No CopilotInteraction audit records found in the last 7 days. Verify audit ingestion pipeline.")
+            $warnings.Add("Section 3: No CopilotInteraction records found in OfficeActivity (last 7 days). This is expected on a standard tenant — the Office 365 connector ingests only Exchange/SharePoint/Teams, not the Audit.General content type that carries CopilotInteraction (RecordType 261). Absence here does NOT indicate absence of Copilot activity; configure custom Audit.General ingestion or use Microsoft Purview Audit / Search-UnifiedAuditLog to evidence Copilot interactions.")
             Write-Warning $warnings[-1]
         }
         else {
