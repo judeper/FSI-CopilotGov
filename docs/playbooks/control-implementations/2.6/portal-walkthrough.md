@@ -13,21 +13,21 @@ Step-by-step portal configuration for controlling Copilot's ability to search th
 ### Step 1: Review Web Search Settings
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Copilot > Settings > Data access > Web search
+**Path:** Admin Center > Copilot > Settings > Data access > Web search for Microsoft 365 Copilot and Microsoft 365 Copilot Chat
 
-Review the current web search configuration for Copilot. By default, Copilot may use Bing web search to supplement responses with public web content. For FSI environments, this behavior requires careful governance.
+Review the current web search configuration for Copilot. The admin control is the **Allow web search in Copilot** policy in the Cloud Policy service for Microsoft 365 Apps; the Microsoft 365 admin center Data access page provides a shortcut that creates this policy. In commercial tenants, if the policy is not configured, web search is on by default and may use Bing web search to supplement responses with public web content; in GCC and DoD tenants it is off by default. For FSI environments, this behavior requires careful governance.
 
 ### Step 2: Disable or Restrict Web Search
 
-**Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Copilot > Settings > Data access > Web search
+**Portal:** Microsoft 365 Cloud Policy service (Microsoft 365 Apps)
+**Path:** `https://config.office.com` > Customization > Policy Management > Allow web search in Copilot (reachable via the web search shortcut on Admin Center > Copilot > Settings > Data access)
 
-For most FSI deployments, disable web search to prevent Copilot from:
+For most FSI deployments, configure the **Allow web search in Copilot** policy and set it off to prevent Copilot from:
 - Grounding responses on unverified external content
 - Potentially sending organizational context to web search services
 - Generating responses that mix internal and external data without clear distinction
 
-Toggle web search to "Off" for all users or specific groups based on governance policy.
+Set the policy to off for all users, or scope it to specific user groups based on governance policy. In commercial tenants, web search stays on until this policy is configured to off, so create the policy explicitly rather than relying on defaults.
 
 ### Step 3: Configure Web Content Plugin Settings
 
