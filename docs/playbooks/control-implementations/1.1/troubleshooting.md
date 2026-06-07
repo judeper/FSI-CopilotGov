@@ -53,7 +53,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
   1. Verify reporting timeframe in Label Analytics (default may be 7-day window)
   2. Check auto-labeling policy status — confirm policies are enabled and not in simulation mode
   3. Review label policy scoping — labels may not be published to all user groups
-  4. Force a re-index of key SharePoint sites using PnP PowerShell (`Invoke-PnPSiteSearchReindex`) or the SharePoint site settings UI under Search and Offline Availability
+  4. Force a re-index of key SharePoint sites using PnP PowerShell (`Request-PnPReindexWeb`) or the SharePoint site settings UI under Search and Offline Availability
 
 ### Issue 6: Stale Site Detection False Positives
 
