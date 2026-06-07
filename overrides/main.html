@@ -1,5 +1,36 @@
 {% extends "base.html" %}
 
+{% block extrahead %}
+  {# OpenGraph + Twitter Card meta for link previews in Slack / Teams / LinkedIn.
+     Without these, FSI-CopilotGov links shared in regulated FS channels render
+     as bare URLs.
+
+     Guard "page" because MkDocs renders 404.html with page=None; the template
+     would raise "'None' has no attribute 'meta'" without this check.
+
+     No og:image: we don't ship a brand image asset; text-only unfurls in
+     Slack/Teams render correctly without one.
+
+     If a future maintainer enables Material's `social` plugin in mkdocs.yml,
+     REMOVE this block — the plugin auto-injects og:/twitter: meta and
+     duplication will confuse Slack/Teams unfurl. #}
+  {% if page %}
+    {% set _og_title = page.title|striptags %}
+    {% if _og_title != config.site_name %}
+      {% set _og_title = _og_title ~ " — " ~ config.site_name %}
+    {% endif %}
+    {% set _og_description = page.meta.description|default(config.site_description) %}
+    <meta property="og:title" content="{{ _og_title }}">
+    <meta property="og:description" content="{{ _og_description }}">
+    <meta property="og:url" content="{{ page.canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ config.site_name }}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ _og_title }}">
+    <meta name="twitter:description" content="{{ _og_description }}">
+  {% endif %}
+{% endblock %}
+
 {% block announce %}
   Framework recently updated —
   <a href="https://github.com/judeper/FSI-CopilotGov/blob/main/CHANGELOG.md">

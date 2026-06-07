@@ -1,0 +1,140 @@
+name: docs-validation
+
+# PR-time validation gate for the MkDocs site. Mirrors the build steps in
+# publish_docs.yml so the site is proven to build with --strict before merge,
+# not just at deploy time. Required check name: mkdocs-strict.
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'overrides/**'
+      - 'scripts/verify_build_output.py'
+      - 'scripts/verify_meta_tags.py'
+      - 'scripts/verify_doc_links.py'
+      - 'scripts/verify_learn_url_health.py'
+      - 'scripts/macros_module.py'
+      - 'scripts/hooks/**'
+      - 'assessment/**'
+      - 'data/monitor-state.json'
+      - '.github/workflows/**'
+      # npm Dependabot PRs only change package.json / package-lock.json.
+      # Without this, mkdocs-strict never fires on those PRs and branch
+      # protection blocks the merge.
+      - 'package.json'
+      - 'package-lock.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mkdocs-strict:
+    name: mkdocs-strict
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Cache MkDocs build cache
+        uses: actions/cache@v5
+        with:
+          key: mkdocs-material-${{ hashFiles('mkdocs.yml') }}-${{ github.run_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-${{ hashFiles('mkdocs.yml') }}-
+            mkdocs-material-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt openpyxl jsonschema
+
+      # --- Pre-build steps (mirrors publish_docs.yml) ---
+      # These generate data files consumed by macros_module.py at build time.
+
+      - name: Validate Control Structure
+        run: python scripts/verify_controls.py
+
+      - name: Validate Language Rules
+        run: python scripts/verify_language_rules.py
+
+      - name: Build Content Graph (canonical metadata)
+        run: python scripts/build_content_graph.py
+
+      - name: Validate Content Graph
+        run: python scripts/validate_content_graph.py
+
+      - name: Verify README/AGENTS Counts vs Content Graph
+        run: python scripts/verify_readme_counts.py
+
+      - name: Verify Count Consistency Across Docs/SPA
+        run: python scripts/verify_count_consistency.py
+
+      - name: Generate Assessment Data
+        run: python scripts/extract_assessment_data.py
+
+      - name: Generate Manifest (engine schema)
+        run: python assessment/manifest/generate_manifest.py
+
+      - name: Harvest Manifest Extension (SPA fields)
+        run: python scripts/harvest_manifest_extension.py
+
+      - name: Merge Authored Manifest Content
+        run: python scripts/merge_authored_content.py
+
+      - name: Validate Manifest
+        run: python scripts/validate_manifest.py --strict --allow-todo
+
+      - name: Build Checklist Templates (XLSX)
+        run: python scripts/build_checklist_templates.py
+
+      - name: Verify Checklist Templates (XLSX)
+        run: python scripts/verify_excel_templates.py
+
+      # --- MkDocs build (strict) ---
+
+      - name: Build documentation (strict)
+        run: mkdocs build --strict
+
+      # --- Post-build quality gates (ported from FSI-AgentGov) ---
+
+      - name: Verify built site output completeness
+        # Asserts that the expected route families (controls/, playbooks/) and
+        # the search asset exist before downstream validators run. Catches a
+        # widened exclude_docs pattern or partial artifact step that can exit 0
+        # while dropping major route families from site/.
+        run: python scripts/verify_build_output.py site
+
+      - name: Verify OpenGraph and Twitter Card meta tags on built site
+        # Ensures OG/Twitter card metadata in overrides/main.html renders
+        # correctly. Runs against the real site/ build (not synthetic test
+        # strings) so any Jinja regression is caught at PR-time.
+        run: python scripts/verify_meta_tags.py site/
+
+      - name: Verify built HTML has no broken internal links
+        # Walks site/**/*.html and validates every internal <a href>.
+        # mkdocs --strict only flags WARN-level link issues; cross-page depth
+        # bugs and exclude_docs targets can be silent. This catches them.
+        run: python scripts/verify_doc_links.py site --json _broken-links.json
+
+      - name: Upload broken-links report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: broken-links-report
+          path: _broken-links.json
+          if-no-files-found: ignore
+
+      - name: Verify Learn URL health (state file gate)
+        # Reads data/monitor-state.json and fails if any tracked Microsoft Learn
+        # URL has last_status in {404, 410, 451}. Soft failures (5xx, timeouts)
+        # are surfaced but do NOT fail CI — transient Learn outages would
+        # produce flaky results.
+        run: python scripts/verify_learn_url_health.py
