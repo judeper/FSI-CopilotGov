@@ -65,9 +65,7 @@
       "broker-dealer": "Assessment covers trade blotter, research, and client-facing sites; MNPI sites identified and information-barrier readiness validated before Copilot enablement.",
       "investment-adviser": "Assessment covers client portfolio and private fund document sites; remediation prioritized by SEC OCIE exam focus areas.",
       "insurance-carrier": "Assessment covers claims and underwriting sites with PHI/PII; HIPAA BAA documentation reviewed for Copilot data processing.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "Assessment covers member NPI sites; remediation aligned to NCUA Part 748 expectations.",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -155,9 +153,7 @@
       "broker-dealer": "Weekly DSPM oversharing scan; sites containing trade blotters, research reports, or MNPI carry information-barrier evidence; remediation closure documented for SEC Reg S-P examiners.",
       "investment-adviser": "Weekly DSPM oversharing scan; client portfolio documents and private fund records reviewed for least-privilege; remediation evidence retained for SEC OCIE / IA exam response.",
       "insurance-carrier": "Weekly DSPM scan; PHI/PII-bearing sites (claims, underwriting) auto-restricted; HIPAA + state insurance regulator readiness.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "Weekly DSPM scan with NCUA Part 748 alignment; member NPI sites carry documented sharing reviews.",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -253,9 +249,7 @@
       "broker-dealer": "RSS enabled; research and investment-banking sites carry RCD exclusion to honor information barriers; allow-list reviewed by supervisory principal monthly.",
       "investment-adviser": "RSS enabled with allow-list limited to approved client-service and ops sites; private fund / portfolio company sites excluded.",
       "insurance-carrier": "RSS enabled; claims and underwriting sites with PHI excluded from allow-list; HIPAA business-associate documentation references RSS scope.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -342,9 +336,7 @@
       "broker-dealer": "Research and MNPI sites governed by information barriers; semantic-index exclusions reviewed by supervisory principal.",
       "investment-adviser": "Index scope reviewed for client portfolio and private fund document sites; exclusions aligned to SEC Reg S-P NPI handling.",
       "insurance-carrier": "Index scope excludes claims and underwriting sites with PHI/PII unless compensating DLP controls are in place.",
-      "insurance-wholesale": "Index scope excludes policyholder data sites; exclusions reviewed per applicable state insurance data privacy requirements.",
       "credit-union": "Index scope reviewed for member NPI sites per NCUA Part 748 expectations; exclusions documented with business justification.",
-      "holding-company": "Index scope reviewed across subsidiary entities; exclusions aligned to each subsidiary's regulatory requirements.",
       "other": "Index scope reviewed and exclusions documented with business justification per organization's data governance policy."
     },
     "facilitatorNotes": {
@@ -437,9 +429,7 @@
       "broker-dealer": "Labels cover MNPI, research, and client-confidential tiers; reviewed by supervisory principal for FINRA WSP alignment.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "Labels cover PHI and PII tiers; HIPAA alignment verified with privacy officer.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -532,9 +522,7 @@
       "broker-dealer": "Audit covers research, IB, and client-facing sites; information-barrier scope validated at each audit cycle.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "Audit covers claims and underwriting sites with PHI; HIPAA access-control evidence produced.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -635,9 +623,7 @@
       "broker-dealer": "SAM enabled; RCD applied to research and MNPI sites; RAC used to enforce information barriers at site level.",
       "investment-adviser": "SAM enabled; RAC applied to client portfolio sites; site lifecycle reviewed quarterly by compliance.",
       "insurance-carrier": "SAM enabled; RAC applied to claims and PHI/PII sites; site lifecycle aligned to data retention requirements.",
-      "insurance-wholesale": "SAM enabled; RAC applied to policyholder data sites; site lifecycle aligned to state insurance requirements.",
       "credit-union": "SAM enabled; RAC applied to member NPI sites per NCUA Part 748; site lifecycle reviewed semi-annually.",
-      "holding-company": "SAM enabled across subsidiary tenants; RAC/RCD applied per subsidiary regulatory requirements.",
       "other": "SAM enabled and configured per organization's data governance policy; RAC/RCD applied to sensitive sites."
     },
     "facilitatorNotes": {
@@ -716,9 +702,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -794,9 +778,7 @@
       "broker-dealer": "Licenses assigned by registered-rep status; utilization reviewed monthly by supervisory principal.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -880,9 +862,7 @@
       "broker-dealer": "Assessment includes FINRA Regulatory Notice coverage; vendor risk reviewed as part of supervisory review program.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -949,9 +929,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1025,9 +1003,7 @@
       "broker-dealer": "Training includes FINRA Rule 3110 supervisory awareness; completion tracked for registered representatives.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1107,9 +1083,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1191,9 +1165,7 @@
       "broker-dealer": "Scans cover MNPI documents; information-barrier compliance validated at item level.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1280,9 +1252,7 @@
       "broker-dealer": "Drift monitoring includes information-barrier-protected sites; reconciliation documented for FINRA exam readiness.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1367,9 +1337,7 @@
       "broker-dealer": "Tuning review includes supervisory principal approval before publishing for registered-representative use.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1459,9 +1427,7 @@
       "broker-dealer": "All three scenarios enforced; SIT set covers CRD numbers, account numbers, SSN; label and web-search rules align with Research and IB Confidential labels supporting information-barrier policy.",
       "investment-adviser": "All three scenarios enforced; SIT set covers SSN, account numbers, and adviser-firm-defined SITs for client portfolio identifiers, including external web-search restrictions for those SITs.",
       "insurance-carrier": "All three scenarios enforced; SIT set covers SSN, policy numbers, and PHI patterns; label and web-search rules align with PHI sensitivity labels.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "All three scenarios enforced; SITs cover member account numbers + SSN; label and web-search rules align to NCUA NPI categories.",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1547,9 +1513,7 @@
       "broker-dealer": "Labels align with information-barrier segments (Research Confidential, IB Confidential, Client Confidential); auto-labeling covers trade blotters and research reports.",
       "investment-adviser": "Labels cover client portfolio data and private fund documents; auto-labeling aligned to SEC Reg S-P NPI categories.",
       "insurance-carrier": "Labels cover PHI and PII classifications; auto-labeling enforced for claims and underwriting document libraries.",
-      "insurance-wholesale": "Labels cover policyholder PII and underwriting data; auto-labeling aligned to applicable state insurance privacy requirements.",
       "credit-union": "Labels cover member NPI per NCUA Part 748; auto-labeling configured for member-facing document sites.",
-      "holding-company": "Labels applied consistently across subsidiary entities; auto-labeling policies scoped per subsidiary regulatory requirements.",
       "other": "Labels applied per organization's data classification policy; auto-labeling configured for high-risk content types."
     },
     "facilitatorNotes": {
@@ -1631,9 +1595,7 @@
       "broker-dealer": "CA policies enforce MFA for all registered representatives using Copilot; compliant device required per FINRA cybersecurity guidance.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "CA policies enforce MFA and compliant device per NYDFS Part 500 MFA requirements for Copilot workloads.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1715,9 +1677,7 @@
       "broker-dealer": "IB segments enforce Research / IB / Trading separation per FINRA Rule 5280 and SEC Rule 10b-5 requirements; Copilot boundary tested at each IB policy change.",
       "investment-adviser": "IB segments separate public-side and private-side functions; Copilot boundary compliance documented for SEC OCIE exams.",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1789,9 +1749,7 @@
       "broker-dealer": "Grounding scope respects information barriers; research and MNPI sites excluded unless IB-validated.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1886,9 +1844,7 @@
       "broker-dealer": "Web search disabled for registered representatives by default; enabled only with supervisory approval and DLP MNPI SIT restriction.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1974,9 +1930,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2064,9 +2018,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "Encryption meets NYDFS Part 500 requirements; TLS 1.2+ enforced for all Copilot data flows.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2141,9 +2093,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2225,9 +2175,7 @@
       "broker-dealer": "Insider Risk covers registered-rep Copilot usage; alerts reviewed by supervisory principal per FINRA Rule 3110.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2319,9 +2267,7 @@
       "broker-dealer": "Pages sharing restricted to internal only; audit logs reviewed for FINRA Rule 4511 records compliance.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2402,9 +2348,7 @@
       "broker-dealer": "External sharing restricted per SEC Reg S-P; guest access reviews conducted monthly.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2491,9 +2435,7 @@
       "broker-dealer": "Connector inventory reviewed by supervisory principal; data-flow assessments cover MNPI exposure per FINRA guidance.",
       "investment-adviser": "Connectors assessed for client data exposure per SEC Reg S-P; approved connectors reviewed quarterly by CCO.",
       "insurance-carrier": "Connector data-flow assessments cover PHI/PII exposure; risk classification aligned to NYDFS Part 500.",
-      "insurance-wholesale": "Connector inventory includes policyholder data-flow assessments; reviewed per state insurance requirements.",
       "credit-union": "Connector inventory maintained per NCUA examination expectations; unapproved connectors blocked.",
-      "holding-company": "Connector governance applied across subsidiary entities; risk classification aligned to subsidiary-specific regulatory requirements.",
       "other": "Connector inventory maintained and reviewed per organization's third-party risk management policy."
     },
     "facilitatorNotes": {
@@ -2574,9 +2516,7 @@
       "broker-dealer": "Agent inventory reviewed by supervisory principal per FINRA Rule 3110; publishing approval required before registered-representative use.",
       "investment-adviser": "Agent governance aligned to SEC investment adviser supervisory obligations; data-source scope documented per agent.",
       "insurance-carrier": "Agent risk classification covers PHI/PII data-source access; approval workflow aligned to NYDFS Part 500.",
-      "insurance-wholesale": "Agent inventory includes policyholder data-access scope; approval per applicable state insurance requirements.",
       "credit-union": "Agent inventory maintained per NCUA expectations; publishing approval documented.",
-      "holding-company": "Agent governance applied across subsidiary entities; risk classification per subsidiary regulatory context.",
       "other": "Agent inventory maintained with documented risk classification and owner assignment."
     },
     "facilitatorNotes": {
@@ -2656,9 +2596,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "Network controls align to NYDFS Part 500 requirements for access from secure networks.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2735,9 +2673,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2819,9 +2755,7 @@
       "broker-dealer": "Federation trust reviewed by supervisory principal; FINRA Rule 3110 supervision scope includes federated agent interactions.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2909,9 +2843,7 @@
       "broker-dealer": "UAL on; CopilotInteraction events retained 7 years per SEC Rule 17a-4 where applicable; WORM archive evidence provided to FINRA on exam request; supervisory review of agent events.",
       "investment-adviser": "UAL on; CopilotInteraction events retained ≥5 years per Investment Advisers Act Rule 204-2; SIEM/archive evidence available for SEC OCIE exams.",
       "insurance-carrier": "UAL on; CopilotInteraction events retained per state insurance regulator record-keeping minimums; SIEM ingestion for HIPAA security-incident detection.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "UAL on; CopilotInteraction events retained per NCUA Part 749 record retention; SIEM ingestion for member-data monitoring.",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2993,9 +2925,7 @@
       "broker-dealer": "Retention policies retain Copilot interactions for 7 years per FINRA Rule 4511 and SEC Rule 17a-4 where applicable to required records.",
       "investment-adviser": "Retention policies retain Copilot interactions for 5+ years per Investment Advisers Act Rule 204-2.",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "Retention aligned to NCUA Part 749 record retention requirements.",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3081,9 +3011,7 @@
       "broker-dealer": "eDiscovery verified for Copilot content per FINRA Rule 4511; custodian holds tested for registered-rep Copilot data.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3170,9 +3098,7 @@
       "broker-dealer": "Communication compliance covers registered-rep Copilot interactions per FINRA Rule 3110 supervisory requirements and FINRA Rule 2210 review obligations.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3258,9 +3184,7 @@
       "broker-dealer": "All Copilot-drafted retail and institutional communications subject to principal review per FINRA Rule 2210 and FINRA Regulatory Notice 24-09; detection patterns cover prohibited promissory and superlative language.",
       "investment-adviser": "Copilot-drafted client communications subject to review per SEC Marketing Rule (Rule 206(4)-1) requirements.",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3340,9 +3264,7 @@
       "broker-dealer": "Designated supervisory principal per FINRA Rule 3110; WSPs updated to cover Copilot use in client-facing and trading workflows; review conducted at least monthly.",
       "investment-adviser": "Supervisory oversight aligned to SEC Reg BI best-interest obligations for Copilot-assisted recommendations.",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3422,9 +3344,7 @@
       "broker-dealer": "FINRA Rule 4530 reporting covers Copilot-related incidents; books-and-records certifications include Copilot interactions.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3503,9 +3423,7 @@
       "broker-dealer": "MRM review completed for Copilot use in client-facing functions; validation cadence aligned to FINRA guidance.",
       "investment-adviser": "MRM review covers Copilot use in advisory and portfolio management functions; documentation retained for SEC exam.",
       "insurance-carrier": "MRM review covers Copilot use in underwriting and claims; model limitations documented per NYDFS Part 500.",
-      "insurance-wholesale": "MRM review covers Copilot use in policyholder-facing functions; documentation per state regulatory requirements.",
       "credit-union": "MRM review aligned to NCUA expectations for AI/ML model governance; Copilot in model inventory.",
-      "holding-company": "MRM review covers Copilot across subsidiary entities; consolidated model inventory maintained.",
       "other": "MRM review completed per organization's model governance policy; validation methodology and monitoring documented."
     },
     "facilitatorNotes": {
@@ -3590,9 +3508,7 @@
       "broker-dealer": "GenAI governance completed for Copilot use in client-facing and trading functions; NIST AI RMF alignment documented for FINRA exam readiness.",
       "investment-adviser": "GenAI governance covers Copilot use in advisory functions; bias testing includes client-communication scenarios.",
       "insurance-carrier": "GenAI governance covers Copilot use in underwriting and claims; bias testing per NYDFS fair lending requirements.",
-      "insurance-wholesale": "GenAI governance covers policyholder-facing Copilot use; bias testing per applicable state insurance requirements.",
       "credit-union": "GenAI governance aligned to NCUA expectations; NIST AI RMF categories reviewed for member-facing Copilot use.",
-      "holding-company": "GenAI governance covers Copilot across subsidiary entities; NIST AI RMF alignment at enterprise level.",
       "other": "GenAI governance review completed per organization's AI policy; NIST AI RMF 1.0 alignment documented."
     },
     "facilitatorNotes": {
@@ -3667,9 +3583,7 @@
       "broker-dealer": "AI disclosure aligned to FINRA Regulatory Notice 24-09 and SEC AI Marketing Risk Alert; disclosure reviewed by supervisory principal.",
       "investment-adviser": "AI disclosure aligned to SEC Marketing Rule (Rule 206(4)-1) and Investment Advisers Act §206; reviewed by CCO.",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3750,9 +3664,7 @@
       "broker-dealer": "SEC Reg S-P compliance reviewed for Copilot; NPI DLP policies cover account numbers, SSN, and client identifiers.",
       "investment-adviser": "SEC Reg S-P privacy controls reviewed for Copilot processing of client NPI; DLP policies cover advisory account data.",
       "insurance-carrier": "Privacy controls reviewed for Copilot processing of PHI/PII; DLP policies cover HIPAA and state privacy requirements.",
-      "insurance-wholesale": "Privacy controls reviewed for policyholder NPI processing; DLP policies per applicable state insurance privacy laws.",
       "credit-union": "Privacy controls reviewed for Copilot NPI processing per NCUA Part 748; DLP covers member account identifiers.",
-      "holding-company": "Privacy controls reviewed across subsidiary entities; DLP policies aligned to each subsidiary's privacy obligations.",
       "other": "Privacy controls reviewed for Copilot per organization's data privacy policy; DLP policies cover sensitive personal data."
     },
     "facilitatorNotes": {
@@ -3839,9 +3751,7 @@
       "broker-dealer": "Copilot interactions captured per SEC Rule 17a-4 where applicable to required records; WORM archive validated; retrievable within 48 hours for FINRA exam requests.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3924,9 +3834,7 @@
       "broker-dealer": "Evidence pack structured for FINRA Rule 3120 testing and inspection response.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4014,9 +3922,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "FFIEC alignment reviewed per NCUA expectations for technology governance.",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4098,9 +4004,7 @@
       "broker-dealer": "Pages/Notebooks retention aligned to FINRA Rule 4511 and SEC Rule 17a-4 where applicable; provenance tracked for examiner response.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4193,9 +4097,7 @@
       "broker-dealer": "AI Administrator role used; Copilot Settings + Agents reviewed monthly by supervisory principal; Cloud Policy enforces approved Pages/Notebooks behavior for FINRA WSP alignment.",
       "investment-adviser": "AI Administrator role used; Cloud Policy controls extension surfaces; settings reviewed quarterly with compliance officer.",
       "insurance-carrier": "AI Administrator role used; Cloud Policy enforces Pages/Notebooks scope for PHI handling units; settings reviewed monthly.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4279,9 +4181,7 @@
       "broker-dealer": "Meeting transcriptions retained per FINRA Rule 4511 and SEC Rule 17a-4 where applicable; supervisory review of client-facing meeting summaries per FINRA Rule 3110.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4365,9 +4265,7 @@
       "broker-dealer": "Call recordings retained per FINRA Rule 4511 and SEC Rule 17a-4 where applicable; call summaries reviewed by supervisory principal per FINRA Rule 3110.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4449,9 +4347,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4533,9 +4429,7 @@
       "broker-dealer": "Usage analytics reviewed monthly by supervisory principal; anomalies investigated per FINRA Rule 3110.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4620,9 +4514,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4704,9 +4596,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4786,9 +4676,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4864,9 +4752,7 @@
       "broker-dealer": "Incident reporting per FINRA Rule 4530; Copilot-specific incidents subject to supervisory escalation.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4941,9 +4827,7 @@
       "broker-dealer": "BC/DR plan includes Copilot per FINRA Rule 4370 business continuity requirements.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -5026,9 +4910,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "Sentinel rules cover Copilot PHI access anomalies per NYDFS Part 500 monitoring requirements.",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -5108,9 +4990,7 @@
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -5196,9 +5076,7 @@
       "broker-dealer": "Agent operations reviewed by supervisory principal per FINRA Rule 3110; error rates monitored for client-facing agents.",
       "investment-adviser": "Agent operations monitoring covers advisory-function agents; usage patterns reviewed quarterly by CCO.",
       "insurance-carrier": "Agent operations monitoring covers claims and underwriting agents; error rates tracked per NYDFS Part 500.",
-      "insurance-wholesale": "Agent operations monitoring covers policyholder-facing agents; operational metrics per state requirements.",
       "credit-union": "Agent operations governance per NCUA expectations; operational monitoring for member-facing agents.",
-      "holding-company": "Agent operations governance applied across subsidiary entities; consolidated operational monitoring.",
       "other": "Agent operations monitored per organization's operational governance policy; health and error rates tracked."
     },
     "facilitatorNotes": {
@@ -5285,9 +5163,7 @@
       "broker-dealer": "Agent lifecycle includes supervisory approval gate per FINRA Rule 3110 before publication for registered-rep use.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -5370,9 +5246,7 @@
       "broker-dealer": "Cowork availability for registered reps gated on supervisory review of agentic outputs per FINRA Rule 3110 before enablement.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "insurance-wholesale": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
-      "holding-company": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {

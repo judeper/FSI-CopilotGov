@@ -51,8 +51,8 @@ describe("manifest + solutions-lock integrity (H2)", () => {
 
   it("every sectorYesBar (when authored) is a map keyed by FSI sector", () => {
     const allowedSectors = new Set([
-      "bank", "broker-dealer", "credit-union", "holding-company",
-      "insurance-carrier", "insurance-wholesale", "investment-adviser", "other",
+      "bank", "broker-dealer", "credit-union",
+      "insurance-carrier", "investment-adviser", "other",
     ]);
     for (const c of manifest) {
       if (!c.sectorYesBar) continue;
