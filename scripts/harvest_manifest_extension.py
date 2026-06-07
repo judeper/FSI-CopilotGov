@@ -18,7 +18,7 @@ extension fields:
 * ``portalPlaybookUrl`` — from extract_assessment_data.json playbooks,
   else conventional path
 * ``collectorField`` — empty (engine-aware authoring)
-* ``sectorYesBar`` — TODO map for the 8 canonical FSI sectors
+* ``sectorYesBar`` — TODO map for the 6 canonical FSI sectors
 * ``facilitatorNotes`` — TODO ask/followUp + 5-minute default budget
 * ``solutions`` — empty list (Phase C0/C2 will populate from sister repo)
 
@@ -128,9 +128,7 @@ SECTORS = (
     "broker-dealer",
     "investment-adviser",
     "insurance-carrier",
-    "insurance-wholesale",
     "credit-union",
-    "holding-company",
     "other",
 )
 
@@ -276,7 +274,7 @@ def harvest_one(control: dict[str, Any], adata_entry: dict[str, Any]) -> dict[st
     if "collectorField" not in control:
         extension["collectorField"] = ""
 
-    # sectorYesBar — 8 canonical FSI sectors, all TODO
+    # sectorYesBar — 6 canonical FSI sectors, all TODO
     if "sectorYesBar" not in control:
         extension["sectorYesBar"] = {
             sector: "TODO: sector-specific yes-bar" for sector in SECTORS

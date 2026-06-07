@@ -80,9 +80,7 @@ SECTORS = {
     "broker-dealer",
     "investment-adviser",
     "insurance-carrier",
-    "insurance-wholesale",
     "credit-union",
-    "holding-company",
     "other",
 }
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")

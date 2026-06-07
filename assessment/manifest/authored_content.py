@@ -27,9 +27,7 @@ _SECTORS = (
     "broker-dealer",
     "investment-adviser",
     "insurance-carrier",
-    "insurance-wholesale",
     "credit-union",
-    "holding-company",
     "other",
 )
 
@@ -353,14 +351,6 @@ AUTHORED: dict[str, dict] = {
                 "Index scope reviewed for member NPI sites per NCUA Part 748 "
                 "expectations; exclusions documented with business justification."
             ),
-            holding_company=(
-                "Index scope reviewed across subsidiary entities; exclusions "
-                "aligned to each subsidiary's regulatory requirements."
-            ),
-            insurance_wholesale=(
-                "Index scope excludes policyholder data sites; exclusions "
-                "reviewed per applicable state insurance data privacy requirements."
-            ),
             other=(
                 "Index scope reviewed and exclusions documented with business "
                 "justification per organization's data governance policy."
@@ -580,14 +570,6 @@ AUTHORED: dict[str, dict] = {
             credit_union=(
                 "SAM enabled; RAC applied to member NPI sites per NCUA "
                 "Part 748; site lifecycle reviewed semi-annually."
-            ),
-            holding_company=(
-                "SAM enabled across subsidiary tenants; RAC/RCD applied "
-                "per subsidiary regulatory requirements."
-            ),
-            insurance_wholesale=(
-                "SAM enabled; RAC applied to policyholder data sites; "
-                "site lifecycle aligned to state insurance requirements."
             ),
             other=(
                 "SAM enabled and configured per organization's data "
@@ -1260,16 +1242,6 @@ AUTHORED: dict[str, dict] = {
             credit_union=(
                 "Labels cover member NPI per NCUA Part 748; auto-labeling "
                 "configured for member-facing document sites."
-            ),
-            holding_company=(
-                "Labels applied consistently across subsidiary entities; "
-                "auto-labeling policies scoped per subsidiary regulatory "
-                "requirements."
-            ),
-            insurance_wholesale=(
-                "Labels cover policyholder PII and underwriting data; "
-                "auto-labeling aligned to applicable state insurance "
-                "privacy requirements."
             ),
             other=(
                 "Labels applied per organization's data classification policy; "
@@ -1961,15 +1933,6 @@ AUTHORED: dict[str, dict] = {
                 "Connector inventory maintained per NCUA examination "
                 "expectations; unapproved connectors blocked."
             ),
-            holding_company=(
-                "Connector governance applied across subsidiary entities; "
-                "risk classification aligned to subsidiary-specific "
-                "regulatory requirements."
-            ),
-            insurance_wholesale=(
-                "Connector inventory includes policyholder data-flow "
-                "assessments; reviewed per state insurance requirements."
-            ),
             other=(
                 "Connector inventory maintained and reviewed per "
                 "organization's third-party risk management policy."
@@ -2049,14 +2012,6 @@ AUTHORED: dict[str, dict] = {
             credit_union=(
                 "Agent inventory maintained per NCUA expectations; "
                 "publishing approval documented."
-            ),
-            holding_company=(
-                "Agent governance applied across subsidiary entities; "
-                "risk classification per subsidiary regulatory context."
-            ),
-            insurance_wholesale=(
-                "Agent inventory includes policyholder data-access scope; "
-                "approval per applicable state insurance requirements."
             ),
             other=(
                 "Agent inventory maintained with documented risk "
@@ -2747,14 +2702,6 @@ AUTHORED: dict[str, dict] = {
                 "MRM review aligned to NCUA expectations for AI/ML model "
                 "governance; Copilot in model inventory."
             ),
-            holding_company=(
-                "MRM review covers Copilot across subsidiary entities; "
-                "consolidated model inventory maintained."
-            ),
-            insurance_wholesale=(
-                "MRM review covers Copilot use in policyholder-facing "
-                "functions; documentation per state regulatory requirements."
-            ),
             other=(
                 "MRM review completed per organization's model governance "
                 "policy; validation methodology and monitoring documented."
@@ -2829,14 +2776,6 @@ AUTHORED: dict[str, dict] = {
             credit_union=(
                 "GenAI governance aligned to NCUA expectations; NIST AI RMF "
                 "categories reviewed for member-facing Copilot use."
-            ),
-            holding_company=(
-                "GenAI governance covers Copilot across subsidiary entities; "
-                "NIST AI RMF alignment at enterprise level."
-            ),
-            insurance_wholesale=(
-                "GenAI governance covers policyholder-facing Copilot use; "
-                "bias testing per applicable state insurance requirements."
             ),
             other=(
                 "GenAI governance review completed per organization's AI "
@@ -2967,14 +2906,6 @@ AUTHORED: dict[str, dict] = {
             credit_union=(
                 "Privacy controls reviewed for Copilot NPI processing per "
                 "NCUA Part 748; DLP covers member account identifiers."
-            ),
-            holding_company=(
-                "Privacy controls reviewed across subsidiary entities; DLP "
-                "policies aligned to each subsidiary's privacy obligations."
-            ),
-            insurance_wholesale=(
-                "Privacy controls reviewed for policyholder NPI processing; "
-                "DLP policies per applicable state insurance privacy laws."
             ),
             other=(
                 "Privacy controls reviewed for Copilot per organization's "
@@ -3963,14 +3894,6 @@ AUTHORED: dict[str, dict] = {
             credit_union=(
                 "Agent operations governance per NCUA expectations; "
                 "operational monitoring for member-facing agents."
-            ),
-            holding_company=(
-                "Agent operations governance applied across subsidiary "
-                "entities; consolidated operational monitoring."
-            ),
-            insurance_wholesale=(
-                "Agent operations monitoring covers policyholder-facing "
-                "agents; operational metrics per state requirements."
             ),
             other=(
                 "Agent operations monitored per organization's operational "
