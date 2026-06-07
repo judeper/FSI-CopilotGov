@@ -10,6 +10,8 @@
 
 > **New to this framework? [→ Start Here](docs/start-here.md)** — understand what this is and where to begin.
 
+> **Cloud scope:** This repository targets **US commercial-cloud Microsoft 365 only**. See [SCOPE.md](SCOPE.md) for details.
+
 ---
 
 ## What This Is
