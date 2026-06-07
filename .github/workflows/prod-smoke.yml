@@ -1,0 +1,129 @@
+name: prod-smoke
+
+on:
+  workflow_run:
+    workflows: ["Publish Docs"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: "URL to probe (defaults to live site)"
+        required: false
+        default: "https://judeper.github.io/FSI-CopilotGov/"
+      expected_sha:
+        description: "SHA expected at /version.json (defaults to current main HEAD)"
+        required: false
+        default: ""
+
+concurrency:
+  group: prod-smoke
+  cancel-in-progress: false
+
+jobs:
+  prod-smoke:
+    name: prod-smoke
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Resolve expected SHA + target URL + canonical version
+        id: meta
+        run: |
+          target="${{ github.event.inputs.target_url }}"
+          if [ -z "$target" ]; then target="https://judeper.github.io/FSI-CopilotGov/"; fi
+          expected="${{ github.event.inputs.expected_sha }}"
+          if [ -z "$expected" ]; then expected="${{ github.sha }}"; fi
+          # Canonical version comes from the repo-root VERSION file (single source
+          # of truth, also embedded into the deployed site by scripts/hooks/version_json.py).
+          version="$(cat VERSION | tr -d '[:space:]')"
+          echo "target=$target" >> "$GITHUB_OUTPUT"
+          echo "expected=$expected" >> "$GITHUB_OUTPUT"
+          echo "expected_version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Poll /version.json for expected SHA + version (up to 5 minutes)
+        id: poll
+        run: |
+          target="${{ steps.meta.outputs.target }}"
+          expected="${{ steps.meta.outputs.expected }}"
+          expected_version="${{ steps.meta.outputs.expected_version }}"
+          deadline=$(( $(date +%s) + 300 ))
+          last_actual=""
+          last_actual_version=""
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            payload=$(curl -fsSL "${target}version.json" 2>/dev/null || echo "")
+            actual=$(echo "$payload" | jq -r .sha 2>/dev/null || echo "")
+            actual_version=$(echo "$payload" | jq -r .version 2>/dev/null || echo "")
+            last_actual="$actual"
+            last_actual_version="$actual_version"
+            echo "actual_sha=$actual expected_sha=$expected actual_version=$actual_version expected_version=$expected_version"
+            if [ "$actual" = "$expected" ] && [ "$actual_version" = "$expected_version" ]; then
+              echo "matched=true" >> "$GITHUB_OUTPUT"
+              echo "actual=$actual" >> "$GITHUB_OUTPUT"
+              echo "actual_version=$actual_version" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "matched=false" >> "$GITHUB_OUTPUT"
+          echo "actual=$last_actual" >> "$GITHUB_OUTPUT"
+          echo "actual_version=$last_actual_version" >> "$GITHUB_OUTPUT"
+          exit 1
+
+      - name: Ensure smoke-failure labels exist
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create prod-smoke-fail --color B60205 --description "Production smoke probe failed" --force
+          gh label create automated --color 0075ca --description "Opened by automation" --force
+
+      - name: Open issue on failure
+        if: failure()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const target = "${{ steps.meta.outputs.target }}";
+            const expected = "${{ steps.meta.outputs.expected }}";
+            const expectedVersion = "${{ steps.meta.outputs.expected_version }}";
+            const actual = "${{ steps.poll.outputs.actual }}";
+            const actualVersion = "${{ steps.poll.outputs.actual_version }}";
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            let reason;
+            if (actual === expected && actualVersion !== expectedVersion) {
+              reason = `Deployed SHA matched but \`version.json.version\` was \`${actualVersion || "(empty)"}\` not the expected \`${expectedVersion}\` (canonical from repo-root \`VERSION\`).`;
+            } else {
+              reason = `Deployed SHA \`${actual || "(empty)"}\` did not match expected \`${expected}\` (or version \`${actualVersion || "(empty)"}\` did not match expected \`${expectedVersion}\`) within 5 minutes.`;
+            }
+            const body = [
+              `## Production smoke failed`,
+              ``,
+              `**Target:** ${target}`,
+              `**Expected SHA:** \`${expected}\``,
+              `**Expected version:** \`${expectedVersion}\``,
+              `**Run:** ${runUrl}`,
+              ``,
+              `### Reason`,
+              reason,
+              ``,
+              `### Triage steps`,
+              `1. Verify GitHub Pages deploy completed successfully.`,
+              `2. Check ${target}version.json manually — confirm both \`sha\` and \`version\` fields are present and correct.`,
+              `3. If \`version\` field is missing or wrong, the version hook (\`scripts/hooks/version_json.py\`) may have regressed.`,
+              `4. Re-run \`prod-smoke\` workflow via workflow_dispatch.`,
+              `5. If real outage: check the Pages deployments at https://github.com/${context.repo.owner}/${context.repo.repo}/deployments and trigger a re-deploy from main.`,
+            ].join("\n");
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `prod-smoke-fail: deploy ${expected.slice(0,7)} did not propagate`,
+              body,
+              labels: ["prod-smoke-fail", "automated"]
+            });
