@@ -24,13 +24,12 @@ $start = (Get-Date).AddDays(-30)
 $end   = Get-Date
 
 $agentOperations = @(
-  'AgentInstalled',
-  'AgentUninstalled',
-  'AgentRegistered',
-  'AgentDeregistered',
-  'AgentSettingsModified'
+  'DeployedAgent',
+  'RemovedAgent',
+  'UpdatedAgent'
 )
 
+# Agent 365 management operations per https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
   -Operations $agentOperations `
   -ResultSize 5000 |
@@ -82,7 +81,7 @@ $activity = Import-Csv .\artifacts\4.15\cowork-install-activity.csv
 $approved = (Import-Csv .\artifacts\4.15\cowork-approved-members.csv).UserPrincipalName
 
 $activity |
-  Where-Object { $_.Operation -eq 'AgentInstalled' -and $approved -notcontains $_.UserIds } |
+  Where-Object { $_.Operation -eq 'DeployedAgent' -and $approved -notcontains $_.UserIds } |
   Export-Csv .\artifacts\4.15\cowork-out-of-scope-installs.csv -NoTypeInformation
 ```
 

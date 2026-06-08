@@ -51,15 +51,15 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
      } while ($batch.Count -eq 5000)
      ```
 
-### Issue 5: Agent Events Not Appearing (AgentAdminActivity Latency)
+### Issue 5: Agent Events Not Appearing (CopilotAgentManagement Latency)
 
-- **Symptoms:** An administrator creates or modifies a Copilot agent, but no `AgentAdminActivity` event appears in the Unified Audit Log when searching immediately after.
+- **Symptoms:** An administrator creates or modifies a Copilot agent, but no `CopilotAgentManagement` event appears in the Unified Audit Log when searching immediately after.
 - **Root Cause:** Agent administrative events may have longer ingestion latency than standard CopilotInteraction events — typically 30 minutes to 4 hours depending on tenant load and event pipeline. This is expected behavior, not a configuration error.
 - **Resolution:**
   1. Wait at least 4 hours after the agent configuration change before searching for the event.
   2. If no event appears after 24 hours, verify the administrator performing the change has sufficient permissions for the action to be logged.
-  3. Search with a broader date range to account for potential timestamp alignment issues: `Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-2) -EndDate (Get-Date) -RecordType AgentAdminActivity`
-  4. Confirm the `AgentAdminActivity` record type is available in your tenant by checking the Microsoft 365 Admin Center under Service features.
+  3. Search with a broader date range to account for potential timestamp alignment issues: `Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-2) -EndDate (Get-Date) -RecordType CopilotAgentManagement`
+  4. Confirm the `CopilotAgentManagement` record type is available in your tenant by checking the Microsoft 365 Admin Center under Service features.
 
 ### Issue 6: PAYG Billing Unexpected Cost Spike
 
@@ -88,7 +88,7 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
 2. **Verify licensing:** Confirm Copilot and E5 Compliance licenses are assigned to affected users.
 3. **Test with known interaction:** Have a test user perform a Copilot action and check for the record after 30 minutes.
 4. **Review admin audit log:** Check for any recent changes to audit configuration that may have disrupted logging.
-5. **Check agent event latency:** For AgentAdminActivity events, allow up to 4 hours before diagnosing a missing event.
+5. **Check agent event latency:** For CopilotAgentManagement events, allow up to 4 hours before diagnosing a missing event.
 
 ## Escalation
 
@@ -97,7 +97,7 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
 | Critical | Audit logging completely non-functional | Microsoft Premier Support — Severity A |
 | High | Copilot events missing for multiple users | Internal compliance team + Microsoft Support |
 | High | JailbreakDetected event with no legitimate business explanation | Security incident response team — escalate per FFIEC incident response procedures |
-| Medium | AgentAdminActivity events missing after 24 hours | Internal IT support — verify permissions and record type availability |
+| Medium | CopilotAgentManagement events missing after 24 hours | Internal IT support — verify permissions and record type availability |
 | Medium | Individual user audit gaps | Internal IT support — verify licensing and configuration |
 | Medium | PAYG billing spike | Finance + IT — review event volume and evaluate E5 vs PAYG cost comparison |
 | Low | Minor field discrepancies | Document and monitor — review at next quarterly assessment |

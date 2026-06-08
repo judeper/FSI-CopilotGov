@@ -58,30 +58,20 @@ $copilotLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
 ### Script 3: Search Agent Administrative Activity
 
 ```powershell
-# Search for agent configuration changes (AgentAdminActivity)
+# Search for agent configuration changes (CopilotAgentManagement record type)
+# Operations per https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
 
 $agentAdminLogs = Search-UnifiedAuditLog `
     -StartDate $startDate `
     -EndDate $endDate `
-    -RecordType AgentAdminActivity `
+    -RecordType CopilotAgentManagement `
     -ResultSize 5000
 
 Write-Host "Found $($agentAdminLogs.Count) agent admin activity records"
 $agentAdminLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
-    Export-Csv -Path "AgentAdminActivity_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
-
-# Search for agent settings changes (AgentSettingsAdminActivity)
-$agentSettingsLogs = Search-UnifiedAuditLog `
-    -StartDate $startDate `
-    -EndDate $endDate `
-    -RecordType AgentSettingsAdminActivity `
-    -ResultSize 5000
-
-Write-Host "Found $($agentSettingsLogs.Count) agent settings admin activity records"
-$agentSettingsLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
-    Export-Csv -Path "AgentSettingsActivity_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+    Export-Csv -Path "CopilotAgentManagement_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
 ### Script 4: Filter Audit Data by AgentId or AgentName
@@ -152,10 +142,11 @@ New-UnifiedAuditLogRetentionPolicy `
     -Priority 100
 
 # Create 10-year retention policy for agent administrative record types
+# CopilotAgentManagement per https://learn.microsoft.com/graph/api/resources/security-auditlogrecordtype
 New-UnifiedAuditLogRetentionPolicy `
     -Name "FSI-AgentAdmin-10Year-Retention" `
     -Description "10-year retention for agent admin events (helps meet Sarbanes-Oxley §§302/404 IT general control evidence preservation, where applicable to ICFR)" `
-    -RecordTypes @("AgentAdminActivity", "AgentSettingsAdminActivity") `
+    -RecordTypes @("CopilotAgentManagement") `
     -RetentionDuration TenYears `
     -Priority 100
 
@@ -198,7 +189,7 @@ $copilotVolume = Search-UnifiedAuditLog `
 
 $agentAdminVolume = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -RecordType AgentAdminActivity -ResultSize 1 -SessionCommand ReturnNextPreviewPage
+    -RecordType CopilotAgentManagement -ResultSize 1 -SessionCommand ReturnNextPreviewPage
 
 Write-Host "PAYG Cost Estimate (30-day period at `$0.01/event):"
 Write-Host "  Review Azure Cost Management for actual charges — filter by 'Microsoft.Purview' resource provider"
