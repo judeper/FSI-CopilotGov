@@ -113,23 +113,24 @@ Search-UnifiedAuditLog -StartDate $start -EndDate $end `
   Export-Csv -Path "agent-incident-runtime-audit.csv" -NoTypeInformation
 
 # Search for Agent 365 registration and settings changes.
-$agentAdminOperations = @('AgentRegistered','AgentDeregistered','AgentSettingsModified')
+# Operations per https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities
+$agentAdminOperations = @('DeployedAgent','RemovedAgent','UpdatedAgent')
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
   -Operations $agentAdminOperations `
   -ResultSize 5000 |
   Export-Csv -Path "agent-incident-admin-audit.csv" -NoTypeInformation
 
 # Search for Copilot Studio authoring and lifecycle events.
+# Operations per https://learn.microsoft.com/microsoft-copilot-studio/admin-logging-copilot-studio
 $copilotStudioOperations = @(
-  'BotComponentUpdated',
-  'BotComponentDeleted',
-  'PublishBot',
-  'BotEnvironmentVariableUpdated',
-  'AgentInstalled',
-  'AgentUninstalled'
+  'BotComponentUpdate',
+  'BotComponentDelete',
+  'BotUpdateOperation-BotPublish',
+  'EnvironmentVariableUpdate'
 )
+# Copilot Studio events do not carry a dedicated MicrosoftCopilotStudio RecordType;
+# constrain by -Operations per Learn documentation.
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
-  -RecordType "MicrosoftCopilotStudio" `
   -Operations $copilotStudioOperations `
   -ResultSize 5000 |
   Export-Csv -Path "agent-incident-copilot-studio-audit.csv" -NoTypeInformation

@@ -60,6 +60,7 @@ Connect-ExchangeOnline -ShowBanner:$false
 $start = (Get-Date).AddDays(-30)
 $end   = Get-Date
 
+<!-- NEEDS_HUMAN_REVIEW: The operations CrossTenantAgentInvoked, CrossTenantTrustGranted, CrossTenantTrustRevoked, MCPFederatedServerRegistered, MCPFederatedServerRevoked, CopilotStudioAgentInstalled, and CopilotStudioAgentUninstalled are not documented in Microsoft Learn audit-log-activities as of 2026-06-08. Verify these operation names against current tenant behavior before relying on them in production. -->
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
   -Operations 'CrossTenantAgentInvoked','CrossTenantTrustGranted','CrossTenantTrustRevoked','MCPFederatedServerRegistered','MCPFederatedServerRevoked','CopilotStudioAgentInstalled','CopilotStudioAgentUninstalled' `
   -ResultSize 5000 |

@@ -27,7 +27,7 @@ Step-by-step portal configuration for enabling comprehensive audit logging of al
 1. In the **Activities - friendly names** filter, expand **Copilot activities** to view all Copilot-specific events.
 2. Confirm that the following activities are available for search: `CopilotInteraction`, `CopilotFeedback`, `CopilotPluginRun`.
 3. Create a saved search for "All Copilot Activity" selecting all Copilot-related event types.
-4. To search for agent-specific events, use the **Record type** filter and select `AgentAdminActivity` or `AgentSettingsAdminActivity`.
+4. To search for agent-specific events, use the **Record type** filter and select `CopilotAgentManagement`.
 
 ### Step 3: Search for New Audit Schema Fields
 
@@ -53,7 +53,7 @@ To surface the expanded audit schema fields (AgentId, AgentName, XPIA, Jailbreak
 4. Set **Priority** to a value higher than the default retention policy.
 5. Click **Save** to apply.
 6. Create a second policy for agent record types:
-   - **Record types:** Select `AgentAdminActivity` and `AgentSettingsAdminActivity`
+   - **Record types:** Select `CopilotAgentManagement`
    - **Duration:** 6 years (Sarbanes-Oxley §404 IT general controls require multi-year change management records)
    - **Priority:** Same as the Copilot interaction policy
 
@@ -65,8 +65,7 @@ To surface the expanded audit schema fields (AgentId, AgentName, XPIA, Jailbreak
 To search for agent administrative events in the portal:
 
 1. In the Audit search interface, set the date range.
-2. In the **Record type** filter (advanced search options), select `AgentAdminActivity` to find agent configuration changes.
-3. Select `AgentSettingsAdminActivity` to find agent settings modifications.
+2. In the **Record type** filter (advanced search options), select `CopilotAgentManagement` to find agent configuration changes.
 4. Combine with the **User** filter to scope searches to specific administrators who manage Copilot agents.
 5. Export results and use the `AgentId` field to trace which agents were created, modified, or deleted.
 
@@ -86,7 +85,7 @@ To search for agent administrative events in the portal:
 |---------|----------|-------------|-----------|
 | Audit log status | Enabled | Enabled | Enabled |
 | CopilotInteraction retention | 180 days | 1 year | 6-10 years |
-| AgentAdminActivity retention | Not required | 1 year | 6 years |
+| CopilotAgentManagement retention | Not required | 1 year | 6 years |
 | Copilot activity alerts | Optional | Recommended | Required |
 | JailbreakDetected alert | Optional | Recommended | Required |
 | Audit Premium or PAYG | Optional | Recommended | Required |
@@ -97,7 +96,7 @@ To search for agent administrative events in the portal:
 - **SEC Rule 17a-4(a)** — Six-year retention requirement drives the regulated-tier audit retention configuration
 - **FINRA Rule 4511** — Books-and-records obligations for AI-assisted communications and agent-configured workflows
 - **FINRA Rule 3110** — Supervisory mapping of agent activities; AgentId/AgentName fields are the primary evidence
-- **SOX Section 404** — IT general controls audit trail; AgentAdminActivity captures configuration change history
+- **SOX Section 404** — IT general controls audit trail; CopilotAgentManagement captures configuration change history
 - **FFIEC** — Incident response requirements; JailbreakDetected events require documented escalation procedures
 
 ## Next Steps
