@@ -2839,7 +2839,7 @@
     "portalPlaybookUrl": "/playbooks/control-implementations/3.1/portal-walkthrough/",
     "collectorField": "Audit_UALCopilotInteraction",
     "sectorYesBar": {
-      "bank": "UAL on; CopilotInteraction + AgentAdminActivity + AgentSettingsAdminActivity events retained 7 years; SIEM ingestion to bank-managed log lake; aligned to OCC Heightened Standards (12 CFR part 30, appendix D) for monitoring.",
+      "bank": "UAL on; CopilotInteraction + CopilotAgentManagement (RecordType 384) events retained 7 years; SIEM ingestion to bank-managed log lake; aligned to OCC Heightened Standards (12 CFR part 30, appendix D) for monitoring.",
       "broker-dealer": "UAL on; CopilotInteraction events retained 7 years per SEC Rule 17a-4 where applicable; WORM archive evidence provided to FINRA on exam request; supervisory review of agent events.",
       "investment-adviser": "UAL on; CopilotInteraction events retained ≥5 years per Investment Advisers Act Rule 204-2; SIEM/archive evidence available for SEC OCIE exams.",
       "insurance-carrier": "UAL on; CopilotInteraction events retained per state insurance regulator record-keeping minimums; SIEM ingestion for HIPAA security-incident detection.",

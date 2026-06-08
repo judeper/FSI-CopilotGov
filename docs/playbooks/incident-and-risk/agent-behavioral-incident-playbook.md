@@ -112,26 +112,37 @@ Search-UnifiedAuditLog -StartDate $start -EndDate $end `
   Where-Object { $_.AuditData -like "*AgentId*" } |
   Export-Csv -Path "agent-incident-runtime-audit.csv" -NoTypeInformation
 
-# Search for Agent 365 registration and settings changes.
-$agentAdminOperations = @('AgentRegistered','AgentDeregistered','AgentSettingsModified')
+# Search for Copilot agent management (deploy, remove, block/unblock, update,
+# delete, tenant settings) per the M365 Admin Center Agent Management
+# activities (RecordType 384 = CopilotAgentManagement). See:
+# https://learn.microsoft.com/en-us/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities
+$agentAdminOperations = @('BlockedAgent','DeletedAgent','DeployedAgent','RemovedAgent','UnblockedAgent','UpdatedAgent','UpdatedTenantSettings')
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
+  -RecordType "CopilotAgentManagement" `
   -Operations $agentAdminOperations `
   -ResultSize 5000 |
   Export-Csv -Path "agent-incident-admin-audit.csv" -NoTypeInformation
 
-# Search for Copilot Studio authoring and lifecycle events.
+# Search for Copilot Studio authoring and lifecycle events. Per Microsoft Learn
+# (https://learn.microsoft.com/en-us/microsoft-copilot-studio/admin-logging-copilot-studio)
+# the documented Operation labels are present-tense. Copilot Studio events do
+# not have a dedicated AuditLogRecordType enum entry, so filter by Operations
+# only and post-filter by Workload to scope to Copilot Studio.
 $copilotStudioOperations = @(
-  'BotComponentUpdated',
-  'BotComponentDeleted',
-  'PublishBot',
-  'BotEnvironmentVariableUpdated',
-  'AgentInstalled',
-  'AgentUninstalled'
+  'BotComponentUpdate',
+  'BotComponentDelete',
+  'BotPublish',
+  'EnvironmentVariableUpdate',
+  'BotCreate',
+  'BotDelete'
 )
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
-  -RecordType "MicrosoftCopilotStudio" `
   -Operations $copilotStudioOperations `
   -ResultSize 5000 |
+  Where-Object {
+    $w = ($_.AuditData | ConvertFrom-Json).Workload
+    $w -in @('MicrosoftCopilotStudio','PowerVirtualAgents')
+  } |
   Export-Csv -Path "agent-incident-copilot-studio-audit.csv" -NoTypeInformation
 ```
 

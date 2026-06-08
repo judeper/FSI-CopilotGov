@@ -45,24 +45,49 @@ Connect-ExchangeOnline -ShowBanner:$false
 $start = (Get-Date).AddDays(-30)
 $end   = Get-Date
 
+# Documented Copilot Studio Operation labels (event labels per Microsoft Learn:
+# https://learn.microsoft.com/en-us/microsoft-copilot-studio/admin-logging-copilot-studio).
+# Present-tense forms are the documented labels; do not use past-tense variants.
 $copilotStudioOperations = @(
-  'BotComponentUpdated',
-  'BotComponentDeleted',
-  'PublishBot',
-  'BotEnvironmentVariableUpdated',
-  'AgentInstalled',
-  'AgentUninstalled'
+  'BotComponentUpdate',
+  'BotComponentDelete',
+  'BotPublish',
+  'EnvironmentVariableUpdate',
+  'BotCreate',
+  'BotDelete'
+)
+
+# Copilot Studio events do not flow under a dedicated `MicrosoftCopilotStudio`
+# RecordType in the AuditLogRecordType enum
+# (https://learn.microsoft.com/en-us/office/office-365-management-api/office-365-management-activity-api-schema#auditlogrecordtype).
+# Filter by Operations only, then post-filter by Workload (`MicrosoftCopilotStudio` /
+# `PowerVirtualAgents`) on the returned records to scope to Copilot Studio.
+$copilotStudioAudit = Search-UnifiedAuditLog -StartDate $start -EndDate $end `
+  -Operations $copilotStudioOperations `
+  -ResultSize 5000
+
+$copilotStudioAudit |
+  Where-Object {
+    $w = ($_.AuditData | ConvertFrom-Json).Workload
+    $w -in @('MicrosoftCopilotStudio','PowerVirtualAgents')
+  } |
+  Export-Csv .\artifacts\4.14\agent-lifecycle-audit.csv -NoTypeInformation
+
+# Microsoft 365 Admin Center Agent Management activities (per Learn:
+# https://learn.microsoft.com/en-us/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities).
+# These flow under RecordType `CopilotAgentManagement` (RecordType 384).
+$agent365Operations = @(
+  'BlockedAgent',
+  'DeletedAgent',
+  'DeployedAgent',
+  'RemovedAgent',
+  'UnblockedAgent',
+  'UpdatedAgent',
+  'UpdatedTenantSettings'
 )
 
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
-  -RecordType 'MicrosoftCopilotStudio' `
-  -Operations $copilotStudioOperations `
-  -ResultSize 5000 |
-  Export-Csv .\artifacts\4.14\agent-lifecycle-audit.csv -NoTypeInformation
-
-$agent365Operations = @('AgentRegistered','AgentDeregistered','AgentSettingsModified')
-
-Search-UnifiedAuditLog -StartDate $start -EndDate $end `
+  -RecordType 'CopilotAgentManagement' `
   -Operations $agent365Operations `
   -ResultSize 5000 |
   Export-Csv .\artifacts\4.14\agent-365-admin-audit.csv -NoTypeInformation
@@ -89,7 +114,7 @@ $register |
 $audit = Import-Csv .\artifacts\4.14\agent-lifecycle-audit.csv
 
 $audit |
-  Where-Object { $_.Operations -in @('PublishBot','BotComponentUpdated','BotEnvironmentVariableUpdated','AgentInstalled','AgentUninstalled') } |
+  Where-Object { $_.Operations -in @('BotPublish','BotComponentUpdate','BotComponentDelete','EnvironmentVariableUpdate','BotCreate','BotDelete') } |
   ForEach-Object {
     $data = $_.AuditData | ConvertFrom-Json
     [pscustomobject]@{

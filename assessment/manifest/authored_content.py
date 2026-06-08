@@ -2249,8 +2249,8 @@ AUTHORED: dict[str, dict] = {
         "collectorField": "Audit_UALCopilotInteraction",
         "sectorYesBar": _sector_map(
             bank=(
-                "UAL on; CopilotInteraction + AgentAdminActivity + "
-                "AgentSettingsAdminActivity events retained 7 years; SIEM "
+                "UAL on; CopilotInteraction + CopilotAgentManagement "
+                "(RecordType 384) events retained 7 years; SIEM "
                 "ingestion to bank-managed log lake; aligned to OCC Heightened "
                 "Standards (12 CFR part 30, appendix D) for monitoring."
             ),

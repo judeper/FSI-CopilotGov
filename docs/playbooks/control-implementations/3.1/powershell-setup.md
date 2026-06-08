@@ -55,33 +55,37 @@ $copilotLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
     Export-Csv -Path "CopilotAuditLog_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 3: Search Agent Administrative Activity
+### Script 3: Search Copilot Agent Management Activity
 
 ```powershell
-# Search for agent configuration changes (AgentAdminActivity)
+# Search for Copilot agent management events (RecordType 384 = CopilotAgentManagement).
+# Per the AuditLogRecordType enum, CopilotAgentManagement covers admin activities for
+# Microsoft Copilot agents (deploy, remove, block/unblock, update, delete, tenant settings):
+# https://learn.microsoft.com/en-us/office/office-365-management-api/office-365-management-activity-api-schema#auditlogrecordtype
+# Documented Operations (M365 Admin Center Agent Management activities) are:
+# BlockedAgent, DeletedAgent, DeployedAgent, RemovedAgent, UnblockedAgent, UpdatedAgent,
+# UpdatedTenantSettings. See:
+# https://learn.microsoft.com/en-us/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
 
-$agentAdminLogs = Search-UnifiedAuditLog `
+$agentMgmtLogs = Search-UnifiedAuditLog `
     -StartDate $startDate `
     -EndDate $endDate `
-    -RecordType AgentAdminActivity `
+    -RecordType CopilotAgentManagement `
     -ResultSize 5000
 
-Write-Host "Found $($agentAdminLogs.Count) agent admin activity records"
-$agentAdminLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
-    Export-Csv -Path "AgentAdminActivity_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+Write-Host "Found $($agentMgmtLogs.Count) Copilot agent management records"
+$agentMgmtLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
+    Export-Csv -Path "CopilotAgentManagement_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 
-# Search for agent settings changes (AgentSettingsAdminActivity)
-$agentSettingsLogs = Search-UnifiedAuditLog `
-    -StartDate $startDate `
-    -EndDate $endDate `
-    -RecordType AgentSettingsAdminActivity `
-    -ResultSize 5000
+# Narrow to lifecycle / settings operations
+$lifecycleOps = @('DeployedAgent','RemovedAgent','BlockedAgent','UnblockedAgent','DeletedAgent','UpdatedAgent','UpdatedTenantSettings')
+$lifecycleLogs = $agentMgmtLogs | Where-Object { $lifecycleOps -contains $_.Operations }
 
-Write-Host "Found $($agentSettingsLogs.Count) agent settings admin activity records"
-$agentSettingsLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
-    Export-Csv -Path "AgentSettingsActivity_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+Write-Host "Found $($lifecycleLogs.Count) lifecycle / settings events"
+$lifecycleLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
+    Export-Csv -Path "AgentLifecycleSettings_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
 ### Script 4: Filter Audit Data by AgentId or AgentName
@@ -151,11 +155,11 @@ New-UnifiedAuditLogRetentionPolicy `
     -RetentionDuration TenYears `
     -Priority 100
 
-# Create 10-year retention policy for agent administrative record types
+# Create 10-year retention policy for Copilot agent management events
 New-UnifiedAuditLogRetentionPolicy `
-    -Name "FSI-AgentAdmin-10Year-Retention" `
-    -Description "10-year retention for agent admin events (helps meet Sarbanes-Oxley §§302/404 IT general control evidence preservation, where applicable to ICFR)" `
-    -RecordTypes @("AgentAdminActivity", "AgentSettingsAdminActivity") `
+    -Name "FSI-CopilotAgentManagement-10Year-Retention" `
+    -Description "10-year retention for Copilot agent management events (helps meet Sarbanes-Oxley §§302/404 IT general control evidence preservation, where applicable to ICFR)" `
+    -RecordTypes CopilotAgentManagement `
     -RetentionDuration TenYears `
     -Priority 100
 
@@ -196,9 +200,9 @@ $copilotVolume = Search-UnifiedAuditLog `
     -RecordType CopilotInteraction -ResultSize 1 -SessionCommand ReturnNextPreviewPage
 # Note: For volume estimation, use the Management Activity API for accurate counts at scale
 
-$agentAdminVolume = Search-UnifiedAuditLog `
+$agentMgmtVolume = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -RecordType AgentAdminActivity -ResultSize 1 -SessionCommand ReturnNextPreviewPage
+    -RecordType CopilotAgentManagement -ResultSize 1 -SessionCommand ReturnNextPreviewPage
 
 Write-Host "PAYG Cost Estimate (30-day period at `$0.01/event):"
 Write-Host "  Review Azure Cost Management for actual charges — filter by 'Microsoft.Purview' resource provider"
@@ -211,7 +215,7 @@ Write-Host "  Ensure budget alerts are configured in Azure Cost Management for y
 |------|-----------|--------|
 | Audit log status check | Daily | Script 1 |
 | Copilot log export | Weekly | Script 2 |
-| Agent admin activity review | Weekly | Script 3 |
+| Agent management activity review | Weekly | Script 3 |
 | JailbreakDetected scan | Daily | Script 5 |
 | Daily activity summary | Daily | Script 7 |
 | PAYG billing review | Monthly | Script 8 |

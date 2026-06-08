@@ -47,15 +47,15 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 
 ### Test 5: Agent Audit Event Capture
 
-- **Objective:** Verify that agent creation and modification events generate AgentAdminActivity records
+- **Objective:** Verify that agent creation and modification events generate `CopilotAgentManagement` records
 - **Steps:**
-  1. In a test environment, have an authorized administrator create a new declarative Copilot agent or modify an existing agent (e.g., add a knowledge source or change agent instructions).
+  1. In a test environment, have an authorized administrator deploy a new declarative Copilot agent or modify an existing agent (e.g., add a knowledge source or change agent instructions).
   2. Wait 15-30 minutes for log ingestion.
-  3. Search the Unified Audit Log using `-RecordType AgentAdminActivity` filtered to the test administrator's UPN.
-  4. Verify the event record contains `AgentId` and `AgentName` fields in the AuditData JSON.
-  5. Repeat for an agent settings change using `-RecordType AgentSettingsAdminActivity`.
-- **Expected Result:** At least one `AgentAdminActivity` event and one `AgentSettingsAdminActivity` event appear with the administrator's UPN, the affected agent's ID and name, and a timestamp corresponding to the test action.
-- **Evidence:** PowerShell output showing the agent audit records with AgentId field populated.
+  3. Search the Unified Audit Log using `-RecordType CopilotAgentManagement` filtered to the test administrator's UPN.
+  4. Verify the event record contains `AgentId` and `AgentName` fields in the AuditData JSON and that the `Operations` value matches one of the documented M365 Admin Center Agent Management activities (`DeployedAgent`, `RemovedAgent`, `BlockedAgent`, `UnblockedAgent`, `DeletedAgent`, `UpdatedAgent`, `UpdatedTenantSettings`).
+  5. Repeat for a tenant-wide agent settings change and confirm an `UpdatedTenantSettings` Operation appears under the same `CopilotAgentManagement` RecordType.
+- **Expected Result:** At least one `CopilotAgentManagement` event appears with the administrator's UPN, the affected agent's ID and name, a documented `Operations` value, and a timestamp corresponding to the test action.
+- **Evidence:** PowerShell output showing the agent audit records with `AgentId` field populated and a documented `Operations` value.
 
 ### Test 6: JailbreakDetected Field Verification
 
@@ -78,14 +78,14 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Expected Result:** PAYG billing budget exists with active alert. Current spend is within approved limit. No unexpected cost spikes from audit event accumulation.
 - **Evidence:** Screenshot of Azure Cost Management budget configuration and current spend.
 
-### Test 8: AgentAdminActivity Retention Policy
+### Test 8: CopilotAgentManagement Retention Policy
 
-- **Objective:** Verify that agent-specific record types are covered by a retention policy
+- **Objective:** Verify that the Copilot agent management record type is covered by a retention policy
 - **Steps:**
-  1. Run `Get-UnifiedAuditLogRetentionPolicy | Where-Object { $_.RecordTypes -like "*AgentAdminActivity*" }`.
+  1. Run `Get-UnifiedAuditLogRetentionPolicy | Where-Object { $_.RecordTypes -like "*CopilotAgentManagement*" }`.
   2. Confirm the policy exists with a minimum 6-year duration.
   3. Verify the policy priority is appropriately set.
-- **Expected Result:** A retention policy covering `AgentAdminActivity` and `AgentSettingsAdminActivity` exists with 6-year duration — supporting SOX Section 404 IT general controls audit trail requirements.
+- **Expected Result:** A retention policy covering `CopilotAgentManagement` exists with at least 6-year duration — supporting SOX Section 404 IT general controls audit trail requirements.
 - **Evidence:** PowerShell output showing the agent record type retention policy configuration.
 
 ## Evidence Collection
@@ -107,7 +107,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 | SEC Rule 17a-4(a) | Electronic record preservation — six-year retention minimum | Supports compliance through 6-year audit log retention for CopilotInteraction and agent record types |
 | FINRA Rule 4511 | Books and records | Helps meet record-keeping requirements for AI-assisted activities |
 | FINRA Rule 3110 | Supervisory procedures for registered representatives | AgentId/AgentName fields enable supervisory mapping of agent usage to approved workflows |
-| SOX Section 404 | IT general controls audit trail | AgentAdminActivity and AgentSettingsAdminActivity record types provide change management evidence |
+| SOX Section 404 | IT general controls audit trail | The `CopilotAgentManagement` record type provides change management evidence for Copilot agent lifecycle and settings |
 | FFIEC IT Handbook | Audit trail and incident response requirements | JailbreakDetected scan provides the detection capability required for AI incident response |
 
 ## Next Steps

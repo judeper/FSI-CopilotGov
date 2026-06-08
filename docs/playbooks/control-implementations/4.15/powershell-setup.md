@@ -23,15 +23,22 @@ Connect-ExchangeOnline -ShowBanner:$false
 $start = (Get-Date).AddDays(-30)
 $end   = Get-Date
 
+# Microsoft 365 Admin Center Agent Management activities (per Learn:
+# https://learn.microsoft.com/en-us/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities).
+# These flow under RecordType `CopilotAgentManagement` (RecordType 384 in the
+# AuditLogRecordType enum).
 $agentOperations = @(
-  'AgentInstalled',
-  'AgentUninstalled',
-  'AgentRegistered',
-  'AgentDeregistered',
-  'AgentSettingsModified'
+  'BlockedAgent',
+  'DeletedAgent',
+  'DeployedAgent',
+  'RemovedAgent',
+  'UnblockedAgent',
+  'UpdatedAgent',
+  'UpdatedTenantSettings'
 )
 
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
+  -RecordType 'CopilotAgentManagement' `
   -Operations $agentOperations `
   -ResultSize 5000 |
   Where-Object { $_.AuditData -match 'Cowork' } |
@@ -82,7 +89,7 @@ $activity = Import-Csv .\artifacts\4.15\cowork-install-activity.csv
 $approved = (Import-Csv .\artifacts\4.15\cowork-approved-members.csv).UserPrincipalName
 
 $activity |
-  Where-Object { $_.Operation -eq 'AgentInstalled' -and $approved -notcontains $_.UserIds } |
+  Where-Object { $_.Operation -eq 'DeployedAgent' -and $approved -notcontains $_.UserIds } |
   Export-Csv .\artifacts\4.15\cowork-out-of-scope-installs.csv -NoTypeInformation
 ```
 
