@@ -108,4 +108,35 @@ describe("solutions catalog view (edge cases)", () => {
     expect(app.getControlsForSolution("")).toEqual([]);
     expect(app.getControlsForSolution(null)).toEqual([]);
   });
+
+  it("surfaces schema 0.2.0 tiersSupported chips with the recommended tier emphasized", async () => {
+    const { app, document } = await init();
+    const sol = app.solutionsLock.solutions.find(
+      (s) => Array.isArray(s.tiersSupported) && s.tiersSupported.length && s.tierRecommended,
+    );
+    expect(sol, "lock should carry schema 0.2.0 tier metadata").toBeTruthy();
+    const card = document.querySelector(
+      `.solution-catalog-card[data-solution-id="${sol.id}"]`,
+    );
+    expect(card).not.toBeNull();
+    const chips = card.querySelectorAll(".solution-tier-chip");
+    expect(chips.length).toBe(sol.tiersSupported.length);
+    const rec = card.querySelector(".solution-tier-chip.recommended");
+    expect(rec).not.toBeNull();
+    expect(rec.getAttribute("data-tier-name")).toBe(sol.tierRecommended);
+  });
+
+  it("detail panel surfaces solution maturity from schema 0.2.0 metadata", async () => {
+    const { app } = await init();
+    const sol = app.solutionsLock.solutions.find((s) => s.maturity);
+    expect(sol).toBeTruthy();
+    const f = app._getSolutionsFilter();
+    f.selectedId = sol.id;
+    app.render();
+    const panel = app.el.querySelector(".solution-detail-panel");
+    expect(panel).not.toBeNull();
+    const mat = panel.querySelector(".solution-maturity");
+    expect(mat).not.toBeNull();
+    expect(mat.getAttribute("data-maturity")).toBe(sol.maturity);
+  });
 });
