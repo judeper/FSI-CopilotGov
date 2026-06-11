@@ -16,7 +16,7 @@ Shape of the emitted lock:
       "generatedAt": "<ISO UTC>",
       "source": {
         "repo": "judeper/FSI-CopilotGov-Solutions",
-        "ref": "v0.7.0",
+        "ref": "v0.8.0",
         "commit": "<sha>"
       },
       "solutions": [ /* deep-copied from source */ ]
@@ -56,10 +56,20 @@ DEFAULT_SISTER_REPO = Path(
     os.environ.get("FSI_SOLUTIONS_REPO", r"C:\dev\FSI-CopilotGov-Solutions")
 )
 SISTER_REPO_SLUG = "judeper/FSI-CopilotGov-Solutions"
-EXPECTED_SCHEMA = "0.1.0"
-# The pinned ref that the v1.4 framework targets. Update in lock-step
+# Schema version of the *lock envelope* this script emits. It is validated by
+# ``scripts/validate_solutions_lock.py`` and is independent of the sister repo's
+# own ``solutions.json`` schema (see ``SUPPORTED_SOURCE_SCHEMAS``). Bump only
+# when the lock file's own structure changes.
+LOCK_SCHEMA = "0.1.0"
+# Sister-repo ``solutions.json`` schema versions this generator understands.
+# The 0.1.0 -> 0.2.0 bump (sister repo v0.8.0) was purely additive — it added
+# per-solution maturity/tier metadata (``maturity``, ``tierMaturity``,
+# ``tierRecommended``, ``tiersSupported``) without removing or renaming any
+# field the lock copies — so both versions round-trip safely.
+SUPPORTED_SOURCE_SCHEMAS = ("0.1.0", "0.2.0")
+# The pinned ref that the framework targets. Update in lock-step
 # with the sister repo release cadence.
-PINNED_REF = "v0.7.0"
+PINNED_REF = "v0.8.0"
 
 
 def _git(sister_repo: Path, *args: str) -> str | None:
@@ -113,10 +123,10 @@ def _load_source_solutions(sister_repo: Path) -> tuple[list[dict], str | None]:
     """
     data = json.loads(_read_pinned_solutions_json(sister_repo))
     sv = data.get("schemaVersion")
-    if sv != EXPECTED_SCHEMA:
+    if sv not in SUPPORTED_SOURCE_SCHEMAS:
         raise SystemExit(
             f"ERROR: sister repo solutions.json schemaVersion is {sv!r}, "
-            f"expected {EXPECTED_SCHEMA!r}."
+            f"expected one of {list(SUPPORTED_SOURCE_SCHEMAS)!r}."
         )
     sols = data.get("solutions")
     if not isinstance(sols, list) or not sols:
@@ -195,7 +205,7 @@ def build_lock(
         )
 
     lock = {
-        "schemaVersion": EXPECTED_SCHEMA,
+        "schemaVersion": LOCK_SCHEMA,
         "generatedAt": now,
         "source": source,
         "solutions": solutions,
