@@ -86,10 +86,26 @@ def validate(graph: dict, schema: dict) -> list[str]:
     for c in controls:
         key = str(c.get("pillar"))
         by_pillar[key] = by_pillar.get(key, 0) + 1
+
+    tiers = ("Baseline", "Recommended", "Regulated")
+    by_tier = {t: 0 for t in tiers}
+    by_pillar_tier: dict[str, dict[str, int]] = {}
+    for c in controls:
+        tier = c.get("tier")
+        pkey = str(c.get("pillar"))
+        if tier not in tiers:
+            errors.append(f"control {c.get('id')!r}: invalid or missing tier {tier!r}")
+            continue
+        by_tier[tier] += 1
+        by_pillar_tier.setdefault(pkey, {t: 0 for t in tiers})[tier] += 1
+    by_pillar_tier = {k: by_pillar_tier[k] for k in sorted(by_pillar_tier, key=int)}
+
     expected_counts = {
         "controls": len(controls),
         "pillars": len({c.get("pillar") for c in controls}),
         "by_pillar": {k: by_pillar[k] for k in sorted(by_pillar, key=int)},
+        "by_tier": by_tier,
+        "by_pillar_tier": by_pillar_tier,
         "playbooks_total": len(playbooks),
         "playbooks_control": pb_ctrl,
         "playbooks_cross_cutting": pb_cross,

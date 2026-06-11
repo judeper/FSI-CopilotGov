@@ -129,9 +129,9 @@ Admin settings, per-app configuration, analytics, Viva governance, cost tracking
 
 | Level | Pillar 1 | Pillar 2 | Pillar 3 | Pillar 4 | Total |
 |-------|----------|----------|----------|----------|-------|
-| **Baseline (B)** | 6 | 6 | 3 | 3 | **18** |
-| **Recommended (R)** | 7 | 8 | 6 | 11 | **32** |
-| **Regulated (Reg)** | 3 | 3 | 6 | 1 | **13** |
+| **Baseline (B)** | {{ tier_count("B", 1) }} | {{ tier_count("B", 2) }} | {{ tier_count("B", 3) }} | {{ tier_count("B", 4) }} | **{{ tier_count("B") }}** |
+| **Recommended (R)** | {{ tier_count("R", 1) }} | {{ tier_count("R", 2) }} | {{ tier_count("R", 3) }} | {{ tier_count("R", 4) }} | **{{ tier_count("R") }}** |
+| **Regulated (Reg)** | {{ tier_count("Reg", 1) }} | {{ tier_count("Reg", 2) }} | {{ tier_count("Reg", 3) }} | {{ tier_count("Reg", 4) }} | **{{ tier_count("Reg") }}** |
 | **Pillar Total** | **{{ pillar_count(1) }}** | **{{ pillar_count(2) }}** | **{{ pillar_count(3) }}** | **{{ pillar_count(4) }}** | **{{ counts.controls }}** |
 
 !!! tip "Implementation Priority"
