@@ -7,7 +7,7 @@ governance framework.
 > repository. PPAC (Power Platform Admin Center) collectors and evaluators
 > have been removed because FSI-CopilotGov is scoped to Microsoft 365 Copilot
 > surfaces (Word, Excel, PowerPoint, Outlook, Teams, OneDrive, SharePoint,
-> Copilot Chat, Copilot Pages, declarative agents, Agents 365). Power Platform
+> Copilot Chat, Copilot Pages, declarative agents, Microsoft Agent 365). Power Platform
 > and Copilot Studio governance live in the companion FSI-AgentGov framework.
 > A single dead-code constant (``LEGACY_AGENTGOV_COPILOT_STUDIO_APP_ID`` in
 > ``engine/score.py``) is retained as a labelled quarantine block to preserve
