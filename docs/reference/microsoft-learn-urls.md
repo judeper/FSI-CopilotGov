@@ -319,4 +319,4 @@ See the [Microsoft Open-Source Copilot Analytics Tools playbook](../playbooks/go
 
 ---
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*

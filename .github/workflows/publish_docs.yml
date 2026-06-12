@@ -72,6 +72,9 @@ jobs:
       - name: Verify Count Consistency Across Docs/SPA
         run: python scripts/verify_count_consistency.py
 
+      - name: Verify Version Stamps vs VERSION
+        run: python scripts/verify_version_stamps.py --check
+
       - name: Generate Assessment Data
         run: python scripts/extract_assessment_data.py
 

@@ -186,4 +186,4 @@ Download or copy this checklist into your governance tracking system. Recommende
 
 ---
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*

@@ -2,7 +2,7 @@
 
 **Pillar Focus:** Operational governance, ongoing monitoring, and lifecycle management of Microsoft 365 Copilot in financial services environments.
 
-**Controls:** 15
+**Controls:** {{ pillar_count(4) }}
 **Primary Admin Portals:** M365 Admin Center, Microsoft Sentinel, Microsoft Viva Insights, Teams Admin Center
 
 ---
@@ -140,4 +140,4 @@ Phase 4: Optimization and Lifecycle (Week 7-8)
 
 ---
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*

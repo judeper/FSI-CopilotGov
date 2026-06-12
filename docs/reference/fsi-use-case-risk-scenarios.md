@@ -109,4 +109,4 @@ Copilot in Teams meetings generating transcripts, summaries, action items, and v
 
 ---
 
-*FSI Copilot Governance Framework v1.4 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*
