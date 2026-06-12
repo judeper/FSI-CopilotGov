@@ -155,10 +155,13 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 ---
 
-## DSPM (Data Security Posture Management) and DSPM for AI (classic)
+## DSPM (Data Security Posture Management) and DSPM for AI
+
+Use the current DSPM for AI overview as the primary reference; the classic AI hub URLs are retained for organizations that have not yet migrated.
 
 | Topic | URL |
 |-------|-----|
+| DSPM for AI overview (current) | [https://learn.microsoft.com/en-us/purview/dspm-for-ai](https://learn.microsoft.com/en-us/purview/dspm-for-ai) |
 | DSPM for AI (classic) overview | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
 | Get started with DSPM for AI (classic) | [https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations](https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations) |
 | Learn about DSPM | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about](https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about) |
