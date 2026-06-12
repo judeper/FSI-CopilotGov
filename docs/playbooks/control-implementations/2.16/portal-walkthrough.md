@@ -54,5 +54,5 @@ Federated connector vendors are third parties under OCC Bulletin 2023-17. Re-ass
 - Use [Verification & Testing](verification-testing.md) to validate scoping and DLP coverage.
 - Keep [Troubleshooting](troubleshooting.md) available for enablement, authentication, and audit issues.
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*
 - Back to [Control 2.16](../../../controls/pillar-2-security/2.16-federated-connector-mcp-governance.md)

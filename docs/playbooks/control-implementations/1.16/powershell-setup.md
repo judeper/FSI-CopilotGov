@@ -84,5 +84,5 @@ Compress-Archive -Path .\artifacts\1.16\* `
 - Continue to [Verification & Testing](verification-testing.md) to validate evidence captures.
 - Reference [Troubleshooting](troubleshooting.md) for cmdlet errors or empty audit results.
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*
 - Back to [Control 1.16](../../../controls/pillar-1-readiness/1.16-copilot-tuning-governance.md)

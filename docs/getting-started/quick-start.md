@@ -220,4 +220,4 @@ After completing the five-step quick start, you have **Baseline** governance in 
 
 ---
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*

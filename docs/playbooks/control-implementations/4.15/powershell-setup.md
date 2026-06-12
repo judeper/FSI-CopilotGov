@@ -108,5 +108,5 @@ Compress-Archive -Path .\artifacts\4.15\* `
 - Continue to [Verification & Testing](verification-testing.md) for availability, plugin, and audit-coverage validation.
 - Reference [Troubleshooting](troubleshooting.md) for visibility, availability, and plugin issues.
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*
 - Back to [Control 4.15](../../../controls/pillar-4-operations/4.15-copilot-cowork-governance.md)

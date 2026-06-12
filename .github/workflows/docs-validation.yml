@@ -8,12 +8,15 @@ on:
   pull_request:
     paths:
       - 'docs/**'
+      - 'README.md'
+      - 'VERSION'
       - 'mkdocs.yml'
       - 'overrides/**'
       - 'scripts/verify_build_output.py'
       - 'scripts/verify_meta_tags.py'
       - 'scripts/verify_doc_links.py'
       - 'scripts/verify_learn_url_health.py'
+      - 'scripts/verify_version_stamps.py'
       - 'scripts/macros_module.py'
       - 'scripts/hooks/**'
       - 'assessment/**'
@@ -76,6 +79,9 @@ jobs:
 
       - name: Verify Count Consistency Across Docs/SPA
         run: python scripts/verify_count_consistency.py
+
+      - name: Verify Version Stamps vs VERSION
+        run: python scripts/verify_version_stamps.py --check
 
       - name: Generate Assessment Data
         run: python scripts/extract_assessment_data.py
