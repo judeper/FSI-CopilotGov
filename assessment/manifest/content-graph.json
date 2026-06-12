@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-06-08T05:21:55Z",
+  "generatedAt": "2026-06-12T07:26:25Z",
   "counts": {
     "controls": 63,
     "pillars": 4,
@@ -47,7 +47,7 @@
       "pillar": 1,
       "title": "Control 1.3: Restricted SharePoint Search Configuration",
       "path": "docs/controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -97,7 +97,7 @@
       "pillar": 1,
       "title": "Control 1.7: SharePoint Advanced Management Readiness for Copilot",
       "path": "docs/controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Examination Handbook (Information Security Booklet)"
@@ -293,7 +293,7 @@
       "pillar": 2,
       "title": "Control 2.7: Data Residency and Cross-Border Data Flow Governance",
       "path": "docs/controls/pillar-2-security/2.7-data-residency.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "GDPR (if applicable)",
@@ -373,7 +373,7 @@
       "pillar": 2,
       "title": "Control 2.14: Declarative and SharePoint Agents Governance",
       "path": "docs/controls/pillar-2-security/2.14-declarative-agents-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)"
       ]
@@ -394,7 +394,7 @@
       "pillar": 2,
       "title": "Control 2.16: Federated Copilot Connector and Model Context Protocol (MCP) Governance",
       "path": "docs/controls/pillar-2-security/2.16-federated-connector-mcp-governance.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P",
@@ -407,7 +407,7 @@
       "pillar": 2,
       "title": "Control 2.17: Cross-Tenant Agent Federation (MCP and Entra Agent ID)",
       "path": "docs/controls/pillar-2-security/2.17-cross-tenant-agent-federation.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P (248.30)",
@@ -421,7 +421,7 @@
       "pillar": 3,
       "title": "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)",
       "path": "docs/controls/pillar-3-compliance/3.1-copilot-audit-logging.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "FINRA 4511 (Books and Records)",
         "SEC 17a-3/4 (Books and Records)",
@@ -443,9 +443,9 @@
     {
       "id": "3.3",
       "pillar": 3,
-      "title": "Control 3.3: eDiscovery for Copilot-Generated Content",
+      "title": "Control 3.3: Purview eDiscovery for Copilot-Generated Content",
       "path": "docs/controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "SEC 17a-4 (Preservation of Records)",
         "FINRA 4511 (Books and Records)",
@@ -598,7 +598,7 @@
       "pillar": 3,
       "title": "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot",
       "path": "docs/controls/pillar-3-compliance/3.8a-generative-ai-model-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "SR 26-2 / OCC Bulletin 2026-13 (April 2026 interagency guidance — Copilot excluded as generative AI; this control applies SR 11-7 / OCC Bulletin 2011-12 principles synthesized with NIST AI RMF 1.0 and ISO/IEC 42001 as the most-recent applicable interim framework)",
         "NIST AI RMF 1.0",
@@ -767,7 +767,7 @@
       "pillar": 4,
       "title": "Control 4.13: Copilot Extensibility and Agent Operations Governance",
       "path": "docs/controls/pillar-4-operations/4.13-extensibility-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Examination Handbook",
@@ -780,7 +780,7 @@
       "pillar": 4,
       "title": "Control 4.14: Copilot Studio Agent Lifecycle Governance",
       "path": "docs/controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "FFIEC IT Handbook (Operations Booklet)",
         "FINRA Rule 3110 (supervisory systems and WSPs)",
