@@ -58,5 +58,5 @@ Schedule a periodic attestation that every agent in the register has a current o
 - Use [Verification & Testing](verification-testing.md) to validate stage transitions, approvals, and deprecation.
 - Keep [Troubleshooting](troubleshooting.md) available for register, approval, and deprecation issues.
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*
 - Back to [Control 4.14](../../../controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md)

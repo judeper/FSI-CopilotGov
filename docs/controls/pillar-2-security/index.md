@@ -2,7 +2,7 @@
 
 **Pillar Focus:** Protecting sensitive financial data and enforcing security boundaries across all Microsoft 365 Copilot surfaces.
 
-**Controls:** 17
+**Controls:** {{ pillar_count(2) }}
 **Primary Admin Portals:** Microsoft Purview, Microsoft Entra, Microsoft Defender
 
 ---

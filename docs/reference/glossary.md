@@ -69,8 +69,8 @@ Connectors that bring external data (from third-party systems, databases, or fil
 ### Microsoft 365 Copilot
 Microsoft's AI assistant embedded across Microsoft 365 applications. Copilot uses large language models (LLMs) grounded in organizational data accessed through the Microsoft Graph. It operates within the user's existing permission boundaries.
 
-### Microsoft 365 Brain
-The orchestration layer for Microsoft 365 Copilot that coordinates prompts, retrieval from Microsoft Graph and Copilot Search, tool use, responsible AI processing, and foundation model calls.
+### Copilot orchestrator
+The orchestration layer for Microsoft 365 Copilot that coordinates prompts, retrieval from Microsoft Graph and Copilot Search, tool use, responsible AI processing, and foundation model calls. Microsoft Learn describes Microsoft 365 Copilot as acting as an *orchestrator*. *"Microsoft 365 Brain"* is an informal term for this layer and is not canonical Microsoft product terminology.
 
 ### Microsoft Defender for Cloud Apps
 A Cloud Access Security Broker (CASB) that provides visibility, control, and threat protection for cloud services including Microsoft 365. Used to create session policies that can monitor and control Copilot interactions in web sessions.
@@ -269,4 +269,4 @@ Prohibition under federal consumer financial protection law against unfair, dece
 
 ---
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*

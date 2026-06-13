@@ -57,5 +57,5 @@ Common issues and resolution steps for cross-tenant Agent ID trust, MCP attestat
 - [PowerShell Setup](powershell-setup.md)
 - [Verification & Testing](verification-testing.md)
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*
 - Back to [Control 2.17](../../../controls/pillar-2-security/2.17-cross-tenant-agent-federation.md)

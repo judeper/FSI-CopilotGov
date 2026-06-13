@@ -16,7 +16,7 @@
       - FsiMimeControl.psm1 — MIME type compliance evaluation patterns
 
 .PARAMETER TenantId
-    Mandatory. Azure AD tenant ID.
+    Mandatory. Microsoft Entra tenant ID.
 
 .PARAMETER AuthMode
     Mandatory. Authentication mode: Interactive or ServicePrincipal.
@@ -88,7 +88,7 @@ Write-Verbose "Loaded ExchangeOnlineManagement module."
 # to obtain the real tenant setting.
 # Reference: https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/get-adminauditlogconfig?view=exchange-ps
 # Interactive: user sign-in prompt. SP: certificate-based app auth.
-Write-Verbose "Authenticating to Security & Compliance Center in $AuthMode mode..."
+Write-Verbose "Authenticating to Security & Compliance PowerShell in $AuthMode mode..."
 
 if ($AuthMode -eq 'Interactive') {
     Connect-IPPSSession -ErrorAction Stop

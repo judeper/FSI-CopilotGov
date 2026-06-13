@@ -368,4 +368,4 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 ---
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*

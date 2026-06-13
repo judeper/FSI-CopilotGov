@@ -50,7 +50,7 @@ DLP, sensitivity labels, conditional access, encryption, information barriers, a
 | 2.11 | [Copilot Pages Security and Sharing Controls](pillar-2-security/2.11-copilot-pages-security.md) | Baseline |
 | 2.12 | [External Sharing and Guest Access Governance](pillar-2-security/2.12-external-sharing-governance.md) | Baseline |
 | 2.13 | [Plugin and Graph Connector Security Governance](pillar-2-security/2.13-plugin-connector-security.md) | Recommended |
-| 2.14 | [Declarative Agents from SharePoint — Creation and Sharing Governance](pillar-2-security/2.14-declarative-agents-governance.md) | Recommended |
+| 2.14 | [Declarative and SharePoint Agents Governance](pillar-2-security/2.14-declarative-agents-governance.md) | Recommended |
 | 2.15 | [Network Security and Private Connectivity](pillar-2-security/2.15-network-security.md) | Regulated |
 | 2.16 | [Federated Copilot Connector and MCP Governance](pillar-2-security/2.16-federated-connector-mcp-governance.md) | Baseline |
 | 2.17 | [Cross-Tenant Agent Federation (MCP and Entra Agent ID)](pillar-2-security/2.17-cross-tenant-agent-federation.md) | Recommended |
@@ -109,10 +109,10 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 
 | Pillar | Controls | Baseline | Recommended | Regulated |
 |--------|----------|----------|-------------|-----------|
-| 1. Readiness & Assessment | 16 | 7 | 7 | 2 |
-| 2. Security & Protection | 17 | 7 | 7 | 3 |
-| 3. Compliance & Audit | 15 | 3 | 6 | 6 |
-| 4. Operations & Monitoring | 15 | 5 | 9 | 1 |
+| 1. Readiness & Assessment | {{ pillar_count(1) }} | 7 | 7 | 2 |
+| 2. Security & Protection | {{ pillar_count(2) }} | 7 | 7 | 3 |
+| 3. Compliance & Audit | {{ pillar_count(3) }} | 3 | 6 | 6 |
+| 4. Operations & Monitoring | {{ pillar_count(4) }} | 5 | 9 | 1 |
 | **Total** | **{{ counts.controls }}** | **22** | **29** | **12** |
 
 ---
@@ -126,4 +126,4 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 
 ---
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*

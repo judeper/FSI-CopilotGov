@@ -15,7 +15,10 @@ Understanding the Microsoft 365 Copilot architecture is essential for effective 
 
 ## Microsoft 365 Copilot Architecture Overview
 
-Microsoft 365 Copilot is not a standalone product -- it uses **Microsoft 365 Brain** as the orchestration layer between the user, Microsoft Graph, the Semantic Index, Microsoft 365 Copilot Search, optional web grounding, and large language models (LLMs).
+Microsoft 365 Copilot is not a standalone product -- it acts as an **orchestrator** (the **Copilot orchestrator**) between the user, Microsoft Graph, the Semantic Index, Microsoft 365 Copilot Search, optional web grounding, and large language models (LLMs).
+
+!!! note "Terminology"
+    Microsoft Learn describes Microsoft 365 Copilot as acting as an **orchestrator** that coordinates prompt processing, grounding, and model calls; this document uses **"Copilot orchestrator"** for that layer. **"Microsoft 365 Brain"** is an informal term sometimes used for the same orchestration layer and is not canonical Microsoft product terminology. Verify against the [Microsoft 365 Copilot architecture](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-architecture) page. *(Verified on Microsoft Learn, 2026-06-12.)*
 
 ```
 +------------------------------------------------------------------+
@@ -27,9 +30,9 @@ Microsoft 365 Copilot is not a standalone product -- it uses **Microsoft 365 Bra
 |        |                                                           |
 |        v                                                           |
 |  +-----+------+                                                    |
-|  | Microsoft  |  Responsible AI filters                            |
-|  | 365 Brain  |  Content safety checks                             |
-|  | Orchestr.  |  Prompt preprocessing                              |
+|  | Copilot    |  Responsible AI filters                            |
+|  | orchestr-  |  Content safety checks                             |
+|  | ator       |  Prompt preprocessing                              |
 |  +-----+------+                                                    |
 |        |                                                           |
 |        +-------------------+-------------------+                   |
@@ -88,13 +91,16 @@ Microsoft 365 Copilot is not a standalone product -- it uses **Microsoft 365 Bra
 
 | Component | Function | Governance Relevance |
 |-----------|----------|---------------------|
-| **Microsoft 365 Brain (Copilot Orchestrator)** | Receives user prompt, coordinates retrieval, search, tool calls, and LLM interaction | Prompt preprocessing applies Responsible AI filters; orchestration choices determine which grounding sources are used |
+| **Copilot orchestrator** | Receives user prompt, coordinates retrieval, search, tool calls, and LLM interaction | Prompt preprocessing applies Responsible AI filters; orchestration choices determine which grounding sources are used |
 | **Microsoft Graph** | Provides access to user's Microsoft 365 content (files, emails, chats, meetings) | Access scoped to user's existing permissions |
 | **Semantic Index** | Pre-built search index of tenant content for fast retrieval | Indexes content the user can access; governance must address permission scope |
 | **Microsoft 365 Copilot Search** | Search module and admin-managed retrieval surface in the Microsoft 365 Copilot app, including Microsoft 365 and configured third-party data sources | Govern result sources, authoritative sites, connectors, and eligible users through Microsoft 365 admin settings |
-| **LLM (foundation models)** | Generates response based on grounded prompt. Default path uses Microsoft-hosted OpenAI models within Microsoft's managed Azure boundary; optional providers include Anthropic Claude through Microsoft 365 Copilot Premium and xAI Grok in preview where enabled. | Tenant prompts, responses, and Microsoft Graph data are not used to train foundation LLMs. **Microsoft-hosted OpenAI**: processed in Microsoft-managed Azure boundary under the Product Terms / DPA, with EU Data Boundary and in-country LLM processing commitments where applicable. **Anthropic Claude**: provided under the Microsoft Product Terms and DPA, but **out of scope for the EU Data Boundary and in-country LLM processing commitments**; on by default for most commercial-cloud customers (excluding EU/EFTA and UK). **xAI Grok (preview)**: hosted by xAI **outside Microsoft-managed environments and audit controls** under xAI's separate Terms of Service and Data Processing Addendum — Microsoft Product Terms, DPA, data residency commitments, audit and compliance requirements, SLAs, and the Customer Copyright Commitment do not apply. |
+| **LLM (foundation models)** | Generates response based on grounded prompt. Default path uses Microsoft-hosted OpenAI models within Microsoft's managed Azure boundary; optional providers include Anthropic Claude (available across Microsoft 365 Copilot, Researcher, and Copilot in Microsoft 365 apps) and xAI Grok (preview, currently surfaced through Copilot Studio) where enabled. | Tenant prompts, responses, and Microsoft Graph data are not used to train foundation LLMs. **Microsoft-hosted OpenAI**: processed in Microsoft-managed Azure boundary under the Product Terms / DPA, with EU Data Boundary and in-country LLM processing commitments where applicable. **Anthropic Claude**: provided under the Microsoft Product Terms and DPA, but **out of scope for the EU Data Boundary and in-country LLM processing commitments**; on by default for most commercial-cloud customers (excluding EU/EFTA and UK). **xAI Grok (preview)**: hosted by xAI **outside Microsoft-managed environments and audit controls** under xAI's separate Terms of Service and Data Processing Addendum — Microsoft Product Terms, DPA, data residency commitments, audit and compliance requirements, SLAs, and the Customer Copyright Commitment do not apply. |
 | **Responsible AI layer** | Pre- and post-processing safety filters | Content safety, harmful content blocking, citation generation |
 | **Web Search (Bing)** | Optional grounding from web content | May send contextual queries externally; controllable via admin settings |
+
+!!! note "Third-party model provider currency"
+    Provider scope and default-state claims above are time-sensitive. The Anthropic Claude posture (under Microsoft Product Terms/DPA; out of scope for the EU Data Boundary; on by default outside EU/EFTA/UK) and the xAI Grok posture (hosted outside Microsoft-managed environments; Product Terms, DPA, residency, and Customer Copyright Commitment do not apply) were verified against [Connect to Anthropic models](https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor) and [Connect to xAI's models](https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-models) on **2026-06-12**. Re-verify before relying on these statements, as availability and default state change over time.
 
 ---
 
@@ -156,11 +162,11 @@ Microsoft 365 Copilot Search is the Search module in the Microsoft 365 Copilot a
 
 ## Graph Grounding
 
-Graph grounding is the process by which Microsoft 365 Brain (the Copilot Orchestrator) retrieves relevant content from the Microsoft Graph to provide context for the LLM.
+Graph grounding is the process by which the Copilot orchestrator retrieves relevant content from the Microsoft Graph to provide context for the LLM.
 
 ### How Graph Grounding Works
 
-1. **Query formulation:** Microsoft 365 Brain converts the user's natural language prompt into one or more Graph API queries or search requests
+1. **Query formulation:** the Copilot orchestrator converts the user's natural language prompt into one or more Graph API queries or search requests
 2. **Permission-scoped search:** Queries execute within the user's security context -- only content the user has permission to access is returned
 3. **Relevance ranking:** Results are ranked by semantic relevance to the prompt
 4. **Content extraction:** Relevant passages are extracted from documents, emails, and messages
@@ -606,7 +612,7 @@ For FSI environments, organizations should document which business functions are
 
 | Architecture Component | Primary Governance Concern | Key Controls |
 |-----------------------|---------------------------|--------------|
-| Microsoft 365 Brain | Orchestrates retrieval, search, tools, and LLM interaction across Copilot experiences | 3.1, 4.1 |
+| Copilot orchestrator | Orchestrates retrieval, search, tools, and LLM interaction across Copilot experiences | 3.1, 4.1 |
 | Semantic Index | Indexes accessible content; oversharing is amplified | 1.1, 1.2, 1.3, 1.4 |
 | Microsoft 365 Copilot Search | Search surface over Microsoft 365 and configured third-party data sources; result and source governance | 1.1, 1.13, 2.13 |
 | Graph Grounding | Permission-scoped but inherits permission problems | 1.2, 1.6, 2.2 |
@@ -635,4 +641,4 @@ This framework's {{ counts.controls }} controls map comprehensively to all three
 
 ---
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*

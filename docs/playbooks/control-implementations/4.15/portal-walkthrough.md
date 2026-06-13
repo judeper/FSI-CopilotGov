@@ -57,5 +57,5 @@ Confirm that Cowork activity is visible to existing Purview audit, retention, an
 - Use [Verification & Testing](verification-testing.md) to validate availability scoping, plugin controls, and audit coverage.
 - Keep [Troubleshooting](troubleshooting.md) available for visibility, availability, and plugin issues.
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*
 - Back to [Control 4.15](../../../controls/pillar-4-operations/4.15-copilot-cowork-governance.md)
