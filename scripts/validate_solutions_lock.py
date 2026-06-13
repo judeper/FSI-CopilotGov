@@ -7,7 +7,7 @@ so framework builds are reproducible.
 
 Rules enforced:
 
-* top-level ``schemaVersion`` equals ``"0.1.0"``.
+* top-level ``schemaVersion`` equals ``"0.2.0"``.
 * top-level ``generatedAt`` is an ISO-8601 UTC timestamp.
 * top-level ``source`` has ``repo``, ``ref``, ``commit`` (commit may
   be empty string if sister repo git metadata was unavailable).
@@ -15,7 +15,19 @@ Rules enforced:
 * every solution has required fields: ``id``, ``slug``, ``tier``
   (int in {1,2,3}), ``name``, ``version`` (bare semver),
   ``domain``, ``summary``, ``repoPath``, ``url``.
+* schema 0.2.0 tier metadata is present and enum-valid:
+  ``tiersSupported`` (non-empty array of {baseline, recommended,
+  regulated}), ``tierRecommended`` (one of the same set),
+  ``tierMaturity`` (one of {active, preview, deprecated}), and
+  ``maturity`` (one of {documentation-first-scaffold, preview, live}).
+  Enum values mirror the sister repo's
+  ``scripts/validate_solutions_json.py`` (the upstream source of truth).
 * IDs/slugs are unique and kebab-case.
+
+Note: the sister repo's "coverage-state envelope" (per-control
+``coverageState``) lives in ``data/control-coverage.json``, not in
+``solutions.json``, so it is not part of the consumed lock and is not
+validated here.
 
 Cross-check (warning only): every solution ID referenced by a control
 in ``assessment/manifest/controls.json`` should resolve in the lock.
@@ -35,8 +47,14 @@ ROOT = Path(__file__).resolve().parents[1]
 LOCK_DEFAULT = ROOT / "assessment" / "data" / "solutions-lock.json"
 MANIFEST_DEFAULT = ROOT / "assessment" / "manifest" / "controls.json"
 
-EXPECTED_SCHEMA = "0.1.0"
+EXPECTED_SCHEMA = "0.2.0"
 ALLOWED_TIERS = {1, 2, 3}
+# Schema 0.2.0 tier-metadata enums. Field names are camelCase as emitted by
+# the sister repo's scripts/build_solutions_json.py; allowed values mirror its
+# scripts/validate_solutions_json.py (the upstream source of truth).
+ALLOWED_TIER_NAMES = {"baseline", "recommended", "regulated"}
+ALLOWED_TIER_MATURITY = {"active", "preview", "deprecated"}
+ALLOWED_MATURITY = {"documentation-first-scaffold", "preview", "live"}
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
 ISO_UTC_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
@@ -86,6 +104,36 @@ def _validate_solution(idx: int, body: Any) -> list[str]:
     repo_path = body.get("repoPath")
     if not (isinstance(repo_path, str) and repo_path):
         errs.append(f"solutions[{sid}].repoPath must be non-empty string")
+
+    # Schema 0.2.0 tier metadata (camelCase as emitted by the sister repo).
+    tiers_supported = body.get("tiersSupported")
+    if not (isinstance(tiers_supported, list) and tiers_supported):
+        errs.append(f"solutions[{sid}].tiersSupported must be a non-empty array")
+    else:
+        for t in tiers_supported:
+            if t not in ALLOWED_TIER_NAMES:
+                errs.append(
+                    f"solutions[{sid}].tiersSupported contains invalid value {t!r} "
+                    f"(allowed: {sorted(ALLOWED_TIER_NAMES)})"
+                )
+    tier_recommended = body.get("tierRecommended")
+    if tier_recommended not in ALLOWED_TIER_NAMES:
+        errs.append(
+            f"solutions[{sid}].tierRecommended must be one of "
+            f"{sorted(ALLOWED_TIER_NAMES)} (got {tier_recommended!r})"
+        )
+    tier_maturity = body.get("tierMaturity")
+    if tier_maturity not in ALLOWED_TIER_MATURITY:
+        errs.append(
+            f"solutions[{sid}].tierMaturity must be one of "
+            f"{sorted(ALLOWED_TIER_MATURITY)} (got {tier_maturity!r})"
+        )
+    maturity = body.get("maturity")
+    if maturity not in ALLOWED_MATURITY:
+        errs.append(
+            f"solutions[{sid}].maturity must be one of "
+            f"{sorted(ALLOWED_MATURITY)} (got {maturity!r})"
+        )
 
     return errs
 

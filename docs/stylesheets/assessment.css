@@ -1381,3 +1381,44 @@
   color: var(--md-default-fg-color--light);
   line-height: 1.4;
 }
+
+/* Schema 0.2.0 tier metadata badges (tiersSupported + maturity), surfaced in
+   the Solutions catalog cards and the solution detail panel. */
+.assessment-container .solution-tier-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+.assessment-container .solution-tier-supported {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.assessment-container .solution-tier-chip {
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  background: var(--md-code-bg-color, rgba(0, 0, 0, 0.05));
+  color: var(--md-default-fg-color--light);
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+.assessment-container .solution-tier-chip.recommended {
+  font-weight: 700;
+  background: var(--ag-green-bg);
+  color: var(--ag-green);
+  border-color: var(--ag-green);
+}
+.assessment-container .solution-maturity {
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: var(--md-code-bg-color, rgba(0, 0, 0, 0.05));
+  color: var(--md-primary-fg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+}

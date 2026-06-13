@@ -18,7 +18,7 @@ CONTENT_GRAPH = ROOT / "assessment" / "manifest" / "content-graph.json"
 sys.path.insert(0, str(ROOT / "scripts"))
 import generate_solutions_lock  # noqa: E402
 
-EXPECTED_SCHEMA = "0.1.0"
+EXPECTED_SCHEMA = "0.2.0"
 # Solution count is derived from the canonical content graph (built from the
 # same lock) so it stays a cross-check against the committed graph rather than a
 # scattered literal. The single explicit literal lives in the content-graph
@@ -29,6 +29,12 @@ EXPECTED_SOLUTION_COUNT = json.loads(
     CONTENT_GRAPH.read_text(encoding="utf-8")
 )["counts"]["solutions"]
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+
+# Schema 0.2.0 tier-metadata enums (mirror the sister repo's
+# scripts/validate_solutions_json.py — the upstream source of truth).
+ALLOWED_TIER_NAMES = {"baseline", "recommended", "regulated"}
+ALLOWED_TIER_MATURITY = {"active", "preview", "deprecated"}
+ALLOWED_MATURITY = {"documentation-first-scaffold", "preview", "live"}
 
 
 @pytest.fixture(scope="module")
@@ -62,6 +68,26 @@ def test_lock_has_all_solutions(lock: dict) -> None:
         assert s["tier"] in (1, 2, 3), s
         assert s["name"] and s["version"] and s["domain"]
         assert s["url"].startswith("https://")
+
+
+def test_tier_metadata_present_and_valid(lock: dict) -> None:
+    """Schema 0.2.0 adds per-solution tier metadata (camelCase as emitted by
+    the sister repo). Every solution must carry enum-valid tiersSupported /
+    tierRecommended / tierMaturity / maturity."""
+    for s in lock["solutions"]:
+        sid = s["id"]
+        ts = s.get("tiersSupported")
+        assert isinstance(ts, list) and ts, f"{sid}: tiersSupported must be non-empty list"
+        assert set(ts) <= ALLOWED_TIER_NAMES, f"{sid}: tiersSupported invalid {ts}"
+        assert s.get("tierRecommended") in ALLOWED_TIER_NAMES, (
+            f"{sid}: tierRecommended {s.get('tierRecommended')!r}"
+        )
+        assert s.get("tierMaturity") in ALLOWED_TIER_MATURITY, (
+            f"{sid}: tierMaturity {s.get('tierMaturity')!r}"
+        )
+        assert s.get("maturity") in ALLOWED_MATURITY, (
+            f"{sid}: maturity {s.get('maturity')!r}"
+        )
 
 
 def test_every_control_has_solutions_key(manifest: list[dict]) -> None:

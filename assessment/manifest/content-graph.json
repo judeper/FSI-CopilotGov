@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-06-13T17:00:43Z",
+  "generatedAt": "2026-06-13T17:03:56Z",
   "counts": {
     "controls": 63,
     "pillars": 4,
@@ -2736,117 +2736,117 @@
   "solutions": [
     {
       "id": "01-copilot-readiness-scanner",
-      "version": "0.2.0",
+      "version": "0.2.3",
       "control_coverage": []
     },
     {
       "id": "02-oversharing-risk-assessment",
-      "version": "0.2.0",
+      "version": "0.2.4",
       "control_coverage": []
     },
     {
       "id": "03-sensitivity-label-auditor",
-      "version": "0.2.0",
+      "version": "0.2.4",
       "control_coverage": []
     },
     {
       "id": "04-finra-supervision-workflow",
-      "version": "0.2.0",
+      "version": "0.2.3",
       "control_coverage": []
     },
     {
       "id": "05-dlp-policy-governance",
-      "version": "0.2.0",
+      "version": "0.2.3",
       "control_coverage": []
     },
     {
       "id": "06-audit-trail-manager",
-      "version": "0.2.0",
+      "version": "0.2.3",
       "control_coverage": []
     },
     {
       "id": "07-conditional-access-automation",
-      "version": "0.2.0",
+      "version": "0.2.4",
       "control_coverage": []
     },
     {
       "id": "08-license-governance-roi",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "09-feature-management-controller",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "10-connector-plugin-governance",
-      "version": "0.1.0",
+      "version": "0.2.3",
       "control_coverage": []
     },
     {
       "id": "11-risk-tiered-rollout",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "12-regulatory-compliance-dashboard",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "13-dora-resilience-monitor",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "14-communication-compliance-config",
-      "version": "0.1.0",
+      "version": "0.2.4",
       "control_coverage": []
     },
     {
       "id": "15-pages-notebooks-gap-monitor",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "16-item-level-oversharing-scanner",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "17-sharepoint-permissions-drift",
-      "version": "0.1.0",
+      "version": "0.1.4",
       "control_coverage": []
     },
     {
       "id": "18-entra-access-reviews",
-      "version": "0.1.0",
+      "version": "0.1.5",
       "control_coverage": []
     },
     {
       "id": "19-copilot-tuning-governance",
-      "version": "0.1.0",
+      "version": "0.1.4",
       "control_coverage": []
     },
     {
       "id": "20-generative-ai-model-governance-monitor",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "21-cross-tenant-agent-federation-auditor",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "22-pages-notebooks-retention-tracker",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "control_coverage": []
     },
     {
       "id": "23-copilot-studio-lifecycle-tracker",
-      "version": "0.1.0",
+      "version": "0.1.4",
       "control_coverage": []
     }
   ]

@@ -4245,10 +4245,52 @@
     parent.appendChild(wrap);
   };
 
+  /**
+   * Render schema 0.2.0 tier metadata for a solution-lock entry:
+   * `tiersSupported` (with the `tierRecommended` tier emphasized) and the
+   * solution `maturity`. Returns null when the entry carries none of these
+   * fields, so legacy 0.1.0 locks degrade gracefully (no empty nodes).
+   */
+  AssessmentApp.prototype._renderSolutionTierMeta = function (s, opts) {
+    if (!s || typeof s !== "object") return null;
+    opts = opts || {};
+    var tiers = Array.isArray(s.tiersSupported) ? s.tiersSupported : [];
+    var recommended = typeof s.tierRecommended === "string" ? s.tierRecommended : null;
+    var maturity = typeof s.maturity === "string" ? s.maturity : null;
+    if (!tiers.length && !maturity) return null;
+    var ABBR = { baseline: "base", recommended: "rec", regulated: "reg" };
+    var wrap = h("div", { className: "solution-tier-meta" });
+    if (tiers.length) {
+      var group = h("span", {
+        className: "solution-tier-supported",
+        role: "group",
+        "aria-label": "Supported governance tiers",
+      });
+      tiers.forEach(function (t) {
+        var isRec = t === recommended;
+        var text = opts.abbreviate ? (ABBR[t] || t) : t;
+        group.appendChild(h("span", {
+          className: "solution-tier-chip tier-name-" + t + (isRec ? " recommended" : ""),
+          "data-tier-name": t,
+          title: isRec ? t + " (recommended)" : t,
+          "aria-label": isRec ? t + " (recommended)" : t,
+        }, isRec ? text + " \u2605" : text));
+      });
+      wrap.appendChild(group);
+    }
+    if (maturity) {
+      wrap.appendChild(h("span", {
+        className: "solution-maturity maturity-" + maturity,
+        "data-maturity": maturity,
+        title: "Solution maturity: " + maturity.replace(/-/g, " "),
+      }, maturity.replace(/-/g, " ")));
+    }
+    return wrap;
+  };
+
   AssessmentApp.prototype._renderSolutionCatalogCard = function (s, selected) {
     var self = this;
-    var coverage = this.getControlsForSolution(s.id).length;
-    var card = h("button", {
+    var coverage = this.getControlsForSolution(s.id).length;    var card = h("button", {
       className: "solution-catalog-card" + (selected ? " selected" : ""),
       type: "button",
       "data-solution-id": s.id,
@@ -4265,6 +4307,8 @@
     if (s.domain) meta.appendChild(h("span", { className: "solution-catalog-domain" }, s.domain));
     if (s.version) meta.appendChild(h("span", { className: "solution-catalog-version" }, "v" + s.version));
     card.appendChild(meta);
+    var tierMeta = self._renderSolutionTierMeta(s, { abbreviate: true });
+    if (tierMeta) card.appendChild(tierMeta);
     if (s.summary) {
       card.appendChild(h("p", { className: "solution-catalog-summary" }, s.summary));
     }
@@ -4288,6 +4332,9 @@
     panel.appendChild(header);
 
     if (s.summary) panel.appendChild(h("p", { className: "solution-detail-summary" }, s.summary));
+
+    var tierMeta = this._renderSolutionTierMeta(s, { abbreviate: false });
+    if (tierMeta) panel.appendChild(tierMeta);
 
     if (s.url) {
       panel.appendChild(h("a", {
