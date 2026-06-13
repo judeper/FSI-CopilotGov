@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "1.0.0",
-  "generatedAt": "2026-06-11T16:52:08Z",
+  "schemaVersion": "1.1.0",
+  "generatedAt": "2026-06-13T17:03:56Z",
   "counts": {
     "controls": 63,
     "pillars": 4,
@@ -9,6 +9,33 @@
       "2": 17,
       "3": 15,
       "4": 15
+    },
+    "by_tier": {
+      "Baseline": 18,
+      "Recommended": 33,
+      "Regulated": 12
+    },
+    "by_pillar_tier": {
+      "1": {
+        "Baseline": 6,
+        "Recommended": 7,
+        "Regulated": 3
+      },
+      "2": {
+        "Baseline": 6,
+        "Recommended": 9,
+        "Regulated": 2
+      },
+      "3": {
+        "Baseline": 3,
+        "Recommended": 6,
+        "Regulated": 6
+      },
+      "4": {
+        "Baseline": 3,
+        "Recommended": 11,
+        "Regulated": 1
+      }
     },
     "playbooks_total": 268,
     "playbooks_control": 249,
@@ -19,6 +46,7 @@
     {
       "id": "1.1",
       "pillar": 1,
+      "tier": "Baseline",
       "title": "Control 1.1: Copilot Readiness Assessment and Data Hygiene",
       "path": "docs/controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md",
       "last_verified": "2026-05-25",
@@ -33,6 +61,7 @@
     {
       "id": "1.2",
       "pillar": 1,
+      "tier": "Baseline",
       "title": "Control 1.2: SharePoint Oversharing Detection and Remediation (DSPM for AI)",
       "path": "docs/controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md",
       "last_verified": "2026-05-25",
@@ -45,9 +74,10 @@
     {
       "id": "1.3",
       "pillar": 1,
+      "tier": "Recommended",
       "title": "Control 1.3: Restricted SharePoint Search Configuration",
       "path": "docs/controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -57,6 +87,7 @@
     {
       "id": "1.4",
       "pillar": 1,
+      "tier": "Recommended",
       "title": "Control 1.4: Semantic Index Governance and Scope Control",
       "path": "docs/controls/pillar-1-readiness/1.4-semantic-index-governance.md",
       "last_verified": "2026-05-25",
@@ -69,6 +100,7 @@
     {
       "id": "1.5",
       "pillar": 1,
+      "tier": "Baseline",
       "title": "Control 1.5: Sensitivity Label Taxonomy Review for Copilot",
       "path": "docs/controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md",
       "last_verified": "2026-05-25",
@@ -82,6 +114,7 @@
     {
       "id": "1.6",
       "pillar": 1,
+      "tier": "Baseline",
       "title": "Control 1.6: Permission Model Audit (SharePoint, OneDrive, Exchange, Teams, Graph)",
       "path": "docs/controls/pillar-1-readiness/1.6-permission-model-audit.md",
       "last_verified": "2026-06-07",
@@ -95,9 +128,10 @@
     {
       "id": "1.7",
       "pillar": 1,
+      "tier": "Recommended",
       "title": "Control 1.7: SharePoint Advanced Management Readiness for Copilot",
       "path": "docs/controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Examination Handbook (Information Security Booklet)"
@@ -106,6 +140,7 @@
     {
       "id": "1.8",
       "pillar": 1,
+      "tier": "Recommended",
       "title": "Control 1.8: Information Architecture Review",
       "path": "docs/controls/pillar-1-readiness/1.8-information-architecture-review.md",
       "last_verified": "2026-06-05",
@@ -118,6 +153,7 @@
     {
       "id": "1.9",
       "pillar": 1,
+      "tier": "Baseline",
       "title": "Control 1.9: License Planning and Copilot Assignment Strategy",
       "path": "docs/controls/pillar-1-readiness/1.9-license-planning.md",
       "last_verified": "2026-05-25",
@@ -130,6 +166,7 @@
     {
       "id": "1.10",
       "pillar": 1,
+      "tier": "Regulated",
       "title": "Control 1.10: Vendor Risk Management for Microsoft AI Services",
       "path": "docs/controls/pillar-1-readiness/1.10-vendor-risk-management.md",
       "last_verified": "2026-05-25",
@@ -143,6 +180,7 @@
     {
       "id": "1.11",
       "pillar": 1,
+      "tier": "Recommended",
       "title": "Control 1.11: Organizational Change Management and Adoption Planning",
       "path": "docs/controls/pillar-1-readiness/1.11-change-management-adoption.md",
       "last_verified": "2026-05-25",
@@ -156,6 +194,7 @@
     {
       "id": "1.12",
       "pillar": 1,
+      "tier": "Baseline",
       "title": "Control 1.12: Training and Awareness Program",
       "path": "docs/controls/pillar-1-readiness/1.12-training-awareness.md",
       "last_verified": "2026-05-25",
@@ -169,6 +208,7 @@
     {
       "id": "1.13",
       "pillar": 1,
+      "tier": "Regulated",
       "title": "Control 1.13: Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)",
       "path": "docs/controls/pillar-1-readiness/1.13-extensibility-readiness.md",
       "last_verified": "2026-05-25",
@@ -182,6 +222,7 @@
     {
       "id": "1.14",
       "pillar": 1,
+      "tier": "Recommended",
       "title": "Control 1.14: Item-Level Permission Scanning",
       "path": "docs/controls/pillar-1-readiness/1.14-item-level-permission-scanning.md",
       "last_verified": "2026-05-25",
@@ -195,6 +236,7 @@
     {
       "id": "1.15",
       "pillar": 1,
+      "tier": "Recommended",
       "title": "Control 1.15: SharePoint Permissions Drift Detection",
       "path": "docs/controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md",
       "last_verified": "2026-05-25",
@@ -209,6 +251,7 @@
     {
       "id": "1.16",
       "pillar": 1,
+      "tier": "Regulated",
       "title": "Control 1.16: Copilot Tuning Governance",
       "path": "docs/controls/pillar-1-readiness/1.16-copilot-tuning-governance.md",
       "last_verified": "2026-06-05",
@@ -221,6 +264,7 @@
     {
       "id": "2.1",
       "pillar": 2,
+      "tier": "Baseline",
       "title": "Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions",
       "path": "docs/controls/pillar-2-security/2.1-dlp-policies-for-copilot.md",
       "last_verified": "2026-06-06",
@@ -234,6 +278,7 @@
     {
       "id": "2.2",
       "pillar": 2,
+      "tier": "Baseline",
       "title": "Control 2.2: Sensitivity Labels and Copilot Content Classification",
       "path": "docs/controls/pillar-2-security/2.2-sensitivity-labels-classification.md",
       "last_verified": "2026-05-25",
@@ -245,6 +290,7 @@
     {
       "id": "2.3",
       "pillar": 2,
+      "tier": "Baseline",
       "title": "Control 2.3: Conditional Access Policies for Copilot Workloads",
       "path": "docs/controls/pillar-2-security/2.3-conditional-access-policies.md",
       "last_verified": "2026-06-05",
@@ -257,6 +303,7 @@
     {
       "id": "2.4",
       "pillar": 2,
+      "tier": "Regulated",
       "title": "Control 2.4: Information Barriers for Copilot (Chinese Wall)",
       "path": "docs/controls/pillar-2-security/2.4-information-barriers.md",
       "last_verified": "2026-06-05",
@@ -269,6 +316,7 @@
     {
       "id": "2.5",
       "pillar": 2,
+      "tier": "Recommended",
       "title": "Control 2.5: Data Minimization and Grounding Scope",
       "path": "docs/controls/pillar-2-security/2.5-data-minimization-grounding-scope.md",
       "last_verified": "2026-05-25",
@@ -280,6 +328,7 @@
     {
       "id": "2.6",
       "pillar": 2,
+      "tier": "Baseline",
       "title": "Control 2.6: Copilot Web Search and Web Grounding Controls",
       "path": "docs/controls/pillar-2-security/2.6-web-search-controls.md",
       "last_verified": "2026-05-25",
@@ -291,9 +340,10 @@
     {
       "id": "2.7",
       "pillar": 2,
+      "tier": "Recommended",
       "title": "Control 2.7: Data Residency and Cross-Border Data Flow Governance",
       "path": "docs/controls/pillar-2-security/2.7-data-residency.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "GDPR (if applicable)",
@@ -303,6 +353,7 @@
     {
       "id": "2.8",
       "pillar": 2,
+      "tier": "Baseline",
       "title": "Control 2.8: Encryption (Data in Transit and at Rest)",
       "path": "docs/controls/pillar-2-security/2.8-encryption.md",
       "last_verified": "2026-05-25",
@@ -315,6 +366,7 @@
     {
       "id": "2.9",
       "pillar": 2,
+      "tier": "Recommended",
       "title": "Control 2.9: Defender for Cloud Apps — Copilot Session Controls",
       "path": "docs/controls/pillar-2-security/2.9-defender-cloud-apps.md",
       "last_verified": "2026-05-25",
@@ -326,6 +378,7 @@
     {
       "id": "2.10",
       "pillar": 2,
+      "tier": "Recommended",
       "title": "Control 2.10: Insider Risk Detection for Copilot Usage Patterns",
       "path": "docs/controls/pillar-2-security/2.10-insider-risk-detection.md",
       "last_verified": "2026-05-25",
@@ -338,6 +391,7 @@
     {
       "id": "2.11",
       "pillar": 2,
+      "tier": "Recommended",
       "title": "Control 2.11: Copilot Pages Security and Sharing Controls",
       "path": "docs/controls/pillar-2-security/2.11-copilot-pages-security.md",
       "last_verified": "2026-05-25",
@@ -349,6 +403,7 @@
     {
       "id": "2.12",
       "pillar": 2,
+      "tier": "Recommended",
       "title": "Control 2.12: External Sharing and Guest Access Governance",
       "path": "docs/controls/pillar-2-security/2.12-external-sharing-governance.md",
       "last_verified": "2026-05-25",
@@ -360,6 +415,7 @@
     {
       "id": "2.13",
       "pillar": 2,
+      "tier": "Recommended",
       "title": "Control 2.13: Plugin and Graph Connector Security Governance",
       "path": "docs/controls/pillar-2-security/2.13-plugin-connector-security.md",
       "last_verified": "2026-05-25",
@@ -371,9 +427,10 @@
     {
       "id": "2.14",
       "pillar": 2,
+      "tier": "Recommended",
       "title": "Control 2.14: Declarative and SharePoint Agents Governance",
       "path": "docs/controls/pillar-2-security/2.14-declarative-agents-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)"
       ]
@@ -381,6 +438,7 @@
     {
       "id": "2.15",
       "pillar": 2,
+      "tier": "Regulated",
       "title": "Control 2.15: Network Security and Private Connectivity",
       "path": "docs/controls/pillar-2-security/2.15-network-security.md",
       "last_verified": "2026-05-25",
@@ -392,9 +450,10 @@
     {
       "id": "2.16",
       "pillar": 2,
+      "tier": "Baseline",
       "title": "Control 2.16: Federated Copilot Connector and Model Context Protocol (MCP) Governance",
       "path": "docs/controls/pillar-2-security/2.16-federated-connector-mcp-governance.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P",
@@ -405,9 +464,10 @@
     {
       "id": "2.17",
       "pillar": 2,
+      "tier": "Recommended",
       "title": "Control 2.17: Cross-Tenant Agent Federation (MCP and Entra Agent ID)",
       "path": "docs/controls/pillar-2-security/2.17-cross-tenant-agent-federation.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P (248.30)",
@@ -419,9 +479,10 @@
     {
       "id": "3.1",
       "pillar": 3,
+      "tier": "Baseline",
       "title": "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)",
       "path": "docs/controls/pillar-3-compliance/3.1-copilot-audit-logging.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "FINRA 4511 (Books and Records)",
         "SEC 17a-3/4 (Books and Records)",
@@ -431,6 +492,7 @@
     {
       "id": "3.2",
       "pillar": 3,
+      "tier": "Baseline",
       "title": "Control 3.2: Data Retention Policies for Copilot Interactions",
       "path": "docs/controls/pillar-3-compliance/3.2-data-retention-policies.md",
       "last_verified": "2026-05-25",
@@ -443,9 +505,10 @@
     {
       "id": "3.3",
       "pillar": 3,
-      "title": "Control 3.3: eDiscovery for Copilot-Generated Content",
+      "tier": "Recommended",
+      "title": "Control 3.3: Purview eDiscovery for Copilot-Generated Content",
       "path": "docs/controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "SEC 17a-4 (Preservation of Records)",
         "FINRA 4511 (Books and Records)",
@@ -457,6 +520,7 @@
     {
       "id": "3.4",
       "pillar": 3,
+      "tier": "Recommended",
       "title": "Control 3.4: Communication Compliance Monitoring",
       "path": "docs/controls/pillar-3-compliance/3.4-communication-compliance.md",
       "last_verified": "2026-05-25",
@@ -469,6 +533,7 @@
     {
       "id": "3.5",
       "pillar": 3,
+      "tier": "Regulated",
       "title": "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications",
       "path": "docs/controls/pillar-3-compliance/3.5-finra-2210-compliance.md",
       "last_verified": "2026-05-25",
@@ -484,6 +549,7 @@
     {
       "id": "3.6",
       "pillar": 3,
+      "tier": "Regulated",
       "title": "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)",
       "path": "docs/controls/pillar-3-compliance/3.6-supervision-oversight.md",
       "last_verified": "2026-05-25",
@@ -497,6 +563,7 @@
     {
       "id": "3.7",
       "pillar": 3,
+      "tier": "Recommended",
       "title": "Control 3.7: Regulatory Reporting (FINRA, SEC, SOX, GLBA, CFPB UDAAP)",
       "path": "docs/controls/pillar-3-compliance/3.7-regulatory-reporting.md",
       "last_verified": "2026-05-25",
@@ -510,6 +577,7 @@
     {
       "id": "3.8",
       "pillar": 3,
+      "tier": "Regulated",
       "title": "Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI)",
       "path": "docs/controls/pillar-3-compliance/3.8-model-risk-management.md",
       "last_verified": "2026-05-25",
@@ -523,6 +591,7 @@
     {
       "id": "3.9",
       "pillar": 3,
+      "tier": "Regulated",
       "title": "Control 3.9: AI Disclosure, Transparency, and SEC Marketing Rule",
       "path": "docs/controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md",
       "last_verified": "2026-05-25",
@@ -536,6 +605,7 @@
     {
       "id": "3.10",
       "pillar": 3,
+      "tier": "Regulated",
       "title": "Control 3.10: SEC Reg S-P -- Privacy of Consumer Financial Information",
       "path": "docs/controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md",
       "last_verified": "2026-05-25",
@@ -548,6 +618,7 @@
     {
       "id": "3.11",
       "pillar": 3,
+      "tier": "Baseline",
       "title": "Control 3.11: Record Keeping and Books-and-Records Compliance (SEC 17a-3/4, FINRA 4511)",
       "path": "docs/controls/pillar-3-compliance/3.11-record-keeping.md",
       "last_verified": "2026-05-25",
@@ -560,6 +631,7 @@
     {
       "id": "3.12",
       "pillar": 3,
+      "tier": "Recommended",
       "title": "Control 3.12: Evidence Collection and Audit Attestation",
       "path": "docs/controls/pillar-3-compliance/3.12-evidence-collection.md",
       "last_verified": "2026-05-25",
@@ -572,6 +644,7 @@
     {
       "id": "3.13",
       "pillar": 3,
+      "tier": "Recommended",
       "title": "Control 3.13: FFIEC IT Examination Handbook Alignment",
       "path": "docs/controls/pillar-3-compliance/3.13-ffiec-alignment.md",
       "last_verified": "2026-05-25",
@@ -583,6 +656,7 @@
     {
       "id": "3.14",
       "pillar": 3,
+      "tier": "Recommended",
       "title": "Control 3.14: Copilot Pages and Notebooks Retention and Provenance",
       "path": "docs/controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md",
       "last_verified": "2026-06-06",
@@ -596,9 +670,10 @@
     {
       "id": "3.8a",
       "pillar": 3,
+      "tier": "Regulated",
       "title": "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot",
       "path": "docs/controls/pillar-3-compliance/3.8a-generative-ai-model-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "SR 26-2 / OCC Bulletin 2026-13 (April 2026 interagency guidance — Copilot excluded as generative AI; this control applies SR 11-7 / OCC Bulletin 2011-12 principles synthesized with NIST AI RMF 1.0 and ISO/IEC 42001 as the most-recent applicable interim framework)",
         "NIST AI RMF 1.0",
@@ -610,6 +685,7 @@
     {
       "id": "4.1",
       "pillar": 4,
+      "tier": "Baseline",
       "title": "Control 4.1: Copilot Admin Settings and Feature Management",
       "path": "docs/controls/pillar-4-operations/4.1-admin-settings-feature-management.md",
       "last_verified": "2026-05-25",
@@ -622,6 +698,7 @@
     {
       "id": "4.2",
       "pillar": 4,
+      "tier": "Baseline",
       "title": "Control 4.2: Copilot in Teams Meetings Governance",
       "path": "docs/controls/pillar-4-operations/4.2-teams-meetings-governance.md",
       "last_verified": "2026-05-25",
@@ -635,6 +712,7 @@
     {
       "id": "4.3",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.3: Copilot in Teams Phone and Queues Governance",
       "path": "docs/controls/pillar-4-operations/4.3-teams-phone-queues.md",
       "last_verified": "2026-05-25",
@@ -648,6 +726,7 @@
     {
       "id": "4.4",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.4: Copilot in Viva Suite Governance",
       "path": "docs/controls/pillar-4-operations/4.4-viva-suite-governance.md",
       "last_verified": "2026-05-25",
@@ -661,6 +740,7 @@
     {
       "id": "4.5",
       "pillar": 4,
+      "tier": "Baseline",
       "title": "Control 4.5: Copilot Usage Analytics and Adoption Reporting",
       "path": "docs/controls/pillar-4-operations/4.5-usage-analytics.md",
       "last_verified": "2026-05-25",
@@ -673,6 +753,7 @@
     {
       "id": "4.6",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.6: Microsoft Viva Insights and Copilot Analytics Impact Measurement",
       "path": "docs/controls/pillar-4-operations/4.6-viva-insights-measurement.md",
       "last_verified": "2026-05-25",
@@ -685,6 +766,7 @@
     {
       "id": "4.7",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.7: Copilot Feedback and Telemetry Data Governance",
       "path": "docs/controls/pillar-4-operations/4.7-feedback-telemetry.md",
       "last_verified": "2026-05-25",
@@ -698,6 +780,7 @@
     {
       "id": "4.8",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.8: Cost Allocation and License Optimization",
       "path": "docs/controls/pillar-4-operations/4.8-cost-allocation.md",
       "last_verified": "2026-06-07",
@@ -711,6 +794,7 @@
     {
       "id": "4.9",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.9: Incident Reporting and Root Cause Analysis",
       "path": "docs/controls/pillar-4-operations/4.9-incident-reporting.md",
       "last_verified": "2026-05-25",
@@ -726,6 +810,7 @@
     {
       "id": "4.10",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.10: Business Continuity and Disaster Recovery for Copilot Dependency",
       "path": "docs/controls/pillar-4-operations/4.10-business-continuity.md",
       "last_verified": "2026-05-25",
@@ -740,6 +825,7 @@
     {
       "id": "4.11",
       "pillar": 4,
+      "tier": "Regulated",
       "title": "Control 4.11: Microsoft Sentinel Integration for Copilot Events",
       "path": "docs/controls/pillar-4-operations/4.11-sentinel-integration.md",
       "last_verified": "2026-06-05",
@@ -753,6 +839,7 @@
     {
       "id": "4.12",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.12: Change Management for Copilot Feature Rollouts",
       "path": "docs/controls/pillar-4-operations/4.12-change-management-rollouts.md",
       "last_verified": "2026-05-25",
@@ -765,9 +852,10 @@
     {
       "id": "4.13",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.13: Copilot Extensibility and Agent Operations Governance",
       "path": "docs/controls/pillar-4-operations/4.13-extensibility-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Examination Handbook",
@@ -778,9 +866,10 @@
     {
       "id": "4.14",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.14: Copilot Studio Agent Lifecycle Governance",
       "path": "docs/controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-06-12",
       "regulatory_references": [
         "FFIEC IT Handbook (Operations Booklet)",
         "FINRA Rule 3110 (supervisory systems and WSPs)",
@@ -793,6 +882,7 @@
     {
       "id": "4.15",
       "pillar": 4,
+      "tier": "Recommended",
       "title": "Control 4.15: Copilot Cowork Governance",
       "path": "docs/controls/pillar-4-operations/4.15-copilot-cowork-governance.md",
       "last_verified": "2026-05-25",

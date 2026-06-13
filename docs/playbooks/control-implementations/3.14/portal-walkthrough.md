@@ -58,5 +58,5 @@ Schedule a quarterly attestation that branch events for in-scope Pages have been
 - Use [Verification & Testing](verification-testing.md) to validate retention scope and lineage capture.
 - Keep [Troubleshooting](troubleshooting.md) available for branch, embed, and hold issues.
 
-*FSI Copilot Governance Framework v1.4.0 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - April 2026*
 - Back to [Control 3.14](../../../controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md)

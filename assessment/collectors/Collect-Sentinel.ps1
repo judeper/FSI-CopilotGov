@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Validates Sentinel workspace existence, enumerates data connectors (Office 365,
-    Microsoft Cloud App Security), and runs a KQL audit query to confirm Copilot
+    Microsoft Defender for Cloud Apps), and runs a KQL audit query to confirm Copilot
     interaction audit records exist in the last 7 days.
 
     Outputs a structured JSON file (sentinel.json) consumed by the assessment engine.
@@ -15,7 +15,7 @@
       - Invoke-HardeningBaselineCheck.ps1 — multi-control baseline check structure
 
 .PARAMETER TenantId
-    Mandatory. Azure AD tenant ID.
+    Mandatory. Microsoft Entra tenant ID.
 
 .PARAMETER AuthMode
     Mandatory. Authentication mode: Interactive or ServicePrincipal.
@@ -149,7 +149,7 @@ catch {
 
 # ═══════════════════════════════════════════════════════════════════════
 # Section 2: Data Connectors
-# Supports: Control 3.1 (Audit Ingestion) — verify Office 365 and MCAS connectors
+# Supports: Control 3.1 (Audit Ingestion) — verify Office 365 and Defender for Cloud Apps connectors
 # Pattern: Invoke-HardeningBaselineCheck.ps1 — baseline item enumeration
 # ═══════════════════════════════════════════════════════════════════════
 $dataConnectors = $null
@@ -157,7 +157,7 @@ try {
     Write-Verbose "Section 2: Enumerating Sentinel data connectors..."
 
     # Use Azure REST API for Sentinel data connectors (more reliable than Get-AzOperationalInsightsDataSource
-    # for Sentinel-specific connectors like Office365 and MCAS)
+    # for Sentinel-specific connectors like Office365 and Defender for Cloud Apps (kind: MicrosoftCloudAppSecurity))
     $connectorApiUri = "https://management.azure.com/subscriptions/$SubscriptionId" +
         "/resourceGroups/$ResourceGroup" +
         "/providers/Microsoft.OperationalInsights/workspaces/$WorkspaceName" +

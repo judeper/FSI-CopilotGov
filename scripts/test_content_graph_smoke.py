@@ -16,6 +16,13 @@ EXPECTED = {
     "controls": 63,
     "pillars": 4,
     "by_pillar": {"1": 16, "2": 17, "3": 15, "4": 15},
+    "by_tier": {"Baseline": 18, "Recommended": 33, "Regulated": 12},
+    "by_pillar_tier": {
+        "1": {"Baseline": 6, "Recommended": 7, "Regulated": 3},
+        "2": {"Baseline": 6, "Recommended": 9, "Regulated": 2},
+        "3": {"Baseline": 3, "Recommended": 6, "Regulated": 6},
+        "4": {"Baseline": 3, "Recommended": 11, "Regulated": 1},
+    },
     "playbooks_total": 268,
     "playbooks_control": 249,
     "playbooks_cross_cutting": 19,
