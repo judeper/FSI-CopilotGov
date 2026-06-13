@@ -26,6 +26,8 @@ _FALLBACK_GRAPH = {
     "counts": {
         "controls": 0,
         "by_pillar": {},
+        "by_tier": {},
+        "by_pillar_tier": {},
         "playbooks_total": 0,
         "playbooks_control": 0,
         "playbooks_cross_cutting": 0,
@@ -35,6 +37,14 @@ _FALLBACK_GRAPH = {
 }
 
 _CONTROL_DIR_RE = re.compile(r"control-implementations/([0-9]+\.[0-9]+[a-z]?)/")
+
+# Accept both the single-letter Level codes used in checklist.md and the full
+# tier names so templates can call e.g. tier_count("B", 2) or tier_count("Baseline").
+_TIER_ALIASES = {
+    "b": "Baseline", "baseline": "Baseline",
+    "r": "Recommended", "recommended": "Recommended",
+    "reg": "Regulated", "regulated": "Regulated",
+}
 
 
 def _control_to_pillar(graph: dict) -> dict[str, int]:
@@ -111,4 +121,27 @@ def define_env(env):
         env.macro(pillar_count)
     else:
         env.variables["pillar_count"] = pillar_count
+
+    def tier_count(tier, pillar=None) -> int:
+        """Control count for a governance tier, sourced from the content graph
+        so tier subtotals are never hand-typed.
+
+        ``tier`` accepts the checklist Level code (``B`` / ``R`` / ``Reg``) or a
+        full tier name (case-insensitive). With ``pillar`` omitted, returns the
+        across-all-pillars total from ``counts.by_tier``; with a pillar number,
+        returns that pillar's tier count from ``counts.by_pillar_tier``. Returns
+        0 for an unknown tier or pillar."""
+        canonical = _TIER_ALIASES.get(str(tier).strip().lower())
+        if canonical is None:
+            return 0
+        counts = graph.get("counts", {}) or {}
+        if pillar is None:
+            return int((counts.get("by_tier", {}) or {}).get(canonical, 0))
+        bucket = (counts.get("by_pillar_tier", {}) or {}).get(str(pillar), {}) or {}
+        return int(bucket.get(canonical, 0))
+
+    if hasattr(env, "macro"):
+        env.macro(tier_count)
+    else:
+        env.variables["tier_count"] = tier_count
 

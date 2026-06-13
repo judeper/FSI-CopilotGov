@@ -21,6 +21,8 @@
         "controls",
         "pillars",
         "by_pillar",
+        "by_tier",
+        "by_pillar_tier",
         "playbooks_total",
         "playbooks_control",
         "playbooks_cross_cutting",
@@ -38,6 +40,34 @@
           },
           "additionalProperties": false
         },
+        "by_tier": {
+          "type": "object",
+          "description": "Control count per governance tier (entry tier).",
+          "required": ["Baseline", "Recommended", "Regulated"],
+          "additionalProperties": false,
+          "properties": {
+            "Baseline": {"type": "integer", "minimum": 0},
+            "Recommended": {"type": "integer", "minimum": 0},
+            "Regulated": {"type": "integer", "minimum": 0}
+          }
+        },
+        "by_pillar_tier": {
+          "type": "object",
+          "description": "Control count per pillar per governance tier, keyed by pillar number as a string.",
+          "patternProperties": {
+            "^[1-9][0-9]*$": {
+              "type": "object",
+              "required": ["Baseline", "Recommended", "Regulated"],
+              "additionalProperties": false,
+              "properties": {
+                "Baseline": {"type": "integer", "minimum": 0},
+                "Recommended": {"type": "integer", "minimum": 0},
+                "Regulated": {"type": "integer", "minimum": 0}
+              }
+            }
+          },
+          "additionalProperties": false
+        },
         "playbooks_total": {"type": "integer", "minimum": 0},
         "playbooks_control": {"type": "integer", "minimum": 0},
         "playbooks_cross_cutting": {"type": "integer", "minimum": 0},
@@ -48,11 +78,12 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "pillar", "title", "path", "regulatory_references"],
+        "required": ["id", "pillar", "tier", "title", "path", "regulatory_references"],
         "additionalProperties": false,
         "properties": {
           "id": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+[a-z]?$"},
           "pillar": {"type": "integer", "minimum": 1, "maximum": 4},
+          "tier": {"type": "string", "enum": ["Baseline", "Recommended", "Regulated"]},
           "title": {"type": "string"},
           "path": {"type": "string"},
           "last_verified": {
