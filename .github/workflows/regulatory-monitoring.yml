@@ -74,12 +74,20 @@ jobs:
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Generate GitHub App token
+        id: app-token
+        if: github.event_name != 'pull_request' && steps.diff.outputs.has_changes == 'true'
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Open / update PR with regulatory findings
         id: cpr
         if: github.event_name != 'pull_request' && steps.diff.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           commit-message: "Regulatory Monitor: new findings detected"
           branch: monitoring/regulatory-${{ github.run_number }}
           delete-branch: true
