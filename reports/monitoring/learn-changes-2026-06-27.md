@@ -1,0 +1,1918 @@
+# Microsoft Learn Documentation Changes
+
+**Run Date:** 2026-06-27
+**Run Time:** 2026-06-27T00:54:45.723959+00:00
+**Total URLs Checked:** 152
+
+---
+
+## Executive Summary
+
+| Category | Count |
+|----------|-------|
+| HIGH Changes | 39 |
+| MEDIUM Changes | 16 |
+| Redirects | 1 |
+
+---
+
+## Change Summary (Quick Scan)
+
+| # | URL | Classification | Affected Controls | Action Required |
+|---|-----|----------------|-------------------|-----------------|
+| 1 | microsoft-365-copilot-setup | MEDIUM | 2.6 | Review optional |
+| 2 | microsoft-365-copilot-usage | HIGH | 4.5 | Review and update |
+| 3 | release-notes | CRITICAL | 4.12 | Monitor |
+| 4 | whats-new | CRITICAL | 4.12 | Monitor |
+| 5 | connect-to-ai-subprocessor | HIGH | 3.8a, 2.7 | Review and update |
+| 6 | dlp-create-deploy-policy | HIGH | None | Review and update |
+| 7 | dlp-policy-reference | HIGH | None | Review and update |
+| 8 | ...osoft365-copilot-location-learn-about | HIGH | 2.1 | Review and update |
+| 9 | ...e-information-type-entity-definitions | HIGH | None | Review and update |
+| 10 | ...e-a-custom-sensitive-information-type | HIGH | 2.1 | Review and update |
+| 11 | endpoint-dlp-learn-about | HIGH | None | Review and update |
+| 12 | apply-sensitivity-label-automatically | HIGH | 1.5, 2.2 | Review and update |
+| 13 | audit-search | HIGH | 3.14, 3.1 | Review and update |
+| 14 | audit-log-activities | CRITICAL | 1.15 | Monitor |
+| 15 | audit-log-retention-policies | HIGH | 3.1 | Review and update |
+| 16 | create-retention-policies | HIGH | 3.2 | Review and update |
+| 17 | cpcn-compliance-summary | HIGH | 2.11 | Review and update |
+| 18 | purview-management | HIGH | None | Review and update |
+| 19 | ...m/en-us/microsoft-365/copilot/cowork/ | HIGH | None | Review and update |
+| 20 | get-started | HIGH | None | Review and update |
+| 21 | cowork-admin-governance | HIGH | None | Review and update |
+| 22 | cowork-manage-plugins | HIGH | None | Review and update |
+| 23 | cowork-faq | HIGH | None | Review and update |
+| 24 | communication-compliance-policies | HIGH | 3.4, 3.5 | Review and update |
+| 25 | ...tion-compliance-investigate-remediate | HIGH | None | Review and update |
+| 26 | ai-microsoft-purview | MEDIUM | 1.2, 1.1, 2.1, index | Review optional |
+| 27 | .../microsoft-365/copilot/extensibility/ | HIGH | 4.13, 1.13, 2.14, 2.16, 2.13 | Review and update |
+| 28 | overview-copilot-connector | MEDIUM | 2.13 | Review optional |
+| 29 | authoring-ask-a-question | HIGH | None | Review and update |
+| 30 | authoring-select-agent-model | MEDIUM | 4.14, 1.16 | Review optional |
+| 31 | agent-365-overview | HIGH | 4.13, 4.5 | Review and update |
+| 32 | agent-registry | MEDIUM | 4.13, 2.14 | Review optional |
+| 33 | ...n.microsoft.com/en-us/entra/agent-id/ | HIGH | 2.17 | Review and update |
+| 34 | what-is-microsoft-entra-agent-id | MEDIUM | None | Review optional |
+| 35 | what-are-agent-identities | MEDIUM | None | Review optional |
+| 36 | whats-new-agent-id | MEDIUM | None | Review optional |
+| 37 | what-is-agent-id-platform | MEDIUM | None | Review optional |
+| 38 | configure-third-party-agents | MEDIUM | None | Review optional |
+| 39 | agent-id | HIGH | 2.3, 2.17 | Review and update |
+| 40 | concept-risky-agents | HIGH | None | Review and update |
+| 41 | agent-id-governance-overview | HIGH | None | Review and update |
+| 42 | concept-secure-web-ai-gateway-agents | MEDIUM | None | Review optional |
+| 43 | insider-risk-management-policies | HIGH | 2.10 | Review and update |
+| 44 | ...r-risk-management-adaptive-protection | HIGH | 2.3, 2.10 | Review and update |
+| 45 | data-connectors-reference | CRITICAL | 4.11, 3.1 | Monitor |
+| 46 | create-analytics-rules | HIGH | None | Review and update |
+| 47 | monitor-your-data | HIGH | 4.11 | Review and update |
+| 48 | ...opilot-sharepoint-advanced-management | HIGH | 1.13, 1.3 | Review and update |
+| 49 | ai-in-sharepoint-get-started | HIGH | None | Review and update |
+| 50 | site-lifecycle-management | CRITICAL | 1.7 | Monitor |
+| 51 | restricted-content-discovery | HIGH | 1.7 | Review and update |
+| 52 | content-governance-agent | HIGH | 1.7 | Review and update |
+| 53 | zero-trust-microsoft-365-copilot | HIGH | None | Review and update |
+| 54 | what-is-defender-for-cloud-apps | HIGH | 2.9 | Review and update |
+| 55 | archive-overview | HIGH | 3.2 | Review and update |
+
+---
+
+## HIGH: Control Review Recommended
+
+### 1. Copilot usage reports
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage?view=o365-worldwide
+**Section:** Copilot Administration
+**Classification:** HIGH (Portal references)
+
+**Affected Controls:**
+- Control 4.5: Control 4.5: Copilot Usage Analytics and Adoption Reporting
+  - File: `controls/pillar-4-operations/4.5-usage-analytics.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -26,7 +26,7 @@ For general information about usage reports in the Microsoft 365 admin center, and to see a list of all available reports, see
+ Microsoft 365 admin center usage reports overview
+ .
+-View the Microsoft 365 Copilot usage report
++View the Microsoft 365 Copilot usage report in the Microsoft 365 admin center
+ For information about the roles needed to view usage reports, see "Before you begin" in
+ Microsoft 365 admin center usage reports overview
+ Go to the
+@@ -253,7 +253,7 @@ Adoption
+ section, you might see a recommendation card:
+ To learn more about using organizational messages for Microsoft 365 Copilot, see
+-Microsoft 365 features adoption using organizational messages
++Drive adoption with Microsoft 365 Copilot Usage report's Organizational Messages feature
+ .
+ You can export the report data into an Excel .csv file by selecting the ellipses and then
+ Export
+
+```
+
+---
+
+### 2. Anthropic as a Microsoft subprocessor
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor
+**Section:** Copilot Administration
+**Classification:** HIGH (Compliance features)
+
+**Affected Controls:**
+- Control 3.8a: Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot
+  - File: `controls/pillar-3-compliance/3.8a-generative-ai-model-governance.md`
+- Control 2.7: Control 2.7: Data Residency and Cross-Border Data Flow Governance
+  - File: `controls/pillar-2-security/2.7-data-residency.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -19,29 +19,50 @@ Access to this page requires authorization. You can try
+ changing directories
+ .
+-Anthropic as a subprocessor for Microsoft Online Services
++Anthropic models in Microsoft Online Services
+ Feedback
+ Summarize this article for me
+ Microsoft is introducing a new offering with Anthropic AI models as part of Microsoft Online Services, delivering enterprise-grade commitments and safeguards to ensure secure and responsible use of Anthropic models within your organization.
+-To enable this change, Anthropic has onboarded as a Microsoft subprocessor. As part of this update, we're deprecating the previous option that allowed Microsoft tenant admins to opt in to use Anthropic models under Anthropic's separate commercial terms and data processing agreement. This change simplifies the experience and strengthens compliance and security under Microsoft's enterprise framework.
+-As a subprocessor, Anthropic will operate with Microsoft oversight through contractual safeguards and appropriate technical and organizational measures. The Microsoft
+-Product Terms
++To enable this change, Anthropic has onboarded as a Microsoft subprocessor. This change simplifies the experience and strengthens compliance and security under Microsoft's enterprise framework. The Microsoft Customer Copyright Commitment (CCC) applies to Anthropic models used within products covered by the CCC, including Microsoft 365 Copilot and Copilot Studio.
++As a subprocessor, Anthropic will operate with Microsoft oversight through contractual safeguards and appropriate technical and organizational measures. Unless models are labeled "Preview models with Data Retention," the
++Microsoft Product Terms
+ and
+ Microsoft Data Protection Addendum (DPA)
+ apply to use of Anthropic models through Microsoft's enterprise Online Services. Such use is also covered under our
+ Enterprise Data Protection
+-. The Microsoft Customer Copyright Commitment (CCC) applies to Anthropic models used within products covered b
+```
+
+---
+
+### 3. Create and deploy a DLP policy
+
+**URL:** https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy
+**Section:** Data Loss Prevention (DLP)
+**Classification:** HIGH (Compliance features)
+
+**What Changed:**
+```diff
+--- +++ @@ -23,9 +23,9 @@ Feedback
+ Summarize this article for me
+ Microsoft Purview Data Loss Prevention (DLP) policies include many configuration options. Each option changes the policy's behavior. The articles in this series cover some of the most common DLP policy scenarios. They walk you through configuring those options to give you hands-on experience with the DLP policy creation process. When you familiarize yourself with these scenarios, you gain the foundational skills that you need to use the DLP policy creation UX to create your own policies.
+-How you deploy a policy is as important policy design. You have
+-multiple options to control policy deployment
+-. This article shows you how to use these options so that the policy achieves your intent while avoiding costly business disruptions.
++How you deploy a policy is as important policy design. You have multiple options to control policy deployment, including policy state, actions, and scope, as described in the
++Deploy and manage DLP policies
++section of this article. This article shows you how to use these options so that the policy achieves your intent while avoiding costly business disruptions.
+ In preview
+ You can change the display name of DLP policies and rules. Once you rename a policy or a rule, any existing records retain their previous name in activity explorer evetns, in alerts and in audit records. New records will reflect the new name in activity explorer events, in alerts and in audit records. These names will remain until the items age out of the system.
+ Orient yourself to DLP
+@@ -95,20 +95,22 @@ Disable Microsoft Purview data loss prevention scanning for some supported files and apply controls
+ Help prevent sharing Power BI reports with credit card numbers
+ Policy creation scenarios for Inline web traffic
++The following scenarios show how to create DLP policies for inline web traffic.
+ Help prevent sharing via Microsoft Edge for Business to unmanaged AI apps from managed devices
+ Help Prevent
+```
+
+---
+
+### 4. DLP policy reference
+
+**URL:** https://learn.microsoft.com/en-us/purview/dlp-policy-reference
+**Section:** Data Loss Prevention (DLP)
+**Classification:** HIGH (Portal references)
+
+**What Changed:**
+```diff
+--- +++ @@ -917,7 +917,7 @@ -
+ Get started with Endpoint data loss prevention
+ -
+-Configure device proxy and internet connection settings for Information Protection
++Configure device proxy and internet connection settings for Microsoft Purview Endpoint DLP
+ On-premises repositories (file shares and SharePoint)
+ No
+ Repository
+@@ -925,7 +925,7 @@ -
+ Learn about the data loss prevention on-premises repositories
+ -
+-Get started with the data loss prevention on-premises repositories
++Get started with data loss prevention for on-premises repositories
+ Fabric and Power BI
+ No
+ Workspaces
+@@ -958,6 +958,18 @@ - Only available in the
+ Custom
+ policy template
++Note
++In the
++Devices
++location, the
++Devices and device groups
++setting supports only
++Audit or restrict activities on devices
++. You can't use it with
++Audit or restrict activities when users access sensitive sites in the Microsoft Edge browser on Windows devices
++under
++Rule Actions
++.
+ Exchange location scoping
+ If you choose to include specific distribution groups in Exchange, the DLP policy is scoped to the emails sent by members of that group or sent to members of that group. Similarly, excluding a distribution group excludes all the emails sent by the members of that distribution group or from policy evaluation.
+ Group Type
+@@ -1695,10 +1707,10 @@ Document name contains words or phrases
+ Document size equals or is greater than
+ Document created by
+-Document creation date is on or after (preview)
+-Document creation date is on or before (preview)
+-Document modification date is on or after (preview)
+-Document modification date is on or before (preview)
++Document creation date is on or after
++Document creation date is on or before
++Document modification date is on or after
++Document modification date is on or before
+ Conditions OneDrive accounts support
+ Content contains
+ Content is shared from Microsoft 365
+@@ -1711,10 +1723,10 @@ Document size equals or is greater than
+ Document created by
+ Document is shared
+-Do
+```
+
+---
+
+### 5. DLP for Microsoft 365 Copilot
+
+**URL:** https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about
+**Section:** Data Loss Prevention (DLP)
+**Classification:** HIGH (Portal references)
+
+**Affected Controls:**
+- Control 2.1: Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions
+  - File: `controls/pillar-2-security/2.1-dlp-policies-for-copilot.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -22,13 +22,15 @@ Learn about using Microsoft Purview Data Loss Prevention to protect interactions with Microsoft 365 Copilot and Copilot Chat
+ Feedback
+ Summarize this article for me
+-Microsoft Purview Data Loss Prevention (DLP) can help you protect interactions with Microsoft 365 Copilot and Copilot Chat in two ways:
+-Restrict Microsoft 365 Copilot from using external web search when prompts contain sensitive data (preview)
+-, you can use Microsoft Purview Data Loss Prevention (DLP) policies to prevent Microsoft 365 Copilot and Copilot Chat from sending sensitive information to external web services. When a prompt contains sensitive information types (SITs)âsuch as credit card numbers, passport numbers, Social Security numbers, or custom SITs defined by your organizationâCopilot automatically blocks the use of external web search as a grounding source for that prompt. Instead, Copilot continues to generate responses using permitted internal Microsoft 365 data sources, where applicable. This ensures that sensitive data remains protected and is not shared with external search providers.
+-Restrict Microsoft 365 Copilot and Copilot Chat from processing sensitive prompts
+-, you can create a DLP policy to help protect against the use of sensitive information types (SIT), such as credit card numbers, passport identification, or social security numbers in Microsoft Copilot 365 prompts. This includes Microsoft provided SITs and custom SITs that you create. This real-time control helps organizations mitigate data leakage and oversharing risks by preventing Microsoft 365 Copilot and Copilot Chat, including prebuilt agents in Microsoft 365 Copilot and Copilot Chat, from returning a response when prompts contain sensitive data and from using that sensitive data for both internal and external web searches.
+-Restrict M365 Copilot and Copilot Chat processing sensitive files and emails (generally available)
+-, you can create a DLP policy to help protect against the i
+```
+
+---
+
+### 6. Sensitive information type entity definitions
+
+**URL:** https://learn.microsoft.com/en-us/purview/sit-sensitive-information-type-entity-definitions
+**Section:** Data Loss Prevention (DLP)
+**Classification:** HIGH (Feature availability)
+
+**What Changed:**
+```diff
+--- +++ @@ -112,8 +112,11 @@ Canada social insurance number
+ Chile identity card number
+ China resident identity card (PRC) number
++China physical addresses
+ Client secret / API key
+ Credit card number
++Colombia national ID
++Colombia tax identification number
+ Croatia driver's license number
+ Croatia identity card number
+ Croatia passport number
+@@ -161,20 +164,21 @@ General password
+ General Symmetric key
+ Generic medication names
+-Germany driver's license number
++German Driver's License Number
+ Germany identity card number
+-Germany passport number
++German Passport Number
+ Germany physical addresses
+ Germany tax identification number
+ Germany value added tax number
+ GitHub Personal Access Token
+ Google API key
++Greenland physical addresses
+ Greece driver's license number
+ Greece national ID card
+ Greece passport number
+ Greece physical addresses
+ Greece Social Security Number (AMKA)
+-Greece tax identification number
++Greek Tax Identification Number
+ Hong Kong identity card (HKID) number
+ Http authorization header
+ Hungary driver's license number
+@@ -213,11 +217,11 @@ Italy value added tax number
+ Japan bank account number
+ Japan driver's license number
+-Japan My Number - Corporate
+-Japan My Number - Personal
++Japanese My Number Corporate
++Japanese My Number Personal
+ Japan passport number
+ Japan physical addresses
+-Japan residence card number
++Japanese Residence Card Number
+ Japan resident registration number
+ Japan social insurance number (SIN)
+ Lab test terms
+@@ -270,7 +274,7 @@ Poland driver's license number
+ Poland identity card
+ Poland national ID (PESEL)
+-Poland passport number
++Poland Passport Number
+ Poland physical addresses
+ Poland REGON number
+ Poland tax identification number
+@@ -279,16 +283,20 @@ Portugal passport number
+ Portugal physical addresses
+ Portugal tax identification number
+-Qatari identification card number
++Qatari ID Card Number
+ Romania driver's license number
+ Romania passport number
+ Romania personal numeric code (CNP)
+ Romania physical
+```
+
+---
+
+### 7. Custom sensitive information types
+
+**URL:** https://learn.microsoft.com/en-us/purview/sit-create-a-custom-sensitive-information-type
+**Section:** Data Loss Prevention (DLP)
+**Classification:** HIGH (Policy language)
+
+**Affected Controls:**
+- Control 2.1: Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions
+  - File: `controls/pillar-2-security/2.1-dlp-policies-for-copilot.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -96,11 +96,36 @@ Sensitive Information Type regular expression validators
+ .
+ Important
+-Don't use positional regex anchors, like
++Custom SIT regex patterns must follow these rules:
++Don't use positional anchors
++like
+ ^
+ and
+ $
+-in custom SITs as the SIT is unlikely to behave as intended when these anchors are part of the regular expression. If they are used, when the content is scanned there are no guarantees about where in the content will correspond to the starting and ending anchors.
++. When content is scanned, there are no guarantees about where in the content the starting and ending anchors correspond to.
++Use
++one primary capturing group
++(the only capturing group), for example:
++(?:prefix)(primary capturing group)(?:suffix)
++(use noncapturing groups for any additional grouping).
++Handle all match variants
++inside
++that single group using
++|
++(alternation). Multiple capturing groups separated by
++|
++at the top level are
++not supported
++and are blocked during validation.
++Invalid pattern
++(three top-level capturing groups):
++(?:[\s,;])([A-Z]{2}[0-9]{3})(?:[\s,;])|(?:[\s,;])([A-Z]{2}[A-Z]{4}[0-9])(?:[\s,;])|(?:[\s,;])([A-Z]{2}[0-9]{5})(?:[\s,;])
++Valid pattern
++(single capturing group with alternation):
++(?:[\s,;])([A-Z]{2}[0-9]{3}|[A-Z]{2}[A-Z]{4}[0-9]|[A-Z]{2}[0-9]{5})(?:[\s,;])
++For more information on limits, see
++Sensitive information type limits
++.
+ Fill in a value for
+ Character proximity
+ .
+@@ -108,7 +133,7 @@ Character proximity
+ configuration.
+ (Optional) Add any
+-additional checks
++sensitive information type additional checks
+ from the list of available checks.
+ Choose
+ Create
+@@ -207,7 +232,7 @@ (Optional) If you have
+ Supporting elements
+ or any
+-additional checks
++sensitive information type additional checks
+ you want to run, add them. If needed, you can organize your
+ Supporting elements
+ into groups.
+
+```
+
+---
+
+### 8. Endpoint DLP
+
+**URL:** https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about
+**Section:** Data Loss Prevention (DLP)
+**Classification:** HIGH (Compliance features)
+
+**What Changed:**
+```diff
+--- +++ @@ -42,13 +42,7 @@ Note
+ Endpoint DLP cannot detect the sensitivity label from another tenant on a document.
+ Endpoint DLP Windows 10/11 and macOS support
+-Endpoint DLP allows you to onboard devices running the following versions of Windows Server:
+-Windows Server 2019 (
+-November 14, 2023âKB5032196 (OS Build 17763.5122) - Microsoft Support
+-)
+-Windows Server 2022 (
+-November 14, 2023 Security update (KB5032198) - Microsoft Support
+-)
++Endpoint DLP allows you to onboard devices running Windows Server 2019 and later versions.
+ Note
+ Installing the supported Windows Server KBs disables the
+ Classification
+@@ -59,7 +53,7 @@ Once properly configured, the same data loss protection policies can be automatically applied to both Windows PCs and Windows servers.
+ Setting
+ Subsetting
+-Windows 10, 1809 and later, Windows 11, Windows Server 2019, Windows Server 2022 (21H2 onwards) for Endpoints (X64)
++Windows 10, 1809 and later, Windows 11, Windows Server 2019 and later versions for Endpoints (X64)
+ macOS (three latest released versions)
+ Notes
+ Advanced classification scanning and protection
+@@ -168,7 +162,7 @@ Other settings
+ Setting
+ Windows 10/11, Windows 10, 1809 and later, Windows 11
+-Windows Server 2019, Windows Server 2022 (21H2 onwards) for Endpoints (X64)
++Windows Server 2019 and later versions for Endpoints (X64)
+ macOS (three latest released versions)
+ Archive file
+ Supported
+@@ -188,7 +182,7 @@ Endpoint DLP enables you to audit and manage the following types of activities users take on sensitive items that are physically stored Windows 10, Windows 11, or macOS devices.
+ Activity
+ Description
+-Windows 10 (21H2, 22H2), Windows 11 (21H2, 22H2), Windows Server 2019, Server 2022 (21H2 onwards) for Endpoints (X64)
++Windows 10 (21H2, 22H2), Windows 11 (21H2, 22H2), Windows Server 2019 and later versions for Endpoints (X64)
+ Windows 11 (21H2, 22H2) for Endpoints (ARM64)
+ macOS three latest released versions
+ Auditable/
+@@ -582,9 +576,6 @@ Just-in-time protection 
+```
+
+---
+
+### 9. Apply sensitivity labels automatically
+
+**URL:** https://learn.microsoft.com/en-us/purview/apply-sensitivity-label-automatically
+**Section:** Information Protection (Sensitivity Labels)
+**Classification:** HIGH (Feature availability)
+
+**Affected Controls:**
+- Control 1.5: Control 1.5: Sensitivity Label Taxonomy Review for Copilot
+  - File: `controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md`
+- Control 2.2: Control 2.2: Sensitivity Labels and Copilot Content Classification
+  - File: `controls/pillar-2-security/2.2-sensitivity-labels-classification.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -754,6 +754,51 @@ However currently, restricted admins won't be able to see labeling activities for OneDrive in activity explorer.
+ Tip
+ You can also use content explorer to identify locations that have documents with sensitive information, but are unlabeled. Using this information, consider adding these locations to your auto-labeling policy, and include the identified sensitive information types as rules.
++Policy-level labeling activity for SharePoint and OneDrive
++For auto-labeling policies that are turned on and target SharePoint and OneDrive, you can monitor them right from the main
++Auto-labeling
++page and use the per-policy review pages. Use these pages to monitor day-to-day labeling activity, spot-check labeled files, and investigate labeling failures.
++To view the review pages, you need one of the following roles:
++Compliance Administrator
++Compliance Data Administrator
++Information Protection Admin
++Information Protection Analyst
++To see the matched text inside a file from the
++Contextual summary
++tab, you also need the
++Data Classification Content Viewer
++role.
++To open these pages, from
++Information Protection
++>
++Auto-labeling
++, select the name of an auto-labeling policy. Most data on the review pages reflects activity from the last 30 days.
++The policy
++Overview
++page shows labeled and failed file counts, a daily activity trend chart, the top labels applied, and the top sites where labeling occurred. A
++Labeling failures
++card surfaces the total failure count and the top three failure reasons so you can quickly identify whether the policy needs attention.
++From the
++Labeled items
++tab, you can toggle between a
++Labeled
++view (a sample of successfully labeled files) and a
++Failed
++view (files the policy couldn't label, grouped by failure reason). Select any item to open a details flyout pane that includes a file preview, file properties, and a
++Contextual summary
++tab that explains in plain language why the file matched or why labeling faile
+```
+
+---
+
+### 10. Search the audit log
+
+**URL:** https://learn.microsoft.com/en-us/purview/audit-search
+**Section:** Audit and Retention
+**Classification:** HIGH (Compliance features)
+
+**Affected Controls:**
+- Control 3.14: Control 3.14: Copilot Pages and Notebooks Retention and Provenance
+  - File: `controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md`
+- Control 3.1: Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)
+  - File: `controls/pillar-3-compliance/3.1-copilot-audit-logging.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -28,7 +28,7 @@ Each admin Audit account user can have up to 10 search jobs running at the same time, with a limit of one unfiltered search job.
+ Before you search the audit log
+ Review the following items before you start searching the audit log.
+-Audit log search is turned on by default for Microsoft 365 and Office 365 enterprise organizations. To verify that audit log search is turned on, run the following command in
++Audit log search is turned on by default for Microsoft 365 and Office 365 enterprise organizations. Verify the current unified audit log ingestion setting for your organization by running the following command in
+ Exchange Online PowerShell
+ :
+ Get-AdminAuditLogConfig | Format-List UnifiedAuditLogIngestionEnabled
+@@ -79,9 +79,9 @@ Even when mailbox auditing on by default is turned on, you might notice that mailbox audit events for some users aren't found in audit log searches in the Microsoft Purview portal or via the Office 365 Management Activity API. For more information, see
+ Mailbox audit logging
+ .
+-To turn off audit log search for your organization, run the following command in Exchange Online PowerShell:
++To turn off audit log search for your organization, use the following command to disable unified audit log ingestion in Exchange Online PowerShell:
+ Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $false
+-To turn on audit search again, run the following command in Exchange Online PowerShell:
++To turn unified audit log ingestion back on for your organization, run the following command in Exchange Online PowerShell:
+ Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true
+ For more information, see
+ Turn off audit log search
+@@ -95,8 +95,8 @@ .
+ For information about exporting the search results returned by the
+ Search-UnifiedAuditLog
+-cmdlet to a CSV file, see the "Tips for exporting and viewing the audit log" section in
+-Export, configure, and view audit log records
++cmdlet to a CSV file, see
++Tips for exporting an
+```
+
+---
+
+### 11. Manage audit log retention policies
+
+**URL:** https://learn.microsoft.com/en-us/purview/audit-log-retention-policies
+**Section:** Audit and Retention
+**Classification:** HIGH (Compliance features)
+
+**Affected Controls:**
+- Control 3.1: Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)
+  - File: `controls/pillar-3-compliance/3.1-copilot-audit-logging.md`
+
+**Affected Playbooks:**
+- ℹ️ `playbooks/control-implementations/3.11/troubleshooting.md` (HIGH)
+
+**What Changed:**
+```diff
+--- +++ @@ -52,7 +52,7 @@ Your organization can have up to 50 audit log retention policies.
+ To retain an audit log for longer than 180 days (and up to 1 year), the user who generates the audit log (by performing an audited activity) must have an Office 365 E5 or Microsoft 365 E5 license or a Microsoft Purview Suite (formerly known as Microsoft 365 E5 Compliance) or E5 eDiscovery and Audit add-on license. To retain audit logs for 10 years, the user who generates the audit log must also have a 10-year audit log retention add-on license in addition to an E5 license.
+ Note
+-If the user generating the audit log doesn't meet these licensing requirements, data is retained according to the highest priority retention policy. This retention might be either the default retention policy for the user's license or the highest priority policy that matches the user and its record type.
++If the user generating the audit log doesn't have the licenses required for the selected retention duration, data is retained according to the highest priority retention policy. This retention might be either the default retention policy for the user's license or the highest priority policy that matches the user and its record type.
+ All custom audit log retention policies (created by your organization) take priority over the default retention policy. For example, if you create an audit log retention policy for Exchange mailbox activity that has a retention period that's shorter than one year, audit records for Exchange mailbox activities are retained for the shorter duration specified by the custom policy.
+ The audit item lifetime for data is determined when you add it to the auditing pipeline and is based on the licensing defaults or applicable retention policies. Any changes to licensing or applicable retention policies change the expiration time of the audit data after updating. These changes don't update any previously committed items.
+ Create an audit log retention policy
+@@ -142,7 +142,7 @@ 
+```
+
+---
+
+### 12. Create and configure retention policies
+
+**URL:** https://learn.microsoft.com/en-us/purview/create-retention-policies
+**Section:** Audit and Retention
+**Classification:** HIGH (Compliance features)
+
+**Affected Controls:**
+- Control 3.2: Control 3.2: Data Retention Policies for Copilot Interactions
+  - File: `controls/pillar-3-compliance/3.2-data-retention-policies.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -100,7 +100,7 @@ . When you configure retention settings for the
+ Teams channel message
+ location, if a team has any shared channels, they inherit retention settings from their parent team.
+-From late April 20206, retention policies also support newly created Teams call logs when you create the retention policies with PowerShell. For more information, see
++From late April 2026, retention policies also support newly created Teams call logs when you create the retention policies with PowerShell. For more information, see
+ Retention policy for Teams call logs
+ .
+ Sign in to the Microsoft Purview portal
+@@ -205,9 +205,7 @@ Retention policy for Teams call logs
+ Teams call logs represent the collection of call-related data generated by Teams, including call data records (CDRs) and other call metadata. CDRs are also sometimes referred to as call detail records, or just call records.
+ Prior to supporting the retention of Teams call logs in late April 2026, CDRs for Teams chat and Teams channels were included in retention policies for the Teams chat location. Going forward, new CDRs are supported only when you create a retention policy for Teams call logs. CDRs included in previous Teams chat retention policies continue to be managed by those same policies.
+-This separate retention policy for call logs can be created only by using PowerShell, and has the following considerations:
+-The policy is tenant-wide and can't be scoped to individual users.
+-The policy doesn't support adaptive scopes or administrative units.
++This separate retention policy for call logs can be created and modified only by using PowerShell. It has the following considerations:
+ The policy includes call logs for both Teams chat and Teams channels.
+ The policy applies only to new call logs that are created after the policy is configured and active.
+ After you create the retention policy for Teams call logs, it's displayed in
+@@ -215,14 +213,13 @@ >
+ Policies
+ in the Microsoft Purview portal, wh
+```
+
+---
+
+### 13. Copilot Pages and Notebooks compliance summary
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide
+**Section:** Copilot Pages and Notebooks
+**Classification:** HIGH (Policy language)
+
+**Affected Controls:**
+- Control 2.11: Control 2.11: Copilot Pages Security and Sharing Controls
+  - File: `controls/pillar-2-security/2.11-copilot-pages-security.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -42,9 +42,10 @@  Supported
+ eDiscovery
+ â- Supported (full-text search in review sets not available)
++ Supported
+ Legal Hold
+-â Manual - container must be added per user
++â+ Supported; selecting the container in the custodian data source picker is rolling out (expected early August)
+ Retention policies
+ â  Supported via "All SharePoint Sites"
+@@ -78,7 +79,7 @@ EUDB
+ : Compliance is supported. See
+ What is the EU Data Boundary?
+-Data Security, Devices
++Data security and devices
+ Intune
+ :
+ Device Management Support
+@@ -111,19 +112,19 @@ and
+ Set
+ guest app permissions.
+-Data Lifecycle
++Data lifecycle
+ Scenario: user leaves the organization.
+-The Copilot Pages and Copilot Notebooks container follows the OneDrive cleanup schedule (30 days active, then 93 days to permanent deletion). To add owners and preserve content before deletion, see
++The container follows the same
++OneDrive deletion lifecycle
++as the rest of Microsoft 365, with one manual handoff step at departure (access and notification aren't automatic) and the option to permanently reassign the container to a new owner. For the full process, options, and comparison with OneDrive, see
+ Grant access to containers
+ . To preserve content before departure, export it using Purview or the Graph API, or add the container to a retention policy.
+ Storage
+ : Copilot Pages and Copilot Notebooks are stored together in a single user-owned SharePoint Embedded container, which is also shared by Loop My workspace. Storage counts against your organization's SharePoint quota. See
+ storage
+-for the full explanation of the shared container,
++for the full explanation of the shared container and
+ Managing SharePoint Embedded containers
+-for admin tooling, and
+-Grant access to containers
+-for the manual access workflow at user departure.
++for admin tooling.
+ Limitation
+ : There's no admin control to set quota limits on individual containers.
+ Admin control note
+@@ -137,7 +138,7 @@ preferred data location
+ .
+ Known 
+```
+
+---
+
+### 14. Purview management for SharePoint Embedded containers
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/loop/purview-management?view=o365-worldwide
+**Section:** Copilot Pages and Notebooks
+**Classification:** HIGH (Portal references)
+
+**What Changed:**
+```diff
+--- +++ @@ -62,7 +62,7 @@ Note
+ The
+ Container Redirect URL
+-field may not yet be available in the SharePoint admin center. This capability is still rolling out. Track the rollout status on the
++field might not yet be available in the SharePoint admin center. This capability is still rolling out. Track the rollout status on the
+ Microsoft 365 public roadmap
+ .
+ Searching the Audit Logs
+
+```
+
+---
+
+### 15. Copilot Cowork overview
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/
+**Section:** Copilot Cowork
+**Classification:** HIGH (Feature availability)
+
+**What Changed:**
+```diff
+--- +++ @@ -19,22 +19,9 @@ Access to this page requires authorization. You can try
+ changing directories
+ .
+-Cowork overview (Frontier)
++Copilot Cowork overview
+ Feedback
+ Summarize this article for me
+-[This article is prerelease documentation and is subject to change.]
+-Important
+-You need to be part of the
+-Frontier preview program
+-to get
+-early access
+-to Microsoft 365 Copilot Cowork. Frontier connects you directly with Microsoft's latest AI innovations. Frontier previews are subject to the existing preview terms of your customer agreements. As these features are still in development, their availability and capabilities may change over time.
+-If Cowork isn't visible in Microsoft Admin Center Agent management, ensure that the admin account is also enrolled in Frontier (Copilot -> Settings -> Frontier).
+-This is a preview feature.
+-Preview features may have restricted functionality. These features are available before an official release so that customers can get early access and provide feedback.
+-For more information, go to our
+-Microsoft Product Terms
+-.
+ Microsoft 365 Copilot Cowork can carry out tasks on your behalf. You describe what you need, and Cowork sends emails, schedules meetings, creates documents, posts in Teams, and manages your calendar. You approve each action before it happens.
+ What is Cowork?
+ Cowork carries out tasks across your Microsoft 365 environment. Rather than describing what you could do, it does the work.
+@@ -48,6 +35,16 @@ : Sends messages to channels and chats.
+ Searches your organization
+ : Finds the information you need across your company's resources.
++Manages files
++: Browses and manages files in OneDrive and SharePoint.
++Conducts deep research
++: Performs research across multiple sources and compiles comprehensive analysis.
++Prepares briefings and summaries
++: Prepares daily briefings and meeting intelligence summaries.
++Drafts communications
++: Drafts stakeholder communications such as status updates and announcements.
++Sche
+```
+
+---
+
+### 16. Get started with Copilot Cowork
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started
+**Section:** Copilot Cowork
+**Classification:** HIGH (Feature availability)
+
+**What Changed:**
+```diff
+--- +++ @@ -19,31 +19,20 @@ Access to this page requires authorization. You can try
+ changing directories
+ .
+-Get started with Cowork (Frontier)
++Get started with Copilot Cowork
+ Feedback
+ Summarize this article for me
+-[This article is prerelease documentation and is subject to change.]
+-Important
+-You need to be part of the
+-Frontier preview program
+-to get
+-early access
+-to Microsoft 365 Copilot Cowork. Frontier connects you directly with Microsoft's latest AI innovations. Frontier previews are subject to the existing preview terms of your customer agreements. As these features are still in development, their availability and capabilities may change over time.
+-If Cowork isn't visible in Microsoft Admin Center Agent management, ensure that the admin account is also enrolled in Frontier (Copilot -> Settings -> Frontier).
+-This is a preview feature.
+-Preview features may have restricted functionality. These features are available before an official release so that customers can get early access and provide feedback.
+-For more information, go to our
+-Microsoft Product Terms
+-.
+ Microsoft 365 Copilot Cowork allows you to describe what you needâdraft an email, build a spreadsheet, schedule a meetingâand Cowork handles it. This article walks you through your first conversation, from sending a request to reviewing the result.
+ Prerequisites
+ Before you begin, make sure you have:
+ Microsoft 365 Copilot access
+-: An active Microsoft 365 Copilot license assigned to your account and enrollment in the frontier program.
++: An active Microsoft 365 Copilot license assigned to your account.
+ A modern browser
+ : Microsoft Edge or Google Chrome recommended.
+ Cowork available
+ : Cowork is enabled in your Microsoft 365 Copilot environment.
++Usage-based billing
++: Usage-based and Cowork billing has been enabled.
+ Anthropic enabled in tenant
+ : Cowork uses Anthropic models as a subprocessor to ensure secure and responsible use of Anthropic models within your organization. Details 
+```
+
+---
+
+### 17. Copilot Cowork admin and governance
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance
+**Section:** Copilot Cowork
+**Classification:** HIGH (Feature availability)
+
+**What Changed:**
+```diff
+--- +++ @@ -19,179 +19,85 @@ Access to this page requires authorization. You can try
+ changing directories
+ .
+-Manage Cowork for your organization
++Manage Copilot Cowork for your organization
+ Feedback
+ Summarize this article for me
+-[This article is prerelease documentation and is subject to change.]
+-Important
+-You need to be part of the
+-Frontier preview program
+-to get
+-early access
+-to Microsoft 365 Copilot Cowork. Frontier connects you directly with Microsoft's latest AI innovations. Frontier previews are subject to the existing preview terms of your customer agreements. As these features are still in development, their availability and capabilities may change over time.
+-If Cowork isn't visible in Microsoft Admin Center Agent management, ensure that the admin account is also enrolled in Frontier (Copilot -> Settings -> Frontier).
+-This is a preview feature.
+-Preview features may have restricted functionality. These features are available before an official release so that customers can get early access and provide feedback.
+-For more information, go to our
+-Microsoft Product Terms
++Learn how to manage plugins, models, browser use, security and compliance, and usage-based billing in Copilot Cowork.
++Allow access to Cowork
++To allow users to access Cowork, admins must enable usage-based billing. To learn how to set up and enable usage-based billing, see
++Managing AI experiences enabled by usage-based billing
+ .
+-Microsoft 365 Copilot Cowork is available to all Microsoft 365 Copilot tenants. IT administrators can control who has access to it, deploy it on behalf of users, and pin it in the Copilot experience using the same governance tools in Microsoft 365 Copilot.
+-Default availability
+-By default, Cowork is
+-available to all licensed users
+-in your tenant. This means:
+-You can discover and install it yourself from the Agent Store.
+-It's
+-not pre-installed
+-or pre-pinned for youâno action is required to enable it.
+-If you don't want to use it, you can simply 
+```
+
+---
+
+### 18. Manage Copilot Cowork plugins
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins
+**Section:** Copilot Cowork
+**Classification:** HIGH (Feature availability)
+
+**What Changed:**
+```diff
+--- +++ @@ -19,25 +19,14 @@ Access to this page requires authorization. You can try
+ changing directories
+ .
+-Manage plugins for Cowork (Frontier)
++Manage plugins for Copilot Cowork
+ Feedback
+ Summarize this article for me
+-[This article is prerelease documentation and is subject to change.]
+-Important
+-You need to be part of the
+-Frontier preview program
+-to get
+-early access
+-to Microsoft 365 Copilot Cowork. Frontier connects you directly with Microsoft's latest AI innovations. Frontier previews are subject to the existing preview terms of your customer agreements. As these features are still in development, their availability and capabilities may change over time.
+-If Cowork isn't visible in Microsoft Admin Center Agent management, ensure that the admin account is also enrolled in Frontier (Copilot -> Settings -> Frontier).
+-This is a preview feature.
+-Preview features may have restricted functionality. These features are available before an official release so that customers can get early access and provide feedback.
+-For more information, go to our
+-Microsoft Product Terms
+-.
+ Microsoft 365 Copilot Cowork supports plugins that add skills and connectors to extend what Cowork can do. As an IT administrator, you control which plugins are available in your organization, how they're deployed, and who can use them. This article covers plugin governance from an admin perspective.
+ For information on how users browse and use plugins, see
+ Use plugins with Cowork
++and
++Customize Copilot Cowork
+ . For information on building plugins, see
+ Build plugins for Cowork
+ .
+@@ -60,25 +49,23 @@ Microsoft 365 admin center
+ .
+ Select
+-Copilot
+->
+ Agents
+ >
+-All agents
++Tools
+ .
+ Find the plugin you want to deploy. You can search by name or browse the available plugins.
+ Select the plugin to open its details.
+-Under
+-Deploy to
++Select
++Installed for
+ , select
+-Entire organization
++All users
+ or
+ Specific users/groups
+ .
+ Select
+-Deploy
+-.
+-When you deploy a plugin, it's automaticall
+```
+
+---
+
+### 19. Copilot Cowork FAQ
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq
+**Section:** Copilot Cowork
+**Classification:** HIGH (Feature availability)
+
+**What Changed:**
+```diff
+--- +++ @@ -19,22 +19,9 @@ Access to this page requires authorization. You can try
+ changing directories
+ .
+-Cowork common questions (Frontier)
++Copilot Cowork common questions
+ Feedback
+ Summarize this article for me
+-[This article is prerelease documentation and is subject to change.]
+-Important
+-You need to be part of the
+-Frontier preview program
+-to get
+-early access
+-to Microsoft 365 Copilot Cowork. Frontier connects you directly with Microsoft's latest AI innovations. Frontier previews are subject to the existing preview terms of your customer agreements. As these features are still in development, their availability and capabilities may change over time.
+-If Cowork isn't visible in Microsoft Admin Center Agent management, ensure that the admin account is also enrolled in Frontier (Copilot -> Settings -> Frontier).
+-This is a preview feature.
+-Preview features may have restricted functionality. These features are available before an official release so that customers can get early access and provide feedback.
+-For more information, go to our
+-Microsoft Product Terms
+-.
+ Find answers to common questions about Microsoft 365 Copilot Cowork.
+ What is Cowork?
+ Cowork is available in Microsoft 365 Copilot. It carries out tasks on your behalf. For example, it can send emails, schedule meetings, create documents, post in Teams, and handle multi-step tasks across your Microsoft 365 environment.
+@@ -323,6 +310,22 @@ view, or from the
+ Schedule
+ section of the side panel.
++Can Cowork use my local browser?
++Yes. Cowork can complete web tasks for you in Microsoft Edge on your device, using the sites you're already signed in to. The browser tab runs on your machine, your credentials and cookies stay on your device, and Cowork uses only the access you already have. If Cowork hits a sign-in step it can't complete on its own, it hands the browser back to you to finish. For details, see
++Use the local browser with Cowork
++.
++Can I generate images with Cowork?
++Yes. Ask Cowork 
+```
+
+---
+
+### 20. Create communication compliance policies
+
+**URL:** https://learn.microsoft.com/en-us/purview/communication-compliance-policies
+**Section:** Communication Compliance
+**Classification:** HIGH (Compliance features)
+
+**Affected Controls:**
+- Control 3.4: Control 3.4: Communication Compliance Monitoring
+  - File: `controls/pillar-3-compliance/3.4-communication-compliance.md`
+- Control 3.5: Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications
+  - File: `controls/pillar-3-compliance/3.5-finra-2210-compliance.md`
+
+**Affected Playbooks:**
+- ℹ️ `playbooks/control-implementations/3.4/powershell-setup.md` (HIGH)
+
+**What Changed:**
+```diff
+--- +++ @@ -25,7 +25,7 @@ Important
+ Microsoft Purview Communication Compliance
+ provides the tools to help organizations detect regulatory compliance (for example, SEC or FINRA) and business conduct violations such as sensitive or confidential information, harassing or threatening language, and sharing of adult content. Communication Compliance is built with privacy by design. Usernames are pseudonymized by default, role-based access controls are built in, investigators are opted in by an admin, and audit logs are in place to help ensure user-level privacy.
+-Policies
++Create and manage policies
+ Create Communication Compliance policies for Microsoft 365 organizations in the Microsoft Purview portal. Communication Compliance policies define which communications and users are subject to review in your organization, set custom conditions the communications must meet, and specify who should do reviews.
+ Users assigned the
+ Communication Compliance Admins
+@@ -36,7 +36,7 @@ You can't rename policies, but you can delete them when no longer needed.
+ Important
+ PowerShell isn't supported for creating and managing Communication Compliance policies. To create and manage these policies, use the policy management controls in the Communication Compliance solution.
+-Policy templates
++Choose a policy template
+ Policy templates are predefined policy settings that you can use to quickly create policies to address common compliance scenarios. Each of these templates has differences in conditions and scope. All templates use the same types of detection signals. You can choose from the following policy templates:
+ Area
+ Policy Template
+@@ -88,12 +88,12 @@ User-reported messages
+ policy is implemented for your organization when you purchase a license that includes Microsoft Purview Communication Compliance. However, this feature can take up to 30 days to become available after license purchase.
+ As part of a layered defense to detect and remediate inappropriate messages in your organiza
+```
+
+---
+
+### 21. Investigate and remediate alerts
+
+**URL:** https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate
+**Section:** Communication Compliance
+**Classification:** HIGH (UI element names)
+
+**What Changed:**
+```diff
+--- +++ @@ -49,8 +49,8 @@ May 19
+ to change the time period if you don't want to use the default setting of
+ 1 year
+-.
+-Learn more about the Policy Match Preservation setting
++. For details, see
++Policy Match Preservation setting
+ .
+ To investigate issues detected by your policies, review policy matches and alerts. The Communication Compliance area provides several features to help you quickly investigate policy matches and alerts:
+ Policies page
+@@ -104,8 +104,8 @@ Pending
+ tab, summarize a lengthy message by using Microsoft Copilot in Microsoft Purview, or review the history of closed policy matches on the
+ Resolved
+-tab.
+-Learn more about remediation actions
++tab. For details, see
++Review and remediate policy matches and alerts
+ .
+ Alerts page
+ Go to
+@@ -120,7 +120,7 @@ Reports
+ to display Communication Compliance report widgets. Each widget provides an overview of Communication Compliance activities and statuses, including access to deeper insights about policy matches and remediation actions.
+ Tip
+-Learn how to analyze interactions entered into generative AI applications
++Analyze interactions entered into generative AI applications
+ .
+ Tips for quickly reviewing policy matches on the Pending or Resolved tab
+ When you select a message to review on the
+@@ -155,7 +155,9 @@ You can also specify a preservation period when you create or edit a policy. The preservation period you select within a policy takes precedence over the global
+ Policy Match Preservation
+ setting.
+-When the setting goes into effect on April 1, 2025:
++When the global
++Policy Match Preservation
++setting goes into effect on April 1, 2025:
+ The value in the
+ Policy Match Preservation
+ setting applies to all existing policy matches. The system automatically deletes policy matches that are older than the selected time period. For example, if the
+@@ -178,6 +180,7 @@ Change the time period for the global
+ Policy Match Preservation
+ setting
++To change the global policy match preservation period, complet
+```
+
+---
+
+### 22. Copilot extensibility overview
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/
+**Section:** Copilot Extensibility
+**Classification:** HIGH (Feature availability)
+
+**Affected Controls:**
+- Control 4.13: Control 4.13: Copilot Extensibility and Agent Operations Governance
+  - File: `controls/pillar-4-operations/4.13-extensibility-governance.md`
+- Control 1.13: Control 1.13: Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)
+  - File: `controls/pillar-1-readiness/1.13-extensibility-readiness.md`
+- Control 2.14: Control 2.14: Declarative and SharePoint Agents Governance
+  - File: `controls/pillar-2-security/2.14-declarative-agents-governance.md`
+- Control 2.16: Control 2.16: Federated Copilot Connector and Model Context Protocol (MCP) Governance
+  - File: `controls/pillar-2-security/2.16-federated-connector-mcp-governance.md`
+- Control 2.13: Control 2.13: Plugin and Graph Connector Security Governance
+  - File: `controls/pillar-2-security/2.13-plugin-connector-security.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -25,7 +25,7 @@ Reference
+ Microsoft 365 Agents Toolkit
+ Microsoft 365 Agents SDK
+-Work IQ API (preview)
++Work IQ API
+ Microsoft 365 Copilot APIs
+-Interactive Demo (preview)
++Interactive Demo
+ Microsoft Agent 365
+```
+
+---
+
+### 23. Adaptive cards in Copilot Studio topics
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-ask-a-question#add-an-adaptive-card
+**Section:** Copilot Studio
+**Classification:** HIGH (UI element names)
+
+**What Changed:**
+```diff
+--- +++ @@ -24,10 +24,10 @@ Summarize this article for me
+ A
+ Question
+-node prompts a user for information and stores their response in a variable for use later on in the conversation.
+-The node allows you to choose the type of information to collect, such as a multiple-choice answer, a prebuilt entity, or a custom entity.
++node prompts a user for information and stores their response in a variable for use later in the conversation.
++The node offers options for the type of information to collect, such as a multiple-choice answer, a prebuilt entity, or a custom entity.
+ Question behavior properties
+-allow you to control the behavior of the node, such as what to do when the user enters an invalid response.
++let you control the behavior of the node, such as what to do when the user enters an invalid response.
+ Like
+ Message
+ nodes,
+@@ -97,9 +97,9 @@ question properties
+ .
+ Configure question properties
+-The
++Use the
+ Question properties
+-panel is where you can adjust behaviors like prompting, validation, and interruptions.
++panel to adjust behaviors like prompting, validation, and interruptions.
+ To open the
+ Question properties
+ panel, select the three dots (
+@@ -119,7 +119,7 @@ (available for voice-enabled agents only)
+ Hold and resume
+ Configure question behavior
+-Question behavior properties allow you to control whether the agent can skip the question and how it responds to an invalid response.
++Question behavior properties control whether the agent can skip the question and how it responds to an invalid response.
+ Skip behavior
+ Skip behavior
+ determines what the agent should do if the question node's variable already has a value from earlier in the conversation.
+@@ -147,24 +147,34 @@ Customize
+ , and then enter the new prompt.
+ Configure entity recognition
+-Entity recognition properties allow you to expand validation beyond the default rules for the entity to collect, and to choose what happens when your agent isn't able to elicit a valid entity value from the u
+```
+
+---
+
+### 24. Agent management in Microsoft 365 admin center
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview?view=o365-worldwide
+**Section:** Agent Governance
+**Classification:** HIGH (Policy language)
+
+**Affected Controls:**
+- Control 4.13: Control 4.13: Copilot Extensibility and Agent Operations Governance
+  - File: `controls/pillar-4-operations/4.13-extensibility-governance.md`
+- Control 4.5: Control 4.5: Copilot Usage Analytics and Adoption Reporting
+  - File: `controls/pillar-4-operations/4.5-usage-analytics.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -53,15 +53,33 @@ The Microsoft Frontier program gives organizations early access to innovative and emerging AI capabilities in Microsoft 365 before those features reach general availability (GA). Frontier previews are subject to the existing preview terms of your customer agreements. For more information, see
+ Get started with the Microsoft Frontier program
+ .
+-Prerequisites
++Prerequisites for agent management
+ Before you can manage agents in the Microsoft 365 admin center, confirm the following requirements are met:
+-Your organization has the required Microsoft 365 subscription and licenses for either Microsoft 365 Copilot or Microsoft Agent 365 capabilities.
+-Users who create, publish, or use agents have the appropriate licenses assigned.
+-Youâre assigned an administrator role that includes permissions to manage settings for either Microsoft 365 Copilot or Microsoft Agent 365 in the Microsoft 365 admin center.
++Your organization has the required subscription and licenses for either Microsoft 365, Microsoft 365 Copilot, or Microsoft Agent 365.
++Users at your organization that create, publish, or use agents have the appropriate licenses assigned.
++Youâre assigned an administrator role that includes permissions to manage settings for Microsoft 365, Microsoft 365 Copilot, or Microsoft Agent 365 in the Microsoft 365 admin center.
+ For more information, see the following resources:
++Licensing for agent management
++Agent management roles and permissions
++Licensing for agent management
++The following licensing options include agents that can be managed in Microsoft 365 admin center:
++Microsoft 365 plans
++Microsoft 365 (All Suites) includes Copilot Chat. Copilot Chat provides web data agents.
++Microsoft 365 (E7) includes Microsoft 365 E5, Microsoft 365 Copilot, Microsoft Agent 365, and Microsoft Entra Suite.
++Microsoft 365 Copilot
++This license can be added to your Microsoft 365 license (E3, E5). It's included with your Microsoft 365 license (E7). This optio
+```
+
+---
+
+### 25. Microsoft Entra Agent ID documentation
+
+**URL:** https://learn.microsoft.com/en-us/entra/agent-id/
+**Section:** Agent Governance
+**Classification:** HIGH (Feature availability)
+
+**Affected Controls:**
+- Control 2.17: Control 2.17: Cross-Tenant Agent Federation (MCP and Entra Agent ID)
+  - File: `controls/pillar-2-security/2.17-cross-tenant-agent-federation.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -1,46 +1,57 @@-Microsoft Entra Agent ID
+-Protect agent identities and secure their access to applications and resources. Part of Microsoft Agent 365, Microsoft Entra Agent ID and the Microsoft agent identity platform provide the foundation for secure and compliant AI agent deployments in the enterprise.
+-Learn about Microsoft Entra Agent ID
+-Get started with Microsoft Entra Agent ID
+-Learn about how Microsoft Entra Agent ID and Agent 365 work together so you can observe, govern, and secure agents across your organization.
+-Manage agents
+-Learn how to manage all aspects of agents in your ecosystem, such as assigning sponsors and requesting access packages.
++Microsoft Entra Agent ID documentation
++Secure access for AI agents with enterprise-grade access management, protection, and governance. Integrate AI agents with enterprise workflows, apply Zero Trust principles, and govern agent access at scale using the identity and network access capabilities of Microsoft Entra.
++Overview
++What is Microsoft Entra Agent ID?
++Architecture
++Plan your agent identity architecture
++Concept
++Security for AI overview
++What's new
++What's new in Agent ID
++Manage, govern, and protect
++Microsoft Entra Agent ID helps you manage, govern, and protect AI agent identities across your organization.
+ Manage agent identities
++Create an agent blueprint
++Create agent identities
++Manage owners and sponsors
+ Govern agent lifecycles
+-Ensure the lifecycle of your agents is governed with access reviews, entitlement management, and sponsor accountability.
+-Get started
++ID Governance for agents
++Access packages for agents
++Maintain agent sponsors and lifecycle
+ Protect agent access to resources
+-Apply the same Zero Trust principles and access controls to your agents as you do for your users and workloads.
+-Security for AI overview
+-Build on the Microsoft agent identity platform
+-Build agents with enterprise-ready identities using the Microsoft agent identity platform.
++Conditional Access for age
+```
+
+---
+
+### 26. Conditional Access for agent identities
+
+**URL:** https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id
+**Section:** Agent Governance
+**Classification:** HIGH (Feature availability)
+
+**Affected Controls:**
+- Control 2.3: Control 2.3: Conditional Access Policies for Copilot Workloads
+  - File: `controls/pillar-2-security/2.3-conditional-access-policies.md`
+- Control 2.17: Control 2.17: Cross-Tenant Agent Federation (MCP and Entra Agent ID)
+  - File: `controls/pillar-2-security/2.17-cross-tenant-agent-federation.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -32,6 +32,7 @@ Guide to managing agent identities across your organization:
+ Manage agent identities in your organization
+ .
++How to target agent identities in Conditional Access
+ Configure policies for autonomous agent access
+ How Conditional Access evaluates agent access requests
+ To access a corporate resource such as SharePoint file, MCP servers, or Open API services, a user or agent first requests an access token from Microsoft Entra ID.
+@@ -70,32 +71,22 @@ In this flow, the agent can't reuse the user's original token because it was issued for a different audience. Instead, the agent uses the OBO flow to exchange tokens with Microsoft Entra ID, obtaining a new token scoped to the target resource. This token exchange is also evaluated by Conditional Access, letting admins enforce granular controls over which resources agents can access on behalf of the user.
+ Because the user is the subject in this flow, Conditional Access policies target
+ users and groups
+-, not agent identities. For step-by-step policy configuration, see
+-Conditional Access for agents operating on-behalf-of a user
+-.
++, not agent identities.
+ Agents acting as an application
+ Agents might access resources without a signed-in user. In this case the agent accesses the resource with its own identity. This flow is also known as client credentials flow, or app only access. All types of agents might use this flow. For more information about how agents authenticate with their own identity, see
+ Agent OAuth flows: Autonomous apps
+ .
+-The following diagram shows the application only access authorization flow.
+ This flow applies in the following common scenarios:
+ Autonomous agents that operate independently
+-:
+-These agents run in the background, respond to events, or run on a schedule.
+-For example, an agent that generates a daily report and sends the result to a group of employees. In this scenario, there's no user present, and the agent operates on its own.
++run in the background, respond 
+```
+
+---
+
+### 27. Identity Protection for agents
+
+**URL:** https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents
+**Section:** Agent Governance
+**Classification:** HIGH (Feature availability)
+
+**What Changed:**
+```diff
+--- +++ @@ -19,7 +19,7 @@ Access to this page requires authorization. You can try
+ changing directories
+ .
+-ID Protection for agents (Preview)
++ID Protection for agents
+ Feedback
+ Summarize this article for me
+ As organizations adopt, build, and deploy autonomous AI agents, the need to monitor and protect those agents becomes critical. Microsoft Entra ID Protection helps protect your organization by automatically detecting and responding to identity-based risks on agents that have agent identities provided by
+@@ -35,59 +35,48 @@ Conditional Access Administrator
+ role assigned.
+ Licensing
+-Microsoft Entra Agent ID is a product within Microsoft Entra that provides the platform for creating and managing agent identities and agent identity blueprints. Agent ID is available for all Microsoft Entra customers.
+-Integration with
+-Microsoft Agent 365
+-enables agents to operate across Microsoft 365 services and enterprise workflows, which requires a
+-Microsoft Agent 365
+-license for each user. For pricing details, see
+-Microsoft Agent 365 plans and pricing
+-.
+-Technical requirements that enable the security features for agents within Microsoft Entra require
+-Microsoft 365 E5
+-or the following licensing:
+-Conditional Access for agents
+-: Microsoft Entra ID P1
+-ID Protection for agents
+-: Microsoft Entra ID P2
+-ID Governance for agents
+-: Microsoft Entra ID P1
+-Network controls for agents
+-: Microsoft Entra Internet Access, included in Microsoft Entra Suite or licensed separately. For more information, see
+-What is Global Secure Access
++Starting soon, ID Protection for agents will require a
++Microsoft Agent 365 license
++to extend protection to agents through
++Microsoft Entra Agent ID
+ .
+ How it works
+-Because agents can operate autonomously and on behalf of (OBO) a user, they can display unique sign-in behavior. Agents can take initiative, interact with sensitive data, and operate at scale. Microsoft Entra ID Protection for agents is designed to identify and mitigate risks asso
+```
+
+---
+
+### 28. Microsoft Entra ID Governance for agent identities
+
+**URL:** https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview
+**Section:** Agent Governance
+**Classification:** HIGH (UI element names)
+
+**What Changed:**
+```diff
+--- +++ @@ -25,26 +25,19 @@ Microsoft Entra allows you to ensure that the right people have the right access to the right apps and services at the right time. With the addition of the Microsoft agent identity platform, managing the access rights of agents in the same way is just as important in the governance lifecycle of your organization's identities. The Microsoft agent identity platform introduces the concept of Agent Identities (IDs). Agent identities are accounts within Microsoft Entra ID that provide unique identification and authentication capabilities for AI agents.
+ This allows agent identities to be governed with Microsoft Entra features in the same style as you would govern human identities. With Agent identities, you can govern and manage the identity and access lifecycle of agents, ensuring the agents have a responsible person providing oversight throughout the agent lifecycle and agent's access does not persist longer than it is needed. This article provides an overview of how Microsoft Entra can be utilized to govern agent identities.
+ License requirements
+-Microsoft Entra Agent ID is a product within Microsoft Entra that provides the platform for creating and managing agent identities and agent identity blueprints. Agent ID is available for all Microsoft Entra customers.
+-Integration with
++Using
++Microsoft Entra ID Governance
++for agent identities requires one of the following license plans:
++Microsoft 365 E7
++, which includes Agent 365 and Microsoft Entra Suite, to provide governance of user and agent identities.
+ Microsoft Agent 365
+-enables agents to operate across Microsoft 365 services and enterprise workflows, which requires a
++license paired with at least Microsoft Entra P1 or Microsoft 365 E3.
++For more information, see
++Microsoft Agent 365 plans and pricing
++. For the full list of agent-specific capabilities, refer to the
+ Microsoft Agent 365
+-license for each user. For pricing details, see
+-Microsoft Agent 365 plans and pricing
+-.
+-Technic
+```
+
+---
+
+### 29. Create insider risk policies
+
+**URL:** https://learn.microsoft.com/en-us/purview/insider-risk-management-policies
+**Section:** Insider Risk Management
+**Classification:** HIGH (Feature availability)
+
+**Affected Controls:**
+- Control 2.10: Control 2.10: Insider Risk Detection for Copilot Usage Patterns
+  - File: `controls/pillar-2-security/2.10-insider-risk-detection.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -241,7 +241,9 @@ Policy triggers aren't working, or policy trigger requirements aren't properly configured
+ . Policy functionality might depend on other services or configuration requirements to effectively detect triggering events to activate risk score assignment to users in the policy. These dependencies might include issues with connector configuration, Microsoft Defender for Endpoint alert sharing, or data loss prevention policy configuration settings.
+ Volume limits are nearing or over limits
+-. Insider Risk Management policies use numerous Microsoft 365 services and endpoints to aggregate risk activity signals. Depending on the number of users in your policies, volume limits might delay identification and reporting of risk activities. Learn more about these limits in the Policy template limits section of this article.
++. Insider Risk Management policies use numerous Microsoft 365 services and endpoints to aggregate risk activity signals. Depending on the number of users in your policies, volume limits might delay identification and reporting of risk activities. Learn more about these limits in the
++Policy template limits
++section.
+ To quickly view the health status for a policy, go to the
+ Policy
+ tab and check the
+@@ -359,7 +361,9 @@ Check that your HR connector is configured correctly and sending data, or come back and check the policy status.
+ You're approaching the maximum limit of users being actively scored for this policy template
+ All policy templates
+-Each policy template has a maximum number of included users. See the template limit section details.
++Each policy template has a maximum number of included users. See the
++Policy template limits
++section for details.
+ Review the users in the Users tab and remove any users who don't need to be scored anymore.
+ Your organization doesn't have a Microsoft Defender for Endpoint subscription
+ - Security policy violations
+@@ -373,7 +377,7 @@ Insider Risk Management
+ solution in the Microsoft Purview
+```
+
+---
+
+### 30. Adaptive Protection
+
+**URL:** https://learn.microsoft.com/en-us/purview/insider-risk-management-adaptive-protection
+**Section:** Insider Risk Management
+**Classification:** HIGH (Feature availability)
+
+**Affected Controls:**
+- Control 2.3: Control 2.3: Conditional Access Policies for Copilot Workloads
+  - File: `controls/pillar-2-security/2.3-conditional-access-policies.md`
+- Control 2.10: Control 2.10: Insider Risk Detection for Copilot Usage Patterns
+  - File: `controls/pillar-2-security/2.10-insider-risk-detection.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -128,7 +128,9 @@ past activity detection
+ window (optional). Conditions for user activity are additive. The insider risk level is assigned to a user only if all the conditions are met.
+ Past activity detection
+-This insider risk level setting determines how many days back Adaptive Protection examines to detect whether a user meets the conditions defined by any of the insider risk levels. The default setting is 7 days, but you can choose between 5 and 30 days of previous activity to apply insider risk level conditions. This setting only applies to insider risk levels that are based on a user's daily activity and excludes insider risk levels based on alerts.
++The
++Past activity detection
++setting determines how many days back Adaptive Protection examines to detect whether a user meets the conditions defined by any of the insider risk levels. The default setting is 7 days, but you can choose between 5 and 30 days of previous activity to apply insider risk level conditions. This setting only applies to insider risk levels that are based on a user's daily activity and excludes insider risk levels based on alerts.
+ The following example illustrates how past activity detection settings and insider risk levels interact to determine if a user's past activity is in-scope:
+ Elevated risk level
+ setting: User performs at least three sequences, each with a high severity risk score (67 to 100)
+@@ -143,7 +145,9 @@ User has 3 high severity sequences on Day T-3
+ Yes
+ Insider risk level timeframe
+-This insider risk level setting determines how long an insider risk level remains assigned to a user before it's automatically reset. The default setting is 7 days, but you can choose between 5 and 30 days before resetting the insider risk level for a user.
++The
++Insider risk level timeframe
++setting determines how long an insider risk level remains assigned to a user before it's automatically reset. The default setting is 7 days, but you can choose between 5 and 30 days before r
+```
+
+---
+
+### 31. Create analytics rules
+
+**URL:** https://learn.microsoft.com/en-us/azure/sentinel/create-analytics-rules
+**Section:** Microsoft Sentinel
+**Classification:** HIGH (Portal references)
+
+**What Changed:**
+```diff
+--- +++ @@ -38,7 +38,7 @@ to find and install the recommended rules specific to that recommendation. For more information, see
+ SOC optimization usage flow
+ .
+-This article describes the process of creating an analytics rule from scratch, including using the
++This section describes the process of creating an analytics rule from scratch, including using the
+ Analytics rule wizard
+ . It includes screenshots and directions to access the wizard in both the Azure portal and the Defender portal.
+ Important
+@@ -66,7 +66,9 @@ Important
+ Make sure that your query returns the
+ TimeGenerated
+-column, as scheduled analytics rules use it as the reference for the lookback period. This means that the rule only evaluates records where the
++column, as scheduled analytics rules use it as the reference for the lookback period. Because
++TimeGenerated
++serves as the lookback reference, the rule only evaluates records where the
+ TimeGenerated
+ value falls within the specified lookback window.
+ Build and test your queries in the
+@@ -78,7 +80,7 @@ Kusto Query Language in Microsoft Sentinel
+ Best practices for Kusto Query Language queries
+ Create your analytics rule
+-This section describes how to create a rule by using the Azure or Defender portals.
++The following procedure explains how to create a scheduled analytics rule by using the Azure portal or the Defender portal.
+ Get started creating a scheduled query rule
+ To get started, go to the
+ Analytics
+@@ -149,7 +151,7 @@ Defender portal
+ Azure portal
+ Define the rule logic
+-The next step is to set the rule logic, which includes adding the Kusto query that you created.
++Set the rule logic, including adding the Kusto query that you created.
+ Enter the rule query and alert enhancement configuration.
+ Setting
+ Description
+@@ -162,7 +164,7 @@ Entity mapping
+ and define up to 10 entity types recognized by Microsoft Sentinel onto fields in your query results. This mapping integrates the identified entities into the
+ Entities
+-field in your alert
+```
+
+---
+
+### 32. Create workbooks
+
+**URL:** https://learn.microsoft.com/en-us/azure/sentinel/monitor-your-data
+**Section:** Microsoft Sentinel
+**Classification:** HIGH (Compliance features)
+
+**Affected Controls:**
+- Control 4.11: Control 4.11: Microsoft Sentinel Integration for Copilot Events
+  - File: `controls/pillar-4-operations/4.11-sentinel-integration.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -36,6 +36,7 @@ unified security operations experience offered by Microsoft Defender
+ .
+ Prerequisites
++Before you create or use workbooks, make sure you meet the following prerequisites:
+ You must have at least
+ Workbook reader
+ or
+@@ -98,7 +99,7 @@ For more information, see:
+ Create interactive reports with Azure Monitor Workbooks
+ Tutorial: Visual data in Log Analytics
+-Create new workbook
++Create a new workbook
+ Create a workbook from scratch in Microsoft Sentinel.
+ In Microsoft Sentinel, select
+ Threat management > Workbooks
+@@ -168,13 +169,15 @@ You can delete both saved templates and customized workbooks from the
+ My workbooks
+ tab. Templates themselves can't be deleted.
++Warning
++Deleting a workbook permanently removes the workbook resource and any customizations you made to the template. This action can't be undone. The original template remains available.
+ To delete a workbook, select the workbook in the
+ My workbooks
+ tab, and then select
+ Delete
+-. This action removes the workbook resource and any changes you made to the template. The original template remains available.
++.
+ Workbook recommendations
+-This section reviews basic recommendations we have for using workbooks with Microsoft Sentinel.
++The following recommendations help you use Microsoft Sentinel workbooks effectively.
+ Add Microsoft Entra ID workbooks
+ If you use Microsoft Entra ID with Microsoft Sentinel, we recommend that you install the Microsoft Entra solution for Microsoft Sentinel and use the following workbooks:
+ Microsoft Entra sign-ins
+@@ -198,13 +201,15 @@ or
+ CommonSecurityLog
+ table, on any other firewall.
++The query compares daily security event counts between the current week and the previous week, so you can quickly spot unusual changes in event volume.
+ // week over week query
+ SecurityEvent
+ | where TimeGenerated > ago(14d)
+ | summarize count() by bin(TimeGenerated, 1d)
+ | extend Week = iff(TimeGenerated>ago(7d), "This Week", "Last Week"), TimeGenerated = iff(TimeGen
+```
+
+---
+
+### 33. Get ready for Copilot with SharePoint Advanced Management
+
+**URL:** https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management
+**Section:** SharePoint Administration
+**Classification:** HIGH (UI element names)
+
+**Affected Controls:**
+- Control 1.13: Control 1.13: Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)
+  - File: `controls/pillar-1-readiness/1.13-extensibility-readiness.md`
+- Control 1.3: Control 1.3: Restricted SharePoint Search Configuration
+  - File: `controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -38,8 +38,7 @@ Receive actionable recommendations for remediation
+ Track progress over time with recurring assessments
+ This hub helps make content governance accessible and actionable, even for administrators who might not have deep technical expertise yet.
+-To access the Content Management Assessment hub
+-:
++Access the Content Management Assessment hub
+ In the SharePoint admin center, in the navigation pane, select
+ Advanced Management
+ .
+@@ -52,8 +51,7 @@ Site lifecycle management
+ Site lifecycle management policies help reduce content sprawl by automating the process of ensuring that your organization's SharePoint sites are well governed.
+ When you set up your site lifecycle management policies, the system automatically identifies potential problems. You can configure enforcement actions and email notifications that ask site owners or administrators to take action.
+-To view or create site lifecycle management policies
+-:
++View or create site lifecycle management policies
+ In the SharePoint admin center, in the navigation pane, select
+ Site lifecycle management
+ .
+@@ -66,8 +64,8 @@ , select
+ Open
+ .
+-Site lifecycle management policies include
+-:
++Site lifecycle management policies
++Site lifecycle management policies include the following:
+ Site ownership policies
+ that support effective site management and reduce the risk of ownerless sites. You can set minimum owner or administrator counts and automate notifications when sites don't meet the criteria.
+ Inactive site policies
+@@ -86,8 +84,8 @@ You can manage archived sites on the
+ Archived sites
+ page.
+-To set up and use Microsoft 365 Archive
+-, see the following resources:
++Set up and use Microsoft 365 Archive
++See the following resources:
+ Set up Microsoft 365 Archive
+ Manage Microsoft 365 Archive
+ End-user experience in Microsoft 365 Archive
+@@ -96,8 +94,7 @@ Adjust sharing settings for SharePoint and OneDrive
+ By default, SharePoint sets sharing settings to the most permissive option. You can set s
+```
+
+---
+
+### 34. AI in SharePoint (preview)
+
+**URL:** https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started
+**Section:** SharePoint Administration
+**Classification:** HIGH (Feature availability)
+
+**What Changed:**
+```diff
+--- +++ @@ -19,81 +19,39 @@ Access to this page requires authorization. You can try
+ changing directories
+ .
+-Get started with AI in SharePoint (preview)
++Get started with Copilot in SharePoint (preview)
+ Feedback
+ Summarize this article for me
+ Note
+-This article applies to the preview version of AI capabilities in SharePoint (previously referred to as Knowledge Agent).
+-AI in SharePoint isn't currently supported in Microsoft 365 GovernmentâGCC, GCC High, DoD, Office 365 air-gapped cloud environments, or Microsoft 365 operated by 21Vianet.
++This article applies to the preview version of Copilot in SharePoint (previously referred to as AI in SharePoint).
++Microsoft 365 GovernmentâGCC, GCC High, DoD, Office 365 air-gapped cloud environments, and Microsoft 365 operated by 21Vianet don't currently support Copilot in SharePoint.
++Copilot in SharePoint helps you do more with your content. Ask questions, run workflows, and create SharePoint sites, pages, lists, libraries, interactive reports, and Office files by using natural language. Starting in mid-June 2026, these capabilities roll out as an opt-out preview and become available automatically to all users with a Microsoft 365 Copilot license.
+ Important
+-AI in SharePoint capabilities require sites to be explicitly opted in to the AI in SharePoint public preview, or for the tenant to be opted in at the tenant level. Sites that are not opted in do not receive preview benefits.
++Copilot in SharePoint is changing from an opt-in preview to an opt-out preview. No administrator action is required to receive it. If you previously opted out your tenant or specific sites, those settings are honored.
+ Prerequisites
+-To use AI in SharePoint during Public Preview,
+-all
+-of the following requirements must be met.
++To use Copilot in SharePoint during the preview:
+ Microsoft 365 Copilot license:
+-Users must have an active Microsoft 365 Copilot license. AI in SharePoint is included with this license during Public Preview and at Gen
+```
+
+---
+
+### 35. Restricted Content Discovery
+
+**URL:** https://learn.microsoft.com/en-us/sharepoint/restricted-content-discovery
+**Section:** SharePoint Administration
+**Classification:** HIGH (Feature availability)
+
+**Affected Controls:**
+- Control 1.7: Control 1.7: SharePoint Advanced Management Readiness for Copilot
+  - File: `controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -22,106 +22,166 @@ Restrict discovery of SharePoint sites and content
+ Feedback
+ Summarize this article for me
+-For organizations onboarding to Microsoft 365 Copilot, maintaining strong data governance controls for SharePoint content is critical to deploying Copilot in a safe manner. Sites identified with the highest risk of oversharing can use Restricted Content Discovery to protect content while taking time to ensure that permissions are accurate and well-managed.
+-With Restricted Content Discovery, organizations can limit the ability of end users to search for files from specific SharePoint sites. Enabling Restricted Content Discovery for each site prevents the sites from surfacing in organization-wide search and Microsoft 365 Copilot Business Chat, unless a user had a recent interaction.
+-Restricted Content Discovery is a site-level setting that needs to be propagated to the search index, a large number of transactions could lead to a long queue in the ingestion pipeline and higher update latency times.
+-While child content is hidden by default, users in your organization can still discover files they own or recently interacted with. End users can still find relevant content they need for their day-to-day tasks, even if Restricted Content Discovery is applied to the parent site.
+-Restricted Content Discovery doesn't affect searches originating from a site context or other intelligent features such as Microsoft 365 Feed and Recommendations.
++Organizations preparing for Microsoft 365 Copilot often need time to review SharePoint sites, validate permissions, and implement governance controls before making content broadly discoverable. Restricted Content Discovery (RCD) helps you limit discovery of content from specific SharePoint sites while those reviews are taking place.
++When you enable Restricted Content Discovery for a site, content from that site doesn't appear in organization-wide search and Microsoft 365 Copilot experiences unless a user recently 
+```
+
+---
+
+### 36. SharePoint Admin Agent (Content Governance Agent)
+
+**URL:** https://learn.microsoft.com/en-us/sharepoint/content-governance-agent
+**Section:** SharePoint Administration
+**Classification:** HIGH (Compliance features)
+
+**Affected Controls:**
+- Control 1.7: Control 1.7: SharePoint Advanced Management Readiness for Copilot
+  - File: `controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -72,6 +72,12 @@ Microsoft 365 Backup
+ , and
+ version history
++Manage data residency compliance
++with
++Multi-Geo capabilities
++, such as cross-geography content move status reports (
++Preview
++)
+ SharePoint Admin Agent prerequisites
+ Your organization must have SharePoint Advanced Management. See
+ SharePoint Advanced Management prerequisites
+@@ -80,20 +86,23 @@ SharePoint Advanced Management Administrator
+ role assigned in Microsoft Entra ID.
+ Open the SharePoint Admin Agent
+-Open the SharePoint Admin Agent in Microsoft 365 Copilot, the SharePoint admin center, or Microsoft Teams.
+-SharePoint Admin Agent in Microsoft 365 Copilot
++Open the SharePoint Admin Agent by using any of the following methods:
++Open the SharePoint Admin Agent in the Microsoft 365 Copilot app
++Access content governance skills for Copilot in the SharePoint admin center
++Open the SharePoint Admin Agent in Microsoft Teams
++Open the SharePoint Admin Agent in Microsoft 365 Copilot
+ In the Microsoft 365 Copilot app, expand
+ Agents
+ , and search for the SharePoint Admin Agent.
+-After adding it, you can use the agent in the Copilot app.
+-Prompts for Copilot in the SharePoint admin center
+-In the SharePoint admin center, select the
++Use the agent in the Copilot app.
++Access content governance skills in Copilot in the SharePoint admin center
++Copilot in the SharePoint admin center includes content governance skills.
++Select the
+ Copilot
+-button.
+-Select the
++button, and then select the
+ View prompts
+-button to view and use Governance skills.
+-SharePoint Admin Agent in Microsoft Teams
++button to view and use governance skills.
++Open the SharePoint Admin Agent in Microsoft Teams
+ In Microsoft Teams, select
+ Apps
+ , and then search for
+@@ -101,20 +110,39 @@ .
+ Get started with example prompts
+ To help you get started, the SharePoint Admin Agent suggests prompts that you can try in your environment.
+-Here are some more example prompts:
++As you submit a question, the SharePoint Admin Agent responds 
+```
+
+---
+
+### 37. Zero Trust for Microsoft 365 Copilot
+
+**URL:** https://learn.microsoft.com/en-us/security/zero-trust/copilots/zero-trust-microsoft-365-copilot
+**Section:** Zero Trust and Security Architecture
+**Classification:** HIGH (Policy language)
+
+**What Changed:**
+```diff
+--- +++ @@ -155,14 +155,14 @@ .
+ Govern AI apps and data for regulatory compliance
+ Getting started with E3
+-First, apply oversharing controls that work with Copilot, as appropriate for your environment. These controls help you protect data immediately. After doing the longer-term work of classifying data and applying sensitivity labels and protection, be sure to revisit the oversharing controls you applied initially to ensure these are still appropriate. Review the
++First, apply oversharing controls that work with Copilot, as appropriate for your environment. These controls help you protect data immediately. After doing the longer-term work of classifying data and applying sensitivity labels and protection, revisit the oversharing controls you applied initially to ensure they're still appropriate. Review the
+ oversharing illustration
+ and
+ download the blueprint to prevent oversharing
+ .
+ Next, invest in data classification and protection with Microsoft Purview capabilities.
+ Sensitivity labels
+-form the cornerstone of protecting your data. Before you create the labels to denote the sensitivity of items and the protection actions that are applied, you must understand your organizationâs existing classification taxonomy and how it maps to labels that users see and apply in apps. After creating the sensitivity labels, publish them, and provide guidance to users how and when to apply them in Word, Excel, PowerPoint, and Outlook.
++form the cornerstone of protecting your data. Before you create the labels to denote the sensitivity of items and the protection actions that are applied, understand your organizationâs existing classification taxonomy and how it maps to labels that users see and apply in apps. After creating the sensitivity labels, publish them, and provide guidance to users on how and when to apply them in Word, Excel, PowerPoint, and Outlook.
+ For more information, see:
+ Get started with sensitivity labels
+ Create and configure sensitivity labels and t
+```
+
+---
+
+### 38. Microsoft Defender for Cloud Apps
+
+**URL:** https://learn.microsoft.com/en-us/defender-cloud-apps/what-is-defender-for-cloud-apps
+**Section:** Zero Trust and Security Architecture
+**Classification:** HIGH (Feature availability)
+
+**Affected Controls:**
+- Control 2.9: Control 2.9: Defender for Cloud Apps — Copilot Session Controls
+  - File: `controls/pillar-2-security/2.9-defender-cloud-apps.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -65,9 +65,9 @@ Continuous threat protection in eXtended detection and response (XDR)
+ While cloud apps continue to be a target for adversaries trying to exfiltrate corporate data, sophisticated attacks often cross modalitiesâmoving laterally from email as the most common entry point, to compromise endpoints and identities, before ultimately gaining access to in-app data.
+ Defender for Cloud Apps offers built-in adaptive access control (AAC), provides user and entity behavior analysis (UEBA), and helps you mitigate malware.
+-Defender for Cloud Apps is also integrated directly into Microsoft Defender XDR, correlating XDR signals from the Microsoft Defender suite and providing incident-level detection, investigation, and powerful response capabilities. Integrating SaaS security into Microsoft's XDR experience gives SOC teams full kill chain visibility and improves operational efficiency and effectivity.
++Defender for Cloud Apps is also integrated directly into Microsoft Defender, correlating cross-domain signals from the Microsoft Defender suite and providing incident-level detection, investigation, and powerful response capabilities. Integrating SaaS security into Microsoft's unified security experience gives SOC teams full kill chain visibility and improves operational efficiency and effectivity.
+ For more information, see
+-Microsoft Defender for Cloud Apps in Microsoft Defender XDR
++Microsoft Defender for Cloud Apps in Microsoft Defender
+ .
+ App to app protection with app governance
+ OAuth apps often behave unnoticed, while still having extensive permissions to access data in other apps on behalf of an employee, making OAuth apps susceptible to a compromise.
+
+```
+
+---
+
+### 39. Microsoft 365 Archive overview
+
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview?view=o365-worldwide
+**Section:** Microsoft 365 Archive
+**Classification:** HIGH (Feature availability)
+
+**Affected Controls:**
+- Control 3.2: Control 3.2: Data Retention Policies for Copilot Interactions
+  - File: `controls/pillar-3-compliance/3.2-data-retention-policies.md`
+
+**What Changed:**
+```diff
+--- +++ @@ -74,7 +74,7 @@ Older versions of Office desktop apps that haven't had updates since March 1, 2026.
+ Other apps such as Clipchamp and Power BI fail to load archived content when attempting to import.
+ File-level archive is available only for SharePoint sites. When archived files are copied or moved, they retain their archived state. However, if an archived file is moved or copied into OneDrive, that archived state might not always be visually represented in the OneDrive user interface.
+-Files that are reactivated cannot be archived again for 30 days.
++Files that are reactivated cannot be archived again for 120 days.
+ Certain file types can't be archived, including OneNote, SharePoint pages, and SharePoint agents.
+ The Site Assets library on SharePoint sites does not support file-level archive.
+ Related articles
+
+```
+
+---
+
+## MEDIUM: Minor Changes (Review Optional)
+
+### 1. Microsoft 365 Copilot setup guide
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-setup
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 2. Microsoft 365 Copilot release notes
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/release-notes
+**Classification:** CRITICAL (Deprecation notice)
+
+---
+
+### 3. What's new in Microsoft Purview
+**URL:** https://learn.microsoft.com/en-us/purview/whats-new
+**Classification:** CRITICAL (Deprecation notice)
+
+---
+
+### 4. Audit log activities
+**URL:** https://learn.microsoft.com/en-us/purview/audit-log-activities
+**Classification:** CRITICAL (Deprecation notice)
+
+---
+
+### 5. DSPM for AI (classic) overview
+**URL:** https://learn.microsoft.com/en-us/purview/ai-microsoft-purview
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 6. Microsoft Graph connectors overview
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-copilot-connector?toc=%2Fgraph%2Ftoc.json
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 7. Select an agent model
+**URL:** https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-select-agent-model
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 8. Agent registry in Microsoft 365 admin center
+**URL:** https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry?view=o365-worldwide
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 9. Microsoft Entra Agent ID overview
+**URL:** https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 10. Microsoft Entra agent identity concepts
+**URL:** https://learn.microsoft.com/en-us/entra/agent-id/what-are-agent-identities
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 11. What's new in Microsoft Entra Agent ID
+**URL:** https://learn.microsoft.com/en-us/entra/agent-id/whats-new-agent-id
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 12. Microsoft Entra Agent identity platform
+**URL:** https://learn.microsoft.com/en-us/entra/agent-id/what-is-agent-id-platform
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 13. Integrate third-party agents with Microsoft Entra Agent ID
+**URL:** https://learn.microsoft.com/en-us/entra/agent-id/configure-third-party-agents
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 14. Network controls for Copilot Studio agents
+**URL:** https://learn.microsoft.com/en-us/entra/global-secure-access/concept-secure-web-ai-gateway-agents
+**Classification:** MEDIUM (General content update)
+
+---
+
+### 15. Connect Microsoft 365 data
+**URL:** https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365
+**Classification:** CRITICAL (UI navigation steps changed)
+
+---
+
+### 16. SharePoint site lifecycle management
+**URL:** https://learn.microsoft.com/en-us/sharepoint/site-lifecycle-management
+**Classification:** CRITICAL (Deprecation notice)
+
+---
+
+## URL Redirects Detected
+
+Consider updating microsoft-learn-urls.md:
+
+| Original URL | Redirects To |
+|--------------|--------------|
+| https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started | https://learn.microsoft.com/en-us/SharePoint/copilot-in-sharepoint-get-started |
+
+---
+
+## Errors
+
+No errors detected.
+
+---
+
+*Generated by `scripts/learn_monitor.py` (unified monitoring framework)*
