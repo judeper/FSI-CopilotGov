@@ -94,7 +94,6 @@ jobs:
           add-paths: |
             data/monitor-state.json
             data/monitor-state.json.backup
-            data/monitor-pending/learn/*.json
             reports/monitoring/*.md
           commit-message: "Learn Monitor: update Microsoft Learn URL tracking"
           branch: monitoring/learn-url-${{ github.run_number }}
@@ -193,7 +192,7 @@ jobs:
             exit 0
           fi
           NON_STATE=$(printf '%s\n' "$FILES" \
-            | grep -vcE '^data/monitor-state\.json(\.backup)?$|^data/monitor-pending/learn/[^/]+\.json$|^reports/monitoring/.*\.md$' || true)
+            | grep -vcE '^data/monitor-state\.json(\.backup)?$|^reports/monitoring/.*\.md$' || true)
           if [ "${NON_STATE:-1}" != "0" ]; then
             echo "::warning::PR #$NEW_PR contains non-state file(s) (count=${NON_STATE:-unknown}); skipping auto-merge (manual review required)."
             gh pr edit "$NEW_PR" --add-label needs-review || true
