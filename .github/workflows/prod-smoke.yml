@@ -32,7 +32,7 @@ jobs:
       issues: write
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Resolve expected SHA + target URL + canonical version
         id: meta
