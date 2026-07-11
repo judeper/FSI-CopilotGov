@@ -59,5 +59,5 @@ When a cross-tenant relationship ends, residual grants persist by default. Docum
 - Use [Verification & Testing](verification-testing.md) to validate trust scope and termination integrity.
 - Keep [Troubleshooting](troubleshooting.md) available for trust, attestation, and publishing issues.
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 2.17](../../../controls/pillar-2-security/2.17-cross-tenant-agent-federation.md)

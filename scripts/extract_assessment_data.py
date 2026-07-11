@@ -42,14 +42,14 @@ PILLARS = {
 
 # Role-to-control assignments (hardcoded — CopilotGov has no structured role sections)
 ROLE_CONTROLS = {
-    "M365 Global Admin": ["1.9", "1.11", "1.12", "4.1", "4.2", "4.3", "4.4", "4.5", "4.7", "4.8", "4.12", "4.15"],
-    "Purview Compliance Admin": ["1.5", "2.1", "2.2", "2.5", "2.10", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"],
+    "M365 Global Admin": ["1.9", "1.11", "1.12", "4.1", "4.2", "4.3", "4.4", "4.5", "4.7", "4.8", "4.12", "4.15", "4.16"],
+    "Purview Compliance Admin": ["1.5", "2.1", "2.2", "2.5", "2.10", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "4.15", "4.16"],
     "SharePoint Admin": ["1.1", "1.2", "1.3", "1.6", "1.7", "1.8", "1.14", "1.15", "2.11", "2.12"],
     "Entra Global Admin": ["2.3", "2.4", "2.15"],
     "Exchange Online Admin": ["2.8"],
     "Teams Admin": ["4.2", "4.3"],
-    "Security Admin": ["2.6", "2.7", "2.9", "2.13", "2.14", "2.16", "4.9", "4.10", "4.11"],
-    "AI Governance Lead": ["1.4", "1.10", "1.13", "1.16", "3.13", "4.6", "4.13", "4.15"],
+    "Security Admin": ["2.6", "2.7", "2.9", "2.13", "2.14", "2.16", "4.9", "4.10", "4.11", "4.15", "4.16"],
+    "AI Governance Lead": ["1.4", "1.10", "1.13", "1.16", "3.13", "4.6", "4.13", "4.15", "4.16"],
 }
 
 # Adoption phase mappings (from adoption roadmap)
@@ -89,7 +89,7 @@ PHASE_CONTROLS = {
             "4.3": "Medium", "4.4": "Medium", "4.6": "Medium",
             "4.7": "Medium", "4.8": "Medium", "4.9": "Medium",
             "4.10": "Medium", "4.11": "Medium", "4.12": "Medium", "4.13": "Medium",
-            "4.14": "Medium", "4.15": "Medium",
+            "4.14": "Medium", "4.15": "Medium", "4.16": "Medium",
         },
     },
 }
@@ -446,7 +446,32 @@ def parse_regulations(reg_string):
     """Parse regulatory reference string into list of regulation codes."""
     if not reg_string:
         return []
-    regs = [r.strip() for r in reg_string.split(",")]
+    regs = []
+    current = []
+    depth = 0
+    for i, ch in enumerate(reg_string):
+        if ch == "(":
+            depth += 1
+            current.append(ch)
+            continue
+        if ch == ")":
+            if depth > 0:
+                depth -= 1
+            current.append(ch)
+            continue
+        if ch == "," and depth == 0:
+            lookahead = reg_string[i + 1:].lstrip()
+            if lookahead and (lookahead[0].isupper() or lookahead[0].isdigit()):
+                candidate = "".join(current).strip()
+                if candidate:
+                    regs.append(candidate)
+                current = []
+                continue
+        current.append(ch)
+
+    tail = "".join(current).strip()
+    if tail:
+        regs.append(tail)
     return [r for r in regs if r]
 
 

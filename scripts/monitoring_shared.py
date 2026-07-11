@@ -57,6 +57,10 @@ CLASSIFICATION_HIGH = "HIGH"
 CLASSIFICATION_MEDIUM = "MEDIUM"
 CLASSIFICATION_NOISE = "NOISE"
 
+_URL_PATTERN = re.compile(
+    r'(?i)(?:https?://|//|learn\.microsoft\.com/)[^\s<>"\'\]\)]+'
+)
+
 # === HTTP Fetching ===
 def fetch_page(url: str, session: requests.Session, max_retries: int = MAX_RETRIES) -> dict:
     """
@@ -252,6 +256,69 @@ def classify_change(old_text: str, new_text: str, url: str = "", config: dict = 
 
 
 # === Control-to-URL Impact Mapping ===
+def _canonicalize_reference_url(raw_url: str) -> Optional[str]:
+    """
+    Canonicalize reference URLs for deterministic matching.
+
+    For Microsoft Learn URLs, canonicalization normalizes:
+    - host casing
+    - optional /en-us locale prefix
+    - trailing slash
+    - fragment
+    - equivalent absolute URL forms (scheme-less and //host forms)
+    """
+    if not raw_url:
+        return None
+
+    candidate = raw_url.strip().strip("<>[]()\"'").rstrip(".,;:")
+    if not candidate:
+        return None
+
+    if candidate.startswith("//"):
+        parsed = urlparse(f"https:{candidate}")
+    elif "://" not in candidate:
+        parsed = urlparse(f"https://{candidate}")
+    else:
+        parsed = urlparse(candidate)
+
+    if parsed.scheme and parsed.scheme.lower() not in {"http", "https"}:
+        return None
+
+    if not parsed.netloc:
+        return None
+
+    host = parsed.netloc.lower()
+    if host.endswith(":443"):
+        host = host[:-4]
+    elif host.endswith(":80"):
+        host = host[:-3]
+
+    path = re.sub(r"/+", "/", parsed.path or "/")
+    path = path.rstrip("/") or "/"
+
+    # Learn-specific canonical form for resilient matching in docs.
+    if host == "learn.microsoft.com":
+        path = re.sub(r"^/en-us(?=/|$)", "", path, flags=re.IGNORECASE)
+        path = (path.rstrip("/") or "/").lower()
+        return f"{host}{path}"
+
+    scheme = parsed.scheme.lower() if parsed.scheme else "https"
+    return f"{scheme}://{host}{path}"
+
+
+def _content_references_url(content: str, canonical_target: Optional[str], raw_target: str) -> bool:
+    """Return True when content references target URL by canonical or exact form."""
+    if canonical_target:
+        for match in _URL_PATTERN.finditer(content):
+            canonical_candidate = _canonicalize_reference_url(match.group(0))
+            if canonical_candidate == canonical_target:
+                return True
+        return False
+
+    # Fallback for non-canonicalizable values.
+    return raw_target in content
+
+
 def find_affected_controls(url: str, docs_dir: Path) -> dict:
     """
     Find controls and playbooks that reference a given URL.
@@ -269,6 +336,27 @@ def find_affected_controls(url: str, docs_dir: Path) -> dict:
         - 'playbooks': list of {control_id, playbook_type, file_path, priority}
     """
     affected = {'controls': [], 'playbooks': []}
+    canonical_target = _canonicalize_reference_url(url)
+    matched_control_ids = set()
+    seen_playbook_paths = set()
+
+    def _add_playbook(control_id: str, playbook_file: Path) -> None:
+        rel_path = str(playbook_file.relative_to(docs_dir))
+        if rel_path in seen_playbook_paths:
+            return
+        seen_playbook_paths.add(rel_path)
+        playbook_type = playbook_file.stem
+        priority = (
+            CLASSIFICATION_CRITICAL
+            if playbook_type == 'portal-walkthrough'
+            else CLASSIFICATION_HIGH
+        )
+        affected['playbooks'].append({
+            'control_id': control_id,
+            'playbook_type': playbook_type,
+            'file_path': rel_path,
+            'priority': priority,
+        })
 
     # Scan controls
     controls_dir = docs_dir / 'controls'
@@ -277,8 +365,9 @@ def find_affected_controls(url: str, docs_dir: Path) -> dict:
             for control_file in pillar_dir.glob('*.md'):
                 try:
                     content = control_file.read_text(encoding='utf-8')
-                    if url in content:
+                    if _content_references_url(content, canonical_target, url):
                         control_id = control_file.stem.split('-')[0]
+                        matched_control_ids.add(control_id)
                         title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
                         affected['controls'].append({
                             'control_id': control_id,
@@ -302,17 +391,19 @@ def find_affected_controls(url: str, docs_dir: Path) -> dict:
             for playbook_file in control_dir.glob('*.md'):
                 try:
                     content = playbook_file.read_text(encoding='utf-8')
-                    if url in content:
-                        playbook_type = playbook_file.stem
-                        priority = CLASSIFICATION_CRITICAL if playbook_type == 'portal-walkthrough' else CLASSIFICATION_HIGH
-                        affected['playbooks'].append({
-                            'control_id': control_dir.name,
-                            'playbook_type': playbook_type,
-                            'file_path': str(playbook_file.relative_to(docs_dir)),
-                            'priority': priority,
-                        })
+                    if _content_references_url(content, canonical_target, url):
+                        _add_playbook(control_dir.name, playbook_file)
                 except Exception:
                     continue
+
+        # If a control document cites the URL, include all implementation playbooks
+        # for that control (even when the URL is only cited in the control doc).
+        for control_id in sorted(matched_control_ids):
+            control_playbook_dir = impl_dir / control_id
+            if not control_playbook_dir.is_dir():
+                continue
+            for playbook_file in sorted(control_playbook_dir.glob('*.md')):
+                _add_playbook(control_id, playbook_file)
 
     # Cross-cutting playbook folders (everything under playbooks/ except
     # control-implementations). These have no control_id, so key them by the
@@ -324,13 +415,8 @@ def find_affected_controls(url: str, docs_dir: Path) -> dict:
             for playbook_file in section_dir.rglob('*.md'):
                 try:
                     content = playbook_file.read_text(encoding='utf-8')
-                    if url in content:
-                        affected['playbooks'].append({
-                            'control_id': section_dir.name,
-                            'playbook_type': playbook_file.stem,
-                            'file_path': str(playbook_file.relative_to(docs_dir)),
-                            'priority': CLASSIFICATION_HIGH,
-                        })
+                    if _content_references_url(content, canonical_target, url):
+                        _add_playbook(section_dir.name, playbook_file)
                 except Exception:
                     continue
 

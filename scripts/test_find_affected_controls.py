@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPTS_DIR.parent
 sys.path.insert(0, str(SCRIPTS_DIR))
 
 import monitoring_shared  # noqa: E402
@@ -92,3 +93,42 @@ def test_no_match_returns_empty(tmp_path):
         "https://learn.microsoft.com/en-us/not/cited", docs
     )
     assert result == {"controls": [], "playbooks": []}
+
+
+def _assert_cowork_variants_map(url_variant: str) -> None:
+    result = monitoring_shared.find_affected_controls(url_variant, REPO_ROOT / "docs")
+
+    control_ids = {c["control_id"] for c in result["controls"]}
+    assert "4.15" in control_ids
+
+    paths = {p["file_path"].replace("\\", "/") for p in result["playbooks"]}
+    expected = {
+        "playbooks/control-implementations/4.15/portal-walkthrough.md",
+        "playbooks/control-implementations/4.15/powershell-setup.md",
+        "playbooks/control-implementations/4.15/troubleshooting.md",
+        "playbooks/control-implementations/4.15/verification-testing.md",
+    }
+    assert expected.issubset(paths)
+
+
+def test_cowork_url_variants_map_to_control_and_playbooks():
+    variants = [
+        "https://learn.microsoft.com/microsoft-365/copilot/cowork/cowork-admin-governance",
+        "https://LEARN.MICROSOFT.COM/en-us/microsoft-365/copilot/cowork/cowork-admin-governance",
+        "https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance/",
+        "https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance#overview",
+    ]
+    for url_variant in variants:
+        _assert_cowork_variants_map(url_variant)
+
+
+def test_canonicalizer_accepts_scheme_less_learn_url():
+    assert monitoring_shared._canonicalize_reference_url(
+        "learn.microsoft.com/en-us/example/page"
+    ) == "learn.microsoft.com/example/page"
+
+
+def test_canonicalizer_does_not_treat_embedded_learn_host_as_learn_url():
+    assert monitoring_shared._canonicalize_reference_url(
+        "example.com/learn.microsoft.com/en-us/example/page"
+    ) == "https://example.com/learn.microsoft.com/en-us/example/page"

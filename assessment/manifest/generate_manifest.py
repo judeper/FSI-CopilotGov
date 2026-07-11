@@ -21,7 +21,7 @@ M365 Copilot scope:
 
 * No PPAC / Power Platform collectors (Copilot stack only).
 * Pillar names: Readiness, Security, Compliance, Operations.
-* 63 controls across 4 pillars (16 / 17 / 15 / 15).
+* 64 controls across 4 pillars (16 / 17 / 15 / 16).
 """
 from __future__ import annotations
 
@@ -104,7 +104,7 @@ CONTROLS = [
     ("2.16", "2.16-federated-connector-mcp-governance.md",     2, "partial", ["M365Admin", "Graph_API"], "Are federated connectors and MCP endpoints subject to a documented approval, allow-list, and review cycle?"),
     ("2.17", "2.17-cross-tenant-agent-federation.md",          2, "manual",  [], "Are cross-tenant Entra Agent ID trust relationships, MCP federated server attestations, and Copilot Studio multi-tenant publishings subject to documented approval and review?"),
     # ---------------------------------------------------------------
-    # Pillar 3 — Compliance & Records (13)
+    # Pillar 3 — Compliance & Records (15)
     # ---------------------------------------------------------------
     ("3.1",  "3.1-copilot-audit-logging.md",                   3, "full",    ["Purview_PowerShell"], None),
     ("3.2",  "3.2-data-retention-policies.md",                 3, "full",    ["Purview_PowerShell"], None),
@@ -122,7 +122,7 @@ CONTROLS = [
     ("3.13", "3.13-ffiec-alignment.md",                        3, "manual",  [], "Has FFIEC IT Handbook alignment (Information Security, Outsourcing, Architecture) been reviewed for Copilot deployment?"),
     ("3.14", "3.14-copilot-pages-notebooks-retention.md",      3, "partial", ["Purview_PowerShell"], "Are branch-aware Copilot Pages, Notebook section-level coverage, and Loop component provenance addressed in retention and records-management policies?"),
     # ---------------------------------------------------------------
-    # Pillar 4 — Operations & Lifecycle (13)
+    # Pillar 4 — Operations & Lifecycle (16)
     # ---------------------------------------------------------------
     ("4.1",  "4.1-admin-settings-feature-management.md",       4, "full",    ["M365Admin"], None),
     ("4.2",  "4.2-teams-meetings-governance.md",               4, "full",    ["Teams"], None),
@@ -138,7 +138,8 @@ CONTROLS = [
     ("4.12", "4.12-change-management-rollouts.md",             4, "manual",  [], "Are Copilot feature releases (Microsoft-managed and tenant-managed) tracked and risk-reviewed before user enablement?"),
     ("4.13", "4.13-extensibility-governance.md",               4, "manual",  [], "Are extensibility surfaces (declarative agents, MCP, plug-ins) governed by an approval and inventory process before publication?"),
     ("4.14", "4.14-copilot-studio-agent-lifecycle.md",         4, "manual",  [], "Is the Copilot Studio agent lifecycle (authoring → testing → publishing → versioning → deprecation) governed with documented evidence at each gate?"),
-    ("4.15", "4.15-copilot-cowork-governance.md",              4, "manual",  [], "Is Microsoft 365 Copilot Cowork (Frontier preview) governed with deliberate availability, plugin, and supervision decisions before broad enablement?"),
+    ("4.15", "4.15-copilot-cowork-governance.md",              4, "manual",  [], "Is Microsoft 365 Copilot Cowork governed at GA with deliberate billing/discovery, model/browser, plugin/skill, and supervision decisions before broad enablement?"),
+    ("4.16", "4.16-microsoft-scout-governance.md",             4, "manual",  [], "Is Microsoft Scout governed across Frontier scope, endpoint policy plus attestation, and GitHub Copilot entitlement with documented supervision and boundary risk controls before enablement?"),
 ]
 
 

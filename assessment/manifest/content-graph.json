@@ -1,19 +1,19 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-06-13T17:03:56Z",
+  "generatedAt": "2026-07-11T17:21:09Z",
   "counts": {
-    "controls": 63,
+    "controls": 64,
     "pillars": 4,
     "by_pillar": {
       "1": 16,
       "2": 17,
       "3": 15,
-      "4": 15
+      "4": 16
     },
     "by_tier": {
       "Baseline": 18,
       "Recommended": 33,
-      "Regulated": 12
+      "Regulated": 13
     },
     "by_pillar_tier": {
       "1": {
@@ -34,11 +34,11 @@
       "4": {
         "Baseline": 3,
         "Recommended": 11,
-        "Regulated": 1
+        "Regulated": 2
       }
     },
-    "playbooks_total": 268,
-    "playbooks_control": 249,
+    "playbooks_total": 272,
+    "playbooks_control": 253,
     "playbooks_cross_cutting": 19,
     "solutions": 23
   },
@@ -536,12 +536,14 @@
       "tier": "Regulated",
       "title": "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications",
       "path": "docs/controls/pillar-3-compliance/3.5-finra-2210-compliance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-11",
       "regulatory_references": [
         "FINRA Rule 2210 (Communications with the Public)",
         "FINRA Rule 3110 — supervisory systems and WSPs",
         "SEC Rule 17a-4 — required broker-dealer records only",
         "FINRA Regulatory Notice 24-09 (AI in Communications)",
+        "FINRA Regulatory Notice 26-14 (request for comment; not effective)",
+        "SEC Release No. 34-103492 / SR-FINRA-2026-004 Partial Amendment No. 1 (pending proposal; not effective)",
         "SEC Marketing Rule (206(4)-1)",
         "Investment Advisers Act Section 206"
       ]
@@ -673,7 +675,7 @@
       "tier": "Regulated",
       "title": "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot",
       "path": "docs/controls/pillar-3-compliance/3.8a-generative-ai-model-governance.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-07-11",
       "regulatory_references": [
         "SR 26-2 / OCC Bulletin 2026-13 (April 2026 interagency guidance — Copilot excluded as generative AI; this control applies SR 11-7 / OCC Bulletin 2011-12 principles synthesized with NIST AI RMF 1.0 and ISO/IEC 42001 as the most-recent applicable interim framework)",
         "NIST AI RMF 1.0",
@@ -885,13 +887,29 @@
       "tier": "Recommended",
       "title": "Control 4.15: Copilot Cowork Governance",
       "path": "docs/controls/pillar-4-operations/4.15-copilot-cowork-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-10",
       "regulatory_references": [
         "FFIEC IT Examination Handbook",
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404",
         "OCC Heightened Standards (12 CFR part 30, appendix D)",
         "FINRA Rule 3110"
+      ]
+    },
+    {
+      "id": "4.16",
+      "pillar": 4,
+      "tier": "Regulated",
+      "title": "Control 4.16: Microsoft Scout Governance",
+      "path": "docs/controls/pillar-4-operations/4.16-microsoft-scout-governance.md",
+      "last_verified": "2026-07-10",
+      "regulatory_references": [
+        "FFIEC IT Examination Handbook",
+        "GLBA §501(b)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
+        "OCC Heightened Standards (12 CFR part 30, appendix D)",
+        "FINRA Rule 3110",
+        "SEC Rule 17a-4 (for required broker-dealer records)"
       ]
     }
   ],
@@ -2421,6 +2439,34 @@
       "type": "control-implementation",
       "control_refs": [
         "4.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.16/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.16/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.16/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.16/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.16"
       ]
     },
     {

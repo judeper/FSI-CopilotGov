@@ -121,4 +121,4 @@ When discussing Copilot model-risk governance during regulatory examinations:
 
 ---
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

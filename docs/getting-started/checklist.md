@@ -121,7 +121,8 @@ Admin settings, per-app configuration, analytics, Viva governance, cost tracking
 | [ ] | 4.12 | Change Management for Rollouts | R | | | Message Center monitoring, feature update impact assessment, and targeted release ring management |
 | [ ] | 4.13 | Extensibility Governance | R | | | Ongoing lifecycle governance for deployed plugins, Graph connectors, and declarative agents |
 | [ ] | 4.14 | Copilot Studio Agent Lifecycle Governance | R | | | End-to-end lifecycle governance for Copilot Studio agents (authoring, testing, publishing, versioning, deprecation) |
-| [ ] | 4.15 | Copilot Cowork Governance | R | | | Governance for Microsoft 365 Copilot Cowork (Frontier preview): availability scoping, plugin inventory, deployment/pinning approvals, and supervision coverage |
+| [ ] | 4.15 | Copilot Cowork Governance | R | | | Governance for Microsoft 365 Copilot Cowork (June 2026 GA): usage-based billing gating, discovery scoping, model policy (Fable 5 Preview off by default), Cowork Browsing tenant toggle, and supervision coverage |
+| [ ] | 4.16 | Microsoft Scout Governance | Reg | | | Governance for Microsoft Scout (Frontier preview endpoint agent): Frontier scoping, Intune endpoint policy plus admin attestation, and GitHub Copilot Business/Enterprise entitlement gates; shell/browser/MCP/subagent/automation posture; and documentation of storage and inference activity outside the M365 DPA |
 
 ---
 
@@ -186,4 +187,4 @@ Download or copy this checklist into your governance tracking system. Recommende
 
 ---
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

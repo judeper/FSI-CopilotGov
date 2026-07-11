@@ -55,5 +55,5 @@ Define the standing review cadence (recommended weekly) for tuning requests. Eac
 - Use [Verification & Testing](verification-testing.md) to validate scoping, approval, and supervision controls.
 - Keep [Troubleshooting](troubleshooting.md) available for enablement, scoping, and approval-flow issues.
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 1.16](../../../controls/pillar-1-readiness/1.16-copilot-tuning-governance.md)

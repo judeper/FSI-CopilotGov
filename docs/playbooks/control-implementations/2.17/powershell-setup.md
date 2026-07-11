@@ -89,5 +89,5 @@ Compress-Archive -Path .\artifacts\2.17\* `
 - Continue to [Verification & Testing](verification-testing.md) for trust scope and termination validation.
 - Reference [Troubleshooting](troubleshooting.md) for attestation or publishing issues.
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 2.17](../../../controls/pillar-2-security/2.17-cross-tenant-agent-federation.md)

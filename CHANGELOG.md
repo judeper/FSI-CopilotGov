@@ -4,6 +4,61 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## [1.8.0] - 2026-07-11
+
+Cowork GA + Scout governance release, with full canonical asset regeneration for
+the integrated Cowork/Scout/shared-docs/monitor-repair source set.
+
+### Added
+
+- **Control 4.16: Microsoft Scout Governance** (`docs/controls/pillar-4-operations/4.16-microsoft-scout-governance.md`) with a full implementation playbook set:
+  `docs/playbooks/control-implementations/4.16/{portal-walkthrough,powershell-setup,verification-testing,troubleshooting}.md`.
+- **Release Notes v1.8.0** page (`docs/reference/release-notes-v1.8.md`) and MkDocs nav wiring (`mkdocs.yml`).
+
+### Changed
+
+- **Control inventory and tier distribution refreshed** after regeneration:
+  - controls: **64**
+  - pillars: **16 / 17 / 15 / 16**
+  - tier totals: **Baseline 18 / Recommended 33 / Regulated 13**
+  - playbooks: **272 total** (**253** control + **19** cross-cutting)
+- **Control 4.15 (Copilot Cowork Governance)** integrated as GA-refresh baseline with updated cross-control linkage and regenerated derived artifacts.
+- **README / AGENTS / `.github/copilot-instructions.md` / relationship docs** reconciled to canonical counts and release pointers.
+- **Checklist generator framework stamp** updated to `v1.8.0`, with template regeneration expanded to all published homework roles in both `assessment/templates/` and `docs/assessment/templates/` (placeholder `.xlsx` files removed).
+- **Version baseline** updated from `1.7.1` to `1.8.0` via root `VERSION`, with footer version-stamp reconciliation across docs.
+
+### Fixed
+
+- **Count tripwire drift** in `scripts/test_content_graph_smoke.py` and SPA facilitator-mode count wording (`tests/spa/facilitator-mode.test.mjs`).
+- **Monitor attribution/config references** reconciled in regenerated release-facing documentation to align with the repaired monitoring pipeline state.
+- **Release-notes monitoring caveat** added: Scout Learn URL baselines seed on first scheduled monitor run unless monitor state is intentionally refreshed beforehand.
+
+### Manifest authoring/TODO status
+
+- TODO markers in `assessment/manifest/controls.json` measured before/after regeneration:
+  - before: **211**
+  - after: **208**
+  - delta: **-3**
+- One Scout sector TODO remains intentionally for preview-specific evidence constraints.
+
+### Validation
+
+Targeted validation suite passed for this release:
+
+- `python scripts/verify_readme_counts.py`
+- `python scripts/verify_count_consistency.py`
+- `python scripts/verify_version_stamps.py --check`
+- `python -m pytest scripts/test_content_graph_smoke.py assessment/tests -q`
+- `npm test -- --run tests/spa/manifest-integrity.test.mjs tests/spa/count-snapshot.test.mjs tests/spa/facilitator-mode.test.mjs`
+- `python scripts/verify_excel_templates.py`
+
+> **Preview caveat.** Scout remains a Frontier preview capability and Cowork
+> behavior can evolve post-GA refresh. This release records the governance
+> baseline verified on 2026-07-10; organizations should re-verify Microsoft
+> feature state and evidence paths before production attestations.
+
+---
+
 ## [1.7.1] - 2026-04-30
 
 Post-release CI hardening and dependency refresh. No content or framework changes.
@@ -329,7 +384,7 @@ Major feature port from FSI-AgentGov bringing governance assessment parity for M
 - `merge_authored_content.py` now treats `solutions` as a replace-only field
 
 ### Reference
-- [Phased rollout](docs/getting-started/phased-rollout.md)
+- [Adoption roadmap](docs/framework/adoption-roadmap.md)
 - [Homework pages](docs/getting-started/homework-quickstart.md)
 
 ---

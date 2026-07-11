@@ -78,7 +78,7 @@ Audit logging, retention, eDiscovery, regulatory record-keeping, supervisory rev
 
 ---
 
-## Pillar 4: Operations and Monitoring (15 Controls)
+## Pillar 4: Operations and Monitoring (16 Controls)
 
 Feature management, per-app configuration, analytics, cost tracking, incident response, and business continuity controls.
 
@@ -99,6 +99,7 @@ Feature management, per-app configuration, analytics, cost tracking, incident re
 | 4.13 | Extensibility Governance | [Portal](4.13/portal-walkthrough.md) / [PowerShell](4.13/powershell-setup.md) / [Verification](4.13/verification-testing.md) / [Troubleshooting](4.13/troubleshooting.md) |
 | 4.14 | Copilot Studio Agent Lifecycle Governance | [Portal](4.14/portal-walkthrough.md) / [PowerShell](4.14/powershell-setup.md) / [Verification](4.14/verification-testing.md) / [Troubleshooting](4.14/troubleshooting.md) |
 | 4.15 | Copilot Cowork Governance | [Portal](4.15/portal-walkthrough.md) / [PowerShell](4.15/powershell-setup.md) / [Verification](4.15/verification-testing.md) / [Troubleshooting](4.15/troubleshooting.md) |
+| 4.16 | Microsoft Scout Governance | [Portal](4.16/portal-walkthrough.md) / [PowerShell](4.16/powershell-setup.md) / [Verification](4.16/verification-testing.md) / [Troubleshooting](4.16/troubleshooting.md) |
 
 ---
 
@@ -113,4 +114,4 @@ Each playbook is self-contained but references related playbooks within the same
 
 ---
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

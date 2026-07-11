@@ -96,5 +96,5 @@ Compress-Archive -Path .\artifacts\3.14\* `
 - Continue to [Verification & Testing](verification-testing.md) for retention and lineage validation.
 - Reference [Troubleshooting](troubleshooting.md) for branch, embed, or hold issues.
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 3.14](../../../controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md)

@@ -34,7 +34,7 @@ The no-additional-license tier of Copilot Chat available to Microsoft 365 users.
 The paid tier of Copilot Chat included with a Microsoft 365 Copilot license. Provides Microsoft Graph grounding across permitted organizational data, priority access, and advanced features across Microsoft 365 apps.
 
 ### Copilot Cowork
-A Copilot capability that enables delegation of multi-step business tasks to Copilot, with users able to monitor and intervene in the process.
+A Microsoft 365 Copilot capability that enables delegation of multi-step business tasks to Copilot, with users able to monitor and intervene in the process. Cowork reached **general availability in June 2026**; access is now gated by usage-based billing on Copilot Credits (model responses, tools/skills, image generation, browser tasks), and discovery is a separate setting that lets users request access when billing is not yet enabled. Model policy includes Claude Opus 4.8, Sonnet 5, a Sonnet+Opus Advisor pairing, GPT 5.5, Imagen 2, and Claude Fable 5 (Preview, off by default). Cowork also includes an optional **Cowork Browsing** capability (off by default) that drives the user's local Microsoft Edge browser under Conditional Access, Purview DLP, browser management policy, and site allow/block/view-only rules.
 
 ### Copilot Pages
 A collaborative AI-powered canvas created from Microsoft 365 Copilot Chat responses. Users can convert a Copilot response into a Page for further editing and sharing. Copilot Pages (`.page` files) are stored in a user-owned SharePoint Embedded container shared with Copilot Notebooks and Loop My workspace, and creation is governed through Microsoft 365 Cloud Policy.
@@ -60,6 +60,9 @@ A Microsoft Purview capability that provides visibility into AI usage across the
 ### Edit with Copilot
 Formerly known as "Agent Mode." An iterative, multi-step document creation and refinement experience in Word, Excel, and PowerPoint. Available to all Microsoft 365 users; unlicensed users are limited to web data sources only.
 
+### Frontier preview program
+Microsoft's opt-in preview channel for early-stage Copilot capabilities. Frontier scoping in Copilot > Settings > Frontier selects which users and admin accounts in the tenant have Frontier access; preview capabilities such as Microsoft Scout resolve their admin and user surfaces only when Frontier is scoped. Preview features may have restricted functionality, are subject to preview terms, and may change before general availability.
+
 ### Entra Agent ID
 A unique identity assigned to Copilot agents in Microsoft Entra ID, enabling security and compliance tracking, policy enforcement, and audit trail for agent activities.
 
@@ -83,6 +86,12 @@ The unified API and data model that connects Microsoft 365 services. Copilot use
 
 ### Microsoft Purview
 Microsoft's unified data governance, risk, and compliance platform. Includes information protection (sensitivity labels), DLP, audit, retention, eDiscovery, communication compliance, information barriers, insider risk management, and DSPM for AI.
+
+### Microsoft Scout
+A Frontier-preview, endpoint-installed, agentic Copilot experience delivered as a native app for Windows 11 or later and macOS 12 or later. Scout can read and write local workspace files, execute shell commands (per-command permission modes), drive a browser through Playwright, reach into Microsoft 365 and Work IQ, load skills and subagents, connect to Model Context Protocol (MCP) servers, and schedule or trigger automations. Access is gated by three independent admin gates — Frontier scoping in the M365 admin center, Intune endpoint policy (`AllowScoutFrontierAccess` on Windows or a macOS `.mobileconfig`) combined with an admin attestation, and a per-user **GitHub Copilot Business or Enterprise** entitlement on a linked GitHub account. Session and memory data are stored in OneDrive; **automation instructions and MCP-server output are stored locally on the endpoint and are outside the Microsoft 365 Data Protection Addendum (DPA)**. Some inference is processed through **GitHub Copilot and third-party model providers** under those providers' separate terms, outside M365 residency, retention, sensitivity-label enforcement, and eDiscovery. Governed by [Control 4.16](../controls/pillar-4-operations/4.16-microsoft-scout-governance.md).
+
+### Model Context Protocol (MCP)
+An open protocol for exposing tools, data sources, and prompts to AI agents. Copilot surfaces that support MCP (including Microsoft Scout, and federated Copilot connectors under [Control 2.16](../controls/pillar-2-security/2.16-federated-connector-mcp-governance.md)) can call MCP servers as extensibility. MCP servers may be local or remote, may authenticate differently from Microsoft-managed connectors, and may egress data outside the M365 DPA — treat them under connector and extensibility governance ([Control 4.13](../controls/pillar-4-operations/4.13-extensibility-governance.md)) with MCP-specific approvals for data path, authentication mechanism, and external egress.
 
 ### Microsoft Sentinel
 Microsoft's cloud-native Security Information and Event Management (SIEM) and Security Orchestration, Automation, and Response (SOAR) solution built on Azure. Used to collect, analyze, and respond to Copilot audit data at enterprise scale.
@@ -269,4 +278,4 @@ Prohibition under federal consumer financial protection law against unfair, dece
 
 ---
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

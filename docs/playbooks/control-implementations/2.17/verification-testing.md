@@ -57,5 +57,5 @@ Test cases and evidence collection for validating cross-tenant trust scope, MCP 
 - [PowerShell Setup](powershell-setup.md)
 - [Troubleshooting](troubleshooting.md)
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 2.17](../../../controls/pillar-2-security/2.17-cross-tenant-agent-federation.md)

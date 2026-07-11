@@ -57,5 +57,5 @@ Test cases and evidence collection for validating tenant scoping, request-and-ap
 - [PowerShell Setup](powershell-setup.md)
 - [Troubleshooting](troubleshooting.md)
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 1.16](../../../controls/pillar-1-readiness/1.16-copilot-tuning-governance.md)

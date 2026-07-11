@@ -69,6 +69,7 @@ Feature-by-control applicability matrix showing which governance controls apply 
 | **Copilot Notebooks** | Supported | Partial | Supported | Supported | Supported | Supported | Partial | N/A | Supported |
 | **Edit with Copilot (Agent Mode)** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Partial | Supported |
 | **Copilot Cowork** | Supported | Supported | Supported | Supported | Supported | Partial | Supported | Partial | Supported |
+| **Microsoft Scout (Frontier preview)** | Partial | Partial | Supported | Partial | Partial | Partial | Partial | N/A | Partial |
 | **Copilot Tuning (preview)** | Partial | Partial | Supported | Supported | Partial | Partial | Partial | N/A | Supported |
 | **Researcher** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported |
 | **Analyst** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Partial | Supported |
@@ -146,11 +147,13 @@ Feature-by-control applicability matrix showing which governance controls apply 
 - **Word / Excel / PowerPoint:** Communication Compliance applies to content shared via Copilot in collaboration scenarios (e.g., shared documents) but does not inspect content during local authoring.
 - **Edit with Copilot (Agent Mode):** Communication Compliance applies to content shared from documents created or modified via Agent Mode but does not inspect content during the multi-step editing session itself.
 - **Copilot Cowork / Analyst:** Communication Compliance coverage for autonomously generated content may be limited to the final output shared by the user; intermediate processing steps may not be individually inspected.
+- **Microsoft Scout (Frontier preview):** Communication Compliance is **not supported** for Scout activity. Scout is an endpoint agent whose local automation instructions, MCP output, and third-party inference occur outside the M365 DPA; Communication Compliance policies do not apply to that surface. Scout activity that touches M365 content and is later shared inherits Comm Compliance coverage for the destination surface (e.g., Teams, Outlook), not for the Scout session itself.
 - **Teams Queues:** Communication Compliance coverage depends on how queue messages, transcripts, summaries, and follow-up artifacts are stored.
 
 ### eDiscovery
 
 - **Copilot Cowork:** eDiscovery coverage for Cowork task outputs depends on how the generated content is stored and shared. Intermediate work products may have limited eDiscovery support.
+- **Microsoft Scout (Frontier preview):** eDiscovery coverage is **partial**. Session and memory data stored in OneDrive are subject to existing OneDrive eDiscovery. **Automation instructions and MCP-server output are stored locally on the endpoint** and are outside the M365 DPA — they are not captured by Purview eDiscovery. Content processed through GitHub Copilot and third-party model providers is outside M365 residency and eDiscovery. Treat local artifact preservation as a known unsupported evidence gap (Control 4.16) rather than assuming Purview coverage.
 - **Copilot Tuning:** Preserve tuning requests, approvals, source data lineage, and tuned-agent outputs through model-risk and records procedures where applicable.
 
 ### Basic vs Premium Access
@@ -164,6 +167,7 @@ Microsoft distinguishes between **Copilot Chat Basic** (no additional Copilot li
 | **Edit with Copilot (Agent Mode)** | Available with web data grounding only | Available with organizational data via Microsoft Graph |
 | **Copilot Pages / Copilot Notebooks** | Available where tenant policy and app entitlement permit; content created from Basic chats is not automatically Graph-grounded | Available with Microsoft Graph-grounded content and SharePoint Embedded storage |
 | **Copilot Cowork** | Not available | Available |
+| **Microsoft Scout (Frontier preview)** | Not available | Not part of the standard M365 Copilot license; requires Frontier enrollment + Intune endpoint policy (imported `microsoft-scout` ADMX/ADML with **Allow Microsoft Scout Frontier access** plus documented ADMX admin controls) + admin attestation + an active **Microsoft 365 Copilot license** + a per-user **GitHub Copilot Business or Enterprise** entitlement on a linked GitHub account. Installation requires local Administrator permissions on the endpoint — prefer system-context managed deployment through Intune over standing local admin. |
 | **Researcher** | Not available | Available |
 | **Analyst** | Not available | Available |
 | **Copilot Tuning (preview)** | Not available | Available only for eligible tenants with at least 5,000 Microsoft 365 Copilot licenses during preview |
@@ -183,4 +187,4 @@ Governance controls in this matrix apply most fully to Premium access where Micr
 
 ---
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

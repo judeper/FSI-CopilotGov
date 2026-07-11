@@ -355,4 +355,4 @@ The [State AI Laws Compliance Matrix](../playbooks/regulatory-modules/state-ai-l
 
 ---
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

@@ -57,5 +57,5 @@ Common issues and resolution steps for Copilot Tuning enablement, request flow, 
 - [PowerShell Setup](powershell-setup.md)
 - [Verification & Testing](verification-testing.md)
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 1.16](../../../controls/pillar-1-readiness/1.16-copilot-tuning-governance.md)

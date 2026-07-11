@@ -102,6 +102,7 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 | 4.13 | [Copilot Extensibility Governance](pillar-4-operations/4.13-extensibility-governance.md) | Recommended |
 | 4.14 | [Copilot Studio Agent Lifecycle Governance](pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md) | Recommended |
 | 4.15 | [Copilot Cowork Governance](pillar-4-operations/4.15-copilot-cowork-governance.md) | Recommended |
+| 4.16 | [Microsoft Scout Governance](pillar-4-operations/4.16-microsoft-scout-governance.md) | Regulated |
 
 ---
 
@@ -109,11 +110,11 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 
 | Pillar | Controls | Baseline | Recommended | Regulated |
 |--------|----------|----------|-------------|-----------|
-| 1. Readiness & Assessment | {{ pillar_count(1) }} | 7 | 7 | 2 |
-| 2. Security & Protection | {{ pillar_count(2) }} | 7 | 7 | 3 |
-| 3. Compliance & Audit | {{ pillar_count(3) }} | 3 | 6 | 6 |
-| 4. Operations & Monitoring | {{ pillar_count(4) }} | 5 | 9 | 1 |
-| **Total** | **{{ counts.controls }}** | **22** | **29** | **12** |
+| 1. Readiness & Assessment | {{ pillar_count(1) }} | {{ tier_count('B', 1) }} | {{ tier_count('R', 1) }} | {{ tier_count('Reg', 1) }} |
+| 2. Security & Protection | {{ pillar_count(2) }} | {{ tier_count('B', 2) }} | {{ tier_count('R', 2) }} | {{ tier_count('Reg', 2) }} |
+| 3. Compliance & Audit | {{ pillar_count(3) }} | {{ tier_count('B', 3) }} | {{ tier_count('R', 3) }} | {{ tier_count('Reg', 3) }} |
+| 4. Operations & Monitoring | {{ pillar_count(4) }} | {{ tier_count('B', 4) }} | {{ tier_count('R', 4) }} | {{ tier_count('Reg', 4) }} |
+| **Total** | **{{ counts.controls }}** | **{{ tier_count('B') }}** | **{{ tier_count('R') }}** | **{{ tier_count('Reg') }}** |
 
 ---
 
@@ -126,4 +127,4 @@ Feature management, per-app toggles, usage analytics, cost tracking, and inciden
 
 ---
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
