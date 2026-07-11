@@ -29,6 +29,7 @@ import logging
 import os
 import re
 import sys
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -80,6 +81,19 @@ FEDERAL_REGISTER_API_BASE = "https://www.federalregister.gov/api/v1"
 
 # FINRA notices page
 FINRA_NOTICES_URL = "https://www.finra.org/rules-guidance/notices"
+
+FEDERAL_REGISTER_DETAIL_FETCH_LIMIT = 20
+FINRA_DETAIL_FETCH_LIMIT = 20
+FALLBACK_TEXT_MAX_CHARS = 4000
+FEDERAL_REGISTER_DETAIL_SIGNAL = re.compile(
+    r'\b(finra|rule\s*2210|communications?\s+with\s+the\s+public|retail\s+communications?|project(?:ed|ion)\s+performance|target(?:ed)?\s+returns?)\b',
+    re.IGNORECASE,
+)
+FINRA_NOTICE_ID_PATTERN = re.compile(r'/notices/(\d{2})-(\d{2})', re.IGNORECASE)
+FINRA_DETAIL_TITLE_SIGNAL = re.compile(
+    r'\b(request\s+for\s+comment|regulatory\s+notice\s+\d{2}-\d{2}|rule\s*2210|communications?\s+with\s+the\s+public)\b',
+    re.IGNORECASE,
+)
 
 # Configure logging
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
@@ -211,7 +225,133 @@ def find_affected_controls_by_keywords(title: str, abstract: str, config: dict) 
     return sorted(list(affected))
 
 
-def fetch_federal_register_documents(session: requests.Session, since_date: str, config: dict, limit: Optional[int] = None) -> list[RegulatoryItem]:
+def _get_operational_settings(config: dict) -> tuple[int, int, float]:
+    """Return request timeout, max retries, and request delay from config."""
+    operational = config.get("operational", {})
+    request_timeout = int(operational.get("request_timeout", 30))
+    max_retries = int(operational.get("max_retries", 3))
+    request_delay = float(operational.get("request_delay", 1.0))
+    return request_timeout, max_retries, request_delay
+
+
+def _extract_compact_text(html: str, selectors: list[str]) -> str:
+    """Extract compact text from the first selector that yields content."""
+    soup = BeautifulSoup(html or "", "html.parser")
+
+    for selector in selectors:
+        node = soup.select_one(selector)
+        if node:
+            text = re.sub(r"\s+", " ", node.get_text(" ", strip=True)).strip()
+            if text:
+                return text[:FALLBACK_TEXT_MAX_CHARS]
+
+    body = soup.find("body")
+    if not body:
+        return ""
+    return re.sub(r"\s+", " ", body.get_text(" ", strip=True)).strip()[:FALLBACK_TEXT_MAX_CHARS]
+
+
+def _extract_federal_register_fallback_text(html: str) -> str:
+    """Extract fallback text from a Federal Register document page."""
+    return _extract_compact_text(
+        html,
+        selectors=[
+            "section#fulltext_content",
+            "div#fulltext_content",
+            "article",
+            "main",
+        ],
+    )
+
+
+def _extract_finra_notice_fallback_text(html: str) -> str:
+    """Extract fallback text from a FINRA notice page."""
+    return _extract_compact_text(
+        html,
+        selectors=[
+            "div.field--name-body",
+            "article",
+            "main",
+            "div.layout-content",
+        ],
+    )
+
+
+def _fetch_cached_fallback_text(
+    *,
+    url: str,
+    session: requests.Session,
+    cache: dict[str, str],
+    request_delay: float,
+    max_retries: int,
+    extractor,
+) -> tuple[str, bool]:
+    """Fetch fallback text once per URL and return (text, fetched_new)."""
+    if not url:
+        return "", False
+
+    if url in cache:
+        return cache[url], False
+
+    if request_delay > 0:
+        time.sleep(request_delay)
+
+    result = fetch_page(url, session, max_retries=max_retries)
+    if result["status_code"] != 200:
+        logger.warning(
+            "Detail fetch failed for %s (status=%s, error=%s)",
+            url,
+            result["status_code"],
+            result.get("error"),
+        )
+        cache[url] = ""
+        return "", True
+
+    fallback_text = extractor(result["content"])
+    cache[url] = fallback_text
+    return fallback_text, True
+
+
+def _should_fetch_federal_register_detail(
+    title: str,
+    abstract: str,
+    classification: str,
+    doc_type: str,
+) -> bool:
+    """Determine if a Federal Register body fetch is warranted."""
+    if (abstract or "").strip():
+        return False
+    if classification in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}:
+        return False
+    if doc_type not in {"NOTICE", "PRORULE"}:
+        return False
+    return bool(FEDERAL_REGISTER_DETAIL_SIGNAL.search(title or ""))
+
+
+def _should_fetch_finra_notice_detail(title: str, url: str, classification: str) -> bool:
+    """Determine if a FINRA notice body fetch is warranted."""
+    if classification in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}:
+        return False
+
+    if FINRA_DETAIL_TITLE_SIGNAL.search(title or ""):
+        return True
+
+    match = FINRA_NOTICE_ID_PATTERN.search(url or "")
+    if not match:
+        return False
+
+    notice_year_short = int(match.group(1))
+    current_year_short = datetime.now(timezone.utc).year % 100
+    return notice_year_short >= (current_year_short - 1)
+
+
+def fetch_federal_register_documents(
+    session: requests.Session,
+    since_date: str,
+    config: dict,
+    limit: Optional[int] = None,
+    detail_fetch_limit: int = FEDERAL_REGISTER_DETAIL_FETCH_LIMIT,
+) -> list[RegulatoryItem]:
     """
     Fetch documents from Federal Register API.
 
@@ -220,11 +360,14 @@ def fetch_federal_register_documents(session: requests.Session, since_date: str,
         since_date: ISO date string (YYYY-MM-DD) - fetch documents published on or after this date
         config: Configuration dict with federal_register settings
         limit: Maximum documents to fetch (for testing)
+        detail_fetch_limit: Maximum detail pages to fetch for fallback text
 
     Returns:
         list[RegulatoryItem]: New regulatory items
     """
     items = []
+
+    request_timeout, max_retries, request_delay = _get_operational_settings(config)
 
     # Get agencies and doc types from config
     fed_config = config.get('federal_register', {})
@@ -247,73 +390,124 @@ def fetch_federal_register_documents(session: requests.Session, since_date: str,
         'fields[]': ['document_number', 'title', 'abstract', 'publication_date', 'type', 'html_url', 'agencies'],
     }
 
-    try:
-        logger.info(f"Querying Federal Register API for documents since {since_date}...")
-        response = session.get(
-            f"{FEDERAL_REGISTER_API_BASE}/documents.json",
-            params=params,
-            timeout=30
-        )
-        response.raise_for_status()
-        data = response.json()
-
-        documents = data.get('results', [])
-        logger.info(f"Federal Register API returned {len(documents)} documents")
-
-        # Apply limit if specified
-        if limit:
-            documents = documents[:limit]
-            logger.info(f"Limited to {limit} documents for testing")
-
-        for doc in documents:
-            # Extract agency names
-            doc_agencies = doc.get('agencies', [])
-            agency_slugs = [agency.get('slug', '') for agency in doc_agencies]
-            agency_names = [agency.get('name', 'Unknown') for agency in doc_agencies]
-            agency_name = ', '.join(agency_names) if agency_names else 'Unknown'
-
-            # Map to canonical short names using config
-            agency_short = 'Unknown'
-            for slug in agency_slugs:
-                if slug in agency_short_map:
-                    agency_short = agency_short_map[slug]
-                    break
-            if agency_short == 'Unknown':
-                agency_short = agency_name
-
-            title = doc.get('title', 'Untitled')
-            abstract = doc.get('abstract', '')
-
-            # Classify for FSI Copilot governance relevance
-            tier, reason = classify_regulatory_relevance(title, abstract, config)
-
-            # Find affected controls by keywords
-            affected_controls = find_affected_controls_by_keywords(title, abstract, config)
-
-            item = RegulatoryItem(
-                source='Federal Register',
-                agency=agency_short,
-                title=title,
-                url=doc.get('html_url', ''),
-                publication_date=doc.get('publication_date', ''),
-                doc_type=doc.get('type', ''),
-                abstract=abstract,
-                document_id=doc.get('document_number', ''),
-                classification=tier,
-                classification_reason=reason,
-                affected_controls=affected_controls,
+    data = {}
+    for attempt in range(max_retries):
+        try:
+            logger.info(f"Querying Federal Register API for documents since {since_date}...")
+            response = session.get(
+                f"{FEDERAL_REGISTER_API_BASE}/documents.json",
+                params=params,
+                timeout=request_timeout,
             )
-            items.append(item)
+            response.raise_for_status()
+            data = response.json()
+            break
+        except requests.RequestException as e:
+            if attempt == max_retries - 1:
+                logger.error(f"Federal Register API error: {e}")
+                return items
+            sleep_seconds = request_delay if request_delay > 0 else (2 ** attempt)
+            logger.warning(
+                "Federal Register API request failed (attempt %s/%s): %s; retrying in %.1fs",
+                attempt + 1,
+                max_retries,
+                e,
+                sleep_seconds,
+            )
+            time.sleep(sleep_seconds)
+        except json.JSONDecodeError as e:
+            logger.error(f"Federal Register API response parsing error: {e}")
+            return items
 
-    except requests.RequestException as e:
-        logger.error(f"Federal Register API error: {e}")
-    except json.JSONDecodeError as e:
-        logger.error(f"Federal Register API response parsing error: {e}")
+    documents = data.get('results', [])
+    logger.info(f"Federal Register API returned {len(documents)} documents")
+
+    # Apply limit if specified
+    if limit:
+        documents = documents[:limit]
+        logger.info(f"Limited to {limit} documents for testing")
+
+    detail_cache: dict[str, str] = {}
+    detail_fetches = 0
+    detail_limit_logged = False
+
+    for doc in documents:
+        # Extract agency names
+        doc_agencies = doc.get('agencies', [])
+        agency_slugs = [agency.get('slug', '') for agency in doc_agencies]
+        agency_names = [agency.get('name', 'Unknown') for agency in doc_agencies]
+        agency_name = ', '.join(agency_names) if agency_names else 'Unknown'
+
+        # Map to canonical short names using config
+        agency_short = 'Unknown'
+        for slug in agency_slugs:
+            if slug in agency_short_map:
+                agency_short = agency_short_map[slug]
+                break
+        if agency_short == 'Unknown':
+            agency_short = agency_name
+
+        title = doc.get('title', 'Untitled')
+        abstract = doc.get('abstract', '') or ''
+        doc_type = doc.get('type', '')
+        url = doc.get('html_url', '')
+
+        tier, reason = classify_regulatory_relevance(title, abstract, config)
+        effective_text = abstract
+
+        should_fetch_detail = _should_fetch_federal_register_detail(
+            title=title,
+            abstract=abstract,
+            classification=tier,
+            doc_type=doc_type,
+        )
+        if should_fetch_detail and detail_fetches < detail_fetch_limit:
+            fallback_text, fetched_new = _fetch_cached_fallback_text(
+                url=url,
+                session=session,
+                cache=detail_cache,
+                request_delay=request_delay,
+                max_retries=max_retries,
+                extractor=_extract_federal_register_fallback_text,
+            )
+            if fetched_new:
+                detail_fetches += 1
+            if fallback_text:
+                effective_text = fallback_text
+                tier, reason = classify_regulatory_relevance(title, effective_text, config)
+        elif should_fetch_detail and not detail_limit_logged:
+            logger.info(
+                "Federal Register detail fetch limit reached (%s); skipping additional fallback fetches",
+                detail_fetch_limit,
+            )
+            detail_limit_logged = True
+
+        affected_controls = find_affected_controls_by_keywords(title, effective_text, config)
+
+        item = RegulatoryItem(
+            source='Federal Register',
+            agency=agency_short,
+            title=title,
+            url=url,
+            publication_date=doc.get('publication_date', ''),
+            doc_type=doc_type,
+            abstract=effective_text,
+            document_id=doc.get('document_number', ''),
+            classification=tier,
+            classification_reason=reason,
+            affected_controls=affected_controls,
+        )
+        items.append(item)
 
     return items
 
 
-def fetch_finra_notices(session: requests.Session, config: dict, limit: Optional[int] = None) -> list[RegulatoryItem]:
+def fetch_finra_notices(
+    session: requests.Session,
+    config: dict,
+    limit: Optional[int] = None,
+    detail_fetch_limit: int = FINRA_DETAIL_FETCH_LIMIT,
+) -> list[RegulatoryItem]:
     """
     Scrape FINRA regulatory notices page.
 
@@ -321,89 +515,105 @@ def fetch_finra_notices(session: requests.Session, config: dict, limit: Optional
         session: requests.Session instance
         config: Configuration dict for classification
         limit: Maximum notices to fetch (for testing)
+        detail_fetch_limit: Maximum notice pages to fetch for fallback text
 
     Returns:
         list[RegulatoryItem]: FINRA notices
     """
     items = []
+    _, max_retries, request_delay = _get_operational_settings(config)
 
-    try:
-        logger.info(f"Fetching FINRA notices from {FINRA_NOTICES_URL}...")
-        result = fetch_page(FINRA_NOTICES_URL, session)
+    logger.info(f"Fetching FINRA notices from {FINRA_NOTICES_URL}...")
+    result = fetch_page(FINRA_NOTICES_URL, session, max_retries=max_retries)
 
-        if result['status_code'] != 200:
-            logger.error(f"FINRA notices page returned status {result['status_code']}")
-            return items
+    if result['status_code'] != 200:
+        logger.error(f"FINRA notices page returned status {result['status_code']}")
+        if result.get("error"):
+            logger.error("FINRA notices fetch error: %s", result["error"])
+        return items
 
-        soup = BeautifulSoup(result['content'], 'html.parser')
+    soup = BeautifulSoup(result['content'], 'html.parser')
 
-        # FINRA notices are in a table with class 'notices-table' or similar
-        # The structure may vary, so we look for common patterns
-        notice_links = []
+    # FINRA notices are in a table with class 'notices-table' or similar.
+    notice_links = []
 
-        # Strategy 1: Look for article elements with notice links
-        for article in soup.find_all(['article', 'div'], class_=re.compile(r'notice|regulatory')):
-            link = article.find('a', href=re.compile(r'/rules-guidance/notices/'))
-            if link:
-                notice_links.append(link)
+    for article in soup.find_all(['article', 'div'], class_=re.compile(r'notice|regulatory')):
+        link = article.find('a', href=re.compile(r'/rules-guidance/notices/'))
+        if link:
+            notice_links.append(link)
 
-        # Strategy 2: Look for all links to /rules-guidance/notices/
-        if not notice_links:
-            notice_links = soup.find_all('a', href=re.compile(r'/rules-guidance/notices/\d{2}-\d{2}'))
+    if not notice_links:
+        notice_links = soup.find_all('a', href=re.compile(r'/rules-guidance/notices/\d{2}-\d{2}'))
 
-        logger.info(f"Found {len(notice_links)} FINRA notice links")
+    logger.info(f"Found {len(notice_links)} FINRA notice links")
 
-        # Apply limit if specified
-        if limit:
-            notice_links = notice_links[:limit]
-            logger.info(f"Limited to {limit} notices for testing")
+    if limit:
+        notice_links = notice_links[:limit]
+        logger.info(f"Limited to {limit} notices for testing")
 
-        for link in notice_links:
-            title = link.get_text(strip=True)
-            url = link.get('href', '')
+    detail_cache: dict[str, str] = {}
+    detail_fetches = 0
+    detail_limit_logged = False
 
-            # Make URL absolute
-            if url.startswith('/'):
-                url = f"https://www.finra.org{url}"
+    for link in notice_links:
+        title = link.get_text(strip=True)
+        url = link.get('href', '')
 
-            # Extract date from notice ID (e.g., /notices/24-15 → 2024)
-            # Note: This is a heuristic - actual publication date requires fetching the notice page
-            match = re.search(r'/notices/(\d{2})-(\d{2})', url)
-            if match:
-                year_short = match.group(1)
-                notice_num = match.group(2)
-                year = f"20{year_short}"
-                # Assume January 1 for notices without specific dates
-                publication_date = f"{year}-01-01"
-                document_id = f"FINRA {year_short}-{notice_num}"
-            else:
-                publication_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-                document_id = url
+        if url.startswith('/'):
+            url = f"https://www.finra.org{url}"
 
-            # Classify for FSI Copilot governance relevance
-            # For FINRA notices, we don't have abstracts without fetching individual pages
-            tier, reason = classify_regulatory_relevance(title, "", config)
+        match = FINRA_NOTICE_ID_PATTERN.search(url)
+        if match:
+            year_short = match.group(1)
+            notice_num = match.group(2)
+            year = f"20{year_short}"
+            publication_date = f"{year}-01-01"
+            document_id = f"FINRA {year_short}-{notice_num}"
+        else:
+            publication_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+            document_id = url
 
-            # Find affected controls by keywords
-            affected_controls = find_affected_controls_by_keywords(title, "", config)
+        tier, reason = classify_regulatory_relevance(title, "", config)
+        effective_text = ""
 
-            item = RegulatoryItem(
-                source='FINRA',
-                agency='FINRA',
-                title=title,
+        should_fetch_detail = _should_fetch_finra_notice_detail(title, url, tier)
+        if should_fetch_detail and detail_fetches < detail_fetch_limit:
+            fallback_text, fetched_new = _fetch_cached_fallback_text(
                 url=url,
-                publication_date=publication_date,
-                doc_type='NOTICE',
-                abstract="",
-                document_id=document_id,
-                classification=tier,
-                classification_reason=reason,
-                affected_controls=affected_controls,
+                session=session,
+                cache=detail_cache,
+                request_delay=request_delay,
+                max_retries=max_retries,
+                extractor=_extract_finra_notice_fallback_text,
             )
-            items.append(item)
+            if fetched_new:
+                detail_fetches += 1
+            if fallback_text:
+                effective_text = fallback_text
+                tier, reason = classify_regulatory_relevance(title, effective_text, config)
+        elif should_fetch_detail and not detail_limit_logged:
+            logger.info(
+                "FINRA detail fetch limit reached (%s); skipping additional fallback fetches",
+                detail_fetch_limit,
+            )
+            detail_limit_logged = True
 
-    except Exception as e:
-        logger.error(f"FINRA notices scraping error: {e}")
+        affected_controls = find_affected_controls_by_keywords(title, effective_text, config)
+
+        item = RegulatoryItem(
+            source='FINRA',
+            agency='FINRA',
+            title=title,
+            url=url,
+            publication_date=publication_date,
+            doc_type='NOTICE',
+            abstract=effective_text,
+            document_id=document_id,
+            classification=tier,
+            classification_reason=reason,
+            affected_controls=affected_controls,
+        )
+        items.append(item)
 
     return items
 
@@ -486,8 +696,7 @@ def generate_regulatory_report(
     lines = []
 
     # Header
-    run_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-    lines.append(f"# Regulatory Monitor Report - {run_date}\n\n")
+    run_date = datetime.now(timezone.utc).isoformat(timespec='seconds')
     lines.append(generate_report_header(
         title="Regulatory Monitor Report",
         run_date=run_date,

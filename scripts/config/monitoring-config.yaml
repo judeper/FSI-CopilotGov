@@ -92,12 +92,24 @@ regulatory:
   high_patterns:
     - pattern: '\bartificial\s+intelligence'
       reason: "References artificial intelligence"
+    - pattern: '\bgenai\b'
+      reason: "References GenAI terminology"
     - pattern: '\bmachine\s+learning'
       reason: "References machine learning"
     - pattern: '\bllm\b'
       reason: "References large language models"
     - pattern: '\bgenerative\s+ai'
       reason: "References generative AI"
+    - pattern: '\bfinra\s+rule\s*2210\b'
+      reason: "FINRA Rule 2210 (communications with the public)"
+    - pattern: '\bcommunications?\s+with\s+the\s+public\b'
+      reason: "FINRA communications with the public language"
+    - pattern: '\b(?:finra\b.{0,80}\bretail\s+communications?\b|retail\s+communications?\b.{0,80}\bfinra\b)'
+      reason: "Retail communications language in FINRA context"
+    - pattern: '\bproject(?:ed|ion)\s+performance\b'
+      reason: "Projected performance language"
+    - pattern: '\btarget(?:ed)?\s+returns?\b'
+      reason: "Targeted return language"
     - pattern: '\bchatbot'
       reason: "References chatbots"
     - pattern: '\bautomation'
@@ -118,6 +130,8 @@ regulatory:
   # MEDIUM patterns: General FSI regulations that may indirectly affect AI agents.
   # These are general FSI regulations that could have indirect impact on AI agent deployments.
   medium_patterns:
+    - pattern: '\bregulatory\s+notice\s+\d{2}-\d{2}\b'
+      reason: "FINRA regulatory notice identifier"
     - pattern: '\bbroker-dealer'
       reason: "Broker-dealer regulation"
     - pattern: '\binvestment\s+adviser'
@@ -212,6 +226,36 @@ keyword_control_map:
         name: "Control 3.4: Communication Compliance Monitoring"
       - id: "3.5"
         name: "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications"
+      - id: "3.6"
+        name: "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)"
+
+  - keyword: finra rule 2210
+    controls:
+      - id: "3.5"
+        name: "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications"
+      - id: "3.6"
+        name: "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)"
+
+  - keyword: communications with the public
+    controls:
+      - id: "3.5"
+        name: "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications"
+      - id: "3.6"
+        name: "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)"
+
+  - keyword: projected performance
+    controls:
+      - id: "3.5"
+        name: "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications"
+      - id: "3.6"
+        name: "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)"
+
+  - keyword: targeted return
+    controls:
+      - id: "3.5"
+        name: "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications"
+      - id: "3.6"
+        name: "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)"
 
   - keyword: model risk
     controls:
@@ -227,6 +271,20 @@ keyword_control_map:
 
   - keyword: generative ai
     controls:
+      - id: "3.8a"
+        name: "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot"
+
+  - keyword: hallucination
+    controls:
+      - id: "3.8"
+        name: "Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI)"
+      - id: "3.8a"
+        name: "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot"
+
+  - keyword: data protection risk
+    controls:
+      - id: "3.8"
+        name: "Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI)"
       - id: "3.8a"
         name: "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot"
 
