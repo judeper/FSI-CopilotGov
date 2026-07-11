@@ -274,16 +274,12 @@ def _canonicalize_reference_url(raw_url: str) -> Optional[str]:
     if not candidate:
         return None
 
-    if candidate.lower().startswith("//"):
-        candidate = f"https:{candidate}"
-    elif candidate.lower().startswith("learn.microsoft.com/"):
-        candidate = f"https://{candidate}"
-
-    parsed = urlparse(candidate)
-
-    # Handle scheme-less absolute forms after parsing (e.g., learn.microsoft.com/path)
-    if not parsed.netloc and parsed.path.lower().startswith("learn.microsoft.com/"):
-        parsed = urlparse(f"https://{parsed.path}")
+    if candidate.startswith("//"):
+        parsed = urlparse(f"https:{candidate}")
+    elif "://" not in candidate:
+        parsed = urlparse(f"https://{candidate}")
+    else:
+        parsed = urlparse(candidate)
 
     if parsed.scheme and parsed.scheme.lower() not in {"http", "https"}:
         return None

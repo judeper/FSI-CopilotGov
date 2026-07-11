@@ -120,3 +120,15 @@ def test_cowork_url_variants_map_to_control_and_playbooks():
     ]
     for url_variant in variants:
         _assert_cowork_variants_map(url_variant)
+
+
+def test_canonicalizer_accepts_scheme_less_learn_url():
+    assert monitoring_shared._canonicalize_reference_url(
+        "learn.microsoft.com/en-us/example/page"
+    ) == "learn.microsoft.com/example/page"
+
+
+def test_canonicalizer_does_not_treat_embedded_learn_host_as_learn_url():
+    assert monitoring_shared._canonicalize_reference_url(
+        "example.com/learn.microsoft.com/en-us/example/page"
+    ) == "https://example.com/learn.microsoft.com/en-us/example/page"
