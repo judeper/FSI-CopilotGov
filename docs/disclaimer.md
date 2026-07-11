@@ -41,4 +41,4 @@ The regulatory landscape for AI and Microsoft 365 Copilot is rapidly evolving. O
 
 *By using this framework, you acknowledge that you have read and understood this disclaimer.*
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

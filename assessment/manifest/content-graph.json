@@ -1,19 +1,19 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-06-13T17:03:56Z",
+  "generatedAt": "2026-07-11T05:13:57Z",
   "counts": {
-    "controls": 63,
+    "controls": 64,
     "pillars": 4,
     "by_pillar": {
       "1": 16,
       "2": 17,
       "3": 15,
-      "4": 15
+      "4": 16
     },
     "by_tier": {
       "Baseline": 18,
       "Recommended": 33,
-      "Regulated": 12
+      "Regulated": 13
     },
     "by_pillar_tier": {
       "1": {
@@ -34,11 +34,11 @@
       "4": {
         "Baseline": 3,
         "Recommended": 11,
-        "Regulated": 1
+        "Regulated": 2
       }
     },
-    "playbooks_total": 268,
-    "playbooks_control": 249,
+    "playbooks_total": 272,
+    "playbooks_control": 253,
     "playbooks_cross_cutting": 19,
     "solutions": 23
   },
@@ -885,13 +885,29 @@
       "tier": "Recommended",
       "title": "Control 4.15: Copilot Cowork Governance",
       "path": "docs/controls/pillar-4-operations/4.15-copilot-cowork-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-10",
       "regulatory_references": [
         "FFIEC IT Examination Handbook",
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404",
         "OCC Heightened Standards (12 CFR part 30, appendix D)",
         "FINRA Rule 3110"
+      ]
+    },
+    {
+      "id": "4.16",
+      "pillar": 4,
+      "tier": "Regulated",
+      "title": "Control 4.16: Microsoft Scout Governance",
+      "path": "docs/controls/pillar-4-operations/4.16-microsoft-scout-governance.md",
+      "last_verified": "2026-07-10",
+      "regulatory_references": [
+        "FFIEC IT Examination Handbook",
+        "GLBA §501(b)",
+        "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
+        "OCC Heightened Standards (12 CFR part 30, appendix D)",
+        "FINRA Rule 3110",
+        "SEC Rule 17a-4 (for required broker-dealer records)"
       ]
     }
   ],
@@ -2421,6 +2437,34 @@
       "type": "control-implementation",
       "control_refs": [
         "4.15"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.16/portal-walkthrough.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.16/powershell-setup.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.16/troubleshooting.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.16"
+      ]
+    },
+    {
+      "path": "docs/playbooks/control-implementations/4.16/verification-testing.md",
+      "type": "control-implementation",
+      "control_refs": [
+        "4.16"
       ]
     },
     {

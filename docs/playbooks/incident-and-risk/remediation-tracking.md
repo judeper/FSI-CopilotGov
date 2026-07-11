@@ -120,4 +120,4 @@ For regulatory examination findings (MRAs/MRIAs):
 
 *Review this process annually and after each examination cycle. Update SLAs and procedures based on organizational capacity and regulatory expectations.*
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

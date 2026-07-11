@@ -70,5 +70,5 @@ Confirm Cowork is included in the tenant's Purview posture per the [Use Microsof
 - Use [Verification & Testing](verification-testing.md) to validate access posture, model toggles, browser toggle, plugin/skill inventory, consumption limits, and Purview/audit coverage.
 - Keep [Troubleshooting](troubleshooting.md) available for access, billing, discovery, model-toggle, browser-use, and plugin issues.
 
-*FSI Copilot Governance Framework v1.7.1 - July 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 4.15](../../../controls/pillar-4-operations/4.15-copilot-cowork-governance.md)

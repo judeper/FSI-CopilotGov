@@ -34,7 +34,7 @@ OUT_DIR = REPO_ROOT / "assessment" / "templates"
 # OUT_DIR into site/assessment/templates/ for the published artifact.
 DOCS_MIRROR = REPO_ROOT / "docs" / "assessment" / "templates"
 
-FRAMEWORK_VERSION = "FSI Copilot Governance Framework v1.4"
+FRAMEWORK_VERSION = "FSI Copilot Governance Framework v1.8"
 
 # ── Role → checklist file mapping ─────────────────────────────────────────────
 # Each entry: (output filename, display role label, manifest role key or None)

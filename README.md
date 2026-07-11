@@ -16,7 +16,7 @@
 
 ## What This Is
 
-A technical documentation framework providing **63 controls** and **268 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments. (Counts in published documentation are rendered from the canonical `assessment/manifest/content-graph.json`; this README is plain GitHub Markdown and quotes the same numbers verbatim.)
+A technical documentation framework providing **64 controls** and **272 playbooks** for governing Microsoft 365 Copilot across all M365 applications in regulated US financial services environments. (Counts in published documentation are rendered from the canonical `assessment/manifest/content-graph.json`; this README is plain GitHub Markdown and quotes the same numbers as the 64-control manifest verbatim.)
 
 This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, Planner, Stream, Viva, Microsoft 365 Copilot Chat (Basic & Premium tiers), Copilot Pages**, and **SharePoint agents** — plus extensibility via **plugins, Graph connectors, declarative agents, and Microsoft Agent 365**.
 
@@ -47,7 +47,7 @@ This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outloo
 | Layer | Purpose | Content |
 |-------|---------|---------|
 | **Framework** (Strategic) | Board/executive governance context | Executive summary, regulatory landscape, architecture, operating model |
-| **Controls** (Technical) | What to configure and why | 63 controls across 4 lifecycle pillars with FSI regulatory mappings |
+| **Controls** (Technical) | What to configure and why | 64 controls across 4 lifecycle pillars with FSI regulatory mappings |
 | **Playbooks** (Implementation) | How to configure step-by-step | Portal walkthroughs, PowerShell automation, verification, troubleshooting |
 
 ### Four Lifecycle Pillars
@@ -57,7 +57,7 @@ This covers M365 Copilot as it surfaces across **Word, Excel, PowerPoint, Outloo
 | **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | 16 | Purview, SharePoint Admin, M365 Admin |
 | **2. Security & Protection** | DLP, sensitivity labels, conditional access, information barriers, Defender | 17 | Purview, Entra, Defender |
 | **3. Compliance & Audit** | Audit logging, retention, eDiscovery, FINRA 2210, supervision, regulatory reporting | 15 | Purview, M365 Admin |
-| **4. Operations & Monitoring** | Feature management, per-app toggles, analytics, cost tracking, incident response | 15 | M365 Admin, Viva Insights, Teams Admin |
+| **4. Operations & Monitoring** | Feature management, per-app toggles, analytics, cost tracking, incident response | 16 | M365 Admin, Viva Insights, Teams Admin |
 
 ### Three Governance Levels
 
@@ -88,19 +88,15 @@ Each control provides tiered implementation guidance:
 
 ---
 
-## What's New in v1.4
+## What's New in v1.8
 
-Released April 2026. Full notes: [Release Notes v1.4](docs/reference/release-notes-v1.4.md).
+Released July 2026. Full notes: [Release Notes v1.8](docs/reference/release-notes-v1.8.md).
 
-- **Python assessment engine** (`assessment/engine/`) scores collector evidence against the 63-control manifest.
-- **Evidence collectors** (`assessment/collectors/`) for Microsoft Graph, Purview, SharePoint, and Sentinel.
-- **Schema-validated control manifest** (`assessment/manifest/controls.json`) drives both the engine and the SPA.
-- **Governance Scorecard SPA** upgrades: role filter, quick-start mode (5 foundation controls), sector calibration (8 FSI types), "how to verify" drawer, facilitator mode, zone auto-exclusion, collector evidence import, versioned portal export envelope, inline solutions catalog.
-- **Role checklist templates** (`assessment/templates/*.xlsx`) generated from the manifest.
-- **Solutions integration** — pinned reference to [FSI-CopilotGov-Solutions](https://github.com/judeper/FSI-CopilotGov-Solutions) via `assessment/data/solutions-lock.json`; drift-guarded in CI.
-- **Test suites** — 25+ pytest cases (engine, collectors, drift) and 77+ vitest cases (SPA behaviour).
-- **Monitoring workflows** — scheduled daily CI (10:00 UTC) watches Microsoft Learn URLs and regulatory sources, opening a PR when content drift is detected.
-- **Pre-session homework pages** — per-role preparation guides under `docs/getting-started/`.
+- **Control 4.16: Microsoft Scout Governance** added under Pillar 4 with a **Regulated** overall governance tier, plus full control playbooks.
+- **Control 4.15 Cowork governance** refreshed for GA operating posture and linked supervision/records controls.
+- **Canonical inventory refreshed** to **64 controls** and **272 playbooks** (`253` control implementation + `19` cross-cutting), with regenerated content graph, manifest, SPA data, and checklist templates.
+- **Monitor repair updates** include attribution/configuration corrections across monitoring scripts and workflow wiring for coherent drift evidence.
+- **Versioned framework release artifacts** updated for v1.8.0, with regenerated release documentation and validation gates.
 
 ---
 
@@ -152,7 +148,7 @@ FSI-CopilotGov/
 │   │   ├── pillar-1-readiness/    # 16 controls
 │   │   ├── pillar-2-security/     # 17 controls
 │   │   ├── pillar-3-compliance/   # 15 controls
-│   │   └── pillar-4-operations/   # 15 controls
+│   │   └── pillar-4-operations/   # 16 controls
 │   ├── playbooks/          # Layer 3: Implementation procedures
 │   │   ├── control-implementations/  # 4 playbooks per control
 │   │   ├── getting-started/          # Phased deployment guides
@@ -192,8 +188,8 @@ FSI-CopilotGov/
 | **Pillars** | Security, Management, Reporting, SharePoint | Readiness, Security, Compliance, Operations |
 | **Governance Model** | Zones 1-2-3 (Personal/Team/Enterprise agents) | Org-wide with Baseline/Recommended/Regulated levels |
 | **Key Concepts** | Managed Environments, Connectors, DLP Connector Policies | Semantic Index, Graph grounding, Restricted SharePoint Search, DSPM for AI |
-| **Controls** | 71 | 63 |
-| **Playbooks** | 284 | 268 |
+| **Controls** | 71 | 64 |
+| **Playbooks** | 284 | 272 |
 
 Both repositories are **standalone** — no cross-repo dependencies. Where governance topics overlap (e.g., sensitivity labels, audit logging), each repo provides self-contained guidance tailored to its scope.
 
@@ -227,4 +223,4 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 ---
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

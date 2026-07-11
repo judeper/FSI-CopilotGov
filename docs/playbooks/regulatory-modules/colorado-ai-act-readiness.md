@@ -156,4 +156,4 @@ The Colorado AI Act regulatory landscape is evolving:
 
 *This module provides general compliance guidance. Consult legal counsel for organization-specific compliance advice. Review and update as the regulatory landscape evolves.*
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*

@@ -57,5 +57,5 @@ Test cases and evidence collection for validating intake clearance, stage transi
 - [PowerShell Setup](powershell-setup.md)
 - [Troubleshooting](troubleshooting.md)
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 4.14](../../../controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle.md)

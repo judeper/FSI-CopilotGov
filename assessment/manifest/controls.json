@@ -2948,7 +2948,7 @@
   },
   {
     "id": "3.3",
-    "title": "Control 3.3: eDiscovery for Copilot-Generated Content",
+    "title": "Control 3.3: Purview eDiscovery for Copilot-Generated Content",
     "pillar": 3,
     "pillar_name": "Compliance & Records",
     "source_file": "docs/controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md",
@@ -5202,7 +5202,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": "Is Microsoft 365 Copilot Cowork (Frontier preview) governed with deliberate availability, plugin, and supervision decisions before broad enablement?",
+    "manual_question": "Is Microsoft 365 Copilot Cowork governed at GA with deliberate billing/discovery, model/browser, plugin/skill, and supervision decisions before broad enablement?",
     "name": "Copilot Cowork Governance",
     "zonesApplicable": [
       1,
@@ -5244,14 +5244,109 @@
     "sectorYesBar": {
       "bank": "Cowork adoption treated as a change-control and operational-risk event aligned to the FFIEC IT Examination Handbook and OCC Heightened Standards (12 CFR part 30, appendix D).",
       "broker-dealer": "Cowork availability for registered reps gated on supervisory review of agentic outputs per FINRA Rule 3110 before enablement.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
-      "other": "TODO: sector-specific yes-bar"
+      "investment-adviser": "Cowork rollout is approved by compliance leadership where adviser workflows touch client communications, with usage and model decisions documented for SEC exam response.",
+      "insurance-carrier": "Cowork is limited to approved underwriting/claims populations after privacy and browser-use controls are reviewed for PHI/PII handling obligations.",
+      "credit-union": "Cowork scope is tied to member-data least-privilege posture; billing/discovery decisions and consumption controls are retained as NCUA examination evidence.",
+      "other": "Cowork governance decisions (access, models, browser use, plugins, consumption, and Purview coverage) are documented under the institution's AI governance standard."
     },
     "facilitatorNotes": {
       "ask": "Is Copilot Cowork governed with deliberate availability, plugin, and supervision decisions before broad enablement?",
       "followUp": "Confirm Frontier enrollment, that availability is scoped (not default-all), and that plugins and audit coverage are documented.",
+      "timeBudgetMinutes": 5
+    },
+    "solutions": []
+  },
+  {
+    "id": "4.16",
+    "title": "Control 4.16: Microsoft Scout Governance",
+    "pillar": 4,
+    "pillar_name": "Operations & Lifecycle",
+    "source_file": "docs/controls/pillar-4-operations/4.16-microsoft-scout-governance.md",
+    "automation": "manual",
+    "collection_methods": [],
+    "checks": [],
+    "zone_thresholds": {
+      "zone1": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone2": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      },
+      "zone3": {
+        "min_checks_passed": 0,
+        "maturity_score": 0
+      }
+    },
+    "manual_question": "Is Microsoft Scout governed across Frontier scope, endpoint policy plus attestation, and GitHub Copilot entitlement with documented supervision and boundary risk controls before enablement?",
+    "name": "Microsoft Scout Governance",
+    "zonesApplicable": [
+      1,
+      2,
+      3
+    ],
+    "roles": [
+      "M365 Global Admin",
+      "Purview Compliance Admin",
+      "Security Admin",
+      "AI Governance Lead"
+    ],
+    "regulatory": [
+      "OCC-Heightened-Standards",
+      "FFIEC-IT-Handbook",
+      "SOX-302-404",
+      "GLBA-501b",
+      "FINRA-3110",
+      "SEC-17a-4"
+    ],
+    "priority": "high",
+    "yesBar": "Microsoft Scout is governed through all three required gates (Frontier scope, managed-endpoint policy with admin attestation, and GitHub Copilot Business/Enterprise entitlement), with managed endpoint posture validated, shell/browser/local-file permissions governed, autonomous/unattended modes explicitly controlled, MCP approvals documented, mixed M365/GitHub/local boundary risks acknowledged, and supervision evidence retained.",
+    "partialBar": "Scout governance exists but one or more critical controls is missing or stale (gate reconciliation, endpoint policy evidence, permission defaults, MCP approval records, supervision cadence, or known-evidence limitations tracking).",
+    "noBar": "Scout is enabled or piloted without reconciled Frontier/Intune/GitHub gating, without documented permission boundaries, and without evidence of supervision or residual-risk acceptance for local and third-party processing surfaces.",
+    "verifyIn": [
+      {
+        "portal": "Microsoft 365 admin center",
+        "path": "Copilot > Settings > Frontier",
+        "url": "https://admin.microsoft.com/Adminportal/Home#/copilot"
+      },
+      {
+        "portal": "Microsoft Intune admin center",
+        "path": "Devices > Configuration > Policies (Scout Frontier profile / AllowScoutFrontierAccess)",
+        "url": "https://intune.microsoft.com"
+      },
+      {
+        "portal": "GitHub organization settings",
+        "path": "Copilot > Access / seat assignments (Business or Enterprise)",
+        "url": "https://github.com/organizations"
+      }
+    ],
+    "verifyPowerShell": "",
+    "evidenceExpected": [
+      "Frontier enrollment and scoping record for tenant and pilot groups",
+      "Intune policy export showing Scout enablement profile assignment and effective state",
+      "Admin attestation record naming approver and completion date",
+      "GitHub Copilot Business/Enterprise entitlement export matched to pilot users",
+      "Documented default permission posture for local files, shell commands, and browser actions",
+      "Autonomous-mode and unattended-automation decision records with scope constraints",
+      "Approved MCP inventory including authentication, egress, and data-path classification",
+      "Boundary map showing M365-protected data vs GitHub/local/third-party processing surfaces",
+      "Known unsupported evidence register (local automation artifacts, local MCP output, third-party inference telemetry)"
+    ],
+    "controlDocUrl": "/controls/pillar-4-operations/4.16-microsoft-scout-governance/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/4.16/portal-walkthrough/",
+    "collectorField": "",
+    "sectorYesBar": {
+      "bank": "Scout pilot is approved as an endpoint and third-party-risk change event; Frontier/Intune/GitHub gates and residual-risk acceptance are documented for FFIEC and OCC Heightened Standards oversight.",
+      "broker-dealer": "Scout use by registered populations is gated on FINRA Rule 3110 supervisory procedures and explicit records-treatment decisions for artifacts potentially in scope under SEC Rule 17a-4.",
+      "investment-adviser": "Scout deployment for adviser workflows includes compliance approval, documented entitlement scope, and supervision over client-facing outputs produced through local file/shell/browser actions.",
+      "insurance-carrier": "Scout is limited to managed endpoints with documented PHI/PII handling boundaries, with endpoint-policy evidence and exception tracking retained for audit.",
+      "credit-union": "Scout enablement for member-data workflows is constrained to approved pilot users and managed devices, with gate reconciliation and boundary-risk evidence retained for NCUA examinations.",
+      "other": "TODO: define sector-specific regulated Scout threshold once Microsoft publishes GA-stable evidence and policy surfaces."
+    },
+    "facilitatorNotes": {
+      "ask": "Can you show reconciled evidence that Scout is governed across Frontier scope, Intune policy + attestation, and GitHub Copilot entitlement, with explicit controls for permissions, autonomy, and MCP?",
+      "followUp": "Validate all three gates against the same pilot roster, then review permission defaults (local file/shell/browser), autonomous-mode posture, MCP approvals, and the known unsupported evidence register for local/third-party boundaries.",
       "timeBudgetMinutes": 5
     },
     "solutions": []

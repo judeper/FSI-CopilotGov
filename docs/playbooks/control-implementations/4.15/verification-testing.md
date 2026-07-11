@@ -78,5 +78,5 @@ Test cases and evidence collection for validating access posture (usage-based bi
 - [PowerShell Setup](powershell-setup.md)
 - [Troubleshooting](troubleshooting.md)
 
-*FSI Copilot Governance Framework v1.7.1 - July 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 4.15](../../../controls/pillar-4-operations/4.15-copilot-cowork-governance.md)

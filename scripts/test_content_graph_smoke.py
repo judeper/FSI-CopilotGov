@@ -13,18 +13,18 @@ BUILD_SCRIPT = REPO_ROOT / "scripts" / "build_content_graph.py"
 VALIDATE_SCRIPT = REPO_ROOT / "scripts" / "validate_content_graph.py"
 
 EXPECTED = {
-    "controls": 63,
+    "controls": 64,
     "pillars": 4,
-    "by_pillar": {"1": 16, "2": 17, "3": 15, "4": 15},
-    "by_tier": {"Baseline": 18, "Recommended": 33, "Regulated": 12},
+    "by_pillar": {"1": 16, "2": 17, "3": 15, "4": 16},
+    "by_tier": {"Baseline": 18, "Recommended": 33, "Regulated": 13},
     "by_pillar_tier": {
         "1": {"Baseline": 6, "Recommended": 7, "Regulated": 3},
         "2": {"Baseline": 6, "Recommended": 9, "Regulated": 2},
         "3": {"Baseline": 3, "Recommended": 6, "Regulated": 6},
-        "4": {"Baseline": 3, "Recommended": 11, "Regulated": 1},
+        "4": {"Baseline": 3, "Recommended": 11, "Regulated": 2},
     },
-    "playbooks_total": 268,
-    "playbooks_control": 249,
+    "playbooks_total": 272,
+    "playbooks_control": 253,
     "playbooks_cross_cutting": 19,
     "solutions": 23,
 }

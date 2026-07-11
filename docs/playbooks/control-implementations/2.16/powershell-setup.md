@@ -93,5 +93,5 @@ Compress-Archive -Path .\artifacts\2.16\* `
 - Continue to [Verification & Testing](verification-testing.md) for scope and DLP validation.
 - Reference [Troubleshooting](troubleshooting.md) for inventory and audit issues.
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.8.0 - July 2026*
 - Back to [Control 2.16](../../../controls/pillar-2-security/2.16-federated-connector-mcp-governance.md)
