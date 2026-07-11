@@ -167,7 +167,7 @@ Microsoft distinguishes between **Copilot Chat Basic** (no additional Copilot li
 | **Edit with Copilot (Agent Mode)** | Available with web data grounding only | Available with organizational data via Microsoft Graph |
 | **Copilot Pages / Copilot Notebooks** | Available where tenant policy and app entitlement permit; content created from Basic chats is not automatically Graph-grounded | Available with Microsoft Graph-grounded content and SharePoint Embedded storage |
 | **Copilot Cowork** | Not available | Available |
-| **Microsoft Scout (Frontier preview)** | Not available | Not part of the standard M365 Copilot license; requires Frontier enrollment + Intune endpoint policy + admin attestation + a per-user GitHub Copilot Business or Enterprise entitlement on a linked GitHub account |
+| **Microsoft Scout (Frontier preview)** | Not available | Not part of the standard M365 Copilot license; requires Frontier enrollment + Intune endpoint policy (imported `microsoft-scout` ADMX/ADML with **Allow Microsoft Scout Frontier access** plus documented ADMX admin controls) + admin attestation + an active **Microsoft 365 Copilot license** + a per-user **GitHub Copilot Business or Enterprise** entitlement on a linked GitHub account. Installation requires local Administrator permissions on the endpoint — prefer system-context managed deployment through Intune over standing local admin. |
 | **Researcher** | Not available | Available |
 | **Analyst** | Not available | Available |
 | **Copilot Tuning (preview)** | Not available | Available only for eligible tenants with at least 5,000 Microsoft 365 Copilot licenses during preview |

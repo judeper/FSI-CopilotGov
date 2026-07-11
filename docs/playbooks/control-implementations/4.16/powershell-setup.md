@@ -5,13 +5,13 @@ Automation workflow for reconciling the three Scout admin gates, capturing Intun
 ## Prerequisites
 
 - PowerShell 7+
-- `Microsoft.Graph` (permissions: `DeviceManagementConfiguration.Read.All`, `DeviceManagementApps.Read.All`, `Group.Read.All`) for Intune device-configuration inspection and group reconciliation
+- `Microsoft.Graph` (permissions: `DeviceManagementConfiguration.Read.All`, `DeviceManagementApps.Read.All`, `Group.Read.All`, `User.Read.All`, `Directory.Read.All`) for Intune device-configuration inspection, group reconciliation, and Microsoft 365 Copilot license assignment reads
 - `ExchangeOnlineManagement` for unified-audit-log queries (Scout-related admin events flow through admin-agent management operations)
 - On the local Windows device being sampled: rights to read `HKLM` policy hives
 - M365 Global Reader (or equivalent least-privilege read role) for the tenant surfaces
 - GitHub administrator access to the linked GitHub organization or enterprise for entitlement reconciliation (out-of-band; use the GitHub UI or `gh` CLI — no PowerShell module invocation is included here)
 - Approved evidence-retention path
-- A documented record of the approved pilot group, endpoint-policy assignment target, and GitHub Copilot entitlement list
+- A documented record of the approved pilot group, endpoint-policy assignment target, and the two per-user license prerequisites (active Microsoft 365 Copilot license per Control 1.9, GitHub Copilot Business or Enterprise entitlement)
 
 > **Important:** Scout is a Frontier preview capability with **no dedicated Scout PowerShell service module**. Do not rely on invented or undocumented Scout-specific cmdlets. Validate configuration in the Microsoft 365 admin center, Intune, and GitHub UIs and reconcile results with the evidence pulled below. Re-verify audit operation names and Intune configuration schemas against current Microsoft documentation before treating output as evidence.
 
@@ -94,33 +94,93 @@ $outOfScope  = $assignments | Where-Object { $_.TargetGroup -and $_.TargetGroup 
 $outOfScope | Export-Csv .\artifacts\4.16\scout-intune-out-of-scope-assignments.csv -NoTypeInformation
 ```
 
-### Script 4: Inspect the local Windows ADMX-backed policy value on a sampled device
+### Script 4: Inspect the local Windows ADMX-backed policy values on a sampled device
 
-Read-only inspection. The Scout Windows ADMX is documented to expose `AllowScoutFrontierAccess`. Registry paths for policy-backed settings resolve under the `HKLM\SOFTWARE\Policies` hive; the exact subkey should be verified against the current Scout ADMX. Do not write to policy hives from this playbook.
+Read-only inspection. Microsoft's [Manage admin controls in Intune for Microsoft Scout](https://learn.microsoft.com/microsoft-scout/manage-group-policy) documents the Scout Windows ADMX policy as device-scoped and stored under `HKLM\SOFTWARE\Policies\Scout`. The **Allow Microsoft Scout Frontier access** capability (from [Set up Microsoft Scout with Intune](https://learn.microsoft.com/microsoft-scout/admin-intune-setup)) is the sign-in gate; the other documented values give admins policy-level control over MCP servers, permission types, models, providers, Heartbeat, Automations, workspace scoping, browser egress, and forced approval prompts. Verify names against the current article before treating output as evidence. Do not write to policy hives from this playbook.
 
 ```powershell
-# Adjust the subkey path to match the Scout ADMX namespace verified from current Microsoft docs.
-$candidates = @(
-  'HKLM:\SOFTWARE\Policies\Scout'
+# Documented ADMX admin controls under HKLM\SOFTWARE\Policies\Scout.
+# Verify names/types against current Microsoft documentation before treating as evidence:
+#   https://learn.microsoft.com/microsoft-scout/manage-group-policy
+$scoutPolicyPath = 'HKLM:\SOFTWARE\Policies\Scout'
+$scoutDwordValues = @(
+  'PolicyVersion',
+  'ForcePrompt',
+  'DisableHeartbeat',
+  'DisableWorkflows',
+  'RestrictToWorkspace'
+)
+$scoutStringValues = @(
+  'DisabledServers',
+  'DisabledPermissions',
+  'DisabledModels',
+  'DisabledProviders',
+  'BrowserEgressBlockedOrigins'
 )
 
-$found = @()
-foreach ($path in $candidates) {
-  if (Test-Path $path) {
-    $found += Get-ItemProperty -Path $path |
-      Select-Object PSPath,
-        @{n='AllowScoutFrontierAccess';e={ $_.AllowScoutFrontierAccess }}
+# Frontier-access ADMX capability from admin-intune-setup (sign-in gate).
+$frontierValue = 'AllowScoutFrontierAccess'
+
+$sample = [ordered]@{
+  PSPath                    = $scoutPolicyPath
+  KeyPresent                = (Test-Path $scoutPolicyPath)
+  $frontierValue            = $null
+}
+foreach ($v in ($scoutDwordValues + $scoutStringValues)) { $sample[$v] = $null }
+
+if ($sample.KeyPresent) {
+  $props = Get-ItemProperty -Path $scoutPolicyPath -ErrorAction SilentlyContinue
+  foreach ($name in @($frontierValue) + $scoutDwordValues + $scoutStringValues) {
+    if ($props.PSObject.Properties.Name -contains $name) {
+      $sample[$name] = $props.$name
+    }
+  }
+} else {
+  Write-Warning 'No Scout policy key found at HKLM\SOFTWARE\Policies\Scout. Verify the ADMX namespace and settings in current Microsoft documentation and update this script.'
+}
+
+[pscustomobject]$sample |
+  Export-Csv .\artifacts\4.16\scout-local-policy-sample.csv -NoTypeInformation
+```
+
+> On macOS, evidence for the equivalent profile is captured with `profiles show -type configuration` and by exporting the deployed `.mobileconfig` from Intune. Where an equivalent macOS payload key exists for any of the Windows ADMX admin controls above, confirm the specific key against current Microsoft documentation before treating output as evidence. Both are out-of-band relative to this PowerShell workflow.
+
+### Script 4b: Reconcile pilot users against active Microsoft 365 Copilot license assignment
+
+Microsoft's [Get started with Microsoft Scout](https://learn.microsoft.com/microsoft-scout/get-started) lists an active Microsoft 365 Copilot license as a per-user prerequisite. Reconcile pilot users against license assignment (also relevant to [Control 1.9](../../../controls/pillar-1-readiness/1.9-license-planning.md)).
+
+```powershell
+Connect-MgGraph -Scopes 'User.Read.All','Directory.Read.All','Group.Read.All' -NoWelcome
+
+# Substitute the current Microsoft 365 Copilot license SKU part number from your tenant.
+# Verify against the current Microsoft 365 Copilot licensing documentation before use.
+$copilotSkuPartNumber = 'Microsoft_365_Copilot'
+$copilotSku = Get-MgSubscribedSku -All |
+  Where-Object { $_.SkuPartNumber -eq $copilotSkuPartNumber }
+
+if (-not $copilotSku) {
+  Write-Warning "SKU '$copilotSkuPartNumber' not found in Get-MgSubscribedSku. Verify the Copilot SKU part number in the Microsoft 365 admin center and update this script."
+}
+
+$approvedPilotGroupId = (Import-Csv .\config\scout-pilot-decision.csv).ApprovedUserGroupId |
+  Select-Object -First 1
+
+$pilotUsers = Get-MgGroupMember -GroupId $approvedPilotGroupId -All
+
+$licenseReport = foreach ($m in $pilotUsers) {
+  $u = Get-MgUser -UserId $m.Id -Property 'id,userPrincipalName,assignedLicenses'
+  [pscustomobject]@{
+    UserPrincipalName    = $u.UserPrincipalName
+    UserId               = $u.Id
+    HasM365CopilotLicense = if ($copilotSku) {
+      [bool]($u.AssignedLicenses | Where-Object { $_.SkuId -eq $copilotSku.SkuId })
+    } else { 'Unknown' }
   }
 }
 
-if (-not $found) {
-  Write-Warning 'No Scout policy key found under the sampled paths. Verify the ADMX namespace in current Microsoft documentation and update this script.'
-}
-
-$found | Export-Csv .\artifacts\4.16\scout-local-policy-sample.csv -NoTypeInformation
+$licenseReport |
+  Export-Csv .\artifacts\4.16\scout-m365-copilot-license-reconciliation.csv -NoTypeInformation
 ```
-
-> On macOS, evidence for the equivalent profile is captured with `profiles show -type configuration` and by exporting the deployed `.mobileconfig` from Intune. Both are out-of-band relative to this PowerShell workflow.
 
 ### Script 5: Pull the subset of Scout-related activity visible to Purview audit
 
@@ -169,14 +229,17 @@ Compress-Archive -Path .\artifacts\4.16\* `
 
 | Task | Cadence | Notes |
 |------|---------|-------|
-| Intune policy + assignment export | Monthly | Confirms endpoint policy stays scoped to the approved pilot device group |
-| Local ADMX policy spot-check | Monthly (rotating device sample) | Confirms the policy actually applied on managed devices; verify ADMX namespace against current docs |
-| GitHub Copilot entitlement reconciliation | Monthly | Out-of-band from GitHub administration; documents the third gate |
-| Admin-attestation record review | Quarterly | Confirms the attestation gate remains valid and named admins are still authorized |
-| MCP-server inventory review | Monthly | Confirms configured MCP servers match the approved inventory |
-| Permission-mode review | Monthly | Confirms shell default posture, autonomous-mode posture, and unattended-automation posture match the approved decisions |
+| Intune policy + assignment export | Monthly | Confirms endpoint policy (including documented ADMX admin controls under `HKLM\SOFTWARE\Policies\Scout`) stays scoped to the approved pilot device group |
+| Local ADMX policy spot-check | Monthly (rotating device sample) | Confirms the **Allow Microsoft Scout Frontier access** capability and the documented admin controls actually applied on managed devices; verify names against current [Microsoft documentation](https://learn.microsoft.com/microsoft-scout/manage-group-policy) |
+| Microsoft 365 Copilot license reconciliation | Monthly | Confirms pilot users hold an active Microsoft 365 Copilot license (per Control 1.9) — one of Scout's per-user prerequisites |
+| GitHub Copilot entitlement reconciliation | Monthly | Out-of-band from GitHub administration; documents the GitHub Copilot Business/Enterprise entitlement gate |
+| Admin-attestation record review | Quarterly | Confirms Microsoft's Frontier organization sign-up (attestation) gate remains valid and named admins are still authorized |
+| Installation-privilege deployment review | Quarterly | Confirms the Scout installer deployment pattern (system-context managed deployment, just-in-time elevation, or documented exception) remains in force so end users are not granted standing local Administrator rights |
+| MCP-server inventory review | Monthly | Confirms configured MCP servers match the approved inventory; where the ADMX `DisabledServers` setting is used, confirm the policy value matches the inventory decision |
+| Permission-mode review | Monthly | Confirms shell default posture (with `ForcePrompt` where applied), autonomous-mode posture, and unattended-automation posture (with `DisableWorkflows` where applied) match the approved decisions |
+| Provider/model exclusion review | Quarterly | Confirms `DisabledProviders` and `DisabledModels` ADMX values match the third-party inference exclusion decision |
 | M365 audit pull (Scout subset) | Weekly | Aligns with the pilot supervisory review cadence |
-| Preview-change review | As released | Re-assesses each gate when Microsoft updates the Scout preview |
+| Preview-change review | As released | Re-assesses each gate — and the documented ADMX admin controls — when Microsoft updates the Scout preview |
 | Evidence-gap manifest refresh | Quarterly | Confirms the documented list of unsupported platform evidence remains current |
 
 ## Next Steps

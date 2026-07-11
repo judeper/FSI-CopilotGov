@@ -114,6 +114,7 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Get started with Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/get-started](https://learn.microsoft.com/microsoft-scout/get-started) |
 | Microsoft Scout admin access overview | [https://learn.microsoft.com/microsoft-scout/admin-access-overview](https://learn.microsoft.com/microsoft-scout/admin-access-overview) |
 | Set up Microsoft Scout with Intune | [https://learn.microsoft.com/microsoft-scout/admin-intune-setup](https://learn.microsoft.com/microsoft-scout/admin-intune-setup) |
+| Manage admin controls in Intune for Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/manage-group-policy](https://learn.microsoft.com/microsoft-scout/manage-group-policy) |
 | Use Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/use-microsoft-scout](https://learn.microsoft.com/microsoft-scout/use-microsoft-scout) |
 | Microsoft Scout FAQ | [https://learn.microsoft.com/microsoft-scout/faq](https://learn.microsoft.com/microsoft-scout/faq) |
 | Responsible AI overview for Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-overview](https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-overview) |
