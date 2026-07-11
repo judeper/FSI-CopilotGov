@@ -1,61 +1,74 @@
 # Control 4.15: Copilot Cowork Governance - Portal Walkthrough
 
-Step-by-step admin-center workflow for governing Microsoft 365 Copilot Cowork while it is a Frontier preview feature: confirming Frontier enrollment, scoping availability, governing deployment and pinning, controlling plugins, and confirming supervision coverage. This playbook governs the Cowork agent wrapper; broader admin settings (Control 4.1) and extensibility (Control 4.13) remain owned by their respective controls.
+Step-by-step admin-center workflow for governing Microsoft 365 Copilot Cowork after its June 2026 general availability: scoping access through usage-based billing, controlling the discovery setting, governing model toggles (Anthropic family and Fable 5 (Preview)), reviewing the local browser-use toggle, governing plugins and the Customize page (skills and uploaded plugin packages), setting consumption limits, and confirming Purview and audit coverage. This playbook governs Cowork's tenant configuration surfaces; broader admin settings (Control 4.1) and extensibility (Control 4.13) remain owned by their respective controls.
 
 ## Prerequisites
 
 - [Control 4.1 Admin Settings and Feature Management](../../../controls/pillar-4-operations/4.1-admin-settings-feature-management.md) baseline is documented.
-- [Control 4.13 Extensibility Governance](../../../controls/pillar-4-operations/4.13-extensibility-governance.md) governs plugins and connectors that extend Cowork.
+- [Control 4.13 Extensibility Governance](../../../controls/pillar-4-operations/4.13-extensibility-governance.md) governs plugins, connectors, and uploaded plugin packages that extend Cowork.
 - An approved pilot security group exists for phased rollout.
-- A documented agent register and evidence repository are in place, per [Control 4.15](../../../controls/pillar-4-operations/4.15-copilot-cowork-governance.md).
+- The tenant's usage-based billing (Copilot Credits) posture has been approved by finance, and a spending policy is in place.
+- A documented governance register and evidence repository are in place, per [Control 4.15](../../../controls/pillar-4-operations/4.15-copilot-cowork-governance.md).
 
-> **Important:** Cowork is a Frontier preview feature. Preview capabilities and admin surfaces may change. Re-verify each step against current Microsoft documentation before relying on it in production governance.
+> **Important:** Cowork is generally available as of June 2026, but certain sub-features remain in preview at the time of last verification — including **local browser use** and the **Claude Fable 5 (Preview)** model. Re-verify each step against current Microsoft documentation before relying on it in production governance.
 
 ## Access Paths
 
 | Portal | Path | Why it matters |
 |--------|------|----------------|
-| Microsoft 365 Copilot settings | Copilot > Settings > Frontier | Confirms tenant and admin Frontier enrollment that gates Cowork visibility |
-| Microsoft 365 Admin Center | Copilot > Agents > All agents > Cowork | Sets availability, deployment, and plugin controls for Cowork |
-| Microsoft 365 Admin Center | Copilot > Agents > Manage pinned agents | Controls whether Cowork is pinned in the Copilot rail |
-| Microsoft Purview portal | Audit | Captures Cowork-related agent install, deployment, and usage events |
-| Governance evidence repository | Workspace of record | Stores availability decisions, plugin inventory, and approvals |
+| Microsoft 365 admin center | Copilot > Cost management | Configures usage-based billing scope, spending policies, and per-user or per-group consumption limits for Cowork |
+| Microsoft 365 admin center | Copilot > Settings > AI experiences enabled by usage-based billing | Toggles tenant-wide discovery for usage-based experiences including Cowork |
+| Microsoft 365 admin center | Copilot settings > Anthropic model family / Claude Fable 5 (Preview) | Governs third-party model availability and the preview model that requires provider data retention |
+| Microsoft 365 admin center | Copilot > Settings > View All > Cowork settings > Allow browser access | Governs the **Cowork Browsing** tenant toggle for local Microsoft Edge browser use |
+| Microsoft 365 admin center | Integrated apps / plugin availability controls | Governs Microsoft and partner plugin availability, deployment, and connector authentication |
+| Cowork (web) | Customize > Plugins and Customize > Skills | Governs uploaded plugin packages, user-created and uploaded custom skills, and sharing scope |
+| Microsoft Purview portal | Copilot governance surfaces per the Purview for Cowork guidance | Provides sensitivity-label handling, DLP for Copilot, audit, communication compliance, and eDiscovery coverage |
+| Microsoft Purview portal | Audit | Captures unified-audit-log events including Cowork browser tasks |
+| Governance evidence repository | Workspace of record | Stores access-posture decisions, model-toggle decisions, browser-toggle decisions, plugin/skill inventory, consumption limits, and approvals |
 
 ## Steps
 
-### Step 1: Confirm Frontier enrollment
+### Step 1: Confirm the access posture (billing + discovery)
 
-Navigate to **Copilot > Settings > Frontier** and record whether the tenant and the administering accounts are enrolled. If Cowork is not visible in Agent management, verify that the admin account is enrolled in Frontier. Capture the enrollment decision and approver in the register.
+In **M365 Admin Center > Copilot > Cost management**, record which users or groups have usage-based billing enabled for Cowork and confirm the spending policy. Then in **M365 Admin Center > Copilot > Settings > AI experiences enabled by usage-based billing**, record whether discovery is on. The recommended pilot posture is billing enabled for the approved pilot group with tenant-wide discovery **off**, so Cowork is not surfaced to users outside the pilot. Capture the decision, approver, and pilot scope in the register.
 
-### Step 2: Scope availability deliberately
+### Step 2: Handle access requests deliberately
 
-In **Copilot > Agents > All agents**, select **Cowork** and set availability to **Available to specific users or groups** scoped to the approved pilot group, rather than leaving the Microsoft default of **Available to all users**. Use security groups to represent geographic or organizational segments — country/region scoping is not supported.
+If discovery is on and a user does not have billing enabled, the user can submit an access request in the app. Establish a documented workflow so that requests are reviewed against policy, cost, and compliance before an admin enables billing for the requester. Record the reviewer and outcome for each request.
 
-### Step 3: Govern deployment and pinning
+### Step 3: Govern model toggles
 
-Decide whether Cowork is user-installed or pre-installed. If deploying, use **Deploy to** scoped to approved groups, recognizing that deployment accepts users' permissions on their behalf. If pinning, use **Manage pinned agents**. Record an approval for each deployment or pinning decision.
+In **M365 Admin Center > Copilot settings**, record the current state of the **Anthropic model family** toggle and the **Claude Fable 5 (Preview)** toggle. Fable 5 (Preview) is off by default. Because Fable 5 (Preview) requires the model provider to retain prompts and responses, leave it off unless legal, privacy, and compliance have reviewed the retention terms and approved the use. If the Anthropic family is disabled per policy, coordinate with the pilot on which models remain available for their tasks.
 
-### Step 4: Govern plugins
+### Step 4: Govern the Cowork Browsing tenant toggle
 
-Review the plugins available to Cowork through the admin plugin controls. Maintain an approved-plugin inventory, confirm connector authentication for any Dynamics 365 / Agent 365 integrations, and restrict plugin availability to approved populations under [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md).
+Navigate to **M365 Admin Center > Copilot > Settings > View All > Cowork settings > Allow browser access**. Leave "Allow Cowork to use the Microsoft Edge browser to perform tasks on behalf of users" unchecked until browser use is reviewed. Because browser tasks run in the user's local Microsoft Edge and inherit Conditional Access, Microsoft Purview DLP, browser management policy, and site allow/block/view-only rules, confirm those policies are in the intended state before enabling the toggle. Local browser use is a preview capability at the time of last verification and should be treated accordingly.
 
-### Step 5: Confirm supervision and audit coverage
+### Step 5: Govern plugins and the Customize page
 
-Confirm that Cowork activity is visible to existing Purview audit, retention, and supervision tooling. Document any coverage gaps and the remediation owner. Define a review cadence for availability, plugin inventory, and preview-feature changes.
+Review the plugins available to Cowork through the admin plugin controls, including Microsoft plugins (for example, Dynamics 365 Customer Service, Sales, ERP, Fabric IQ) and partner connectors (for example, Jira, Salesforce, ServiceNow, SAP ERP, Workday HCM, Zendesk). Coordinate with Control 4.13 on the Cowork **Customize** page: govern uploaded plugin packages, user-created and uploaded custom skills (`.md`, `.zip`, `.skill`), and the sharing scope for each. Maintain an approved inventory and confirm connector authentication for any Dynamics 365 / Agent 365 integrations.
+
+### Step 6: Set consumption limits and monitor spend
+
+In **Copilot > Cost management**, set per-user or per-group consumption limits sized to the pilot's approved budget. Cowork consumption includes model responses, tool/skill calls, image generation, and browser tasks — reflect all four in the review. Establish a review cadence so consumption growth is visible before month-end and before threshold breaches.
+
+### Step 7: Confirm Purview, audit, and supervision coverage
+
+Confirm Cowork is included in the tenant's Purview posture per the [Use Microsoft Purview to manage data security & compliance for Copilot Cowork](https://learn.microsoft.com/en-us/purview/ai-copilot-cowork) guidance (sensitivity labels, DLP for Copilot, audit, communication compliance, and eDiscovery). Confirm that browser task events appear in the unified audit log. Document any coverage gaps with a remediation owner and cadence.
 
 ## FSI Recommendations
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Document Frontier enrollment, set availability deliberately, and maintain a plugin inventory. |
-| **Recommended** | Use group-scoped availability and deployment under a change register, separate approval from implementation, and confirm audit coverage. |
-| **Regulated** | All Recommended controls plus: dual technology + compliance approval before any regulated population is enabled, supervisory review of agentic outputs per FINRA Rule 3110 where applicable, and examination-ready evidence retention. |
+| **Baseline** | Scope usage-based billing to a pilot group with tenant-wide discovery off; keep the Cowork Browsing toggle and Claude Fable 5 (Preview) model off; maintain a plugin and custom-skill inventory; set an initial consumption limit. |
+| **Recommended** | Manage billing scope, discovery, model toggles, browser toggle, plugin/skill/uploaded-package inventory, and consumption limits through a documented change register with separation of approval and implementation; route access requests through a formal review; confirm Purview and audit coverage. |
+| **Regulated** | All Recommended controls plus: dual technology + compliance approval before enabling billing, discovery, browser use, or the Anthropic-family/Fable toggles for any regulated population; supervisory review of agentic outputs per FINRA Rule 3110 where applicable; prohibition or explicit documented approval of any model that requires provider data retention for regulated data; examination-ready evidence retention for billing, discovery, model, browser, plugin/skill, and consumption decisions. |
 
 ## Next Steps
 
-- Proceed to [PowerShell Setup](powershell-setup.md) to inventory Cowork availability and pull audit evidence.
-- Use [Verification & Testing](verification-testing.md) to validate availability scoping, plugin controls, and audit coverage.
-- Keep [Troubleshooting](troubleshooting.md) available for visibility, availability, and plugin issues.
+- Proceed to [PowerShell Setup](powershell-setup.md) for evidence-collection scripts that pull unified-audit-log activity and package portal exports.
+- Use [Verification & Testing](verification-testing.md) to validate access posture, model toggles, browser toggle, plugin/skill inventory, consumption limits, and Purview/audit coverage.
+- Keep [Troubleshooting](troubleshooting.md) available for access, billing, discovery, model-toggle, browser-use, and plugin issues.
 
-*FSI Copilot Governance Framework v1.7.1 - April 2026*
+*FSI Copilot Governance Framework v1.7.1 - July 2026*
 - Back to [Control 4.15](../../../controls/pillar-4-operations/4.15-copilot-cowork-governance.md)
