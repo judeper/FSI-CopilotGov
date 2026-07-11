@@ -14,6 +14,10 @@ Replacement rules:
 * **dict fields** (sectorYesBar, facilitatorNotes) are merged
   per-key with the same TODO-replacement rule.
 
+* **force-replace fields** always use authored content for specific scopes:
+    - globally for fields in ``_REPLACE_FIELDS``
+    - per-control for fields in ``_CONTROL_FORCE_REPLACE_FIELDS``
+
 The merge **never** overwrites a value that has been hand-edited away
 from the TODO default. Re-running this script after authored_content.py
 is updated is safe.
@@ -41,6 +45,30 @@ AUTHORED_PY = ROOT / "assessment" / "manifest" / "authored_content.py"
 # FSI-CopilotGov-Solutions sister repo, so hand edits in the manifest
 # must not silently override later corrections).
 _REPLACE_FIELDS: set[str] = {"solutions"}
+
+# Per-control force replacements for fields intentionally re-authored in
+# authored_content.py. This is intentionally narrow: all controls/fields
+# outside these sets keep the default preservation behavior.
+_CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
+    "4.15": {
+        "yesBar",
+        "partialBar",
+        "noBar",
+        "sectorYesBar",
+        "verifyIn",
+        "evidenceExpected",
+        "facilitatorNotes",
+        "collectorField",
+    }
+}
+
+
+def _should_force_replace(control_id: str | None, field_name: str) -> bool:
+    if field_name in _REPLACE_FIELDS:
+        return True
+    if not control_id:
+        return False
+    return field_name in _CONTROL_FORCE_REPLACE_FIELDS.get(control_id, set())
 
 
 def _is_todo(v: Any) -> bool:
@@ -119,7 +147,7 @@ def main() -> int:
         before = json.dumps(ctrl, sort_keys=True)
         for key, override_value in overlay.items():
             existing = ctrl.get(key)
-            force_replace = key in _REPLACE_FIELDS
+            force_replace = _should_force_replace(cid, key)
             new_value = _merge_value(existing, override_value, force_replace=force_replace)
             if new_value is not existing:
                 if existing is None or _is_todo(existing) or (

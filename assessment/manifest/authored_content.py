@@ -4024,7 +4024,7 @@ AUTHORED: dict[str, dict] = {
             "Approved plugin, uploaded package, and custom-skill inventory with owner",
             "Purview coverage evidence (audit/eDiscovery/DLP alignment) and gap log",
         ],
-        "collectorField": "M365Admin_CoworkGovernance",
+        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Cowork enablement (billing scope, discovery, model/browser toggles) "

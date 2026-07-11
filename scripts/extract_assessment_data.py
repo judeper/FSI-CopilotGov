@@ -446,7 +446,32 @@ def parse_regulations(reg_string):
     """Parse regulatory reference string into list of regulation codes."""
     if not reg_string:
         return []
-    regs = [r.strip() for r in reg_string.split(",")]
+    regs = []
+    current = []
+    depth = 0
+    for i, ch in enumerate(reg_string):
+        if ch == "(":
+            depth += 1
+            current.append(ch)
+            continue
+        if ch == ")":
+            if depth > 0:
+                depth -= 1
+            current.append(ch)
+            continue
+        if ch == "," and depth == 0:
+            lookahead = reg_string[i + 1:].lstrip()
+            if lookahead and (lookahead[0].isupper() or lookahead[0].isdigit()):
+                candidate = "".join(current).strip()
+                if candidate:
+                    regs.append(candidate)
+                current = []
+                continue
+        current.append(ch)
+
+    tail = "".join(current).strip()
+    if tail:
+        regs.append(tail)
     return [r for r in regs if r]
 
 

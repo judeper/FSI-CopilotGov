@@ -32,7 +32,7 @@ describe("facilitator mode", () => {
   it("renders facilitator panels for all authored controls", async () => {
     const { document } = await initApp({ facilitator: true });
     // All controls are authored — every control should render a panel.
-    ["1.1", "1.2", "1.3", "1.4", "2.1", "2.2", "2.3", "3.1", "3.2", "4.1", "4.2", "4.13", "4.15"].forEach((id) => {
+    ["1.1", "1.2", "1.3", "1.4", "2.1", "2.2", "2.3", "3.1", "3.2", "3.8a", "4.1", "4.2", "4.13", "4.14", "4.15", "4.16"].forEach((id) => {
       const row = document.querySelector(`.control-row[data-control-id="${id}"]`);
       expect(row, `row ${id}`).not.toBeNull();
       expect(row.querySelector(".facilitator-panel"), `panel ${id}`).not.toBeNull();
@@ -67,6 +67,7 @@ describe("facilitator mode", () => {
     const cards = document.querySelectorAll(".ag-control-card");
     const lastId = cards[cards.length - 1].getAttribute("data-control-id");
     expect(() => app.focusNextControlCard(lastId)).not.toThrow();
+    expect(() => app.focusNextControlCard("4.16")).not.toThrow();
     // And with an unknown id: still a no-op, no throw.
     expect(() => app.focusNextControlCard("does-not-exist")).not.toThrow();
   });

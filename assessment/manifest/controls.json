@@ -5221,38 +5221,56 @@
       "FINRA-3110"
     ],
     "priority": "high",
-    "yesBar": "Microsoft 365 Copilot Cowork availability is set deliberately (scoped to approved groups or blocked) rather than left at the default of all users, with Frontier enrollment, plugin inventory, deployment/pinning approvals, and supervision coverage documented.",
-    "partialBar": "Some Cowork governance exists but availability, plugin inventory, or supervision/audit coverage is not fully documented or approved.",
-    "noBar": "Cowork is left at its default availability with no documented governance, plugin inventory, or supervision review.",
+    "yesBar": "Copilot Cowork governance reflects GA operating controls: usage-based billing scope is approved, discovery is set deliberately, model toggles (including Anthropic family and Claude Fable 5 preview) are documented, local browser use is governed as a preview sub-feature, consumption limits are monitored, plugin/skill inventories are approved, and Purview/audit coverage is evidenced.",
+    "partialBar": "Cowork governance is partially implemented, but one or more required GA decisions (billing/discovery, model policy, browser toggle, consumption limits, plugin/skill approvals, or Purview coverage) is missing, outdated, or lacks approver evidence.",
+    "noBar": "Cowork is effectively unmanaged: billing/discovery posture is not approved, model and browser settings are not governed, no verified plugin/skill inventory exists, and Purview/supervision evidence is absent.",
     "verifyIn": [
       {
         "portal": "Microsoft 365 admin center",
-        "path": "Copilot > Agents > All agents > Cowork",
-        "url": "https://admin.microsoft.com/Adminportal/Home#/agents"
+        "path": "Copilot > Cost management",
+        "url": "https://admin.microsoft.com/Adminportal/Home#/copilot"
+      },
+      {
+        "portal": "Microsoft 365 admin center",
+        "path": "Copilot > Settings > AI experiences enabled by usage-based billing",
+        "url": "https://admin.microsoft.com/Adminportal/Home#/copilot"
+      },
+      {
+        "portal": "Microsoft 365 admin center",
+        "path": "Copilot > Settings > View all > Cowork settings",
+        "url": "https://admin.microsoft.com/Adminportal/Home#/copilot"
+      },
+      {
+        "portal": "Microsoft Purview portal",
+        "path": "AI hub / Copilot security and compliance for Cowork",
+        "url": "https://purview.microsoft.com/aihub"
       }
     ],
     "verifyPowerShell": "",
     "evidenceExpected": [
-      "Frontier preview enrollment record for tenant and admin accounts",
-      "Cowork availability configuration (scoped group or blocked) with approval",
-      "Approved Cowork plugin inventory and connector authentication records",
-      "Deployment/pinning approvals and supervision/audit coverage evidence"
+      "Usage-based billing scope export (user/group assignments) with approver",
+      "Discovery-setting decision record and access-request workflow evidence",
+      "Model-policy record for Anthropic family and Claude Fable 5 (Preview)",
+      "Cowork Browsing tenant-toggle decision tied to browser-control review",
+      "Consumption-limit policy and recent spend/consumption report",
+      "Approved plugin, uploaded package, and custom-skill inventory with owner",
+      "Purview coverage evidence (audit/eDiscovery/DLP alignment) and gap log"
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.15-copilot-cowork-governance/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.15/portal-walkthrough/",
-    "collectorField": "M365Admin_CoworkGovernance",
+    "collectorField": "",
     "sectorYesBar": {
-      "bank": "Cowork adoption treated as a change-control and operational-risk event aligned to the FFIEC IT Examination Handbook and OCC Heightened Standards (12 CFR part 30, appendix D).",
-      "broker-dealer": "Cowork availability for registered reps gated on supervisory review of agentic outputs per FINRA Rule 3110 before enablement.",
+      "bank": "Cowork enablement (billing scope, discovery, model/browser toggles) is treated as a formal change-control event aligned to FFIEC IT Examination Handbook expectations and OCC Heightened Standards (12 CFR part 30, appendix D).",
+      "broker-dealer": "Cowork for registered reps is gated on FINRA Rule 3110 supervisory readiness, with documented review of agentic outputs that can contribute to client communications or records.",
       "investment-adviser": "Cowork rollout is approved by compliance leadership where adviser workflows touch client communications, with usage and model decisions documented for SEC exam response.",
       "insurance-carrier": "Cowork is limited to approved underwriting/claims populations after privacy and browser-use controls are reviewed for PHI/PII handling obligations.",
       "credit-union": "Cowork scope is tied to member-data least-privilege posture; billing/discovery decisions and consumption controls are retained as NCUA examination evidence.",
       "other": "Cowork governance decisions (access, models, browser use, plugins, consumption, and Purview coverage) are documented under the institution's AI governance standard."
     },
     "facilitatorNotes": {
-      "ask": "Is Copilot Cowork governed with deliberate availability, plugin, and supervision decisions before broad enablement?",
-      "followUp": "Confirm Frontier enrollment, that availability is scoped (not default-all), and that plugins and audit coverage are documented.",
-      "timeBudgetMinutes": 5
+      "ask": "Is Cowork operated under a documented GA governance posture (billing/discovery, models, browser use, consumption, plugins/skills, and Purview supervision) before expansion?",
+      "followUp": "Open Copilot cost-management and settings pages to confirm billing scope, discovery state, model/browser toggles, and consumption limits. Then verify plugin/skill approvals plus Purview/audit coverage evidence and unresolved gaps.",
+      "timeBudgetMinutes": 8
     },
     "solutions": []
   },
