@@ -296,7 +296,7 @@ Use the current DSPM for AI overview as the primary reference; the classic AI hu
 | Get ready for Copilot with SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management](https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management) |
 | Data access governance reports | [https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports](https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports) |
 | Agent insights report in SharePoint | [https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents](https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents) |
-| AI in SharePoint (preview) | [https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started](https://learn.microsoft.com/en-us/sharepoint/ai-in-sharepoint-get-started) |
+| Copilot in SharePoint (preview) | [https://learn.microsoft.com/en-us/sharepoint/copilot-in-sharepoint-get-started](https://learn.microsoft.com/en-us/sharepoint/copilot-in-sharepoint-get-started) |
 | SAM Content Management Assessment | [https://learn.microsoft.com/en-us/sharepoint/content-management-assessment](https://learn.microsoft.com/en-us/sharepoint/content-management-assessment) |
 | SharePoint site lifecycle management | [https://learn.microsoft.com/en-us/sharepoint/site-lifecycle-management](https://learn.microsoft.com/en-us/sharepoint/site-lifecycle-management) |
 | Restricted Content Discovery | [https://learn.microsoft.com/en-us/sharepoint/restricted-content-discovery](https://learn.microsoft.com/en-us/sharepoint/restricted-content-discovery) |
