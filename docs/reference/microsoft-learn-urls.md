@@ -95,10 +95,29 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Topic | URL |
 |-------|-----|
 | Copilot Cowork overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/) |
+| What's new in Copilot Cowork | [https://learn.microsoft.com/microsoft-365/copilot/cowork/whats-new](https://learn.microsoft.com/microsoft-365/copilot/cowork/whats-new) |
 | Get started with Copilot Cowork | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started) |
 | Copilot Cowork admin and governance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance) |
+| Copilot Cowork available models | [https://learn.microsoft.com/microsoft-365/copilot/cowork/cowork-models](https://learn.microsoft.com/microsoft-365/copilot/cowork/cowork-models) |
 | Manage Copilot Cowork plugins | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins) |
 | Copilot Cowork FAQ | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq) |
+| Managing AI experiences enabled by usage-based billing | [https://learn.microsoft.com/microsoft-365/copilot/discovery-setting-ai-experiences](https://learn.microsoft.com/microsoft-365/copilot/discovery-setting-ai-experiences) |
+| Manage Copilot Credits (usage-based billing) | [https://learn.microsoft.com/microsoft-365/copilot/usage-based-billing-manage-copilot-credits](https://learn.microsoft.com/microsoft-365/copilot/usage-based-billing-manage-copilot-credits) |
+
+---
+
+## Microsoft Scout (Frontier preview)
+
+| Topic | URL |
+|-------|-----|
+| Microsoft Scout (Frontier) overview | [https://learn.microsoft.com/microsoft-scout/overview](https://learn.microsoft.com/microsoft-scout/overview) |
+| Get started with Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/get-started](https://learn.microsoft.com/microsoft-scout/get-started) |
+| Microsoft Scout admin access overview | [https://learn.microsoft.com/microsoft-scout/admin-access-overview](https://learn.microsoft.com/microsoft-scout/admin-access-overview) |
+| Set up Microsoft Scout with Intune | [https://learn.microsoft.com/microsoft-scout/admin-intune-setup](https://learn.microsoft.com/microsoft-scout/admin-intune-setup) |
+| Use Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/use-microsoft-scout](https://learn.microsoft.com/microsoft-scout/use-microsoft-scout) |
+| Microsoft Scout FAQ | [https://learn.microsoft.com/microsoft-scout/faq](https://learn.microsoft.com/microsoft-scout/faq) |
+| Responsible AI overview for Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-overview](https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-overview) |
+| Responsible AI FAQ for Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-faq](https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-faq) |
 
 ---
 

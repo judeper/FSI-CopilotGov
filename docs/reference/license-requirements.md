@@ -123,6 +123,9 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | 4.11 | Microsoft Sentinel Integration for Copilot Events | -- | -- | -- | Microsoft Sentinel | Separate consumption-based (pay-per-GB) service |
 | 4.12 | Change Management for Copilot Feature Rollouts | Included | Included | -- | -- | Message Center monitoring; no additional license |
 | 4.13 | Copilot Extensibility and Agent Operations Governance | Included | Included | Included | -- | Integrated Apps and agent settings in M365 Admin Center |
+| 4.14 | Copilot Studio Agent Lifecycle Governance | -- | -- | Included | Copilot Studio capacity as required | Copilot Studio agent lifecycle; some Studio scenarios require additional Copilot Studio capacity or messaging packs |
+| 4.15 | Copilot Cowork Governance | -- | -- | Included | Usage-based billing (Copilot Credits) | Cowork reached GA in June 2026; access is gated by usage-based billing on Copilot Credits (model responses, tools/skills, image generation, browser tasks). Discovery is a separate setting under Copilot > Settings > AI experiences. |
+| 4.16 | Microsoft Scout Governance | -- | -- | Not included in the standard M365 Copilot license | Frontier preview enrollment + Intune (or equivalent MDM) + a per-user **GitHub Copilot Business or Enterprise** entitlement on a linked GitHub account | Scout is a Frontier-preview endpoint app for Windows 11+ and macOS 12+. Three independent gates: Frontier scoping, Intune endpoint policy plus admin attestation, and GitHub Copilot Business/Enterprise entitlement. Some inference is processed through GitHub Copilot and third-party model providers under separate terms. |
 
 ---
 

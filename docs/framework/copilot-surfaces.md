@@ -275,11 +275,21 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 | Attribute | Details |
 |-----------|---------|
-| **Copilot Capabilities** | Multi-step task delegation — users assign complex business workflows to Copilot for autonomous execution with periodic checkpoints for monitoring and intervention |
-| **Data Sources** | All M365 content accessible to the user — SharePoint, OneDrive, Exchange, Teams, Semantic Index |
-| **Governance Considerations** | Cowork introduces autonomous multi-step processing where Copilot independently accesses and combines data from multiple sources. This reduces the frequency of human review compared to single-turn interactions. Task outputs should be reviewed before distribution, particularly for client-facing or regulated content. Organizations should document which business functions are approved for Cowork delegation. |
-| **Key Controls** | 3.1 (Audit logging), 3.5 (Communication review), 2.2 (Sensitivity labels), 1.1 (Oversharing assessment) |
-| **Access** | Premium only (requires Copilot license). |
+| **Copilot Capabilities** | Multi-step task delegation — users assign complex business workflows to Copilot for autonomous execution with periodic checkpoints for monitoring and intervention. Cowork reached **general availability in June 2026** and includes a **Cowork Browsing** capability (off by default) that drives the user's local Microsoft Edge browser under Conditional Access, Purview DLP, browser management policy, and site allow/block/view-only rules. |
+| **Data Sources** | All M365 content accessible to the user — SharePoint, OneDrive, Exchange, Teams, Semantic Index. Model policy spans Claude Opus 4.7/4.8, Sonnet 5, a Sonnet+Opus Advisor pairing, GPT 5.5, Imagen 2, and Claude Fable 5 (Preview, off by default and requires provider data retention). |
+| **Governance Considerations** | Cowork introduces autonomous multi-step processing where Copilot independently accesses and combines data from multiple sources. Access is now gated by **usage-based billing (Copilot Credits)** in Copilot > Cost management; discovery is a separate setting under Copilot > Settings > AI experiences and lets users request access when billing is not enabled for them. Every browser task is recorded in the unified audit log. Task outputs should be reviewed before distribution, particularly for client-facing or regulated content. Organizations should document which business functions are approved for Cowork delegation, whether the Anthropic model family is enabled, and whether the Cowork Browsing tenant toggle is on. |
+| **Key Controls** | 3.1 (Audit logging), 3.5 (Communication review), 2.2 (Sensitivity labels), 1.1 (Oversharing assessment), 4.15 (Cowork governance) |
+| **Access** | Premium only (Microsoft 365 Copilot license). Cowork model responses, tools/skills, image generation, and browser tasks consume Copilot Credits under usage-based billing. |
+
+### Microsoft Scout (Frontier preview)
+
+| Attribute | Details |
+|-----------|---------|
+| **Copilot Capabilities** | **Endpoint-installed** agentic experience delivered through the Frontier preview program as a native app for Windows 11+ and macOS 12+. Scout can read and write local workspace files, execute shell commands (per-command permission modes), drive a browser through Playwright, reach into Microsoft 365 and Work IQ, load skills and subagents, connect to MCP servers, and schedule or trigger automations. Optional autonomous modes relax approval friction and are a separate governance decision. |
+| **Data Sources** | Local endpoint workspace, browser (via Playwright), the user's M365/Work IQ content, and third-party MCP servers. Some inference is processed through **GitHub Copilot and third-party model providers**, under those providers' separate terms, outside the M365 DPA. |
+| **Governance Considerations** | Scout has three independent admin gates: **Frontier scoping** (M365 admin center), **Intune endpoint policy + admin attestation** (Windows ADMX `AllowScoutFrontierAccess` or macOS `.mobileconfig`), and a per-user **GitHub Copilot Business or Enterprise entitlement** on a linked GitHub account — installing the app alone grants nothing. Session and memory data live in OneDrive under existing tenant controls, but **automation instructions and MCP output are stored locally on the endpoint** and are outside the M365 DPA; inference through GitHub Copilot and third-party providers is outside M365 residency, retention, sensitivity-label enforcement, and eDiscovery. Scout can display Purview sensitivity labels on citations, but generated or modified content may not reliably inherit sensitivity labels from source content. Preview capability, boundaries, and admin surfaces may change. |
+| **Key Controls** | 4.16 (Scout governance), 4.13 (Extensibility governance — skills, subagents, MCP as extensibility), 2.16 (MCP governance), 1.10 (Vendor risk — third-party inference), 1.9 (License planning — GitHub Copilot entitlement), 3.1 (Audit — M365-sourced activity only; local automation and MCP output are a known gap) |
+| **Access** | Frontier preview: requires all three gates plus GitHub Copilot Business or Enterprise entitlement on a linked GitHub account. Not part of the standard M365 Copilot license. |
 
 ### Researcher and Analyst
 
@@ -343,7 +353,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 | Tier | Risk Level | Surfaces | Governance Priority |
 |------|-----------|----------|-------------------|
-| **Tier 1 (Highest)** | High | Microsoft 365 Copilot Chat, Outlook, Teams, Copilot Cowork | Full governance at all levels |
+| **Tier 1 (Highest)** | High | Microsoft 365 Copilot Chat, Outlook, Teams, Copilot Cowork, Microsoft Scout (Frontier preview) | Full governance at all levels |
 | **Tier 2** | Medium-High | Word, Excel, PowerPoint, SharePoint, Copilot Pages, Copilot Search, Agent Mode / Edit with Copilot, Copilot Tuning (preview), Researcher, Analyst | Sensitivity labels, DLP, audit |
 | **Tier 3** | Medium | OneNote, Loop, OneDrive, Stream, Plugins, Connectors | Standard governance, monitoring |
 | **Tier 4** | Lower | Whiteboard, Forms, Planner, Viva suite | Baseline governance, awareness |
@@ -362,6 +372,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | Copilot Pages | Required | Required | Required | Required | -- | Required |
 | Copilot Search | Required | Required | Required | Required | -- | Required |
 | Copilot Cowork | Required | Required | Required | Required | Recommended | Required |
+| Microsoft Scout (Frontier preview) | Partial (M365-sourced only; local automation/MCP output not captured) | Endpoint DLP only | Display only (inheritance unreliable) | OneDrive scope only (local artifacts outside DPA) | Not supported | Required (existing M365 sources) |
 | Copilot Tuning | Required | Recommended | Recommended | Recommended | -- | Recommended |
 | Plugins | Required | Recommended | -- | Required | -- | -- |
 | Viva suite | Required | Recommended | -- | Recommended | -- | -- |
