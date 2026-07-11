@@ -1,53 +1,72 @@
 name: docs-validation
 
-# PR-time validation gate for the MkDocs site. Mirrors the build steps in
-# publish_docs.yml so the site is proven to build with --strict before merge,
-# not just at deploy time. Required check name: mkdocs-strict.
+# Base-controlled PR gate for documentation autonomy. The workflow runs for
+# every PR so the required mkdocs-strict context is always present. Docs-impacting
+# PRs receive the full deterministic validation suite; other PRs shim-success.
 
 on:
-  pull_request:
-    paths:
-      - 'docs/**'
-      - 'README.md'
-      - 'VERSION'
-      - 'mkdocs.yml'
-      - 'overrides/**'
-      - 'scripts/verify_build_output.py'
-      - 'scripts/verify_meta_tags.py'
-      - 'scripts/verify_doc_links.py'
-      - 'scripts/verify_learn_url_health.py'
-      - 'scripts/verify_version_stamps.py'
-      - 'scripts/macros_module.py'
-      - 'scripts/hooks/**'
-      - 'assessment/**'
-      - 'data/monitor-state.json'
-      - '.github/workflows/**'
-      # npm Dependabot PRs only change package.json / package-lock.json.
-      # Without this, mkdocs-strict never fires on those PRs and branch
-      # protection blocks the merge.
-      - 'package.json'
-      - 'package-lock.json'
+  # pull_request_target loads this workflow from the protected base branch.
+  # The PR head is checked out only with a read-only token and no persisted
+  # credentials before repository code is executed.
+  pull_request_target:
+    branches: [main]
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
-  group: docs-validation-${{ github.ref }}
+  group: docs-validation-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   mkdocs-strict:
     name: mkdocs-strict
     runs-on: ubuntu-latest
+    env:
+      DOCS_PATH_REGEX: >-
+        ^(docs/|README\.md$|AGENTS\.md$|SCOPE\.md$|VERSION$|mkdocs\.yml$|overrides/|requirements\.txt$|scripts/|assessment/(manifest|data|templates)/|data/monitor-state\.json$|\.github/branch-protection\.json$|\.github/copilot-instructions\.md$|\.github/instructions/|\.github/workflows/)
     steps:
-      - uses: actions/checkout@v7
+      - name: Classify changed paths
+        id: scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api --paginate \
+            "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files?per_page=100" \
+            --jq '.[] | .filename, (.previous_filename // empty)' |
+            sort -u > changed-files.txt
+
+          docs=false
+          if grep -Eq "$DOCS_PATH_REGEX" changed-files.txt; then
+            docs=true
+          fi
+
+          echo "docs=${docs}" >> "$GITHUB_OUTPUT"
+          echo "Documentation validation required: ${docs}"
+
+      - name: Non-documentation PR shim
+        if: steps.scope.outputs.docs != 'true'
+        run: echo "No documentation-impacting paths changed; mkdocs-strict is satisfied."
+
+      - name: Checkout PR head without credentials
+        if: steps.scope.outputs.docs == 'true'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - uses: actions/setup-python@v6
+        if: steps.scope.outputs.docs == 'true'
         with:
           python-version: '3.12'
           cache: 'pip'
 
       - name: Cache MkDocs build cache
+        if: steps.scope.outputs.docs == 'true'
         uses: actions/cache@v6
         with:
           key: mkdocs-material-${{ hashFiles('mkdocs.yml') }}-${{ github.run_id }}
@@ -57,61 +76,86 @@ jobs:
             mkdocs-material-
 
       - name: Install dependencies
-        run: pip install -r requirements.txt openpyxl jsonschema
+        if: steps.scope.outputs.docs == 'true'
+        run: pip install -r requirements.txt -r scripts/requirements.txt openpyxl pytest
+
+      - name: Verify docs-autonomy protection contract
+        if: steps.scope.outputs.docs == 'true'
+        run: pytest scripts/test_branch_protection_config.py -q
 
       # --- Pre-build steps (mirrors publish_docs.yml) ---
       # These generate data files consumed by macros_module.py at build time.
 
       - name: Validate Control Structure
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/verify_controls.py
 
       - name: Validate Language Rules
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/verify_language_rules.py
 
+      - name: Validate Commercial-Cloud Scope
+        if: steps.scope.outputs.docs == 'true'
+        run: python scripts/verify_commercial_scope.py
+
       - name: Build Content Graph (canonical metadata)
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/build_content_graph.py
 
       - name: Validate Content Graph
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/validate_content_graph.py
 
       - name: Verify README/AGENTS Counts vs Content Graph
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/verify_readme_counts.py
 
       - name: Verify Count Consistency Across Docs/SPA
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/verify_count_consistency.py
 
       - name: Verify Version Stamps vs VERSION
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/verify_version_stamps.py --check
 
       - name: Generate Assessment Data
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/extract_assessment_data.py
 
       - name: Generate Manifest (engine schema)
+        if: steps.scope.outputs.docs == 'true'
         run: python assessment/manifest/generate_manifest.py
 
       - name: Harvest Manifest Extension (SPA fields)
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/harvest_manifest_extension.py
 
       - name: Merge Authored Manifest Content
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/merge_authored_content.py
 
       - name: Validate Manifest
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/validate_manifest.py --strict --allow-todo
 
       - name: Build Checklist Templates (XLSX)
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/build_checklist_templates.py
 
       - name: Verify Checklist Templates (XLSX)
+        if: steps.scope.outputs.docs == 'true'
         run: python scripts/verify_excel_templates.py
 
       # --- MkDocs build (strict) ---
 
       - name: Build documentation (strict)
+        if: steps.scope.outputs.docs == 'true'
         run: mkdocs build --strict
 
       # --- Post-build quality gates (ported from FSI-AgentGov) ---
 
       - name: Verify built site output completeness
+        if: steps.scope.outputs.docs == 'true'
         # Asserts that the expected route families (controls/, playbooks/) and
         # the search asset exist before downstream validators run. Catches a
         # widened exclude_docs pattern or partial artifact step that can exit 0
@@ -119,19 +163,21 @@ jobs:
         run: python scripts/verify_build_output.py site
 
       - name: Verify OpenGraph and Twitter Card meta tags on built site
+        if: steps.scope.outputs.docs == 'true'
         # Ensures OG/Twitter card metadata in overrides/main.html renders
         # correctly. Runs against the real site/ build (not synthetic test
         # strings) so any Jinja regression is caught at PR-time.
         run: python scripts/verify_meta_tags.py site/
 
       - name: Verify built HTML has no broken internal links
+        if: steps.scope.outputs.docs == 'true'
         # Walks site/**/*.html and validates every internal <a href>.
         # mkdocs --strict only flags WARN-level link issues; cross-page depth
         # bugs and exclude_docs targets can be silent. This catches them.
         run: python scripts/verify_doc_links.py site --json _broken-links.json
 
       - name: Upload broken-links report on failure
-        if: failure()
+        if: steps.scope.outputs.docs == 'true' && failure()
         uses: actions/upload-artifact@v7
         with:
           name: broken-links-report
@@ -139,6 +185,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Verify Learn URL health (state file gate)
+        if: steps.scope.outputs.docs == 'true'
         # Reads data/monitor-state.json and fails if any tracked Microsoft Learn
         # URL has last_status in {404, 410, 451}. Soft failures (5xx, timeouts)
         # are surfaced but do NOT fail CI — transient Learn outages would

@@ -172,6 +172,13 @@ GitHub Actions workflows in `.github/workflows/`:
 
 All workflows block commits containing internal-only artifacts (PDFs, TXT, JSON in `docs/reference/` or `docs/controls/`, and files like `docs/HANDOFF.md`).
 
+### Documentation autonomy branch protection
+
+- **`.github/branch-protection.json` is the committed source of truth** for `main`; it is not applied automatically. Do not change live branch settings as part of ordinary repository work.
+- **`mkdocs-strict` is the only required context.** `.github/workflows/docs-validation.yml` runs on every PR through base-controlled `pull_request_target`: documentation-impacting changes run the full deterministic internal validation suite, while non-documentation PRs receive an explicit success shim so branch protection cannot deadlock.
+- The workflow uses a read-only token and checks out the PR head without persisted credentials. External link validation (`markdown-link-check`) remains advisory and is intentionally not required because remote sites are nondeterministic.
+- Run `pytest scripts/test_branch_protection_config.py -q` after changing the protection source or docs-validation workflow.
+
 ## Site Design System
 
 The documentation site uses a unified FSI design system shared across all FSI-AgentGov and FSI-CopilotGov repositories.
