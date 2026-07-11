@@ -101,8 +101,7 @@ Read-only inspection. The Scout Windows ADMX is documented to expose `AllowScout
 ```powershell
 # Adjust the subkey path to match the Scout ADMX namespace verified from current Microsoft docs.
 $candidates = @(
-  'HKLM:\SOFTWARE\Policies\Microsoft\Scout',
-  'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftScout'
+  'HKLM:\SOFTWARE\Policies\Scout'
 )
 
 $found = @()
