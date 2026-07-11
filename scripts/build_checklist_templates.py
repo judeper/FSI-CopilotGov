@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -34,11 +35,13 @@ OUT_DIR = REPO_ROOT / "assessment" / "templates"
 # OUT_DIR into site/assessment/templates/ for the published artifact.
 DOCS_MIRROR = REPO_ROOT / "docs" / "assessment" / "templates"
 
-FRAMEWORK_VERSION = "FSI Copilot Governance Framework v1.8"
+FRAMEWORK_VERSION = "FSI Copilot Governance Framework v1.8.0"
 
 # ── Role → checklist file mapping ─────────────────────────────────────────────
-# Each entry: (output filename, display role label, manifest role key or None)
-# If the manifest role key is None, fall back to the hardcoded list below.
+# Each entry: (output filename, display role label, manifest role key or None).
+# Roles not represented in assessment/manifest/controls.json are driven by the
+# explicit ROLE_CONTROL_OVERRIDES map below (source: role homework pages +
+# extract_assessment_data.py ROLE_CONTROLS alignment for supervision/records).
 ROLE_FILES = [
     ("ai-administrator-checklist.xlsx",
      "AI Administrator", "AI Governance Lead"),
@@ -56,20 +59,42 @@ ROLE_FILES = [
      "Security Admin", "Security Admin"),
     ("compliance-officer-checklist.xlsx",
      "Compliance Officer", None),
+    ("exchange-online-admin-checklist.xlsx",
+     "Exchange Online Admin", "Exchange Online Admin"),
+    ("internal-audit-checklist.xlsx",
+     "Internal Audit", None),
+    ("privacy-officer-checklist.xlsx",
+     "Privacy Officer", None),
+    ("records-manager-checklist.xlsx",
+     "Records Manager", None),
+    ("vendor-third-party-risk-manager-checklist.xlsx",
+     "Vendor / Third-Party Risk Manager", None),
+    ("governance-lead-checklist.xlsx",
+     "Governance Lead", None),
 ]
 
-# Conservative fallback: compliance officers track regulatory-facing
-# controls (all of Pillar 3 plus a handful of cross-pillar items).
-COMPLIANCE_OFFICER_IDS = [
-    "1.10",  # Vendor risk for Microsoft AI services
-    "1.12",  # Training and awareness
-    "2.1",   # DLP for Copilot interactions
-    "2.2",   # Sensitivity labels and Copilot classification
-    "2.10",  # Insider risk
-    # Pillar 3 — Compliance & Records (full coverage)
-    "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7",
-    "3.8", "3.9", "3.10", "3.11", "3.12", "3.13",
-]
+# Role-specific control overlays for templates where manifest role metadata is
+# intentionally incomplete (e.g., TODO role assignment placeholders) or absent.
+ROLE_CONTROL_OVERRIDES = {
+    # Maintain direct supervision/records controls in compliance views.
+    "compliance-officer-checklist.xlsx": [
+       "1.10", "1.12", "2.1", "2.2", "2.10",
+       "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7",
+       "3.8", "3.8a", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14",
+       "4.15", "4.16",
+    ],
+    # TODO-role controls in manifest (3.8a, 3.14) still belong in Purview ops.
+    "purview-compliance-admin-checklist.xlsx": ["3.8a", "3.14"],
+    # Homework-referenced roles published under docs/assessment/templates.
+    "internal-audit-checklist.xlsx": ["3.1", "3.12", "3.13"],
+    "privacy-officer-checklist.xlsx": ["2.5", "3.10"],
+    "records-manager-checklist.xlsx": [
+       "3.1", "3.2", "3.3", "3.11", "3.12", "3.14", "4.15", "4.16"
+    ],
+    "vendor-third-party-risk-manager-checklist.xlsx": ["1.10", "1.13"],
+    "governance-lead-checklist.xlsx": ["1.1", "1.11", "1.12", "3.7", "4.9", "4.12"],
+    "exchange-online-admin-checklist.xlsx": ["3.2", "3.11"],
+}
 
 # ── Styling ───────────────────────────────────────────────────────────────────
 PRIMARY_DARK = "0078D4"   # FSI Microsoft Blue
@@ -180,20 +205,33 @@ def build_role_to_ids(manifest: list[dict]) -> dict[str, list[str]]:
     return mapping
 
 
-def select_ids(role_key: str | None, role_to_ids: dict[str, list[str]],
-               all_ids: list[str]) -> list[str]:
-    if role_key and role_key in role_to_ids and role_to_ids[role_key]:
-        return sorted_by_natural_id(role_to_ids[role_key])
-    # Compliance Officer fallback (and any future unmapped role).
-    return sorted_by_natural_id(
-        [cid for cid in COMPLIANCE_OFFICER_IDS if cid in set(all_ids)])
+CONTROL_ID_RE = re.compile(r"^(?P<pillar>\d+)\.(?P<number>\d+)(?P<suffix>[a-z]?)$", re.IGNORECASE)
+
+
+def control_id_key(control_id: str) -> tuple[int, int, str]:
+    match = CONTROL_ID_RE.match(control_id.strip())
+    if not match:
+        return (999, 999, control_id)
+    return (
+        int(match.group("pillar")),
+        int(match.group("number")),
+        match.group("suffix").lower(),
+    )
+
+
+def select_ids(filename: str, role_key: str | None,
+               role_to_ids: dict[str, list[str]], all_ids: list[str]) -> list[str]:
+    all_id_set = set(all_ids)
+    ids = set(role_to_ids.get(role_key, [])) if role_key else set()
+    ids.update(
+        cid for cid in ROLE_CONTROL_OVERRIDES.get(filename, [])
+        if cid in all_id_set
+    )
+    return sorted_by_natural_id(list(ids))
 
 
 def sorted_by_natural_id(ids: list[str]) -> list[str]:
-    def key(cid: str):
-        parts = cid.split(".")
-        return tuple(int(p) if p.isdigit() else 0 for p in parts)
-    return sorted(ids, key=key)
+    return sorted(ids, key=control_id_key)
 
 
 # ── Worksheet builders ───────────────────────────────────────────────────────
@@ -314,12 +352,7 @@ def build_dashboard(out_path: Path, manifest: list[dict],
 
     data_start = header_row + 1
     row = data_start
-    controls = sorted(manifest,
-                      key=lambda c: sorted_by_natural_id([c["id"]])[0])
-    controls = sorted(controls,
-                      key=lambda c: (c["pillar"],
-                                     tuple(int(p) if p.isdigit() else 0
-                                           for p in c["id"].split("."))))
+    controls = sorted(manifest, key=lambda c: control_id_key(c["id"]))
     for i, c in enumerate(controls):
         spa_c = spa.get(c["id"])
         pillar_label = f"P{c['pillar']} – {c.get('pillar_name', '')}"
@@ -381,7 +414,7 @@ def main() -> int:
         shutil.copyfile(path, DOCS_MIRROR / path.name)
 
     for filename, role_label, manifest_key in ROLE_FILES:
-        ids = select_ids(manifest_key, role_to_ids, all_ids)
+        ids = select_ids(filename, manifest_key, role_to_ids, all_ids)
         controls = [by_id[cid] for cid in ids if cid in by_id]
         out = OUT_DIR / filename
         count = build_checklist(out, role_label, controls, spa)

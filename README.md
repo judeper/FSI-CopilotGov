@@ -88,9 +88,9 @@ Each control provides tiered implementation guidance:
 
 ---
 
-## What's New in v1.8
+## What's New in v1.8.0
 
-Released July 2026. Full notes: [Release Notes v1.8](docs/reference/release-notes-v1.8.md).
+Released July 2026. Full notes: [Release Notes v1.8.0](docs/reference/release-notes-v1.8.md).
 
 - **Control 4.16: Microsoft Scout Governance** added under Pillar 4 with a **Regulated** overall governance tier, plus full control playbooks.
 - **Control 4.15 Cowork governance** refreshed for GA operating posture and linked supervision/records controls.

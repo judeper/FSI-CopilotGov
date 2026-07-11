@@ -15,7 +15,7 @@ Verification date for this release train: **2026-07-10**.
   - Pillars: **16 / 17 / 15 / 16**
   - Tier totals: **Baseline 18**, **Recommended 33**, **Regulated 13**
   - Playbooks: **272 total** (**253** control implementations + **19** cross-cutting)
-- **Manifest and template regeneration** completed across content graph, manifest, assessment data, and role-checklist workbooks.
+- **Manifest and template regeneration** completed across content graph, manifest, assessment data, and role-checklist workbooks (canonical + homework-linked roles; no placeholder `.xlsx` artifacts).
 - **Monitor attribution/configuration repairs** carried into this release baseline and reflected in regenerated outputs.
 
 ## Data and Authoring Notes
@@ -25,6 +25,11 @@ Verification date for this release train: **2026-07-10**.
   - Final after merge/rebuild: **208**
   - Net delta: **-3**
 - One explicit Scout sector TODO remains by design for preview-era evidence limits.
+
+## Monitoring Operational Caveat
+
+- Newly added **Scout Microsoft Learn URLs** are seeded into monitor drift baselines by the first scheduled monitor run after this release.
+- If you need immediate deterministic baselines (for example, before the next scheduler window), intentionally refresh current monitor state first; otherwise expect first-run deltas.
 
 ## Important Preview Caveat
 

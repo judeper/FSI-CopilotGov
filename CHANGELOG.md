@@ -13,7 +13,7 @@ the integrated Cowork/Scout/shared-docs/monitor-repair source set.
 
 - **Control 4.16: Microsoft Scout Governance** (`docs/controls/pillar-4-operations/4.16-microsoft-scout-governance.md`) with a full implementation playbook set:
   `docs/playbooks/control-implementations/4.16/{portal-walkthrough,powershell-setup,verification-testing,troubleshooting}.md`.
-- **Release Notes v1.8** page (`docs/reference/release-notes-v1.8.md`) and MkDocs nav wiring (`mkdocs.yml`).
+- **Release Notes v1.8.0** page (`docs/reference/release-notes-v1.8.md`) and MkDocs nav wiring (`mkdocs.yml`).
 
 ### Changed
 
@@ -24,13 +24,14 @@ the integrated Cowork/Scout/shared-docs/monitor-repair source set.
   - playbooks: **272 total** (**253** control + **19** cross-cutting)
 - **Control 4.15 (Copilot Cowork Governance)** integrated as GA-refresh baseline with updated cross-control linkage and regenerated derived artifacts.
 - **README / AGENTS / `.github/copilot-instructions.md` / relationship docs** reconciled to canonical counts and release pointers.
-- **Checklist generator framework stamp** updated to `v1.8`, followed by template regeneration in both `assessment/templates/` and `docs/assessment/templates/`.
+- **Checklist generator framework stamp** updated to `v1.8.0`, with template regeneration expanded to all published homework roles in both `assessment/templates/` and `docs/assessment/templates/` (placeholder `.xlsx` files removed).
 - **Version baseline** updated from `1.7.1` to `1.8.0` via root `VERSION`, with footer version-stamp reconciliation across docs.
 
 ### Fixed
 
 - **Count tripwire drift** in `scripts/test_content_graph_smoke.py` and SPA facilitator-mode count wording (`tests/spa/facilitator-mode.test.mjs`).
 - **Monitor attribution/config references** reconciled in regenerated release-facing documentation to align with the repaired monitoring pipeline state.
+- **Release-notes monitoring caveat** added: Scout Learn URL baselines seed on first scheduled monitor run unless monitor state is intentionally refreshed beforehand.
 
 ### Manifest authoring/TODO status
 
