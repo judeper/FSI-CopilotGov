@@ -1,4 +1,4 @@
-"""Authored manifest content for all 63 controls.
+"""Authored manifest content for all 64 controls.
 
 This module contains hand-authored values for the SPA-extension fields
 that require human judgment (yesBar/partialBar/noBar, priority,
@@ -8,12 +8,12 @@ evidenceExpected, collectorField).
 Used by ``scripts/merge_authored_content.py`` to overlay these values
 on top of the harvested manifest, replacing TODO placeholders.
 
-All 63 controls across the four governance pillars are covered:
+All 64 controls across the four governance pillars are covered:
 
 * Pillar 1 (Readiness): 16 controls (1.1–1.16)
 * Pillar 2 (Security): 17 controls (2.1–2.17)
 * Pillar 3 (Compliance): 15 controls (3.1–3.14 + 3.8a)
-* Pillar 4 (Operations): 15 controls (4.1–4.15)
+* Pillar 4 (Operations): 16 controls (4.1–4.16)
 
 The merge is **idempotent**: only fields present in this dict overwrite
 manifest values, and only when the manifest value is missing or starts
@@ -3974,55 +3974,205 @@ AUTHORED: dict[str, dict] = {
     "4.15": {
         "priority": "high",
         "yesBar": (
-            "Microsoft 365 Copilot Cowork availability is set deliberately "
-            "(scoped to approved groups or blocked) rather than left at the "
-            "default of all users, with Frontier enrollment, plugin inventory, "
-            "deployment/pinning approvals, and supervision coverage documented."
+            "Copilot Cowork governance reflects GA operating controls: usage-based "
+            "billing scope is approved, discovery is set deliberately, model "
+            "toggles (including Anthropic family and Claude Fable 5 preview) are "
+            "documented, local browser use is governed as a preview sub-feature, "
+            "consumption limits are monitored, plugin/skill inventories are "
+            "approved, and Purview/audit coverage is evidenced."
         ),
         "partialBar": (
-            "Some Cowork governance exists but availability, plugin inventory, "
-            "or supervision/audit coverage is not fully documented or approved."
+            "Cowork governance is partially implemented, but one or more required "
+            "GA decisions (billing/discovery, model policy, browser toggle, "
+            "consumption limits, plugin/skill approvals, or Purview coverage) "
+            "is missing, outdated, or lacks approver evidence."
         ),
         "noBar": (
-            "Cowork is left at its default availability with no documented "
-            "governance, plugin inventory, or supervision review."
+            "Cowork is effectively unmanaged: billing/discovery posture is not "
+            "approved, model and browser settings are not governed, no verified "
+            "plugin/skill inventory exists, and Purview/supervision evidence is absent."
         ),
         "verifyIn": [
             {
                 "portal": "Microsoft 365 admin center",
-                "path": "Copilot > Agents > All agents > Cowork",
-                "url": "https://admin.microsoft.com/Adminportal/Home#/agents",
+                "path": "Copilot > Cost management",
+                "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
+            },
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Copilot > Settings > AI experiences enabled by usage-based billing",
+                "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
+            },
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Copilot > Settings > View all > Cowork settings",
+                "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
+            },
+            {
+                "portal": "Microsoft Purview portal",
+                "path": "AI hub / Copilot security and compliance for Cowork",
+                "url": "https://purview.microsoft.com/aihub",
             },
         ],
         "verifyPowerShell": "",
         "evidenceExpected": [
-            "Frontier preview enrollment record for tenant and admin accounts",
-            "Cowork availability configuration (scoped group or blocked) with approval",
-            "Approved Cowork plugin inventory and connector authentication records",
-            "Deployment/pinning approvals and supervision/audit coverage evidence",
+            "Usage-based billing scope export (user/group assignments) with approver",
+            "Discovery-setting decision record and access-request workflow evidence",
+            "Model-policy record for Anthropic family and Claude Fable 5 (Preview)",
+            "Cowork Browsing tenant-toggle decision tied to browser-control review",
+            "Consumption-limit policy and recent spend/consumption report",
+            "Approved plugin, uploaded package, and custom-skill inventory with owner",
+            "Purview coverage evidence (audit/eDiscovery/DLP alignment) and gap log",
         ],
         "collectorField": "M365Admin_CoworkGovernance",
         "sectorYesBar": _sector_map(
             bank=(
-                "Cowork adoption treated as a change-control and operational-risk "
-                "event aligned to the FFIEC IT Examination Handbook and OCC "
-                "Heightened Standards (12 CFR part 30, appendix D)."
+                "Cowork enablement (billing scope, discovery, model/browser toggles) "
+                "is treated as a formal change-control event aligned to FFIEC IT "
+                "Examination Handbook expectations and OCC Heightened Standards "
+                "(12 CFR part 30, appendix D)."
             ),
             broker_dealer=(
-                "Cowork availability for registered reps gated on supervisory "
-                "review of agentic outputs per FINRA Rule 3110 before enablement."
+                "Cowork for registered reps is gated on FINRA Rule 3110 supervisory "
+                "readiness, with documented review of agentic outputs that can "
+                "contribute to client communications or records."
+            ),
+            investment_adviser=(
+                "Cowork rollout is approved by compliance leadership where adviser "
+                "workflows touch client communications, with usage and model "
+                "decisions documented for SEC exam response."
+            ),
+            insurance_carrier=(
+                "Cowork is limited to approved underwriting/claims populations "
+                "after privacy and browser-use controls are reviewed for PHI/PII "
+                "handling obligations."
+            ),
+            credit_union=(
+                "Cowork scope is tied to member-data least-privilege posture; "
+                "billing/discovery decisions and consumption controls are retained "
+                "as NCUA examination evidence."
+            ),
+            other=(
+                "Cowork governance decisions (access, models, browser use, plugins, "
+                "consumption, and Purview coverage) are documented under the "
+                "institution's AI governance standard."
             ),
         ),
         "facilitatorNotes": {
             "ask": (
-                "Is Copilot Cowork governed with deliberate availability, plugin, "
-                "and supervision decisions before broad enablement?"
+                "Is Cowork operated under a documented GA governance posture "
+                "(billing/discovery, models, browser use, consumption, plugins/skills, "
+                "and Purview supervision) before expansion?"
             ),
             "followUp": (
-                "Confirm Frontier enrollment, that availability is scoped (not "
-                "default-all), and that plugins and audit coverage are documented."
+                "Open Copilot cost-management and settings pages to confirm billing "
+                "scope, discovery state, model/browser toggles, and consumption "
+                "limits. Then verify plugin/skill approvals plus Purview/audit "
+                "coverage evidence and unresolved gaps."
             ),
-            "timeBudgetMinutes": 6,
+            "timeBudgetMinutes": 8,
+        },
+    },
+    # ---------------------------------------------------------------
+    # 4.16 — Microsoft Scout Governance
+    # ---------------------------------------------------------------
+    "4.16": {
+        "priority": "high",
+        "yesBar": (
+            "Microsoft Scout is governed through all three required gates "
+            "(Frontier scope, managed-endpoint policy with admin attestation, and "
+            "GitHub Copilot Business/Enterprise entitlement), with managed endpoint "
+            "posture validated, shell/browser/local-file permissions governed, "
+            "autonomous/unattended modes explicitly controlled, MCP approvals "
+            "documented, mixed M365/GitHub/local boundary risks acknowledged, and "
+            "supervision evidence retained."
+        ),
+        "partialBar": (
+            "Scout governance exists but one or more critical controls is missing "
+            "or stale (gate reconciliation, endpoint policy evidence, permission "
+            "defaults, MCP approval records, supervision cadence, or known-evidence "
+            "limitations tracking)."
+        ),
+        "noBar": (
+            "Scout is enabled or piloted without reconciled Frontier/Intune/GitHub "
+            "gating, without documented permission boundaries, and without evidence "
+            "of supervision or residual-risk acceptance for local and third-party "
+            "processing surfaces."
+        ),
+        "verifyIn": [
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Copilot > Settings > Frontier",
+                "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
+            },
+            {
+                "portal": "Microsoft Intune admin center",
+                "path": "Devices > Configuration > Policies (Scout Frontier profile / AllowScoutFrontierAccess)",
+                "url": "https://intune.microsoft.com",
+            },
+            {
+                "portal": "GitHub organization settings",
+                "path": "Copilot > Access / seat assignments (Business or Enterprise)",
+                "url": "https://github.com/organizations",
+            },
+        ],
+        "verifyPowerShell": "",
+        "evidenceExpected": [
+            "Frontier enrollment and scoping record for tenant and pilot groups",
+            "Intune policy export showing Scout enablement profile assignment and effective state",
+            "Admin attestation record naming approver and completion date",
+            "GitHub Copilot Business/Enterprise entitlement export matched to pilot users",
+            "Documented default permission posture for local files, shell commands, and browser actions",
+            "Autonomous-mode and unattended-automation decision records with scope constraints",
+            "Approved MCP inventory including authentication, egress, and data-path classification",
+            "Boundary map showing M365-protected data vs GitHub/local/third-party processing surfaces",
+            "Known unsupported evidence register (local automation artifacts, local MCP output, third-party inference telemetry)",
+        ],
+        "collectorField": "",
+        "sectorYesBar": _sector_map(
+            bank=(
+                "Scout pilot is approved as an endpoint and third-party-risk change "
+                "event; Frontier/Intune/GitHub gates and residual-risk acceptance "
+                "are documented for FFIEC and OCC Heightened Standards oversight."
+            ),
+            broker_dealer=(
+                "Scout use by registered populations is gated on FINRA Rule 3110 "
+                "supervisory procedures and explicit records-treatment decisions "
+                "for artifacts potentially in scope under SEC Rule 17a-4."
+            ),
+            investment_adviser=(
+                "Scout deployment for adviser workflows includes compliance approval, "
+                "documented entitlement scope, and supervision over client-facing "
+                "outputs produced through local file/shell/browser actions."
+            ),
+            insurance_carrier=(
+                "Scout is limited to managed endpoints with documented PHI/PII "
+                "handling boundaries, with endpoint-policy evidence and exception "
+                "tracking retained for audit."
+            ),
+            credit_union=(
+                "Scout enablement for member-data workflows is constrained to "
+                "approved pilot users and managed devices, with gate reconciliation "
+                "and boundary-risk evidence retained for NCUA examinations."
+            ),
+            other=(
+                "TODO: define sector-specific regulated Scout threshold once "
+                "Microsoft publishes GA-stable evidence and policy surfaces."
+            ),
+        ),
+        "facilitatorNotes": {
+            "ask": (
+                "Can you show reconciled evidence that Scout is governed across "
+                "Frontier scope, Intune policy + attestation, and GitHub Copilot "
+                "entitlement, with explicit controls for permissions, autonomy, and MCP?"
+            ),
+            "followUp": (
+                "Validate all three gates against the same pilot roster, then review "
+                "permission defaults (local file/shell/browser), autonomous-mode "
+                "posture, MCP approvals, and the known unsupported evidence register "
+                "for local/third-party boundaries."
+            ),
+            "timeBudgetMinutes": 10,
         },
     },
 }
@@ -4255,6 +4405,7 @@ _SOLUTIONS_BY_CONTROL: dict[str, list[dict]] = {
         {"id": '23-copilot-studio-lifecycle-tracker', "tier": 3, "role": 'primary'},
     ],
     '4.15': [],
+    '4.16': [],
 }
 
 
