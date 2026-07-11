@@ -60,6 +60,8 @@ learn:
       reason: "Metadata fields"
     - pattern: '(Article|Contributor|Feedback)'
       reason: "Page chrome elements"
+    - pattern: '^[+-]\s*(Table of contents|Read in English|Add to Plans?|Copy Markdown|Print)\s*$'
+      reason: "Learn command-bar chrome labels"
 
 
 # === REGULATORY MONITOR CLASSIFICATION PATTERNS ===
@@ -153,201 +155,107 @@ regulatory:
 keyword_control_map:
   - keyword: supervision
     controls:
-      - id: "2.12"
-        name: "Human-in-the-Loop Approval"
-      - id: "2.18"
-        name: "Supervision Queue Integration"
+      - id: "3.6"
+        name: "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)"
+      - id: "3.4"
+        name: "Control 3.4: Communication Compliance Monitoring"
 
   - keyword: recordkeeping
     controls:
-      - id: "1.7"
-        name: "Audit Logging Configuration"
-      - id: "1.10"
-        name: "Communication Compliance"
+      - id: "3.11"
+        name: "Control 3.11: Record Keeping and Books-and-Records Compliance (SEC 17a-3/4, FINRA 4511)"
 
   - keyword: retention
     controls:
-      - id: "1.7"
-        name: "Audit Logging Configuration"
-      - id: "1.10"
-        name: "Communication Compliance"
+      - id: "3.2"
+        name: "Control 3.2: Data Retention Policies for Copilot Interactions"
+      - id: "3.14"
+        name: "Control 3.14: Copilot Pages and Notebooks Retention and Provenance"
 
   - keyword: data loss prevention
     controls:
-      - id: "1.3"
-        name: "Data Loss Prevention Policies"
-      - id: "1.5"
-        name: "Sensitivity Labels"
+      - id: "2.1"
+        name: "Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions"
 
   - keyword: dlp
     controls:
-      - id: "1.3"
-        name: "Data Loss Prevention Policies"
-      - id: "1.5"
-        name: "Sensitivity Labels"
+      - id: "2.1"
+        name: "Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions"
 
   - keyword: audit
     controls:
-      - id: "1.7"
-        name: "Audit Logging Configuration"
       - id: "3.1"
-        name: "Unified Audit Log Access"
-      - id: "3.2"
-        name: "Activity Reports"
+        name: "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)"
+      - id: "3.12"
+        name: "Control 3.12: Evidence Collection and Audit Attestation"
 
   - keyword: access control
     controls:
-      - id: "1.1"
-        name: "Maker-Checker Governance"
-      - id: "1.2"
-        name: "Conditional Access Policies"
-      - id: "1.11"
-        name: "SharePoint Site Permissions"
+      - id: "2.3"
+        name: "Control 2.3: Conditional Access Policies for Copilot Workloads"
+      - id: "2.12"
+        name: "Control 2.12: External Sharing and Guest Access Governance"
 
   - keyword: encryption
     controls:
-      - id: "1.14"
-        name: "Data Encryption Standards"
-      - id: "1.15"
-        name: "Key Management"
-
-  - keyword: risk management
-    controls:
-      - id: "2.6"
-        name: "Risk Assessment Framework"
-      - id: "2.7"
-        name: "Risk Monitoring"
-
-  - keyword: incident
-    controls:
-      - id: "2.14"
-        name: "Incident Response Procedures"
-      - id: "2.15"
-        name: "Incident Documentation"
-
-  - keyword: disaster recovery
-    controls:
-      - id: "2.16"
-        name: "Business Continuity Planning"
-      - id: "2.17"
-        name: "Disaster Recovery Testing"
+      - id: "2.8"
+        name: "Control 2.8: Encryption (Data in Transit and at Rest)"
 
   - keyword: information barrier
     controls:
-      - id: "1.22"
-        name: "Information Barriers Configuration"
-      - id: "1.23"
-        name: "Information Barrier Compliance"
+      - id: "2.4"
+        name: "Control 2.4: Information Barriers for Copilot (Chinese Wall)"
 
   - keyword: communication
     controls:
-      - id: "1.10"
-        name: "Communication Compliance"
-      - id: "2.18"
-        name: "Supervision Queue Integration"
-      - id: "2.19"
-        name: "Communication Monitoring"
-
-  - keyword: ai
-    controls:
-      - id: "2.6"
-        name: "Risk Assessment Framework"
-      - id: "2.12"
-        name: "Human-in-the-Loop Approval"
-      - id: "3.8"
-        name: "AI Agent Analytics"
-
-  - keyword: artificial intelligence
-    controls:
-      - id: "2.6"
-        name: "Risk Assessment Framework"
-      - id: "2.12"
-        name: "Human-in-the-Loop Approval"
-      - id: "3.8"
-        name: "AI Agent Analytics"
-
-  - keyword: machine learning
-    controls:
-      - id: "2.6"
-        name: "Risk Assessment Framework"
-      - id: "2.12"
-        name: "Human-in-the-Loop Approval"
+      - id: "3.4"
+        name: "Control 3.4: Communication Compliance Monitoring"
+      - id: "3.5"
+        name: "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications"
 
   - keyword: model risk
     controls:
-      - id: "2.6"
-        name: "Risk Assessment Framework"
+      - id: "3.8"
+        name: "Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI)"
+      - id: "3.8a"
+        name: "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot"
 
-  - keyword: chatbot
+  - keyword: artificial intelligence
     controls:
-      - id: "2.6"
-        name: "Risk Assessment Framework"
-      - id: "2.12"
-        name: "Human-in-the-Loop Approval"
+      - id: "3.8a"
+        name: "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot"
 
-  - keyword: generative
+  - keyword: generative ai
     controls:
-      - id: "2.6"
-        name: "Risk Assessment Framework"
-      - id: "2.12"
-        name: "Human-in-the-Loop Approval"
-
-  - keyword: automated advice
-    controls:
-      - id: "2.6"
-        name: "Risk Assessment Framework"
-      - id: "2.12"
-        name: "Human-in-the-Loop Approval"
-
-  - keyword: broker-dealer
-    controls:
-      - id: "1.10"
-        name: "Communication Compliance"
-      - id: "2.18"
-        name: "Supervision Queue Integration"
-
-  - keyword: investment adviser
-    controls:
-      - id: "1.10"
-        name: "Communication Compliance"
-      - id: "2.18"
-        name: "Supervision Queue Integration"
-
-  - keyword: cybersecurity
-    controls:
-      - id: "1.14"
-        name: "Data Encryption Standards"
-      - id: "2.6"
-        name: "Risk Assessment Framework"
-      - id: "2.14"
-        name: "Incident Response Procedures"
-
-  - keyword: data protection
-    controls:
-      - id: "1.3"
-        name: "Data Loss Prevention Policies"
-      - id: "1.14"
-        name: "Data Encryption Standards"
-      - id: "1.15"
-        name: "Key Management"
+      - id: "3.8a"
+        name: "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot"
 
   - keyword: privacy
     controls:
-      - id: "1.3"
-        name: "Data Loss Prevention Policies"
-      - id: "1.14"
-        name: "Data Encryption Standards"
-      - id: "1.15"
-        name: "Key Management"
+      - id: "3.10"
+        name: "Control 3.10: SEC Reg S-P -- Privacy of Consumer Financial Information"
 
-  - keyword: compliance
+  - keyword: cybersecurity
     controls:
-      - id: "2.6"
-        name: "Risk Assessment Framework"
+      - id: "2.15"
+        name: "Control 2.15: Network Security and Private Connectivity"
+
+  - keyword: incident
+    controls:
+      - id: "4.9"
+        name: "Control 4.9: Incident Reporting and Root Cause Analysis"
+
+  - keyword: broker-dealer
+    controls:
+      - id: "3.11"
+        name: "Control 3.11: Record Keeping and Books-and-Records Compliance (SEC 17a-3/4, FINRA 4511)"
+
+  - keyword: investment adviser
+    controls:
       - id: "3.1"
-        name: "Unified Audit Log Access"
-      - id: "3.2"
-        name: "Activity Reports"
+        name: "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)"
+      - id: "3.6"
+        name: "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)"
 
 
 # === FEDERAL REGISTER API CONFIGURATION ===
