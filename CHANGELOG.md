@@ -384,7 +384,7 @@ Major feature port from FSI-AgentGov bringing governance assessment parity for M
 - `merge_authored_content.py` now treats `solutions` as a replace-only field
 
 ### Reference
-- [Phased rollout](docs/getting-started/phased-rollout.md)
+- [Adoption roadmap](docs/framework/adoption-roadmap.md)
 - [Homework pages](docs/getting-started/homework-quickstart.md)
 
 ---
