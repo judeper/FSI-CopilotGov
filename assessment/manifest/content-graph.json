@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-11T06:26:51Z",
+  "generatedAt": "2026-07-11T17:21:09Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -536,12 +536,14 @@
       "tier": "Regulated",
       "title": "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications",
       "path": "docs/controls/pillar-3-compliance/3.5-finra-2210-compliance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-11",
       "regulatory_references": [
         "FINRA Rule 2210 (Communications with the Public)",
         "FINRA Rule 3110 — supervisory systems and WSPs",
         "SEC Rule 17a-4 — required broker-dealer records only",
         "FINRA Regulatory Notice 24-09 (AI in Communications)",
+        "FINRA Regulatory Notice 26-14 (request for comment; not effective)",
+        "SEC Release No. 34-103492 / SR-FINRA-2026-004 Partial Amendment No. 1 (pending proposal; not effective)",
         "SEC Marketing Rule (206(4)-1)",
         "Investment Advisers Act Section 206"
       ]
@@ -673,7 +675,7 @@
       "tier": "Regulated",
       "title": "Control 3.8a: Generative AI Model Governance for Microsoft 365 Copilot",
       "path": "docs/controls/pillar-3-compliance/3.8a-generative-ai-model-governance.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-07-11",
       "regulatory_references": [
         "SR 26-2 / OCC Bulletin 2026-13 (April 2026 interagency guidance — Copilot excluded as generative AI; this control applies SR 11-7 / OCC Bulletin 2011-12 principles synthesized with NIST AI RMF 1.0 and ISO/IEC 42001 as the most-recent applicable interim framework)",
         "NIST AI RMF 1.0",
