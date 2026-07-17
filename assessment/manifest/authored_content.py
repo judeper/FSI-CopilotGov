@@ -3269,7 +3269,7 @@ AUTHORED: dict[str, dict] = {
         "verifyPowerShell": (
             "Connect-MicrosoftTeams; "
             "Get-CsTeamsMeetingPolicy | Select-Object Identity, "
-            "AllowTranscription, AllowCloudRecording, CopilotWithTranscript"
+            "AllowTranscription, AllowCloudRecording, Copilot"
         ),
         "evidenceExpected": [
             "Teams meeting policy configuration showing Copilot settings",

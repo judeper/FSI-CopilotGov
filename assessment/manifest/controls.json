@@ -4166,7 +4166,7 @@
         "url": "https://admin.teams.microsoft.com/policies/meetings"
       }
     ],
-    "verifyPowerShell": "Connect-MicrosoftTeams; Get-CsTeamsMeetingPolicy | Select-Object Identity, AllowTranscription, AllowCloudRecording, CopilotWithTranscript",
+    "verifyPowerShell": "Connect-MicrosoftTeams; Get-CsTeamsMeetingPolicy | Select-Object Identity, AllowTranscription, AllowCloudRecording, Copilot",
     "evidenceExpected": [
       "Teams meeting policy configuration showing Copilot settings",
       "Meeting organizer control documentation",

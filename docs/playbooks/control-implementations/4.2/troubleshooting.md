@@ -11,12 +11,12 @@ Common issues and resolution steps for Copilot governance in Teams meetings, inc
 - **Resolution:**
   1. Run the immediate remediation:
      ```powershell
-     Set-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" -CopilotWithoutTranscript Disabled
+     Set-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" -Copilot "EnabledWithTranscript"
      ```
   2. Verify the policy change:
      ```powershell
-     Get-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" | Select-Object CopilotWithoutTranscript
-     # Expected: Disabled
+     Get-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" | Select-Object Copilot
+     # Expected: EnabledWithTranscript
      ```
   3. Run the full audit script (Script 4 in PowerShell Setup) to identify any other policies that still permit Copilot without transcript.
   4. Apply the fix to all non-compliant policies.
@@ -25,7 +25,7 @@ Common issues and resolution steps for Copilot governance in Teams meetings, inc
 
 ### Issue 2: Policy Not Applying After Update (Assignment Delay)
 
-- **Symptoms:** The meeting policy has been updated to enforce `CopilotWithoutTranscript = Disabled`, but users still see Copilot available without transcription in live meetings.
+- **Symptoms:** The meeting policy has been updated to enforce `Copilot = EnabledWithTranscript`, but users still see Copilot available without transcription in live meetings.
 - **Root Cause:** Teams meeting policy changes typically propagate within 1-4 hours, but can take up to 24 hours in large tenants. Users already in active meetings may not receive the updated policy until they start a new meeting.
 - **Resolution:**
   1. Verify the policy has been saved correctly: `Get-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" | Format-List`
@@ -77,7 +77,7 @@ Common issues and resolution steps for Copilot governance in Teams meetings, inc
 
 ## Diagnostic Steps
 
-1. **Check EnabledWithTranscript enforcement:** `Get-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" | Select-Object CopilotWithoutTranscript` — expect `Disabled`
+1. **Check EnabledWithTranscript enforcement:** `Get-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" | Select-Object Copilot` — expect `EnabledWithTranscript`
 2. **Check user policy:** `Get-CsOnlineUser -Identity "user@contoso.com" | Select TeamsMeetingPolicy`
 3. **Review meeting policy settings:** `Get-CsTeamsMeetingPolicy -Identity "policy-name" | Format-List`
 4. **Run full policy audit:** Execute Script 4 from PowerShell Setup to identify all non-compliant policies.
@@ -88,7 +88,7 @@ Common issues and resolution steps for Copilot governance in Teams meetings, inc
 
 | Severity | Condition | Escalation Path |
 |----------|-----------|-----------------|
-| Critical | Copilot active in meetings without transcription in any regulated environment | IT Admin — immediate policy remediation (`Set-CsTeamsMeetingPolicy -CopilotWithoutTranscript Disabled`); notify Compliance |
+| Critical | Copilot active in meetings without transcription in any regulated environment | IT Admin — immediate policy remediation (`Set-CsTeamsMeetingPolicy -Copilot "EnabledWithTranscript"`); notify Compliance |
 | Critical | Copilot active in MNPI meetings | IT Security + Compliance — immediate policy enforcement |
 | High | Meeting summaries exposed to unauthorized users | IT Admin + Compliance — access review |
 | High | EnabledWithTranscript remediation not propagated after 24 hours | IT Admin — verify policy assignment, escalate to Microsoft Support if needed |
