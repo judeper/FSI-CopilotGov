@@ -6,7 +6,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlsplit
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONTROL_35_PATH = (
@@ -39,10 +39,19 @@ def check_finra_partial_amendment_pairing(content: str) -> list[str]:
 
 
 def is_generic_sec_division_url(url: str) -> bool:
-    parsed = urlparse(url.strip())
-    if parsed.scheme not in {"http", "https"}:
+    raw = url.strip()
+    lowered = raw.lower()
+    if "\\" in raw or "%2f" in lowered or "%5c" in lowered:
         return False
-    if not parsed.netloc.lower().endswith("sec.gov"):
+    parsed = urlsplit(raw)
+    if parsed.scheme != "https":
+        return False
+    if parsed.username is not None or parsed.password is not None:
+        return False
+    hostname = (parsed.hostname or "").lower()
+    if not hostname:
+        return False
+    if hostname != "sec.gov" and not hostname.endswith(".sec.gov"):
         return False
     path = parsed.path.rstrip("/")
     return path in GENERIC_SEC_DIVISION_PATHS

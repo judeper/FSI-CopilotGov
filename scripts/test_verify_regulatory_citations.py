@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
+import pytest
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = REPO_ROOT / "scripts" / "verify_regulatory_citations.py"
 
@@ -55,3 +57,60 @@ def test_find_mislabeled_risk_alert_links_allows_specific_risk_alert_urls() -> N
     )
     violations = verify_regulatory_citations.find_mislabeled_risk_alert_links(markdown)
     assert violations == []
+
+
+@pytest.mark.parametrize(
+    ("url", "expected"),
+    [
+        (
+            "https://www.sec.gov/about/divisions-offices/division-examinations",
+            True,
+        ),
+        (
+            "https://sec.gov/about/divisions-offices/division-enforcement",
+            True,
+        ),
+        (
+            "https://subdomain.sec.gov/about/divisions-offices/division-examinations",
+            True,
+        ),
+        (
+            "https://evilsec.gov/about/divisions-offices/division-examinations",
+            False,
+        ),
+        (
+            "https://sec.gov.evil/about/divisions-offices/division-examinations",
+            False,
+        ),
+        (
+            "https://sec.gov@evil.com/about/divisions-offices/division-examinations",
+            False,
+        ),
+        (
+            "https://www.sec.gov\\@evil.com/about/divisions-offices/division-examinations",
+            False,
+        ),
+        (
+            "https://www.sec.gov%2f.evil.com/about/divisions-offices/division-examinations",
+            False,
+        ),
+        (
+            "https://www.sec.gov%5c.evil.com/about/divisions-offices/division-examinations",
+            False,
+        ),
+        (
+            "https:///about/divisions-offices/division-examinations",
+            False,
+        ),
+        (
+            "https://example.com/about/divisions-offices/division-examinations",
+            False,
+        ),
+        (
+            "http://www.sec.gov/about/divisions-offices/division-examinations",
+            False,
+        ),
+    ],
+)
+def test_is_generic_sec_division_url_host_and_scheme_hardening(url: str, expected: bool) -> None:
+    assert verify_regulatory_citations.is_generic_sec_division_url(url) is expected
