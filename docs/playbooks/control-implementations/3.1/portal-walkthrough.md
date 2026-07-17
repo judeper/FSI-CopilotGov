@@ -34,12 +34,12 @@ Step-by-step portal configuration for enabling comprehensive audit logging of al
 **Portal:** Microsoft Purview portal
 **Path:** purview.microsoft.com > Audit > Search > Export results
 
-To surface the expanded audit schema fields (AgentId, AgentName, XPIA, JailbreakDetected, SensitivityLabelId):
+To surface the expanded audit schema fields — the top-level `AgentId`, `AgentName`, and `SensitivityLabelId`, plus the nested `AccessedResources.XPIADetected` and `Messages.JailbreakDetected` sub-properties:
 
 1. Run a `CopilotInteraction` search for your desired date range and export results to CSV.
 2. Open the exported CSV and review the **AuditData** column (JSON format) for the new fields.
 3. When reviewing agent-assisted interactions, the `AgentId` and `AgentName` fields identify which Copilot agent was invoked — use these to map agent usage to FINRA Rule 3110 supervisory records.
-4. Filter the exported data for rows where `JailbreakDetected` is `true` — these events require security escalation per FFIEC incident response standards.
+4. Parse the **AuditData** JSON and flag records where any `Messages[].JailbreakDetected` sub-property is `true` — these events require security escalation per FFIEC incident response standards.
 5. Use `SensitivityLabelId` values to cross-reference against your label inventory and verify that Copilot respected label-based access boundaries.
 
 ### Step 4: Enable Audit (Premium) for Extended Retention

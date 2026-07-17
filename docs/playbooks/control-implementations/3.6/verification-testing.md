@@ -56,8 +56,8 @@ Test cases and evidence collection procedures for validating supervisory control
   3. Wait 15–30 minutes for audit events to propagate to the Purview audit log.
   4. Run Script 5 (Agent Interaction Audit) from the PowerShell setup guide to retrieve agent-specific CopilotInteraction events.
   5. Verify the returned records contain: `AgentId`, `AgentName`, the interacting user's identity, and the interaction timestamp.
-  6. Confirm the `XPIA` field is present and set to `false` for normal interactions (no cross-prompt injection attempt detected).
-- **Expected Result:** Agent interactions appear in the audit log with correct AgentId, AgentName, user identity, and timestamp. XPIA flag is captured. The records are exportable for supervisory review evidence.
+  6. Confirm the `AccessedResources.XPIADetected` flag is absent or `false` for normal interactions (no cross-prompt injection attempt detected on referenced resources).
+- **Expected Result:** Agent interactions appear in the audit log with correct AgentId, AgentName, user identity, and timestamp. The `AccessedResources.XPIADetected` flag is captured when a detection occurs. The records are exportable for supervisory review evidence.
 - **Evidence:** CSV export from Script 5 showing agent interaction records; Purview audit log screenshot showing CopilotInteraction records with AgentId populated.
 
 ### Test 6: WSP Coverage Verification for Deployed Agents

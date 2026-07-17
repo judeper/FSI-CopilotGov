@@ -112,7 +112,7 @@ $allCopilotLogs = Search-UnifiedAuditLog `
 
 $jailbreakEvents = $allCopilotLogs | Where-Object {
     $auditData = $_.AuditData | ConvertFrom-Json
-    $auditData.JailbreakDetected -eq $true
+    [bool]($auditData.Messages | Where-Object { $_.JailbreakDetected -eq $true })
 }
 
 if ($jailbreakEvents.Count -gt 0) {
