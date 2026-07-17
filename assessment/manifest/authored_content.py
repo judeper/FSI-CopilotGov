@@ -2724,6 +2724,21 @@ AUTHORED: dict[str, dict] = {
     # ---------------------------------------------------------------
     "3.8a": {
         "priority": "high",
+        # 3.8a is the genAI overlay of the co-dependent Control 3.8 and is
+        # operated as a single integrated program with it. Accountable roles are
+        # source-grounded in the control doc's governance ownership ("named
+        # accountable owner for Copilot generative AI governance ... Head of AI
+        # Governance or CTO delegate") plus the compliance-review co-dependency
+        # inherited from Control 3.8 (Purview Compliance Admin). Kept in sync
+        # with ROLE_CONTROLS in scripts/extract_assessment_data.py so a
+        # from-scratch harvest derives the same roles in the same order.
+        "roles": ["Purview Compliance Admin", "AI Governance Lead"],
+        # No genAI-specific portal walkthrough exists yet; rather than fabricate
+        # a nonexistent /3.8a/ playbook route, point at the co-dependent Control
+        # 3.8 portal walkthrough (the shared MRM/model-inventory substrate).
+        # force-replaced in merge_authored_content.py so this overrides the
+        # harvest fallback that would otherwise emit a dead /3.8a/ route.
+        "portalPlaybookUrl": "/playbooks/control-implementations/3.8/portal-walkthrough/",
         "yesBar": (
             "A generative-AI model-governance review (NIST AI RMF 1.0 / "
             "ISO/IEC 42001) has been completed for Copilot, addressing the "

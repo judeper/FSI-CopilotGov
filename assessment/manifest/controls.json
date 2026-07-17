@@ -3476,7 +3476,8 @@
       3
     ],
     "roles": [
-      "TODO: assign per ROLE_CONTROLS"
+      "Purview Compliance Admin",
+      "AI Governance Lead"
     ],
     "regulatory": [
       "SR-11-7",
@@ -3502,7 +3503,7 @@
       "Responsible-AI principles adoption evidence"
     ],
     "controlDocUrl": "/controls/pillar-3-compliance/3.8a-generative-ai-model-governance/",
-    "portalPlaybookUrl": "/playbooks/control-implementations/3.8a/portal-walkthrough/",
+    "portalPlaybookUrl": "/playbooks/control-implementations/3.8/portal-walkthrough/",
     "collectorField": "Compliance_GenAIGovernance",
     "sectorYesBar": {
       "bank": "GenAI governance aligned to NIST AI RMF 1.0; addresses SR 26-2 / OCC 2026-13 explicit exclusion of generative AI by continuing to apply SR 11-7 / OCC 2011-12 principles.",

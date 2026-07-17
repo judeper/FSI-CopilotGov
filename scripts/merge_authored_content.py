@@ -50,6 +50,12 @@ _REPLACE_FIELDS: set[str] = {"solutions"}
 # authored_content.py. This is intentionally narrow: all controls/fields
 # outside these sets keep the default preservation behavior.
 _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
+    "3.8a": {
+        # The harvest fallback fabricates a conventional /3.8a/portal-walkthrough/
+        # route even though no such playbook file exists. Force the authored
+        # co-dependent 3.8 route to win over that dead default.
+        "portalPlaybookUrl",
+    },
     "4.5": {
         "verifyIn",
         "verifyPowerShell",
