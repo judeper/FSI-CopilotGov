@@ -19,7 +19,7 @@
     "sentinel": {
       "filename": "sentinel.json",
       "collector": "Collect-Sentinel.ps1",
-      "description": "Microsoft Sentinel: workspace config, data connectors, KQL audit queries for CopilotInteraction events."
+      "description": "Microsoft Sentinel: workspace config, data connectors, and CopilotActivity KQL status for RecordType CopilotInteraction."
     }
   },
   "mappings": [
@@ -249,11 +249,11 @@
     },
     {
       "controlId": "4.11",
-      "collectorField": "Sentinel_CopilotDetections",
+      "collectorField": "Sentinel_CopilotActivityCollection",
       "source": "sentinel",
-      "jsonPath": "kql_audit_check",
-      "evaluator": "exists_non_empty",
-      "evidenceKey": "Sentinel detection rules for Copilot events"
+      "jsonPath": "kql_audit_check.HasRecords",
+      "evaluator": "boolean_true",
+      "evidenceKey": "CopilotActivity collection status for CopilotInteraction records"
     }
   ]
 }
