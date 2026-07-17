@@ -1,6 +1,6 @@
 // H2: Expanded manifest / solutions-lock integrity tests.
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -84,6 +84,48 @@ describe("manifest + solutions-lock integrity (H2)", () => {
     expect(lock.source.ref.length).toBeGreaterThan(0);
     expect(typeof lock.source.commit).toBe("string");
     expect(lock.source.commit).toMatch(/^[0-9a-f]{40}$/);
+  });
+
+  it("every portalPlaybookUrl resolves to an existing portal-walkthrough on disk (no broken route)", () => {
+    // Regression guard for controls/3.8a: its manifest route pointed at a
+    // nonexistent /3.8a/portal-walkthrough/ playbook. Every control's playbook
+    // route must map to a real docs/playbooks/.../portal-walkthrough.md file.
+    const routeRe =
+      /^\/playbooks\/control-implementations\/([^/]+)\/portal-walkthrough\/?$/;
+    for (const c of manifest) {
+      const url = c.portalPlaybookUrl;
+      const m = typeof url === "string" ? url.match(routeRe) : null;
+      expect(
+        m,
+        `${c.id} portalPlaybookUrl '${url}' is not a control-implementations portal-walkthrough route`,
+      ).toBeTruthy();
+      const file = join(
+        REPO,
+        "docs",
+        "playbooks",
+        "control-implementations",
+        m[1],
+        "portal-walkthrough.md",
+      );
+      expect(existsSync(file), `${c.id} portalPlaybookUrl points to missing file ${file}`).toBe(true);
+    }
+  });
+
+  it("co-dependent controls 3.8 and 3.8a carry concrete accountable roles (no TODO placeholder)", () => {
+    // Reconciliation guard: 3.8a shipped with a ["TODO: assign per ROLE_CONTROLS"]
+    // placeholder. Both halves of the co-dependent MRM pair must name real roles.
+    for (const id of ["3.8", "3.8a"]) {
+      const c = manifest.find((x) => x.id === id);
+      expect(c, `control ${id} missing from manifest`).toBeTruthy();
+      expect(Array.isArray(c.roles) && c.roles.length > 0, `${id} roles must be non-empty`).toBe(true);
+      for (const r of c.roles) {
+        expect(typeof r).toBe("string");
+        expect(
+          r.toLowerCase().startsWith("todo"),
+          `${id} still carries a TODO role placeholder: '${r}'`,
+        ).toBe(false);
+      }
+    }
   });
 
   it("every control id is unique and matches the documented pillar.index pattern", () => {
