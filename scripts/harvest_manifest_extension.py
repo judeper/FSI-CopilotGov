@@ -90,6 +90,7 @@ REG_TOKENS: list[tuple[str, str]] = [
     ("FINRA Regulatory Notice 25-07", "FINRA-25-07"),
     ("FINRA Notice 25-07", "FINRA-25-07"),
     # SEC
+    ("SEC Release No. 34-105845 / SR-FINRA-2026-004 Partial Amendment No. 1", "SEC-34-105845-SR-FINRA-2026-004"),
     ("SEC Marketing Rule (Rule 206(4)-1)", "SEC-206-4-1"),
     ("SEC Marketing Rule", "SEC-206-4-1"),
     ("Rule 206(4)-1", "SEC-206-4-1"),
@@ -98,7 +99,8 @@ REG_TOKENS: list[tuple[str, str]] = [
     ("SEC Regulation Best Interest (Reg BI)", "SEC-Reg-BI"),
     ("SEC Regulation Best Interest", "SEC-Reg-BI"),
     ("Reg BI", "SEC-Reg-BI"),
-    ("SEC Risk Alerts on AI Marketing Claims", "SEC-AI-Marketing-Risk-Alert"),
+    ("SEC Press Release 2024-36 (Delphia and Global Predictions AI washing enforcement actions)", "SEC-2024-36-AI-Washing"),
+    ("SEC Press Release 2024-36", "SEC-2024-36-AI-Washing"),
     ("SEC Rule 17a-4", "SEC-17a-4"),
     ("SEC Rule 17a-3", "SEC-17a-3"),
     ("SEC Rule 10b-5", "SEC-10b-5"),

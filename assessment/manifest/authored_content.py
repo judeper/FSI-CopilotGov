@@ -2825,7 +2825,8 @@ AUTHORED: dict[str, dict] = {
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "AI disclosure aligned to FINRA Regulatory Notice 24-09 "
-                "and SEC AI Marketing Risk Alert; disclosure reviewed by "
+                "and SEC Press Release 2024-36 AI washing enforcement "
+                "actions; disclosure reviewed by "
                 "supervisory principal."
             ),
             investment_adviser=(

@@ -62,6 +62,7 @@ Test cases and evidence collection procedures to validate AI disclosure and tran
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | SEC Marketing Rule | Advertising disclosure requirements | Supports compliance with AI-assisted content disclosure in marketing materials |
+| SEC Press Release 2024-36 (Delphia/Global Predictions) | Enforcement actions against false or misleading AI-use statements | Reinforces review of AI capability claims before external distribution |
 | SEC Reg BI | Client communication transparency | Helps meet disclosure obligations for AI-assisted recommendations |
 | FINRA 2210 | Fair and balanced communication | Supports transparency in AI-generated public communications |
 
