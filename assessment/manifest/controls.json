@@ -3155,6 +3155,7 @@
     "regulatory": [
       "FINRA-2210",
       "FINRA-24-09",
+      "SEC-34-105845-SR-FINRA-2026-004",
       "SEC-206-4-1",
       "IAA-206"
     ],
@@ -3560,7 +3561,7 @@
     "regulatory": [
       "SEC-206-4-1",
       "SEC-Reg-BI",
-      "SEC-AI-Marketing-Risk-Alert",
+      "SEC-2024-36-AI-Washing",
       "State-AI-Disclosure"
     ],
     "priority": "high",
@@ -3580,7 +3581,7 @@
     "collectorField": "",
     "sectorYesBar": {
       "bank": "TODO: sector-specific yes-bar",
-      "broker-dealer": "AI disclosure aligned to FINRA Regulatory Notice 24-09 and SEC AI Marketing Risk Alert; disclosure reviewed by supervisory principal.",
+      "broker-dealer": "AI disclosure aligned to FINRA Regulatory Notice 24-09 and SEC Press Release 2024-36 AI washing enforcement actions; disclosure reviewed by supervisory principal.",
       "investment-adviser": "AI disclosure aligned to SEC Marketing Rule (Rule 206(4)-1) and Investment Advisers Act §206; reviewed by CCO.",
       "insurance-carrier": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",

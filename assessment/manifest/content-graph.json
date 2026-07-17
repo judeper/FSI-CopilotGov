@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-11T17:21:09Z",
+  "generatedAt": "2026-07-17T09:42:03Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -543,7 +543,7 @@
         "SEC Rule 17a-4 — required broker-dealer records only",
         "FINRA Regulatory Notice 24-09 (AI in Communications)",
         "FINRA Regulatory Notice 26-14 (request for comment; not effective)",
-        "SEC Release No. 34-103492 / SR-FINRA-2026-004 Partial Amendment No. 1 (pending proposal; not effective)",
+        "SEC Release No. 34-105845 / SR-FINRA-2026-004 Partial Amendment No. 1 (pending proposal; not effective)",
         "SEC Marketing Rule (206(4)-1)",
         "Investment Advisers Act Section 206"
       ]
@@ -601,7 +601,7 @@
         "SEC Marketing Rule (Rule 206(4)-1)",
         "SEC Regulation Best Interest (Reg BI)",
         "State AI Disclosure Laws",
-        "SEC Risk Alerts on AI Marketing Claims"
+        "SEC Press Release 2024-36 (Delphia and Global Predictions AI washing enforcement actions)"
       ]
     },
     {
