@@ -2891,8 +2891,18 @@ AUTHORED: dict[str, dict] = {
         ],
         "verifyPowerShell": (
             "Connect-IPPSSession; "
-            "Get-DlpCompliancePolicy | Where-Object { "
-            "$_.Workload -match 'Exchange|SharePoint|OneDrive' }"
+            "$policies = @(Get-DlpCompliancePolicy); "
+            "if (-not $policies -or $policies.Count -lt 1) { "
+            "throw 'Fail closed: no DLP compliance policies returned.' }; "
+            "$required = 'Workload','EnforcementPlanes','Locations'; "
+            "foreach ($p in $policies) { foreach ($name in $required) { "
+            "if (-not $p.PSObject.Properties[$name]) { "
+            "throw 'Fail closed: DlpCompliancePolicy missing required verification properties.' } } }; "
+            "$matches = @($policies | Where-Object { "
+            "$_.Workload -eq 'Applications' -and $_.EnforcementPlanes -contains 'CopilotExperiences' }); "
+            "if (-not $matches -or $matches.Count -lt 1) { "
+            "throw 'Fail closed: no Copilot DLP policy found for Workload=Applications and EnforcementPlane=CopilotExperiences.' }; "
+            "$matches | Select-Object Name, Mode, Enabled, Workload, EnforcementPlanes, Locations"
         ),
         "evidenceExpected": [
             "Privacy impact assessment for Copilot NPI processing",

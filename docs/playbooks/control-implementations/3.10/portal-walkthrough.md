@@ -2,7 +2,7 @@
 
 # Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information — Portal Walkthrough
 
-Step-by-step portal configuration for implementing privacy controls that support compliance with SEC Regulation S-P (including the 2023 amendments) when using Microsoft 365 Copilot with consumer financial information.
+Step-by-step portal configuration for implementing privacy controls that support compliance with SEC Regulation S-P, including the amendments proposed in 2023 and adopted in May 2024 (SEC Release No. 34-100155), when using Microsoft 365 Copilot with consumer financial information.
 
 ## Prerequisites
 
@@ -34,11 +34,12 @@ Step-by-step portal configuration for implementing privacy controls that support
 
 1. Create a DLP policy named "FSI-RegSP-Copilot-Privacy-Protection".
 2. Select the **U.S. Financial** regulatory template as a starting point.
-3. Add locations: Exchange, SharePoint, OneDrive, Teams, and Copilot interactions.
+3. For the Copilot interaction policy, select the **Microsoft 365 Copilot and Copilot Chat** location (custom policy template) and leave non-Copilot workloads disabled in this policy.
 4. Configure rules:
    - **Low volume (1-9 instances):** Notify user with policy tip
    - **High volume (10+ instances):** Block sharing and notify compliance team
 5. Enable the policy for all Copilot-licensed users.
+6. In policy details (or Security & Compliance PowerShell output), verify this policy resolves to `Workload=Applications` and `EnforcementPlanes` includes `CopilotExperiences` before publishing.
 
 ### Step 3: Configure Information Barriers for Privacy Segregation
 
@@ -107,6 +108,7 @@ The amended Reg S-P requires a written incident response program addressing unau
 
 ## Regulatory Alignment
 
+- **SEC Final Rule, Release No. 34-100155 (May 2024)** — Primary SEC source for the Reg S-P amendments proposed in 2023 and adopted in 2024
 - **SEC Reg S-P Rule 248.30(a)(3)** — Requires institutions to adopt policies requiring service providers to notify the institution within 72 hours of unauthorized access to customer information
 - **SEC Reg S-P Rule 248.30(a)(4)** — Mandatory written incident response program; Copilot-specific scenarios must be included
 - **SEC Reg S-P (Rule 30)** — Supports compliance with safeguarding requirements for customer records and information

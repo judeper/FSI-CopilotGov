@@ -25,10 +25,8 @@ Connect-MgGraph -Scopes "InformationProtectionPolicy.ReadWrite.All", "AuditLog.R
 New-DlpCompliancePolicy `
     -Name "FSI-RegSP-Copilot-Privacy-Protection" `
     -Comment "Protects consumer financial information per SEC Reg S-P" `
-    -ExchangeLocation "All" `
-    -SharePointLocation "All" `
-    -OneDriveLocation "All" `
-    -TeamsLocation "All" `
+    -Locations '[{"Workload":"Applications","Region":null,"AddInclusions":[{"Type":"All","Identity":"All"}],"RemoveInclusions":[],"AddExclusions":[],"RemoveExclusions":[]}]' `
+    -EnforcementPlanes @("CopilotExperiences") `
     -Mode Enable
 
 # Rule for low-volume NPI detection
@@ -55,7 +53,20 @@ New-DlpComplianceRule `
     -BlockAccess $true `
     -NotifyUser Owner, SiteAdmin
 
-Write-Host "Reg S-P DLP policy created with low and high volume rules" -ForegroundColor Green
+$policy = Get-DlpCompliancePolicy -Identity "FSI-RegSP-Copilot-Privacy-Protection"
+foreach ($name in @("Workload","EnforcementPlanes","Locations")) {
+    if (-not $policy.PSObject.Properties[$name]) {
+        throw "Fail closed: FSI-RegSP-Copilot-Privacy-Protection missing required property '$name'."
+    }
+}
+if ($policy.Workload -ne "Applications") {
+    throw "Fail closed: expected Workload=Applications, got '$($policy.Workload)'."
+}
+if (-not ($policy.EnforcementPlanes -contains "CopilotExperiences")) {
+    throw "Fail closed: policy missing EnforcementPlanes=CopilotExperiences."
+}
+
+Write-Host "Reg S-P DLP policy created and verified for Workload=Applications with EnforcementPlanes=CopilotExperiences" -ForegroundColor Green
 ```
 
 ### Script 2: DLP Incident Report for Privacy Violations
