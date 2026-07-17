@@ -12,6 +12,14 @@ sys.path.insert(0, str(SCRIPTS_DIR))
 import merge_authored_content as merger  # noqa: E402
 
 
+FORCED_45_FIELDS = (
+    "verifyIn",
+    "verifyPowerShell",
+    "evidenceExpected",
+    "facilitatorNotes",
+)
+
+
 FORCED_415_FIELDS = (
     "yesBar",
     "partialBar",
@@ -58,6 +66,14 @@ def test_415_forced_fields_in_manifest_match_authored_source():
         assert manifest_415[field] == authored_415[field]
 
 
+def test_45_forced_fields_in_manifest_match_authored_source():
+    authored_45 = _load_authored()["4.5"]
+    manifest_45 = _load_manifest_control("4.5")
+
+    for field in FORCED_45_FIELDS:
+        assert manifest_45[field] == authored_45[field]
+
+
 def test_415_forced_fields_do_not_contain_obsolete_frontier_default_guidance():
     manifest_415 = _load_manifest_control("4.15")
     payload = json.dumps(
@@ -75,6 +91,19 @@ def test_415_forced_fields_do_not_contain_obsolete_frontier_default_guidance():
 
 
 def test_control_scoped_force_replace_does_not_overwrite_unrelated_controls():
+    stale_45 = {
+        "id": "4.5",
+        "verifyPowerShell": "stale command",
+        "evidenceExpected": ["legacy"],
+    }
+    overlay_45 = {
+        "verifyPowerShell": "Get-MgBetaReportMicrosoft365CopilotUsageUserDetail ...",
+        "evidenceExpected": ["new"],
+    }
+    merged_45 = _apply_overlay(stale_45, overlay_45)
+    assert merged_45["verifyPowerShell"] == "Get-MgBetaReportMicrosoft365CopilotUsageUserDetail ..."
+    assert merged_45["evidenceExpected"] == ["new"]
+
     stale_415 = {
         "id": "4.15",
         "yesBar": "stale 4.15 guidance",

@@ -3440,13 +3440,35 @@ AUTHORED: dict[str, dict] = {
                 "path": "Reports > Usage > Microsoft 365 Copilot",
                 "url": "https://admin.microsoft.com/AdminPortal/Home#/reportsUsage",
             },
+            {
+                "portal": "Microsoft Graph REST (beta)",
+                "path": "GET /beta/reports/getMicrosoft365CopilotUsageUserDetail(period='D7')?$format=application/json",
+                "url": "https://learn.microsoft.com/en-us/graph/api/reportroot-getmicrosoft365copilotusageuserdetail?view=graph-rest-beta",
+            },
+            {
+                "portal": "Microsoft Graph REST (beta, Copilot report root)",
+                "path": "GET /beta/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D7',version='v1')",
+                "url": "https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/api/admin-settings/reports/copilotreportroot-getmicrosoft365copilotusageuserdetail",
+            },
         ],
-        "verifyPowerShell": "",
+        "verifyPowerShell": (
+            "Import-Module Microsoft.Graph.Beta.Reports; "
+            "Connect-MgGraph -Scopes 'Reports.Read.All'; "
+            "$out = Join-Path $PWD ('copilot-usage-beta-' + "
+            "(Get-Date -Format 'yyyyMMddHHmmss') + '.json'); "
+            "Get-MgBetaReportMicrosoft365CopilotUsageUserDetail -Period 'D7' "
+            "-Format 'application/json' -OutFile $out; "
+            "$payload = Get-Content -Raw -Path $out | ConvertFrom-Json; "
+            "if (-not $payload.value -or @($payload.value).Count -lt 1) { "
+            "throw 'Fail closed: no Copilot usage-detail records returned for D7.' "
+            "}; "
+            "$payload.value | Select-Object -First 1"
+        ),
         "evidenceExpected": [
-            "Copilot usage report from Microsoft 365 admin center",
-            "Leadership reporting cadence and most recent report",
-            "Anomaly detection configuration and recent alerts",
-            "ROI/adoption metric dashboard or report",
+            "Successful Microsoft Graph beta usage-detail export artifact (JSON or CSV) with timestamp and period",
+            "At least one usage-detail record returned for the selected period (fail closed if empty)",
+            "Permission evidence for Reports.Read.All and supported delegated role or app consent",
+            "Documented caveats for beta API behavior, national-cloud availability (global only), and unlicensed Copilot Chat data exclusion",
         ],
         "collectorField": "M365Admin_UsageAnalytics",
         "sectorYesBar": _sector_map(
@@ -3465,8 +3487,9 @@ AUTHORED: dict[str, dict] = {
                 "documented cadence with anomalies flagged?"
             ),
             "followUp": (
-                "Open Microsoft 365 admin center > Reports > Usage. "
-                "Verify reporting cadence and anomaly detection."
+                "Run Get-MgBetaReportMicrosoft365CopilotUsageUserDetail for D7 "
+                "and verify export succeeds with >=1 record. Treat permission "
+                "errors, 429 without recovery, or empty record sets as failed."
             ),
             "timeBudgetMinutes": 6,
         },

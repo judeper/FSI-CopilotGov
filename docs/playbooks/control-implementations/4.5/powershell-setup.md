@@ -1,143 +1,125 @@
 # Control 4.5: Copilot Usage Analytics and Adoption Reporting — PowerShell Setup
 
-Automation scripts for generating Copilot usage analytics and adoption reports.
+Conservative automation for proving that Microsoft 365 Copilot usage-detail reporting is reachable and exportable from a live tenant.
+
+## Verification Boundary (Read First)
+
+This runbook verifies **access + exportability** of usage-detail records only. It does **not** establish:
+
+- dashboard interpretation quality
+- adoption effectiveness
+- regulatory sufficiency by itself
+- complete user coverage
+
+## Current First-Party Microsoft Graph Surfaces
+
+| Surface | Documented Endpoint / Cmdlet | Notes |
+|---|---|---|
+| Legacy Graph beta report API | `GET https://graph.microsoft.com/beta/reports/getMicrosoft365CopilotUsageUserDetail(period='D7')?$format=application/json` | Supports `$format` (`application/json` or `text/csv`), returns JSON (`200`) or CSV redirect (`302` + `Location`) |
+| Copilot report root (beta) | `GET https://graph.microsoft.com/beta/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D7',version='v1')` | Newer path segment; preview response is JSON (`200`) |
+| Documented Graph PowerShell beta cmdlet | `Get-MgBetaReportMicrosoft365CopilotUsageUserDetail -Period D7 -Format application/json -OutFile <path>` | Module: `Microsoft.Graph.Beta.Reports` |
 
 ## Prerequisites
 
-- **Modules:** `Microsoft.Graph`
-- **Permissions:** Reports.Read.All
-- **PowerShell:** Version 7.x recommended
+- **PowerShell:** 7.x
+- **Modules:** `Microsoft.Graph.Authentication`, `Microsoft.Graph.Beta.Reports`
+- **Permission support (per Microsoft Graph docs):**
+  - Delegated (work/school): `Reports.Read.All`
+  - Application: `Reports.Read.All`
+  - Delegated personal Microsoft account: not supported
+- **Delegated role requirement:** assign a supported Microsoft Entra admin role (for example: Company Administrator, AI Administrator, Exchange Administrator, SharePoint Administrator, Lync Administrator, Teams Service Administrator, Teams Communications Administrator, or Reports Reader).
+- **Availability caveat:** this API is documented as available in Microsoft Graph global service only.
 
-> **Current Learn status:** Microsoft Learn documents `getMicrosoft365CopilotUsageUserDetail` examples under Microsoft Graph `/beta`; `/beta` APIs are subject to change and are not supported for production applications. Use these exports for governed reporting, validate the Graph version selector before productionizing automation, and use the Microsoft 365 admin center path **Reports > Microsoft 365 Copilot Usage** as the portal fallback for tenant-level metrics.
+## Parameter and Behavior Notes
 
-## Connect to Required Services
+- `period` is required for this method.
+- Supported period values on the legacy endpoint/cmdlet: `D7`, `D30`, `D90`, `D180`, `ALL`.
+- No `date` parameter is documented for this usage-detail method; treat date-filter attempts as out of scope for Control 4.5 verification.
+- Beta APIs are subject to change and are not supported for production applications.
+- Unlicensed Copilot Chat usage data is not returned by this API.
 
-```powershell
-Import-Module Microsoft.Graph
-Connect-MgGraph -Scopes "Reports.Read.All"
-```
-
-## Scripts
-
-### Script 1: Copilot Usage Summary Report
-
-```powershell
-# Generate Copilot usage summary from Microsoft Graph reports
-# Microsoft Learn examples currently use /beta for this Copilot usage API.
-$period = "D30"  # D7, D30, D90, D180, ALL
-$reportDate = Get-Date -Format 'yyyyMMdd'
-$outputPath = "CopilotUsageDetail_$reportDate.csv"
-
-$usageReport = Invoke-MgGraphRequest -Method GET `
-    -Uri "https://graph.microsoft.com/beta/reports/getMicrosoft365CopilotUsageUserDetail(period='$period')?`$format=text/csv" `
-    -OutputFilePath $outputPath
-
-Write-Host "Copilot usage detail report downloaded" -ForegroundColor Green
-
-# Parse the CSV for summary statistics
-$data = Import-Csv $outputPath
-$totalUsers = $data.Count
-$activeUsers = ($data | Where-Object { $_.'Last Activity Date' -ne '' }).Count
-
-Write-Host "`nCopilot Adoption Summary ($period):" -ForegroundColor Cyan
-Write-Host "Total licensed users: $totalUsers"
-Write-Host "Active users: $activeUsers"
-Write-Host "Adoption rate: $([math]::Round(($activeUsers / [Math]::Max($totalUsers,1)) * 100, 1))%"
-```
-
-### Script 2: Usage by Application Report
+## Script: Conservative Verification (Fail Closed)
 
 ```powershell
-# Break down Copilot usage by application
-$data = Import-Csv "CopilotUsageDetail_$(Get-Date -Format 'yyyyMMdd').csv"
+Import-Module Microsoft.Graph.Authentication
+Import-Module Microsoft.Graph.Beta.Reports
 
-$appUsage = @(
-    [PSCustomObject]@{App="Word"; Users=($data | Where-Object { $_.'Word Copilot Last Activity Date' -ne '' }).Count},
-    [PSCustomObject]@{App="Excel"; Users=($data | Where-Object { $_.'Excel Copilot Last Activity Date' -ne '' }).Count},
-    [PSCustomObject]@{App="PowerPoint"; Users=($data | Where-Object { $_.'PowerPoint Copilot Last Activity Date' -ne '' }).Count},
-    [PSCustomObject]@{App="Outlook"; Users=($data | Where-Object { $_.'Outlook Copilot Last Activity Date' -ne '' }).Count},
-    [PSCustomObject]@{App="Teams"; Users=($data | Where-Object { $_.'Teams Copilot Last Activity Date' -ne '' }).Count}
-)
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
 
-Write-Host "Copilot Usage by Application:" -ForegroundColor Cyan
-$appUsage | Sort-Object Users -Descending | Format-Table -AutoSize
-$appUsage | Export-Csv "CopilotUsageByApp_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
-```
+$period = 'D7'
+$outFile = Join-Path $PWD ("copilot-usage-beta-{0}.json" -f (Get-Date -Format 'yyyyMMddHHmmss'))
 
-### Script 3: Department-Level Adoption Report
+Connect-MgGraph -Scopes 'Reports.Read.All'
 
-```powershell
-# Generate department-level Copilot adoption metrics
-$data = Import-Csv "CopilotUsageDetail_$(Get-Date -Format 'yyyyMMdd').csv"
+try {
+    Get-MgBetaReportMicrosoft365CopilotUsageUserDetail `
+        -Period $period `
+        -Format 'application/json' `
+        -OutFile $outFile | Out-Null
 
-# Enrich with department data from Entra ID
-$enriched = $data | ForEach-Object {
-    $user = Get-MgUser -UserId $_.'User Principal Name' -Property Department -ErrorAction SilentlyContinue
+    if (-not (Test-Path $outFile)) {
+        throw "Fail closed: expected export file was not created."
+    }
+
+    $payload = Get-Content -Raw -Path $outFile | ConvertFrom-Json
+    $records = @($payload.value)
+
+    if ($records.Count -lt 1) {
+        throw "Fail closed: API call succeeded but returned zero usage-detail records."
+    }
+
     [PSCustomObject]@{
-        User       = $_.'User Principal Name'
-        Department = $user.Department
-        Active     = $_.'Last Activity Date' -ne ''
-    }
+        Period = $period
+        RecordCount = $records.Count
+        ReportRefreshDate = $records[0].reportRefreshDate
+        SampleUser = $records[0].userPrincipalName
+        OutputFile = $outFile
+    } | Format-List
 }
-
-$deptAdoption = $enriched | Group-Object Department | ForEach-Object {
-    $total = $_.Count
-    $active = ($_.Group | Where-Object { $_.Active }).Count
-    [PSCustomObject]@{
-        Department    = $_.Name
-        Licensed      = $total
-        Active        = $active
-        AdoptionRate  = "$([math]::Round(($active / [Math]::Max($total,1)) * 100, 1))%"
+catch {
+    if ($_.Exception.Message -match '429|TooManyRequests|Retry-After') {
+        throw "Fail closed: throttled by Microsoft Graph. Follow Retry-After guidance and rerun."
     }
-} | Sort-Object { [int]($_.AdoptionRate -replace '%','') } -Descending
-
-Write-Host "Department Adoption Report:" -ForegroundColor Cyan
-$deptAdoption | Format-Table -AutoSize
-$deptAdoption | Export-Csv "CopilotAdoptionByDept_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+    throw
+}
+finally {
+    Disconnect-MgGraph -ErrorAction SilentlyContinue
+}
 ```
 
-### Script 4: Adoption Trend Analysis
+## Optional REST Probe (CSV Redirect Behavior)
+
+Use this only when you need explicit evidence of the documented `302` redirect behavior.
 
 ```powershell
-# Compare adoption across multiple time periods
-$periods = @("D7", "D30", "D90")
-$trends = @()
-
-foreach ($period in $periods) {
-    $outputPath = "temp_$period.csv"
-    $report = Invoke-MgGraphRequest -Method GET `
-        -Uri "https://graph.microsoft.com/beta/reports/getMicrosoft365CopilotUsageUserDetail(period='$period')?`$format=text/csv" `
-        -OutputFilePath $outputPath
-
-    $data = Import-Csv $outputPath
-    $total = $data.Count
-    $active = ($data | Where-Object { $_.'Last Activity Date' -ne '' }).Count
-
-    $trends += [PSCustomObject]@{
-        Period       = $period
-        Licensed     = $total
-        Active       = $active
-        AdoptionRate = "$([math]::Round(($active / [Math]::Max($total,1)) * 100, 1))%"
-    }
-}
-
-Write-Host "Adoption Trend Analysis:" -ForegroundColor Cyan
-$trends | Format-Table -AutoSize
+Connect-MgGraph -Scopes 'Reports.Read.All'
+Invoke-MgGraphRequest -Method GET `
+  -Uri "https://graph.microsoft.com/beta/reports/getMicrosoft365CopilotUsageUserDetail(period='D7')?`$format=text/csv" `
+  -SkipHttpErrorCheck
+Disconnect-MgGraph
 ```
 
-## Scheduled Tasks
+Expected behavior: `302 Found` with a short-lived preauthenticated URL in the `Location` header.
 
-| Task | Frequency | Script |
-|------|-----------|--------|
-| Usage summary report | Weekly | Script 1 |
-| Application usage breakdown | Monthly | Script 2 |
-| Department adoption report | Monthly | Script 3 |
-| Trend analysis | Monthly | Script 4 |
+## Required Evidence Artifacts
 
-> **Retention note:** Copilot analytics in the Microsoft 365 admin center and Viva Insights dashboard are designed around recent activity windows (28 days by default for admin-center reporting). Schedule exports or retain audit evidence where configured if regulated reporting requires longer trend history.
+- Command transcript (including period value and timestamp)
+- Export artifact (`*.json` or `*.csv`)
+- Record count result (`>=1` for pass)
+- Permission/role evidence for the identity used
+- Any throttling events and retry actions
+
+## References
+
+- [Graph beta: reportRoot getMicrosoft365CopilotUsageUserDetail](https://learn.microsoft.com/en-us/graph/api/reportroot-getmicrosoft365copilotusageuserdetail?view=graph-rest-beta)
+- [Copilot report root API](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/api/admin-settings/reports/copilotreportroot-getmicrosoft365copilotusageuserdetail)
+- [Get-MgBetaReportMicrosoft365CopilotUsageUserDetail](https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.beta.reports/get-mgbetareportmicrosoft365copilotusageuserdetail?view=graph-powershell-beta)
+- [Authorization for Microsoft 365 usage-report APIs](https://learn.microsoft.com/en-us/graph/reportroot-authorization)
+- [Microsoft Graph throttling guidance](https://learn.microsoft.com/en-us/graph/throttling)
 
 ## Next Steps
 
-- See [Verification & Testing](verification-testing.md) to validate analytics
-- See [Troubleshooting](troubleshooting.md) for reporting issues
+- Run [Verification & Testing](verification-testing.md)
+- See [Troubleshooting](troubleshooting.md) for common failures
 - Back to [Control 4.5](../../../controls/pillar-4-operations/4.5-usage-analytics.md)

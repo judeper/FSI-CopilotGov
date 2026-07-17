@@ -1,72 +1,93 @@
 # Control 4.5: Copilot Usage Analytics and Adoption Reporting — Verification & Testing
 
-Test cases and evidence collection procedures for Copilot usage analytics and adoption reporting.
+Conservative tests that validate whether usage-detail reporting is accessible and produces records in a live tenant.
+
+## Non-Claims (Scope Guardrails)
+
+Passing these tests does **not** prove:
+
+- dashboard interpretation quality
+- adoption quality or business impact
+- regulatory sufficiency on its own
+- complete user coverage across licensed and unlicensed populations
 
 ## Test Cases
 
-### Test 1: Usage Dashboard Data Accuracy
+### Test 1: Permission and Role Gate
 
-- **Objective:** Verify that Copilot usage dashboard data accurately reflects actual usage
+- **Objective:** Confirm the caller is authorized to query Copilot usage-detail APIs.
 - **Steps:**
-  1. Have 5 test users perform known Copilot interactions across different applications.
-  2. Wait 48 hours for reporting data to update.
-  3. Check the M365 Admin Center Copilot usage report for the test users.
-  4. Verify the reported activity matches the known test interactions.
-- **Expected Result:** Dashboard accurately reflects the test users' Copilot activity within 48 hours.
-- **Evidence:** Comparison of known test activity with dashboard-reported data.
+  1. Connect with `Connect-MgGraph -Scopes "Reports.Read.All"`.
+  2. Run `Get-MgContext | Select-Object Scopes`.
+  3. Validate the identity is assigned a supported delegated admin role (if using delegated auth), or app-only consent exists for `Reports.Read.All`.
+- **Expected Result:** `Reports.Read.All` is present and authorization requirements are met.
+- **Fail Closed:** Missing scope, missing role, or consent errors.
 
-### Test 2: Report Privacy Controls
+### Test 2: Beta Endpoint/Cmdlet Reachability
 
-- **Objective:** Confirm that usage report privacy settings are correctly configured
+- **Objective:** Confirm the documented beta API path is reachable from the tenant.
 - **Steps:**
-  1. Log in as a Reports Reader role user and access the Copilot usage report.
-  2. Verify that user-identifiable information is shown or hidden per the configured privacy settings.
-  3. Log in as a Purview Compliance Admin and verify they can access identifiable data.
-  4. Confirm the audit log records who accessed user-identifiable usage reports.
-- **Expected Result:** Privacy settings correctly control visibility of identifiable data per role.
-- **Evidence:** Screenshots showing different data visibility for different roles.
+  1. Run `Get-MgBetaReportMicrosoft365CopilotUsageUserDetail -Period D7 -Format application/json -OutFile .\copilot-usage-d7.json`.
+  2. Parse the file with `Get-Content -Raw .\copilot-usage-d7.json | ConvertFrom-Json`.
+- **Expected Result:** Command succeeds and returns structured JSON payload.
+- **Fail Closed:** HTTP/auth errors, malformed output, or missing file.
 
-### Test 3: Adoption KPI Tracking
+### Test 3: Record Presence Validation
 
-- **Objective:** Validate that adoption KPIs are accurately calculated and tracked over time
+- **Objective:** Validate that the export contains usage-detail records.
 - **Steps:**
-  1. Run the adoption report scripts for 7-day, 30-day, and 90-day periods.
-  2. Verify the active user count is consistent across data sources.
-  3. Confirm the adoption rate calculation is correct (active / licensed * 100).
-  4. Compare with the M365 Admin Center dashboard for consistency.
-- **Expected Result:** KPI calculations are accurate and consistent across reporting methods.
-- **Evidence:** KPI comparison report showing calculated values from multiple sources.
+  1. Count records in `.value`.
+  2. Capture `reportRefreshDate`, `userPrincipalName`, and at least one activity-date field from a sample row.
+- **Expected Result:** Record count is `>= 1`.
+- **Fail Closed:** Zero records returned.
 
-### Test 4: Department-Level Reporting Accuracy
+### Test 4: Response and Export Behavior Validation
 
-- **Objective:** Confirm department-level adoption reports correctly aggregate user data
+- **Objective:** Confirm expected Microsoft Graph response/export behavior for the selected mode.
 - **Steps:**
-  1. Run the department-level adoption report script.
-  2. Manually verify 3 departments by cross-referencing user lists and activity.
-  3. Confirm department assignments match Entra ID department attributes.
-  4. Verify totals sum correctly across all departments.
-- **Expected Result:** Department adoption data is accurately aggregated from individual user data.
-- **Evidence:** Department report with manual verification notes.
+  1. JSON path: verify `200 OK` semantics and JSON payload in output file.
+  2. Optional CSV path: call legacy beta endpoint with `$format=text/csv` and capture redirect response details.
+- **Expected Result:** JSON mode returns data; CSV mode shows documented redirect/download behavior.
+- **Fail Closed:** Response mode differs from docs without documented explanation.
+
+### Test 5: Throttling and Retry Controls
+
+- **Objective:** Validate handling of Graph throttling events.
+- **Steps:**
+  1. On `429 Too Many Requests`, inspect `Retry-After`.
+  2. Re-run after the required wait time.
+  3. Log retry count and final outcome.
+- **Expected Result:** Process follows `Retry-After` guidance and logs retries.
+- **Fail Closed:** Repeated throttling with no successful retrieval in the approved execution window.
+
+### Test 6: Caveat and Coverage Documentation
+
+- **Objective:** Confirm that known API limitations are documented with evidence.
+- **Steps:**
+  1. Record that the control uses a beta API surface.
+  2. Record that availability is global-service-only per docs.
+  3. Record that unlicensed Copilot Chat usage is excluded from this API.
+- **Expected Result:** Verification packet includes explicit caveat statements.
+- **Fail Closed:** Caveats omitted from evidence package.
 
 ## Evidence Collection
 
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
-| Usage dashboard screenshot | M365 Admin Center | Screenshot | Monthly archive |
-| Adoption report | PowerShell/Graph | CSV | Monthly archive |
-| Privacy settings config | Admin Center | Screenshot | With control documentation |
-| KPI tracking log | Custom report | Spreadsheet | 1 year |
+| Beta cmdlet execution transcript | PowerShell session | Text log | Quarterly archive |
+| Usage-detail export artifact | Microsoft Graph beta API | JSON/CSV | Quarterly archive |
+| Authorization proof | Entra app consent + role assignment | Screenshot/export | With control record |
+| Throttling/retry log | Execution transcript | Text log | With control record |
+| Caveat statement | Control runbook record | Markdown/PDF | With committee packet |
 
-## Compliance Mapping
+## Operational Decision Rule
 
-| Regulation | Requirement | How This Control Helps |
-|-----------|-------------|----------------------|
-| FFIEC Management Booklet | IT investment monitoring | Supports compliance with technology utilization tracking |
-| 12 CFR part 30, appendix D (OCC Heightened Standards) | Technology governance | Helps meet expectations for AI technology adoption oversight |
-| Sarbanes-Oxley §404 | Internal control over IT assets | Supports IT asset management and utilization controls |
+- **Pass:** authorization valid, export succeeds, and at least one record is present.
+- **Fail:** missing permissions, unreachable endpoint, unresolved throttling, or empty result set.
+- **Manual follow-up required:** pass/fail result must be reviewed with reporting cadence evidence before final control attestation.
 
 ## Next Steps
 
-- Review [Troubleshooting](troubleshooting.md) for analytics issues
-- Proceed to [Control 4.6](../4.6/portal-walkthrough.md) for Viva Insights Copilot measurement
-- Back to [Control 4.5](../../../controls/pillar-4-operations/4.5-usage-analytics.md)
+- Review [Troubleshooting](troubleshooting.md) for failure triage.
+- Coordinate with [Control 4.6](../4.6/portal-walkthrough.md) for impact analytics that are outside this verification scope.
+- Back to [Control 4.5](../../../controls/pillar-4-operations/4.5-usage-analytics.md).
