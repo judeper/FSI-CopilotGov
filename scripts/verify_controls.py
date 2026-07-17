@@ -91,6 +91,9 @@ def main():
                 total_errors += len(errors)
 
             if warnings:
+                print(f"WARNINGS in {filepath}:")
+                for w in warnings:
+                    print(w)
                 total_warnings += len(warnings)
 
     print(f"\n--- Control Verification Summary ---")
