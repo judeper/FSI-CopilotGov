@@ -71,7 +71,7 @@ Supervisory review of M365 Copilot agent interactions (Teams channel agents, dec
 5. Run the search and open individual records to inspect:
    - **AgentId** — identifies the specific agent (Teams channel agent or declarative agent) that participated in the interaction
    - **AgentName** — the display name of the agent, useful for correlating to the firm's agent inventory in the WSP
-   - **XPIA** — cross-prompt injection attempt flag; a value of `true` indicates the agent may have processed untrusted external content
+   - **AccessedResources.XPIADetected** — nested cross-prompt injection attempt flag on an accessed resource; a value of `true` indicates the agent may have processed untrusted external content
    - **CopilotEventData** — contains the prompt context and any grounding sources the agent accessed
 6. Export results using the **Export** button for retention as supervisory review evidence.
 

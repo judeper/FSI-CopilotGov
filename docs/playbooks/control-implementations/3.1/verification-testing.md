@@ -61,7 +61,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Objective:** Confirm that JailbreakDetected events are captured and identifiable in audit logs
 - **Steps:**
   1. Review existing CopilotInteraction audit records for the past 30 days.
-  2. Parse AuditData JSON for each record and check for the `JailbreakDetected` field.
+  2. Parse AuditData JSON for each record and check the nested `Messages[].JailbreakDetected` sub-property.
   3. Verify that the daily JailbreakDetected scan script (Script 5 in the PowerShell Setup playbook) executes successfully and produces output.
 - **Expected Result:** The scan script runs without errors and correctly identifies the presence or absence of JailbreakDetected events. If events exist, they are exported to a separate CSV for investigation.
 - **Evidence:** PowerShell output from Script 5 showing scan completion, plus exported CSV if events were found.

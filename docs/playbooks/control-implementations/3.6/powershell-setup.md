@@ -146,14 +146,14 @@ $agentInteractions = $copilotEvents | ForEach-Object {
             User       = $_.UserIds
             AgentId    = $data.AgentId
             AgentName  = $data.AgentName
-            XPIA       = $data.XPIA  # Cross-prompt injection attempt flag
+            XPIADetected = [bool]($data.AccessedResources | Where-Object { $_.XPIADetected -eq $true })  # Cross-prompt injection detected on an accessed resource
             EventData  = $data.CopilotEventData | ConvertTo-Json -Depth 3
         }
     }
 } | Where-Object { $_ -ne $null }
 
 Write-Host "Agent interactions found: $($agentInteractions.Count)" -ForegroundColor Cyan
-$agentInteractions | Format-Table Date, User, AgentName, XPIA -AutoSize
+$agentInteractions | Format-Table Date, User, AgentName, XPIADetected -AutoSize
 
 $agentInteractions | Export-Csv "AgentInteractions_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 Write-Host "Agent audit events exported for supervisory review" -ForegroundColor Green
@@ -186,7 +186,7 @@ $agentEvents = $allCopilotEvents | ForEach-Object {
             User      = $_.UserIds
             AgentId   = $data.AgentId
             AgentName = $data.AgentName
-            XPIA      = $data.XPIA
+            XPIADetected = [bool]($data.AccessedResources | Where-Object { $_.XPIADetected -eq $true })
             RawData   = $_.AuditData
         }
     }
