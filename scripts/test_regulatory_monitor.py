@@ -203,3 +203,68 @@ def test_generate_regulatory_report_has_single_h1_heading(monkeypatch):
     content = captured["content"]
     assert content.count("# Regulatory Monitor Report") == 1
     assert content.startswith("# Regulatory Monitor Report\n")
+
+
+def _fed_item(abstract: str, *, document_id: str = "2026-00042") -> "regulatory_monitor.RegulatoryItem":
+    return regulatory_monitor.RegulatoryItem(
+        source="Federal Register",
+        agency="SEC",
+        title="Self-Regulatory Organizations; Notice of Filing",
+        url="https://www.federalregister.gov/documents/2026/07/11/2026-00042/notice",
+        publication_date="2026-07-11",
+        doc_type="NOTICE",
+        abstract=abstract,
+        document_id=document_id,
+        classification=regulatory_monitor.CLASSIFICATION_NOISE,
+        classification_reason="Test",
+        affected_controls=[],
+    )
+
+
+def test_change_hash_ignores_incidental_abstract_whitespace_churn():
+    """A same-document item whose abstract differs only in whitespace/newline
+    reflow must NOT be re-emitted -- this is the dedup/normalization gap that
+    re-reported 17 Federal Register NOISE items."""
+    original = _fed_item("The Commission is publishing this notice to solicit comments.")
+    state: dict = {}
+    regulatory_monitor.update_source_state("regulatory-federal", [original], state)
+    source_state = regulatory_monitor.get_source_state(state, "regulatory-federal")
+
+    churned = _fed_item(
+        "  The Commission is publishing this   notice\nto solicit comments.  "
+    )
+    new_items = regulatory_monitor.check_for_new_items(
+        "regulatory-federal", [churned], source_state
+    )
+
+    assert new_items == [], (
+        "cosmetic whitespace churn should not re-emit an unchanged item"
+    )
+
+
+def test_change_hash_still_detects_substantive_abstract_change():
+    """A genuine wording change to the abstract must still be reported so real
+    regulatory updates are not silently dropped by the normalization."""
+    original = _fed_item("The Commission is publishing this notice to solicit comments.")
+    state: dict = {}
+    regulatory_monitor.update_source_state("regulatory-federal", [original], state)
+    source_state = regulatory_monitor.get_source_state(state, "regulatory-federal")
+
+    updated = _fed_item(
+        "The Commission is publishing this notice to APPROVE the proposed rule change."
+    )
+    new_items = regulatory_monitor.check_for_new_items(
+        "regulatory-federal", [updated], source_state
+    )
+
+    assert len(new_items) == 1
+    assert new_items[0].document_id == "2026-00042"
+
+
+def test_content_fingerprint_normalizes_whitespace_only():
+    """The fingerprint collapses whitespace but preserves substantive text and
+    field ordering (title|abstract|publication_date)."""
+    item = _fed_item("alpha\n\nbeta   gamma")
+    fp = regulatory_monitor._content_fingerprint(item)
+    assert "alpha beta gamma" in fp
+    assert fp.split("|")[2] == "2026-07-11"

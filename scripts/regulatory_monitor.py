@@ -618,6 +618,34 @@ def fetch_finra_notices(
     return items
 
 
+def _normalize_hash_field(text: str) -> str:
+    """Collapse incidental whitespace for change-detection hashing.
+
+    Federal Register abstracts (and fetched fallback bodies) churn cosmetically
+    within the ``since_date`` window -- leading/trailing spaces, doubled spaces,
+    and newline reflow -- without any substantive change. Hashing the raw text
+    made those cosmetic edits flip the content hash and re-emit an otherwise
+    unchanged item (observed: 17 Federal Register NOISE items re-reported). This
+    normalization only strips/collapses whitespace; it does not lowercase, decode
+    entities, or otherwise alter meaning, so a genuine wording change still
+    produces a different hash and is still reported. Substantive relevance
+    classification is computed separately (``classify_regulatory_relevance``) and
+    is unaffected.
+    """
+    if not text:
+        return ""
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _content_fingerprint(item: RegulatoryItem) -> str:
+    """Whitespace-normalized ``title|abstract|publication_date`` used as the
+    change-detection hash input, so cosmetic churn does not re-emit an item."""
+    return "|".join(
+        _normalize_hash_field(part)
+        for part in (item.title, item.abstract, item.publication_date)
+    )
+
+
 def check_for_new_items(source_key: str, items: list[RegulatoryItem], source_state: dict) -> list[RegulatoryItem]:
     """
     Compare fetched items against source state to find new items.
@@ -637,9 +665,9 @@ def check_for_new_items(source_key: str, items: list[RegulatoryItem], source_sta
         # Use document_id or URL as the key
         entry_key = item.document_id if item.document_id else item.url
 
-        # Compute hash of the item content
-        content_to_hash = f"{item.title}|{item.abstract}|{item.publication_date}"
-        content_hash = compute_hash(content_to_hash)
+        # Compute hash of the item content (whitespace-normalized so cosmetic
+        # abstract churn within the since_date window does not re-emit an item).
+        content_hash = compute_hash(_content_fingerprint(item))
 
         # Check if this is a new item or changed item
         if entry_key not in existing_entries:
@@ -666,8 +694,7 @@ def update_source_state(source_key: str, items: list[RegulatoryItem], state: dic
 
     for item in items:
         entry_key = item.document_id if item.document_id else item.url
-        content_to_hash = f"{item.title}|{item.abstract}|{item.publication_date}"
-        entries[entry_key] = compute_hash(content_to_hash)
+        entries[entry_key] = compute_hash(_content_fingerprint(item))
 
     source_state['entries'] = entries
     source_state['last_run'] = datetime.now(timezone.utc).isoformat()
