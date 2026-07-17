@@ -27,12 +27,13 @@ Common issues and resolution steps for Copilot usage analytics and adoption repo
 ### Issue 3: Graph API Reports Returning Errors
 
 - **Symptoms:** PowerShell scripts using the Graph API return authentication or permission errors when accessing usage reports.
-- **Root Cause:** Insufficient permissions, expired tokens, or API endpoint changes.
+- **Root Cause:** Insufficient permissions, expired tokens, API endpoint changes, or throttling events.
 - **Resolution:**
   1. Verify the service principal has `Reports.Read.All` permission.
   2. Re-authenticate: `Disconnect-MgGraph && Connect-MgGraph -Scopes "Reports.Read.All"`
-  3. Check for Microsoft Graph API deprecation notices for the reports endpoint.
-  4. Update the Microsoft.Graph PowerShell module to the latest version.
+  3. If you receive `429 Too Many Requests`, wait for the `Retry-After` duration before retrying.
+  4. Check for Microsoft Graph API deprecation notices for the reports endpoint.
+  5. Update the Microsoft.Graph PowerShell module to the latest version.
 
 ### Issue 4: Adoption Rate Calculation Discrepancies
 
@@ -42,7 +43,17 @@ Common issues and resolution steps for Copilot usage analytics and adoption repo
   1. Standardize on a single reporting method for official KPI tracking.
   2. Document the definition of "active" used by each method.
   3. When comparing, ensure the same time period and user scope are applied.
-  4. Use Graph API data as the authoritative source for programmatic comparisons.
+  4. Treat differences as expected unless documented definitions and periods are matched.
+
+### Issue 5: Export Succeeds but Returns No Records
+
+- **Symptoms:** API call succeeds, but JSON/CSV export contains no usage-detail rows.
+- **Root Cause:** No in-scope licensed activity for the selected period, a filtering mismatch, or a tenant-side data delay.
+- **Resolution:**
+  1. Confirm the control run uses a supported period value (`D7`, `D30`, `D90`, `D180`, `ALL`).
+  2. Confirm at least one user has an assigned Microsoft 365 Copilot license and recent activity.
+  3. Re-run with a wider period (`D30` or `D90`) and document the result.
+  4. Keep Control 4.5 verification **failed** until at least one record is returned.
 
 ## Diagnostic Steps
 
