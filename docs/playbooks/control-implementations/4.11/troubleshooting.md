@@ -7,13 +7,13 @@ Common issues and resolution steps for Microsoft Sentinel integration with Copil
 ### Issue 1: Copilot Events Not Appearing in Sentinel
 
 - **Symptoms:** Queries for CopilotInteraction record type return no results in Sentinel logs.
-- **Root Cause:** Data connector may not be configured, the connector may not include Copilot event types, or there is an ingestion delay.
+- **Root Cause:** The Microsoft Copilot connector (preview) may be disabled, `CopilotActivity` table access may be blocked, or ingestion is delayed.
 - **Resolution:**
-  1. Verify the Microsoft 365 data connector is enabled and showing "Connected" status.
-  2. Check that Exchange, SharePoint, and Teams data types are enabled in the connector.
-  3. Enable the Microsoft Purview connector if Copilot events are routed through Purview.
+  1. Verify the **Microsoft Copilot** connector (preview) is enabled and healthy.
+  2. Confirm `CopilotActivity` is queryable (`CopilotActivity | getschema`).
+  3. Validate query permissions for the analyst/service principal account.
   4. Allow up to 24 hours for initial data ingestion after connector configuration.
-  5. Check the Sentinel workspace data ingestion health in Azure Monitor.
+  5. Check Sentinel workspace ingestion health in Azure Monitor.
 
 ### Issue 2: Analytics Rules Generating Excessive False Positives
 
@@ -49,7 +49,7 @@ Common issues and resolution steps for Microsoft Sentinel integration with Copil
 ## Diagnostic Steps
 
 1. **Check connector status:** Navigate to Sentinel > Data connectors and verify connector health.
-2. **Test data ingestion:** Run `OfficeActivity | where TimeGenerated > ago(1h) | take 10` in Logs.
+2. **Test data ingestion:** Run `CopilotActivity | where RecordType == "CopilotInteraction" | where TimeGenerated > ago(1h) | take 10` in Logs.
 3. **Review analytics rule health:** Check Sentinel > Analytics for rule execution status.
 4. **Monitor workspace costs:** Navigate to the workspace > Usage and estimated costs.
 

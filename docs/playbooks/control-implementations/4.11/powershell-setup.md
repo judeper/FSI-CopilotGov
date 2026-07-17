@@ -20,6 +20,9 @@ $workspaceName = "your-sentinel-workspace"
 
 ## Scripts
 
+!!! warning "Use CopilotActivity (Preview Connector)"
+    The Microsoft Copilot connector (public preview) writes Copilot audit records to `CopilotActivity`. `OfficeActivity` does not provide equivalent proof for `RecordType == "CopilotInteraction"` monitoring.
+
 ### Script 1: Create Copilot Analytics Rule — Unusual Access Pattern
 
 ```powershell
@@ -30,17 +33,17 @@ $ruleParams = @{
     Severity          = "Medium"
     Enabled           = $true
     Query             = @"
-OfficeActivity
+CopilotActivity
 | where TimeGenerated > ago(1h)
 | where RecordType == "CopilotInteraction"
-| summarize EventCount = count() by UserId, ClientIP, bin(TimeGenerated, 1h)
+| summarize EventCount = count() by ActorUserId, ActorName, SrcIpAddr, bin(TimeGenerated, 1h)
 | where EventCount > 50
 | join kind=leftanti (
-    OfficeActivity
+    CopilotActivity
     | where TimeGenerated between (ago(30d) .. ago(1d))
     | where RecordType == "CopilotInteraction"
-    | summarize by UserId, ClientIP
-) on UserId, ClientIP
+    | summarize by ActorUserId, SrcIpAddr
+) on ActorUserId, SrcIpAddr
 "@
     QueryFrequency    = "PT1H"
     QueryPeriod       = "P30D"
@@ -63,12 +66,12 @@ Write-Host "Analytics rule created: Unusual Copilot Access Pattern" -ForegroundC
 ```powershell
 # Create analytics rule for potential data exfiltration via Copilot
 $exfilQuery = @"
-OfficeActivity
+CopilotActivity
 | where TimeGenerated > ago(1h)
 | where RecordType == "CopilotInteraction"
-| summarize InteractionCount = count(), UniqueDocuments = dcount(SourceFileName) by UserId, bin(TimeGenerated, 1h)
-| where InteractionCount > 100 or UniqueDocuments > 50
-| project TimeGenerated, UserId, InteractionCount, UniqueDocuments
+| summarize InteractionCount = count(), DistinctSourceIps = dcount(SrcIpAddr) by ActorUserId, ActorName, bin(TimeGenerated, 1h)
+| where InteractionCount > 100 or DistinctSourceIps > 5
+| project TimeGenerated, ActorUserId, ActorName, InteractionCount, DistinctSourceIps
 "@
 
 $ruleParams = @{
@@ -95,31 +98,41 @@ $huntingQueries = @(
     @{
         Name  = "Copilot Usage After Hours"
         Query = @"
-OfficeActivity
+CopilotActivity
 | where RecordType == "CopilotInteraction"
 | extend HourOfDay = datetime_part("hour", TimeGenerated)
 | where HourOfDay < 6 or HourOfDay > 22
-| summarize AfterHoursCount = count() by UserId, bin(TimeGenerated, 1d)
+| summarize AfterHoursCount = count() by ActorUserId, ActorName, SrcIpAddr, bin(TimeGenerated, 1d)
 | where AfterHoursCount > 10
 "@
     },
     @{
         Name  = "Copilot Access to Sensitive Labels"
         Query = @"
-OfficeActivity
+CopilotActivity
 | where RecordType == "CopilotInteraction"
-| where SensitivityLabelId != ""
-| summarize SensitiveAccessCount = count() by UserId, SensitivityLabelId, bin(TimeGenerated, 1d)
+| extend AccessedResources = todynamic(LLMEventData).AccessedResources
+| mv-expand AccessedResources
+| extend SensitivityLabelId = tostring(AccessedResources.SensitivityLabelId)
+| where isnotempty(SensitivityLabelId)
+| summarize SensitiveAccessCount = count() by ActorUserId, ActorName, SensitivityLabelId, bin(TimeGenerated, 1d)
 | where SensitiveAccessCount > 20
 "@
     },
     @{
         Name  = "Copilot DLP Trigger Correlation"
         Query = @"
-OfficeActivity
-| where RecordType in ("CopilotInteraction", "DLP")
-| summarize CopilotEvents = countif(RecordType == "CopilotInteraction"), DLPEvents = countif(RecordType == "DLP") by UserId, bin(TimeGenerated, 1h)
-| where DLPEvents > 0
+let CopilotInteractions = CopilotActivity
+| where TimeGenerated > ago(24h)
+| where RecordType == "CopilotInteraction"
+| summarize CopilotEvents = count() by ActorUserId, bin(TimeGenerated, 1h);
+SecurityAlert
+| where TimeGenerated > ago(24h)
+| where AlertType contains "DLP"
+| where Description contains "Copilot" or AdditionalData contains "Copilot"
+| summarize DLPAlerts = count() by bin(TimeGenerated, 1h)
+| join kind=inner CopilotInteractions on TimeGenerated
+| project TimeGenerated, ActorUserId, CopilotEvents, DLPAlerts
 "@
     }
 )
@@ -138,10 +151,11 @@ Write-Host "Deploy these queries via Sentinel > Hunting > New Query" -Foreground
 ```powershell
 # Validate that Copilot events are flowing into the Sentinel workspace
 $query = @"
-OfficeActivity
+CopilotActivity
 | where TimeGenerated > ago(24h)
 | where RecordType == "CopilotInteraction"
-| summarize EventCount = count() by bin(TimeGenerated, 1h)
+| project TimeGenerated, RecordType, ActorUserId, ActorName, SrcIpAddr, Workload, AIModelName, LLMEventData
+| summarize EventCount = count() by bin(TimeGenerated, 1h), Workload
 | order by TimeGenerated desc
 "@
 

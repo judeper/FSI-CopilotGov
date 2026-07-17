@@ -4,8 +4,9 @@
 
 .DESCRIPTION
     Validates Sentinel workspace existence, enumerates data connectors (Office 365,
-    Microsoft Defender for Cloud Apps), and runs a KQL audit query to confirm Copilot
-    interaction audit records exist in the last 7 days.
+    Microsoft Defender for Cloud Apps, Microsoft Copilot where visible), and runs a
+    KQL audit query against CopilotActivity to confirm Copilot interaction audit
+    records are queryable in the last 7 days.
 
     Outputs a structured JSON file (sentinel.json) consumed by the assessment engine.
 
@@ -85,6 +86,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+. (Join-Path $PSScriptRoot 'Collect-Sentinel.CopilotActivity.ps1')
 
 # ─── Initialise ──────────────────────────────────────────────────────
 $warnings = [System.Collections.Generic.List[string]]::new()
@@ -185,12 +187,9 @@ try {
     }
     $connectorResponse = Invoke-RestMethod -Uri $connectorApiUri -Method GET -Headers $headers -ErrorAction Stop
 
-    # Extract connectors of interest
-    $targetKinds = @('Office365', 'MicrosoftCloudAppSecurity', 'AzureActiveDirectory', 'MicrosoftThreatProtection')
-
     $dataConnectors = [PSCustomObject]@{
-        TotalConnectors     = if ($connectorResponse.value) { $connectorResponse.value.Count } else { 0 }
-        ConnectorSummary    = if ($connectorResponse.value) {
+        TotalConnectors         = if ($connectorResponse.value) { $connectorResponse.value.Count } else { 0 }
+        ConnectorSummary        = if ($connectorResponse.value) {
             $connectorResponse.value | ForEach-Object {
                 [PSCustomObject]@{
                     Id        = $_.id
@@ -201,13 +200,21 @@ try {
             }
         }
         else { @() }
-        Office365Enabled    = $false
-        McasEnabled         = $false
+        Office365Enabled        = $false
+        McasEnabled             = $false
+        CopilotConnectorDetected = $false
     }
 
     if ($connectorResponse.value) {
         $dataConnectors.Office365Enabled = ($connectorResponse.value | Where-Object { $_.kind -eq 'Office365' }).Count -gt 0
         $dataConnectors.McasEnabled = ($connectorResponse.value | Where-Object { $_.kind -eq 'MicrosoftCloudAppSecurity' }).Count -gt 0
+        $dataConnectors.CopilotConnectorDetected = (
+            $connectorResponse.value | Where-Object {
+                ($_.kind -match 'copilot') -or
+                ($_.name -match 'copilot') -or
+                ($_.id -match 'copilot')
+            }
+        ).Count -gt 0
 
         if (-not $dataConnectors.Office365Enabled) {
             $warnings.Add("Section 2: Office365 data connector is NOT enabled in workspace '$WorkspaceName'.")
@@ -217,8 +224,12 @@ try {
             $warnings.Add("Section 2: MicrosoftCloudAppSecurity data connector is NOT enabled in workspace '$WorkspaceName'.")
             Write-Warning $warnings[-1]
         }
+        if (-not $dataConnectors.CopilotConnectorDetected) {
+            $warnings.Add("Section 2: No data connector with a Copilot name/kind signature was detected. Verify the Microsoft Copilot connector (preview) is enabled in Sentinel.")
+            Write-Warning $warnings[-1]
+        }
     }
-    Write-Verbose "  Data connectors enumerated. Office365=$($dataConnectors.Office365Enabled), MCAS=$($dataConnectors.McasEnabled)"
+    Write-Verbose "  Data connectors enumerated. Office365=$($dataConnectors.Office365Enabled), MCAS=$($dataConnectors.McasEnabled), CopilotConnectorDetected=$($dataConnectors.CopilotConnectorDetected)"
 }
 catch {
     $warnings.Add("Section 2 (Data Connectors) failed: $($_.Exception.Message)")
@@ -227,68 +238,134 @@ catch {
 
 # ═══════════════════════════════════════════════════════════════════════
 # Section 3: KQL Audit Check — Copilot Interaction Records
-# Supports: Control 3.1 (Audit Evidence) — confirm agent audit logs exist
+# Supports: Control 4.11 (Sentinel integration) and supplemental 3.1 audit evidence
 # ═══════════════════════════════════════════════════════════════════════
 $kqlAuditCheck = $null
 try {
     Write-Verbose "Section 3: Running KQL audit check for CopilotInteraction records..."
 
     if ($workspaceInfo) {
-        # Copilot interaction audit records carry Operation/RecordType "CopilotInteraction"
-        # (RecordType 261) in the unified audit log under the Audit.General content type.
-        # IMPORTANT: the Microsoft 365 (Office 365) Sentinel data connector streams only the
-        # Exchange, SharePoint, and Teams workloads into the OfficeActivity table — it does NOT
-        # ingest the Audit.General content type. CopilotInteraction records are therefore absent
-        # from OfficeActivity unless a custom Audit.General ingestion pipeline (e.g. the Office
-        # 365 Management Activity API) is configured. The Microsoft Entra ID "AuditLogs" table
-        # likewise does not contain Copilot interaction records.
-        # We still probe OfficeActivity: a non-zero count is positive evidence that such a custom
-        # pipeline exists, but a zero count means "not collected via this path" — it does NOT mean
-        # "no Copilot activity occurred".
-        $kqlQuery = 'OfficeActivity | where Operation == "CopilotInteraction" | where TimeGenerated > ago(7d) | count'
-
-        $queryResult = Invoke-AzOperationalInsightsQuery `
-            -WorkspaceId $workspaceInfo.WorkspaceId `
-            -Query $kqlQuery `
-            -ErrorAction Stop
-
-        $recordCount = 0
-        if ($queryResult.Results) {
-            # The count query returns a single row with a Count column
-            $countValue = $queryResult.Results | Select-Object -First 1
-            if ($countValue.Count) {
-                $recordCount = [int]$countValue.Count
-            }
-            elseif ($countValue.'Count') {
-                $recordCount = [int]$countValue.'Count'
-            }
-        }
-
+        $schemaQuery = Get-CopilotActivitySchemaQuery
+        $kqlQuery = Get-CopilotActivityDataQuery
+        $requiredColumns = @(Get-CopilotActivityRequiredColumns)
+        $collectionCaveat = 'CopilotActivity is populated by the Microsoft Copilot data connector (preview). Use RecordType == "CopilotInteraction" for collection evidence. OfficeActivity is not equivalent proof for Copilot interaction coverage and must not be used as a substitute.'
         $kqlAuditCheck = [PSCustomObject]@{
-            Query           = $kqlQuery
-            RecordCount     = $recordCount
-            HasRecords      = ($recordCount -gt 0)
-            QueryTimeRange  = '7 days'
-            ExecutedAt      = (Get-Date -Format 'o')
-            CollectionCaveat = 'CopilotInteraction (RecordType 261) belongs to the Audit.General content type, which the Exchange/SharePoint/Teams Office 365 connector does not ingest into OfficeActivity. A RecordCount of 0 does NOT imply absence of Copilot activity — it typically means Audit.General is not being ingested via this path. Use a custom Audit.General pipeline, Microsoft Purview Audit, or Search-UnifiedAuditLog to evidence Copilot interactions.'
+            Table            = 'CopilotActivity'
+            RecordTypeFilter = 'CopilotInteraction'
+            SchemaQuery      = $schemaQuery
+            Query            = $kqlQuery
+            QueryTimeRange   = '7 days'
+            ExecutedAt       = (Get-Date -Format 'o')
+            RequiredColumns  = $requiredColumns
+            AvailableColumns = @()
+            MissingColumns   = @()
+            RecordCount      = 0
+            HasRecords       = $false
+            Status           = 'query_failure'
+            TableAvailable   = $false
+            QueryError       = $null
+            CollectionCaveat = $collectionCaveat
+            DataMinimization = Get-CopilotActivityDataMinimizationNote
         }
 
-        if ($recordCount -eq 0) {
-            $warnings.Add("Section 3: No CopilotInteraction records found in OfficeActivity (last 7 days). This is expected on a standard tenant — the Office 365 connector ingests only Exchange/SharePoint/Teams, not the Audit.General content type that carries CopilotInteraction (RecordType 261). Absence here does NOT indicate absence of Copilot activity; configure custom Audit.General ingestion or use Microsoft Purview Audit / Search-UnifiedAuditLog to evidence Copilot interactions.")
-            Write-Warning $warnings[-1]
+        try {
+            $schemaResult = Invoke-AzOperationalInsightsQuery `
+                -WorkspaceId $workspaceInfo.WorkspaceId `
+                -Query $schemaQuery `
+                -ErrorAction Stop
+
+            $availableColumns = @(Get-CopilotActivitySchemaColumnNames -SchemaRows $schemaResult.Results)
+            $missingColumns = @(Get-CopilotActivityMissingColumns -AvailableColumns $availableColumns)
+            $kqlAuditCheck.AvailableColumns = $availableColumns
+            $kqlAuditCheck.MissingColumns = $missingColumns
+
+            if ($missingColumns.Count -gt 0) {
+                $kqlAuditCheck.Status = 'schema_mismatch'
+                $kqlAuditCheck.QueryError = "CopilotActivity schema missing expected column(s): $($missingColumns -join ', ')"
+                $warnings.Add("Section 3: CopilotActivity schema mismatch. Missing expected column(s): $($missingColumns -join ', '). Treat collection as failed-closed until schema is verified.")
+                Write-Warning $warnings[-1]
+            }
+            else {
+                $kqlAuditCheck.TableAvailable = $true
+
+                try {
+                    $queryResult = Invoke-AzOperationalInsightsQuery `
+                        -WorkspaceId $workspaceInfo.WorkspaceId `
+                        -Query $kqlQuery `
+                        -ErrorAction Stop
+
+                    $rows = @(Convert-CopilotActivityResultsToRows -Results $queryResult.Results)
+                    $recordCount = $rows.Count
+                    $kqlAuditCheck.RecordCount = $recordCount
+                    $kqlAuditCheck.HasRecords = ($recordCount -gt 0)
+                    $kqlAuditCheck.Status = Get-CopilotActivityAssessmentStatus -RowCount $recordCount
+
+                    if ($recordCount -eq 0) {
+                        $warnings.Add("Section 3: CopilotActivity query returned zero CopilotInteraction records in the last 7 days. This is a fail-closed evidence gap (not equivalent to proof via OfficeActivity). Verify connector state, ingestion timing, and query permissions.")
+                        Write-Warning $warnings[-1]
+                    }
+                    else {
+                        Write-Verbose "  Found $recordCount CopilotInteraction record(s) in CopilotActivity over the last 7 days."
+                    }
+                }
+                catch {
+                    $queryError = $_.Exception.Message
+                    $queryStatus = Get-CopilotActivityFailureStatus -Message $queryError
+                    $kqlAuditCheck.Status = $queryStatus
+                    $kqlAuditCheck.QueryError = $queryError
+                    $warnings.Add("Section 3: CopilotActivity data query failed ($queryStatus): $queryError")
+                    Write-Warning $warnings[-1]
+                }
+            }
         }
-        else {
-            Write-Verbose "  Found $recordCount CopilotInteraction record(s) in the last 7 days."
+        catch {
+            $schemaError = $_.Exception.Message
+            $schemaStatus = Get-CopilotActivityFailureStatus -Message $schemaError
+            $kqlAuditCheck.Status = $schemaStatus
+            $kqlAuditCheck.QueryError = $schemaError
+            if ($schemaStatus -eq 'table_or_connector_unavailable') {
+                $warnings.Add("Section 3: CopilotActivity table unavailable. Verify the Microsoft Copilot connector (preview) is enabled for this workspace. OfficeActivity is not an equivalent fallback for CopilotInteraction evidence.")
+            }
+            else {
+                $warnings.Add("Section 3: CopilotActivity schema query failed ($schemaStatus): $schemaError")
+            }
+            Write-Warning $warnings[-1]
         }
     }
     else {
-        $warnings.Add("Section 3 (KQL Audit): Skipped — workspace info unavailable.")
+        $kqlAuditCheck = [PSCustomObject]@{
+            Table            = 'CopilotActivity'
+            RecordTypeFilter = 'CopilotInteraction'
+            SchemaQuery      = Get-CopilotActivitySchemaQuery
+            Query            = Get-CopilotActivityDataQuery
+            QueryTimeRange   = '7 days'
+            ExecutedAt       = (Get-Date -Format 'o')
+            RequiredColumns  = @(Get-CopilotActivityRequiredColumns)
+            AvailableColumns = @()
+            MissingColumns   = @()
+            RecordCount      = 0
+            HasRecords       = $false
+            Status           = 'workspace_unavailable'
+            TableAvailable   = $false
+            QueryError       = 'Workspace information unavailable.'
+            CollectionCaveat = 'CopilotActivity is collected through the Microsoft Copilot connector (preview). OfficeActivity is not an equivalent fallback for CopilotInteraction evidence.'
+            DataMinimization = Get-CopilotActivityDataMinimizationNote
+        }
+        $warnings.Add("Section 3 (KQL Audit): Workspace info unavailable; CopilotActivity query not attempted.")
         Write-Warning $warnings[-1]
     }
 }
 catch {
     $warnings.Add("Section 3 (KQL Audit) failed: $($_.Exception.Message)")
     Write-Warning $warnings[-1]
+}
+
+if ($kqlAuditCheck) {
+    foreach ($forbiddenField in @(Get-CopilotActivityForbiddenEvidenceFields)) {
+        if ($kqlAuditCheck.PSObject.Properties[$forbiddenField]) {
+            $kqlAuditCheck.PSObject.Properties.Remove($forbiddenField)
+        }
+    }
 }
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -316,13 +393,27 @@ Write-Verbose "Output written to $outputFile"
 # ─── Exit Code ───────────────────────────────────────────────────────
 $sectionValues = @($workspaceInfo, $dataConnectors, $kqlAuditCheck)
 $nullSections = @($sectionValues | Where-Object { $null -eq $_ })
+$failedClosedStatuses = @(
+    'table_or_connector_unavailable',
+    'permission_failure',
+    'query_failure',
+    'schema_mismatch',
+    'workspace_unavailable'
+)
+$kqlFailedClosed = $false
+if ($kqlAuditCheck -and $kqlAuditCheck.PSObject.Properties['Status']) {
+    $kqlFailedClosed = $failedClosedStatuses -contains [string]$kqlAuditCheck.Status
+}
 
 if ($nullSections.Count -eq $sectionValues.Count) {
     Write-Error "All sections failed to collect data. See warnings for details."
     exit 2
 }
-elseif ($nullSections.Count -gt 0) {
+elseif ($nullSections.Count -gt 0 -or $kqlFailedClosed) {
     Write-Warning "Partial collection: $($nullSections.Count)/$($sectionValues.Count) sections returned null."
+    if ($kqlFailedClosed) {
+        Write-Warning "Section 3 failed-closed with status '$($kqlAuditCheck.Status)'."
+    }
     exit 1
 }
 else {

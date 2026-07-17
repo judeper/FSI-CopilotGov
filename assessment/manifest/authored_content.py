@@ -3780,8 +3780,9 @@ AUTHORED: dict[str, dict] = {
             "Rule tuning cadence and most recent tuning date",
             "SOC integration documentation for Copilot alerts",
             "Recent alert log showing Copilot detection rule activity",
+            "Collector output showing CopilotActivity query status for RecordType CopilotInteraction (records_found / no_records / unavailable / query failure)",
         ],
-        "collectorField": "Sentinel_CopilotDetections",
+        "collectorField": "Sentinel_CopilotActivityCollection",
         "sectorYesBar": _sector_map(
             bank=(
                 "Sentinel rules cover Copilot data exfiltration and "
@@ -3800,7 +3801,9 @@ AUTHORED: dict[str, dict] = {
             ),
             "followUp": (
                 "Open Microsoft Sentinel > Analytics. Verify detection "
-                "rules for Copilot and check tuning records."
+                "rules for Copilot and check tuning records. Treat collector "
+                "query output as ingestion evidence only, not as a substitute "
+                "for manual rule-coverage review."
             ),
             "timeBudgetMinutes": 6,
         },

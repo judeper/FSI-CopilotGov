@@ -28,19 +28,19 @@ Step-by-step portal configuration for integrating Microsoft 365 Copilot events i
 4. Verify the connector status shows "Connected" and data is flowing.
 5. For workspaces not yet transitioned, use the legacy Azure portal path until migration is complete.
 
-### Step 2: Enable Microsoft Purview Connector for Copilot Events
+### Step 2: Enable Microsoft Copilot Connector (Preview)
 
 **Portal:** Microsoft Defender portal (recommended primary path)
-**Path:** Microsoft Sentinel > Configuration > Data connectors > Microsoft Purview (Preview)
-**Legacy Azure path:** Azure portal > Microsoft Sentinel > Data connectors > Microsoft Purview (Preview)
+**Path:** Microsoft Sentinel > Configuration > Data connectors > Microsoft Copilot (Preview)
+**Legacy Azure path:** Azure portal > Microsoft Sentinel > Data connectors > Microsoft Copilot (Preview)
 
-1. In **Microsoft Sentinel > Configuration > Data connectors**, locate the **Microsoft Purview** data connector.
-2. Enable the connector to ingest Copilot-specific audit events.
-3. Configure the data types to include:
-   - CopilotInteraction events
-   - DLP events related to Copilot
-   - Communication compliance events
-4. Verify Copilot events are appearing in the Sentinel logs.
+1. In **Microsoft Sentinel > Configuration > Data connectors**, locate **Microsoft Copilot (Preview)**.
+2. Enable the connector for the target workspace.
+3. Validate the table schema in Logs:
+   - `CopilotActivity | getschema`
+4. Validate ingestion with the documented filter:
+   - `CopilotActivity | where RecordType == "CopilotInteraction" | take 10`
+5. If zero rows are returned, treat that as a gap indicator and verify connector state, RBAC permissions, and ingestion delay.
 
 ### Step 3: Create Copilot-Specific Analytics Rules
 
@@ -79,7 +79,7 @@ Step-by-step portal configuration for integrating Microsoft 365 Copilot events i
 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
-| Sentinel data connectors | M365 only | M365 + Purview | M365 + Purview + Custom |
+| Sentinel data connectors | M365 + Copilot (Preview) | M365 + Copilot (Preview) + Purview | M365 + Copilot (Preview) + Purview + custom sources |
 | Analytics rules | Default | Copilot-specific rules | Custom rules + ML detection |
 | Workbook dashboards | None | Copilot dashboard | Real-time SOC dashboard |
 | Incident auto-response | Manual | Semi-automated | Automated for high-severity |

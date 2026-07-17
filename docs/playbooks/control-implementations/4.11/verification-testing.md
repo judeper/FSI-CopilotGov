@@ -9,11 +9,11 @@ Test cases and evidence collection procedures for Microsoft Sentinel integration
 - **Objective:** Verify that Copilot events are being ingested into the Sentinel workspace
 - **Steps:**
   1. Navigate to Sentinel > Logs in the Azure Portal.
-  2. Run the query: `OfficeActivity | where RecordType == "CopilotInteraction" | take 10`
-  3. Verify results are returned with recent timestamps.
-  4. Confirm data freshness (events within the last 2 hours).
+  2. Run the query: `CopilotActivity | where RecordType == "CopilotInteraction" | project TimeGenerated, ActorUserId, ActorName, SrcIpAddr, Workload, AIModelName, LLMEventData | take 10`
+  3. If records are returned, verify timestamps and sampled fields are populated.
+  4. If zero records are returned, treat as a gap signal and verify connector status, permissions, and ingestion delay before concluding data absence.
 - **Expected Result:** Copilot events are present in the Sentinel workspace with near-real-time ingestion.
-- **Evidence:** Query results screenshot showing recent Copilot events.
+- **Evidence:** Query results screenshot showing recent Copilot events. For assessment automation output, retain aggregate collector metadata (`HasRecords`, `RecordCount`, status) and avoid persisting raw row payloads with actor/prompt fields.
 
 ### Test 2: Analytics Rule Trigger Verification
 

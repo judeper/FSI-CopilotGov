@@ -5,7 +5,9 @@ on:
     paths:
       - 'assessment/engine/**'
       - 'assessment/manifest/**'
+      - 'assessment/collectors/**'
       - 'assessment/tests/**'
+      - 'scripts/test_collect_sentinel_copilotactivity.py'
       - 'assessment/requirements.txt'
       - '.github/workflows/engine-tests.yml'
   push:
@@ -14,7 +16,9 @@ on:
     paths:
       - 'assessment/engine/**'
       - 'assessment/manifest/**'
+      - 'assessment/collectors/**'
       - 'assessment/tests/**'
+      - 'scripts/test_collect_sentinel_copilotactivity.py'
       - 'assessment/requirements.txt'
 
 jobs:
@@ -30,5 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r assessment/requirements.txt
-      - name: Run engine smoke tests
-        run: pytest assessment/tests -v
+      - name: Verify PowerShell availability
+        run: pwsh -NoProfile -Command '$PSVersionTable.PSVersion.ToString()'
+      - name: Run engine and collector tests
+        run: pytest assessment/tests scripts/test_collect_sentinel_copilotactivity.py -v

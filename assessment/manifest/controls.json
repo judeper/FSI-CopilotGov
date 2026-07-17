@@ -4911,11 +4911,12 @@
       "Sentinel analytic rules targeting Copilot scenarios",
       "Rule tuning cadence and most recent tuning date",
       "SOC integration documentation for Copilot alerts",
-      "Recent alert log showing Copilot detection rule activity"
+      "Recent alert log showing Copilot detection rule activity",
+      "Collector output showing CopilotActivity query status for RecordType CopilotInteraction (records_found / no_records / unavailable / query failure)"
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.11-sentinel-integration/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.11/portal-walkthrough/",
-    "collectorField": "Sentinel_CopilotDetections",
+    "collectorField": "Sentinel_CopilotActivityCollection",
     "sectorYesBar": {
       "bank": "Sentinel rules cover Copilot data exfiltration and anomalous usage per FFIEC IT Handbook expectations; SOC review within 4-hour SLA.",
       "broker-dealer": "TODO: sector-specific yes-bar",
@@ -4926,7 +4927,7 @@
     },
     "facilitatorNotes": {
       "ask": "Are Sentinel detection rules covering Copilot misuse reviewed and tuned on a documented cadence?",
-      "followUp": "Open Microsoft Sentinel > Analytics. Verify detection rules for Copilot and check tuning records.",
+      "followUp": "Open Microsoft Sentinel > Analytics. Verify detection rules for Copilot and check tuning records. Treat collector query output as ingestion evidence only, not as a substitute for manual rule-coverage review.",
       "timeBudgetMinutes": 5
     },
     "solutions": [
