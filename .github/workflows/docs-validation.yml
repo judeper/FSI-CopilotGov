@@ -94,6 +94,10 @@ jobs:
         if: steps.scope.outputs.docs == 'true'
         run: python scripts/verify_language_rules.py
 
+      - name: Validate Copilot Tuning Claims (Control 1.16)
+        if: steps.scope.outputs.docs == 'true'
+        run: python scripts/verify_tuning_claims.py
+
       - name: Validate Commercial-Cloud Scope
         if: steps.scope.outputs.docs == 'true'
         run: python scripts/verify_commercial_scope.py
