@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-17T09:42:03Z",
+  "generatedAt": "2026-07-17T13:28:45Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -254,7 +254,7 @@
       "tier": "Regulated",
       "title": "Control 1.16: Copilot Tuning Governance",
       "path": "docs/controls/pillar-1-readiness/1.16-copilot-tuning-governance.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-07-17",
       "regulatory_references": [
         "GLBA §501(b)",
         "SR 11-7 / OCC Bulletin 2011-12 (interim — applicable to genAI per the 2026-13 exclusion)",

@@ -4,7 +4,7 @@ Step-by-step governance workflow for evaluating Copilot Tuning eligibility, conf
 
 ## Prerequisites
 
-- Tenant has 5,000+ Microsoft 365 Copilot licenses (Tuning eligibility threshold).
+- Tenant has 5,000+ Microsoft 365 Copilot licenses (Copilot Tuning early access preview eligibility threshold, delivered via Frontier).
 - [Control 1.10 Vendor Risk Management](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md) has assessed Microsoft as the AI platform vendor.
 - [Control 2.2 Sensitivity Labels](../../../controls/pillar-2-security/2.2-sensitivity-labels-classification.md) is in place so candidate SharePoint tuning sources are labeled.
 - A documented model risk management framework aligned to OCC Bulletin 2011-12 / SR 11-7 principles.
