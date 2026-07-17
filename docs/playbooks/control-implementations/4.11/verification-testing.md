@@ -13,7 +13,7 @@ Test cases and evidence collection procedures for Microsoft Sentinel integration
   3. If records are returned, verify timestamps and sampled fields are populated.
   4. If zero records are returned, treat as a gap signal and verify connector status, permissions, and ingestion delay before concluding data absence.
 - **Expected Result:** Copilot events are present in the Sentinel workspace with near-real-time ingestion.
-- **Evidence:** Query results screenshot showing recent Copilot events.
+- **Evidence:** Query results screenshot showing recent Copilot events. For assessment automation output, retain aggregate collector metadata (`HasRecords`, `RecordCount`, status) and avoid persisting raw row payloads with actor/prompt fields.
 
 ### Test 2: Analytics Rule Trigger Verification
 

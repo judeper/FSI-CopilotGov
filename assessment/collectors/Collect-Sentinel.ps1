@@ -263,9 +263,9 @@ try {
             HasRecords       = $false
             Status           = 'query_failure'
             TableAvailable   = $false
-            SampleRows       = @()
             QueryError       = $null
             CollectionCaveat = $collectionCaveat
+            DataMinimization = Get-CopilotActivityDataMinimizationNote
         }
 
         try {
@@ -294,12 +294,11 @@ try {
                         -Query $kqlQuery `
                         -ErrorAction Stop
 
-                    $rows = @($queryResult.Results)
+                    $rows = @(Convert-CopilotActivityResultsToRows -Results $queryResult.Results)
                     $recordCount = $rows.Count
                     $kqlAuditCheck.RecordCount = $recordCount
                     $kqlAuditCheck.HasRecords = ($recordCount -gt 0)
                     $kqlAuditCheck.Status = Get-CopilotActivityAssessmentStatus -RowCount $recordCount
-                    $kqlAuditCheck.SampleRows = @($rows | Select-Object -First 5)
 
                     if ($recordCount -eq 0) {
                         $warnings.Add("Section 3: CopilotActivity query returned zero CopilotInteraction records in the last 7 days. This is a fail-closed evidence gap (not equivalent to proof via OfficeActivity). Verify connector state, ingestion timing, and query permissions.")
@@ -348,9 +347,9 @@ try {
             HasRecords       = $false
             Status           = 'workspace_unavailable'
             TableAvailable   = $false
-            SampleRows       = @()
             QueryError       = 'Workspace information unavailable.'
             CollectionCaveat = 'CopilotActivity is collected through the Microsoft Copilot connector (preview). OfficeActivity is not an equivalent fallback for CopilotInteraction evidence.'
+            DataMinimization = Get-CopilotActivityDataMinimizationNote
         }
         $warnings.Add("Section 3 (KQL Audit): Workspace info unavailable; CopilotActivity query not attempted.")
         Write-Warning $warnings[-1]
@@ -359,6 +358,14 @@ try {
 catch {
     $warnings.Add("Section 3 (KQL Audit) failed: $($_.Exception.Message)")
     Write-Warning $warnings[-1]
+}
+
+if ($kqlAuditCheck) {
+    foreach ($forbiddenField in @(Get-CopilotActivityForbiddenEvidenceFields)) {
+        if ($kqlAuditCheck.PSObject.Properties[$forbiddenField]) {
+            $kqlAuditCheck.PSObject.Properties.Remove($forbiddenField)
+        }
+    }
 }
 
 # ═══════════════════════════════════════════════════════════════════════

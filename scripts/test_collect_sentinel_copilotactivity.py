@@ -6,6 +6,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 HELPER = REPO_ROOT / "assessment" / "collectors" / "Collect-Sentinel.CopilotActivity.ps1"
+COLLECTOR = REPO_ROOT / "assessment" / "collectors" / "Collect-Sentinel.ps1"
 
 
 def _run_helper(expression: str) -> str:
@@ -79,3 +80,32 @@ def test_distinguishes_empty_and_valid_copilotactivity_rows():
 
     has_records = _run_helper("Get-CopilotActivityAssessmentStatus -RowCount 3")
     assert has_records == "records_found"
+
+
+def test_null_results_guard_does_not_create_single_null_row():
+    empty_count = _run_helper(
+        "@(Convert-CopilotActivityResultsToRows -Results $null).Count"
+    )
+    assert empty_count == "0"
+
+    mixed_count = _run_helper(
+        "$rows = @(Convert-CopilotActivityResultsToRows -Results @($null, [pscustomobject]@{RecordType='CopilotInteraction'})); "
+        "$rows.Count"
+    )
+    assert mixed_count == "1"
+
+
+def test_data_minimization_contract_blocks_raw_row_fields():
+    forbidden_fields = json.loads(
+        _run_helper("@(Get-CopilotActivityForbiddenEvidenceFields) | ConvertTo-Json -Compress")
+    )
+    assert "SampleRows" in forbidden_fields
+    assert "RawRows" in forbidden_fields
+
+    minimization_note = _run_helper("Get-CopilotActivityDataMinimizationNote")
+    assert "aggregate metadata only" in minimization_note
+    assert "ActorUserId" in minimization_note
+    assert "LLMEventData" in minimization_note
+
+    collector_text = COLLECTOR.read_text(encoding="utf-8")
+    assert "SampleRows" not in collector_text

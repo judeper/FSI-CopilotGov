@@ -31,6 +31,38 @@ CopilotActivity
 '@.Trim()
 }
 
+function Convert-CopilotActivityResultsToRows {
+    param(
+        [Parameter()]
+        [object]$Results
+    )
+
+    if ($null -eq $Results) {
+        return @()
+    }
+
+    if ($Results -is [System.Collections.IEnumerable] -and -not ($Results -is [string])) {
+        return @(
+            $Results | Where-Object { $null -ne $_ }
+        )
+    }
+
+    return @($Results)
+}
+
+function Get-CopilotActivityForbiddenEvidenceFields {
+    return @(
+        'SampleRows',
+        'Rows',
+        'RawRows',
+        'Results'
+    )
+}
+
+function Get-CopilotActivityDataMinimizationNote {
+    return 'Collector persists aggregate metadata only (status, counts, schema/query metadata). Raw CopilotActivity row payloads containing ActorUserId, ActorName, SrcIpAddr, or LLMEventData are not written to evidence output.'
+}
+
 function Get-CopilotActivitySchemaColumnNames {
     param(
         [Parameter()]
