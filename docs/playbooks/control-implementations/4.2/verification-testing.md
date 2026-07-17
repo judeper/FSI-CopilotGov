@@ -8,13 +8,13 @@ Test cases and evidence collection procedures to validate Copilot governance in 
 
 - **Objective:** Verify that Copilot cannot activate in meetings without transcription — confirming the March 2026 default change has been remediated
 - **Steps:**
-  1. Run the PowerShell audit script: `Get-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" | Select-Object CopilotWithoutTranscript`
-  2. Confirm the output shows `Disabled`.
+  1. Run the PowerShell audit script: `Get-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" | Select-Object Copilot`
+  2. Confirm the output shows `EnabledWithTranscript`.
   3. In a test meeting with the regulated policy applied, start the meeting without enabling transcription.
   4. Attempt to activate Copilot — Copilot should either be unavailable or prompt to enable transcription first.
   5. Enable transcription and verify Copilot becomes available.
   6. Check the Teams audit log to confirm that Copilot events are accompanied by corresponding transcription start events.
-- **Expected Result:** Copilot requires transcription to be active; `CopilotWithoutTranscript` returns `Disabled`; Copilot-generated artifacts have accompanying verbatim transcripts in storage.
+- **Expected Result:** Copilot requires transcription to be active; `Copilot` returns `EnabledWithTranscript`; Copilot-generated artifacts have accompanying verbatim transcripts in storage.
 - **Evidence:** PowerShell output screenshot; meeting test screenshots showing Copilot availability states; audit log showing transcript and Copilot events paired.
 
 ### Test 2: Audit Log Verification — Transcript and Copilot Event Pairing
@@ -80,7 +80,7 @@ Test cases and evidence collection procedures to validate Copilot governance in 
 
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
-| CopilotWithoutTranscript=Disabled verification | PowerShell | Screenshot/export | With control documentation |
+| Copilot=EnabledWithTranscript verification | PowerShell | Screenshot/export | With control documentation |
 | Audit log transcript + Copilot event pairing | Unified Audit Log | CSV export | Per retention policy |
 | Meeting policy configuration | Teams Admin Center | Screenshot | With control documentation |
 | Copilot availability test (with transcript) | Meeting interface | Screenshot | With control documentation |
