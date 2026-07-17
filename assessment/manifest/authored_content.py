@@ -2036,13 +2036,19 @@ AUTHORED: dict[str, dict] = {
     "2.15": {
         "priority": "medium",
         "yesBar": (
-            "Network security controls (Private Link, VPN, conditional "
-            "access named locations) are configured for Copilot workloads "
-            "where required by the organization's network security policy."
+            "Network security controls (Conditional Access named "
+            "locations, Global Secure Access / SASE, and universal "
+            "tenant restrictions) are configured for Copilot workloads "
+            "where required by the organization's network security "
+            "policy. M365 Copilot is internet-facing SaaS and is not "
+            "routed through customer-managed Private Link; Private Link "
+            "applies only to adjacent Azure resources an internal agent "
+            "calls."
         ),
         "partialBar": (
-            "Network security is considered but Private Link or conditional "
-            "access location restrictions are not implemented for Copilot."
+            "Network security is considered but Global Secure Access / "
+            "SASE or conditional access location restrictions are not "
+            "implemented for Copilot."
         ),
         "noBar": (
             "No network security controls are applied to Copilot workloads "
@@ -2061,7 +2067,7 @@ AUTHORED: dict[str, dict] = {
         ),
         "evidenceExpected": [
             "Named location configuration for Copilot CA policies",
-            "Private Link configuration (if applicable)",
+            "Private Link configuration for adjacent Azure resources (if applicable)",
             "Network security policy alignment documentation",
         ],
         "collectorField": "Graph_NetworkSecurity",
@@ -2081,8 +2087,9 @@ AUTHORED: dict[str, dict] = {
                 "workloads per the organization's policy?"
             ),
             "followUp": (
-                "Verify CA named locations and Private Link configuration "
-                "for Copilot workloads."
+                "Verify CA named locations, Global Secure Access, and "
+                "tenant restrictions for Copilot; Private Link applies "
+                "only to adjacent Azure resources an internal agent calls."
             ),
             "timeBudgetMinutes": 5,
         },
