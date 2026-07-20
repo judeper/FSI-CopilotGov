@@ -1,11 +1,11 @@
 # Control 2.15: Network Security and Private Connectivity — Portal Walkthrough
 
-Step-by-step portal configuration for implementing network security controls and private connectivity for M365 Copilot workloads.
+Step-by-step portal configuration for implementing network security controls for M365 Copilot workloads, plus correct scoping of private connectivity (Azure Private Link) for adjacent Azure resources.
 
 ## Prerequisites
 
 - Azure Network Administrator or Entra Global Admin role
-- Azure subscription for Private Link configuration
+- Azure subscription (only if configuring Private Link for adjacent Azure resources an internal Copilot Studio agent calls — not for M365 Copilot)
 - Network architecture documentation
 - Understanding of Microsoft 365 network connectivity requirements
 
@@ -21,16 +21,18 @@ Review the network connectivity assessment for your organization. Verify:
 - No proxy or inspection devices are degrading Copilot performance
 - DNS resolution is correctly configured for Microsoft 365 services
 
-### Step 2: Configure Azure Private Link for SharePoint (Optional)
+### Step 2: Scope Azure Private Link Correctly (Adjacent Azure Resources Only)
 
 **Portal:** Azure Portal
-**Path:** Azure Portal > Private Link Center > Private Endpoints > Create
+**Path:** Azure Portal > Private Link Center > Private Endpoints
 
-For organizations requiring private network connectivity to Microsoft 365 content:
-- Create Private Endpoints for SharePoint Online
-- Configure DNS to resolve SharePoint URLs to private IP addresses
-- Verify connectivity from corporate network through private endpoints
-- Test Copilot functionality over the private connection
+Azure Private Link does **not** apply to Microsoft 365 Copilot. Microsoft 365 (SharePoint Online, Exchange Online, Teams, and Copilot surfaces) is delivered as SaaS over the public internet, and Microsoft offers **no** customer-managed private endpoints for these services. Do not attempt to route M365 or Copilot traffic through Private Link — treat it as internet-facing SaaS and govern it with Conditional Access, Global Secure Access, and tenant restrictions (Steps 3–4).
+
+Use Private Link **only** for *adjacent Azure resources* an internal Copilot Studio agent calls — for example, an Azure-hosted API, Azure SQL, or Storage account behind the agent:
+- Create a Private Endpoint on the Azure resource itself (not on M365)
+- Configure Azure Private DNS so the agent's Azure backend resolves privately
+- Verify the agent's backend connectivity through the private endpoint
+- Confirm this protects the adjacent Azure resource — it does not create a private path to the M365 Copilot service
 
 ### Step 3: Review Firewall and Proxy Configuration
 
@@ -58,7 +60,7 @@ Define trusted network locations for Conditional Access policies:
 Create a network security document for Copilot connectivity:
 - Network topology for Microsoft 365 access
 - Firewall rules and exceptions for Copilot endpoints
-- Private Link configuration (if applicable)
+- Private Link configuration for adjacent Azure resources (if applicable — not for M365 Copilot itself)
 - Monitoring and alerting for network security events
 - Performance baselines for Copilot connectivity
 
@@ -68,7 +70,7 @@ Create a network security document for Copilot connectivity:
 |------|---------------|
 | **Baseline** | Verify Microsoft 365 endpoint access; configure trusted locations in Conditional Access |
 | **Recommended** | Optimize network paths; SSL inspection exceptions for M365; network monitoring for Copilot traffic |
-| **Regulated** | Azure Private Link for SharePoint; network segmentation for Copilot traffic; continuous network monitoring with SIEM integration |
+| **Regulated** | Global Secure Access (Entra Internet Access) + universal tenant restrictions for Copilot; Private Link only for adjacent Azure resources an internal agent calls; network segmentation for Copilot traffic; continuous network monitoring with SIEM integration |
 
 ## Next Steps
 
