@@ -59,7 +59,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         if: steps.scope.outputs.docs == 'true'
         with:
           python-version: '3.12'
