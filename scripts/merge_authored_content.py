@@ -65,6 +65,14 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
     "3.10": {
         "verifyPowerShell",
     },
+    "3.11": {
+        # Force-apply corrected Rule 17a-4(f)(2) citation (with SEC adopting
+        # release No. 34-96034) to override stale values already present in
+        # controls.json from before the citation correction in issue #255.
+        "evidenceExpected",
+        "yesBar",
+        "sectorYesBar",
+    },
     "4.15": {
         "yesBar",
         "partialBar",

@@ -1,6 +1,6 @@
 # Control 3.11: Record Keeping and Books-and-Records Compliance — Portal Walkthrough
 
-Step-by-step portal configuration for implementing record keeping controls that support compliance with SEC Rule 17a-4 (including the audit-trail alternative under Rule 17a-4(f)(2)(ii)(A)), FINRA Rule 4511, and other books-and-records requirements for Copilot-generated content -- including mobile Copilot access controls to prevent off-channel recordkeeping gaps.
+Step-by-step portal configuration for implementing record keeping controls that support compliance with SEC Rule 17a-4 (including the audit-trail alternative under Rule 17a-4(f)(2)), FINRA Rule 4511, and other books-and-records requirements for Copilot-generated content -- including mobile Copilot access controls to prevent off-channel recordkeeping gaps.
 
 ## Prerequisites
 
@@ -52,9 +52,9 @@ Step-by-step portal configuration for implementing record keeping controls that 
 **Portal:** Microsoft Purview portal
 **Path:** Solutions > Records management > Retention policies
 
-SEC Rule 17a-4(f) requires WORM storage or an audit-trail alternative under Rule 17a-4(f)(2)(ii)(A). Configure one of the following paths:
+SEC Rule 17a-4(f) requires WORM storage or an audit-trail alternative under Rule 17a-4(f)(2). Configure one of the following paths:
 
-**Option A: Audit-Trail Alternative (Rule 17a-4(f)(2)(ii)(A))**
+**Option A: Audit-Trail Alternative (Rule 17a-4(f)(2))**
 
 The audit-trail alternative allows records to be stored in non-WORM format if the firm maintains an audit trail of all modifications, deletions, and access events throughout the retention period. Microsoft Purview regulatory records combined with Preservation Lock may satisfy this requirement:
 
@@ -66,7 +66,7 @@ The audit-trail alternative allows records to be stored in non-WORM format if th
 3. Verify that the **Purview audit log** captures access events for labeled items:
    - Navigate to **Audit** > **Search** > search for record-related audit events (e.g., ComplianceRecordChanged, RecordLocked, FileSensitivityLabelChanged)
    - Confirm audit events are being generated for labeled Copilot content
-4. Document the compliance approach in writing, confirming with 17a-4 compliance counsel that the configuration meets Rule 17a-4(f)(2)(ii)(A) requirements before relying on this path.
+4. Document the compliance approach in writing, confirming with 17a-4 compliance counsel that the configuration meets Rule 17a-4(f)(2) requirements before relying on this path.
 
 **Option B: Third-Party WORM Archival (Traditional Path)**
 
@@ -141,7 +141,7 @@ Mobile Copilot access through unmanaged devices creates an off-channel recordkee
 
 ## Regulatory Alignment
 
-- **SEC Rule 17a-4(f)(2)(ii)(A)** — Audit-trail alternative to WORM storage; satisfied by Purview regulatory record labels + Preservation Lock + comprehensive audit log
+- **SEC Rule 17a-4(f)(2)** (audit-trail alternative added by SEC Release No. 34-96034, 87 FR 66412 (Nov. 3, 2022)) — Audit-trail alternative to WORM storage; satisfied by Purview regulatory record labels + Preservation Lock + comprehensive audit log
 - **SEC Rule 17a-4** — Supports compliance with electronic record retention and WORM storage requirements
 - **FINRA Rule 4511** — Helps meet books-and-records retention obligations
 - **SEC Rule 17a-3** — Supports record-making requirements for broker-dealer operations
