@@ -159,6 +159,15 @@ def _validate_engine(c: dict) -> list[str]:
     if mq is not None and not isinstance(mq, str):
         errs.append(f"{cid}: manual_question must be string or null")
 
+    # Invariant: full automation requires at least one executable check.
+    # A control labeled automation='full' with an empty checks[] is dishonest —
+    # the scoring engine silently produces maturity=0 with no diagnostic signal.
+    if c.get("automation") == "full" and isinstance(checks, list) and not checks:
+        errs.append(
+            f"{cid}: automation='full' requires at least one entry in checks[]; "
+            "use 'partial' if no executable automated check is defined yet"
+        )
+
     return errs
 
 
