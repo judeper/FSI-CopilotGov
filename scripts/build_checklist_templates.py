@@ -16,7 +16,6 @@ Usage::
 from __future__ import annotations
 
 import json
-import os
 import re
 import sys
 from pathlib import Path
@@ -183,10 +182,24 @@ def evidence_text(manifest_control: dict, spa_control: dict | None) -> str:
     return "; ".join(items)
 
 
+DASHBOARD_TIERS = ("baseline", "recommended", "regulated")
+
+
+def dashboard_boilerplate(level: str) -> str:
+    """Generic placeholder for a tier that has no SPA-derived rationale.
+
+    Appearing in a *generated* dashboard means SPA data was absent or
+    incomplete at build time; ``require_complete_dashboard_spa`` treats that as
+    a hard error rather than let 192 curated tier cells silently flatten
+    (regression from issue #255 / PR #356).
+    """
+    return f"All {level.title()} requirements met (see control doc)."
+
+
 def yes_bar(spa_control: dict | None, level: str) -> str:
     """Derive a yes-bar rationale line for a tier from SPA levelRequirements."""
     if not spa_control:
-        return f"All {level.title()} requirements met (see control doc)."
+        return dashboard_boilerplate(level)
     lr = spa_control.get("levelRequirements", {}).get(level) or {}
     rationale = lr.get("rationale")
     if rationale:
@@ -194,7 +207,7 @@ def yes_bar(spa_control: dict | None, level: str) -> str:
     reqs = lr.get("requirements") or []
     if reqs:
         return reqs[0].strip()
-    return f"All {level.title()} requirements met (see control doc)."
+    return dashboard_boilerplate(level)
 
 
 def build_role_to_ids(manifest: list[dict]) -> dict[str, list[str]]:
@@ -393,20 +406,78 @@ def build_dashboard(out_path: Path, manifest: list[dict],
     return len(controls)
 
 
+def _rel(path: Path) -> str:
+    try:
+        return str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
+
+
+def dashboard_boilerplate_cells(manifest: list[dict],
+                                spa: dict[str, dict]) -> list[tuple[str, str]]:
+    """Return ``[(control_id, tier)]`` whose dashboard yes-bar would fall back
+    to the generic boilerplate placeholder — i.e. cells that would silently
+    lose curated tier content because SPA data is missing or incomplete."""
+    offenders: list[tuple[str, str]] = []
+    for c in manifest:
+        spa_c = spa.get(c["id"])
+        for level in DASHBOARD_TIERS:
+            if yes_bar(spa_c, level) == dashboard_boilerplate(level):
+                offenders.append((c["id"], level))
+    return offenders
+
+
+def require_complete_dashboard_spa(manifest: list[dict],
+                                   spa: dict[str, dict],
+                                   spa_path: Path = SPA_DATA) -> None:
+    """Fail loudly *before* generating the governance dashboard when SPA data
+    is absent, unparseable/empty, or incomplete.
+
+    The governance-maturity dashboard's three tier columns are sourced solely
+    from ``docs/javascripts/assessment-data.json``. That file is untracked and
+    absent in a clean checkout, so building without it silently regenerates 192
+    generic "All <tier> requirements met" cells and discards curated content
+    (the issue #255 / PR #356 regression). Role checklists do not consume SPA
+    tier data, so this guard is scoped to the dashboard only."""
+    if not spa_path.exists():
+        raise SystemExit(
+            "ERROR: cannot build governance dashboard — SPA data is absent at "
+            f"{_rel(spa_path)}.\n"
+            "       Generate it first:  python scripts/extract_assessment_data.py"
+        )
+    if not spa:
+        raise SystemExit(
+            "ERROR: cannot build governance dashboard — SPA data at "
+            f"{_rel(spa_path)} is empty or unparseable.\n"
+            "       Regenerate it:  python scripts/extract_assessment_data.py"
+        )
+    offenders = dashboard_boilerplate_cells(manifest, spa)
+    if offenders:
+        preview = ", ".join(f"{cid}[{tier}]" for cid, tier in offenders[:8])
+        more = "" if len(offenders) <= 8 else f" (+{len(offenders) - 8} more)"
+        raise SystemExit(
+            "ERROR: refusing to build governance dashboard — SPA data is "
+            f"incomplete for {len(offenders)} tier cell(s) that would degrade "
+            f"to generic boilerplate: {preview}{more}.\n"
+            "       Regenerate SPA data:  python scripts/extract_assessment_data.py"
+        )
+
+
 def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     DOCS_MIRROR.mkdir(parents=True, exist_ok=True)
     manifest = load_manifest()
     spa = load_spa()
+    # Root-cause guard (issue #255 / PR #356): the governance dashboard's tier
+    # columns are sourced solely from SPA data. Fail loudly rather than silently
+    # regenerate 192 boilerplate cells if it is absent/unparseable/incomplete.
+    require_complete_dashboard_spa(manifest, spa)
     by_id = {c["id"]: c for c in manifest}
     all_ids = [c["id"] for c in manifest]
     role_to_ids = build_role_to_ids(manifest)
 
     print(f"Loaded {len(manifest)} controls from {MANIFEST.relative_to(REPO_ROOT)}")
-    if spa:
-        print(f"Enriching with SPA data ({len(spa)} controls)")
-    else:
-        print("SPA data not available — using manifest-only fallbacks")
+    print(f"Enriching with SPA data ({len(spa)} controls)")
 
     import shutil
 
