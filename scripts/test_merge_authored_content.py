@@ -32,6 +32,13 @@ FORCED_415_FIELDS = (
 )
 
 
+FORCED_311_FIELDS = (
+    "yesBar",
+    "evidenceExpected",
+    "sectorYesBar",
+)
+
+
 def _load_authored() -> dict[str, dict]:
     authored_path = REPO_ROOT / "assessment" / "manifest" / "authored_content.py"
     spec = importlib.util.spec_from_file_location("authored_content", authored_path)
@@ -129,3 +136,43 @@ def test_control_scoped_force_replace_does_not_overwrite_unrelated_controls():
     merged_414 = _apply_overlay(unrelated_414, overlay_414)
     assert merged_414["yesBar"] == "existing authoritative guidance"
     assert merged_414["collectorField"] == "M365Admin_ScoutAccess"
+
+
+def test_311_forced_fields_in_manifest_match_authored_source():
+    authored_311 = _load_authored()["3.11"]
+    manifest_311 = _load_manifest_control("3.11")
+
+    for field in FORCED_311_FIELDS:
+        assert manifest_311[field] == authored_311[field]
+
+
+def test_311_forced_fields_carry_corrected_sec_citation():
+    manifest_311 = _load_manifest_control("3.11")
+    payload = json.dumps(
+        {field: manifest_311.get(field) for field in FORCED_311_FIELDS},
+        ensure_ascii=False,
+    )
+    # The corrected Rule 17a-4(f)(2) citation and its SEC adopting release
+    # must be propagated from authored_content.py into controls.json.
+    assert "17a-4(f)(2)" in payload
+    assert "34-96034" in payload
+    # The pre-correction pinpoint must not reappear in the generated manifest.
+    assert "(f)(2)(ii)(A)" not in payload
+
+
+def test_311_force_replace_is_scoped_to_listed_fields_only():
+    stale_311 = {
+        "id": "3.11",
+        "yesBar": "stale 3.11 yes bar",
+        "partialBar": "hand-edited 3.11 partial bar that must survive",
+    }
+    overlay_311 = {
+        "yesBar": "corrected 3.11 yes bar per Rule 17a-4(f)(2)",
+        "partialBar": "authored partial bar that must NOT win",
+    }
+    merged_311 = _apply_overlay(stale_311, overlay_311)
+    # yesBar is in the 3.11 force set -> authored content wins.
+    assert merged_311["yesBar"] == "corrected 3.11 yes bar per Rule 17a-4(f)(2)"
+    # partialBar is NOT in the 3.11 force set -> an authoritative hand edit
+    # must be preserved (proves the force set is narrowly scoped).
+    assert merged_311["partialBar"] == "hand-edited 3.11 partial bar that must survive"
