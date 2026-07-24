@@ -634,7 +634,7 @@ Aligned documentation with Microsoft's [Secure and Govern Microsoft 365 Copilot]
 - **3.6** Supervision and Oversight — FINRA 2026 agentic AI supervision, SEC 2026 exam focus
 - **3.8** Model Risk Management — OCC Bulletin 2025-26 proportionality principle
 - **3.10** SEC Reg S-P Privacy — 72-hour vendor notification requirement
-- **3.11** Record Keeping — 17a-4(f)(2)(ii)(A) audit-trail alternative, off-channel enforcement
+- **3.11** Record Keeping — 17a-4(f)(2) audit-trail alternative, off-channel enforcement
 
 ### Control Updates (Pillar 4 — Operations & Monitoring)
 - **4.1** Admin Settings — Copilot Control System branding, Baseline Security Mode

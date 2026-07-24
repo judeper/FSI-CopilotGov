@@ -1,6 +1,6 @@
 # Control 3.11: Record Keeping and Books-and-Records Compliance — Verification & Testing
 
-Test cases and evidence collection procedures to validate records management controls for Copilot-generated content, including the SEC Rule 17a-4(f)(2)(ii)(A) audit-trail alternative and mobile Copilot recordkeeping verification.
+Test cases and evidence collection procedures to validate records management controls for Copilot-generated content, including the SEC Rule 17a-4(f)(2) audit-trail alternative and mobile Copilot recordkeeping verification.
 
 ## Test Cases
 
@@ -28,7 +28,7 @@ Test cases and evidence collection procedures to validate records management con
 
 ### Test 3: Preservation Lock Verification
 
-- **Objective:** Confirm that Preservation Lock prevents policy modification (required for audit-trail alternative path under SEC Rule 17a-4(f)(2)(ii)(A))
+- **Objective:** Confirm that Preservation Lock prevents policy modification (required for audit-trail alternative path under SEC Rule 17a-4(f)(2))
 - **Steps:**
   1. Verify that Preservation Lock is enabled: `Get-RetentionCompliancePolicy -Identity "FSI-Regulatory-Record-Labels" | Select Name, RestrictiveRetention`
   2. Attempt to reduce the retention duration on the locked policy.
@@ -38,9 +38,9 @@ Test cases and evidence collection procedures to validate records management con
 - **Expected Result:** Preservation Lock prevents any reduction in retention duration or disabling of the policy; report shows LOCKED status.
 - **Evidence:** PowerShell output showing lock status; Script 4 CSV export; rejected modification attempt screenshot.
 
-### Test 4: Audit-Trail Alternative Compliance Verification (Rule 17a-4(f)(2)(ii)(A))
+### Test 4: Audit-Trail Alternative Compliance Verification (Rule 17a-4(f)(2))
 
-- **Objective:** Verify that the Purview audit trail captures all required events for the Rule 17a-4(f)(2)(ii)(A) audit-trail alternative compliance path
+- **Objective:** Verify that the Purview audit trail captures all required events for the Rule 17a-4(f)(2) audit-trail alternative compliance path
 - **Steps:**
   1. Apply a regulatory record label to a test Copilot-generated document.
   2. Attempt to modify the labeled item — the modification should be blocked.
@@ -49,7 +49,7 @@ Test cases and evidence collection procedures to validate records management con
   5. Confirm that the label application, modification block, and deletion block are all captured in the Purview audit log.
   6. Export the audit log entries as evidence.
   7. Verify that the audit log retention policy covers the full record retention period for the labeled items.
-- **Expected Result:** Audit trail captures all required events (label application, modification blocks, deletion blocks) throughout the retention period; this demonstrates that the audit-trail alternative under Rule 17a-4(f)(2)(ii)(A) is functional.
+- **Expected Result:** Audit trail captures all required events (label application, modification blocks, deletion blocks) throughout the retention period; this demonstrates that the audit-trail alternative under Rule 17a-4(f)(2) is functional.
 - **Evidence:** Audit log export showing record status changes, blocked modifications, and blocked deletions; audit log retention policy screenshot showing coverage period.
 
 ### Test 5: Mobile Copilot Recordkeeping Verification — Managed Device
@@ -102,7 +102,7 @@ Test cases and evidence collection procedures to validate records management con
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Rule 17a-4(f)(2)(ii)(A) | Audit-trail alternative to WORM storage | Tests 3 and 4 verify Preservation Lock and audit trail coverage for the alternative compliance path |
+| SEC Rule 17a-4(f)(2) (SEC Release No. 34-96034, 87 FR 66412 (Nov. 3, 2022)) | Audit-trail alternative to WORM storage | Tests 3 and 4 verify Preservation Lock and audit trail coverage for the alternative compliance path |
 | SEC 17a-4 | Electronic record preservation in WORM format | Supports compliance with immutable record storage requirements (WORM or audit-trail alternative) |
 | FINRA 4511 | Books-and-records retention | Helps meet retention obligations for AI-generated business records |
 | SEC 17a-3 | Record-making requirements | Supports creation and classification of required records |
