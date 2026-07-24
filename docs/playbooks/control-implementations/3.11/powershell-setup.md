@@ -1,6 +1,6 @@
 # Control 3.11: Record Keeping and Books-and-Records Compliance — PowerShell Setup
 
-Automation scripts for implementing and managing records management for Copilot-generated content, including Preservation Lock configuration for the audit-trail alternative path under SEC Rule 17a-4(f)(2)(ii)(A) and retention label deployment for regulatory records.
+Automation scripts for implementing and managing records management for Copilot-generated content, including Preservation Lock configuration for the audit-trail alternative path under SEC Rule 17a-4(f)(2) (audit-trail alternative added by SEC Release No. 34-96034, 87 FR 66412 (Nov. 3, 2022)) and retention label deployment for regulatory records.
 
 ## Prerequisites
 
@@ -69,7 +69,7 @@ Write-Host "Regulatory record labels published to all locations" -ForegroundColo
 ### Script 3: Enable Preservation Lock on Critical Policies
 
 ```powershell
-# Enable Preservation Lock for SEC 17a-4(f) WORM compliance or audit-trail alternative (Rule 17a-4(f)(2)(ii)(A))
+# Enable Preservation Lock for SEC 17a-4(f) WORM compliance or audit-trail alternative (Rule 17a-4(f)(2))
 # Preservation Lock makes the retention policy irreversible — required for both compliance paths
 #
 # IMPORTANT: Preservation Lock is IRREVERSIBLE.
@@ -83,7 +83,7 @@ Write-Host "Regulatory record labels published to all locations" -ForegroundColo
 $policyName = "FSI-Regulatory-Record-Labels"
 
 Write-Warning "Preservation Lock is IRREVERSIBLE. The policy cannot be shortened or disabled after locking."
-Write-Warning "This lock is required for the SEC Rule 17a-4(f)(2)(ii)(A) audit-trail alternative compliance path."
+Write-Warning "This lock is required for the SEC Rule 17a-4(f)(2) audit-trail alternative compliance path."
 Write-Host "Policy to lock: $policyName" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "Prerequisites before locking:"
@@ -102,7 +102,7 @@ if ($confirm -eq "CONFIRM-LOCK") {
     $lockDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC"
     Write-Host "Preservation Lock ENABLED on '$policyName' at $lockDate" -ForegroundColor Red
     Write-Host "Document this action: Policy '$policyName' locked on $lockDate" -ForegroundColor Yellow
-    Write-Host "This lock supports the SEC Rule 17a-4(f)(2)(ii)(A) audit-trail alternative compliance path" -ForegroundColor Cyan
+    Write-Host "This lock supports the SEC Rule 17a-4(f)(2) audit-trail alternative compliance path" -ForegroundColor Cyan
 } else {
     Write-Host "Preservation Lock NOT enabled — operation cancelled" -ForegroundColor Yellow
 }
@@ -132,7 +132,7 @@ Write-Host "=== Retention Policy Preservation Lock Status ==="
 $report | Format-Table PolicyName, LockStatus, Enabled, DistributionStatus -AutoSize
 Write-Host ""
 Write-Host "Policies with Preservation Lock (RestrictiveRetention = True) support the"
-Write-Host "SEC Rule 17a-4(f)(2)(ii)(A) audit-trail alternative compliance path."
+Write-Host "SEC Rule 17a-4(f)(2) audit-trail alternative compliance path."
 
 $report | Export-Csv "RetentionPolicy_LockStatus_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 Write-Host "Lock status report exported" -ForegroundColor Green
@@ -141,7 +141,7 @@ Write-Host "Lock status report exported" -ForegroundColor Green
 ### Script 5: Verify Audit Trail Coverage for Regulatory Records
 
 ```powershell
-# Verify that the audit trail captures required events for the Rule 17a-4(f)(2)(ii)(A) audit-trail alternative
+# Verify that the audit trail captures required events for the Rule 17a-4(f)(2) audit-trail alternative
 # The audit trail must log all modifications, deletions, and access events for regulatory records
 param(
     [int]$DaysBack = 7
@@ -172,7 +172,7 @@ Write-Host ""
 
 if ($recordDeclarations.Count -gt 0) {
     Write-Host "Audit trail IS capturing regulatory record events." -ForegroundColor Green
-    Write-Host "This supports the SEC Rule 17a-4(f)(2)(ii)(A) audit-trail alternative compliance path."
+    Write-Host "This supports the SEC Rule 17a-4(f)(2) audit-trail alternative compliance path."
 } else {
     Write-Host "WARNING: No regulatory record events found in last $DaysBack days." -ForegroundColor Yellow
     Write-Host "Verify that regulatory record labels are being applied to Copilot content."

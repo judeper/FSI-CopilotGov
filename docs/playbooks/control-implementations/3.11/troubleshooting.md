@@ -20,7 +20,7 @@ Common issues and resolution steps for records management of Copilot-generated c
 - **Symptoms:** Users cannot update or modify documents that have been marked as regulatory records.
 - **Root Cause:** Regulatory record labels enforce strict immutability, preventing any modification to the content.
 - **Resolution:**
-  1. Clarify with the user that regulatory records are intentionally immutable per SEC 17a-4. This immutability is what enables the audit-trail alternative under Rule 17a-4(f)(2)(ii)(A).
+  1. Clarify with the user that regulatory records are intentionally immutable per SEC 17a-4. This immutability is what enables the audit-trail alternative under Rule 17a-4(f)(2) (audit-trail alternative added by SEC Release No. 34-96034, 87 FR 66412 (Nov. 3, 2022)).
   2. If the user needs to create an updated version, instruct them to create a new document and apply the appropriate label to the new version.
   3. Review whether the regulatory record designation is appropriate for the content type -- not all content requires regulatory record status.
   4. Use retention labels without the regulatory record flag for working documents that may need updates; apply the regulatory record label only when the document is finalized.
@@ -74,7 +74,7 @@ Common issues and resolution steps for records management of Copilot-generated c
 
 ### Issue 7: Audit Trail Alternative Coverage — Audit Log Retention Insufficient
 
-- **Symptoms:** The firm is using the audit-trail alternative path under Rule 17a-4(f)(2)(ii)(A), but the Purview audit log retention period is shorter than the record retention period required for the retained records (e.g., audit log retained for 1 year, but records have 6-year retention).
+- **Symptoms:** The firm is using the audit-trail alternative path under Rule 17a-4(f)(2), but the Purview audit log retention period is shorter than the record retention period required for the retained records (e.g., audit log retained for 1 year, but records have 6-year retention).
 - **Root Cause:** The Microsoft 365 default audit log retention (90 days to 1 year depending on license) may not match the SEC 17a-4 retention period for the regulated records. The audit-trail alternative requires the audit trail to cover the full retention period.
 - **Resolution:**
   1. Check current audit log retention: Navigate to Purview > Audit > Audit retention policies > review policies.
