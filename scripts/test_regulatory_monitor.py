@@ -268,3 +268,89 @@ def test_content_fingerprint_normalizes_whitespace_only():
     fp = regulatory_monitor._content_fingerprint(item)
     assert "alpha beta gamma" in fp
     assert fp.split("|")[2] == "2026-07-11"
+
+
+# --- Securities-law electronic delivery ("Regulation E-Delivery") classification ---
+# Grounding: Federal Register document 2026-14679, SEC proposed rule
+# "Electronic Delivery of Information Under the Federal Securities Laws"
+# (published 2026-07-21). It is a general FSI regulatory change to how covered
+# information is delivered to broker-dealer/adviser/investment-company recipients,
+# so it must surface at MEDIUM (awareness-only). It has no AI/automation nexus,
+# so it must NOT be elevated to HIGH/CRITICAL.
+ELECTRONIC_DELIVERY_TITLE = (
+    "Electronic Delivery of Information Under the Federal Securities Laws"
+)
+ELECTRONIC_DELIVERY_ABSTRACT = (
+    "The Securities and Exchange Commission is proposing Regulation E-Delivery. "
+    "The proposed rule sets forth conditions for covered entities to deliver "
+    "covered information to covered recipients electronically, and establishes "
+    "conditions under which delivery requirements under the Federal securities "
+    "laws would be considered satisfied by electronic delivery."
+)
+
+
+def test_electronic_delivery_title_classifies_medium_with_null_abstract():
+    """The 2026-14679 title alone (null abstract) must classify MEDIUM. Prior to
+    the added pattern this returned NOISE, which baselined the document in
+    monitor state and suppressed it from future review."""
+    config = _load_config()
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        ELECTRONIC_DELIVERY_TITLE, "", config
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_MEDIUM
+    assert "delivery" in reason.lower()
+
+
+def test_electronic_delivery_abstract_classifies_medium():
+    """A securities-law e-delivery item classifies MEDIUM via the abstract too
+    (e.g., "electronic delivery" / "Regulation E-Delivery" wording)."""
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing",
+        ELECTRONIC_DELIVERY_ABSTRACT,
+        config,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_MEDIUM
+
+
+def test_ordinary_delivery_phrases_remain_noise():
+    """The pattern requires "electronic" adjacent to "delivery" (or the
+    "e-delivery" shorthand); ordinary delivery/settlement/logistics language
+    must stay NOISE so the fix does not broadly match unrelated items."""
+    config = _load_config()
+    noise_titles = [
+        "Physical delivery of commodities under futures contracts",
+        "Delivery versus payment settlement of securities",
+        "Order regarding delivery points and delivery months for natural gas",
+        "Same-day parcel delivery service logistics",
+        "Electronic funds transfer for member delivery of collateral",
+    ]
+    for title in noise_titles:
+        classification, _ = regulatory_monitor.classify_regulatory_relevance(
+            title, "", config
+        )
+        assert classification == regulatory_monitor.CLASSIFICATION_NOISE, title
+
+
+def test_electronic_delivery_does_not_override_high_or_critical():
+    """HIGH/CRITICAL precedence is unchanged: an AI/automation nexus alongside
+    electronic delivery still classifies at the higher tier, never MEDIUM."""
+    config = _load_config()
+
+    critical, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Electronic Delivery of Information by an AI Agent Under the Securities Laws",
+        "",
+        config,
+    )
+    assert critical == regulatory_monitor.CLASSIFICATION_CRITICAL
+
+    high, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Electronic Delivery of Disclosures Generated Using Artificial Intelligence",
+        "",
+        config,
+    )
+    assert high == regulatory_monitor.CLASSIFICATION_HIGH

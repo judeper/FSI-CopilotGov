@@ -10,13 +10,14 @@
 
 | Category | Count |
 |----------|-------|
-| MEDIUM Changes | 1 |
-| NOISE Changes | 47 |
+| MEDIUM Changes | 2 |
+| NOISE Changes | 46 |
 
 ---
 ## MEDIUM Priority Items
 General FSI regulations that may indirectly affect AI agent deployments.
 
+- [Electronic Delivery of Information Under the Federal Securities Laws](https://www.federalregister.gov/documents/2026/07/21/2026-14679/electronic-delivery-of-information-under-the-federal-securities-laws) (SEC, 2026-07-21)
 - [Self-Regulatory Organizations; Financial Industry Regulatory Authority, Inc.; Notice of Filing of a Proposed Rule Change To Amend FINRA Rule 4515.01 (Allocations of Orders Made by Investment Advisers)](https://www.federalregister.gov/documents/2026/07/21/2026-14621/self-regulatory-organizations-financial-industry-regulatory-authority-inc-notice-of-filing-of-a) (SEC, 2026-07-21)
 
 ## NOISE Items
@@ -55,7 +56,6 @@ Regulatory items with no FSI Copilot governance relevance.
 - [Agency Information Collection Activities; Proposed Collection; Comment Request; Extension: Rule 613 of Regulation NMS](https://www.federalregister.gov/documents/2026/07/22/2026-14740/agency-information-collection-activities-proposed-collection-comment-request-extension-rule-613-of) (SEC)
 - [Agency Information Collection Activities; Proposed Collection; Comment Request; Extension: Rule 17a-10](https://www.federalregister.gov/documents/2026/07/22/2026-14739/agency-information-collection-activities-proposed-collection-comment-request-extension-rule-17a-10) (SEC)
 - [Order Sunsetting Certain Large Trader Reporting Requirements for Physical Commodity Swaps](https://www.federalregister.gov/documents/2026/07/21/2026-14710/order-sunsetting-certain-large-trader-reporting-requirements-for-physical-commodity-swaps) (CFTC)
-- [Electronic Delivery of Information Under the Federal Securities Laws](https://www.federalregister.gov/documents/2026/07/21/2026-14679/electronic-delivery-of-information-under-the-federal-securities-laws) (SEC)
 - [Agricultural Advisory Committee](https://www.federalregister.gov/documents/2026/07/21/2026-14675/agricultural-advisory-committee) (CFTC)
 - [Change in Bank Control Notices; Acquisitions of Shares of a Bank or Bank Holding Company](https://www.federalregister.gov/documents/2026/07/21/2026-14669/change-in-bank-control-notices-acquisitions-of-shares-of-a-bank-or-bank-holding-company) (Federal Reserve)
 - [Order Providing Exemptive Relief To Facilitate Listing of Cash-Settled Futures on Individual Equity Securities](https://www.federalregister.gov/documents/2026/07/21/2026-14635/order-providing-exemptive-relief-to-facilitate-listing-of-cash-settled-futures-on-individual-equity) (CFTC)
