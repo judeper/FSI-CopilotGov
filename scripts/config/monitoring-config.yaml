@@ -138,6 +138,12 @@ regulatory:
       reason: "Investment adviser regulation"
     - pattern: '\bcustomer\s+communication'
       reason: "Customer communication rules"
+    # Securities-law electronic delivery (e.g., SEC "Regulation E-Delivery").
+    # Narrowly requires "electronic" adjacent to "delivery" (or the "e-delivery"
+    # shorthand) so securities-law e-delivery proposals surface for awareness,
+    # while ordinary "delivery"/logistics/settlement language stays NOISE.
+    - pattern: '\belectronic\s+delivery\b|\be-delivery\b'
+      reason: "Electronic delivery of information under securities laws"
     - pattern: '\bcybersecurity'
       reason: "Cybersecurity requirements"
     - pattern: '\bdata\s+protection'
