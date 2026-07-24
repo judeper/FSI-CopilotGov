@@ -34,6 +34,7 @@ FORCED_415_FIELDS = (
 
 FORCED_311_FIELDS = (
     "yesBar",
+    "partialBar",
     "evidenceExpected",
     "sectorYesBar",
 )
@@ -164,15 +165,76 @@ def test_311_force_replace_is_scoped_to_listed_fields_only():
     stale_311 = {
         "id": "3.11",
         "yesBar": "stale 3.11 yes bar",
-        "partialBar": "hand-edited 3.11 partial bar that must survive",
+        "noBar": "hand-edited 3.11 no bar that must survive",
     }
     overlay_311 = {
         "yesBar": "corrected 3.11 yes bar per Rule 17a-4(f)(2)",
-        "partialBar": "authored partial bar that must NOT win",
+        "noBar": "authored no bar that must NOT win",
     }
     merged_311 = _apply_overlay(stale_311, overlay_311)
     # yesBar is in the 3.11 force set -> authored content wins.
     assert merged_311["yesBar"] == "corrected 3.11 yes bar per Rule 17a-4(f)(2)"
-    # partialBar is NOT in the 3.11 force set -> an authoritative hand edit
-    # must be preserved (proves the force set is narrowly scoped).
-    assert merged_311["partialBar"] == "hand-edited 3.11 partial bar that must survive"
+    # noBar is NOT in the 3.11 force set -> an authoritative hand edit must be
+    # preserved. partialBar is now force-replaced (so the corrected audit-trail
+    # partial criterion propagates), so noBar is the scoping witness here.
+    assert merged_311["noBar"] == "hand-edited 3.11 no bar that must survive"
+
+
+# ── issue #255 / PR #356 content invariants (authored source + manifest) ────
+
+
+def test_311_partial_and_yes_do_not_overlap_on_audit_trail():
+    """Thread PRRT_kwDORX7m3c6Sl3Ss: a documented audit-trail alternative is full
+    ``Yes`` and must not simultaneously score ``Partial``. The partial bar must
+    therefore require the absence of *both* WORM and the documented audit-trail
+    alternative (or untested retrievability), consistently in the authored source
+    and the generated manifest."""
+    for source in (_load_authored()["3.11"], _load_manifest_control("3.11")):
+        yes = source["yesBar"].lower()
+        partial = source["partialBar"].lower()
+        # yesBar accepts the audit-trail alternative as full compliance.
+        assert "audit-trail alternative" in yes
+        # partialBar no longer downgrades a non-WORM audit-trail implementation:
+        # it requires neither-WORM-nor-audit-trail (or untested retrievability).
+        assert "audit-trail alternative" in partial
+        assert "neither" in partial and "nor" in partial
+        # The old contradictory phrasing ("retained but not in a WORM-compliant
+        # archive") that double-counted a valid audit-trail path is gone.
+        assert "not in a worm-compliant archive" not in partial
+
+
+def test_311_retention_duration_evidence_not_miscited_to_f2():
+    """Thread PRRT_kwDORX7m3c6TagWg: the retention-duration evidence item must
+    cite the generic retention rules (SEC Rule 17a-4 / FINRA 4511), NOT the
+    (f)(2) electronic-storage-system subsection, while the WORM/audit-trail
+    system item keeps (f)(2) + SEC Release 34-96034."""
+    for source in (_load_authored()["3.11"], _load_manifest_control("3.11")):
+        items = source["evidenceExpected"]
+        retention = [i for i in items if "retention duration" in i.lower()]
+        assert len(retention) == 1, f"expected one retention item, got {retention}"
+        assert retention[0] == "Retention duration aligned to SEC Rule 17a-4 / FINRA 4511"
+        assert "(f)(2)" not in retention[0]
+        # The storage-system item still carries the (f)(2) + release citation.
+        worm = [i for i in items if i.lower().startswith("worm archive")]
+        assert len(worm) == 1
+        assert "17a-4(f)(2)" in worm[0] and "34-96034" in worm[0]
+
+
+def test_311_evidence_expected_is_four_explicit_items():
+    """Thread PRRT_kwDORX7m3c6Slx2l: the WORM/audit-trail evidence entry must be a
+    single, unambiguous list item (explicit concatenation in the source), so the
+    list has exactly four items and the WORM item is one intact string — not
+    accidentally split by a missing comma."""
+    for source in (_load_authored()["3.11"], _load_manifest_control("3.11")):
+        items = source["evidenceExpected"]
+        assert len(items) == 4, f"expected 4 evidence items, got {len(items)}: {items}"
+        assert all(isinstance(i, str) and i.strip() for i in items)
+        worm = [i for i in items if i.lower().startswith("worm archive")]
+        assert len(worm) == 1
+        # The single item carries the full intended text (nothing dropped by an
+        # accidental comma-split).
+        assert worm[0] == (
+            "WORM archive configuration or audit-trail alternative "
+            + "documentation per Rule 17a-4(f)(2) (SEC Release No. 34-96034, "
+            + "87 FR 66412 (Nov. 3, 2022)) for Copilot records"
+        )

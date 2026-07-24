@@ -66,11 +66,16 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "verifyPowerShell",
     },
     "3.11": {
-        # Force-apply corrected Rule 17a-4(f)(2) citation (with SEC adopting
-        # release No. 34-96034) to override stale values already present in
-        # controls.json from before the citation correction in issue #255.
+        # Force-apply the corrected Rule 17a-4(f)(2) storage-system citation
+        # (with SEC adopting release No. 34-96034) and the audit-trail-aligned
+        # scoring bars to override stale values already present in controls.json
+        # from before the citation/scoring correction in issue #255. partialBar
+        # is force-replaced so the corrected non-overlapping partial criterion
+        # (which no longer downgrades a documented audit-trail alternative to
+        # Partial) cannot be shadowed by the pre-correction manifest value.
         "evidenceExpected",
         "yesBar",
+        "partialBar",
         "sectorYesBar",
     },
     "4.15": {

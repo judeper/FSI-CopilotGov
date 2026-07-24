@@ -2964,9 +2964,10 @@ AUTHORED: dict[str, dict] = {
             "records are retrievable for examiner requests."
         ),
         "partialBar": (
-            "Copilot interactions are retained but not in a WORM-compliant "
-            "archive, or retrievability for examiner requests has not been "
-            "tested."
+            "Copilot interactions are retained, but retention policies provide "
+            "neither WORM compliance nor a documented audit-trail alternative "
+            "per Rule 17a-4(f)(2), or retrievability for examiner requests has "
+            "not been tested."
         ),
         "noBar": (
             "Copilot interactions are not captured in the books-and-records "
@@ -2986,11 +2987,13 @@ AUTHORED: dict[str, dict] = {
         ),
         "evidenceExpected": [
             "Books-and-records policy covering Copilot interactions",
-            "WORM archive configuration or audit-trail alternative "
-            "documentation per Rule 17a-4(f)(2) (SEC Release No. 34-96034, "
-            "87 FR 66412 (Nov. 3, 2022)) for Copilot records",
+            (
+                "WORM archive configuration or audit-trail alternative "
+                + "documentation per Rule 17a-4(f)(2) (SEC Release No. 34-96034, "
+                + "87 FR 66412 (Nov. 3, 2022)) for Copilot records"
+            ),
             "Retrievability test results for examiner response readiness",
-            "Retention duration aligned to Rule 17a-4(f)(2) / FINRA 4511",
+            "Retention duration aligned to SEC Rule 17a-4 / FINRA 4511",
         ],
         "collectorField": "Purview_BooksAndRecords",
         "sectorYesBar": _sector_map(

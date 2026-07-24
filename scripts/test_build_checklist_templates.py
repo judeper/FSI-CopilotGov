@@ -213,3 +213,67 @@ def test_build_dashboard_regeneration_is_boilerplate_free(tmp_path) -> None:
     out = tmp_path / DASHBOARD_NAME
     bct.build_dashboard(out, _manifest(), _real_spa())
     assert not _boilerplate_hits(_tier_cells(out))
+
+
+# ── Thread PRRT_kwDORX7m3c6TagWh: standalone generation on a clean checkout ──
+# The documented `python scripts/build_checklist_templates.py` command must work
+# without a prior extractor run, because docs/javascripts/assessment-data.json is
+# gitignored and absent on a clean checkout — while keeping the no-degradation
+# guarantee (invalid canonical data still fails before writing).
+
+
+def test_load_spa_from_extractor_is_complete() -> None:
+    """The in-memory canonical rebuild yields complete, boilerplate-free tier
+    data, so the standalone command works without the gitignored SPA file."""
+    spa = bct.load_spa_from_extractor()
+    assert spa, "extractor produced no SPA controls"
+    offenders = bct.dashboard_boilerplate_cells(_manifest(), spa)
+    assert not offenders, f"in-memory SPA would degrade tier cells: {offenders}"
+
+
+def test_resolve_dashboard_spa_rebuilds_when_file_absent(
+        tmp_path, monkeypatch) -> None:
+    """Clean checkout: with the SPA file absent, resolve rebuilds in-memory and
+    passes the no-degradation guard (no SystemExit), sourced from the extractor."""
+    monkeypatch.setattr(bct, "SPA_DATA", tmp_path / "assessment-data.json")
+    assert not bct.SPA_DATA.exists()
+    spa, source = bct.resolve_dashboard_spa(_manifest())
+    assert spa and "in-memory" in source
+    assert not bct.dashboard_boilerplate_cells(_manifest(), spa)
+
+
+def test_resolve_dashboard_spa_fails_before_write_on_invalid_canonical(
+        tmp_path, monkeypatch) -> None:
+    """Clean checkout with an unusable canonical source (extractor yields no
+    controls, e.g. a control doc fails to parse) must still fail *before* writing
+    rather than degrade the dashboard to boilerplate."""
+    monkeypatch.setattr(bct, "SPA_DATA", tmp_path / "assessment-data.json")
+    monkeypatch.setattr(bct, "load_spa_from_extractor", lambda: {})
+    with pytest.raises(SystemExit) as exc:
+        bct.resolve_dashboard_spa(_manifest())
+    assert "empty or unparseable" in str(exc.value).lower()
+
+
+def test_main_builds_complete_dashboard_on_clean_checkout(
+        tmp_path, monkeypatch) -> None:
+    """End-to-end reviewer scenario: on a clean checkout (no assessment-data.json)
+    ``python scripts/build_checklist_templates.py`` still writes a complete,
+    boilerplate-free 192-cell dashboard (and valid role checklists) via the
+    in-memory canonical rebuild — no hidden extractor step required."""
+    out = tmp_path / "templates"
+    docs_mirror = tmp_path / "docs-templates"
+    monkeypatch.setattr(bct, "SPA_DATA", tmp_path / "assessment-data.json")
+    monkeypatch.setattr(bct, "OUT_DIR", out)
+    monkeypatch.setattr(bct, "DOCS_MIRROR", docs_mirror)
+    assert not bct.SPA_DATA.exists()
+
+    assert bct.main() == 0
+    dash = out / DASHBOARD_NAME
+    assert dash.exists(), "dashboard not written on clean checkout"
+    cells = _tier_cells(dash)
+    assert len(cells) == len(_manifest())
+    assert not _boilerplate_hits(cells), "clean-checkout dashboard has boilerplate"
+    # Role checklists remain valid and the docs mirror is written too.
+    xlsx = list(out.glob("*.xlsx"))
+    assert len(xlsx) == len(bct.ROLE_FILES) + 1  # roles + dashboard
+    assert (docs_mirror / DASHBOARD_NAME).exists()
