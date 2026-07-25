@@ -33,8 +33,9 @@
       "SharePoint Admin"
     ],
     "regulatory": [
-      "SR-11-7",
       "OCC-2023-17",
+      "OCC-2011-12",
+      "SR-11-7",
       "FFIEC-IT-Handbook",
       "SOX-302-404",
       "GLBA-501b"
@@ -59,7 +60,7 @@
     ],
     "controlDocUrl": "/controls/pillar-1-readiness/1.1-copilot-readiness-assessment/",
     "portalPlaybookUrl": "/playbooks/control-implementations/1.1/portal-walkthrough/",
-    "collectorField": "ReadinessAssessment",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Readiness assessment covers all Copilot-grounded sites with NPI; remediation backlog reviewed monthly; aligned to FFIEC IT Examination Handbook information security expectations.",
       "broker-dealer": "Assessment covers trade blotter, research, and client-facing sites; MNPI sites identified and information-barrier readiness validated before Copilot enablement.",
@@ -718,10 +719,8 @@
     "pillar": 1,
     "pillar_name": "Readiness & Assessment",
     "source_file": "docs/controls/pillar-1-readiness/1.9-license-planning.md",
-    "automation": "full",
-    "collection_methods": [
-      "M365Admin"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -737,7 +736,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Is Copilot license assignment reconciled against approved entitlement and eligibility criteria on a documented cadence?",
     "name": "License Planning and Copilot Assignment Strategy",
     "zonesApplicable": [
       1,
@@ -772,7 +771,7 @@
     ],
     "controlDocUrl": "/controls/pillar-1-readiness/1.9-license-planning/",
     "portalPlaybookUrl": "/playbooks/control-implementations/1.9/portal-walkthrough/",
-    "collectorField": "M365Admin_LicenseAssignment",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "License assignment aligned to bank cost centers; inactive licenses reclaimed monthly; PAYG budgets reviewed under SOX IT general controls.",
       "broker-dealer": "Licenses assigned by registered-rep status; utilization reviewed monthly by supervisory principal.",
@@ -839,6 +838,7 @@
     ],
     "regulatory": [
       "OCC-2023-17",
+      "Interagency-TPRM-2023",
       "FFIEC-IT-Handbook",
       "GLBA-501b"
     ],
@@ -907,6 +907,7 @@
     ],
     "regulatory": [
       "OCC-Heightened-Standards",
+      "Interagency-AI-2023",
       "FFIEC-IT-Handbook"
     ],
     "priority": "medium",
@@ -979,6 +980,7 @@
       "M365 Global Admin"
     ],
     "regulatory": [
+      "Interagency-AI-2023",
       "FFIEC-IT-Handbook",
       "GLBA-501b",
       "FINRA-3110"
@@ -1054,6 +1056,7 @@
     ],
     "regulatory": [
       "OCC-2023-17",
+      "Interagency-AI-2023",
       "FFIEC-IT-Handbook",
       "GLBA-501b"
     ],
@@ -1077,7 +1080,7 @@
     ],
     "controlDocUrl": "/controls/pillar-1-readiness/1.13-extensibility-readiness/",
     "portalPlaybookUrl": "/playbooks/control-implementations/1.13/portal-walkthrough/",
-    "collectorField": "M365Admin_ExtensibilityInventory",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Extensibility governance aligned to OCC Bulletin 2023-17 third-party risk requirements; each connector/plug-in risk-classified before approval.",
       "broker-dealer": "TODO: sector-specific yes-bar",
@@ -1137,7 +1140,8 @@
     "regulatory": [
       "FFIEC-IT-Handbook",
       "GLBA-501b",
-      "SEC-17a-4"
+      "SEC-17a-4",
+      "NIST-800-53"
     ],
     "priority": "high",
     "yesBar": "Item-level permissions on Copilot-grounded knowledge sources are scanned on a documented cadence. Items with overly broad permissions (Everyone, EEEU, large security groups) are flagged and remediated with named owners.",
@@ -1224,7 +1228,8 @@
     "regulatory": [
       "FFIEC-IT-Handbook",
       "GLBA-501b",
-      "SEC-17a-4"
+      "SEC-17a-4",
+      "NIST-800-53"
     ],
     "priority": "high",
     "yesBar": "SharePoint permissions drift is monitored on a documented cadence using RAC, site lifecycle management, or automated scripts. Drift events are reconciled and documented.",
@@ -1309,6 +1314,7 @@
     "regulatory": [
       "OCC-2011-12",
       "SR-11-7",
+      "Interagency-AI-RFI-2023",
       "GLBA-501b"
     ],
     "priority": "high",
@@ -1331,7 +1337,7 @@
     ],
     "controlDocUrl": "/controls/pillar-1-readiness/1.16-copilot-tuning-governance/",
     "portalPlaybookUrl": "/playbooks/control-implementations/1.16/portal-walkthrough/",
-    "collectorField": "M365Admin_CopilotTuning",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Tuning governance aligned to SR 11-7 / OCC Bulletin 2011-12 model risk management principles; evaluation evidence retained per bank's model-inventory requirements.",
       "broker-dealer": "Tuning review includes supervisory principal approval before publishing for registered-representative use.",
@@ -1743,7 +1749,7 @@
     ],
     "controlDocUrl": "/controls/pillar-2-security/2.5-data-minimization-grounding-scope/",
     "portalPlaybookUrl": "/playbooks/control-implementations/2.5/portal-walkthrough/",
-    "collectorField": "SPO_GroundingScope",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Grounding scope excludes NPI-bearing sites without DLP controls; approved grounding list reviewed quarterly.",
       "broker-dealer": "Grounding scope respects information barriers; research and MNPI sites excluded unless IB-validated.",
@@ -1786,10 +1792,8 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.6-web-search-controls.md",
-    "automation": "full",
-    "collection_methods": [
-      "M365Admin"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -1805,7 +1809,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Is the Copilot web search setting configured to the approved tenant posture and reviewed on a documented cadence?",
     "name": "Copilot Web Search and Web Grounding Controls",
     "zonesApplicable": [
       1,
@@ -1838,7 +1842,7 @@
     ],
     "controlDocUrl": "/controls/pillar-2-security/2.6-web-search-controls/",
     "portalPlaybookUrl": "/playbooks/control-implementations/2.6/portal-walkthrough/",
-    "collectorField": "M365Admin_WebSearchSettings",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Web search disabled for users handling NPI; enabled only for approved groups with DLP web-search restriction for regulated SITs.",
       "broker-dealer": "Web search disabled for registered representatives by default; enabled only with supervisory approval and DLP MNPI SIT restriction.",
@@ -1871,11 +1875,8 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.7-data-residency.md",
-    "automation": "full",
-    "collection_methods": [
-      "M365Admin",
-      "Graph_API"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -1891,7 +1892,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Copilot data residency commitments (Advanced Data Residency and EU Data Boundary scope) documented and reconciled against the tenant configuration?",
     "name": "Data Residency and Cross-Border Data Flow Governance",
     "zonesApplicable": [
       1,
@@ -1924,7 +1925,7 @@
     ],
     "controlDocUrl": "/controls/pillar-2-security/2.7-data-residency/",
     "portalPlaybookUrl": "/playbooks/control-implementations/2.7/portal-walkthrough/",
-    "collectorField": "M365Admin_DataResidency",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Data residency documented per GLBA §501(b); cross-border flows mapped and approved by legal/compliance.",
       "broker-dealer": "TODO: sector-specific yes-bar",
@@ -2034,10 +2035,8 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.9-defender-cloud-apps.md",
-    "automation": "partial",
-    "collection_methods": [
-      "Defender"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -2087,7 +2086,7 @@
     ],
     "controlDocUrl": "/controls/pillar-2-security/2.9-defender-cloud-apps/",
     "portalPlaybookUrl": "/playbooks/control-implementations/2.9/portal-walkthrough/",
-    "collectorField": "Defender_CopilotSessionPolicies",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Session policies monitor exfiltration and anomalous usage patterns; alerts reviewed by SOC within 4-hour SLA per FFIEC expectations.",
       "broker-dealer": "TODO: sector-specific yes-bar",
@@ -2643,8 +2642,9 @@
       "Security Admin"
     ],
     "regulatory": [
+      "OCC-2023-17",
       "FFIEC",
-      "GLBA",
+      "GLBA-501b",
       "Reg-S-P"
     ],
     "priority": "high",
@@ -2749,7 +2749,7 @@
     ],
     "controlDocUrl": "/controls/pillar-2-security/2.17-cross-tenant-agent-federation/",
     "portalPlaybookUrl": "/playbooks/control-implementations/2.17/portal-walkthrough/",
-    "collectorField": "Graph_CrossTenantFederation",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Cross-tenant federation assessed per OCC Bulletin 2023-17; trust relationships approved by CISO and reviewed quarterly.",
       "broker-dealer": "Federation trust reviewed by supervisory principal; FINRA Rule 3110 supervision scope includes federated agent interactions.",
@@ -2895,7 +2895,7 @@
       "Purview Compliance Admin"
     ],
     "regulatory": [
-      "SOX",
+      "SOX-802",
       "FINRA-4511",
       "SEC-17a-4"
     ],
@@ -2983,7 +2983,8 @@
     ],
     "regulatory": [
       "FINRA-4511",
-      "SEC-17a-4"
+      "SEC-17a-4",
+      "FRCP"
     ],
     "priority": "critical",
     "yesBar": "eDiscovery searches can locate and preserve Copilot-generated content (interactions, Pages, Notebooks). At least one test search has confirmed Copilot content is discoverable, and custodian holds can target Copilot data sources.",
@@ -3153,11 +3154,14 @@
       "Purview Compliance Admin"
     ],
     "regulatory": [
+      "FINRA-3110",
       "FINRA-2210",
       "FINRA-24-09",
+      "FINRA-26-14",
       "SEC-34-105845-SR-FINRA-2026-004",
       "SEC-206-4-1",
-      "IAA-206"
+      "IAA-206",
+      "SEC-17a-4"
     ],
     "priority": "critical",
     "yesBar": "Copilot outputs used in FINRA Rule 2210 communications (retail, institutional, correspondence) are subject to documented principal review before use. Detection patterns for prohibited marketing language are configured in communication compliance.",
@@ -3179,7 +3183,7 @@
     ],
     "controlDocUrl": "/controls/pillar-3-compliance/3.5-finra-2210-compliance/",
     "portalPlaybookUrl": "/playbooks/control-implementations/3.5/portal-walkthrough/",
-    "collectorField": "Purview_FINRA2210Compliance",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "TODO: sector-specific yes-bar",
       "broker-dealer": "All Copilot-drafted retail and institutional communications subject to principal review per FINRA Rule 2210 and FINRA Regulatory Notice 24-09; detection patterns cover prohibited promissory and superlative language.",
@@ -3395,8 +3399,13 @@
       "Purview Compliance Admin"
     ],
     "regulatory": [
+      "OCC-2026-13",
+      "OCC-2025-26",
       "OCC-2011-12",
-      "SR-11-7"
+      "SR-26-2",
+      "SR-11-7",
+      "ECOA",
+      "Fair-Housing-Act"
     ],
     "priority": "high",
     "yesBar": "A model-risk-management review aligned to SR 11-7 / OCC Bulletin 2011-12 has been completed for Copilot deployments touching regulated functions. The review documents model limitations, validation methodology, and ongoing monitoring.",
@@ -3418,7 +3427,7 @@
     ],
     "controlDocUrl": "/controls/pillar-3-compliance/3.8-model-risk-management/",
     "portalPlaybookUrl": "/playbooks/control-implementations/3.8/portal-walkthrough/",
-    "collectorField": "Compliance_ModelRiskReview",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "MRM review aligned to SR 11-7 / OCC Bulletin 2011-12; Copilot entered in model inventory with validation schedule.",
       "broker-dealer": "MRM review completed for Copilot use in client-facing functions; validation cadence aligned to FINRA guidance.",
@@ -3480,9 +3489,12 @@
       "AI Governance Lead"
     ],
     "regulatory": [
-      "SR-11-7",
+      "OCC-2026-13",
       "OCC-2011-12",
-      "NIST-AI-RMF"
+      "SR-26-2",
+      "SR-11-7",
+      "NIST-AI-RMF",
+      "ISO-42001"
     ],
     "priority": "high",
     "yesBar": "A generative-AI model-governance review (NIST AI RMF 1.0 / ISO/IEC 42001) has been completed for Copilot, addressing the SR 26-2 / OCC Bulletin 2026-13 generative-AI exclusion. Governance covers bias testing, safety evaluation, and responsible-AI principles.",
@@ -3504,7 +3516,7 @@
     ],
     "controlDocUrl": "/controls/pillar-3-compliance/3.8a-generative-ai-model-governance/",
     "portalPlaybookUrl": "/playbooks/control-implementations/3.8/portal-walkthrough/",
-    "collectorField": "Compliance_GenAIGovernance",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "GenAI governance aligned to NIST AI RMF 1.0; addresses SR 26-2 / OCC 2026-13 explicit exclusion of generative AI by continuing to apply SR 11-7 / OCC 2011-12 principles.",
       "broker-dealer": "GenAI governance completed for Copilot use in client-facing and trading functions; NIST AI RMF alignment documented for FINRA exam readiness.",
@@ -3637,8 +3649,9 @@
       "Purview Compliance Admin"
     ],
     "regulatory": [
-      "GLBA",
-      "Reg-S-P"
+      "GLBA-Title-V",
+      "Reg-S-P",
+      "SEC-Reg-S-ID"
     ],
     "priority": "critical",
     "yesBar": "SEC Reg S-P / GLBA §501(b) privacy controls have been reviewed for Copilot processing of customer NPI. DLP policies prevent Copilot from surfacing NPI outside authorized workflows, and privacy impact is documented.",
@@ -3814,7 +3827,8 @@
     ],
     "regulatory": [
       "SOX-302-404",
-      "FINRA-3120"
+      "FINRA-3120",
+      "PCAOB-AS-2201"
     ],
     "priority": "high",
     "yesBar": "A documented evidence-collection runbook exists for Copilot-related audits and exam responses. The runbook covers all four collector domains (Graph, Purview, SharePoint, Sentinel) and produces a portable evidence pack.",
@@ -3976,6 +3990,7 @@
       "TODO: assign per ROLE_CONTROLS"
     ],
     "regulatory": [
+      "SR-21-14",
       "SOX-302-404",
       "FINRA-4511",
       "SEC-17a-4"
@@ -4121,10 +4136,8 @@
     "pillar": 4,
     "pillar_name": "Operations & Lifecycle",
     "source_file": "docs/controls/pillar-4-operations/4.2-teams-meetings-governance.md",
-    "automation": "full",
-    "collection_methods": [
-      "Teams"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -4140,7 +4153,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Teams meeting policies governing Copilot in meetings, including transcription prerequisites, reviewed on a documented cadence?",
     "name": "Copilot in Teams Meetings Governance",
     "zonesApplicable": [
       1,
@@ -4177,7 +4190,7 @@
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.2-teams-meetings-governance/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.2/portal-walkthrough/",
-    "collectorField": "Teams_MeetingPolicies",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Meeting transcription retention aligned to SOX record-keeping; Copilot disabled for NPI-sensitive committee meetings unless approved.",
       "broker-dealer": "Meeting transcriptions retained per FINRA Rule 4511 and SEC Rule 17a-4 where applicable; supervisory review of client-facing meeting summaries per FINRA Rule 3110.",
@@ -4205,10 +4218,8 @@
     "pillar": 4,
     "pillar_name": "Operations & Lifecycle",
     "source_file": "docs/controls/pillar-4-operations/4.3-teams-phone-queues.md",
-    "automation": "full",
-    "collection_methods": [
-      "Teams"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -4224,7 +4235,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Teams calling and voice-application policies that expose Copilot features reviewed on a documented cadence?",
     "name": "Copilot in Teams Phone and Queues Governance",
     "zonesApplicable": [
       1,
@@ -4261,7 +4272,7 @@
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.3-teams-phone-queues/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.3/portal-walkthrough/",
-    "collectorField": "Teams_CallingPolicies",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Call recording retention aligned to GLBA §501(b) expectations; Copilot disabled for customer service lines unless approved.",
       "broker-dealer": "Call recordings retained per FINRA Rule 4511 and SEC Rule 17a-4 where applicable; call summaries reviewed by supervisory principal per FINRA Rule 3110.",
@@ -4289,11 +4300,8 @@
     "pillar": 4,
     "pillar_name": "Operations & Lifecycle",
     "source_file": "docs/controls/pillar-4-operations/4.4-viva-suite-governance.md",
-    "automation": "partial",
-    "collection_methods": [
-      "VivaInsights",
-      "M365Admin"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -4343,7 +4351,7 @@
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.4-viva-suite-governance/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.4/portal-walkthrough/",
-    "collectorField": "Viva_CopilotSettings",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Viva Insights privacy controls aligned to GLBA §501(b); Copilot features reviewed quarterly.",
       "broker-dealer": "TODO: sector-specific yes-bar",
@@ -4371,10 +4379,8 @@
     "pillar": 4,
     "pillar_name": "Operations & Lifecycle",
     "source_file": "docs/controls/pillar-4-operations/4.5-usage-analytics.md",
-    "automation": "partial",
-    "collection_methods": [
-      "M365Admin"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -4435,7 +4441,7 @@
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.5-usage-analytics/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.5/portal-walkthrough/",
-    "collectorField": "M365Admin_UsageAnalytics",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Usage analytics reported monthly to technology governance committee per SOX IT general control expectations.",
       "broker-dealer": "Usage analytics reviewed monthly by supervisory principal; anomalies investigated per FINRA Rule 3110.",
@@ -4468,10 +4474,8 @@
     "pillar": 4,
     "pillar_name": "Operations & Lifecycle",
     "source_file": "docs/controls/pillar-4-operations/4.6-viva-insights-measurement.md",
-    "automation": "partial",
-    "collection_methods": [
-      "VivaInsights"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -4520,7 +4524,7 @@
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.6-viva-insights-measurement/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.6/portal-walkthrough/",
-    "collectorField": "Viva_CopilotImpact",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "TODO: sector-specific yes-bar",
       "broker-dealer": "TODO: sector-specific yes-bar",
@@ -4548,10 +4552,8 @@
     "pillar": 4,
     "pillar_name": "Operations & Lifecycle",
     "source_file": "docs/controls/pillar-4-operations/4.7-feedback-telemetry.md",
-    "automation": "partial",
-    "collection_methods": [
-      "M365Admin"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -4602,7 +4604,7 @@
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.7-feedback-telemetry/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.7/portal-walkthrough/",
-    "collectorField": "M365Admin_FeedbackSettings",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Feedback data governed per GLBA §501(b); reviewed monthly by product owner.",
       "broker-dealer": "TODO: sector-specific yes-bar",
@@ -4863,7 +4865,7 @@
     "source_file": "docs/controls/pillar-4-operations/4.11-sentinel-integration.md",
     "automation": "partial",
     "collection_methods": [
-      "Defender"
+      "Sentinel"
     ],
     "checks": [],
     "zone_thresholds": {
@@ -5083,7 +5085,7 @@
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.13-extensibility-governance/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.13/portal-walkthrough/",
-    "collectorField": "M365Admin_AgentOperations",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Agent operations governance aligned to OCC Bulletin 2023-17 third-party risk requirements for AI agents.",
       "broker-dealer": "Agent operations reviewed by supervisory principal per FINRA Rule 3110; error rates monitored for client-facing agents.",
@@ -5170,7 +5172,7 @@
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.14-copilot-studio-agent-lifecycle/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.14/portal-walkthrough/",
-    "collectorField": "M365Admin_AgentLifecycle",
+    "collectorField": "",
     "sectorYesBar": {
       "bank": "Lifecycle governance aligned to OCC Bulletin 2023-17 and OCC Heightened Standards (12 CFR part 30, appendix D) for technology lifecycle management.",
       "broker-dealer": "Agent lifecycle includes supervisory approval gate per FINRA Rule 3110 before publication for registered-rep use.",

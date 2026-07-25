@@ -22,6 +22,11 @@ Modes:
 * ``--allow-todo`` — when ``--strict`` is on, ``TODO:`` placeholders in
   authored content fields are downgraded to warnings.
 
+The manifest is also cross-checked against
+``assessment/data/evidence-contract.json`` so a control can never claim
+``full``/``partial`` automation, or name a ``collectorField``, that no
+collector actually delivers.
+
 Exit code: 0 if no errors; 1 otherwise.
 """
 from __future__ import annotations
@@ -36,6 +41,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_DEFAULT = ROOT / "assessment" / "manifest" / "controls.json"
 GRAPH_DEFAULT = ROOT / "assessment" / "manifest" / "content-graph.json"
+CONTRACT_DEFAULT = ROOT / "assessment" / "data" / "evidence-contract.json"
 DOCS_BASE = ROOT / "docs"
 
 PILLARS = {1, 2, 3, 4}
@@ -251,10 +257,12 @@ def _validate_spa(c: dict, strict: bool, allow_todo: bool) -> tuple[list[str], l
         elif _is_todo(v):
             add(f"{cid}: {k} is TODO", severity="todo")
 
+    # collectorField is derived from the evidence contract: empty means "no
+    # collector emits evidence for this control", which is a truthful terminal
+    # state rather than pending authoring. The contract cross-check in main()
+    # verifies the value itself.
     if not isinstance(c["collectorField"], str):
         add(f"{cid}: collectorField must be a string")
-    elif not c["collectorField"].strip():
-        add(f"{cid}: collectorField is empty", severity="todo")
 
     syb = c["sectorYesBar"]
     if not isinstance(syb, dict):
@@ -313,6 +321,58 @@ def _validate_spa(c: dict, strict: bool, allow_todo: bool) -> tuple[list[str], l
                 )
 
     return errs, warns
+
+
+def _load_contract_fields(path: Path) -> dict[str, str] | None:
+    """Return control id -> collectorField from the evidence contract."""
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    out: dict[str, str] = {}
+    for m in data.get("mappings", []) or []:
+        cid = m.get("controlId")
+        field = m.get("collectorField")
+        if cid and field and cid not in out:
+            out[cid] = field
+    return out
+
+
+def _validate_against_contract(
+    controls: list[dict], contract: dict[str, str]
+) -> list[str]:
+    """Assert the manifest only claims automation the collectors can deliver.
+
+    Two invariants keep the manifest honest (issue #257):
+
+    1. ``automation`` other than ``manual`` requires an evidence-contract
+       mapping. Without one, no collector produces evidence for the control
+       and the label overstates what an assessment can verify.
+    2. ``collectorField`` must equal the contract's field for the control, or
+       be empty when the control has no mapping. A non-empty field with no
+       mapping names a collector output that does not exist.
+    """
+    errs: list[str] = []
+    for c in controls:
+        cid = c.get("id", "<missing-id>")
+        expected = contract.get(cid, "")
+        automation = c.get("automation")
+        if automation in ("full", "partial") and not expected:
+            errs.append(
+                f"{cid}: automation is {automation!r} but evidence-contract.json "
+                "has no mapping — no collector supplies evidence for this "
+                "control, so automation must be 'manual'"
+            )
+        actual = c.get("collectorField")
+        if isinstance(actual, str) and actual.strip() != expected:
+            errs.append(
+                f"{cid}: collectorField {actual!r} disagrees with "
+                f"evidence-contract.json ({expected!r}); re-run "
+                "scripts/harvest_manifest_extension.py"
+            )
+    return errs
 
 
 def main() -> int:
@@ -404,6 +464,22 @@ def main() -> int:
         spa_errs, spa_warns = _validate_spa(c, strict=args.strict, allow_todo=args.allow_todo)
         all_errors.extend(spa_errs)
         all_warnings.extend(spa_warns)
+
+    # Cross-check automation claims and collector bindings against the evidence
+    # contract. Like the content-graph cross-check, an unreadable contract is
+    # fatal under --strict because it means the claims cannot be verified.
+    contract = _load_contract_fields(CONTRACT_DEFAULT)
+    if contract is None:
+        (all_errors if args.strict else all_warnings).append(
+            f"evidence contract not found or unreadable at {CONTRACT_DEFAULT}; "
+            "cannot verify automation labels or collectorField bindings"
+        )
+    else:
+        all_errors.extend(
+            _validate_against_contract(
+                [c for c in controls if isinstance(c, dict)], contract
+            )
+        )
 
     for w in all_warnings:
         print(f"WARN: {w}")

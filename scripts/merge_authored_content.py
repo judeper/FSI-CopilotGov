@@ -18,6 +18,9 @@ Replacement rules:
     - globally for fields in ``_REPLACE_FIELDS``
     - per-control for fields in ``_CONTROL_FORCE_REPLACE_FIELDS``
 
+* **derived fields** in ``_DERIVED_FIELDS`` are skipped entirely: they are
+  owned by an upstream source (the evidence contract), not by authors.
+
 The merge **never** overwrites a value that has been hand-edited away
 from the TODO default. Re-running this script after authored_content.py
 is updated is safe.
@@ -45,6 +48,15 @@ AUTHORED_PY = ROOT / "assessment" / "manifest" / "authored_content.py"
 # FSI-CopilotGov-Solutions sister repo, so hand edits in the manifest
 # must not silently override later corrections).
 _REPLACE_FIELDS: set[str] = {"solutions"}
+
+# Fields that are derived elsewhere and must never be overlaid from
+# authored_content.py. ``collectorField`` is derived from
+# ``assessment/data/evidence-contract.json`` by
+# ``scripts/harvest_manifest_extension.py`` — the contract is the only record
+# of what a collector actually emits. Overlaying an authored value here is how
+# twenty controls ended up advertising a collector field no collector produced
+# (issue #257).
+_DERIVED_FIELDS: set[str] = {"collectorField"}
 
 # Per-control force replacements for fields intentionally re-authored in
 # authored_content.py. This is intentionally narrow: all controls/fields
@@ -86,7 +98,6 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "verifyIn",
         "evidenceExpected",
         "facilitatorNotes",
-        "collectorField",
     }
 }
 
@@ -174,6 +185,8 @@ def main() -> int:
             continue
         before = json.dumps(ctrl, sort_keys=True)
         for key, override_value in overlay.items():
+            if key in _DERIVED_FIELDS:
+                continue
             existing = ctrl.get(key)
             force_replace = _should_force_replace(cid, key)
             new_value = _merge_value(existing, override_value, force_replace=force_replace)
