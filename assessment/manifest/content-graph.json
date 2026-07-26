@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-25T20:53:59Z",
+  "generatedAt": "2026-07-26T16:50:13Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -169,7 +169,7 @@
       "tier": "Regulated",
       "title": "Control 1.10: Vendor Risk Management for Microsoft AI Services",
       "path": "docs/controls/pillar-1-readiness/1.10-vendor-risk-management.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "OCC Bulletin 2023-17",
         "Interagency Guidance on Third-Party Relationships (2023)",
