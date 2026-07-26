@@ -3,7 +3,12 @@
 This module contains hand-authored values for the SPA-extension fields
 that require human judgment (yesBar/partialBar/noBar, priority,
 sectorYesBar, facilitatorNotes, verifyIn, verifyPowerShell,
-evidenceExpected, collectorField).
+evidenceExpected).
+
+``collectorField`` is deliberately absent: it is derived from
+``assessment/data/evidence-contract.json`` by
+``scripts/harvest_manifest_extension.py`` and skipped by the merge, so the
+manifest can only advertise a collector field that a collector actually emits.
 
 Used by ``scripts/merge_authored_content.py`` to overlay these values
 on top of the harvested manifest, replacing TODO placeholders.
@@ -84,7 +89,6 @@ AUTHORED: dict[str, dict] = {
             "Data classification coverage percentage across Copilot-grounded sites",
             "Executive sign-off on readiness findings and go/no-go decision",
         ],
-        "collectorField": "ReadinessAssessment",
         "sectorYesBar": _sector_map(
             bank=(
                 "Readiness assessment covers all Copilot-grounded sites with "
@@ -169,7 +173,6 @@ AUTHORED: dict[str, dict] = {
             "Item-level remediation log entries for the last 30 days",
             "List of sites with EEEU/Everyone sharing flagged + dispositioned",
         ],
-        "collectorField": "DSPM_OversharingAssessment",
         "sectorYesBar": _sector_map(
             bank=(
                 "DSPM oversharing assessment runs weekly; any site with NPI "
@@ -255,7 +258,6 @@ AUTHORED: dict[str, dict] = {
             "RCD exception register for targeted site-level exclusions",
             "Documented exit plan / transition target date to long-term Purview+SAM governance",
         ],
-        "collectorField": "SPO_RestrictedSearchConfig",
         "sectorYesBar": _sector_map(
             bank=(
                 "RSS enabled with allow-list reviewed quarterly; loan-ops, "
@@ -345,7 +347,6 @@ AUTHORED: dict[str, dict] = {
             "Review cadence evidence (meeting minutes, policy revision date)",
             "Data classification alignment documentation",
         ],
-        "collectorField": "SPO_SemanticIndexScope",
         "sectorYesBar": _sector_map(
             bank=(
                 "Semantic index scoped to exclude NPI-bearing sites without "
@@ -425,7 +426,6 @@ AUTHORED: dict[str, dict] = {
             "Auto-labeling policy configuration for high-risk content types",
             "Label usage report showing coverage across Copilot-grounded sites",
         ],
-        "collectorField": "Purview_SensitivityLabelTaxonomy",
         "sectorYesBar": _sector_map(
             bank=(
                 "Label taxonomy reviewed for NPI classification; auto-labeling "
@@ -498,7 +498,6 @@ AUTHORED: dict[str, dict] = {
             "Least-privilege evidence for Copilot-grounded knowledge sources",
             "Audit cadence documentation (90-day cycle)",
         ],
-        "collectorField": "SPO_PermissionAudit",
         "sectorYesBar": _sector_map(
             bank=(
                 "Permission audit covers all NPI-bearing sites; EEEU grants "
@@ -566,7 +565,6 @@ AUTHORED: dict[str, dict] = {
             "Site lifecycle management policy with review cadence",
             "Content Management Assessment report (if available)",
         ],
-        "collectorField": "SPO_AdvancedManagement",
         "sectorYesBar": _sector_map(
             bank=(
                 "SAM enabled; RAC applied to NPI sites; site lifecycle "
@@ -637,7 +635,6 @@ AUTHORED: dict[str, dict] = {
             "Hub-association map for Copilot-grounded sites",
             "Content-type and metadata taxonomy alignment documentation",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(),
         "facilitatorNotes": {
             "ask": (
@@ -689,7 +686,6 @@ AUTHORED: dict[str, dict] = {
             "License reclamation cadence and recent reclamation evidence",
             "PAYG budget thresholds and alert configuration",
         ],
-        "collectorField": "M365Admin_LicenseAssignment",
         "sectorYesBar": _sector_map(
             bank=(
                 "License assignment aligned to bank cost centers; inactive "
@@ -741,7 +737,6 @@ AUTHORED: dict[str, dict] = {
             "Third-party plug-in/connector risk inventory and assessment",
             "Annual refresh schedule or material-change trigger documentation",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Vendor risk assessment aligned to OCC Bulletin 2023-17; "
@@ -791,7 +786,6 @@ AUTHORED: dict[str, dict] = {
             "Success metrics / KPIs for Copilot adoption",
             "Stakeholder communication log or newsletter archive",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Change management aligned to OCC Heightened Standards "
@@ -838,7 +832,6 @@ AUTHORED: dict[str, dict] = {
             "Training curriculum covering responsible AI use and firm policies",
             "Annual refresh date for training content",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Training covers GLBA NPI handling expectations for AI; "
@@ -897,7 +890,6 @@ AUTHORED: dict[str, dict] = {
             "Current extensibility inventory (agents, plug-ins, connectors, MCP)",
             "Risk classification scheme for extensibility surfaces",
         ],
-        "collectorField": "M365Admin_ExtensibilityInventory",
         "sectorYesBar": _sector_map(
             bank=(
                 "Extensibility governance aligned to OCC Bulletin 2023-17 "
@@ -954,7 +946,6 @@ AUTHORED: dict[str, dict] = {
             "Documented scan cadence (weekly, monthly, quarterly)",
             "Remediation backlog with named owners",
         ],
-        "collectorField": "SPO_ItemLevelPermissions",
         "sectorYesBar": _sector_map(
             bank=(
                 "Item-level scans cover NPI-bearing documents; overly broad "
@@ -1014,7 +1005,6 @@ AUTHORED: dict[str, dict] = {
             "Monitoring cadence documentation",
             "RAC or site lifecycle management configuration evidence",
         ],
-        "collectorField": "SPO_PermissionsDrift",
         "sectorYesBar": _sector_map(
             bank=(
                 "Drift monitoring runs weekly on NPI sites; reconciliation "
@@ -1071,7 +1061,6 @@ AUTHORED: dict[str, dict] = {
             "Tuning artifact retention policy and location",
             "Approval workflow for publishing tuned models",
         ],
-        "collectorField": "M365Admin_CopilotTuning",
         "sectorYesBar": _sector_map(
             bank=(
                 "Tuning governance aligned to SR 11-7 / OCC Bulletin 2011-12 "
@@ -1146,7 +1135,6 @@ AUTHORED: dict[str, dict] = {
             "Match-event report from Microsoft Purview portal > Activity Explorer for the last 30 days",
             "Override workflow document showing who can request and approve overrides",
         ],
-        "collectorField": "DLP_CopilotPolicies",
         "sectorYesBar": _sector_map(
             bank=(
                 "All three Copilot DLP scenarios enforced; SIT set covers ABA "
@@ -1236,7 +1224,6 @@ AUTHORED: dict[str, dict] = {
             "Label usage report from Activity Explorer for the last 30 days",
             "Evidence of label propagation to Copilot-generated outputs",
         ],
-        "collectorField": "Purview_SensitivityLabels",
         "sectorYesBar": _sector_map(
             bank=(
                 "Labels cover NPI, MNPI, and customer-financial-data "
@@ -1318,7 +1305,6 @@ AUTHORED: dict[str, dict] = {
             "Device compliance requirement configuration",
             "Location-based restriction configuration (if applicable)",
         ],
-        "collectorField": "Graph_ConditionalAccessPolicies",
         "sectorYesBar": _sector_map(
             bank=(
                 "CA policies enforce MFA + compliant device for all Copilot "
@@ -1386,7 +1372,6 @@ AUTHORED: dict[str, dict] = {
             "Segment membership review cadence documentation",
             "Ethical-wall compliance evidence for examiner response",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "IB segments separate wealth management, commercial lending, "
@@ -1447,7 +1432,6 @@ AUTHORED: dict[str, dict] = {
             "Review cadence for grounding scope (quarterly or better)",
             "Approval records for adding new grounding sources",
         ],
-        "collectorField": "SPO_GroundingScope",
         "sectorYesBar": _sector_map(
             bank=(
                 "Grounding scope excludes NPI-bearing sites without DLP "
@@ -1505,7 +1489,6 @@ AUTHORED: dict[str, dict] = {
             "DLP policy evidence showing SIT-based web-search restriction",
             "Audit log review cadence for web-search usage",
         ],
-        "collectorField": "M365Admin_WebSearchSettings",
         "sectorYesBar": _sector_map(
             bank=(
                 "Web search disabled for users handling NPI; enabled only "
@@ -1568,7 +1551,6 @@ AUTHORED: dict[str, dict] = {
             "Cross-border data flow map and approval records",
             "Data sovereignty compliance documentation",
         ],
-        "collectorField": "M365Admin_DataResidency",
         "sectorYesBar": _sector_map(
             bank=(
                 "Data residency documented per GLBA §501(b); cross-border "
@@ -1626,7 +1608,6 @@ AUTHORED: dict[str, dict] = {
             "Encryption-at-rest configuration verification",
             "Cryptographic standards alignment documentation",
         ],
-        "collectorField": "Graph_EncryptionSettings",
         "sectorYesBar": _sector_map(
             bank=(
                 "TLS 1.2+ enforced; Customer Key evaluated per FFIEC "
@@ -1682,7 +1663,6 @@ AUTHORED: dict[str, dict] = {
             "Alert review cadence documentation",
             "SOC integration evidence for Copilot-related alerts",
         ],
-        "collectorField": "Defender_CopilotSessionPolicies",
         "sectorYesBar": _sector_map(
             bank=(
                 "Session policies monitor exfiltration and anomalous usage "
@@ -1740,7 +1720,6 @@ AUTHORED: dict[str, dict] = {
             "Recent alert review log (last 30 days)",
             "Integration with HR/legal escalation workflows",
         ],
-        "collectorField": "Purview_InsiderRiskPolicies",
         "sectorYesBar": _sector_map(
             bank=(
                 "Insider Risk policies include Copilot data exfiltration "
@@ -1804,7 +1783,6 @@ AUTHORED: dict[str, dict] = {
             "External sharing restriction evidence",
             "Sharing activity audit log entries for Pages",
         ],
-        "collectorField": "SPO_PagesSharing",
         "sectorYesBar": _sector_map(
             bank=(
                 "Pages external sharing disabled; sensitivity labels "
@@ -1865,7 +1843,6 @@ AUTHORED: dict[str, dict] = {
             "Entra access review configuration for guest accounts",
             "Sharing activity monitoring report from audit logs",
         ],
-        "collectorField": "SPO_ExternalSharing",
         "sectorYesBar": _sector_map(
             bank=(
                 "External sharing disabled for NPI sites; guest access "
@@ -1944,7 +1921,6 @@ AUTHORED: dict[str, dict] = {
             "Data-flow assessment for connectors accessing regulated data",
             "Documented review cadence and most recent review date",
         ],
-        "collectorField": "Graph_PluginConnectorInventory",
         "sectorYesBar": _sector_map(
             bank=(
                 "Connector risk classification aligned to OCC Bulletin "
@@ -2023,7 +1999,6 @@ AUTHORED: dict[str, dict] = {
             "Data-source scope documentation per agent",
             "Most recent inventory review date",
         ],
-        "collectorField": "Graph_DeclarativeAgents",
         "sectorYesBar": _sector_map(
             bank=(
                 "Agent governance aligned to OCC Bulletin 2023-17; each "
@@ -2098,7 +2073,6 @@ AUTHORED: dict[str, dict] = {
             "Private Link configuration (if applicable)",
             "Network security policy alignment documentation",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Named locations restrict Copilot to corporate network / "
@@ -2154,7 +2128,6 @@ AUTHORED: dict[str, dict] = {
             "Data-flow assessment per endpoint",
             "Review cadence and most recent review date",
         ],
-        "collectorField": "Graph_MCPGovernance",
         "sectorYesBar": _sector_map(
             bank=(
                 "MCP endpoints assessed per OCC Bulletin 2023-17 third-party "
@@ -2209,7 +2182,6 @@ AUTHORED: dict[str, dict] = {
             "MCP federated server attestation documentation",
             "Periodic review cadence and most recent review date",
         ],
-        "collectorField": "Graph_CrossTenantFederation",
         "sectorYesBar": _sector_map(
             bank=(
                 "Cross-tenant federation assessed per OCC Bulletin 2023-17; "
@@ -2280,7 +2252,6 @@ AUTHORED: dict[str, dict] = {
             "SIEM ingestion connector configuration (e.g., Sentinel M365 Defender connector)",
             "WORM/external archive runbook with destination and cadence",
         ],
-        "collectorField": "Audit_UALCopilotInteraction",
         "sectorYesBar": _sector_map(
             bank=(
                 "UAL on; CopilotInteraction + CopilotAgentManagement events "
@@ -2379,7 +2350,6 @@ AUTHORED: dict[str, dict] = {
             "Retention label configuration for Copilot content types",
             "Verification that Copilot Pages/Notebooks are in retention scope",
         ],
-        "collectorField": "Purview_RetentionPolicies",
         "sectorYesBar": _sector_map(
             bank=(
                 "Retention policies cover Copilot interactions with 7-year "
@@ -2466,7 +2436,6 @@ AUTHORED: dict[str, dict] = {
             "eDiscovery readiness documentation for Copilot",
             "Confirmation that Copilot Pages/Notebooks are in eDiscovery scope",
         ],
-        "collectorField": "Purview_eDiscoveryCases",
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "eDiscovery verified for Copilot content per FINRA Rule 4511; "
@@ -2527,7 +2496,6 @@ AUTHORED: dict[str, dict] = {
             "Escalation path documentation for policy matches",
             "Coverage confirmation for Teams and Outlook Copilot interactions",
         ],
-        "collectorField": "Purview_CommCompliancePolicies",
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "Communication compliance covers registered-rep Copilot "
@@ -2588,7 +2556,6 @@ AUTHORED: dict[str, dict] = {
             "FINRA 2210 communication type coverage documentation",
             "Recent review log showing principal approvals",
         ],
-        "collectorField": "Purview_FINRA2210Compliance",
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "All Copilot-drafted retail and institutional communications "
@@ -2641,7 +2608,6 @@ AUTHORED: dict[str, dict] = {
             "Documented review cadence and recent review evidence",
             "Escalation path for supervisory concerns about Copilot outputs",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "Designated supervisory principal per FINRA Rule 3110; WSPs "
@@ -2691,7 +2657,6 @@ AUTHORED: dict[str, dict] = {
             "Evidence trail documentation for Copilot regulatory reports",
             "SOX attestation evidence (if applicable to ICFR)",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "SOX §§302/404 attestations address Copilot where applicable "
@@ -2748,7 +2713,6 @@ AUTHORED: dict[str, dict] = {
             "Ongoing monitoring plan for model performance",
             "Model inventory entry for Copilot (if applicable)",
         ],
-        "collectorField": "Compliance_ModelRiskReview",
         "sectorYesBar": _sector_map(
             bank=(
                 "MRM review aligned to SR 11-7 / OCC Bulletin 2011-12; "
@@ -2836,7 +2800,6 @@ AUTHORED: dict[str, dict] = {
             "Bias testing and safety evaluation results",
             "Responsible-AI principles adoption evidence",
         ],
-        "collectorField": "Compliance_GenAIGovernance",
         "sectorYesBar": _sector_map(
             bank=(
                 "GenAI governance aligned to NIST AI RMF 1.0; addresses "
@@ -2904,7 +2867,6 @@ AUTHORED: dict[str, dict] = {
             "SEC Marketing Rule alignment documentation",
             "Evidence of disclosure usage in recent external communications",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "AI disclosure aligned to FINRA Regulatory Notice 24-09 "
@@ -2978,7 +2940,6 @@ AUTHORED: dict[str, dict] = {
             "SEC Reg S-P alignment documentation for Copilot",
             "GLBA §501(b) safeguards review covering Copilot",
         ],
-        "collectorField": "Purview_RegSP_PrivacyPolicies",
         "sectorYesBar": _sector_map(
             bank=(
                 "Privacy controls reviewed for Copilot NPI processing per "
@@ -3063,7 +3024,6 @@ AUTHORED: dict[str, dict] = {
             "Retrievability test results for examiner response readiness",
             "Retention duration aligned to SEC Rule 17a-4 / FINRA 4511",
         ],
-        "collectorField": "Purview_BooksAndRecords",
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "Copilot interactions captured per Rule 17a-4(f)(2) where "
@@ -3115,7 +3075,6 @@ AUTHORED: dict[str, dict] = {
             "Audit attestation template aligned to regulatory requirements",
             "Collection schedule and most recent run date",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Evidence collection runbook aligned to SOX §§302/404 "
@@ -3164,7 +3123,6 @@ AUTHORED: dict[str, dict] = {
             "Coverage of Information Security, Outsourcing, and Architecture sections",
             "Review date and next scheduled review",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "FFIEC alignment covers Information Security Booklet "
@@ -3226,7 +3184,6 @@ AUTHORED: dict[str, dict] = {
             "Provenance metadata strategy for Copilot-generated content",
             "Section-level retention granularity documentation",
         ],
-        "collectorField": "Purview_PagesRetention",
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "Pages/Notebooks retention aligned to FINRA Rule 4511 and "
@@ -3302,7 +3259,6 @@ AUTHORED: dict[str, dict] = {
             "Change-management record (ticket / PR) for the most recent Copilot setting toggle",
             "Documented review cadence (monthly / quarterly) with evidence-pack template",
         ],
-        "collectorField": "M365Admin_CopilotSettings",
         "sectorYesBar": _sector_map(
             bank=(
                 "AI Administrator role used; Cloud Policy locked-down for "
@@ -3379,7 +3335,6 @@ AUTHORED: dict[str, dict] = {
             "Transcription retention policy aligned to regulatory requirements",
             "Governance policy document for Copilot in meetings",
         ],
-        "collectorField": "Teams_MeetingPolicies",
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "Meeting transcriptions retained per FINRA Rule 4511 and "
@@ -3441,7 +3396,6 @@ AUTHORED: dict[str, dict] = {
             "Governance document covering call summarization and analytics",
             "Queue configuration with Copilot feature settings",
         ],
-        "collectorField": "Teams_CallingPolicies",
         "sectorYesBar": _sector_map(
             broker_dealer=(
                 "Call recordings retained per FINRA Rule 4511 and SEC "
@@ -3499,7 +3453,6 @@ AUTHORED: dict[str, dict] = {
             "Approved user group scoping for Copilot features",
             "Governance review cadence and most recent review date",
         ],
-        "collectorField": "Viva_CopilotSettings",
         "sectorYesBar": _sector_map(
             bank=(
                 "Viva Insights privacy controls aligned to GLBA §501(b); "
@@ -3572,7 +3525,6 @@ AUTHORED: dict[str, dict] = {
             "Permission evidence for Reports.Read.All and supported delegated role or app consent",
             "Documented caveats for beta API behavior, national-cloud availability (global only), and unlicensed Copilot Chat data exclusion",
         ],
-        "collectorField": "M365Admin_UsageAnalytics",
         "sectorYesBar": _sector_map(
             bank=(
                 "Usage analytics reported monthly to technology governance "
@@ -3627,7 +3579,6 @@ AUTHORED: dict[str, dict] = {
             "Review cadence documentation and most recent review date",
             "Statistical-limitation disclaimers in leadership reports",
         ],
-        "collectorField": "Viva_CopilotImpact",
         "sectorYesBar": _sector_map(),
         "facilitatorNotes": {
             "ask": (
@@ -3673,7 +3624,6 @@ AUTHORED: dict[str, dict] = {
             "Product owner assignment for feedback triage",
             "Most recent feedback review summary",
         ],
-        "collectorField": "M365Admin_FeedbackSettings",
         "sectorYesBar": _sector_map(
             bank=(
                 "Feedback data governed per GLBA §501(b); reviewed monthly "
@@ -3725,7 +3675,6 @@ AUTHORED: dict[str, dict] = {
             "PAYG cost tracking dashboard with budget alerts",
             "Chargeback/showback documentation",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Cost allocation aligned to bank cost centers per OCC "
@@ -3772,7 +3721,6 @@ AUTHORED: dict[str, dict] = {
             "Reporting path documentation (internal + regulatory if required)",
             "Root-cause-analysis template and recent RCA examples",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Incident response aligned to OCC Heightened Standards; "
@@ -3821,7 +3769,6 @@ AUTHORED: dict[str, dict] = {
             "Most recent BC/DR test results (within 12 months)",
             "Copilot dependency assessment for critical business processes",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "BC/DR plan aligned to OCC Heightened Standards and FFIEC "
@@ -3883,7 +3830,6 @@ AUTHORED: dict[str, dict] = {
             "Recent alert log showing Copilot detection rule activity",
             "Collector output showing CopilotActivity query status for RecordType CopilotInteraction (records_found / no_records / unavailable / query failure)",
         ],
-        "collectorField": "Sentinel_CopilotActivityCollection",
         "sectorYesBar": _sector_map(
             bank=(
                 "Sentinel rules cover Copilot data exfiltration and "
@@ -3942,7 +3888,6 @@ AUTHORED: dict[str, dict] = {
             "Risk review documentation for recent feature changes",
             "Approval records for tenant-managed feature enablement",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Change management aligned to SOX IT general control "
@@ -4000,7 +3945,6 @@ AUTHORED: dict[str, dict] = {
             "Operational monitoring dashboard for agent health and usage",
             "Error rate tracking and alerting configuration",
         ],
-        "collectorField": "M365Admin_AgentOperations",
         "sectorYesBar": _sector_map(
             bank=(
                 "Agent operations governance aligned to OCC Bulletin 2023-17 "
@@ -4072,7 +4016,6 @@ AUTHORED: dict[str, dict] = {
             "Agent inventory with lifecycle stage tracking",
             "Retirement/deprecation documentation for decommissioned agents",
         ],
-        "collectorField": "M365Admin_AgentLifecycle",
         "sectorYesBar": _sector_map(
             bank=(
                 "Lifecycle governance aligned to OCC Bulletin 2023-17 and "
@@ -4152,7 +4095,6 @@ AUTHORED: dict[str, dict] = {
             "Approved plugin, uploaded package, and custom-skill inventory with owner",
             "Purview coverage evidence (audit/eDiscovery/DLP alignment) and gap log",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Cowork enablement (billing scope, discovery, model/browser toggles) "
@@ -4256,7 +4198,6 @@ AUTHORED: dict[str, dict] = {
             "Boundary map showing M365-protected data vs GitHub/local/third-party processing surfaces",
             "Known unsupported evidence register (local automation artifacts, local MCP output, third-party inference telemetry)",
         ],
-        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Scout pilot is approved as an endpoint and third-party-risk change "
