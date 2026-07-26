@@ -330,14 +330,15 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "SharePoint admin center",
-                "path": "Settings > Search > Content Processing",
+                "path": "Sites > Active sites > [site] > Settings > Restrict content from Microsoft 365 Copilot",
                 "url": "https://admin.microsoft.com/sharepoint",
             },
         ],
         "verifyPowerShell": (
             "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; "
-            "Get-SPOSite -Limit ALL | Select-Object Url, DenyAddAndCustomizePages, "
-            "SearchBoxInNavBar"
+            "Get-SPOSite -Identity <site-url> | Select-Object Url, "
+            "RestrictContentOrgWideSearch; "
+            "Start-SPORestrictedContentDiscoverabilityReport"
         ),
         "evidenceExpected": [
             "Documented semantic-index scope policy with inclusion/exclusion criteria",
