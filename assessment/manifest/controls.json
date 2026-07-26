@@ -194,19 +194,31 @@
     "collection_methods": [
       "SharePoint_Graph"
     ],
-    "checks": [],
+    "checks": [
+      {
+        "check_id": "1.3-grounding-sources-approved",
+        "description": "Verify all SharePoint sites used for Copilot grounding are in the approved allow-list (Restricted SharePoint Search enabled).",
+        "api_call": "Get-PnPSiteSearchQueryResults",
+        "pass_condition": "grounding_sources_approved",
+        "zone_required": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
     "zone_thresholds": {
       "zone1": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 1
       },
       "zone2": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 2
       },
       "zone3": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 4
       }
     },
     "manual_question": null,
@@ -564,7 +576,7 @@
     "pillar": 1,
     "pillar_name": "Readiness & Assessment",
     "source_file": "docs/controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "SharePoint_Graph"
     ],
@@ -583,7 +595,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are SharePoint Advanced Management controls (RCD, RAC, site lifecycle) enabled and configured for Copilot-grounded sites?",
     "name": "SharePoint Advanced Management Readiness for Copilot",
     "zonesApplicable": [
       1,
@@ -718,7 +730,7 @@
     "pillar": 1,
     "pillar_name": "Readiness & Assessment",
     "source_file": "docs/controls/pillar-1-readiness/1.9-license-planning.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "M365Admin"
     ],
@@ -737,7 +749,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Copilot license assignments reviewed against the entitlement plan and cost-allocation policies on a documented cadence?",
     "name": "License Planning and Copilot Assignment Strategy",
     "zonesApplicable": [
       1,
@@ -1359,7 +1371,7 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.1-dlp-policies-for-copilot.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "Purview_PowerShell"
     ],
@@ -1378,7 +1390,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are DLP policies for Copilot interactions configured, tested, and reviewed on a documented cadence?",
     "name": "DLP Policies for Microsoft 365 Copilot Interactions",
     "zonesApplicable": [
       1,
@@ -1449,7 +1461,7 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.2-sensitivity-labels-classification.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "Purview_PowerShell"
     ],
@@ -1468,7 +1480,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are sensitivity labels applied to Copilot-grounded content and label coverage reviewed on a documented cadence?",
     "name": "Sensitivity Labels and Copilot Content Classification",
     "zonesApplicable": [
       1,
@@ -1535,7 +1547,7 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.3-conditional-access-policies.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "Graph_API"
     ],
@@ -1554,7 +1566,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Conditional Access policies for Copilot workloads configured and reviewed on a documented cadence?",
     "name": "Conditional Access Policies for Copilot Workloads",
     "zonesApplicable": [
       1,
@@ -1617,10 +1629,8 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.4-information-barriers.md",
-    "automation": "full",
-    "collection_methods": [
-      "Purview_PowerShell"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -1636,7 +1646,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Information Barrier policies configured and tested for Copilot content surfacing across ethical-wall segments?",
     "name": "Information Barriers for Copilot (Chinese Wall)",
     "zonesApplicable": [
       1,
@@ -1786,7 +1796,7 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.6-web-search-controls.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "M365Admin"
     ],
@@ -1805,7 +1815,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Is Copilot web search configured per the organization's risk appetite and reviewed on a documented cadence?",
     "name": "Copilot Web Search and Web Grounding Controls",
     "zonesApplicable": [
       1,
@@ -1871,7 +1881,7 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.7-data-residency.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "M365Admin",
       "Graph_API"
@@ -1891,7 +1901,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Microsoft 365 Copilot data residency settings configured and verified against regulatory requirements?",
     "name": "Data Residency and Cross-Border Data Flow Governance",
     "zonesApplicable": [
       1,
@@ -1957,7 +1967,7 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.8-encryption.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "Graph_API",
       "Purview_PowerShell"
@@ -1977,7 +1987,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are encryption configurations for Copilot-processed data reviewed and verified on a documented cadence?",
     "name": "Encryption (Data in Transit and at Rest)",
     "zonesApplicable": [
       1,
@@ -2202,7 +2212,7 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.11-copilot-pages-security.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "M365Admin",
       "SharePoint_Graph"
@@ -2222,7 +2232,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Copilot Pages security controls configured to prevent unauthorized sharing and reviewed on a documented cadence?",
     "name": "Copilot Pages Security and Sharing Controls",
     "zonesApplicable": [
       1,
@@ -2293,19 +2303,31 @@
     "collection_methods": [
       "SharePoint_Graph"
     ],
-    "checks": [],
+    "checks": [
+      {
+        "check_id": "2.12-no-external-sharing-on-grounding",
+        "description": "Verify no Copilot grounding sites have unrestricted external sharing enabled.",
+        "api_call": "Get-PnPTenantSite",
+        "pass_condition": "no_external_sharing_on_grounding",
+        "zone_required": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
     "zone_thresholds": {
       "zone1": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 1
       },
       "zone2": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 2
       },
       "zone3": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 4
       }
     },
     "manual_question": null,
@@ -2538,10 +2560,8 @@
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.15-network-security.md",
-    "automation": "full",
-    "collection_methods": [
-      "Graph_API"
-    ],
+    "automation": "manual",
+    "collection_methods": [],
     "checks": [],
     "zone_thresholds": {
       "zone1": {
@@ -2557,7 +2577,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are network security controls (Private Link, VPN, conditional access named locations) configured for Copilot workloads per the organization's network security policy?",
     "name": "Network Security and Private Connectivity",
     "zonesApplicable": [
       1,
@@ -2781,19 +2801,31 @@
     "collection_methods": [
       "Purview_PowerShell"
     ],
-    "checks": [],
+    "checks": [
+      {
+        "check_id": "3.1-audit-log-enabled",
+        "description": "Verify Unified Audit Log ingestion is enabled at the tenant level.",
+        "api_call": "Get-AdminAuditLogConfig",
+        "pass_condition": "audit_log_enabled",
+        "zone_required": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
     "zone_thresholds": {
       "zone1": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 1
       },
       "zone2": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 2
       },
       "zone3": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 4
       }
     },
     "manual_question": null,
@@ -2869,19 +2901,31 @@
     "collection_methods": [
       "Purview_PowerShell"
     ],
-    "checks": [],
+    "checks": [
+      {
+        "check_id": "3.2-copilot-retention-policy-exists",
+        "description": "Verify a Microsoft Purview retention policy covering Copilot interaction workloads is configured.",
+        "api_call": "Get-RetentionCompliancePolicy",
+        "pass_condition": "copilot_retention_policy_exists",
+        "zone_required": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
     "zone_thresholds": {
       "zone1": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 1
       },
       "zone2": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 2
       },
       "zone3": {
-        "min_checks_passed": 0,
-        "maturity_score": 0
+        "min_checks_passed": 1,
+        "maturity_score": 4
       }
     },
     "manual_question": null,
@@ -2952,7 +2996,7 @@
     "pillar": 3,
     "pillar_name": "Compliance & Records",
     "source_file": "docs/controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "Purview_PowerShell"
     ],
@@ -2971,7 +3015,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are eDiscovery cases and holds configured to capture Copilot interaction content when legally required?",
     "name": "eDiscovery for Copilot-Generated Content",
     "zonesApplicable": [
       1,
@@ -4028,7 +4072,7 @@
     "pillar": 4,
     "pillar_name": "Operations & Lifecycle",
     "source_file": "docs/controls/pillar-4-operations/4.1-admin-settings-feature-management.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "M365Admin"
     ],
@@ -4047,7 +4091,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Microsoft 365 Copilot admin settings reviewed and configured per the organization's governance policy on a documented cadence?",
     "name": "Copilot Admin Settings and Feature Management",
     "zonesApplicable": [
       1,
@@ -4121,7 +4165,7 @@
     "pillar": 4,
     "pillar_name": "Operations & Lifecycle",
     "source_file": "docs/controls/pillar-4-operations/4.2-teams-meetings-governance.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "Teams"
     ],
@@ -4140,7 +4184,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Copilot meeting recording and transcript controls configured per the organization's Teams meetings governance policy?",
     "name": "Copilot in Teams Meetings Governance",
     "zonesApplicable": [
       1,
@@ -4205,7 +4249,7 @@
     "pillar": 4,
     "pillar_name": "Operations & Lifecycle",
     "source_file": "docs/controls/pillar-4-operations/4.3-teams-phone-queues.md",
-    "automation": "full",
+    "automation": "partial",
     "collection_methods": [
       "Teams"
     ],
@@ -4224,7 +4268,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": null,
+    "manual_question": "Are Copilot controls for Teams Phone queues configured per the organization's voice governance policy?",
     "name": "Copilot in Teams Phone and Queues Governance",
     "zonesApplicable": [
       1,

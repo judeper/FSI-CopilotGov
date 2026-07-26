@@ -290,6 +290,23 @@ AUTHORED: dict[str, dict] = {
             ),
             "timeBudgetMinutes": 6,
         },
+        "checks": [
+            {
+                "check_id": "1.3-grounding-sources-approved",
+                "description": (
+                    "Verify all SharePoint sites used for Copilot grounding are "
+                    "in the approved allow-list (Restricted SharePoint Search enabled)."
+                ),
+                "api_call": "Get-PnPSiteSearchQueryResults",
+                "pass_condition": "grounding_sources_approved",
+                "zone_required": [1, 2, 3],
+            }
+        ],
+        "zone_thresholds": {
+            "zone1": {"min_checks_passed": 1, "maturity_score": 1},
+            "zone2": {"min_checks_passed": 1, "maturity_score": 2},
+            "zone3": {"min_checks_passed": 1, "maturity_score": 4},
+        },
     },
     # ---------------------------------------------------------------
     # 1.4 — Semantic Index Governance and Scope Control
@@ -1369,7 +1386,7 @@ AUTHORED: dict[str, dict] = {
             "Segment membership review cadence documentation",
             "Ethical-wall compliance evidence for examiner response",
         ],
-        "collectorField": "Graph_InformationBarriers",
+        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "IB segments separate wealth management, commercial lending, "
@@ -1872,6 +1889,23 @@ AUTHORED: dict[str, dict] = {
             ),
             "timeBudgetMinutes": 6,
         },
+        "checks": [
+            {
+                "check_id": "2.12-no-external-sharing-on-grounding",
+                "description": (
+                    "Verify no Copilot grounding sites have unrestricted external "
+                    "sharing enabled."
+                ),
+                "api_call": "Get-PnPTenantSite",
+                "pass_condition": "no_external_sharing_on_grounding",
+                "zone_required": [1, 2, 3],
+            }
+        ],
+        "zone_thresholds": {
+            "zone1": {"min_checks_passed": 1, "maturity_score": 1},
+            "zone2": {"min_checks_passed": 1, "maturity_score": 2},
+            "zone3": {"min_checks_passed": 1, "maturity_score": 4},
+        },
     },
     # ---------------------------------------------------------------
     # 2.13 — Plugin and Graph Connector Security Governance
@@ -2064,7 +2098,7 @@ AUTHORED: dict[str, dict] = {
             "Private Link configuration (if applicable)",
             "Network security policy alignment documentation",
         ],
-        "collectorField": "Graph_NetworkSecurity",
+        "collectorField": "",
         "sectorYesBar": _sector_map(
             bank=(
                 "Named locations restrict Copilot to corporate network / "
@@ -2289,6 +2323,23 @@ AUTHORED: dict[str, dict] = {
             ),
             "timeBudgetMinutes": 8,
         },
+        "checks": [
+            {
+                "check_id": "3.1-audit-log-enabled",
+                "description": (
+                    "Verify Unified Audit Log ingestion is enabled at the "
+                    "tenant level."
+                ),
+                "api_call": "Get-AdminAuditLogConfig",
+                "pass_condition": "audit_log_enabled",
+                "zone_required": [1, 2, 3],
+            }
+        ],
+        "zone_thresholds": {
+            "zone1": {"min_checks_passed": 1, "maturity_score": 1},
+            "zone2": {"min_checks_passed": 1, "maturity_score": 2},
+            "zone3": {"min_checks_passed": 1, "maturity_score": 4},
+        },
     },
     # ---------------------------------------------------------------
     # 3.2 — Data Retention Policies for Copilot Interactions
@@ -2359,6 +2410,23 @@ AUTHORED: dict[str, dict] = {
                 "and duration meets regulatory requirements."
             ),
             "timeBudgetMinutes": 8,
+        },
+        "checks": [
+            {
+                "check_id": "3.2-copilot-retention-policy-exists",
+                "description": (
+                    "Verify a Microsoft Purview retention policy covering "
+                    "Copilot interaction workloads is configured."
+                ),
+                "api_call": "Get-RetentionCompliancePolicy",
+                "pass_condition": "copilot_retention_policy_exists",
+                "zone_required": [1, 2, 3],
+            }
+        ],
+        "zone_thresholds": {
+            "zone1": {"min_checks_passed": 1, "maturity_score": 1},
+            "zone2": {"min_checks_passed": 1, "maturity_score": 2},
+            "zone3": {"min_checks_passed": 1, "maturity_score": 4},
         },
     },
     # ---------------------------------------------------------------

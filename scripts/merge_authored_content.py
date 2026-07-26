@@ -50,6 +50,28 @@ _REPLACE_FIELDS: set[str] = {"solutions"}
 # authored_content.py. This is intentionally narrow: all controls/fields
 # outside these sets keep the default preservation behavior.
 _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
+    "1.3": {
+        # Authored checks[] wires the grounding_sources_approved evaluator;
+        # zone_thresholds must be force-replaced because the generated value
+        # is based on 0 checks and would not update without force-replace.
+        "checks",
+        "zone_thresholds",
+    },
+    "2.12": {
+        # Authored checks[] wires the no_external_sharing_on_grounding evaluator.
+        "checks",
+        "zone_thresholds",
+    },
+    "3.1": {
+        # Authored checks[] wires the audit_log_enabled evaluator.
+        "checks",
+        "zone_thresholds",
+    },
+    "3.2": {
+        # Authored checks[] wires the copilot_retention_policy_exists evaluator.
+        "checks",
+        "zone_thresholds",
+    },
     "3.8a": {
         # The harvest fallback fabricates a conventional /3.8a/portal-walkthrough/
         # route even though no such playbook file exists. Force the authored
