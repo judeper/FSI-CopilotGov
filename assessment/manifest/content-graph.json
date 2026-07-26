@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-26T16:50:13Z",
+  "generatedAt": "2026-07-26T20:47:35Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -183,7 +183,7 @@
       "tier": "Recommended",
       "title": "Control 1.11: Organizational Change Management and Adoption Planning",
       "path": "docs/controls/pillar-1-readiness/1.11-change-management-adoption.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "FFIEC IT Handbook (Management)",
         "Interagency AI Guidance (2023)",
