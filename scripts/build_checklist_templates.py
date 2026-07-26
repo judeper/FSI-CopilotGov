@@ -1,9 +1,15 @@
 """Generate FSI-CopilotGov Excel checklist templates and governance dashboard.
 
-Reads ``assessment/manifest/controls.json`` (and, when present,
-``docs/javascripts/assessment-data.json`` for tier/verification enrichment)
-and emits role-specific ``.xlsx`` checklists plus a governance maturity
-dashboard into ``assessment/templates/``.
+Reads ``assessment/manifest/controls.json`` for control content and sources the
+governance-maturity dashboard's tier columns from
+``docs/javascripts/assessment-data.json``. That SPA data file is gitignored and
+absent on a clean checkout, so when it is missing this script rebuilds the tier
+data in-memory via ``extract_assessment_data.build_output`` (the same production
+logic that writes the published file). The documented standalone command below
+therefore works on a clean checkout without a separate extractor step, while the
+no-degradation guard still fails loudly before writing if the canonical source
+is absent/empty/incomplete. Emits role-specific ``.xlsx`` checklists plus a
+governance maturity dashboard into ``assessment/templates/``.
 
 The MkDocs hook ``scripts/hooks/copy_assessment_data.py`` publishes the
 files to ``site/assessment/templates/`` so the download links in
@@ -16,7 +22,6 @@ Usage::
 from __future__ import annotations
 
 import json
-import os
 import re
 import sys
 from pathlib import Path
@@ -183,10 +188,24 @@ def evidence_text(manifest_control: dict, spa_control: dict | None) -> str:
     return "; ".join(items)
 
 
+DASHBOARD_TIERS = ("baseline", "recommended", "regulated")
+
+
+def dashboard_boilerplate(level: str) -> str:
+    """Generic placeholder for a tier that has no SPA-derived rationale.
+
+    Appearing in a *generated* dashboard means SPA data was absent or
+    incomplete at build time; ``require_complete_dashboard_spa`` treats that as
+    a hard error rather than let 192 curated tier cells silently flatten
+    (regression from issue #255 / PR #356).
+    """
+    return f"All {level.title()} requirements met (see control doc)."
+
+
 def yes_bar(spa_control: dict | None, level: str) -> str:
     """Derive a yes-bar rationale line for a tier from SPA levelRequirements."""
     if not spa_control:
-        return f"All {level.title()} requirements met (see control doc)."
+        return dashboard_boilerplate(level)
     lr = spa_control.get("levelRequirements", {}).get(level) or {}
     rationale = lr.get("rationale")
     if rationale:
@@ -194,7 +213,7 @@ def yes_bar(spa_control: dict | None, level: str) -> str:
     reqs = lr.get("requirements") or []
     if reqs:
         return reqs[0].strip()
-    return f"All {level.title()} requirements met (see control doc)."
+    return dashboard_boilerplate(level)
 
 
 def build_role_to_ids(manifest: list[dict]) -> dict[str, list[str]]:
@@ -393,20 +412,137 @@ def build_dashboard(out_path: Path, manifest: list[dict],
     return len(controls)
 
 
+def _rel(path: Path) -> str:
+    try:
+        return str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
+
+
+def dashboard_boilerplate_cells(manifest: list[dict],
+                                spa: dict[str, dict]) -> list[tuple[str, str]]:
+    """Return ``[(control_id, tier)]`` whose dashboard yes-bar would fall back
+    to the generic boilerplate placeholder — i.e. cells that would silently
+    lose curated tier content because SPA data is missing or incomplete."""
+    offenders: list[tuple[str, str]] = []
+    for c in manifest:
+        spa_c = spa.get(c["id"])
+        for level in DASHBOARD_TIERS:
+            if yes_bar(spa_c, level) == dashboard_boilerplate(level):
+                offenders.append((c["id"], level))
+    return offenders
+
+
+def _require_complete_spa_data(manifest: list[dict],
+                               spa: dict[str, dict],
+                               *, source: str) -> None:
+    """Fail *before* writing when resolved SPA tier data is empty/unparseable or
+    incomplete. Shared by the file-based guard and the in-memory (clean-checkout)
+    rebuild path so neither can silently degrade the 192 curated tier cells.
+
+    ``source`` describes where ``spa`` came from (a file path or the in-memory
+    extractor) and is used only in the error message."""
+    if not spa:
+        raise SystemExit(
+            "ERROR: cannot build governance dashboard — SPA data at "
+            f"{source} is empty or unparseable.\n"
+            "       Regenerate it:  python scripts/extract_assessment_data.py"
+        )
+    offenders = dashboard_boilerplate_cells(manifest, spa)
+    if offenders:
+        preview = ", ".join(f"{cid}[{tier}]" for cid, tier in offenders[:8])
+        more = "" if len(offenders) <= 8 else f" (+{len(offenders) - 8} more)"
+        raise SystemExit(
+            "ERROR: refusing to build governance dashboard — SPA data is "
+            f"incomplete for {len(offenders)} tier cell(s) that would degrade "
+            f"to generic boilerplate: {preview}{more}.\n"
+            "       Regenerate SPA data:  python scripts/extract_assessment_data.py"
+        )
+
+
+def require_complete_dashboard_spa(manifest: list[dict],
+                                   spa: dict[str, dict],
+                                   spa_path: Path = SPA_DATA) -> None:
+    """File-based dashboard guard: fail loudly *before* generating the dashboard
+    when the SPA data file is absent, then delegate the empty/incomplete checks
+    to :func:`_require_complete_spa_data`.
+
+    The governance-maturity dashboard's three tier columns are sourced solely
+    from ``docs/javascripts/assessment-data.json``. That file is untracked and
+    absent in a clean checkout; :func:`resolve_dashboard_spa` rebuilds it
+    in-memory in that case, so this hard file guard remains for the file path and
+    for callers/tests that pass an explicit ``spa_path``. Role checklists do not
+    consume SPA tier data, so this guard is scoped to the dashboard only."""
+    if not spa_path.exists():
+        raise SystemExit(
+            "ERROR: cannot build governance dashboard — SPA data is absent at "
+            f"{_rel(spa_path)}.\n"
+            "       Generate it first:  python scripts/extract_assessment_data.py"
+        )
+    _require_complete_spa_data(manifest, spa, source=_rel(spa_path))
+
+
+def load_spa_from_extractor() -> dict[str, dict]:
+    """Rebuild the SPA control map in-memory via the canonical extractor.
+
+    ``docs/javascripts/assessment-data.json`` is gitignored and absent on a
+    clean checkout, so this lets the documented standalone command
+    ``python scripts/build_checklist_templates.py`` produce a complete dashboard
+    without a separate ``extract_assessment_data.py`` invocation. It reuses the
+    same production ``build_output`` logic that writes the published file, so the
+    result is byte-for-byte equivalent to loading the file. Returns ``{}`` when
+    the extractor cannot produce controls (its own validation failed), so the
+    caller's guard fails before writing rather than degrading the dashboard."""
+    scripts_dir = str(Path(__file__).resolve().parent)
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    try:
+        import extract_assessment_data as ead
+    except ImportError:
+        return {}
+    data = ead.build_output()
+    if not data:
+        return {}
+    return {c["id"]: c for c in data.get("controls", []) if c.get("id")}
+
+
+def resolve_dashboard_spa(manifest: list[dict]) -> tuple[dict[str, dict], str]:
+    """Resolve SPA tier data for the dashboard and validate it before writing.
+
+    Prefers the published ``docs/javascripts/assessment-data.json``; on a clean
+    checkout (that file is gitignored/absent) rebuilds the data in-memory via
+    :func:`load_spa_from_extractor`. Either way the no-degradation guard runs, so
+    an absent/empty/incomplete canonical source fails *before* any workbook is
+    written. Returns ``(spa, source_label)``."""
+    spa = load_spa()
+    if spa or SPA_DATA.exists():
+        # File present (or present-but-unusable): keep the strict file guard,
+        # which surfaces empty/unparseable/incomplete published data.
+        require_complete_dashboard_spa(manifest, spa)
+        return spa, _rel(SPA_DATA)
+    # Clean checkout: the SPA file is gitignored and absent. Rebuild the tier
+    # data canonically in-memory, then validate it before writing.
+    spa = load_spa_from_extractor()
+    source = "extract_assessment_data.build_output() (in-memory)"
+    _require_complete_spa_data(manifest, spa, source=source)
+    return spa, source
+
+
 def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     DOCS_MIRROR.mkdir(parents=True, exist_ok=True)
     manifest = load_manifest()
-    spa = load_spa()
+    # Resolve SPA tier data — the published file, or a canonical in-memory rebuild
+    # on a clean checkout where the file is gitignored/absent — and fail loudly
+    # before writing if it is absent/empty/incomplete. Never silently regenerate
+    # 192 boilerplate cells (issue #255 / PR #356 regression).
+    spa, spa_source = resolve_dashboard_spa(manifest)
     by_id = {c["id"]: c for c in manifest}
     all_ids = [c["id"] for c in manifest]
     role_to_ids = build_role_to_ids(manifest)
 
     print(f"Loaded {len(manifest)} controls from {MANIFEST.relative_to(REPO_ROOT)}")
-    if spa:
-        print(f"Enriching with SPA data ({len(spa)} controls)")
-    else:
-        print("SPA data not available — using manifest-only fallbacks")
+    print(f"Enriching with SPA data ({len(spa)} controls, source: {spa_source})")
 
     import shutil
 
