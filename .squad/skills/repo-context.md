@@ -3,7 +3,7 @@
 ## Overview
 - **Repo:** `judeper/FSI-CopilotGov` (public, GitHub Pages)
 - **Site:** https://judeper.github.io/FSI-CopilotGov/
-- **Framework:** FSI Copilot Governance Framework — 62 controls across 4 pillars
+- **Framework:** FSI Copilot Governance Framework — 64 controls across 4 pillars
 - **Current version:** Check `docs/reference/release-notes-v1.4.md` for latest
 
 ## Pillars
