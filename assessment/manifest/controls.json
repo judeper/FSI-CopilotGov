@@ -2576,7 +2576,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": "Are network security controls (Private Link, VPN, conditional access named locations) configured for Copilot workloads per the organization's network security policy?",
+    "manual_question": "Are network security controls (Conditional Access named locations, Global Secure Access, tenant restrictions) configured for Copilot workloads per the organization's network security policy?",
     "name": "Network Security and Private Connectivity",
     "zonesApplicable": [
       1,

@@ -120,7 +120,7 @@ CONTROLS = [
     ("2.12", "2.12-external-sharing-governance.md",            2, "full",    ["SharePoint_Graph"], None),
     ("2.13", "2.13-plugin-connector-security.md",              2, "partial", ["M365Admin", "Graph_API"], "Is the plug-in / connector inventory reviewed and approved on a documented cadence, with un-approved connectors blocked?"),
     ("2.14", "2.14-declarative-agents-governance.md",          2, "partial", ["M365Admin", "Graph_API"], "Are declarative agents subject to a publishing-approval workflow with a maintained inventory?"),
-    ("2.15", "2.15-network-security.md",                       2, "manual",  [], "Are network security controls (Private Link, VPN, conditional access named locations) configured for Copilot workloads per the organization's network security policy?"),
+    ("2.15", "2.15-network-security.md",                       2, "manual",  [], "Are network security controls (Conditional Access named locations, Global Secure Access, tenant restrictions) configured for Copilot workloads per the organization's network security policy?"),
     ("2.16", "2.16-federated-connector-mcp-governance.md",     2, "partial", ["M365Admin", "Graph_API"], "Are federated connectors and MCP endpoints subject to a documented approval, allow-list, and review cycle?"),
     ("2.17", "2.17-cross-tenant-agent-federation.md",          2, "manual",  [], "Are cross-tenant Entra Agent ID trust relationships, MCP federated server attestations, and Copilot Studio multi-tenant publishings subject to documented approval and review?"),
     # ---------------------------------------------------------------
