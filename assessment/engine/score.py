@@ -100,15 +100,23 @@ API_SOURCE_MAP: dict[str, str] = {
 }
 
 # Map collection_methods from controls.json → source key.
+#
+# Only methods backed by a collector that actually emits the data are mapped.
+# ``M365Admin``, ``Teams``, ``VivaInsights`` and ``Defender`` previously
+# resolved to ``graph``/``sentinel`` even though no collector emits M365 admin
+# centre, Teams policy, Viva or Defender for Cloud Apps state (issue #257).
+# That made a check on those controls look evaluable whenever an unrelated
+# collector file was present. They now resolve to ``None`` (unknown), which is
+# the same treatment as ``Manual``.
 COLLECTION_METHOD_SOURCE: dict[str, str | None] = {
     "Graph_API": "graph",
     "Purview_PowerShell": "purview",
     "SharePoint_Graph": "sharepoint",
-    "M365Admin": "graph",
-    "Teams": "graph",
-    "Defender": "sentinel",
-    "VivaInsights": "graph",
     "Sentinel": "sentinel",
+    "M365Admin": None,
+    "Teams": None,
+    "Defender": None,
+    "VivaInsights": None,
     "Manual": None,
 }
 

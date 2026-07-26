@@ -28,7 +28,6 @@ FORCED_415_FIELDS = (
     "verifyIn",
     "evidenceExpected",
     "facilitatorNotes",
-    "collectorField",
 )
 
 
@@ -58,6 +57,8 @@ def _load_manifest_control(control_id: str) -> dict:
 def _apply_overlay(control: dict, overlay: dict) -> dict:
     merged = json.loads(json.dumps(control))
     for key, override_value in overlay.items():
+        if key in merger._DERIVED_FIELDS:
+            continue
         existing = merged.get(key)
         force_replace = merger._should_force_replace(merged.get("id"), key)
         merged[key] = merger._merge_value(
@@ -126,7 +127,9 @@ def test_control_scoped_force_replace_does_not_overwrite_unrelated_controls():
     merged_415 = _apply_overlay(stale_415, overlay_415)
     assert merged_415["yesBar"] == "fresh 4.15 guidance"
     assert merged_415["facilitatorNotes"] == {"ask": "fresh", "followUp": "fresh"}
-    assert merged_415["collectorField"] == ""
+    # collectorField is contract-derived (issue #257): the overlay must not
+    # touch it in either direction, even under a per-control force-replace.
+    assert merged_415["collectorField"] == "M365Admin_CoworkGovernance"
 
     unrelated_414 = {
         "id": "4.14",
@@ -137,6 +140,17 @@ def test_control_scoped_force_replace_does_not_overwrite_unrelated_controls():
     merged_414 = _apply_overlay(unrelated_414, overlay_414)
     assert merged_414["yesBar"] == "existing authoritative guidance"
     assert merged_414["collectorField"] == "M365Admin_ScoutAccess"
+
+
+def test_collector_field_is_owned_by_the_evidence_contract_not_authors():
+    """authored_content.py must not carry collectorField (issue #257)."""
+    assert "collectorField" in merger._DERIVED_FIELDS
+    authored = _load_authored()
+    carrying = [cid for cid, body in authored.items() if "collectorField" in body]
+    assert not carrying, (
+        "authored_content.py must not author collectorField; it is derived from "
+        f"assessment/data/evidence-contract.json (found on {carrying})"
+    )
 
 
 def test_311_forced_fields_in_manifest_match_authored_source():

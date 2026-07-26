@@ -2009,6 +2009,18 @@
       if (entry && entry.version) {
         meta.appendChild(h("span", { className: "solution-card-version" }, "v" + entry.version));
       }
+      // Disclose solution maturity here as well as in the catalog view. Every
+      // locked solution is currently a `documentation-first-scaffold`; showing
+      // only name/tier/role/version invited readers to treat a control's
+      // solution link as shipped tooling.
+      var maturity = entry && typeof entry.maturity === "string" ? entry.maturity : null;
+      if (maturity) {
+        meta.appendChild(h("span", {
+          className: "solution-maturity maturity-" + maturity,
+          "data-maturity": maturity,
+          title: "Solution maturity: " + maturity.replace(/-/g, " "),
+        }, maturity.replace(/-/g, " ")));
+      }
       if (meta.childNodes.length) card.appendChild(meta);
       if (entry && entry.summary) {
         card.appendChild(h("span", { className: "solution-card-summary" }, entry.summary));
