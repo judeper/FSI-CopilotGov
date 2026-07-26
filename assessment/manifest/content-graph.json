@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-25T20:53:59Z",
+  "generatedAt": "2026-07-26T19:16:02Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -209,9 +209,9 @@
       "id": "1.13",
       "pillar": 1,
       "tier": "Regulated",
-      "title": "Control 1.13: Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)",
+      "title": "Control 1.13: Extensibility Readiness (Copilot Connectors, Plugins, Declarative Agents)",
       "path": "docs/controls/pillar-1-readiness/1.13-extensibility-readiness.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
