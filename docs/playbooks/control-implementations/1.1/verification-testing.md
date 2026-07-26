@@ -4,28 +4,28 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 
 ## Test Cases
 
-### Test 1: Optimization Assessment Completeness
+### Test 1: Readiness Report Completeness
 
-- **Objective:** Verify that the Copilot Optimization Assessment has run and all infrastructure findings have been reviewed
+- **Objective:** Verify that the Microsoft 365 Copilot readiness report and network connectivity test have been run and all infrastructure findings have been reviewed
 - **Steps:**
-  1. Sign in to Microsoft 365 Admin Center as Entra Global Admin
-  2. Navigate to Admin Center > Copilot > Settings > Readiness
-  3. Confirm the Optimization Assessment has completed and shows current results
-  4. Verify network readiness, Office update channel compliance, and app compatibility sections are all reviewed
+  1. Sign in to Microsoft 365 admin center as Entra Global Admin
+  2. Navigate to Reports > Usage > Microsoft 365 Copilot > Readiness
+  3. Confirm the readiness report shows current results (data is available within 72 hours, with up to 72 hours of latency)
+  4. Verify prerequisite license eligibility and eligible update channel counts have been reviewed, and that network connectivity test results for Copilot endpoints have been captured
   5. Confirm that any "blocking" findings have been addressed or have documented remediation plans
-- **Expected Result:** Optimization Assessment shows no blocking infrastructure issues, or all blocking issues have documented remediation timelines
-- **Evidence:** Screenshot of Optimization Assessment results with timestamp; remediation plan document if findings exist
+- **Expected Result:** No blocking infrastructure issues remain, or all blocking issues have documented remediation timelines
+- **Evidence:** Export of the readiness report with timestamp and network connectivity test output; remediation plan document if findings exist
 
 ### Test 1b: Readiness Dashboard Accessibility
 
 - **Objective:** Verify that the Copilot readiness dashboard is accessible and returning data
 - **Steps:**
-  1. Sign in to Microsoft 365 Admin Center as Entra Global Admin
-  2. Navigate to Copilot > Settings > Readiness
-  3. Confirm the dashboard loads and displays assessment categories
-  4. Verify data freshness (last updated within 48 hours)
-- **Expected Result:** Dashboard displays current readiness scores across all assessment categories
-- **Evidence:** Screenshot of readiness dashboard with timestamp
+  1. Sign in to Microsoft 365 admin center as Entra Global Admin
+  2. Navigate to Reports > Usage > Microsoft 365 Copilot > Readiness
+  3. Confirm the report loads and displays the readiness summary charts and user activity table
+  4. Verify data freshness (readiness data can carry up to 72 hours of latency)
+- **Expected Result:** Report displays current readiness metrics across license eligibility, update channel eligibility, and app usage
+- **Evidence:** Export of the readiness report with timestamp
 
 ### Test 2: Oversharing Assessment Completeness
 
