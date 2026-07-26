@@ -8,6 +8,8 @@ on:
       - 'assessment/collectors/**'
       - 'assessment/tests/**'
       - 'scripts/test_collect_sentinel_copilotactivity.py'
+      - 'scripts/verify_tuning_claims.py'
+      - 'scripts/test_verify_tuning_claims.py'
       - 'assessment/requirements.txt'
       - '.github/workflows/engine-tests.yml'
   push:
@@ -19,6 +21,8 @@ on:
       - 'assessment/collectors/**'
       - 'assessment/tests/**'
       - 'scripts/test_collect_sentinel_copilotactivity.py'
+      - 'scripts/verify_tuning_claims.py'
+      - 'scripts/test_verify_tuning_claims.py'
       - 'assessment/requirements.txt'
 
 jobs:
@@ -38,3 +42,5 @@ jobs:
         run: pwsh -NoProfile -Command '$PSVersionTable.PSVersion.ToString()'
       - name: Run engine and collector tests
         run: pytest assessment/tests scripts/test_collect_sentinel_copilotactivity.py -v
+      - name: Run Copilot Tuning Claims verifier unit tests
+        run: pytest scripts/test_verify_tuning_claims.py -v
