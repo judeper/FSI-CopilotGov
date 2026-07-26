@@ -939,8 +939,8 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "Microsoft Purview portal",
-                "path": "DSPM for AI > Reports",
-                "url": "https://purview.microsoft.com/aihub",
+                "path": "DSPM > Discover > Data risk assessments",
+                "url": "https://purview.microsoft.com/datasecurityposturemanagement",
             },
         ],
         "verifyPowerShell": (

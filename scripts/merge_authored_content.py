@@ -87,6 +87,13 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
     "3.10": {
         "verifyPowerShell",
     },
+    "1.14": {
+        # Force-apply the corrected Purview navigation. The stale value in
+        # controls.json points at the retired "DSPM for AI > Reports" /aihub
+        # route; the current path is DSPM > Discover > Data risk assessments
+        # (issue #350 drift re-verification).
+        "verifyIn",
+    },
     "3.11": {
         # Force-apply the corrected Rule 17a-4(f)(2) storage-system citation
         # (with SEC adopting release No. 34-96034) and the audit-trail-aligned

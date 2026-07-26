@@ -11,25 +11,27 @@ Step-by-step portal configuration for evaluating organizational readiness and es
 
 ## Steps
 
-### Step 1: Run the Microsoft 365 Copilot Optimization Assessment
+### Step 1: Run the Microsoft 365 Copilot Readiness Report
 
-**Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Copilot > Settings > Readiness
+**Portal:** Microsoft 365 admin center
+**Path:** Reports > Usage > Microsoft 365 Copilot > Readiness
 
-Navigate to the Copilot Readiness page to access the Optimization Assessment.This Microsoft-provided tool evaluates infrastructure readiness across three dimensions:
+Open the **Readiness** tab of the Microsoft 365 Copilot report. It shows:
 
-- **Network readiness:** Bandwidth, latency, and proxy/firewall compatibility with Copilot service endpoints
-- **Office update channel compliance:** Percentage of endpoints on Current Channel or Monthly Enterprise Channel (required for Copilot features; Semi-Annual Enterprise Channel is not supported)
-- **App compatibility:** Office add-ins and applications with known Copilot compatibility issues
+- **Total prerequisite licenses:** Users who hold, or can be assigned, a Copilot-eligible base license
+- **Users on an eligible update channel:** Users enrolled in Current Channel or Monthly Enterprise Channel for Microsoft 365 Apps updates
+- **Assigned and available Copilot licenses**, with recommended action cards such as moving users to a monthly update channel
+
+Network readiness is assessed separately with the **Microsoft 365 network connectivity test tool** (`connectivity.m365.cloud.microsoft`), which measures average latency to Microsoft 365 Copilot endpoints (latency above 250 ms may degrade the Copilot experience) and confirms WebSocket (WSS) connectivity to `*.cloud.microsoft` and `*.office.com`. Aggregated network insights are also available in the Microsoft 365 admin center under **Health > Connectivity**.
 
 Review each category and address any findings flagged as blocking before assigning Copilot licenses. Document the assessment results for your regulatory examination file.
 
 ### Step 2: Review Data Oversharing Report
 
 **Portal:** Microsoft Purview
-**Path:** Purview > Data Security Posture Management > Reports > Oversharing Assessment
+**Path:** Purview portal > Solutions > DSPM > Discover > Data risk assessments
 
-Open the DSPM oversharing assessment. This report identifies SharePoint sites, OneDrive locations, and Teams channels where sensitive content may be accessible to users who should not have access.
+Open the default data risk assessment, which runs weekly against the top 100 SharePoint sites by usage. This assessment identifies SharePoint and OneDrive locations where sensitive content may be accessible to users who should not have access. Create a custom assessment to target specific users or sites.
 
 Filter results by sensitivity level and focus on sites containing financial data, PII, or regulated content. Export the report for governance committee review.
 
@@ -54,7 +56,7 @@ Flag sites where sharing settings are more permissive than the content sensitivi
 ### Step 5: Document Readiness Findings
 
 Compile findings from Steps 1-4 into a readiness assessment report. Include:
-- Optimization Assessment results (network, update channel, app compatibility)
+- Readiness report results (license eligibility, update channel eligibility) and network connectivity test results
 - Overall readiness score from the Copilot dashboard
 - Count of overshared sites requiring remediation
 - Sensitivity label coverage percentage
@@ -64,8 +66,8 @@ Compile findings from Steps 1-4 into a readiness assessment report. Include:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Complete Optimization Assessment and address infrastructure findings. Run readiness assessment and remediate all critical oversharing findings before pilot |
-| **Recommended** | Achieve >75% sensitivity label coverage (per Control 1.1 scoring model), resolve all high-risk permission anomalies, and achieve >95% update channel compliance |
+| **Baseline** | Review the Copilot readiness report and network connectivity test results, and address infrastructure findings. Run readiness assessment and remediate all critical oversharing findings before pilot |
+| **Recommended** | Achieve >75% sensitivity label coverage (per Control 1.1 scoring model), resolve all high-risk permission anomalies, and achieve >95% update channel eligibility |
 | **Regulated** | Require governance committee sign-off on readiness report with documented remediation plan for all findings, including update channel policy enforcement |
 
 ## Next Steps
