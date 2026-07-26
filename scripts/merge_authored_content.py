@@ -18,6 +18,9 @@ Replacement rules:
     - globally for fields in ``_REPLACE_FIELDS``
     - per-control for fields in ``_CONTROL_FORCE_REPLACE_FIELDS``
 
+* **derived fields** in ``_DERIVED_FIELDS`` are skipped entirely: they are
+  owned by an upstream source (the evidence contract), not by authors.
+
 The merge **never** overwrites a value that has been hand-edited away
 from the TODO default. Re-running this script after authored_content.py
 is updated is safe.
@@ -46,10 +49,41 @@ AUTHORED_PY = ROOT / "assessment" / "manifest" / "authored_content.py"
 # must not silently override later corrections).
 _REPLACE_FIELDS: set[str] = {"solutions"}
 
+# Fields that are derived elsewhere and must never be overlaid from
+# authored_content.py. ``collectorField`` is derived from
+# ``assessment/data/evidence-contract.json`` by
+# ``scripts/harvest_manifest_extension.py`` — the contract is the only record
+# of what a collector actually emits. Overlaying an authored value here is how
+# twenty controls ended up advertising a collector field no collector produced
+# (issue #257).
+_DERIVED_FIELDS: set[str] = {"collectorField"}
+
 # Per-control force replacements for fields intentionally re-authored in
 # authored_content.py. This is intentionally narrow: all controls/fields
 # outside these sets keep the default preservation behavior.
 _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
+    "1.3": {
+        # Authored checks[] wires the grounding_sources_approved evaluator;
+        # zone_thresholds must be force-replaced because the generated value
+        # is based on 0 checks and would not update without force-replace.
+        "checks",
+        "zone_thresholds",
+    },
+    "2.12": {
+        # Authored checks[] wires the no_external_sharing_on_grounding evaluator.
+        "checks",
+        "zone_thresholds",
+    },
+    "3.1": {
+        # Authored checks[] wires the audit_log_enabled evaluator.
+        "checks",
+        "zone_thresholds",
+    },
+    "3.2": {
+        # Authored checks[] wires the copilot_retention_policy_exists evaluator.
+        "checks",
+        "zone_thresholds",
+    },
     "3.8a": {
         # The harvest fallback fabricates a conventional /3.8a/portal-walkthrough/
         # route even though no such playbook file exists. Force the authored
@@ -62,6 +96,29 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "evidenceExpected",
         "facilitatorNotes",
     },
+    "3.10": {
+        "verifyPowerShell",
+    },
+    "1.14": {
+        # Force-apply the corrected Purview navigation. The stale value in
+        # controls.json points at the retired "DSPM for AI > Reports" /aihub
+        # route; the current path is DSPM > Discover > Data risk assessments
+        # (issue #350 drift re-verification).
+        "verifyIn",
+    },
+    "3.11": {
+        # Force-apply the corrected Rule 17a-4(f)(2) storage-system citation
+        # (with SEC adopting release No. 34-96034) and the audit-trail-aligned
+        # scoring bars to override stale values already present in controls.json
+        # from before the citation/scoring correction in issue #255. partialBar
+        # is force-replaced so the corrected non-overlapping partial criterion
+        # (which no longer downgrades a documented audit-trail alternative to
+        # Partial) cannot be shadowed by the pre-correction manifest value.
+        "evidenceExpected",
+        "yesBar",
+        "partialBar",
+        "sectorYesBar",
+    },
     "4.15": {
         "yesBar",
         "partialBar",
@@ -70,7 +127,6 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "verifyIn",
         "evidenceExpected",
         "facilitatorNotes",
-        "collectorField",
     }
 }
 
@@ -158,6 +214,8 @@ def main() -> int:
             continue
         before = json.dumps(ctrl, sort_keys=True)
         for key, override_value in overlay.items():
+            if key in _DERIVED_FIELDS:
+                continue
             existing = ctrl.get(key)
             force_replace = _should_force_replace(cid, key)
             new_value = _merge_value(existing, override_value, force_replace=force_replace)

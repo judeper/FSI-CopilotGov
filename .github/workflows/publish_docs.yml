@@ -37,7 +37,7 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -59,6 +59,9 @@ jobs:
 
       - name: Validate Language Rules
         run: python scripts/verify_language_rules.py
+
+      - name: Validate Regulatory Citations
+        run: python scripts/verify_regulatory_citations.py
 
       - name: Build Content Graph (canonical metadata)
         run: python scripts/build_content_graph.py

@@ -295,3 +295,83 @@ def test_no_orphaned_playbook_directories():
         "Playbook directories without a matching manifest control:\n  "
         + "\n  ".join(orphans)
     )
+
+
+# ---------------------------------------------------------------------------
+# C2b — Automation label regression tests (issue #256)
+# ---------------------------------------------------------------------------
+
+def test_c2_4_automation_is_not_full():
+    """Control 2.4 (Information Barriers) must be labeled 'manual' automation.
+
+    IB policy existence is collector-queryable, but no verified pass-condition
+    evaluator exists — 'full' would be dishonest.  'manual' is the honest label
+    because boundary effectiveness requires human attestation.  Regression guard
+    against re-introduction of the misleading 'full' label.
+    """
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    c = next((c for c in manifest if c["id"] == "2.4"), None)
+    assert c is not None, "Control 2.4 not found in manifest"
+    assert c["automation"] != "full", (
+        f"Control 2.4 has automation={c['automation']!r}; "
+        "expected 'manual' because no verified automated IB checks exist"
+    )
+    # Manual is the correct label: no collector has a verified pass/fail
+    # evaluator for IB boundary effectiveness.
+    assert c["automation"] == "manual", (
+        f"Control 2.4 automation should be 'manual', got {c['automation']!r}"
+    )
+    assert isinstance(c.get("manual_question"), str) and c["manual_question"].strip(), (
+        "Control 2.4 must have a non-empty manual_question when automation='manual'"
+    )
+
+
+def test_c2_15_automation_is_not_full():
+    """Control 2.15 (Network Security) must be labeled 'manual' automation.
+
+    Named-location config is collector-queryable, but no verified pass-condition
+    evaluator exists — 'full' would be dishonest.  'manual' is the honest label
+    because network security policy alignment requires human attestation.
+    Regression guard against re-introduction of the misleading 'full' label.
+    """
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    c = next((c for c in manifest if c["id"] == "2.15"), None)
+    assert c is not None, "Control 2.15 not found in manifest"
+    assert c["automation"] != "full", (
+        f"Control 2.15 has automation={c['automation']!r}; "
+        "expected 'manual' because no verified network security collector exists"
+    )
+    assert c["automation"] == "manual", (
+        f"Control 2.15 automation should be 'manual', got {c['automation']!r}"
+    )
+    assert isinstance(c.get("manual_question"), str) and c["manual_question"].strip(), (
+        "Control 2.15 must have a non-empty manual_question when automation='manual'"
+    )
+
+
+def test_full_automation_implies_non_empty_checks():
+    """Repository invariant: every control with automation='full' must have checks.
+
+    A 'full' label with an empty checks list means the engine has no
+    evaluators to run — the label misrepresents the control's actual
+    evidence-collection capability.  This test enforces the invariant
+    added to validate_manifest.py in issue #256.
+
+    NOTE: Many controls are legitimately labeled 'full' while their checks
+    are still being authored (works in progress).  This test therefore only
+    asserts that the two controls explicitly corrected in issue #256 —
+    2.4 and 2.15 — are NOT re-introduced as 'full' with empty checks.
+    The validate_manifest.py warning covers the broader population.
+    """
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    # Regression guard: specifically 2.4 and 2.15 must never regress to
+    # full+empty-checks (the pattern corrected by issue #256).
+    regressed: list[str] = []
+    for c in manifest:
+        if c["id"] not in ("2.4", "2.15"):
+            continue
+        if c.get("automation") == "full" and len(c.get("checks", [])) == 0:
+            regressed.append(
+                f"{c['id']}: automation='full' with no checks (regression of issue #256)"
+            )
+    assert not regressed, "\n  ".join(regressed)

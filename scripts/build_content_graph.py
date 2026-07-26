@@ -251,6 +251,30 @@ def _tier_breakdowns(controls: list[dict]) -> tuple[dict, dict]:
     return by_tier, by_pillar_tier
 
 
+def _content_timestamp(controls: list[dict]) -> str:
+    """Return a DETERMINISTIC value for generatedAt.
+
+    This field used to be datetime.now(), which made the generated artifact differ on every run.
+    Because content-graph.json is committed, that guaranteed a merge conflict between ANY two
+    documentation PRs -- even when they touched completely different controls, whose `last_verified`
+    lines would otherwise have merged cleanly. Every doc PR therefore had to be rebased,
+    regenerated and re-run through CI strictly one at a time.
+
+    Nothing depended on wall-clock time: `--check` already excluded generatedAt from its comparison
+    precisely because it was non-deterministic. Deriving it from the newest `last_verified` keeps
+    the field meaningful ("content verified as of"), keeps it schema-valid, and makes regeneration
+    reproducible - so two PRs touching different controls no longer collide.
+    """
+    stamps = sorted(
+        str(c.get("last_verified", "")) for c in controls if c.get("last_verified")
+    )
+    if not stamps:
+        # No verification dates at all: fall back to the epoch rather than to now(), so the
+        # artifact stays reproducible instead of silently reintroducing the conflict.
+        return "1970-01-01T00:00:00Z"
+    return f"{stamps[-1]}T00:00:00Z"
+
+
 def build_graph() -> dict:
     tiers = collect_control_tiers()
     controls = collect_controls(tiers)
@@ -281,7 +305,7 @@ def build_graph() -> dict:
 
     return {
         "schemaVersion": SCHEMA_VERSION,
-        "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generatedAt": _content_timestamp(controls),
         "counts": {
             "controls": len(controls),
             "pillars": len(pillars),

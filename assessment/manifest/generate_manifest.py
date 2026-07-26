@@ -54,11 +54,31 @@ MERGE_KEYS_PRESERVED = (
 
 # (id, filename, pillar, automation, collection_methods, manual_question)
 #
-# automation: full | partial | manual
-#   full    — fully evidence-collectable via API/PowerShell
-#   partial — collector returns config state but human attestation needed
-#             for cadence/effectiveness
-#   manual  — policy / process control; collector returns no evidence
+# automation — canonical taxonomy (OceanSquad issue #324, reconciling the two
+# independent derivations from PR #359 and PR #367). A label is the
+# INTERSECTION of two independently verifiable facts, so it can never claim
+# more than both the evidence contract and the engine can actually deliver:
+#
+#   (A) contract-mapped — assessment/data/evidence-contract.json maps the
+#       control to a collector output, i.e. some collector really emits
+#       evidence for it.
+#   (B) wired evaluator — the control carries a non-empty checks[] entry whose
+#       pass_condition names an evaluator the scoring engine implements.
+#
+#   full    — (A) AND (B). The engine can reach an automated pass/fail verdict.
+#   partial — (A) only. A collector returns config state, but a human must
+#             attest to cadence/effectiveness because no evaluator is wired.
+#   manual  — neither. No collector supplies evidence, so the control is
+#             answered by attestation alone and MUST carry a manual_question.
+#
+# Both halves are enforced as hard errors in scripts/validate_manifest.py
+# (`_validate_engine` for (B), `_validate_against_contract` for (A)) and are
+# asserted end-to-end in scripts/test_manifest_honesty.py.
+#
+# A control may be labelled MORE conservatively than the intersection allows
+# (e.g. 2.4 and 2.15 stay 'manual' despite being contract-mapped, because
+# PR #359 found no trustworthy automated pass/fail for them). Under-claiming is
+# always permitted; over-claiming is not.
 #
 # collection_methods is the *intended* set of collectors that may emit
 # evidence for this control. The Python engine uses this to decide
@@ -73,9 +93,9 @@ CONTROLS = [
     ("1.4",  "1.4-semantic-index-governance.md",               1, "partial", ["SharePoint_Graph"], "Are semantic-index inclusion/exclusion rules reviewed on a documented schedule?"),
     ("1.5",  "1.5-sensitivity-label-taxonomy-review.md",       1, "partial", ["Purview_PowerShell"], "Has the sensitivity-label taxonomy been reviewed for AI-readiness in the last 12 months?"),
     ("1.6",  "1.6-permission-model-audit.md",                  1, "partial", ["SharePoint_Graph"], "Has a least-privilege permission audit covering Copilot-grounded sites been completed in the last 90 days?"),
-    ("1.7",  "1.7-sharepoint-advanced-management.md",          1, "full",    ["SharePoint_Graph"], None),
+    ("1.7",  "1.7-sharepoint-advanced-management.md",          1, "partial", ["SharePoint_Graph"], "Are SharePoint Advanced Management controls (RCD, RAC, site lifecycle) enabled and configured for Copilot-grounded sites?"),
     ("1.8",  "1.8-information-architecture-review.md",         1, "manual",  [], "Has the information architecture (IA) been reviewed for Copilot-grounding suitability and findings tracked to remediation?"),
-    ("1.9",  "1.9-license-planning.md",                        1, "full",    ["M365Admin"], None),
+    ("1.9",  "1.9-license-planning.md",                        1, "manual",  [], "Is Copilot license assignment reconciled against approved entitlement and eligibility criteria on a documented cadence?"),
     ("1.10", "1.10-vendor-risk-management.md",                 1, "manual",  [], "Has third-party / vendor risk assessment (per OCC Bulletin 2023-17) been completed for Copilot, plug-ins, and connectors used in production?"),
     ("1.11", "1.11-change-management-adoption.md",             1, "manual",  [], "Is a documented change-management and adoption plan in place for Copilot rollout, with executive sponsorship?"),
     ("1.12", "1.12-training-awareness.md",                     1, "manual",  [], "Have all in-scope users completed Copilot training and acceptable-use acknowledgement in the last 12 months?"),
@@ -86,21 +106,21 @@ CONTROLS = [
     # ---------------------------------------------------------------
     # Pillar 2 — Security & Data Protection (17)
     # ---------------------------------------------------------------
-    ("2.1",  "2.1-dlp-policies-for-copilot.md",                2, "full",    ["Purview_PowerShell"], None),
-    ("2.2",  "2.2-sensitivity-labels-classification.md",       2, "full",    ["Purview_PowerShell"], None),
-    ("2.3",  "2.3-conditional-access-policies.md",             2, "full",    ["Graph_API"], None),
-    ("2.4",  "2.4-information-barriers.md",                    2, "full",    ["Purview_PowerShell"], None),
+    ("2.1",  "2.1-dlp-policies-for-copilot.md",                2, "partial", ["Purview_PowerShell"], "Are DLP policies for Copilot interactions configured, tested, and reviewed on a documented cadence?"),
+    ("2.2",  "2.2-sensitivity-labels-classification.md",       2, "partial", ["Purview_PowerShell"], "Are sensitivity labels applied to Copilot-grounded content and label coverage reviewed on a documented cadence?"),
+    ("2.3",  "2.3-conditional-access-policies.md",             2, "partial", ["Graph_API"], "Are Conditional Access policies for Copilot workloads configured and reviewed on a documented cadence?"),
+    ("2.4",  "2.4-information-barriers.md",                    2, "manual",  [], "Are Information Barrier policies configured and tested for Copilot content surfacing across ethical-wall segments?"),
     ("2.5",  "2.5-data-minimization-grounding-scope.md",       2, "manual",  [], "Has data minimization been applied to Copilot grounding scope (per-agent/site limits) and reviewed on a documented cadence?"),
-    ("2.6",  "2.6-web-search-controls.md",                     2, "full",    ["M365Admin"], None),
-    ("2.7",  "2.7-data-residency.md",                          2, "full",    ["M365Admin", "Graph_API"], None),
-    ("2.8",  "2.8-encryption.md",                              2, "full",    ["Graph_API", "Purview_PowerShell"], None),
-    ("2.9",  "2.9-defender-cloud-apps.md",                     2, "partial", ["Defender"], "Are Defender for Cloud Apps Copilot session policies and anomaly alerts reviewed on a documented cadence?"),
+    ("2.6",  "2.6-web-search-controls.md",                     2, "manual",  [], "Is the Copilot web search setting configured to the approved tenant posture and reviewed on a documented cadence?"),
+    ("2.7",  "2.7-data-residency.md",                          2, "manual",  [], "Are Copilot data residency commitments (Advanced Data Residency and EU Data Boundary scope) documented and reconciled against the tenant configuration?"),
+    ("2.8",  "2.8-encryption.md",                              2, "partial", ["Graph_API", "Purview_PowerShell"], "Are encryption configurations for Copilot-processed data reviewed and verified on a documented cadence?"),
+    ("2.9",  "2.9-defender-cloud-apps.md",                     2, "manual",  [], "Are Defender for Cloud Apps Copilot session policies and anomaly alerts reviewed on a documented cadence?"),
     ("2.10", "2.10-insider-risk-detection.md",                 2, "partial", ["Purview_PowerShell"], "Have any insider-risk alerts touching Copilot interactions been reviewed and dispositioned this quarter?"),
-    ("2.11", "2.11-copilot-pages-security.md",                 2, "full",    ["M365Admin", "SharePoint_Graph"], None),
+    ("2.11", "2.11-copilot-pages-security.md",                 2, "partial", ["M365Admin", "SharePoint_Graph"], "Are Copilot Pages security controls configured to prevent unauthorized sharing and reviewed on a documented cadence?"),
     ("2.12", "2.12-external-sharing-governance.md",            2, "full",    ["SharePoint_Graph"], None),
     ("2.13", "2.13-plugin-connector-security.md",              2, "partial", ["M365Admin", "Graph_API"], "Is the plug-in / connector inventory reviewed and approved on a documented cadence, with un-approved connectors blocked?"),
     ("2.14", "2.14-declarative-agents-governance.md",          2, "partial", ["M365Admin", "Graph_API"], "Are declarative agents subject to a publishing-approval workflow with a maintained inventory?"),
-    ("2.15", "2.15-network-security.md",                       2, "full",    ["Graph_API"], None),
+    ("2.15", "2.15-network-security.md",                       2, "manual",  [], "Are network security controls (Private Link, VPN, conditional access named locations) configured for Copilot workloads per the organization's network security policy?"),
     ("2.16", "2.16-federated-connector-mcp-governance.md",     2, "partial", ["M365Admin", "Graph_API"], "Are federated connectors and MCP endpoints subject to a documented approval, allow-list, and review cycle?"),
     ("2.17", "2.17-cross-tenant-agent-federation.md",          2, "manual",  [], "Are cross-tenant Entra Agent ID trust relationships, MCP federated server attestations, and Copilot Studio multi-tenant publishings subject to documented approval and review?"),
     # ---------------------------------------------------------------
@@ -108,7 +128,7 @@ CONTROLS = [
     # ---------------------------------------------------------------
     ("3.1",  "3.1-copilot-audit-logging.md",                   3, "full",    ["Purview_PowerShell"], None),
     ("3.2",  "3.2-data-retention-policies.md",                 3, "full",    ["Purview_PowerShell"], None),
-    ("3.3",  "3.3-ediscovery-copilot-content.md",              3, "full",    ["Purview_PowerShell"], None),
+    ("3.3",  "3.3-ediscovery-copilot-content.md",              3, "partial", ["Purview_PowerShell"], "Are eDiscovery cases and holds configured to capture Copilot interaction content when legally required?"),
     ("3.4",  "3.4-communication-compliance.md",                3, "partial", ["Purview_PowerShell"], "Has the communication-compliance review queue covering Copilot interactions been reviewed in the last 30 days?"),
     ("3.5",  "3.5-finra-2210-compliance.md",                   3, "manual",  [], "Are Copilot outputs used in FINRA Rule 2210 communications subject to documented principal review before use?"),
     ("3.6",  "3.6-supervision-oversight.md",                   3, "manual",  [], "Is there a designated supervisory principal for Copilot use in regulated workflows, with a documented review cadence (FINRA Rule 3110)?"),
@@ -124,17 +144,17 @@ CONTROLS = [
     # ---------------------------------------------------------------
     # Pillar 4 — Operations & Lifecycle (16)
     # ---------------------------------------------------------------
-    ("4.1",  "4.1-admin-settings-feature-management.md",       4, "full",    ["M365Admin"], None),
-    ("4.2",  "4.2-teams-meetings-governance.md",               4, "full",    ["Teams"], None),
-    ("4.3",  "4.3-teams-phone-queues.md",                      4, "full",    ["Teams"], None),
-    ("4.4",  "4.4-viva-suite-governance.md",                   4, "partial", ["VivaInsights", "M365Admin"], "Is Viva-suite Copilot integration (Insights, Engage, Topics) reviewed on a documented governance cadence?"),
-    ("4.5",  "4.5-usage-analytics.md",                         4, "partial", ["M365Admin"], "Are Copilot usage analytics reported to leadership on a documented cadence with anomalies flagged?"),
-    ("4.6",  "4.6-viva-insights-measurement.md",               4, "partial", ["VivaInsights"], "Are Viva Insights Copilot impact reports reviewed on a documented cadence with caveats applied?"),
-    ("4.7",  "4.7-feedback-telemetry.md",                      4, "partial", ["M365Admin"], "Is Copilot feedback / thumb-rating telemetry reviewed on a documented cadence and routed to product owners?"),
+    ("4.1",  "4.1-admin-settings-feature-management.md",       4, "partial", ["M365Admin"], "Are Microsoft 365 Copilot admin settings reviewed and configured per the organization's governance policy on a documented cadence?"),
+    ("4.2",  "4.2-teams-meetings-governance.md",               4, "manual",  [], "Are Teams meeting policies governing Copilot in meetings, including transcription prerequisites, reviewed on a documented cadence?"),
+    ("4.3",  "4.3-teams-phone-queues.md",                      4, "manual",  [], "Are Teams calling and voice-application policies that expose Copilot features reviewed on a documented cadence?"),
+    ("4.4",  "4.4-viva-suite-governance.md",                   4, "manual",  [], "Is Viva-suite Copilot integration (Insights, Engage, Topics) reviewed on a documented governance cadence?"),
+    ("4.5",  "4.5-usage-analytics.md",                         4, "manual",  [], "Are Copilot usage analytics reported to leadership on a documented cadence with anomalies flagged?"),
+    ("4.6",  "4.6-viva-insights-measurement.md",               4, "manual",  [], "Are Viva Insights Copilot impact reports reviewed on a documented cadence with caveats applied?"),
+    ("4.7",  "4.7-feedback-telemetry.md",                      4, "manual",  [], "Is Copilot feedback / thumb-rating telemetry reviewed on a documented cadence and routed to product owners?"),
     ("4.8",  "4.8-cost-allocation.md",                         4, "manual",  [], "Is Copilot license cost allocation reviewed and chargeback / showback executed on a documented cadence?"),
     ("4.9",  "4.9-incident-reporting.md",                      4, "manual",  [], "Is there a documented incident-response process covering Copilot-specific incidents (oversharing, hallucination, prompt injection) with reporting paths?"),
     ("4.10", "4.10-business-continuity.md",                    4, "manual",  [], "Has a business-continuity plan for Copilot-dependent workflows been documented and tested in the last 12 months?"),
-    ("4.11", "4.11-sentinel-integration.md",                   4, "partial", ["Defender"], "Are Sentinel detections covering Copilot misuse reviewed and tuned on a documented cadence?"),
+    ("4.11", "4.11-sentinel-integration.md",                   4, "partial", ["Sentinel"], "Are Sentinel detections covering Copilot misuse reviewed and tuned on a documented cadence?"),
     ("4.12", "4.12-change-management-rollouts.md",             4, "manual",  [], "Are Copilot feature releases (Microsoft-managed and tenant-managed) tracked and risk-reviewed before user enablement?"),
     ("4.13", "4.13-extensibility-governance.md",               4, "manual",  [], "Are extensibility surfaces (declarative agents, MCP, plug-ins) governed by an approval and inventory process before publication?"),
     ("4.14", "4.14-copilot-studio-agent-lifecycle.md",         4, "manual",  [], "Is the Copilot Studio agent lifecycle (authoring → testing → publishing → versioning → deprecation) governed with documented evidence at each gate?"),

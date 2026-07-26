@@ -1,0 +1,48 @@
+# Regulatory Monitor Report
+
+**Run Date:** 2026-07-20
+**Run Time:** 2026-07-20T12:07:27+00:00
+**New Items:** 29
+**Sources:** Federal Register (SEC, CFTC, OCC, Federal Reserve) + FINRA Regulatory Notices
+
+---
+## Executive Summary
+
+| Category | Count |
+|----------|-------|
+| NOISE Changes | 29 |
+
+---
+## NOISE Items
+Regulatory items with no FSI Copilot governance relevance.
+
+- [Sunshine Act Meetings](https://www.federalregister.gov/documents/2026/07/20/2026-14581/sunshine-act-meetings) (SEC)
+- [Renewal of the Agricultural Advisory Committee](https://www.federalregister.gov/documents/2026/07/20/2026-14575/renewal-of-the-agricultural-advisory-committee) (CFTC)
+- [Modernization of Delegations of Authority to Commission Staff](https://www.federalregister.gov/documents/2026/07/20/2026-14540/modernization-of-delegations-of-authority-to-commission-staff) (SEC)
+- [Agency Information Collection Activities; Proposed Collection; Comment Request; Extension: Rule 17a-4(b)(17)](https://www.federalregister.gov/documents/2026/07/20/2026-14531/agency-information-collection-activities-proposed-collection-comment-request-extension-rule-17a-4b17) (SEC)
+- [Agency Information Collection Activities; Proposed Collection; Comment Request; Extension: Rule 101 of Regulation M](https://www.federalregister.gov/documents/2026/07/20/2026-14530/agency-information-collection-activities-proposed-collection-comment-request-extension-rule-101-of) (SEC)
+- [Self-Regulatory Organizations; Financial Industry Regulatory Authority, Inc.; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend the FINRA Rule 6300 Series (Trade Reporting Facilities) To Extend the Trade Reporting Facilities Operating Hours to 23 Hours Per Day, Five Days Per Week](https://www.federalregister.gov/documents/2026/07/20/2026-14528/self-regulatory-organizations-financial-industry-regulatory-authority-inc-notice-of-filing-and) (SEC)
+- [Self-Regulatory Organizations; NYSE Arca, Inc.; Notice of Filing and Immediate Effectiveness of Proposed Rule Change To Amend Rule 6.8-O To Increase Position and Exercise Limits for Options on iShares Bitcoin Trust ETF](https://www.federalregister.gov/documents/2026/07/20/2026-14527/self-regulatory-organizations-nyse-arca-inc-notice-of-filing-and-immediate-effectiveness-of-proposed) (SEC)
+- [Self-Regulatory Organizations; ICE Clear Credit LLC; Order Approving Proposed Rule Change Relating to the Operational Risk Management Framework](https://www.federalregister.gov/documents/2026/07/20/2026-14525/self-regulatory-organizations-ice-clear-credit-llc-order-approving-proposed-rule-change-relating-to) (SEC)
+- [Self-Regulatory Organizations; NYSE American LLC; Notice of Filing and Immediate Effectiveness of Proposed Rule Change To Amend Rule 904 and Rule 905 To Increase Position and Exercise Limits for Options on iShares Bitcoin Trust ETF](https://www.federalregister.gov/documents/2026/07/17/2026-14526/self-regulatory-organizations-nyse-american-llc-notice-of-filing-and-immediate-effectiveness-of) (SEC)
+- [Margin Requirements for Uncleared Swaps for Swap Dealers and Major Swap Participants](https://www.federalregister.gov/documents/2026/07/17/2026-14509/margin-requirements-for-uncleared-swaps-for-swap-dealers-and-major-swap-participants) (CFTC)
+- [Kennedy Lewis Capital Company, et al.](https://www.federalregister.gov/documents/2026/07/17/2026-14505/kennedy-lewis-capital-company-et-al) (SEC)
+- [Agency Information Collection Activities; Submission for OMB Review; Comment Request; Extension: Rule 15b6-1 and Form BDW](https://www.federalregister.gov/documents/2026/07/17/2026-14414/agency-information-collection-activities-submission-for-omb-review-comment-request-extension-rule) (SEC)
+- [Cliffwater Corporate Lending Fund, et al.](https://www.federalregister.gov/documents/2026/07/17/2026-14413/cliffwater-corporate-lending-fund-et-al) (SEC)
+- [Self-Regulatory Organizations; Cboe EDGX Exchange, Inc.; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend the Options Regulatory Fee (“ORF”)](https://www.federalregister.gov/documents/2026/07/17/2026-14411/self-regulatory-organizations-cboe-edgx-exchange-inc-notice-of-filing-and-immediate-effectiveness-of) (SEC)
+- [Joint Industry Plan; Notice of Filing and Immediate Effectiveness of the Fourth Amendment to the Limited Liability Company Agreement of CT Plan LLC](https://www.federalregister.gov/documents/2026/07/17/2026-14410/joint-industry-plan-notice-of-filing-and-immediate-effectiveness-of-the-fourth-amendment-to-the) (SEC)
+- [Self-Regulatory Organizations; Nasdaq PHLX LLC; Notice of Filing and Immediate Effectiveness of Proposed Rule Change To Amend Options 7, Section 4](https://www.federalregister.gov/documents/2026/07/17/2026-14409/self-regulatory-organizations-nasdaq-phlx-llc-notice-of-filing-and-immediate-effectiveness-of) (SEC)
+- [Self-Regulatory Organizations; Nasdaq PHLX LLC; Notice of Filing and Immediate Effectiveness of Proposed Rule Change To Amend the PHLX Pricing Schedule at Options 7, Section 4, Multiply Listed Options Fees](https://www.federalregister.gov/documents/2026/07/17/2026-14408/self-regulatory-organizations-nasdaq-phlx-llc-notice-of-filing-and-immediate-effectiveness-of) (SEC)
+- [Self-Regulatory Organizations; MIAX Sapphire, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Rule 100, Definitions, and Rule 204, Members and Persons Associated With a Member Who Are or Become Subject to a Statutory Disqualification](https://www.federalregister.gov/documents/2026/07/17/2026-14407/self-regulatory-organizations-miax-sapphire-llc-notice-of-filing-and-immediate-effectiveness-of-a) (SEC)
+- [Self-Regulatory Organizations; MIAX PEARL, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Rule 100, Definitions, and Rule 204. Members and Persons Associated With a Member Who Are or Become Subject to a Statutory Disqualification](https://www.federalregister.gov/documents/2026/07/17/2026-14406/self-regulatory-organizations-miax-pearl-llc-notice-of-filing-and-immediate-effectiveness-of-a) (SEC)
+- [Self-Regulatory Organizations; Miami International Securities Exchange, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Rule 100, Definitions, and Rule 204, Members and Persons Associated With a Member Who Are or Become Subject to a Statutory Disqualification](https://www.federalregister.gov/documents/2026/07/17/2026-14405/self-regulatory-organizations-miami-international-securities-exchange-llc-notice-of-filing-and) (SEC)
+- [Self-Regulatory Organizations; MIAX Emerald, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Rule 100, Definitions, and Rule 204, Members and Persons Associated With a Member Who Are or Become Subject to a Statutory Disqualification](https://www.federalregister.gov/documents/2026/07/17/2026-14404/self-regulatory-organizations-miax-emerald-llc-notice-of-filing-and-immediate-effectiveness-of-a) (SEC)
+- [Self-Regulatory Organizations; NYSE Arca, Inc.; Notice of Filing and Immediate Effectiveness of Proposed Rule Change To Amend the NYSE Arca Equities Fees and Charges](https://www.federalregister.gov/documents/2026/07/17/2026-14403/self-regulatory-organizations-nyse-arca-inc-notice-of-filing-and-immediate-effectiveness-of-proposed) (SEC)
+- [Self-Regulatory Organizations; Miami International Securities Exchange, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend the Fee Schedule](https://www.federalregister.gov/documents/2026/07/17/2026-14402/self-regulatory-organizations-miami-international-securities-exchange-llc-notice-of-filing-and) (SEC)
+- [Self-Regulatory Organizations; New York Stock Exchange LLC; Notice of Filing and Immediate Effectiveness of Proposed Rule Change To Amend Its Price List](https://www.federalregister.gov/documents/2026/07/17/2026-14401/self-regulatory-organizations-new-york-stock-exchange-llc-notice-of-filing-and-immediate) (SEC)
+- [Self-Regulatory Organizations; Cboe BZX Exchange, Inc.; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend the Options Regulatory Fee (“ORF”)](https://www.federalregister.gov/documents/2026/07/17/2026-14400/self-regulatory-organizations-cboe-bzx-exchange-inc-notice-of-filing-and-immediate-effectiveness-of) (SEC)
+- [Self-Regulatory Organizations; Cboe C2 Exchange, Inc.; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend the Options Regulatory Fee (“ORF”)](https://www.federalregister.gov/documents/2026/07/17/2026-14399/self-regulatory-organizations-cboe-c2-exchange-inc-notice-of-filing-and-immediate-effectiveness-of-a) (SEC)
+- [Self-Regulatory Organizations; Cboe Exchange, Inc.; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend the Options Regulatory Fee (“ORF”)](https://www.federalregister.gov/documents/2026/07/17/2026-14398/self-regulatory-organizations-cboe-exchange-inc-notice-of-filing-and-immediate-effectiveness-of-a) (SEC)
+- [Self-Regulatory Organizations; National Securities Clearing Corporation; Order Approving Proposed Rule Change To Enhance NSCC's Clearing Fund Methodology](https://www.federalregister.gov/documents/2026/07/17/2026-14397/self-regulatory-organizations-national-securities-clearing-corporation-order-approving-proposed-rule) (SEC)
+- [Self-Regulatory Organizations; Cboe BZX Exchange, Inc.; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Exchange Rule 11.23](https://www.federalregister.gov/documents/2026/07/17/2026-14396/self-regulatory-organizations-cboe-bzx-exchange-inc-notice-of-filing-and-immediate-effectiveness-of) (SEC)
+

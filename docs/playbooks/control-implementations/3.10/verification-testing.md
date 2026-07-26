@@ -1,19 +1,33 @@
 # Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information — Verification & Testing
 
-Test cases and evidence collection procedures to validate privacy controls for consumer financial information in Copilot interactions, including the incident response program requirements under the 2023 Reg S-P amendments.
+Test cases and evidence collection procedures to validate privacy controls for consumer financial information in Copilot interactions, including the incident response program requirements from the Reg S-P amendments proposed in 2023 and adopted by the SEC in May 2024 (Release No. 34-100155).
 
 ## Test Cases
 
-### Test 1: DLP Detection of NPI in Copilot Interactions
+### Test 1: DLP Detection of NPI in Copilot Interactions and Policy Plane Verification
 
-- **Objective:** Verify that DLP policies detect nonpublic personal information in Copilot-assisted communications
+- **Objective:** Verify that DLP policies detect nonpublic personal information in Copilot-assisted communications and are configured on the Copilot workload/enforcement plane
 - **Steps:**
   1. Using a test account, draft an email with Copilot that contains test SSN and account number data.
   2. Attempt to send the email to an external recipient.
   3. Verify that the DLP policy tip appears warning about NPI content.
-  4. Confirm that high-volume NPI triggers blocking behavior.
-- **Expected Result:** DLP detects NPI content, displays policy tips, and blocks high-volume transmissions.
-- **Evidence:** Screenshots of DLP policy tips and block notifications.
+  4. Run:
+     ```powershell
+     Connect-IPPSSession
+     $policies = @(Get-DlpCompliancePolicy)
+     if (-not $policies) { throw "Fail closed: no DLP policies returned." }
+     foreach ($p in $policies) {
+         foreach ($name in @("Workload","EnforcementPlanes","Locations")) {
+             if (-not $p.PSObject.Properties[$name]) { throw "Fail closed: missing required property for verification." }
+         }
+     }
+     $matches = @($policies | Where-Object { $_.Workload -eq "Applications" -and $_.EnforcementPlanes -contains "CopilotExperiences" })
+     if (-not $matches) { throw "Fail closed: no Copilot DLP policy found for Workload=Applications and EnforcementPlane=CopilotExperiences." }
+     $matches | Select-Object Name, Enabled, Mode, Workload, EnforcementPlanes, Locations
+     ```
+  5. Confirm that high-volume NPI triggers blocking behavior.
+- **Expected Result:** DLP detects NPI content, displays policy tips, blocks high-volume transmissions, and at least one policy is verified with `Workload=Applications` and `CopilotExperiences` enforcement.
+- **Evidence:** Screenshots of DLP policy tips/block notifications and PowerShell output showing `Workload`, `EnforcementPlanes`, and `Locations`.
 
 ### Test 2: Information Barrier Enforcement
 
