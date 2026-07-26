@@ -32,7 +32,7 @@ The FSI Copilot Governance Framework uses a three-layer documentation model to s
         v                       v                       v
 +============================================================================+
 |                                                                            |
-|  LAYER 2: CONTROLS  (58 technical controls)                                |
+|  LAYER 2: CONTROLS  ({{ counts.controls }} technical controls)                                |
 |  What to configure and why                                                 |
 |  Audience: Compliance officers, architects                                 |
 |  Update frequency: Quarterly                                               |
@@ -41,13 +41,13 @@ The FSI Copilot Governance Framework uses a three-layer documentation model to s
 |  | Pillar 1:        | | Pillar 2:        | | Pillar 3:        |            |
 |  | Readiness &      | | Security &       | | Compliance &     |            |
 |  | Assessment       | | Protection       | | Audit            |            |
-|  | (16 controls)    | | (17 controls)    | | (15 controls)    |            |
+|  | ({{ pillar_count(1) }} controls)    | | ({{ pillar_count(2) }} controls)    | | ({{ pillar_count(3) }} controls)    |            |
 |  +------------------+ +------------------+ +------------------+            |
 |  +------------------+                                                      |
 |  | Pillar 4:        |                                                      |
 |  | Operations &     |                                                      |
 |  | Monitoring       |                                                      |
-|  | (15 controls)    |                                                      |
+|  | ({{ pillar_count(4) }} controls)    |                                                      |
 |  +------------------+                                                      |
 |                                                                            |
 +============================================================================+
@@ -55,12 +55,12 @@ The FSI Copilot Governance Framework uses a three-layer documentation model to s
         v                       v                       v
 +============================================================================+
 |                                                                            |
-|  LAYER 3: PLAYBOOKS  (224 implementation procedures)                       |
+|  LAYER 3: PLAYBOOKS  ({{ counts.playbooks_total }} implementation procedures)                       |
 |  How to configure step-by-step                                             |
 |  Audience: Platform teams, operations                                      |
 |  Update frequency: Continuous (as Microsoft portals change)                |
 |                                                                            |
-|  Each control has 4 playbooks:                                             |
+|  Each control has up to 4 playbooks:                                        |
 |  [Portal Walkthrough] [PowerShell Setup] [Verification & Testing] [Troubleshooting] |
 |                                                                            |
 +============================================================================+
@@ -77,7 +77,7 @@ This separation provides governance stability while allowing rapid updates to im
 |     PILLAR 1      |     PILLAR 2      |     PILLAR 3      |     PILLAR 4      |
 |    Readiness &    |    Security &     |   Compliance &    |   Operations &    |
 |    Assessment     |    Protection     |      Audit        |    Monitoring     |
-|   (16 controls)   |   (17 controls)   |   (15 controls)   |   (15 controls)   |
+|   ({{ pillar_count(1) }} controls)   |   ({{ pillar_count(2) }} controls)   |   ({{ pillar_count(3) }} controls)   |   ({{ pillar_count(4) }} controls)   |
 +-------------------+-------------------+-------------------+-------------------+
 | Data hygiene,     | DLP, labels,      | Audit logging,    | Feature toggles,  |
 | oversharing,      | conditional       | retention,        | analytics, cost,  |
@@ -88,10 +88,10 @@ This separation provides governance stability while allowing rapid updates to im
 
 | Pillar | Focus | Controls | Primary Admin Portals |
 |--------|-------|----------|-----------------------|
-| **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | 15 | Purview, SharePoint Admin, M365 Admin |
-| **2. Security & Protection** | DLP, sensitivity labels, conditional access, information barriers, Defender | 15 | Purview, Entra, Defender |
-| **3. Compliance & Audit** | Audit logging, retention, eDiscovery, FINRA 2210, supervision, regulatory reporting | 13 | Purview, M365 Admin |
-| **4. Operations & Monitoring** | Feature management, per-app toggles, analytics, cost tracking, incident response | 13 | M365 Admin, Viva Insights, Teams Admin |
+| **1. Readiness & Assessment** | Pre-deployment data hygiene, oversharing, permissions, licensing | {{ pillar_count(1) }} | Purview, SharePoint Admin, M365 Admin |
+| **2. Security & Protection** | DLP, sensitivity labels, conditional access, information barriers, Defender | {{ pillar_count(2) }} | Purview, Entra, Defender |
+| **3. Compliance & Audit** | Audit logging, retention, eDiscovery, FINRA 2210, supervision, regulatory reporting | {{ pillar_count(3) }} | Purview, M365 Admin |
+| **4. Operations & Monitoring** | Feature management, per-app toggles, analytics, cost tracking, incident response | {{ pillar_count(4) }} | M365 Admin, Viva Insights, Teams Admin |
 
 ---
 
