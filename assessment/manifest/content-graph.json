@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-25T20:53:59Z",
+  "generatedAt": "2026-07-26T19:38:14Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -197,7 +197,7 @@
       "tier": "Baseline",
       "title": "Control 1.12: Training and Awareness Program",
       "path": "docs/controls/pillar-1-readiness/1.12-training-awareness.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "FINRA Rule 3110",
         "FFIEC IT Handbook (Information Security Booklet)",
