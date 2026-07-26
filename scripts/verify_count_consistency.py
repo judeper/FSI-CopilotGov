@@ -8,7 +8,14 @@ is the back-stop that catches anything still hand-typed.
 Scans markdown, JS/TS, Python and YAML source files for phrases of the form
 ``<N> controls``, ``<N> playbooks``, ``<N> solutions``, ``<N> pillars`` and
 fails when the integer is not in the allowed set derived from
-``assessment/manifest/content-graph.json``.
+``assessment/manifest/content-graph.json``. A short qualifier is tolerated
+between the number and the noun (``58 technical controls``), and
+``implementation procedures`` is treated as a playbook synonym, because both
+forms previously let stale headline counts through.
+
+Known limitation: counts rendered as bare table cells (a ``| 15 |`` column with
+no adjacent noun) carry no keyword to anchor on and cannot be detected here.
+Those must be authored as macros (``{{ pillar_count(4) }}``) instead.
 
 Intentional historical references (CHANGELOG, dated release notes, this file
 itself, the verifier's own test) are exempted. Per-pillar control counts are
@@ -26,8 +33,17 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 GRAPH_PATH = REPO_ROOT / "assessment" / "manifest" / "content-graph.json"
 
 PATTERNS: dict[str, re.Pattern[str]] = {
-    "controls":  re.compile(r"\b(\d{2,3})\s+controls\b", re.IGNORECASE),
-    "playbooks": re.compile(r"\b(\d{2,4})\s+playbooks\b", re.IGNORECASE),
+    # An optional qualifier ("58 technical controls", "54 governance controls")
+    # is matched so adjective-separated headline claims cannot slip past.
+    "controls":  re.compile(
+        r"\b(\d{2,3})\s+(?:technical|governance|total|framework|documented)?\s*controls\b",
+        re.IGNORECASE,
+    ),
+    # "implementation procedures" is a long-standing synonym for playbooks in the
+    # framework layer diagrams.
+    "playbooks": re.compile(
+        r"\b(\d{2,4})\s+(?:playbooks|implementation\s+procedures)\b", re.IGNORECASE
+    ),
     "solutions": re.compile(r"\b(\d{1,3})\s+(?:sister\s+)?solutions\b", re.IGNORECASE),
     "pillars":   re.compile(r"\b(\d)\s+pillars\b", re.IGNORECASE),
 }

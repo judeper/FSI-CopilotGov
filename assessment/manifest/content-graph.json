@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-17T13:28:45Z",
+  "generatedAt": "2026-07-25T20:53:59Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -156,7 +156,7 @@
       "tier": "Baseline",
       "title": "Control 1.9: License Planning and Copilot Assignment Strategy",
       "path": "docs/controls/pillar-1-readiness/1.9-license-planning.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (IT Operations)",
@@ -623,7 +623,7 @@
       "tier": "Baseline",
       "title": "Control 3.11: Record Keeping and Books-and-Records Compliance (SEC 17a-3/4, FINRA 4511)",
       "path": "docs/controls/pillar-3-compliance/3.11-record-keeping.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-21",
       "regulatory_references": [
         "SEC Rule 17a-3 (Records to Be Made)",
         "SEC Rule 17a-4 (Records to Be Preserved)",
