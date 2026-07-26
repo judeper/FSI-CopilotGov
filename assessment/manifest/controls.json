@@ -1035,7 +1035,7 @@
   },
   {
     "id": "1.13",
-    "title": "Control 1.13: Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)",
+    "title": "Control 1.13: Extensibility Readiness (Copilot Connectors, Plugins, Declarative Agents)",
     "pillar": 1,
     "pillar_name": "Readiness & Assessment",
     "source_file": "docs/controls/pillar-1-readiness/1.13-extensibility-readiness.md",
@@ -1057,7 +1057,7 @@
       }
     },
     "manual_question": "Has an extensibility / agent governance framework (declarative agents, plug-ins, MCP) been formally adopted before enabling extensibility surfaces?",
-    "name": "Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)",
+    "name": "Extensibility Readiness (Copilot Connectors, Plugins, Declarative Agents)",
     "zonesApplicable": [
       1,
       2,
@@ -1162,8 +1162,8 @@
     "verifyIn": [
       {
         "portal": "Microsoft Purview portal",
-        "path": "DSPM for AI > Reports",
-        "url": "https://purview.microsoft.com/aihub"
+        "path": "DSPM > Discover > Data risk assessments",
+        "url": "https://purview.microsoft.com/datasecurityposturemanagement"
       }
     ],
     "verifyPowerShell": "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; Get-SPOSite -Identity https://<site-url> | Select-Object Url, SharingCapability",

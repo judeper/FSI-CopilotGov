@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-25T20:53:59Z",
+  "generatedAt": "2026-07-26T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -49,7 +49,7 @@
       "tier": "Baseline",
       "title": "Control 1.1: Copilot Readiness Assessment and Data Hygiene",
       "path": "docs/controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -169,7 +169,7 @@
       "tier": "Regulated",
       "title": "Control 1.10: Vendor Risk Management for Microsoft AI Services",
       "path": "docs/controls/pillar-1-readiness/1.10-vendor-risk-management.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "OCC Bulletin 2023-17",
         "Interagency Guidance on Third-Party Relationships (2023)",
@@ -183,7 +183,7 @@
       "tier": "Recommended",
       "title": "Control 1.11: Organizational Change Management and Adoption Planning",
       "path": "docs/controls/pillar-1-readiness/1.11-change-management-adoption.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "FFIEC IT Handbook (Management)",
         "Interagency AI Guidance (2023)",
@@ -197,7 +197,7 @@
       "tier": "Baseline",
       "title": "Control 1.12: Training and Awareness Program",
       "path": "docs/controls/pillar-1-readiness/1.12-training-awareness.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "FINRA Rule 3110",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -209,9 +209,9 @@
       "id": "1.13",
       "pillar": 1,
       "tier": "Regulated",
-      "title": "Control 1.13: Extensibility Readiness (Graph Connectors, Plugins, Declarative Agents)",
+      "title": "Control 1.13: Extensibility Readiness (Copilot Connectors, Plugins, Declarative Agents)",
       "path": "docs/controls/pillar-1-readiness/1.13-extensibility-readiness.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -225,7 +225,7 @@
       "tier": "Recommended",
       "title": "Control 1.14: Item-Level Permission Scanning",
       "path": "docs/controls/pillar-1-readiness/1.14-item-level-permission-scanning.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Rule 17a-4",
