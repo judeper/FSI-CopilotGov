@@ -4,16 +4,17 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
 
 ## Common Issues
 
-### Issue 1: Optimization Assessment Shows Low Update Channel Compliance
+### Issue 1: Readiness Report Shows Low Update Channel Eligibility
 
-- **Symptoms:** The Optimization Assessment reports that a high percentage of endpoints are on Semi-Annual Enterprise Channel or an unsupported Office update channel
-- **Root Cause:** Semi-Annual Enterprise Channel does not receive Copilot feature updates. Endpoints on this channel may install the Copilot license but will not have access to the latest Copilot capabilities.
+- **Symptoms:** The Microsoft 365 Copilot readiness report shows that a low percentage of users are on an eligible Microsoft 365 Apps update channel
+- **Root Cause:** Endpoints are on an update channel that the readiness report does not count as eligible. Historically, Semi-Annual Enterprise Channel did not deliver Copilot features. Beginning with the Version 2606 update release in July 2026, Microsoft unified Semi-Annual Enterprise Channel with Monthly Enterprise Channel, so devices become eligible once Version 2606 or later is installed — but some management tools and reports continue to display the Semi-Annual Enterprise Channel label after the update, which can make eligible devices appear ineligible.
 - **Resolution:**
-  1. Use Microsoft Intune (Devices > Configuration profiles > Settings catalog > search for Update Channel under Microsoft Office 2016 (Machine) > Updates) to move endpoints from Semi-Annual Enterprise Channel to Current Channel or Monthly Enterprise Channel
-  2. For Group Policy-managed environments, update the "Update Channel" policy to "Current Channel" (or "Monthly Enterprise Channel" for environments requiring monthly patch cycles)
-  3. For a phased approach, move Copilot pilot users first, then expand as each group transitions channels
-  4. Allow 1-7 days for channel transitions to complete after policy change
-  5. Re-run the Optimization Assessment to confirm update channel compliance improves after the transition
+  1. Check installed builds rather than channel names. Devices with build numbers higher than 20131.20000 have installed Version 2606 and receive the Monthly Enterprise Channel experience
+  2. Use Microsoft Intune (Devices > Configuration profiles > Settings catalog > search for Update Channel under Microsoft Office 2016 (Machine) > Updates) to move remaining endpoints to Current Channel or Monthly Enterprise Channel
+  3. For Group Policy-managed environments, update the "Update Channel" policy to "Current Channel" (or "Monthly Enterprise Channel" for environments requiring monthly patch cycles)
+  4. For a phased approach, move Copilot pilot users first, then expand as each group transitions channels
+  5. Allow 1-7 days for channel transitions to complete after policy change
+  6. Re-check the readiness report to confirm update channel eligibility improves after the transition
 
 ### Issue 2: Copilot Readiness Dashboard Shows No Data
 
