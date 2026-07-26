@@ -79,6 +79,7 @@ def test_docs_scope_and_deterministic_validation_contract() -> None:
         "pytest scripts/test_branch_protection_config.py -q",
         "python scripts/verify_controls.py",
         "python scripts/verify_language_rules.py",
+        "python scripts/verify_regulatory_citations.py",
         "python scripts/verify_commercial_scope.py",
         "python scripts/build_content_graph.py",
         "python scripts/validate_content_graph.py",

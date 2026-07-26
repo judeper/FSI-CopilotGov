@@ -60,6 +60,9 @@ jobs:
       - name: Validate Language Rules
         run: python scripts/verify_language_rules.py
 
+      - name: Validate Regulatory Citations
+        run: python scripts/verify_regulatory_citations.py
+
       - name: Build Content Graph (canonical metadata)
         run: python scripts/build_content_graph.py
 
