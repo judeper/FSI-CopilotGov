@@ -53,7 +53,7 @@ This homework supports engagements where the working session will produce artifa
 ## Security Admin
 
 - Produce the **Defender XDR Copilot-related incident inventory** for the past 12 months with mean-time-to-detect / mean-time-to-respond metrics (Control 2.9, 4.9).
-- Export **network security posture** — Private Link configuration, named locations, tenant restrictions v2, and any egress controls specific to Copilot (Control 2.15).
+- Export **network security posture** — Global Secure Access, named locations, tenant restrictions v2, and any egress controls specific to Copilot; Private Link configuration only for adjacent Azure resources (Control 2.15).
 - Capture **Sentinel workbook** evidence aggregating Copilot audit, DLP, insider-risk, and agent-identity signals (Control 4.11).
 - Download the role checklist: [security-admin-checklist.xlsx](../assessment/templates/security-admin-checklist.xlsx).
 

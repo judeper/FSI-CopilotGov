@@ -5,7 +5,7 @@ Automation scripts for verifying and monitoring network security for Copilot con
 ## Prerequisites
 
 - Microsoft Graph PowerShell SDK
-- Azure PowerShell module (for Private Link verification)
+- Azure PowerShell module (only for verifying Private Link on adjacent Azure resources an internal agent calls — not for M365 Copilot)
 - Network Administrator role
 
 ## Scripts
@@ -47,21 +47,23 @@ if ($failures -gt 0) {
 }
 ```
 
-### Script 2: Azure Private Link Status Check
+### Script 2: Azure Private Link Status Check (Adjacent Azure Resources Only)
 
 ```powershell
-# Verify Azure Private Link configuration for M365 (if deployed)
+# Enumerate Azure Private Link endpoints for ADJACENT Azure resources an internal
+# Copilot Studio agent calls (e.g., an Azure-hosted API, Azure SQL, Storage).
+# Azure Private Link does NOT apply to M365 Copilot: Microsoft 365 (SharePoint
+# Online, Exchange Online, Teams, Copilot) is internet-facing SaaS with no
+# customer-managed private endpoints. Do not expect M365/Copilot endpoints here.
 # Requires: Azure PowerShell module
 
 Import-Module Az.Network
 Connect-AzAccount
 
-$privateEndpoints = Get-AzPrivateEndpoint | Where-Object {
-    $_.PrivateLinkServiceConnections.GroupIds -match "sharePoint|exchange"
-}
+$privateEndpoints = Get-AzPrivateEndpoint
 
 if ($privateEndpoints.Count -gt 0) {
-    Write-Host "=== Azure Private Link Status ==="
+    Write-Host "=== Azure Private Link Status (adjacent Azure resources) ==="
     foreach ($pe in $privateEndpoints) {
         Write-Host "Name: $($pe.Name)"
         Write-Host "  Status: $($pe.ProvisioningState)"
@@ -70,8 +72,9 @@ if ($privateEndpoints.Count -gt 0) {
         Write-Host ""
     }
 } else {
-    Write-Host "No Azure Private Link endpoints configured for Microsoft 365."
-    Write-Host "Private Link is optional but recommended for regulated FSI environments."
+    Write-Host "No Azure Private Link endpoints configured."
+    Write-Host "Private Link is not applicable to M365 Copilot SaaS; use it only for"
+    Write-Host "adjacent Azure resources (e.g., an Azure-hosted API an internal agent calls)."
 }
 ```
 
@@ -107,7 +110,7 @@ $locationReport | Export-Csv "NamedLocations_$(Get-Date -Format 'yyyyMMdd').csv"
 | Task | Frequency | Purpose |
 |------|-----------|---------|
 | Endpoint Connectivity Test | Daily | Verify Copilot endpoint accessibility |
-| Private Link Status Check | Weekly | Monitor Private Link health |
+| Private Link Status Check | Weekly | Monitor Private Link health for adjacent Azure resources (if any) |
 | Named Location Audit | Quarterly | Verify network location definitions |
 
 ## Next Steps

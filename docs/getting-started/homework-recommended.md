@@ -57,7 +57,7 @@ Owns deeper DLP, retention, eDiscovery, and communication compliance (2.1, 3.2, 
 ## Security Admin
 
 - Export **Defender for Cloud Apps** session policies, anomaly detection policies, and Copilot-connected app risk scores (Control 2.9).
-- Produce **network security** posture for Copilot egress — Private Link, named locations, tenant restrictions (Control 2.15).
+- Produce **network security** posture for Copilot egress — Global Secure Access, named locations, tenant restrictions; Private Link only for adjacent Azure resources (Control 2.15).
 - Capture **Sentinel analytics rules** subscribed to Copilot audit data (Control 4.11).
 - Download the role checklist: [security-admin-checklist.xlsx](../assessment/templates/security-admin-checklist.xlsx).
 

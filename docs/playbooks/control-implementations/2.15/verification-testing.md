@@ -15,16 +15,16 @@ Test cases and evidence collection for validating network security controls.
 - **Expected Result:** All Copilot endpoints reachable with acceptable latency (<100ms)
 - **Evidence:** Connectivity test results from multiple locations
 
-### Test 2: Private Link Connectivity (if deployed)
+### Test 2: Private Link Scope for Adjacent Azure Resources (if deployed)
 
-- **Objective:** Verify Private Link endpoints are functioning correctly
+- **Objective:** Confirm Azure Private Link is correctly scoped — protecting *adjacent Azure resources* an internal Copilot Studio agent calls, not M365 Copilot itself (which has no customer-managed private endpoints)
 - **Steps:**
-  1. Run Script 2 to check Private Link status
-  2. Resolve SharePoint URLs and verify they resolve to private IP addresses
-  3. Test Copilot functionality through the Private Link connection
-  4. Verify public endpoint access is blocked (if configured)
-- **Expected Result:** Traffic routes through Private Link with correct DNS resolution
-- **Evidence:** DNS resolution results and connectivity test
+  1. Run Script 2 to enumerate private endpoints for the agent's adjacent Azure resources
+  2. Resolve the Azure resource's private DNS name and verify it resolves to a private IP address
+  3. Verify the internal agent's Azure backend is reachable through the private endpoint
+  4. Confirm M365/Copilot endpoints resolve to public Microsoft IPs — this is expected for SaaS and is **not** a fault
+- **Expected Result:** Adjacent Azure resources route through Private Link with correct private DNS resolution; M365 Copilot traffic remains internet/SASE with no customer-managed private endpoint
+- **Evidence:** DNS resolution results for the Azure resource and connectivity test
 
 ### Test 3: Firewall Rule Verification
 
@@ -52,7 +52,7 @@ Test cases and evidence collection for validating network security controls.
 | Evidence Item | Format | Storage Location | Retention |
 |--------------|--------|-----------------|-----------|
 | Endpoint connectivity results | CSV | Compliance evidence repository | 7 years |
-| Private Link configuration | PDF/CSV | Compliance evidence repository | 7 years |
+| Private Link configuration (adjacent Azure resources, if any) | PDF/CSV | Compliance evidence repository | 7 years |
 | Firewall rule documentation | PDF | Compliance evidence repository | 7 years |
 | Network architecture diagram | PDF | Compliance evidence repository | 7 years |
 
@@ -62,6 +62,6 @@ Test cases and evidence collection for validating network security controls.
 |-----------|-------------|------------------------------|
 | FFIEC IT Handbook | Network security | Network controls support compliance with FFIEC network security requirements |
 | PCI DSS Req 1 | Network segmentation | Network security controls help meet network segmentation requirements |
-| NIST CSF | PR.AC-5 Network integrity | Private connectivity supports compliance with network integrity protection |
+| NIST CSF | PR.AC-5 Network integrity | Network controls (Conditional Access, Global Secure Access, tenant restrictions) support compliance with network integrity protection |
 | SOX Section 404 | Network access controls | Network security documents internal controls for technology access |
 - Back to [Control 2.15](../../../controls/pillar-2-security/2.15-network-security.md)

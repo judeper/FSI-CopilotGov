@@ -15,15 +15,18 @@ Common issues and resolution steps for network security controls.
   4. Verify SSL inspection exceptions are configured for Microsoft 365 endpoints
   5. Review firewall logs for blocked connections to Copilot service endpoints
 
-### Issue 2: Private Link DNS Resolution Failures
+### Issue 2: Private Link DNS Resolution Failures (Adjacent Azure Resources)
 
-- **Symptoms:** SharePoint or other M365 services resolve to public IP addresses instead of private endpoints, or DNS resolution fails entirely
-- **Root Cause:** Private DNS zones may not be correctly configured, or DNS forwarding rules may not cover all required domains.
+- **Symptoms:** An *adjacent Azure resource* an internal Copilot Studio agent calls (e.g., an Azure-hosted API) resolves to a public IP instead of its private endpoint, or DNS resolution fails entirely
+- **Root Cause:** Private DNS zones for the Azure resource may not be correctly configured, or DNS forwarding rules may not cover the resource's private domain.
 - **Resolution:**
-  1. Verify Azure Private DNS zones are created for all required M365 domains
+  1. Verify Azure Private DNS zones are created for the adjacent Azure resource's domain
   2. Check DNS forwarding configuration on corporate DNS servers
-  3. Test DNS resolution using `nslookup <tenant>.sharepoint.com` from within the corporate network
+  3. Test DNS resolution against the Azure resource's private FQDN from within the corporate network
   4. Verify the Private DNS zone is linked to the correct virtual network
+
+!!! note "M365/Copilot resolving to public Microsoft IPs is expected"
+    Azure Private Link does **not** apply to Microsoft 365 Copilot. M365 endpoints (SharePoint Online, Exchange Online, Teams, Copilot) correctly resolve to public Microsoft IP addresses — that is by design for internet-facing SaaS, not a DNS fault. Govern M365 Copilot traffic with Conditional Access, Global Secure Access, and tenant restrictions, not private endpoints.
 
 ### Issue 3: Firewall Blocking Required Copilot Endpoints
 
@@ -69,7 +72,7 @@ Common issues and resolution steps for network security controls.
 |----------|-----------|----------------|
 | **Low** | Minor latency variations between locations | Network Operations |
 | **Medium** | Endpoint connectivity failures from specific locations | Network Operations and ISP |
-| **High** | Private Link non-functional | Azure team and Network Operations |
+| **High** | Private Link non-functional for an adjacent Azure resource an internal agent calls | Azure team and Network Operations |
 | **Critical** | All Copilot endpoints unreachable | Network Operations and Microsoft support immediately |
 
 ## Related Resources
