@@ -1158,8 +1158,8 @@
     "verifyIn": [
       {
         "portal": "Microsoft Purview portal",
-        "path": "DSPM for AI > Reports",
-        "url": "https://purview.microsoft.com/aihub"
+        "path": "DSPM > Discover > Data risk assessments",
+        "url": "https://purview.microsoft.com/datasecurityposturemanagement"
       }
     ],
     "verifyPowerShell": "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; Get-SPOSite -Identity https://<site-url> | Select-Object Url, SharingCapability",
