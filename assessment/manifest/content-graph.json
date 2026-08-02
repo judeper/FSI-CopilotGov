@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-07-26T00:00:00Z",
+  "generatedAt": "2026-08-02T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -103,7 +103,7 @@
       "tier": "Baseline",
       "title": "Control 1.5: Sensitivity Label Taxonomy Review for Copilot",
       "path": "docs/controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-02",
       "regulatory_references": [
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
