@@ -66,7 +66,7 @@ Feature-by-control applicability matrix showing which governance controls apply 
 | **Copilot Chat (Premium / Microsoft 365 Copilot)** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported |
 | **Microsoft 365 Copilot Search** | Partial | Partial | Supported | Supported | Partial | Partial | Supported | N/A | Supported |
 | **Copilot Pages** | Supported | Supported | Supported | Supported | Supported | Supported | Partial | N/A | Supported |
-| **Copilot Notebooks** | Supported | Partial | Supported | Supported | Supported | Supported | Partial | N/A | Supported |
+| **Copilot Notebooks** | Supported | N/A | Supported | Supported | Supported | Supported | Partial | N/A | Supported |
 | **Edit with Copilot (Agent Mode)** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Partial | Supported |
 | **Copilot Cowork** | Supported | Supported | Supported | Supported | Supported | Partial | Supported | Partial | Supported |
 | **Microsoft Scout (Frontier preview)** | Partial | Partial | Supported | Partial | Partial | Partial | Partial | N/A | Partial |
