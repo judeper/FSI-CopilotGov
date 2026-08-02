@@ -24,18 +24,18 @@ Enable Copilot-relevant and AI-relevant indicators in the insider risk settings:
 - Bulk content summarization or extraction patterns
 - AI usage indicator category (Copilot query volume, agent interactions, AI app usage)
 
-### Step 2: Review Auto-Deployed Risky Agents Policy
+### Step 2: Review Default Risky Agents Policy
 
 **Portal:** Microsoft Purview
 **Path:** Microsoft Purview > Insider Risk Management > Policies
 
-Microsoft auto-deploys a Risky Agents policy for all Copilot Studio and Azure AI Foundry agents in the tenant (GA December 2025):
+The Risky Agents policy (in preview) is available by default to organizations with supported licenses — when Insider Risk Management is set up, this policy is automatically present and ready to generate alerts based on observed agent activity. It supports Copilot Studio agents, Microsoft Foundry agents, and agents built using the P4AI SDK:
 
 1. Locate the Risky Agents policy in the policy list
-2. Review the scope — confirm all deployed Copilot Studio and Azure AI Foundry agents are covered
+2. Review the scope — confirm all deployed Copilot Studio, Microsoft Foundry, and P4AI SDK agents are covered; verify the current preview status, licensing, and tenant availability before relying on it
 3. Review alert routing — configure agent risk alerts to route to both the compliance team and agent deployment owners
 4. Review default thresholds and customize for FSI context if needed
-5. Note: Microsoft prebuilt agents, third-party agents, and SharePoint agents are not yet covered by auto-deployment — apply compensating monitoring via DSPM for AI or Defender for Cloud Apps for these agent types
+5. Note: Microsoft prebuilt agents, third-party agents, and SharePoint agents are not listed among the supported agent types — apply compensating monitoring via DSPM for AI or Defender for Cloud Apps for these agent types
 
 ### Step 3: Create Insider Risk Policy for Copilot
 
@@ -58,16 +58,14 @@ Configure thresholds that define what constitutes elevated risk for Copilot usag
 - **Medium risk:** Significant increase in sensitive content access via Copilot, or AI usage volume 2x peer baseline
 - **High risk:** Bulk data extraction patterns, off-hours access to restricted content, agent data volume anomaly, or AI usage 3x+ peer baseline
 
-### Step 5: Enable Data Risk Graphs
+### Step 5: Set Up Data Risk Graphs
 
-**Portal:** Microsoft Purview
-**Path:** Microsoft Purview > Insider Risk Management > Investigations > Data risk graphs
+**Portal:** Microsoft Purview > Insider Risk Management > Recommended actions
 
-Data risk graphs (GA December 2025) visualize relationships between users, data assets, and AI interactions:
-1. Navigate to the investigation workspace and select the Data risk graphs view
-2. Configure graph time windows (14-day or 30-day views recommended for FSI environments)
-3. Use graphs to identify cross-department Copilot data access patterns (e.g., operations staff accessing trading data via Copilot)
-4. Incorporate graph review into the standard investigation procedure for high-risk alerts
+Data risk graphs provide a visual investigation experience — powered by Microsoft Sentinel integration — that summarizes a user's alert-related SharePoint and OneDrive exfiltration activity over the past 30 days:
+1. Select the **Set up data lake and data risk graph** recommended action and complete the Microsoft Sentinel data lake onboarding (the data lake uses pay-as-you-go billing; initial onboarding can take up to 60 minutes, with data risk graph availability for investigations taking 24-48 hours)
+2. After setup, open an alert at Insider Risk Management > Alerts and select the **Data risk graph** tab to review the connected assets, users, and exfiltration activity (anonymous/company sharing links, downloads, renames in SharePoint and OneDrive)
+3. Incorporate data risk graph review into the standard investigation procedure for alerts involving potential cross-department data movement
 
 ### Step 6: Enable IRM Triage Agent
 
@@ -108,8 +106,8 @@ Configure privacy controls to balance risk detection with employee privacy:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Enable insider risk detection with Copilot and AI usage indicators; review auto-deployed Risky Agents policy; enable IRM Triage Agent in read-only mode; basic alert monitoring |
-| **Recommended** | Policy templates for data leaks and departing employees; priority user groups for high-risk roles; data risk graphs for cross-department access visualization; IRM Triage Agent with auto-categorization; Risky Agents thresholds customized for FSI; SIEM integration |
+| **Baseline** | Enable insider risk detection with Copilot and AI usage indicators; review the default Risky Agents (preview) policy; enable IRM Triage Agent in read-only mode; basic alert monitoring |
+| **Recommended** | Policy templates for data leaks and departing employees; priority user groups for high-risk roles; data risk graph set up for alert investigation context (SharePoint/OneDrive exfiltration activity); IRM Triage Agent with auto-categorization; Risky Agents thresholds customized for FSI; SIEM integration |
 | **Regulated** | Comprehensive insider risk program with legal review; Risky Agents alerts reviewed within 24 hours; IRM Triage Agent with human-in-the-loop; Triage Agent documented as model per SR 11-7; pseudonymization enabled; formal investigation procedures; documented legal basis for monitoring |
 
 ## Next Steps
