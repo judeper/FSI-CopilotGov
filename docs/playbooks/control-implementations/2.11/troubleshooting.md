@@ -51,7 +51,7 @@ Common issues and resolution steps for Copilot Pages security.
 - **Resolution:**
   1. Before deleting a departing user's account, check whether their Pages/Notebooks content is subject to legal hold, regulatory retention, or active eDiscovery cases.
   2. If preservation is required, place a hold on the user's SharePoint Embedded container before account deletion.
-  3. Update the offboarding checklist to include a "Copilot Pages/Notebooks preservation check" step: add a custodian as a container owner to copy content, or use SharePoint PowerShell `Set-SPOContainer -CurrentPrincipalOwner <upn> -NewPrincipalOwner <upn>` to permanently reassign the container, as soon as the user departs rather than waiting for the active retention window to run out.
+  3. Update the offboarding checklist to include a "Copilot Pages/Notebooks preservation check" step: add a custodian as a container owner to copy content, or use SharePoint PowerShell `Set-SPOContainer -Identity <container> -CurrentPrincipalOwner <upn> -NewPrincipalOwner <upn>` to permanently reassign the container, as soon as the user departs rather than waiting for the active retention window to run out.
   4. If content has already entered the recycle bin, an administrator can restore the container during the fixed 93-day recycle-bin period; unlike the active retention period, this window is fixed and can't be extended.
   5. To lengthen the window before content reaches the recycle bin, configure the tenant's deleted-user retention period with `Set-SPOTenant -OrphanedPersonalSitesRetentionPeriod <days>` — the 93-day recycle-bin period itself is fixed and not configurable.
 

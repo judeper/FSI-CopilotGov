@@ -123,7 +123,7 @@ Feature-by-control applicability matrix showing which governance controls apply 
 ### Sensitivity Labels
 
 - **OneNote:** Sensitivity labels apply at the notebook/section level; granular page-level Copilot labeling behavior may vary.
-- **Copilot Notebooks:** Sensitivity label support is limited compared with Copilot Pages; test manual labels, auto-labeling, and label-based DLP before relying on labels as the primary control.
+- **Copilot Notebooks:** No Notebook-level sensitivity labels — Notebooks share a user-owned container with Copilot Pages and Loop My workspace and don't have container sensitivity labels. Automatic and recommended labeling aren't supported for Pages either; document DLP as the compensating control for Notebook content rather than relying on auto-labeling.
 - **Teams Meetings:** Sensitivity labels apply to meeting transcripts and summaries; real-time meeting content does not carry labels.
 - **Viva Engage:** Labels apply to attachments shared via Copilot but not to Engage conversation content directly.
 - **Copilot Search / Graph Connectors / declarative agents:** Label inheritance applies to content surfaced from labeled Microsoft 365 sources, but external connector content may not carry labels.
