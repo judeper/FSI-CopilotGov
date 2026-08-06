@@ -74,8 +74,8 @@ Data risk graphs provide a visual investigation experience — powered by Micros
 
 The IRM Triage Agent automates initial alert triage:
 1. Enable the Triage Agent after verifying the feature is available for your tenant
-2. Initial deployment: enable in read-only mode and review categorization quality for 30 days
-3. After validation, enable auto-categorization to drive investigator queue prioritization
+2. Initial deployment: select **Agent runs manually on one alert at a time** and review categorization quality for 30 days
+3. After validation, configure the agent to run automatically on a schedule for the selected alert timeframe
 4. For Regulated tier: configure human-in-the-loop requirement — alerts cannot be dismissed without investigator review of Triage Agent recommendation
 5. Document the Triage Agent in the firm's model inventory per OCC Bulletin 2011-12 (SR 11-7)
 
@@ -106,8 +106,8 @@ Configure privacy controls to balance risk detection with employee privacy:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Enable insider risk detection with Copilot and AI usage indicators; review the default Risky Agents (preview) policy; enable IRM Triage Agent in read-only mode; basic alert monitoring |
-| **Recommended** | Policy templates for data leaks and departing employees; priority user groups for high-risk roles; data risk graph set up for alert investigation context (SharePoint/OneDrive exfiltration activity); IRM Triage Agent with auto-categorization; Risky Agents thresholds customized for FSI; SIEM integration |
+| **Baseline** | Enable insider risk detection with Copilot and AI usage indicators; review the default Risky Agents (preview) policy; deploy the IRM Triage Agent in manual, one-alert-at-a-time mode; basic alert monitoring |
+| **Recommended** | Policy templates for data leaks and departing employees; priority user groups for high-risk roles; data risk graph set up for alert investigation context (SharePoint/OneDrive exfiltration activity); IRM Triage Agent running automatically on a reviewed schedule; Risky Agents thresholds customized for FSI; SIEM integration |
 | **Regulated** | Comprehensive insider risk program with legal review; Risky Agents alerts reviewed within 24 hours; IRM Triage Agent with human-in-the-loop; Triage Agent documented as model per SR 11-7; pseudonymization enabled; formal investigation procedures; documented legal basis for monitoring |
 
 ## Next Steps
