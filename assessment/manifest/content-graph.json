@@ -239,7 +239,7 @@
       "tier": "Recommended",
       "title": "Control 1.15: SharePoint Permissions Drift Detection",
       "path": "docs/controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Rule 17a-4",
