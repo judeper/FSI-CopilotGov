@@ -17,14 +17,14 @@ Test cases and evidence collection for validating insider risk detection for Cop
 
 ### Test 2: Risky Agents Policy Verification
 
-- **Objective:** Confirm the Risky Agents policy is active and covers all deployed agents
+- **Objective:** Confirm the Risky Agents (preview) policy is active and covers all deployed agent types
 - **Steps:**
   1. Navigate to Microsoft Purview > Insider Risk Management > Policies
-  2. Locate the auto-deployed Risky Agents policy
-  3. Verify the policy scope includes all deployed Copilot Studio and Azure AI Foundry agents
+  2. Locate the default Risky Agents policy
+  3. Verify the policy scope includes all deployed Copilot Studio, Microsoft Foundry, and P4AI SDK agents
   4. Confirm alert routing is configured to reach both compliance and agent deployment owners
   5. Review the policy thresholds for FSI appropriateness
-- **Expected Result:** Risky Agents policy is active, scoped correctly, and alert routing is configured
+- **Expected Result:** Risky Agents policy is active, scoped correctly across all supported agent types, and alert routing is configured
 - **Evidence:** Policy configuration screenshot; alert routing configuration
 
 ### Test 3: AI Usage Indicator Functionality
@@ -52,15 +52,15 @@ Test cases and evidence collection for validating insider risk detection for Cop
 
 ### Test 5: Data Risk Graph Accessibility
 
-- **Objective:** Confirm data risk graphs are available and integrated into investigation procedures
+- **Objective:** Confirm the data risk graph is set up and integrated into investigation procedures
 - **Steps:**
-  1. Navigate to Microsoft Purview > Insider Risk Management > Investigations
-  2. Access the Data risk graphs view
-  3. Select a time window and verify graph data is loading
-  4. Confirm the graph includes Copilot and agent interaction data
-  5. Verify investigators know to include graph review in the standard investigation procedure
-- **Expected Result:** Data risk graphs accessible and displaying Copilot/agent interaction data
-- **Evidence:** Screenshot of data risk graph showing activity data
+  1. Navigate to Microsoft Purview > Insider Risk Management > Recommended actions and confirm the **Set up data lake and data risk graph** action shows Complete
+  2. Navigate to Insider Risk Management > Alerts and open an alert
+  3. Select the **Data risk graph** tab and verify graph data is loading (allow 24-48 hours after initial onboarding for data to populate)
+  4. Confirm the graph displays the alert-related SharePoint/OneDrive exfiltration activity (sharing links, downloads, renames) for the 30-day window
+  5. Verify investigators know to include data risk graph review in the standard investigation procedure for alerts involving potential cross-department data movement
+- **Expected Result:** Data risk graph is set up and accessible from alerts, displaying alert-related exfiltration activity
+- **Evidence:** Screenshot of the data risk graph tab showing activity data
 
 ### Test 6: IRM Triage Agent Operation
 

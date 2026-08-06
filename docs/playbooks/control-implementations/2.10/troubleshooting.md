@@ -6,14 +6,14 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
 
 ### Issue 1: Risky Agents Policy Not Visible
 
-- **Symptoms:** The auto-deployed Risky Agents policy does not appear in the IRM policy list
-- **Root Cause:** Auto-deployment of the Risky Agents policy (GA December 2025) may not have completed for all tenants. The policy may also be deployed under a different display name, or the deployment may have been delayed due to license provisioning timing.
+- **Symptoms:** The default Risky Agents (preview) policy does not appear in the IRM policy list
+- **Root Cause:** The Risky Agents (preview) policy is available by default only to organizations with supported licenses once Insider Risk Management is set up; rollout of the preview and license entitlement can vary by tenant. The policy may also be deployed under a different display name.
 - **Resolution:**
-  1. Verify the tenant has Microsoft 365 E5 Compliance licensing active
+  1. Verify the tenant has Microsoft 365 E5 Compliance licensing active and Insider Risk Management is set up
   2. Check the IRM policy list with a filter for "All" policy states (including disabled or pending)
-  3. Review the Microsoft 365 message center for MC1200579 to check deployment status for your tenant
-  4. If the policy has not been auto-deployed, create a Risky Agents policy manually using the available template in IRM
-  5. For agents not covered by auto-deployment (prebuilt Microsoft agents, third-party, SharePoint agents), configure monitoring via DSPM for AI or Defender for Cloud Apps as a compensating control
+  3. Confirm the tenant is currently entitled to the Risky Agents (preview) capability; check the Microsoft 365 roadmap and message center for rollout status
+  4. If the policy has not appeared, create a Risky Agents policy manually using the available template in IRM
+  5. For agent types not listed as supported (Microsoft prebuilt agents, third-party agents, SharePoint agents), configure monitoring via DSPM for AI or Defender for Cloud Apps as a compensating control
 
 ### Issue 2: AI Usage Indicators Not Available
 
@@ -46,15 +46,16 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
   4. If the Triage Agent is enabled but context summaries are absent, allow 24-48 hours for the system to process existing alerts
   5. Check that the IRM investigator role has appropriate access to view Triage Agent outputs
 
-### Issue 5: Data Risk Graphs Not Showing Copilot Activity
+### Issue 5: Data Risk Graph Not Loading or Missing Data
 
-- **Symptoms:** Data risk graphs are accessible but do not display Copilot interaction data
-- **Root Cause:** Data risk graphs depend on audit log data from Copilot interactions being available to IRM. If Copilot audit logging is disabled, or if the IRM data pipeline has not yet ingested the data, graphs will not reflect Copilot activity.
+- **Symptoms:** The Data risk graph tab is accessible on an alert but does not load, or shows no activity data
+- **Root Cause:** The data risk graph will not load if the anonymized usernames privacy setting is enabled in IRM privacy settings; it also does not support admin unit-scoped access. Separately, if the data lake and data risk graph onboarding has only just completed, the graph may not yet have data — the graph initially shows the most recent seven days and takes time to grow to the full 30-day window.
 - **Resolution:**
-  1. Verify Copilot interaction audit logging is enabled: Microsoft Purview > Audit > Audit log search — filter for CopilotInteraction record type
-  2. Confirm audit log data is flowing to IRM (allow up to 48 hours for initial ingestion)
-  3. Run Script 2 (Copilot Usage Anomaly Detection) to verify audit log data is accessible
-  4. If audit logging is enabled but graphs are still empty, check the graph time window — very recent deployments may not have sufficient historical data for graph generation
+  1. Confirm the anonymized usernames privacy setting is disabled (Microsoft Purview > Insider Risk Management > Settings > Privacy) — the data risk graph cannot be used with it enabled
+  2. Confirm the investigator viewing the graph is not scoped to an admin unit; admin units are not supported in the data risk graph
+  3. Confirm the investigator is assigned the **Insider Risk Management Graph Reader** role (included by default in several built-in IRM role groups)
+  4. Verify the **Set up data lake and data risk graph** recommended action shows Complete; allow 24-48 hours after onboarding for initial data to populate, and expect gradual growth toward the full 30-day window
+  5. Confirm the alert's underlying activity is one of the supported exfiltration activities (SharePoint/OneDrive sharing links, downloads, renames) — the graph does not represent Copilot prompt/response content
 
 ### Issue 6: High Volume of Low-Quality Alerts
 
