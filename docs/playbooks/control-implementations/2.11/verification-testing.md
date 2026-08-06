@@ -17,15 +17,15 @@ Test cases and evidence collection for validating Copilot Pages security.
 
 ### Test 2: Sensitivity Label Application
 
-- **Objective:** Verify sensitivity labels are applied to Copilot Pages; verify Notebook labeling limitations
+- **Objective:** Verify supported sensitivity labeling behavior on Copilot Pages and confirm Notebook-level labels aren't available
 - **Steps:**
-  1. Create a Copilot Page from a source document with a "Confidential" label
-  2. Check the sensitivity label on the resulting Page
-  3. Verify label inheritance is working
-  4. Create a Copilot Notebook and verify whether sensitivity labels can be applied (labeling support may be limited for Notebooks)
-  5. If Notebook labeling is not available, verify compensating controls (DLP, auto-labeling) are in place
-- **Expected Result:** Pages inherit sensitivity labels from source content; Notebook labeling limitations are documented with compensating controls
-- **Evidence:** Page properties showing applied sensitivity label; Notebook labeling test results
+  1. Create a Copilot Page from a source document with a "Confidential" label and confirm label inheritance is working
+  2. Manually apply a published sensitivity label directly to a Copilot Page and confirm it is accepted
+  3. If mandatory labeling or a default document label policy applies to the Pages location, verify a new Page is labeled accordingly (automatic and recommended labeling aren't supported, so unlabeled content is never auto-labeled)
+  4. Create a Copilot Notebook and confirm no Notebook-level sensitivity label option is available — Notebooks share the user-owned container with Pages and Loop My workspace and don't have container sensitivity labels
+  5. Verify DLP policies are in place as the compensating control for Notebook content
+- **Expected Result:** Pages support manual label application, label inheritance, mandatory labeling, and a default document label, but not automatic or recommended labeling; Notebooks have no sensitivity label option, with DLP documented as the compensating control
+- **Evidence:** Page properties showing applied sensitivity label; confirmation that no label option exists on a Notebook; DLP policy configuration covering Notebook content
 
 ### Test 3: Retention Policy Coverage
 

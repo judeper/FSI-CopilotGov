@@ -38,7 +38,7 @@ Step-by-step portal configuration for governing Copilot Pages and Copilot Notebo
 2. Confirm administrators understand the user departure lifecycle and cleanup timing.
 3. Document how ownerless or preservation-sensitive containers are escalated.
 
-> **Departed User Workflow:** When a user account is deleted, their SharePoint Embedded containers (including Pages and Notebooks content) are moved to a **recycle bin** state. Organizations should verify the recycle bin retention window and establish a process to preserve content before the cleanup window expires. If a departed user's content is subject to legal hold or regulatory retention, the compliance team must place a hold on the container before account deletion.
+> **Departed User Workflow:** When a user account is deleted, their SharePoint Embedded container (including Pages and Notebooks content) follows the OneDrive deletion lifecycle: it stays active for the tenant's configurable deleted-user retention period (30 days by default), then moves to a fixed 93-day recycle-bin period before permanent deletion. Because the access handoff isn't automatic for these containers, administrators should add a custodian as a container owner to preserve content, or use SharePoint PowerShell `Set-SPOContainer` to permanently reassign the container to a new owner, before the active retention period ends. If a departed user's content is subject to legal hold or regulatory retention, the compliance team must place a hold on the container before account deletion.
 
 > **Information Barriers Limitation:** Information Barriers are **not supported** for SharePoint Embedded content (including Copilot Pages and Notebooks). Organizations that rely on Information Barriers for MNPI separation (e.g., broker-dealer Chinese walls) should disable Pages and Notebooks creation for populations subject to Information Barriers. This limitation means IB-segmented users could potentially access cross-wall content through Pages if the feature is not disabled for those groups.
 
@@ -60,7 +60,7 @@ Step-by-step portal configuration for governing Copilot Pages and Copilot Notebo
 3. Confirm retention coverage by reviewing policies that include **All SharePoint Sites**.
 4. Run a test eDiscovery search for `.page` content and document the results.
 
-> **Sensitivity Labeling Limitation for Notebooks:** Copilot Notebooks have limited sensitivity labeling support compared to Pages. Organizations should verify whether their tenant supports sensitivity label application to Notebooks and configure compensating controls (such as DLP policies and auto-labeling) if manual label application is not available for Notebook content.
+> **Sensitivity Labeling Limitation for Notebooks:** Sensitivity labels aren't available as a Notebook-level control — Copilot Notebooks share a user-owned container with Copilot Pages and Loop My workspace and don't have container sensitivity labels. For Pages, users can manually apply published labels, and mandatory labeling and a default document label are supported; automatic and recommended labeling aren't supported for Pages or Notebooks. Document DLP policies as the compensating control for Notebook content rather than relying on auto-labeling, which isn't available.
 
 ### Step 6: Document Legal Hold and Offboarding Procedures
 

@@ -248,8 +248,8 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | AI-generated interactive content stored as .pod files; rich canvas for Copilot-assisted research and drafting |
 | **Data Sources** | User's M365 content (via Copilot Chat), notebook content, SharePoint Embedded storage |
-| **Governance Considerations** | Notebooks are stored in SharePoint Embedded containers. Governance requires sensitivity labeling, retention policies covering SharePoint Embedded, eDiscovery inclusion, and sharing controls analogous to Copilot Pages. |
-| **Key Controls** | 2.11 (Copilot Pages governance — applies similarly), 2.2 (Sensitivity labels), 3.2 (Retention), 1.11 (Sharing governance) |
+| **Governance Considerations** | Notebooks are stored in SharePoint Embedded containers. Notebooks don't have Notebook-level sensitivity labels — they share a user-owned container with Copilot Pages and Loop My workspace — so DLP is the compensating control for detecting sensitive Notebook content. Governance also requires retention policies covering SharePoint Embedded, eDiscovery inclusion, and sharing controls analogous to Copilot Pages. |
+| **Key Controls** | 2.11 (Copilot Pages governance — applies similarly), 2.1 (DLP), 3.2 (Retention), 1.11 (Sharing governance) |
 
 ### Microsoft 365 Copilot Search
 
