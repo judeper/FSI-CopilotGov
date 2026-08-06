@@ -115,17 +115,17 @@ $autoReport | Export-Csv "AutoLabelPolicies_$(Get-Date -Format 'yyyyMMdd').csv" 
 # IMPORTANT: Information Protection > Reports uses a 30-day rolling window of
 # labeling *activity* and does NOT inventory total (labeled + unlabeled) content,
 # so it cannot supply the denominator needed for a coverage PERCENTAGE. For the
-# >50%/>75%/>90% coverage targets, use Content Explorer (Microsoft Purview >
-# Solutions > Data Classification > Content explorer), a workload inventory, or
-# the framework's coverage-scanning tooling instead.
+# >50%/>75%/>90% coverage targets, cross-reference Content Explorer labeled-item
+# data with a complete workload inventory, or use the framework's
+# coverage-scanning tooling instead.
 
 Write-Host "=== Label Adoption Metrics (activity/adoption trends) ==="
 Write-Host "For label activity and adoption trend analytics, use the Purview portal:"
 Write-Host "  Microsoft Purview > Solutions > Information Protection > Reports"
 Write-Host ""
-Write-Host "For LABEL COVERAGE PERCENTAGE (>50%/>75%/>90% targets), use Content Explorer"
-Write-Host "  (Microsoft Purview > Solutions > Data Classification > Content explorer)"
-Write-Host "  or a workload inventory -- Reports does not provide a coverage denominator."
+Write-Host "For LABEL COVERAGE PERCENTAGE (>50%/>75%/>90% targets), cross-reference"
+Write-Host "  Content Explorer labeled-item data with a complete workload inventory,"
+Write-Host "  or use the coverage-scanning tooling -- Reports has no coverage denominator."
 Write-Host ""
 Write-Host "Export reports from the portal for governance documentation."
 ```
@@ -137,7 +137,7 @@ Write-Host "Export reports from the portal for governance documentation."
 | Taxonomy Export | Monthly | Track taxonomy changes and maintain audit trail |
 | Policy Coverage Analysis | Quarterly | Verify all user groups have label access |
 | Auto-Labeling Status Check | Weekly | Monitor auto-labeling policy health and mode |
-| Label Coverage Measurement | Monthly | Measure labeling coverage percentage via Content Explorer or workload inventory against governance-level targets (>50% Baseline, >75% Recommended, >90% Regulated) |
+| Label Coverage Measurement | Monthly | Measure labeling coverage percentage by cross-referencing Content Explorer labeled-item data with workload inventory totals, or use coverage-scanning tooling, against governance-level targets (>50% Baseline, >75% Recommended, >90% Regulated) |
 | Adoption Trend Review | Monthly | Review Information Protection Reports for labeling activity/adoption trends (not a coverage-percentage source) |
 
 ## Next Steps
