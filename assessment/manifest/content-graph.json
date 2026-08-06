@@ -381,7 +381,7 @@
       "tier": "Recommended",
       "title": "Control 2.10: Insider Risk Detection for Copilot Usage Patterns",
       "path": "docs/controls/pillar-2-security/2.10-insider-risk-detection.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-02",
       "regulatory_references": [
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404",
