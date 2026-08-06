@@ -64,7 +64,7 @@
       "tier": "Baseline",
       "title": "Control 1.2: SharePoint Oversharing Detection and Remediation (DSPM for AI)",
       "path": "docs/controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Regulation S-P (Rule 248.30)",
@@ -90,7 +90,7 @@
       "tier": "Recommended",
       "title": "Control 1.4: Semantic Index Governance and Scope Control",
       "path": "docs/controls/pillar-1-readiness/1.4-semantic-index-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-07-26",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
