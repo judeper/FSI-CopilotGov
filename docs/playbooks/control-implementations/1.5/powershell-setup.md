@@ -104,20 +104,30 @@ $autoReport | Export-Csv "AutoLabelPolicies_$(Get-Date -Format 'yyyyMMdd').csv" 
 
 ```powershell
 # View label adoption metrics for governance review
-# Sensitivity label analytics are available in the Purview portal:
-#   Microsoft Purview > Information Protection > Label Analytics
+# Sensitivity label activity/adoption trend analytics are available in the Purview portal:
+#   Microsoft Purview > Solutions > Information Protection > Reports
 #
 # The Graph API does not currently provide a PowerShell cmdlet for
-# sensitivity label usage reporting. Use the Purview portal for:
-#   - Label adoption rates across workloads
-#   - Label coverage percentages by department
-#   - Trends in auto-labeling vs. manual labeling
+# sensitivity label usage reporting. Use the Purview portal Reports page for:
+#   - Label adoption and application activity trends over time
+#   - Auto-labeling policy activity
+#
+# IMPORTANT: Information Protection > Reports uses a 30-day rolling window of
+# labeling *activity* and does NOT inventory total (labeled + unlabeled) content,
+# so it cannot supply the denominator needed for a coverage PERCENTAGE. For the
+# >50%/>75%/>90% coverage targets, cross-reference Content Explorer labeled-item
+# data with a complete workload inventory, or use the framework's
+# coverage-scanning tooling instead.
 
-Write-Host "=== Label Adoption Metrics ==="
-Write-Host "For label adoption analytics, use the Purview portal:"
-Write-Host "  Microsoft Purview > Information Protection > Label Analytics"
+Write-Host "=== Label Adoption Metrics (activity/adoption trends) ==="
+Write-Host "For label activity and adoption trend analytics, use the Purview portal:"
+Write-Host "  Microsoft Purview > Solutions > Information Protection > Reports"
 Write-Host ""
-Write-Host "Export label analytics reports from the portal for governance documentation."
+Write-Host "For LABEL COVERAGE PERCENTAGE (>50%/>75%/>90% targets), cross-reference"
+Write-Host "  Content Explorer labeled-item data with a complete workload inventory,"
+Write-Host "  or use the coverage-scanning tooling -- Reports has no coverage denominator."
+Write-Host ""
+Write-Host "Export reports from the portal for governance documentation."
 ```
 
 ## Scheduled Tasks
@@ -127,7 +137,8 @@ Write-Host "Export label analytics reports from the portal for governance docume
 | Taxonomy Export | Monthly | Track taxonomy changes and maintain audit trail |
 | Policy Coverage Analysis | Quarterly | Verify all user groups have label access |
 | Auto-Labeling Status Check | Weekly | Monitor auto-labeling policy health and mode |
-| Adoption Metrics | Monthly | Track progress toward governance-level labeling targets (>50% Baseline, >75% Recommended, >90% Regulated) |
+| Label Coverage Measurement | Monthly | Measure labeling coverage percentage by cross-referencing Content Explorer labeled-item data with workload inventory totals, or use coverage-scanning tooling, against governance-level targets (>50% Baseline, >75% Recommended, >90% Regulated) |
+| Adoption Trend Review | Monthly | Review Information Protection Reports for labeling activity/adoption trends (not a coverage-percentage source) |
 
 ## Next Steps
 
