@@ -64,12 +64,25 @@ jobs:
           set -e
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
 
-          if [ "$EXIT_CODE" -eq 1 ]; then
-            REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md 2>/dev/null | head -1)
-            if [ -n "$REPORT_FILE" ]; then
-              echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
-            fi
-          fi
+          case "$EXIT_CODE" in
+            0)
+              ;;
+            1)
+              REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md 2>/dev/null | head -1)
+              if [ -n "$REPORT_FILE" ]; then
+                echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+              fi
+              ;;
+            *)
+              echo "::error::Regulatory Monitor failed with unexpected exit code $EXIT_CODE"
+              ;;
+          esac
+
+      - name: Fail on unexpected Regulatory Monitor exit
+        if: github.event_name != 'pull_request' && steps.monitor.outputs.exit_code != '0' && steps.monitor.outputs.exit_code != '1'
+        run: |
+          echo "::error::Regulatory Monitor returned unexpected exit code ${{ steps.monitor.outputs.exit_code }}"
+          exit 1
 
       - name: Detect state changes
         if: github.event_name != 'pull_request'

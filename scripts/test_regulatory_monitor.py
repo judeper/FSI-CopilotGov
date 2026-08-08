@@ -111,6 +111,58 @@ def test_federal_register_fetch_processes_all_pages():
     assert [call["page"] for call in session.calls] == [1, 2]
 
 
+def test_federal_register_production_zero_results_may_omit_results():
+    config = _load_config()
+    session = _PagedFederalRegisterSession({1: {"count": 0}})
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-07-24",
+        config=config,
+    )
+
+    assert items == []
+    assert [call["page"] for call in session.calls] == [1]
+
+
+def test_federal_register_uncounted_empty_first_page_fails_closed():
+    config = _load_config()
+    session = _PagedFederalRegisterSession(
+        {1: {"total_pages": 1, "results": []}}
+    )
+
+    with pytest.raises(
+        regulatory_monitor.FederalRegisterPaginationError,
+        match="missing 'count'",
+    ):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-07-24",
+            config=config,
+        )
+
+
+def test_federal_register_uncounted_short_first_page_fails_closed():
+    config = _load_config()
+    short_page = _federal_register_page(
+        ["2026-00001"],
+        total_pages=2,
+        count=1,
+    )
+    short_page.pop("count")
+    session = _PagedFederalRegisterSession({1: short_page})
+
+    with pytest.raises(
+        regulatory_monitor.FederalRegisterPaginationError,
+        match="missing 'count'",
+    ):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-07-24",
+            config=config,
+        )
+
+
 def test_federal_register_later_page_items_are_written_to_state():
     config = _load_config()
     first_page_ids = [f"2026-{index:05d}" for index in range(1, 101)]
@@ -190,7 +242,7 @@ def test_federal_register_missing_results_page_fails_closed():
         )
 
 
-def test_federal_register_overlapping_pages_are_deduplicated():
+def test_federal_register_identical_overlapping_pages_are_deduplicated():
     config = _load_config()
     first_page_ids = [f"2026-{index:05d}" for index in range(1, 101)]
     second_page_ids = [f"2026-{index:05d}" for index in range(100, 117)]
@@ -212,6 +264,31 @@ def test_federal_register_overlapping_pages_are_deduplicated():
     assert [item.document_id for item in items[-17:]] == [
         f"2026-{index:05d}" for index in range(100, 117)
     ]
+
+
+@pytest.mark.parametrize("field", ["title", "abstract"])
+def test_federal_register_conflicting_duplicate_payload_fails_closed(field):
+    config = _load_config()
+    first_page_ids = [f"2026-{index:05d}" for index in range(1, 101)]
+    second_page_ids = [f"2026-{index:05d}" for index in range(100, 117)]
+    second_page = _federal_register_page(second_page_ids)
+    second_page["results"][0][field] = f"Changed substantive {field}"
+    session = _PagedFederalRegisterSession(
+        {
+            1: _federal_register_page(first_page_ids),
+            2: second_page,
+        }
+    )
+
+    with pytest.raises(
+        regulatory_monitor.FederalRegisterPaginationError,
+        match="conflicting substantive payloads",
+    ):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-07-24",
+            config=config,
+        )
 
 
 def test_federal_register_identity_falls_back_to_html_url():
@@ -478,6 +555,78 @@ def test_content_fingerprint_normalizes_whitespace_only():
     fp = regulatory_monitor._content_fingerprint(item)
     assert "alpha beta gamma" in fp
     assert fp.split("|")[2] == "2026-07-11"
+
+
+def test_limited_cli_run_does_not_mutate_entries_or_watermark(monkeypatch):
+    config = _load_config()
+    initial_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-08-01",
+                "entries": {},
+            }
+        },
+    }
+    loaded_state = {
+        "version": initial_state["version"],
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-08-01",
+                "entries": {},
+            }
+        },
+    }
+    save_calls = []
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "load_monitoring_config",
+        lambda _path: config,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "load_state",
+        lambda _path: loaded_state,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda *args: save_calls.append(args),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor.requests,
+        "Session",
+        _Session,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda _session, _since_date, _config, limit=None: [
+            _fed_item("A newly fetched item")
+        ],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "generate_regulatory_report",
+        lambda *_args: None,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor.sys,
+        "argv",
+        ["regulatory_monitor.py", "--source", "federal-register", "--limit", "1"],
+    )
+
+    with pytest.raises(SystemExit) as exc_info:
+        regulatory_monitor.main()
+
+    assert exc_info.value.code == 1
+    assert loaded_state == initial_state
+    assert save_calls == []
 
 
 # --- Securities-law electronic delivery ("Regulation E-Delivery") classification ---

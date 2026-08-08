@@ -97,3 +97,20 @@ def test_offline_dry_run_smoke_is_preserved() -> None:
     assert any(
         "pull_request" in step.get("if", "") for step in dry_run_steps
     ), "the --dry-run smoke must run on pull_request events"
+
+
+def test_unexpected_monitor_exit_is_explicitly_failed() -> None:
+    fail_steps = [
+        step
+        for step in _steps()
+        if "unexpected Regulatory Monitor exit" in step.get("name", "")
+    ]
+    assert fail_steps, (
+        "unexpected monitor exit codes must have a dedicated failing workflow step"
+    )
+
+    fail_step = fail_steps[0]
+    assert "steps.monitor.outputs.exit_code" in fail_step.get("if", "")
+    assert "exit 1" in fail_step.get("run", "")
+    assert "!= '0'" in fail_step.get("if", "")
+    assert "!= '1'" in fail_step.get("if", "")
