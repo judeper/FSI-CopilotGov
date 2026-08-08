@@ -35,6 +35,104 @@ def test_federal_register_rule_2210_title_classifies_high_with_null_abstract():
     }
 
 
+class _FederalRegisterResponse:
+    def __init__(self, payload: dict):
+        self._payload = payload
+
+    def raise_for_status(self) -> None:
+        return None
+
+    def json(self) -> dict:
+        return self._payload
+
+
+class _PagedFederalRegisterSession:
+    def __init__(self, pages: dict[int, dict]):
+        self.pages = pages
+        self.calls: list[dict] = []
+
+    def get(self, _url: str, *, params: dict, timeout: int) -> _FederalRegisterResponse:
+        self.calls.append(dict(params))
+        return _FederalRegisterResponse(self.pages[params["page"]])
+
+
+def _federal_register_page(document_ids: list[str], total_pages: int = 2) -> dict:
+    return {
+        "count": 116,
+        "total_pages": total_pages,
+        "results": [
+            {
+                "document_number": document_id,
+                "title": f"Federal Register document {document_id}",
+                "abstract": "A regulatory notice with no special relevance.",
+                "publication_date": "2026-07-27",
+                "type": "NOTICE",
+                "html_url": f"https://www.federalregister.gov/documents/{document_id}",
+                "agencies": [
+                    {
+                        "slug": "securities-and-exchange-commission",
+                        "name": "Securities and Exchange Commission",
+                    }
+                ],
+            }
+            for document_id in document_ids
+        ],
+    }
+
+
+def test_federal_register_fetch_processes_all_pages():
+    config = _load_config()
+    first_page_ids = [f"2026-{index:05d}" for index in range(1, 101)]
+    second_page_ids = [f"2026-{index:05d}" for index in range(101, 117)]
+    session = _PagedFederalRegisterSession(
+        {
+            1: _federal_register_page(first_page_ids),
+            2: _federal_register_page(second_page_ids),
+        }
+    )
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-07-24",
+        config=config,
+    )
+
+    assert len(items) == 116
+    assert items[-1].document_id == "2026-00116"
+    assert [call["page"] for call in session.calls] == [1, 2]
+
+
+def test_federal_register_later_page_items_are_written_to_state():
+    config = _load_config()
+    first_page_ids = [f"2026-{index:05d}" for index in range(1, 101)]
+    second_page_ids = [f"2026-{index:05d}" for index in range(101, 117)]
+    session = _PagedFederalRegisterSession(
+        {
+            1: _federal_register_page(first_page_ids),
+            2: _federal_register_page(second_page_ids),
+        }
+    )
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-07-24",
+        config=config,
+    )
+    state: dict = {}
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER,
+        items,
+        state,
+    )
+
+    entries = regulatory_monitor.get_source_state(
+        state,
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER,
+    )["entries"]
+    assert len(entries) == 116
+    assert "2026-00116" in entries
+
+
 def test_finra_notice_body_fallback_promotes_genai_notice_to_high(monkeypatch):
     config = _load_config()
     listing_html = """

@@ -83,6 +83,8 @@ FEDERAL_REGISTER_API_BASE = "https://www.federalregister.gov/api/v1"
 FINRA_NOTICES_URL = "https://www.finra.org/rules-guidance/notices"
 
 FEDERAL_REGISTER_DETAIL_FETCH_LIMIT = 20
+FEDERAL_REGISTER_PAGE_SIZE = 100
+FEDERAL_REGISTER_MAX_PAGES = 100
 FINRA_DETAIL_FETCH_LIMIT = 20
 FALLBACK_TEXT_MAX_CHARS = 4000
 FEDERAL_REGISTER_DETAIL_SIGNAL = re.compile(
@@ -116,6 +118,10 @@ def setup_logging(verbose: bool = False) -> logging.Logger:
 
 
 logger = logging.getLogger(__name__)
+
+
+class FederalRegisterPaginationError(RuntimeError):
+    """Raised when a paginated Federal Register response cannot be completed."""
 
 
 @dataclass
@@ -380,47 +386,99 @@ def fetch_federal_register_documents(
         for a in fed_config.get('agencies', [])
     }
 
-    # Build query parameters
+    # Build query parameters. Keep the page size below the API maximum so
+    # pagination remains testable and a malformed response cannot create an
+    # unbounded request loop.
     params = {
         'conditions[agencies][]': agencies,
         'conditions[type][]': doc_types,
         'conditions[publication_date][gte]': since_date,
-        'per_page': 100,  # API max is 1000
+        'per_page': FEDERAL_REGISTER_PAGE_SIZE,
         'order': 'newest',
         'fields[]': ['document_number', 'title', 'abstract', 'publication_date', 'type', 'html_url', 'agencies'],
     }
 
-    data = {}
-    for attempt in range(max_retries):
-        try:
-            logger.info(f"Querying Federal Register API for documents since {since_date}...")
-            response = session.get(
-                f"{FEDERAL_REGISTER_API_BASE}/documents.json",
-                params=params,
-                timeout=request_timeout,
-            )
-            response.raise_for_status()
-            data = response.json()
-            break
-        except requests.RequestException as e:
-            if attempt == max_retries - 1:
-                logger.error(f"Federal Register API error: {e}")
-                return items
-            sleep_seconds = request_delay if request_delay > 0 else (2 ** attempt)
-            logger.warning(
-                "Federal Register API request failed (attempt %s/%s): %s; retrying in %.1fs",
-                attempt + 1,
-                max_retries,
-                e,
-                sleep_seconds,
-            )
-            time.sleep(sleep_seconds)
-        except json.JSONDecodeError as e:
-            logger.error(f"Federal Register API response parsing error: {e}")
-            return items
+    documents = []
+    page = 1
+    total_pages = None
+    while page <= FEDERAL_REGISTER_MAX_PAGES:
+        page_params = {**params, 'page': page}
+        data = {}
+        for attempt in range(max_retries):
+            try:
+                logger.info(
+                    "Querying Federal Register API for documents since %s (page %s)...",
+                    since_date,
+                    page,
+                )
+                response = session.get(
+                    f"{FEDERAL_REGISTER_API_BASE}/documents.json",
+                    params=page_params,
+                    timeout=request_timeout,
+                )
+                response.raise_for_status()
+                data = response.json()
+                break
+            except requests.RequestException as e:
+                if attempt == max_retries - 1:
+                    logger.error(f"Federal Register API error: {e}")
+                    raise FederalRegisterPaginationError(
+                        f"Federal Register API request failed on page {page}"
+                    ) from e
+                sleep_seconds = request_delay if request_delay > 0 else (2 ** attempt)
+                logger.warning(
+                    "Federal Register API request failed (attempt %s/%s): %s; retrying in %.1fs",
+                    attempt + 1,
+                    max_retries,
+                    e,
+                    sleep_seconds,
+                )
+                time.sleep(sleep_seconds)
+            except json.JSONDecodeError as e:
+                logger.error(f"Federal Register API response parsing error: {e}")
+                raise FederalRegisterPaginationError(
+                    f"Federal Register API response parsing failed on page {page}"
+                ) from e
 
-    documents = data.get('results', [])
-    logger.info(f"Federal Register API returned {len(documents)} documents")
+        page_documents = data.get('results', [])
+        documents.extend(page_documents)
+
+        if limit and len(documents) >= limit:
+            break
+
+        reported_total_pages = data.get('total_pages')
+        if reported_total_pages is not None:
+            try:
+                total_pages = max(1, int(reported_total_pages))
+            except (TypeError, ValueError):
+                total_pages = None
+
+        if total_pages and total_pages > FEDERAL_REGISTER_MAX_PAGES:
+            logger.error(
+                "Federal Register response requires %s pages, exceeding the %s-page safety bound",
+                total_pages,
+                FEDERAL_REGISTER_MAX_PAGES,
+            )
+            raise FederalRegisterPaginationError(
+                "Federal Register pagination exceeded the configured safety bound"
+            )
+
+        if not page_documents or (total_pages and page >= total_pages):
+            break
+        if total_pages is None and len(page_documents) < FEDERAL_REGISTER_PAGE_SIZE:
+            break
+
+        page += 1
+    else:
+        raise FederalRegisterPaginationError(
+            "Federal Register pagination reached the configured safety bound"
+        )
+
+    logger.info(
+        "Federal Register API returned %s documents across %s page(s)",
+        len(documents),
+        page,
+    )
 
     # Apply limit if specified
     if limit:
