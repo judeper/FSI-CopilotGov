@@ -83,6 +83,8 @@ FEDERAL_REGISTER_API_BASE = "https://www.federalregister.gov/api/v1"
 FINRA_NOTICES_URL = "https://www.finra.org/rules-guidance/notices"
 
 FEDERAL_REGISTER_DETAIL_FETCH_LIMIT = 20
+FEDERAL_REGISTER_PAGE_SIZE = 100
+FEDERAL_REGISTER_MAX_PAGES = 100
 FINRA_DETAIL_FETCH_LIMIT = 20
 FALLBACK_TEXT_MAX_CHARS = 4000
 FEDERAL_REGISTER_DETAIL_SIGNAL = re.compile(
@@ -116,6 +118,87 @@ def setup_logging(verbose: bool = False) -> logging.Logger:
 
 
 logger = logging.getLogger(__name__)
+
+
+class FederalRegisterPaginationError(RuntimeError):
+    """Raised when a paginated Federal Register response cannot be completed."""
+
+
+def _parse_federal_register_metadata_int(
+    data: dict,
+    field: str,
+    page: int,
+    minimum: int,
+) -> Optional[int]:
+    """Parse a numeric pagination field and fail closed on malformed metadata."""
+    raw_value = data.get(field)
+    if raw_value is None:
+        return None
+    if isinstance(raw_value, bool):
+        raise FederalRegisterPaginationError(
+            f"Federal Register response field '{field}' was invalid on page {page}"
+        )
+    if isinstance(raw_value, float) and not raw_value.is_integer():
+        raise FederalRegisterPaginationError(
+            f"Federal Register response field '{field}' was invalid on page {page}"
+        )
+    try:
+        value = int(raw_value)
+    except (TypeError, ValueError) as exc:
+        raise FederalRegisterPaginationError(
+            f"Federal Register response field '{field}' was invalid on page {page}"
+        ) from exc
+    if value < minimum:
+        raise FederalRegisterPaginationError(
+            f"Federal Register response field '{field}' was invalid on page {page}"
+        )
+    return value
+
+
+def _federal_register_document_identity(document: dict, page: int) -> str:
+    """Return the state-compatible stable identity used to deduplicate a document."""
+    document_number = str(document.get('document_number') or '').strip()
+    if document_number:
+        return document_number
+
+    # The state layer uses the document URL when document_number is absent.
+    fallback_url = str(document.get('html_url') or '').strip()
+    if fallback_url:
+        return fallback_url
+
+    raise FederalRegisterPaginationError(
+        f"Federal Register document on page {page} has no stable identity"
+    )
+
+
+def _federal_register_document_fingerprint(document: dict) -> str:
+    """Return a stable fingerprint for duplicate substantive payload checks."""
+    substantive_fields = (
+        "title",
+        "abstract",
+        "publication_date",
+        "type",
+        "html_url",
+        "agencies",
+    )
+
+    def normalize(value):
+        if isinstance(value, str):
+            return re.sub(r"\s+", " ", value).strip()
+        if isinstance(value, list):
+            return [normalize(entry) for entry in value]
+        if isinstance(value, dict):
+            return {
+                key: normalize(value[key])
+                for key in sorted(value)
+            }
+        return value
+
+    payload = {
+        field: normalize(document.get(field))
+        for field in substantive_fields
+    }
+    return json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
 
 
 @dataclass
@@ -380,47 +463,204 @@ def fetch_federal_register_documents(
         for a in fed_config.get('agencies', [])
     }
 
-    # Build query parameters
+    # Build query parameters. Keep the page size below the API maximum so
+    # pagination remains testable and a malformed response cannot create an
+    # unbounded request loop.
     params = {
         'conditions[agencies][]': agencies,
         'conditions[type][]': doc_types,
         'conditions[publication_date][gte]': since_date,
-        'per_page': 100,  # API max is 1000
+        'per_page': FEDERAL_REGISTER_PAGE_SIZE,
         'order': 'newest',
         'fields[]': ['document_number', 'title', 'abstract', 'publication_date', 'type', 'html_url', 'agencies'],
     }
 
-    data = {}
-    for attempt in range(max_retries):
-        try:
-            logger.info(f"Querying Federal Register API for documents since {since_date}...")
-            response = session.get(
-                f"{FEDERAL_REGISTER_API_BASE}/documents.json",
-                params=params,
-                timeout=request_timeout,
-            )
-            response.raise_for_status()
-            data = response.json()
-            break
-        except requests.RequestException as e:
-            if attempt == max_retries - 1:
-                logger.error(f"Federal Register API error: {e}")
-                return items
-            sleep_seconds = request_delay if request_delay > 0 else (2 ** attempt)
-            logger.warning(
-                "Federal Register API request failed (attempt %s/%s): %s; retrying in %.1fs",
-                attempt + 1,
-                max_retries,
-                e,
-                sleep_seconds,
-            )
-            time.sleep(sleep_seconds)
-        except json.JSONDecodeError as e:
-            logger.error(f"Federal Register API response parsing error: {e}")
-            return items
+    unique_documents: dict[str, dict] = {}
+    page = 1
+    total_pages = None
+    reported_count = None
+    expected_pages = None
+    while page <= FEDERAL_REGISTER_MAX_PAGES:
+        page_params = {**params, 'page': page}
+        data = {}
+        for attempt in range(max_retries):
+            try:
+                logger.info(
+                    "Querying Federal Register API for documents since %s (page %s)...",
+                    since_date,
+                    page,
+                )
+                response = session.get(
+                    f"{FEDERAL_REGISTER_API_BASE}/documents.json",
+                    params=page_params,
+                    timeout=request_timeout,
+                )
+                response.raise_for_status()
+                data = response.json()
+                break
+            except requests.RequestException as e:
+                if attempt == max_retries - 1:
+                    logger.error(f"Federal Register API error: {e}")
+                    raise FederalRegisterPaginationError(
+                        f"Federal Register API request failed on page {page}"
+                    ) from e
+                sleep_seconds = request_delay if request_delay > 0 else (2 ** attempt)
+                logger.warning(
+                    "Federal Register API request failed (attempt %s/%s): %s; retrying in %.1fs",
+                    attempt + 1,
+                    max_retries,
+                    e,
+                    sleep_seconds,
+                )
+                time.sleep(sleep_seconds)
+            except json.JSONDecodeError as e:
+                logger.error(f"Federal Register API response parsing error: {e}")
+                raise FederalRegisterPaginationError(
+                    f"Federal Register API response parsing failed on page {page}"
+                ) from e
 
-    documents = data.get('results', [])
-    logger.info(f"Federal Register API returned {len(documents)} documents")
+        if not isinstance(data, dict):
+            raise FederalRegisterPaginationError(
+                f"Federal Register response was not an object on page {page}"
+            )
+
+        page_count = _parse_federal_register_metadata_int(data, 'count', page, 0)
+        if page_count is None:
+            raise FederalRegisterPaginationError(
+                f"Federal Register response was missing 'count' on page {page}"
+            )
+        if reported_count is not None and page_count != reported_count:
+            raise FederalRegisterPaginationError(
+                "Federal Register response count changed during pagination"
+            )
+        reported_count = page_count
+
+        # The production API omits results for a legitimate zero-result query.
+        # For every non-zero count, results must be present before pagination
+        # can advance; an empty or short response is safe only when count
+        # proves that the complete result set has been collected.
+        if 'results' not in data:
+            if page_count != 0:
+                raise FederalRegisterPaginationError(
+                    f"Federal Register response was missing 'results' on page {page}"
+                )
+            page_documents = []
+        else:
+            page_documents = data['results']
+            if not isinstance(page_documents, list):
+                raise FederalRegisterPaginationError(
+                    f"Federal Register response 'results' was not a list on page {page}"
+                )
+            if page_count == 0 and page_documents:
+                raise FederalRegisterPaginationError(
+                    f"Federal Register response had results with count 0 on page {page}"
+                )
+
+        page_total_pages = _parse_federal_register_metadata_int(
+            data,
+            'total_pages',
+            page,
+            0,
+        )
+        if page_total_pages is not None:
+            page_total_pages = max(1, page_total_pages)
+            if total_pages is not None and page_total_pages != total_pages:
+                raise FederalRegisterPaginationError(
+                    "Federal Register response total_pages changed during pagination"
+                )
+            total_pages = page_total_pages
+
+        reported_page = _parse_federal_register_metadata_int(data, 'page', page, 1)
+        if reported_page is not None and reported_page != page:
+            raise FederalRegisterPaginationError(
+                f"Federal Register response page metadata did not match requested page {page}"
+            )
+
+        if reported_count is not None:
+            expected_pages = max(
+                1,
+                (reported_count + FEDERAL_REGISTER_PAGE_SIZE - 1)
+                // FEDERAL_REGISTER_PAGE_SIZE,
+            )
+            if total_pages is not None and total_pages != expected_pages:
+                raise FederalRegisterPaginationError(
+                    "Federal Register pagination metadata was inconsistent with count"
+                )
+
+        known_final_page = (
+            (total_pages is not None and page >= total_pages)
+            or (total_pages is None and expected_pages is not None and page >= expected_pages)
+            or (page == 1 and not page_documents and total_pages is None and expected_pages is None)
+        )
+
+        if not page_documents:
+            if not known_final_page:
+                raise FederalRegisterPaginationError(
+                    f"Federal Register page {page} was empty before pagination completed"
+                )
+            if reported_count is not None and len(unique_documents) != reported_count:
+                raise FederalRegisterPaginationError(
+                    "Federal Register pagination collected an incomplete unique result set"
+                )
+            break
+
+        for document in page_documents:
+            if not isinstance(document, dict):
+                raise FederalRegisterPaginationError(
+                    f"Federal Register result was not an object on page {page}"
+                )
+            identity = _federal_register_document_identity(document, page)
+            existing_document = unique_documents.get(identity)
+            if existing_document is None:
+                unique_documents[identity] = document
+            elif _federal_register_document_fingerprint(existing_document) != _federal_register_document_fingerprint(document):
+                raise FederalRegisterPaginationError(
+                    f"Federal Register duplicate identity '{identity}' had conflicting "
+                    f"substantive payloads on page {page}"
+                )
+
+        if total_pages and total_pages > FEDERAL_REGISTER_MAX_PAGES:
+            logger.error(
+                "Federal Register response requires %s pages, exceeding the %s-page safety bound",
+                total_pages,
+                FEDERAL_REGISTER_MAX_PAGES,
+            )
+            raise FederalRegisterPaginationError(
+                "Federal Register pagination exceeded the configured safety bound"
+            )
+
+        # A caller-supplied limit deliberately requests a partial collection.
+        if limit and len(unique_documents) >= limit:
+            break
+
+        if known_final_page:
+            if reported_count is not None and len(unique_documents) != reported_count:
+                raise FederalRegisterPaginationError(
+                    "Federal Register pagination collected an incomplete unique result set"
+                )
+            break
+        if (
+            total_pages is None
+            and expected_pages is None
+            and len(page_documents) < FEDERAL_REGISTER_PAGE_SIZE
+        ):
+            raise FederalRegisterPaginationError(
+                "Federal Register pagination completed without enough metadata "
+                "to verify unique results"
+            )
+
+        page += 1
+    else:
+        raise FederalRegisterPaginationError(
+            "Federal Register pagination reached the configured safety bound"
+        )
+
+    documents = list(unique_documents.values())
+    logger.info(
+        "Federal Register API returned %s documents across %s page(s)",
+        len(documents),
+        page,
+    )
 
     # Apply limit if specified
     if limit:
@@ -680,6 +920,29 @@ def check_for_new_items(source_key: str, items: list[RegulatoryItem], source_sta
     return new_items
 
 
+def _sort_regulatory_items(items: list[RegulatoryItem]) -> list[RegulatoryItem]:
+    """Return items in a stable source/date/identity order."""
+    source_order = {"Federal Register": 0, "FINRA": 1}
+    ordered = sorted(
+        items,
+        key=lambda item: (
+            item.document_id or item.url,
+            item.title,
+            item.agency,
+        ),
+        reverse=True,
+    )
+    ordered = sorted(
+        ordered,
+        key=lambda item: item.publication_date or "",
+        reverse=True,
+    )
+    return sorted(
+        ordered,
+        key=lambda item: source_order.get(item.source, len(source_order)),
+    )
+
+
 def update_source_state(source_key: str, items: list[RegulatoryItem], state: dict) -> None:
     """
     Update source state with new item hashes.
@@ -692,7 +955,7 @@ def update_source_state(source_key: str, items: list[RegulatoryItem], state: dic
     source_state = get_source_state(state, source_key)
     entries = source_state.get('entries', {})
 
-    for item in items:
+    for item in _sort_regulatory_items(items):
         entry_key = item.document_id if item.document_id else item.url
         entries[entry_key] = compute_hash(_content_fingerprint(item))
 
@@ -702,9 +965,63 @@ def update_source_state(source_key: str, items: list[RegulatoryItem], state: dic
     set_source_state(state, source_key, source_state)
 
 
+def _validate_report_counts(
+    all_new_items: list[RegulatoryItem],
+    source_counts: Optional[dict[str, dict[str, int]]],
+) -> Optional[dict[str, int]]:
+    """Validate fetched/new accounting before a report is written."""
+    if source_counts is None:
+        return None
+
+    new_by_source: dict[str, int] = {}
+    for item in all_new_items:
+        new_by_source[item.source] = new_by_source.get(item.source, 0) + 1
+
+    fetched_total = 0
+    new_total = 0
+    for source, counts in source_counts.items():
+        if not isinstance(counts, dict):
+            raise ValueError(f"Report counts for {source!r} must be an object")
+        fetched = counts.get("fetched")
+        new = counts.get("new")
+        if (
+            isinstance(fetched, bool)
+            or isinstance(new, bool)
+            or not isinstance(fetched, int)
+            or not isinstance(new, int)
+            or fetched < 0
+            or new < 0
+            or new > fetched
+        ):
+            raise ValueError(f"Invalid fetched/new report counts for {source!r}")
+        expected_new = new_by_source.get(source, 0)
+        if new != expected_new:
+            raise ValueError(
+                f"Report new count for {source!r} was {new}, "
+                f"but {expected_new} new records were classified"
+            )
+        fetched_total += fetched
+        new_total += new
+
+    if set(new_by_source) - set(source_counts):
+        raise ValueError("Report counts omitted a source with classified records")
+    if new_total != len(all_new_items):
+        raise ValueError(
+            f"Report new count was {new_total}, "
+            f"but {len(all_new_items)} records were classified"
+        )
+
+    return {
+        "fetched": fetched_total,
+        "new": new_total,
+        "classified": len(all_new_items),
+    }
+
+
 def generate_regulatory_report(
     all_new_items: list[RegulatoryItem],
-    report_path: Path
+    report_path: Path,
+    source_counts: Optional[dict[str, dict[str, int]]] = None,
 ) -> None:
     """
     Generate regulatory change report using shared report format helpers.
@@ -713,24 +1030,38 @@ def generate_regulatory_report(
         all_new_items: All new regulatory items from all sources
         report_path: Path to write report
     """
+    report_counts = _validate_report_counts(all_new_items, source_counts)
+    ordered_items = _sort_regulatory_items(all_new_items)
+
     # Categorize by classification tier
-    critical_items = [item for item in all_new_items if item.classification == CLASSIFICATION_CRITICAL]
-    high_items = [item for item in all_new_items if item.classification == CLASSIFICATION_HIGH]
-    medium_items = [item for item in all_new_items if item.classification == CLASSIFICATION_MEDIUM]
-    noise_items = [item for item in all_new_items if item.classification == CLASSIFICATION_NOISE]
+    critical_items = [item for item in ordered_items if item.classification == CLASSIFICATION_CRITICAL]
+    high_items = [item for item in ordered_items if item.classification == CLASSIFICATION_HIGH]
+    medium_items = [item for item in ordered_items if item.classification == CLASSIFICATION_MEDIUM]
+    noise_items = [item for item in ordered_items if item.classification == CLASSIFICATION_NOISE]
+    classified_count = len(critical_items) + len(high_items) + len(medium_items) + len(noise_items)
+    if classified_count != len(all_new_items):
+        raise ValueError("Report contains an item with an unknown classification")
 
     # Build report content
     lines = []
 
     # Header
     run_date = datetime.now(timezone.utc).isoformat(timespec='seconds')
+    metadata = {
+        "New Items": len(all_new_items),
+        "Classified Items": classified_count,
+        "Sources": "Federal Register (SEC, CFTC, OCC, Federal Reserve) + FINRA Regulatory Notices",
+    }
+    if report_counts is not None:
+        metadata["Fetched Items"] = report_counts["fetched"]
+        for source in sorted(source_counts):
+            metadata[f"{source} Fetched"] = source_counts[source]["fetched"]
+            metadata[f"{source} New"] = source_counts[source]["new"]
+
     lines.append(generate_report_header(
         title="Regulatory Monitor Report",
         run_date=run_date,
-        metadata={
-            "New Items": len(all_new_items),
-            "Sources": "Federal Register (SEC, CFTC, OCC, Federal Reserve) + FINRA Regulatory Notices"
-        }
+        metadata=metadata,
     ))
 
     # Executive summary
@@ -841,7 +1172,7 @@ def main():
     parser.add_argument(
         '--limit',
         type=int,
-        help="Limit number of items per source (for testing)"
+        help="Limit number of items per source (limited runs never update state)"
     )
     parser.add_argument(
         '--verbose',
@@ -891,8 +1222,9 @@ def main():
     logger.info(f"Source: {args.source}")
     logger.info(f"Dry run: {args.dry_run}")
     logger.info(f"Config: {config_path}")
-    if args.limit:
+    if args.limit is not None:
         logger.info(f"Limit: {args.limit} items per source")
+        logger.info("Limited run: state and watermark updates are disabled")
 
     # Ensure directories exist
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -900,6 +1232,7 @@ def main():
 
     # Load unified state
     state = load_state(STATE_FILE)
+    state_mutation_allowed = not args.dry_run and args.limit is None
 
     # Graceful degradation: --dry-run skips all network calls so the script
     # can be smoke-tested in CI environments without outbound access.
@@ -915,6 +1248,7 @@ def main():
     })
 
     all_new_items = []
+    source_counts: dict[str, dict[str, int]] = {}
 
     # Fetch from Federal Register
     if args.source in ['federal-register', 'all']:
@@ -931,12 +1265,16 @@ def main():
 
         fed_items = fetch_federal_register_documents(session, since_date, config, limit=args.limit)
         new_fed_items = check_for_new_items(SOURCE_KEY_FEDERAL_REGISTER, fed_items, fed_state)
+        source_counts["Federal Register"] = {
+            "fetched": len(fed_items),
+            "new": len(new_fed_items),
+        }
 
         logger.info(f"Federal Register: {len(new_fed_items)} new items")
         all_new_items.extend(new_fed_items)
 
         # Update state
-        if not args.dry_run:
+        if state_mutation_allowed:
             update_source_state(SOURCE_KEY_FEDERAL_REGISTER, fed_items, state)
             # Update last_checked to today
             fed_state = get_source_state(state, SOURCE_KEY_FEDERAL_REGISTER)
@@ -950,12 +1288,16 @@ def main():
 
         finra_items = fetch_finra_notices(session, config, limit=args.limit)
         new_finra_items = check_for_new_items(SOURCE_KEY_FINRA, finra_items, finra_state)
+        source_counts["FINRA"] = {
+            "fetched": len(finra_items),
+            "new": len(new_finra_items),
+        }
 
         logger.info(f"FINRA: {len(new_finra_items)} new items")
         all_new_items.extend(new_finra_items)
 
         # Update state
-        if not args.dry_run:
+        if state_mutation_allowed:
             update_source_state(SOURCE_KEY_FINRA, finra_items, state)
 
     # Generate report if new items found
@@ -965,14 +1307,18 @@ def main():
         report_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
         report_path = REPORTS_DIR / f"regulatory-changes-{report_date}.md"
 
-        generate_regulatory_report(all_new_items, report_path)
+        generate_regulatory_report(
+            all_new_items,
+            report_path,
+            source_counts=source_counts,
+        )
 
         # Save state
-        if not args.dry_run:
+        if state_mutation_allowed:
             save_state_atomic(state, STATE_FILE)
             logger.info(f"State updated: {STATE_FILE}")
         else:
-            logger.info("Dry run: state not updated")
+            logger.info("State not updated (dry-run or limited run)")
 
         # Exit code 1 indicates new items (triggers PR in CI)
         sys.exit(1)
@@ -981,8 +1327,10 @@ def main():
         logger.info("\n=== No new regulatory items detected ===")
 
         # Save state even if no changes (updates last_run timestamps)
-        if not args.dry_run:
+        if state_mutation_allowed:
             save_state_atomic(state, STATE_FILE)
+        else:
+            logger.info("State not updated (dry-run or limited run)")
 
         # Exit code 0 indicates no changes
         sys.exit(0)
