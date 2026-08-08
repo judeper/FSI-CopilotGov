@@ -114,3 +114,15 @@ def test_unexpected_monitor_exit_is_explicitly_failed() -> None:
     assert "exit 1" in fail_step.get("run", "")
     assert "!= '0'" in fail_step.get("if", "")
     assert "!= '1'" in fail_step.get("if", "")
+
+
+def test_pr_title_identifies_run_number_not_item_count() -> None:
+    create_pr_steps = [
+        step
+        for step in _steps()
+        if "create-pull-request" in step.get("uses", "")
+    ]
+    assert create_pr_steps, "the workflow must define its PR creation step"
+    assert create_pr_steps[0]["with"]["title"] == (
+        "Regulatory Monitor: new findings (run ${{ github.run_number }})"
+    )

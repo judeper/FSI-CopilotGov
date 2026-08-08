@@ -3,7 +3,13 @@
 **Run Date:** 2026-08-07
 **Run Time:** 2026-08-07T10:40:26+00:00
 **New Items:** 110
+**Classified Items:** 110
 **Sources:** Federal Register (SEC, CFTC, OCC, Federal Reserve) + FINRA Regulatory Notices
+**Fetched Items:** 125
+**Federal Register Fetched:** 121
+**Federal Register New:** 109
+**FINRA Fetched:** 4
+**FINRA New:** 1
 
 ---
 ## Executive Summary
@@ -131,4 +137,3 @@ Regulatory items with no FSI Copilot governance relevance.
 - [Agency Information Collection Activities; Proposed Collection; Comment Request; Extension: Rule 10c-1a](https://www.federalregister.gov/documents/2026/07/27/2026-15053/agency-information-collection-activities-proposed-collection-comment-request-extension-rule-10c-1a) (SEC)
 - [Agency Information Collection Activities; Proposed Collection; Comment Request; Extension: Rule 17a-11](https://www.federalregister.gov/documents/2026/07/27/2026-15052/agency-information-collection-activities-proposed-collection-comment-request-extension-rule-17a-11) (SEC)
 - [Information Notice 8/3/26](https://www.finra.org/rules-guidance/notices/information-notice-20260803) (FINRA)
-

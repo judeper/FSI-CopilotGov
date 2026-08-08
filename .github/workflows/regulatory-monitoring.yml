@@ -112,7 +112,7 @@ jobs:
           branch: monitoring/regulatory-${{ github.run_number }}
           delete-branch: true
           base: main
-          title: "Regulatory Monitor: new findings (${{ github.run_number }})"
+          title: "Regulatory Monitor: new findings (run ${{ github.run_number }})"
           labels: |
             monitoring
             regulatory

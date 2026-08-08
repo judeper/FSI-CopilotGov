@@ -920,6 +920,29 @@ def check_for_new_items(source_key: str, items: list[RegulatoryItem], source_sta
     return new_items
 
 
+def _sort_regulatory_items(items: list[RegulatoryItem]) -> list[RegulatoryItem]:
+    """Return items in a stable source/date/identity order."""
+    source_order = {"Federal Register": 0, "FINRA": 1}
+    ordered = sorted(
+        items,
+        key=lambda item: (
+            item.document_id or item.url,
+            item.title,
+            item.agency,
+        ),
+        reverse=True,
+    )
+    ordered = sorted(
+        ordered,
+        key=lambda item: item.publication_date or "",
+        reverse=True,
+    )
+    return sorted(
+        ordered,
+        key=lambda item: source_order.get(item.source, len(source_order)),
+    )
+
+
 def update_source_state(source_key: str, items: list[RegulatoryItem], state: dict) -> None:
     """
     Update source state with new item hashes.
@@ -932,7 +955,7 @@ def update_source_state(source_key: str, items: list[RegulatoryItem], state: dic
     source_state = get_source_state(state, source_key)
     entries = source_state.get('entries', {})
 
-    for item in items:
+    for item in _sort_regulatory_items(items):
         entry_key = item.document_id if item.document_id else item.url
         entries[entry_key] = compute_hash(_content_fingerprint(item))
 
@@ -942,9 +965,63 @@ def update_source_state(source_key: str, items: list[RegulatoryItem], state: dic
     set_source_state(state, source_key, source_state)
 
 
+def _validate_report_counts(
+    all_new_items: list[RegulatoryItem],
+    source_counts: Optional[dict[str, dict[str, int]]],
+) -> Optional[dict[str, int]]:
+    """Validate fetched/new accounting before a report is written."""
+    if source_counts is None:
+        return None
+
+    new_by_source: dict[str, int] = {}
+    for item in all_new_items:
+        new_by_source[item.source] = new_by_source.get(item.source, 0) + 1
+
+    fetched_total = 0
+    new_total = 0
+    for source, counts in source_counts.items():
+        if not isinstance(counts, dict):
+            raise ValueError(f"Report counts for {source!r} must be an object")
+        fetched = counts.get("fetched")
+        new = counts.get("new")
+        if (
+            isinstance(fetched, bool)
+            or isinstance(new, bool)
+            or not isinstance(fetched, int)
+            or not isinstance(new, int)
+            or fetched < 0
+            or new < 0
+            or new > fetched
+        ):
+            raise ValueError(f"Invalid fetched/new report counts for {source!r}")
+        expected_new = new_by_source.get(source, 0)
+        if new != expected_new:
+            raise ValueError(
+                f"Report new count for {source!r} was {new}, "
+                f"but {expected_new} new records were classified"
+            )
+        fetched_total += fetched
+        new_total += new
+
+    if set(new_by_source) - set(source_counts):
+        raise ValueError("Report counts omitted a source with classified records")
+    if new_total != len(all_new_items):
+        raise ValueError(
+            f"Report new count was {new_total}, "
+            f"but {len(all_new_items)} records were classified"
+        )
+
+    return {
+        "fetched": fetched_total,
+        "new": new_total,
+        "classified": len(all_new_items),
+    }
+
+
 def generate_regulatory_report(
     all_new_items: list[RegulatoryItem],
-    report_path: Path
+    report_path: Path,
+    source_counts: Optional[dict[str, dict[str, int]]] = None,
 ) -> None:
     """
     Generate regulatory change report using shared report format helpers.
@@ -953,24 +1030,38 @@ def generate_regulatory_report(
         all_new_items: All new regulatory items from all sources
         report_path: Path to write report
     """
+    report_counts = _validate_report_counts(all_new_items, source_counts)
+    ordered_items = _sort_regulatory_items(all_new_items)
+
     # Categorize by classification tier
-    critical_items = [item for item in all_new_items if item.classification == CLASSIFICATION_CRITICAL]
-    high_items = [item for item in all_new_items if item.classification == CLASSIFICATION_HIGH]
-    medium_items = [item for item in all_new_items if item.classification == CLASSIFICATION_MEDIUM]
-    noise_items = [item for item in all_new_items if item.classification == CLASSIFICATION_NOISE]
+    critical_items = [item for item in ordered_items if item.classification == CLASSIFICATION_CRITICAL]
+    high_items = [item for item in ordered_items if item.classification == CLASSIFICATION_HIGH]
+    medium_items = [item for item in ordered_items if item.classification == CLASSIFICATION_MEDIUM]
+    noise_items = [item for item in ordered_items if item.classification == CLASSIFICATION_NOISE]
+    classified_count = len(critical_items) + len(high_items) + len(medium_items) + len(noise_items)
+    if classified_count != len(all_new_items):
+        raise ValueError("Report contains an item with an unknown classification")
 
     # Build report content
     lines = []
 
     # Header
     run_date = datetime.now(timezone.utc).isoformat(timespec='seconds')
+    metadata = {
+        "New Items": len(all_new_items),
+        "Classified Items": classified_count,
+        "Sources": "Federal Register (SEC, CFTC, OCC, Federal Reserve) + FINRA Regulatory Notices",
+    }
+    if report_counts is not None:
+        metadata["Fetched Items"] = report_counts["fetched"]
+        for source in sorted(source_counts):
+            metadata[f"{source} Fetched"] = source_counts[source]["fetched"]
+            metadata[f"{source} New"] = source_counts[source]["new"]
+
     lines.append(generate_report_header(
         title="Regulatory Monitor Report",
         run_date=run_date,
-        metadata={
-            "New Items": len(all_new_items),
-            "Sources": "Federal Register (SEC, CFTC, OCC, Federal Reserve) + FINRA Regulatory Notices"
-        }
+        metadata=metadata,
     ))
 
     # Executive summary
@@ -1157,6 +1248,7 @@ def main():
     })
 
     all_new_items = []
+    source_counts: dict[str, dict[str, int]] = {}
 
     # Fetch from Federal Register
     if args.source in ['federal-register', 'all']:
@@ -1173,6 +1265,10 @@ def main():
 
         fed_items = fetch_federal_register_documents(session, since_date, config, limit=args.limit)
         new_fed_items = check_for_new_items(SOURCE_KEY_FEDERAL_REGISTER, fed_items, fed_state)
+        source_counts["Federal Register"] = {
+            "fetched": len(fed_items),
+            "new": len(new_fed_items),
+        }
 
         logger.info(f"Federal Register: {len(new_fed_items)} new items")
         all_new_items.extend(new_fed_items)
@@ -1192,6 +1288,10 @@ def main():
 
         finra_items = fetch_finra_notices(session, config, limit=args.limit)
         new_finra_items = check_for_new_items(SOURCE_KEY_FINRA, finra_items, finra_state)
+        source_counts["FINRA"] = {
+            "fetched": len(finra_items),
+            "new": len(new_finra_items),
+        }
 
         logger.info(f"FINRA: {len(new_finra_items)} new items")
         all_new_items.extend(new_finra_items)
@@ -1207,7 +1307,11 @@ def main():
         report_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
         report_path = REPORTS_DIR / f"regulatory-changes-{report_date}.md"
 
-        generate_regulatory_report(all_new_items, report_path)
+        generate_regulatory_report(
+            all_new_items,
+            report_path,
+            source_counts=source_counts,
+        )
 
         # Save state
         if state_mutation_allowed:
