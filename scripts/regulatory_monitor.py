@@ -124,6 +124,49 @@ class FederalRegisterPaginationError(RuntimeError):
     """Raised when a paginated Federal Register response cannot be completed."""
 
 
+def _parse_federal_register_metadata_int(
+    data: dict,
+    field: str,
+    page: int,
+    minimum: int,
+) -> Optional[int]:
+    """Parse a numeric pagination field and fail closed on malformed metadata."""
+    raw_value = data.get(field)
+    if raw_value is None:
+        return None
+    if isinstance(raw_value, bool):
+        raise FederalRegisterPaginationError(
+            f"Federal Register response field '{field}' was invalid on page {page}"
+        )
+    try:
+        value = int(raw_value)
+    except (TypeError, ValueError) as exc:
+        raise FederalRegisterPaginationError(
+            f"Federal Register response field '{field}' was invalid on page {page}"
+        ) from exc
+    if value < minimum:
+        raise FederalRegisterPaginationError(
+            f"Federal Register response field '{field}' was invalid on page {page}"
+        )
+    return value
+
+
+def _federal_register_document_identity(document: dict, page: int) -> str:
+    """Return the state-compatible stable identity used to deduplicate a document."""
+    document_number = str(document.get('document_number') or '').strip()
+    if document_number:
+        return document_number
+
+    # The state layer uses the document URL when document_number is absent.
+    fallback_url = str(document.get('html_url') or '').strip()
+    if fallback_url:
+        return fallback_url
+
+    raise FederalRegisterPaginationError(
+        f"Federal Register document on page {page} has no stable identity"
+    )
+
+
 @dataclass
 class RegulatoryItem:
     """Represents a regulatory document or notice."""
@@ -398,9 +441,11 @@ def fetch_federal_register_documents(
         'fields[]': ['document_number', 'title', 'abstract', 'publication_date', 'type', 'html_url', 'agencies'],
     }
 
-    documents = []
+    unique_documents: dict[str, dict] = {}
     page = 1
     total_pages = None
+    reported_count = None
+    expected_pages = None
     while page <= FEDERAL_REGISTER_MAX_PAGES:
         page_params = {**params, 'page': page}
         data = {}
@@ -440,18 +485,87 @@ def fetch_federal_register_documents(
                     f"Federal Register API response parsing failed on page {page}"
                 ) from e
 
-        page_documents = data.get('results', [])
-        documents.extend(page_documents)
+        if not isinstance(data, dict):
+            raise FederalRegisterPaginationError(
+                f"Federal Register response was not an object on page {page}"
+            )
+        if 'results' not in data:
+            raise FederalRegisterPaginationError(
+                f"Federal Register response was missing 'results' on page {page}"
+            )
+        page_documents = data['results']
+        if not isinstance(page_documents, list):
+            raise FederalRegisterPaginationError(
+                f"Federal Register response 'results' was not a list on page {page}"
+            )
 
-        if limit and len(documents) >= limit:
+        page_count = _parse_federal_register_metadata_int(data, 'count', page, 0)
+        if page_count is not None:
+            if reported_count is not None and page_count != reported_count:
+                raise FederalRegisterPaginationError(
+                    "Federal Register response count changed during pagination"
+                )
+            reported_count = page_count
+
+        page_total_pages = _parse_federal_register_metadata_int(
+            data,
+            'total_pages',
+            page,
+            0,
+        )
+        if page_total_pages is not None:
+            page_total_pages = max(1, page_total_pages)
+            if total_pages is not None and page_total_pages != total_pages:
+                raise FederalRegisterPaginationError(
+                    "Federal Register response total_pages changed during pagination"
+                )
+            total_pages = page_total_pages
+
+        reported_page = _parse_federal_register_metadata_int(data, 'page', page, 1)
+        if reported_page is not None and reported_page != page:
+            raise FederalRegisterPaginationError(
+                f"Federal Register response page metadata did not match requested page {page}"
+            )
+
+        if reported_count is not None:
+            expected_pages = max(
+                1,
+                (reported_count + FEDERAL_REGISTER_PAGE_SIZE - 1)
+                // FEDERAL_REGISTER_PAGE_SIZE,
+            )
+            if total_pages is not None and total_pages != expected_pages:
+                raise FederalRegisterPaginationError(
+                    "Federal Register pagination metadata was inconsistent with count"
+                )
+
+        known_final_page = (
+            (total_pages is not None and page >= total_pages)
+            or (total_pages is None and expected_pages is not None and page >= expected_pages)
+            or (page == 1 and not page_documents and total_pages is None and expected_pages is None)
+        )
+
+        if not page_documents:
+            if not known_final_page:
+                raise FederalRegisterPaginationError(
+                    f"Federal Register page {page} was empty before pagination completed"
+                )
+            if reported_count is None and page > 1:
+                raise FederalRegisterPaginationError(
+                    "Federal Register pagination completed without a reported count"
+                )
+            if reported_count is not None and len(unique_documents) != reported_count:
+                raise FederalRegisterPaginationError(
+                    "Federal Register pagination collected an incomplete unique result set"
+                )
             break
 
-        reported_total_pages = data.get('total_pages')
-        if reported_total_pages is not None:
-            try:
-                total_pages = max(1, int(reported_total_pages))
-            except (TypeError, ValueError):
-                total_pages = None
+        for document in page_documents:
+            if not isinstance(document, dict):
+                raise FederalRegisterPaginationError(
+                    f"Federal Register result was not an object on page {page}"
+                )
+            identity = _federal_register_document_identity(document, page)
+            unique_documents.setdefault(identity, document)
 
         if total_pages and total_pages > FEDERAL_REGISTER_MAX_PAGES:
             logger.error(
@@ -463,9 +577,30 @@ def fetch_federal_register_documents(
                 "Federal Register pagination exceeded the configured safety bound"
             )
 
-        if not page_documents or (total_pages and page >= total_pages):
+        # A caller-supplied limit deliberately requests a partial collection.
+        if limit and len(unique_documents) >= limit:
             break
-        if total_pages is None and len(page_documents) < FEDERAL_REGISTER_PAGE_SIZE:
+
+        if known_final_page:
+            if reported_count is None and page > 1:
+                raise FederalRegisterPaginationError(
+                    "Federal Register pagination completed without a reported count"
+                )
+            if reported_count is not None and len(unique_documents) != reported_count:
+                raise FederalRegisterPaginationError(
+                    "Federal Register pagination collected an incomplete unique result set"
+                )
+            break
+        if (
+            total_pages is None
+            and expected_pages is None
+            and len(page_documents) < FEDERAL_REGISTER_PAGE_SIZE
+        ):
+            if page > 1:
+                raise FederalRegisterPaginationError(
+                    "Federal Register pagination completed without enough metadata "
+                    "to verify unique results"
+                )
             break
 
         page += 1
@@ -474,6 +609,7 @@ def fetch_federal_register_documents(
             "Federal Register pagination reached the configured safety bound"
         )
 
+    documents = list(unique_documents.values())
     logger.info(
         "Federal Register API returned %s documents across %s page(s)",
         len(documents),

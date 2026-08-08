@@ -4,6 +4,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
 import yaml
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -56,11 +57,19 @@ class _PagedFederalRegisterSession:
         return _FederalRegisterResponse(self.pages[params["page"]])
 
 
-def _federal_register_page(document_ids: list[str], total_pages: int = 2) -> dict:
-    return {
-        "count": 116,
+def _federal_register_page(
+    document_ids: list[str],
+    total_pages: int = 2,
+    count: int = 116,
+    *,
+    include_results: bool = True,
+) -> dict:
+    page = {
+        "count": count,
         "total_pages": total_pages,
-        "results": [
+    }
+    if include_results:
+        page["results"] = [
             {
                 "document_number": document_id,
                 "title": f"Federal Register document {document_id}",
@@ -76,8 +85,8 @@ def _federal_register_page(document_ids: list[str], total_pages: int = 2) -> dic
                 ],
             }
             for document_id in document_ids
-        ],
-    }
+        ]
+    return page
 
 
 def test_federal_register_fetch_processes_all_pages():
@@ -131,6 +140,109 @@ def test_federal_register_later_page_items_are_written_to_state():
     )["entries"]
     assert len(entries) == 116
     assert "2026-00116" in entries
+
+
+def test_federal_register_empty_intermediate_page_fails_closed():
+    config = _load_config()
+    first_page_ids = [f"2026-{index:05d}" for index in range(1, 101)]
+    session = _PagedFederalRegisterSession(
+        {
+            1: _federal_register_page(first_page_ids, total_pages=3, count=201),
+            2: _federal_register_page([], total_pages=3, count=201),
+        }
+    )
+
+    with pytest.raises(
+        regulatory_monitor.FederalRegisterPaginationError,
+        match="empty before pagination completed",
+    ):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-07-24",
+            config=config,
+        )
+
+
+def test_federal_register_missing_results_page_fails_closed():
+    config = _load_config()
+    first_page_ids = [f"2026-{index:05d}" for index in range(1, 101)]
+    missing_results_page = _federal_register_page(
+        [],
+        total_pages=2,
+        count=116,
+        include_results=False,
+    )
+    session = _PagedFederalRegisterSession(
+        {
+            1: _federal_register_page(first_page_ids),
+            2: missing_results_page,
+        }
+    )
+
+    with pytest.raises(
+        regulatory_monitor.FederalRegisterPaginationError,
+        match="missing 'results'",
+    ):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-07-24",
+            config=config,
+        )
+
+
+def test_federal_register_overlapping_pages_are_deduplicated():
+    config = _load_config()
+    first_page_ids = [f"2026-{index:05d}" for index in range(1, 101)]
+    second_page_ids = [f"2026-{index:05d}" for index in range(100, 117)]
+    session = _PagedFederalRegisterSession(
+        {
+            1: _federal_register_page(first_page_ids),
+            2: _federal_register_page(second_page_ids),
+        }
+    )
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-07-24",
+        config=config,
+    )
+
+    assert len(items) == 116
+    assert len({item.document_id for item in items}) == 116
+    assert [item.document_id for item in items[-17:]] == [
+        f"2026-{index:05d}" for index in range(100, 117)
+    ]
+
+
+def test_federal_register_identity_falls_back_to_html_url():
+    url = "https://www.federalregister.gov/documents/missing-number"
+
+    assert regulatory_monitor._federal_register_document_identity(
+        {"html_url": url},
+        page=1,
+    ) == url
+
+
+def test_federal_register_incomplete_unique_count_fails_closed():
+    config = _load_config()
+    first_page_ids = [f"2026-{index:05d}" for index in range(1, 101)]
+    second_page_ids = [f"2026-{index:05d}" for index in range(100, 116)]
+    session = _PagedFederalRegisterSession(
+        {
+            1: _federal_register_page(first_page_ids),
+            2: _federal_register_page(second_page_ids),
+        }
+    )
+
+    with pytest.raises(
+        regulatory_monitor.FederalRegisterPaginationError,
+        match="incomplete unique result set",
+    ):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-07-24",
+            config=config,
+        )
 
 
 def test_finra_notice_body_fallback_promotes_genai_notice_to_high(monkeypatch):
