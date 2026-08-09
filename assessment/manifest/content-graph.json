@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-08-02T00:00:00Z",
+  "generatedAt": "2026-08-09T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -406,7 +406,7 @@
       "tier": "Recommended",
       "title": "Control 2.12: External Sharing and Guest Access Governance",
       "path": "docs/controls/pillar-2-security/2.12-external-sharing-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-09",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P"
