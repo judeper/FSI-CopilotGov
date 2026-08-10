@@ -2359,7 +2359,7 @@
         "url": "https://entra.microsoft.com/"
       }
     ],
-    "verifyPowerShell": "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; Get-SPOTenant | Select-Object SharingCapability, RequireAcceptingAccountMatchInvitedAccount, ExternalUserExpirationRequired, ExternalUserExpireInDays; Connect-MgGraph -Scopes User.Read.All; Get-MgUserTransitiveMemberOf -UserId <guest-object-id> -All",
+    "verifyPowerShell": "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; Get-SPOTenant | Select-Object SharingCapability, RequireAcceptingAccountMatchInvitedAccount, ExternalUserExpirationRequired, ExternalUserExpireInDays; Connect-MgGraph -Scopes User.Read.All,GroupMember.Read.All; Get-MgUserTransitiveMemberOfAsGroup -UserId <guest-object-id> -All -Property Id,DisplayName,GroupTypes,SecurityEnabled,MailEnabled,ResourceProvisioningOptions | Select-Object Id,DisplayName,GroupTypes,SecurityEnabled,MailEnabled,ResourceProvisioningOptions",
     "evidenceExpected": [
       "Tenant and site-level sharing policy configuration",
       "Approved external domain list (if domain restriction is used)",
@@ -2381,7 +2381,7 @@
     },
     "facilitatorNotes": {
       "ask": "Are external sharing and guest access controls configured and reviewed for Copilot-grounded sites?",
-      "followUp": "Open SharePoint admin center > Sharing and verify tenant, site-level, and guest-access expiration settings and policy enablement date. Confirm expiration is limited to eligible direct or sharing-link access, then reconcile Microsoft 365 group, security group, and Teams access separately. Check Entra resource-review scope and results; denial removes only the reviewed resource's access. Before any tenant-wide account block or deletion, require a separate dedicated guest-lifecycle review confirming that all direct, group, Teams, SharePoint, application, and other engagements are obsolete.",
+      "followUp": "Open SharePoint admin center > Sharing and verify tenant, site-level, and guest-access expiration settings and policy enablement date. Confirm expiration is limited to eligible direct or sharing-link access, then reconcile Microsoft 365 group, security group, and Teams access separately. Check that every Entra resource-scoped review has no account-level denied-guest action configured: no sign-in block or guest deletion. Denial removes only the reviewed resource's access. Before any tenant-wide account block or deletion, require a separate dedicated guest-lifecycle review confirming that all direct, group, Teams, SharePoint, application, and other engagements are obsolete.",
       "timeBudgetMinutes": 6
     },
     "solutions": [

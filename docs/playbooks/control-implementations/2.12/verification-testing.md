@@ -45,10 +45,11 @@ Test cases and evidence collection for validating external sharing controls.
 
 - **Objective:** Verify any tenant-wide B2B guest-account action is decided separately from resource access reviews
 - **Steps:**
-  1. Confirm Team, group, application, and other resource-review denials remove access only to the reviewed resource
-  2. Confirm account blocking or deletion, if required, is handled through a separate dedicated guest-lifecycle review
-  3. Verify the lifecycle review checks direct permissions, sharing links, Microsoft 365 groups, security groups, Teams, SharePoint access, application assignments, and other active engagements
-  4. Confirm every access path and engagement is obsolete and required approvals are recorded before an account-level action
+  1. Confirm every Team, group, application, and other resource-scoped review is configured with no account-level denied-guest action: no sign-in block and no guest-account deletion
+  2. Confirm denial removes only the reviewed resource's membership or access
+  3. Confirm account blocking or deletion, if required, is handled through a separate dedicated guest-lifecycle review
+  4. Verify the lifecycle review checks direct permissions, sharing links, Microsoft 365 groups, security groups, Teams, SharePoint access, application assignments, and other active engagements
+  5. Confirm every access path and engagement is obsolete and required approvals are recorded before an account-level action
 - **Expected Result:** No tenant-wide account block or deletion is based solely on a resource-review denial
 - **Evidence:** Resource-review results, access-path reconciliation, guest-lifecycle review record, and account-action approval
 

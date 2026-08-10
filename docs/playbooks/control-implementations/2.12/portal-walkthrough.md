@@ -71,9 +71,10 @@ Create recurring access reviews for guest users:
 - Review scope: A selected Team or group, or an application, matching the access being reviewed
 - Frequency: Monthly for sites with sensitive content
 - Auto-apply: Remove access to the reviewed resource for denied or non-responded reviews
+- Denied-guest action: Configure no account-level action for the resource review — no sign-in block and no guest-account deletion
 - Post-review reconciliation: Verify the guest has no surviving access through another Microsoft 365 group, security group, Team, application, direct permission, or sharing link
 
-A denial in a Team, group, or application review removes access to that reviewed resource only; it must not by itself trigger a tenant-wide B2B guest-account block or deletion. If an account-level action is required, conduct a separate, dedicated guest-lifecycle review and first verify that all direct permissions, sharing links, Microsoft 365 group and security group memberships, Teams and SharePoint access, application assignments, and other active engagements are obsolete. Apply any approved account action through the tenant's guest-lifecycle procedure rather than treating the resource-review denial as a tenant-wide decision.
+A denial in a Team, group, or application review removes only that reviewed resource's membership or access. If an account-level action is required, conduct a separate, dedicated guest-lifecycle review and first verify that all direct permissions, sharing links, Microsoft 365 group and security group memberships, Teams and SharePoint access, application assignments, and other active engagements are obsolete. Apply any approved account action through the tenant's guest-lifecycle procedure rather than configuring a block or deletion as the resource review's denied-guest action.
 
 ## FSI Recommendations
 

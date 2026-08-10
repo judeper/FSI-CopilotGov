@@ -1850,8 +1850,13 @@ AUTHORED: dict[str, dict] = {
             "Get-SPOTenant | Select-Object SharingCapability, "
             "RequireAcceptingAccountMatchInvitedAccount, "
             "ExternalUserExpirationRequired, ExternalUserExpireInDays; "
-            "Connect-MgGraph -Scopes User.Read.All; "
-            "Get-MgUserTransitiveMemberOf -UserId <guest-object-id> -All"
+            "Connect-MgGraph -Scopes User.Read.All,GroupMember.Read.All; "
+            "Get-MgUserTransitiveMemberOfAsGroup "
+            "-UserId <guest-object-id> -All "
+            "-Property Id,DisplayName,GroupTypes,SecurityEnabled,"
+            "MailEnabled,ResourceProvisioningOptions | "
+            "Select-Object Id,DisplayName,GroupTypes,SecurityEnabled,"
+            "MailEnabled,ResourceProvisioningOptions"
         ),
         "evidenceExpected": [
             "Tenant and site-level sharing policy configuration",
@@ -1883,11 +1888,13 @@ AUTHORED: dict[str, dict] = {
                 "enablement date. Confirm expiration is limited to eligible "
                 "direct or sharing-link access, then reconcile Microsoft 365 "
                 "group, security group, and Teams access separately. Check "
-                "Entra resource-review scope and results; denial removes only "
-                "the reviewed resource's access. Before any tenant-wide account "
-                "block or deletion, require a separate dedicated guest-lifecycle "
-                "review confirming that all direct, group, Teams, SharePoint, "
-                "application, and other engagements are obsolete."
+                "that every Entra resource-scoped review has no account-level "
+                "denied-guest action configured: no sign-in block or guest "
+                "deletion. Denial removes only the reviewed resource's access. "
+                "Before any tenant-wide account block or deletion, require a "
+                "separate dedicated guest-lifecycle review confirming that all "
+                "direct, group, Teams, SharePoint, application, and other "
+                "engagements are obsolete."
             ),
             "timeBudgetMinutes": 6,
         },
