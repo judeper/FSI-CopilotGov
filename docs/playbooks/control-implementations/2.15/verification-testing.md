@@ -33,7 +33,7 @@ Test cases and evidence collection for validating network security controls.
   1. Review firewall rules against Microsoft's published endpoint requirements
   2. Verify no rules block required Copilot service endpoints
   3. Test Copilot functionality from behind the firewall
-  4. Verify SSL inspection exceptions are applied to M365 traffic
+  4. Verify full WSS connectivity to `*.cloud.microsoft` and `*.office.com`; document any scoped TLS inspection exceptions
 - **Expected Result:** All required traffic permitted through firewall
 - **Evidence:** Firewall rule audit and functional test results
 
