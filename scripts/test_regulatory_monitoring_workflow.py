@@ -4,7 +4,9 @@ Guards the gap flagged in PR review: the regulatory-monitor classifier /
 config regression tests (``scripts/test_regulatory_monitor.py``) and the
 classification config they exercise (``scripts/config/monitoring-config.yaml``)
 must be wired into the Regulatory Monitor workflow so a classification-pattern
-regression cannot merge without CI actually running the tests.
+regression cannot merge without CI actually running the tests. It also verifies
+that pull-request code runs only in a read-only job while scheduled/manual
+monitoring retains the write permissions needed to open and supersede PRs.
 
 Mirrors the YAML-aware pattern in ``test_branch_protection_config.py``: the
 workflow is parsed with ``yaml.BaseLoader`` so the ``on:`` mapping key stays the
@@ -26,6 +28,8 @@ WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "regulatory-monitoring.yml
 
 MONITOR_TEST_FILE = "scripts/test_regulatory_monitor.py"
 WORKFLOW_TEST_FILE = "scripts/test_regulatory_monitoring_workflow.py"
+VALIDATION_JOB = "validate"
+MONITOR_JOB = "monitor"
 
 # Changes to any of these must (re)trigger the Regulatory Monitor PR validation
 # so config-only and test-only edits cannot bypass CI. Kept to the exact files
@@ -46,8 +50,12 @@ def _workflow() -> dict:
     return yaml.load(WORKFLOW_PATH.read_text(encoding="utf-8"), Loader=yaml.BaseLoader)
 
 
-def _steps() -> list[dict]:
-    return _workflow()["jobs"]["monitor"]["steps"]
+def _job(job_name: str) -> dict:
+    return _workflow()["jobs"][job_name]
+
+
+def _steps(job_name: str) -> list[dict]:
+    return _job(job_name)["steps"]
 
 
 def test_pr_triggers_cover_impl_config_and_tests() -> None:
@@ -58,26 +66,54 @@ def test_pr_triggers_cover_impl_config_and_tests() -> None:
     )
 
 
+def test_pr_validation_is_read_only_and_write_job_is_event_isolated() -> None:
+    workflow = _workflow()
+    validation_job = _job(VALIDATION_JOB)
+    monitor_job = _job(MONITOR_JOB)
+
+    assert workflow["permissions"] == {}
+    assert validation_job["if"] == "github.event_name == 'pull_request'"
+    assert validation_job["permissions"] == {"contents": "read"}
+
+    assert monitor_job["if"] == (
+        "github.event_name == 'schedule' || "
+        "github.event_name == 'workflow_dispatch'"
+    )
+    assert monitor_job["permissions"] == {
+        "contents": "write",
+        "pull-requests": "write",
+        "issues": "write",
+    }
+
+
+def test_checkouts_do_not_persist_credentials() -> None:
+    for job_name in (VALIDATION_JOB, MONITOR_JOB):
+        checkout_steps = [
+            step
+            for step in _steps(job_name)
+            if step.get("uses", "").startswith("actions/checkout@")
+        ]
+        assert len(checkout_steps) == 1
+        assert checkout_steps[0].get("with", {}).get("persist-credentials") == "false"
+
+
 def test_pr_validation_runs_the_regulatory_monitor_pytest_file() -> None:
     pytest_steps = [
         step
-        for step in _steps()
+        for step in _steps(VALIDATION_JOB)
         if "pytest" in step.get("run", "") and MONITOR_TEST_FILE in step.get("run", "")
     ]
     assert pytest_steps, (
         f"no CI step runs pytest against {MONITOR_TEST_FILE}; a classification "
         "regression could merge unvalidated"
     )
-    # Must execute on pull_request events (the merge-gating path).
-    assert any(
-        "pull_request" in step.get("if", "") for step in pytest_steps
-    ), "the regulatory-monitor pytest step is not gated to pull_request events"
+    assert _job(VALIDATION_JOB)["if"] == "github.event_name == 'pull_request'"
 
 
 def test_dependencies_install_pytest_for_the_test_step() -> None:
     install_runs = " ".join(
         step.get("run", "")
-        for step in _steps()
+        for step in _steps(VALIDATION_JOB)
         if "install" in step.get("name", "").lower()
     )
     assert "pytest" in install_runs, (
@@ -88,21 +124,21 @@ def test_dependencies_install_pytest_for_the_test_step() -> None:
 
 def test_offline_dry_run_smoke_is_preserved() -> None:
     dry_run_steps = [
-        step for step in _steps() if "--dry-run" in step.get("run", "")
+        step
+        for step in _steps(VALIDATION_JOB)
+        if "--dry-run" in step.get("run", "")
     ]
     assert dry_run_steps, (
         "the offline --dry-run smoke step must remain so PR validation needs no "
         "live network access or credentials"
     )
-    assert any(
-        "pull_request" in step.get("if", "") for step in dry_run_steps
-    ), "the --dry-run smoke must run on pull_request events"
+    assert _job(VALIDATION_JOB)["if"] == "github.event_name == 'pull_request'"
 
 
 def test_unexpected_monitor_exit_is_explicitly_failed() -> None:
     fail_steps = [
         step
-        for step in _steps()
+        for step in _steps(MONITOR_JOB)
         if "unexpected Regulatory Monitor exit" in step.get("name", "")
     ]
     assert fail_steps, (
@@ -119,7 +155,7 @@ def test_unexpected_monitor_exit_is_explicitly_failed() -> None:
 def test_pr_title_identifies_run_number_not_item_count() -> None:
     create_pr_steps = [
         step
-        for step in _steps()
+        for step in _steps(MONITOR_JOB)
         if "create-pull-request" in step.get("uses", "")
     ]
     assert create_pr_steps, "the workflow must define its PR creation step"

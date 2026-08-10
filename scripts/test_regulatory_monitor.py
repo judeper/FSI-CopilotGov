@@ -1,6 +1,7 @@
 """Regression tests for FINRA/Federal Register regulatory monitoring logic."""
 from __future__ import annotations
 
+from copy import deepcopy
 import sys
 from pathlib import Path
 
@@ -428,6 +429,118 @@ def test_federal_register_missing_identity_fails_closed():
             since_date="2026-07-24",
             config=config,
         )
+
+
+def _assert_finra_listing_failure_does_not_advance_state(
+    monkeypatch,
+    *,
+    fetch_result: dict,
+    expected_message: str,
+    parser_failure: Exception | None = None,
+) -> None:
+    config = _load_config()
+    initial_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "last_run": "2026-08-01T10:00:00+00:00",
+                "entries": {"FINRA 26-01": "existing-hash"},
+            }
+        },
+    }
+    loaded_state = deepcopy(initial_state)
+    save_calls = []
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "load_monitoring_config",
+        lambda _path: config,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "load_state",
+        lambda _path: loaded_state,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda *args: save_calls.append(args),
+    )
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        lambda _url, _session, max_retries=3: fetch_result,
+    )
+    if parser_failure is not None:
+        def fail_parse(*_args, **_kwargs):
+            raise parser_failure
+
+        monkeypatch.setattr(regulatory_monitor, "BeautifulSoup", fail_parse)
+    monkeypatch.setattr(
+        regulatory_monitor.sys,
+        "argv",
+        ["regulatory_monitor.py", "--source", "finra"],
+    )
+
+    with pytest.raises(
+        regulatory_monitor.FinraListingError,
+        match=expected_message,
+    ):
+        regulatory_monitor.main()
+
+    assert loaded_state == initial_state
+    assert save_calls == []
+
+
+def test_finra_listing_http_failure_fails_closed_without_state_advance(monkeypatch):
+    _assert_finra_listing_failure_does_not_advance_state(
+        monkeypatch,
+        fetch_result={
+            "url": regulatory_monitor.FINRA_NOTICES_URL,
+            "status_code": 503,
+            "content": "",
+            "final_url": regulatory_monitor.FINRA_NOTICES_URL,
+            "was_redirected": False,
+            "error": "service unavailable",
+        },
+        expected_message="status 503",
+    )
+
+
+def test_finra_listing_parse_failure_fails_closed_without_state_advance(monkeypatch):
+    _assert_finra_listing_failure_does_not_advance_state(
+        monkeypatch,
+        fetch_result={
+            "url": regulatory_monitor.FINRA_NOTICES_URL,
+            "status_code": 200,
+            "content": "<html><body>unparseable listing</body></html>",
+            "final_url": regulatory_monitor.FINRA_NOTICES_URL,
+            "was_redirected": False,
+            "error": None,
+        },
+        expected_message="parsing failed",
+        parser_failure=ValueError("parser rejected listing"),
+    )
+
+
+def test_finra_listing_empty_result_fails_closed_without_state_advance(monkeypatch):
+    _assert_finra_listing_failure_does_not_advance_state(
+        monkeypatch,
+        fetch_result={
+            "url": regulatory_monitor.FINRA_NOTICES_URL,
+            "status_code": 200,
+            "content": "<html><body><p>No notices rendered.</p></body></html>",
+            "final_url": regulatory_monitor.FINRA_NOTICES_URL,
+            "was_redirected": False,
+            "error": None,
+        },
+        expected_message="no regulatory notice links",
+    )
 
 
 def test_finra_notice_body_fallback_promotes_genai_notice_to_high(monkeypatch):

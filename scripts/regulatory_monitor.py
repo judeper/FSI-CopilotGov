@@ -124,6 +124,10 @@ class FederalRegisterPaginationError(RuntimeError):
     """Raised when a paginated Federal Register response cannot be completed."""
 
 
+class FinraListingError(RuntimeError):
+    """Raised when the FINRA notice listing cannot be fetched or verified."""
+
+
 def _parse_federal_register_metadata_int(
     data: dict,
     field: str,
@@ -764,26 +768,54 @@ def fetch_finra_notices(
     _, max_retries, request_delay = _get_operational_settings(config)
 
     logger.info(f"Fetching FINRA notices from {FINRA_NOTICES_URL}...")
-    result = fetch_page(FINRA_NOTICES_URL, session, max_retries=max_retries)
+    try:
+        result = fetch_page(FINRA_NOTICES_URL, session, max_retries=max_retries)
+    except Exception as exc:
+        raise FinraListingError("FINRA notices page request failed") from exc
 
-    if result['status_code'] != 200:
-        logger.error(f"FINRA notices page returned status {result['status_code']}")
-        if result.get("error"):
-            logger.error("FINRA notices fetch error: %s", result["error"])
-        return items
+    if not isinstance(result, dict):
+        raise FinraListingError("FINRA notices page request returned an invalid result")
 
-    soup = BeautifulSoup(result['content'], 'html.parser')
+    status_code = result.get('status_code')
+    if status_code != 200:
+        error_detail = result.get("error")
+        logger.error(f"FINRA notices page returned status {status_code}")
+        if error_detail:
+            logger.error("FINRA notices fetch error: %s", error_detail)
+        raise FinraListingError(
+            f"FINRA notices page request failed with status {status_code}"
+        )
 
-    # FINRA notices are in a table with class 'notices-table' or similar.
-    notice_links = []
+    content = result.get('content')
+    if not isinstance(content, (str, bytes)):
+        raise FinraListingError("FINRA notices page parsing failed: invalid content")
 
-    for article in soup.find_all(['article', 'div'], class_=re.compile(r'notice|regulatory')):
-        link = article.find('a', href=re.compile(r'/rules-guidance/notices/'))
-        if link:
-            notice_links.append(link)
+    try:
+        soup = BeautifulSoup(content, 'html.parser')
+
+        # FINRA notices are in a table with class 'notices-table' or similar.
+        notice_links = []
+
+        for article in soup.find_all(
+            ['article', 'div'],
+            class_=re.compile(r'notice|regulatory'),
+        ):
+            link = article.find('a', href=re.compile(r'/rules-guidance/notices/'))
+            if link:
+                notice_links.append(link)
+
+        if not notice_links:
+            notice_links = soup.find_all(
+                'a',
+                href=re.compile(r'/rules-guidance/notices/\d{2}-\d{2}'),
+            )
+    except Exception as exc:
+        raise FinraListingError("FINRA notices page parsing failed") from exc
 
     if not notice_links:
-        notice_links = soup.find_all('a', href=re.compile(r'/rules-guidance/notices/\d{2}-\d{2}'))
+        raise FinraListingError(
+            "FINRA notices page returned no regulatory notice links"
+        )
 
     logger.info(f"Found {len(notice_links)} FINRA notice links")
 
