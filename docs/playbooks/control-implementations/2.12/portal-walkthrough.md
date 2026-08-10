@@ -40,9 +40,10 @@ These Entra external collaboration settings do not configure SharePoint/OneDrive
 - Configure **Guest access to a site or OneDrive will expire automatically after this many days**
 - Document who reviews expiration notices and who may extend approved access
 - Review site-level overrides under **Active sites > [Site] > Settings > More sharing settings**
-- Inventory pre-existing guest access separately because the expiration policy applies to access granted after the policy is enabled
+- Inventory pre-existing direct or sharing-link access separately because the expiration policy applies only to access granted after the policy is enabled
+- Inventory access through Microsoft 365 groups, security groups, and Teams separately because those membership-derived paths can survive SharePoint expiration
 
-This setting expires access to SharePoint sites and OneDrive resources. It does not alter or delete the Microsoft Entra B2B guest account.
+Microsoft's [guest-expiration guidance](https://support.microsoft.com/en-us/office/manage-guest-expiration-for-a-site-25bee24f-42ad-4ee8-8402-4186eed74dea) says the policy applies to guests using sharing links or direct site permissions granted after enablement. It does not alter or delete the Microsoft Entra B2B guest account, and Microsoft 365 group, security group, or Teams access can remain. Reconcile those access paths separately before treating an expired guest as removed.
 
 ### Step 4: Restrict Guest Access to Copilot-Accessible Content
 
@@ -69,7 +70,8 @@ Create a Conditional Access policy for guest users accessing content:
 Create recurring access reviews for guest users:
 - Review scope: A selected Team or group, or an application, matching the access being reviewed
 - Frequency: Monthly for sites with sensitive content
-- Auto-apply: Remove access for denied or non-responded reviews
+- Auto-apply: Remove access to the reviewed resource for denied or non-responded reviews
+- Post-review reconciliation: Verify the guest has no surviving access through another Microsoft 365 group, security group, Team, application, direct permission, or sharing link
 
 The recurring **All Microsoft 365 groups with guest users** mode can remove group access, but it cannot delete guest accounts from the tenant. If automatic account deletion is required, create a specifically scoped **Select Teams + groups** review, enable **Auto apply results to resource**, set **If reviewers don't respond** to **Remove access**, and set **Action to apply on denied guest users** to **Block user from signing-in for 30 days, then remove user from the tenant**.
 
@@ -79,7 +81,7 @@ The recurring **All Microsoft 365 groups with guest users** mode can remove grou
 |------|---------------|
 | **Baseline** | Disable anonymous sharing; restrict external sharing to existing guests; guest access reviews |
 | **Recommended** | Organization-only sharing on Copilot-scoped sites; domain restrictions; monthly guest reviews |
-| **Regulated** | External sharing disabled on all Copilot-accessible sites; guest accounts require governance approval; SharePoint/OneDrive access expiration and quarterly reviews; specifically configured account deletion where required |
+| **Regulated** | External sharing disabled on all Copilot-accessible sites; guest accounts require governance approval; SharePoint/OneDrive access expiration plus separate Microsoft 365 group, security group, and Teams reconciliation; quarterly reviews; specifically configured account deletion where required |
 
 ## Next Steps
 

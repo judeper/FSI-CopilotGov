@@ -1815,15 +1815,19 @@ AUTHORED: dict[str, dict] = {
             "External sharing and guest access settings are reviewed for "
             "Copilot-grounded sites. Guest access is restricted to approved "
             "domains, Entra access reviews are configured for guest accounts, "
-            "SharePoint/OneDrive access expiration is distinguished from "
-            "optional Entra guest-account deletion, and sharing activity is "
-            "monitored."
+            "SharePoint/OneDrive expiration is limited to eligible direct or "
+            "sharing-link access granted after enablement, surviving access "
+            "through Microsoft 365 groups, security groups, and Teams is "
+            "separately reconciled, expiration is distinguished from optional "
+            "Entra guest-account deletion, and sharing activity is monitored."
         ),
         "partialBar": (
             "External sharing is restricted but guest access reviews are "
-            "not configured, SharePoint/OneDrive access expiration is "
-            "conflated with Entra account deletion, or sharing activity is "
-            "not monitored for Copilot-grounded sites."
+            "not configured, SharePoint/OneDrive expiration is treated as "
+            "complete access removal without reconciling Microsoft 365 group, "
+            "security group, or Teams access, expiration is conflated with "
+            "Entra account deletion, or sharing activity is not monitored for "
+            "Copilot-grounded sites."
         ),
         "noBar": (
             "External sharing is unrestricted for Copilot-grounded sites, "
@@ -1845,12 +1849,14 @@ AUTHORED: dict[str, dict] = {
             "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; "
             "Get-SPOTenant | Select-Object SharingCapability, "
             "RequireAcceptingAccountMatchInvitedAccount, "
-            "ExternalUserExpirationRequired, ExternalUserExpireInDays"
+            "ExternalUserExpirationRequired, ExternalUserExpireInDays; "
+            "Get-MgUserTransitiveMemberOf -UserId <guest-object-id> -All"
         ),
         "evidenceExpected": [
             "Tenant and site-level sharing policy configuration",
             "Approved external domain list (if domain restriction is used)",
-            "SharePoint/OneDrive guest-access expiration settings, effective date, and overrides",
+            "SharePoint/OneDrive guest-access expiration settings, policy enablement date, and overrides",
+            "Microsoft 365 group, security group, and Teams access-path reconciliation for guests",
             "Entra access review scope and post-review actions for guest accounts",
             "Sharing activity monitoring report from audit logs",
         ],
@@ -1872,7 +1878,10 @@ AUTHORED: dict[str, dict] = {
             ),
             "followUp": (
                 "Open SharePoint admin center > Sharing and verify tenant, "
-                "site-level, and guest-access expiration settings. Then check "
+                "site-level, and guest-access expiration settings and policy "
+                "enablement date. Confirm expiration is limited to eligible "
+                "direct or sharing-link access, then reconcile Microsoft 365 "
+                "group, security group, and Teams access separately. Check "
                 "Entra access-review scope and post-review actions; account "
                 "deletion requires a Select Teams + groups review and is "
                 "unavailable in all-Microsoft-365-groups mode."

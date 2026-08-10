@@ -22,21 +22,24 @@ Test cases and evidence collection for validating external sharing controls.
   1. Navigate to Entra ID > Identity Governance > Access Reviews
   2. Verify active reviews are on schedule
   3. Confirm completion rate exceeds 95%
-  4. Verify denied access has been removed
-- **Expected Result:** Reviews completing on schedule with access changes applied
-- **Evidence:** Access review completion records
+  4. Verify denied access has been removed from the reviewed resource
+  5. Verify alternate access paths through Microsoft 365 groups, security groups, Teams, applications, direct permissions, and sharing links are separately reconciled
+- **Expected Result:** Reviews complete on schedule, changes are applied to the reviewed resource, and surviving access paths are explicitly resolved or approved
+- **Evidence:** Access review completion records and access-path reconciliation record
 
 ### Test 3: SharePoint/OneDrive Guest-Access Expiration
 
-- **Objective:** Verify resource-access expiration is configured without misrepresenting it as Entra guest-account deletion
+- **Objective:** Verify the limited scope of SharePoint/OneDrive guest expiration without misrepresenting it as complete access removal or Entra guest-account deletion
 - **Steps:**
   1. Review `ExternalUserExpirationRequired` and `ExternalUserExpireInDays`
   2. Confirm site-level overrides are documented
-  3. Confirm pre-existing guest access is inventoried separately because the policy applies to access granted after enablement
-  4. Verify the renewal or removal process for expiring access
-  5. Confirm the evidence states that SharePoint guest-access expiration does not alter or delete the Entra B2B account
-- **Expected Result:** Guest access to SharePoint/OneDrive expires according to policy while the separate Entra account lifecycle remains governed independently
-- **Evidence:** Tenant setting export, site override record, and expiration notification or test record
+  3. Confirm the test uses direct site permission or sharing-link access granted after the policy was enabled
+  4. Inventory pre-existing direct or sharing-link access separately
+  5. Inventory Microsoft 365 group, security group, and Teams membership that can preserve access to a group-connected site or related content
+  6. Verify the renewal or removal process for each access path
+  7. Confirm the evidence states that SharePoint guest-access expiration does not alter or delete the Entra B2B account
+- **Expected Result:** Eligible direct or sharing-link access expires according to policy; surviving pre-existing, Microsoft 365 group, security group, and Teams access is separately identified and reconciled; the Entra account lifecycle remains governed independently
+- **Evidence:** Tenant setting export, policy enablement date, site override record, expiration notification or test record, and group/Teams membership reconciliation
 
 ### Test 4: Guest Account Deletion Review Configuration
 
@@ -67,6 +70,7 @@ Test cases and evidence collection for validating external sharing controls.
 | Guest user inventory | CSV | Compliance evidence repository | 7 years |
 | Access review records | PDF | Compliance evidence repository | 7 years |
 | Guest-access expiration configuration | PDF/CSV | Compliance evidence repository | 7 years |
+| Guest group, security-group, and Teams access reconciliation | CSV/PDF | Compliance evidence repository | 7 years |
 | Sharing block test results | PDF | Compliance evidence repository | 7 years |
 
 ## Compliance Mapping

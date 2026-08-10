@@ -43,11 +43,11 @@ $sharingReport | Export-Csv "ExternalSharing_$(Get-Date -Format 'yyyyMMdd').csv"
 $tenant = Get-SPOTenant
 $tenant | Select-Object ExternalUserExpirationRequired, ExternalUserExpireInDays
 
-# Example: expire guest access to sites and OneDrive after 90 days
+# Example: configure 90-day expiration for eligible direct and sharing-link access
 Set-SPOTenant -ExternalUserExpirationRequired $true -ExternalUserExpireInDays 90
 ```
 
-This SharePoint setting expires access to sites and OneDrive resources. It does not alter or delete the Microsoft Entra B2B guest account.
+Microsoft's [guest-expiration guidance](https://support.microsoft.com/en-us/office/manage-guest-expiration-for-a-site-25bee24f-42ad-4ee8-8402-4186eed74dea) limits this policy to sharing-link access and direct site permissions granted after enablement. It does not alter or delete the Microsoft Entra B2B guest account. Pre-existing access and access through Microsoft 365 groups, security groups, or Teams can remain and must be separately reconciled.
 
 ### Script 3: Guest User Inventory and Activity Report
 
@@ -56,12 +56,13 @@ This SharePoint setting expires access to sites and OneDrive resources. It does 
 Import-Module Microsoft.Graph.Users
 Connect-MgGraph -Scopes "User.Read.All","AuditLog.Read.All"
 
-$guests = Get-MgUser -Filter "userType eq 'Guest'" -All -Property "displayName,userPrincipalName,createdDateTime,signInActivity"
+$guests = Get-MgUser -Filter "userType eq 'Guest'" -All -Property "id,displayName,userPrincipalName,createdDateTime,signInActivity"
 
 $guestReport = @()
 foreach ($guest in $guests) {
     $lastSignIn = $guest.SignInActivity.LastSignInDateTime
     $guestReport += [PSCustomObject]@{
+        Id           = $guest.Id
         DisplayName  = $guest.DisplayName
         UPN          = $guest.UserPrincipalName
         Created      = $guest.CreatedDateTime
@@ -76,6 +77,8 @@ Write-Host "Guest users: $($guestReport.Count) | Stale (>90 days): $stale"
 $guestReport | Export-Csv "GuestUsers_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
+This inventory reports identities, not every access path. For each expiration or stale-access candidate, use [`Get-MgUserTransitiveMemberOf -UserId <guest-object-id> -All`](https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.users/get-mgusertransitivememberof) and the Teams inventory to identify Microsoft 365 group, security group, and Teams membership, then reconcile each membership against the approved engagement.
+
 ### Script 4: Export Stale Guest Candidates for Access Review
 
 ```powershell
@@ -85,14 +88,14 @@ Write-Host "Stale guest candidates for review: $($staleGuests.Count)"
 $staleGuests | Export-Csv "GuestAccessReviewCandidates_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-The candidate report is not an account-deletion mechanism. Automatic tenant-account deletion requires a specifically configured Entra access review for **Select Teams + groups** with auto-apply enabled, nonresponse set to remove access, and the denied-guest action set to **Block user from signing-in for 30 days, then remove user from the tenant**. That deletion option is unavailable for **All Microsoft 365 groups with guest users** reviews.
+The candidate report is not an account-deletion or complete-access-removal mechanism. Reconcile direct permissions, sharing links, Microsoft 365 groups, security groups, Teams, and application assignments separately. Automatic tenant-account deletion requires a specifically configured Entra access review for **Select Teams + groups** with auto-apply enabled, nonresponse set to remove access, and the denied-guest action set to **Block user from signing-in for 30 days, then remove user from the tenant**. That deletion option is unavailable for **All Microsoft 365 groups with guest users** reviews.
 
 ## Scheduled Tasks
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
 | External Sharing Audit | Monthly | Verify sharing settings remain restrictive |
-| Guest-Access Expiration Audit | Monthly | Verify SharePoint/OneDrive access-expiration settings and overrides |
+| Guest-Access Expiration Audit | Monthly | Verify eligible direct/link expiration and reconcile surviving group, security-group, and Teams access |
 | Guest User Inventory | Monthly | Track and review guest accounts |
 | Stale Guest Access Review | Quarterly | Reconcile candidates through the approved access-review process |
 

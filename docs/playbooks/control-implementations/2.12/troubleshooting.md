@@ -17,12 +17,12 @@ Common issues and resolution steps for external sharing and guest access control
 ### Issue 2: Guest Access Reviews Not Removing Denied Access
 
 - **Symptoms:** Access reviews complete but denied guest users retain access
-- **Root Cause:** Auto-apply may not be configured, the review may target the wrong resource, or there may be a processing delay. The all-Microsoft-365-groups review mode cannot delete guest accounts.
+- **Root Cause:** Auto-apply may not be configured, the review may target the wrong resource, there may be a processing delay, or the guest may retain access through another Microsoft 365 group, security group, Team, application, direct permission, or sharing link. The all-Microsoft-365-groups review mode cannot delete guest accounts.
 - **Resolution:**
   1. Verify auto-apply is enabled on the access review
   2. Wait 24-48 hours after review completion for processing
   3. Manually apply results if auto-apply is not configured
-  4. Verify the denied user's group membership has been removed
+  4. Verify the denied user's membership has been removed from the reviewed resource, then reconcile every other group, Team, application, direct permission, and sharing-link access path
   5. If tenant-account deletion is required, verify the review uses **Select Teams + groups**, **If reviewers don't respond** is **Remove access**, and **Action to apply on denied guest users** is **Block user from signing-in for 30 days, then remove user from the tenant**
 
 ### Issue 3: Legitimate External Collaboration Blocked
@@ -40,19 +40,31 @@ Common issues and resolution steps for external sharing and guest access control
 - **Symptoms:** Large numbers of guest accounts exist without recent activity or review
 - **Root Cause:** No automated lifecycle management for guest accounts.
 - **Resolution:**
-  1. Configure SharePoint/OneDrive guest-access expiration for resource access; this does not alter or delete the Entra guest account
-  2. Run the guest inventory script to identify stale account candidates
-  3. Establish a monthly guest access review process
-  4. If account deletion is required, use the specifically configured **Select Teams + groups** review described above; do not rely on the all-groups review mode
+  1. Configure SharePoint/OneDrive guest-access expiration for eligible sharing-link access and direct site permissions granted after enablement; this does not alter or delete the Entra guest account
+  2. Reconcile pre-existing access and access through Microsoft 365 groups, security groups, and Teams because those paths can survive SharePoint expiration
+  3. Run the guest inventory script to identify stale account candidates
+  4. Establish a monthly guest access review process
+  5. If account deletion is required, use the specifically configured **Select Teams + groups** review described above; do not rely on the all-groups review mode
+
+### Issue 5: Guest Still Has Access After SharePoint Expiration
+
+- **Symptoms:** A guest has passed the SharePoint expiration date but can still open a group-connected site, Team, or related content
+- **Root Cause:** Microsoft's guest-expiration policy applies only to sharing-link access and direct site permissions granted after the policy is enabled. Pre-existing permissions and access inherited through Microsoft 365 groups, security groups, or Teams can remain.
+- **Resolution:**
+  1. Confirm when the expiration policy was enabled and when the direct or sharing-link permission was granted
+  2. Export the guest's direct and transitive group memberships and identify Microsoft 365 groups and security groups
+  3. Review Teams membership and connected-site access
+  4. Remove or renew each access path according to the approved engagement, then retest the site and Team
 
 ## Diagnostic Steps
 
 1. **Check tenant sharing:** `(Get-SPOTenant).SharingCapability`
 2. **Audit sites:** Run Script 1 for site-level sharing status
-3. **Check resource expiration:** Review `ExternalUserExpirationRequired` and `ExternalUserExpireInDays`
+3. **Check resource expiration:** Review `ExternalUserExpirationRequired`, `ExternalUserExpireInDays`, the policy enablement date, and site overrides
 4. **Review guests:** Run Script 3 for guest account inventory
-5. **Check reviews:** Verify Entra ID access-review scope and post-review actions
-6. **Test sharing:** Attempt external sharing on key sites
+5. **Check surviving access paths:** Review direct permissions, sharing links, Microsoft 365 groups, security groups, Teams, and applications
+6. **Check reviews:** Verify Entra ID access-review scope and post-review actions
+7. **Test sharing:** Attempt external sharing on key sites
 
 ## Escalation
 

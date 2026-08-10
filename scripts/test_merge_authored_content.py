@@ -108,9 +108,59 @@ def test_212_manifest_distinguishes_access_expiration_from_account_deletion():
     )
 
     assert "ExternalUserExpirationRequired" in payload
+    assert "Get-MgUserTransitiveMemberOf" in payload
+    assert "direct or sharing-link access" in payload
+    assert "Microsoft 365 group" in payload
+    assert "security group" in payload
+    assert "Teams" in payload
     assert "Select Teams + groups" in payload
     assert "all-Microsoft-365-groups mode" in payload
     assert "Copilot license" not in payload
+
+
+def test_212_docs_require_separate_reconciliation_of_surviving_access_paths():
+    paths = (
+        REPO_ROOT
+        / "docs"
+        / "controls"
+        / "pillar-2-security"
+        / "2.12-external-sharing-governance.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "portal-walkthrough.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "powershell-setup.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "troubleshooting.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "verification-testing.md",
+    )
+
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        assert "Microsoft 365 group" in text, path
+        assert "security group" in text, path
+        assert "Teams" in text, path
+        assert "reconcil" in text.lower(), path
+        assert (
+            "This setting expires access to SharePoint sites and OneDrive resources."
+            not in text
+        ), path
 
 
 def test_415_forced_fields_do_not_contain_obsolete_frontier_default_guidance():
