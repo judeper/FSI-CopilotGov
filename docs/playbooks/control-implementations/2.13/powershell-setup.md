@@ -4,30 +4,38 @@ Automation scripts for managing plugin and Graph connector security.
 
 ## Prerequisites
 
-- Microsoft Teams PowerShell module
 - Microsoft Graph PowerShell SDK
-- Teams Admin and Entra Global Admin roles
+- Microsoft Graph read permissions for applications, external connections, and policies
+- Appropriate Microsoft Entra and Microsoft 365 administrator roles
 
 ## Scripts
 
-### Script 1: Plugin and App Permissions Audit
+### Script 1: Candidate Plugin and App OAuth Audit
 
 ```powershell
-# Audit Teams app permissions and consent status
+# Audit delegated OAuth grants for candidate plugin and agent service principals.
+# Reconcile this best-effort result with the Agent Registry and Agent Tools inventory.
 Import-Module Microsoft.Graph.Applications
 Connect-MgGraph -Scopes "Application.Read.All","Directory.Read.All"
 
 $apps = Get-MgServicePrincipal -All -Property "displayName,appId,oauth2PermissionScopes,appRoles"
-$copilotApps = $apps | Where-Object { $_.Tags -contains "CopilotExtension" -or $_.DisplayName -match "Copilot|Plugin" }
+$copilotApps = $apps | Where-Object {
+    $_.Tags -contains "CopilotExtension" -or $_.DisplayName -match "Copilot|Plugin|Agent"
+}
 
 $appReport = @()
 foreach ($app in $copilotApps) {
     $grants = Get-MgServicePrincipalOauth2PermissionGrant -ServicePrincipalId $app.Id -ErrorAction SilentlyContinue
+    $scopes = @(
+        $grants.Scope -split " " |
+            Where-Object { $_ } |
+            Sort-Object -Unique
+    )
     $appReport += [PSCustomObject]@{
         Name         = $app.DisplayName
         AppId        = $app.AppId
-        PermCount    = $grants.Count
-        Permissions  = ($grants.Scope -join "; ")
+        PermCount    = $scopes.Count
+        Permissions  = ($scopes -join "; ")
     }
 }
 
@@ -61,29 +69,60 @@ $connReport | Format-Table Name, State -AutoSize
 $connReport | Export-Csv "ConnectorSecurity_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
+This script inventories Microsoft Graph external connections. Verify each connection's access permissions separately under **Microsoft 365 Admin Center > Copilot > Connectors > Your Connections**; the Graph inventory is not proof that source ACLs are configured correctly.
+
 ### Script 3: App Consent Policy Verification
 
 ```powershell
-# Verify app consent policies are restrictive
+# Verify user self-consent is disabled and the admin consent workflow is enabled
 Import-Module Microsoft.Graph.Identity.SignIns
 Connect-MgGraph -Scopes "Policy.Read.All"
 
-$consentPolicy = Get-MgPolicyAuthorizationPolicy
-Write-Host "=== App Consent Policy ==="
-Write-Host "Default User Role Permissions:"
-Write-Host "  Allow user consent: $($consentPolicy.DefaultUserRolePermissions.AllowedToCreateApps)"
-Write-Host "  Consent policy: $($consentPolicy.DefaultUserRolePermissions.PermissionGrantPoliciesAssigned)"
-Write-Host ""
-Write-Host "Recommended: User consent disabled; admin consent required for all apps"
+$authorizationPolicy = Get-MgPolicyAuthorizationPolicy
+$assignedPolicies = @(
+    $authorizationPolicy.DefaultUserRolePermissions.PermissionGrantPoliciesAssigned
+)
+$selfConsentPolicies = @(
+    $assignedPolicies |
+        Where-Object { $_ -like "managePermissionGrantsForSelf.*" }
+)
+$ownedResourcePolicies = @(
+    $assignedPolicies |
+        Where-Object { $_ -like "managePermissionGrantsForOwnedResource.*" }
+)
+$adminConsentPolicy = Get-MgPolicyAdminConsentRequestPolicy
+
+$result = [PSCustomObject]@{
+    UserConsentDisabled        = ($selfConsentPolicies.Count -eq 0)
+    AdminConsentWorkflowEnabled = $adminConsentPolicy.IsEnabled
+    SelfConsentPolicies         = ($selfConsentPolicies -join "; ")
+    OwnedResourcePolicies       = ($ownedResourcePolicies -join "; ")
+}
+
+$result | Format-List
+
+if (-not $result.UserConsentDisabled) {
+    Write-Warning "User consent remains enabled by a managePermissionGrantsForSelf policy."
+}
+if (-not $result.AdminConsentWorkflowEnabled) {
+    Write-Warning "The admin consent request workflow is disabled."
+}
 ```
+
+`AllowedToCreateApps` controls whether users can register applications; it does not report whether users can grant OAuth consent. User consent is disabled only when no `managePermissionGrantsForSelf.*` policy is assigned to the default user role. Existing grants must be reviewed and revoked separately.
 
 ## Scheduled Tasks
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
-| Plugin Permission Audit | Monthly | Review plugin access scope |
+| Plugin Permission Audit | Monthly | Reconcile portal inventory and delegated OAuth scope |
 | Connector Security Audit | Monthly | Verify connector configurations |
-| Consent Policy Check | Quarterly | Verify consent restrictions active |
+| Consent Policy Check | Quarterly | Verify self-consent is disabled and request workflow is active |
+
+## Microsoft Guidance
+
+- [Configure how users consent to applications](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-user-consent?pivots=ms-powershell)
+- [Configure the admin consent workflow](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-admin-consent-workflow)
 
 ## Next Steps
 

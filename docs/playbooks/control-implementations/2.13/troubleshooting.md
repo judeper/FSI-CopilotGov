@@ -4,14 +4,14 @@ Common issues and resolution steps for plugin and connector security.
 
 ## Common Issues
 
-### Issue 1: Approved Plugin Not Working After Policy Update
+### Issue 1: Approved Agent or Plugin Tool Not Available
 
-- **Symptoms:** A previously approved plugin stops functioning after a Teams app permission policy update
-- **Root Cause:** Policy changes may inadvertently remove the plugin from the allowlist or change the policy assignment.
+- **Symptoms:** A previously approved agent or plugin tool is unavailable to users
+- **Root Cause:** Agent type, user access, agent distribution, or tool scope no longer includes the affected user.
 - **Resolution:**
-  1. Verify the plugin is on the current allowlist in Teams admin center
-  2. Check the user's assigned app permission policy
-  3. Re-add the plugin to the allowlist if it was inadvertently removed
+  1. Review the agent under **Microsoft 365 Admin Center > Agents > All Agents > Registry**
+  2. Check **Agents > Settings > Allowed agent types** and **User access**
+  3. Where licensed, verify the plugin under **Agents > Tools > Plugins** and correct its user or group scope
   4. Allow 24 hours for policy propagation after changes
 
 ### Issue 2: Graph Connector Returning Unauthorized Content
@@ -19,9 +19,9 @@ Common issues and resolution steps for plugin and connector security.
 - **Symptoms:** Users see content from Graph connectors that they should not have access to
 - **Root Cause:** ACL mapping may be incorrect, or the connector may not be enforcing ACLs properly.
 - **Resolution:**
-  1. Review the connector's ACL configuration
+  1. Review the connection under **Microsoft 365 Admin Center > Copilot > Connectors > Your Connections**
   2. Verify the ACL mapping correctly translates source system permissions to Entra ID
-  3. Pause the connector, correct the ACL mapping, and re-crawl
+  3. If the access permission is wrong, delete the connection and recreate it through **Custom setup**; in-place permission changes are not supported
   4. Test with specific users to verify access restrictions
 
 ### Issue 3: Admin Consent Queue Growing Without Review
@@ -29,10 +29,10 @@ Common issues and resolution steps for plugin and connector security.
 - **Symptoms:** Users submit admin consent requests that go unreviewed, blocking business app usage
 - **Root Cause:** No dedicated approver or unclear ownership of the admin consent workflow.
 - **Resolution:**
-  1. Assign dedicated admin consent reviewers
+  1. Under **Microsoft Entra Admin Center > Enterprise apps > Consent and permissions > Admin consent settings**, assign dedicated reviewers
   2. Define SLAs for consent review (24 hours for standard, 4 hours for urgent)
   3. Configure email notifications for pending consent requests
-  4. Pre-approve common low-risk Microsoft first-party apps
+  4. Confirm reviewers hold a role that can grant the requested permissions; reviewer assignment alone does not elevate privileges
 
 ### Issue 4: Plugin Security Assessment Blocking Business Adoption
 
@@ -46,10 +46,10 @@ Common issues and resolution steps for plugin and connector security.
 
 ## Diagnostic Steps
 
-1. **Check plugin status:** Verify plugin is on the Teams allowlist
+1. **Check agent status:** Review the agent in Agents > All Agents > Registry
 2. **Review permissions:** Run Script 1 for plugin permission audit
 3. **Test connector ACLs:** Verify access control on connector content
-4. **Check consent policy:** Run Script 3 to verify settings
+4. **Check consent policy:** Run Script 3 and review existing grants separately
 5. **Review audit logs:** Search for plugin-related events
 
 ## Escalation
