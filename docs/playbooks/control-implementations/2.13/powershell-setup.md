@@ -192,16 +192,27 @@ function Get-PagedCopilotAuditRecord {
                 throw "Paging safety limit reached for $segmentStart to $segmentEnd."
             }
 
-            $page = @(
-                Search-UnifiedAuditLog `
-                    -StartDate $segmentStart `
-                    -EndDate $segmentEnd `
-                    -RecordType CopilotInteraction `
-                    -Operations "CopilotInteraction" `
-                    -SessionId $sessionId `
-                    -SessionCommand ReturnLargeSet `
-                    -ResultSize 5000
-            )
+            try {
+                $page = @(
+                    Search-UnifiedAuditLog `
+                        -StartDate $segmentStart `
+                        -EndDate $segmentEnd `
+                        -RecordType CopilotInteraction `
+                        -Operations "CopilotInteraction" `
+                        -SessionId $sessionId `
+                        -SessionCommand ReturnLargeSet `
+                        -ResultSize 5000 `
+                        -ErrorAction Stop
+                )
+            }
+            catch {
+                throw (
+                    "Search-UnifiedAuditLog failed for segment $segmentStart to " +
+                    "$segmentEnd on page $pageNumber (SessionId $sessionId). " +
+                    "No evidence from this run should be treated as complete. " +
+                    "Underlying error: $($_.Exception.Message)"
+                )
+            }
 
             if ($page.Count -eq 0) {
                 $segmentExhausted = $true
