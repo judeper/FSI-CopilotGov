@@ -1853,6 +1853,8 @@ AUTHORED: dict[str, dict] = {
             "Connect-MgGraph -Scopes User.Read.All,GroupMember.Read.All; "
             "Get-MgUserTransitiveMemberOfAsGroup "
             "-UserId <guest-object-id> -All "
+            "-ConsistencyLevel eventual "
+            "-CountVariable transitiveGroupCount "
             "-Property Id,DisplayName,GroupTypes,SecurityEnabled,"
             "MailEnabled,ResourceProvisioningOptions | "
             "Select-Object Id,DisplayName,GroupTypes,SecurityEnabled,"

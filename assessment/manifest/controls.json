@@ -2359,7 +2359,7 @@
         "url": "https://entra.microsoft.com/"
       }
     ],
-    "verifyPowerShell": "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; Get-SPOTenant | Select-Object SharingCapability, RequireAcceptingAccountMatchInvitedAccount, ExternalUserExpirationRequired, ExternalUserExpireInDays; Connect-MgGraph -Scopes User.Read.All,GroupMember.Read.All; Get-MgUserTransitiveMemberOfAsGroup -UserId <guest-object-id> -All -Property Id,DisplayName,GroupTypes,SecurityEnabled,MailEnabled,ResourceProvisioningOptions | Select-Object Id,DisplayName,GroupTypes,SecurityEnabled,MailEnabled,ResourceProvisioningOptions",
+    "verifyPowerShell": "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; Get-SPOTenant | Select-Object SharingCapability, RequireAcceptingAccountMatchInvitedAccount, ExternalUserExpirationRequired, ExternalUserExpireInDays; Connect-MgGraph -Scopes User.Read.All,GroupMember.Read.All; Get-MgUserTransitiveMemberOfAsGroup -UserId <guest-object-id> -All -ConsistencyLevel eventual -CountVariable transitiveGroupCount -Property Id,DisplayName,GroupTypes,SecurityEnabled,MailEnabled,ResourceProvisioningOptions | Select-Object Id,DisplayName,GroupTypes,SecurityEnabled,MailEnabled,ResourceProvisioningOptions",
     "evidenceExpected": [
       "Tenant and site-level sharing policy configuration",
       "Approved external domain list (if domain restriction is used)",

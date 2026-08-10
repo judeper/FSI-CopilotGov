@@ -110,6 +110,9 @@ def test_212_manifest_distinguishes_access_expiration_from_account_deletion():
     assert "ExternalUserExpirationRequired" in payload
     assert "Get-MgUserTransitiveMemberOfAsGroup" in payload
     assert "User.Read.All,GroupMember.Read.All" in payload
+    assert "-All" in payload
+    assert "-ConsistencyLevel eventual" in payload
+    assert "-CountVariable transitiveGroupCount" in payload
     for property_name in (
         "Id",
         "DisplayName",
@@ -200,6 +203,12 @@ def test_212_resource_reviews_disable_account_level_denied_guest_actions():
         / "control-implementations"
         / "2.12"
         / "verification-testing.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "powershell-setup.md",
     )
 
     for path in paths:
@@ -208,6 +217,33 @@ def test_212_resource_reviews_disable_account_level_denied_guest_actions():
         assert "sign-in block" in text, path
         assert "guest-account deletion" in text or "guest deletion" in text, path
         assert "reviewed resource" in text, path
+
+
+def test_212_powershell_playbook_classifies_transitive_groups():
+    text = (
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "powershell-setup.md"
+    ).read_text(encoding="utf-8")
+
+    assert '"User.Read.All","AuditLog.Read.All","GroupMember.Read.All"' in text
+    assert "Get-MgUserTransitiveMemberOfAsGroup" in text
+    assert "-All" in text
+    assert "-ConsistencyLevel eventual" in text
+    assert "-CountVariable transitiveGroupCount" in text
+    for property_name in (
+        "GroupTypes",
+        "SecurityEnabled",
+        "MailEnabled",
+        "ResourceProvisioningOptions",
+    ):
+        assert property_name in text
+    assert "Team-backed Microsoft 365 group" in text
+    assert "Microsoft 365 group" in text
+    assert "Security group" in text
 
 
 def test_415_forced_fields_do_not_contain_obsolete_frontier_default_guidance():
