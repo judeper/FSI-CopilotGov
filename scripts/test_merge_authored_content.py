@@ -38,6 +38,15 @@ FORCED_311_FIELDS = (
     "sectorYesBar",
 )
 
+FORCED_212_FIELDS = (
+    "yesBar",
+    "partialBar",
+    "verifyIn",
+    "verifyPowerShell",
+    "evidenceExpected",
+    "facilitatorNotes",
+)
+
 
 def _load_authored() -> dict[str, dict]:
     authored_path = REPO_ROOT / "assessment" / "manifest" / "authored_content.py"
@@ -81,6 +90,160 @@ def test_45_forced_fields_in_manifest_match_authored_source():
 
     for field in FORCED_45_FIELDS:
         assert manifest_45[field] == authored_45[field]
+
+
+def test_212_guest_lifecycle_fields_in_manifest_match_authored_source():
+    authored_212 = _load_authored()["2.12"]
+    manifest_212 = _load_manifest_control("2.12")
+
+    for field in FORCED_212_FIELDS:
+        assert manifest_212[field] == authored_212[field]
+
+
+def test_212_manifest_distinguishes_access_expiration_from_account_deletion():
+    manifest_212 = _load_manifest_control("2.12")
+    payload = json.dumps(
+        {field: manifest_212.get(field) for field in FORCED_212_FIELDS},
+        ensure_ascii=False,
+    )
+
+    assert "ExternalUserExpirationRequired" in payload
+    assert "Get-MgUserTransitiveMemberOfAsGroup" in payload
+    assert "User.Read.All,GroupMember.Read.All" in payload
+    assert "-All" in payload
+    assert "-ConsistencyLevel eventual" in payload
+    assert "-CountVariable transitiveGroupCount" in payload
+    for property_name in (
+        "Id",
+        "DisplayName",
+        "GroupTypes",
+        "SecurityEnabled",
+        "MailEnabled",
+        "ResourceProvisioningOptions",
+    ):
+        assert property_name in payload
+    assert "direct or sharing-link access" in payload
+    assert "Microsoft 365 group" in payload
+    assert "security group" in payload
+    assert "Teams" in payload
+    assert "reviewed resource's access" in payload
+    assert "no account-level denied-guest action configured" in payload
+    assert "no sign-in block or guest deletion" in payload
+    assert "dedicated guest-lifecycle review" in payload
+    assert "all direct, group, Teams, SharePoint, application" in payload
+    assert "Select Teams + groups" not in payload
+    assert "Block user from signing-in for 30 days" not in payload
+    assert "Copilot license" not in payload
+
+
+def test_212_docs_require_separate_reconciliation_of_surviving_access_paths():
+    paths = (
+        REPO_ROOT
+        / "docs"
+        / "controls"
+        / "pillar-2-security"
+        / "2.12-external-sharing-governance.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "portal-walkthrough.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "powershell-setup.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "troubleshooting.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "verification-testing.md",
+    )
+
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        assert "Microsoft 365 group" in text, path
+        assert "security group" in text, path
+        assert "Teams" in text, path
+        assert "reconcil" in text.lower(), path
+        assert "guest-lifecycle" in text.lower(), path
+        assert "Select Teams + groups" not in text, path
+        assert "Block user from signing-in for 30 days" not in text, path
+        assert (
+            "This setting expires access to SharePoint sites and OneDrive resources."
+            not in text
+        ), path
+
+
+def test_212_resource_reviews_disable_account_level_denied_guest_actions():
+    paths = (
+        REPO_ROOT
+        / "docs"
+        / "controls"
+        / "pillar-2-security"
+        / "2.12-external-sharing-governance.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "portal-walkthrough.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "verification-testing.md",
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "powershell-setup.md",
+    )
+
+    for path in paths:
+        text = path.read_text(encoding="utf-8").lower()
+        assert "no account-level" in text, path
+        assert "sign-in block" in text, path
+        assert "guest-account deletion" in text or "guest deletion" in text, path
+        assert "reviewed resource" in text, path
+
+
+def test_212_powershell_playbook_classifies_transitive_groups():
+    text = (
+        REPO_ROOT
+        / "docs"
+        / "playbooks"
+        / "control-implementations"
+        / "2.12"
+        / "powershell-setup.md"
+    ).read_text(encoding="utf-8")
+
+    assert '"User.Read.All","AuditLog.Read.All","GroupMember.Read.All"' in text
+    assert "Get-MgUserTransitiveMemberOfAsGroup" in text
+    assert "-All" in text
+    assert "-ConsistencyLevel eventual" in text
+    assert "-CountVariable transitiveGroupCount" in text
+    for property_name in (
+        "GroupTypes",
+        "SecurityEnabled",
+        "MailEnabled",
+        "ResourceProvisioningOptions",
+    ):
+        assert property_name in text
+    assert "Team-backed Microsoft 365 group" in text
+    assert "Microsoft 365 group" in text
+    assert "Security group" in text
 
 
 def test_415_forced_fields_do_not_contain_obsolete_frontier_default_guidance():
