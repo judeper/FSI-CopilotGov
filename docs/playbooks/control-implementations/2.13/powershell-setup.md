@@ -18,7 +18,7 @@ Automation scripts for managing plugin and Graph connector security.
 Import-Module Microsoft.Graph.Applications
 Connect-MgGraph -Scopes "Application.Read.All","Directory.Read.All"
 
-$apps = Get-MgServicePrincipal -All -Property "displayName,appId,oauth2PermissionScopes,appRoles"
+$apps = Get-MgServicePrincipal -All -Property "id,displayName,appId,tags,oauth2PermissionScopes,appRoles"
 $copilotApps = $apps | Where-Object {
     $_.Tags -contains "CopilotExtension" -or $_.DisplayName -match "Copilot|Plugin|Agent"
 }
