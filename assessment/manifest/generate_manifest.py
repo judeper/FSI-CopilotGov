@@ -118,7 +118,7 @@ CONTROLS = [
     ("2.10", "2.10-insider-risk-detection.md",                 2, "partial", ["Purview_PowerShell"], "Have any insider-risk alerts touching Copilot interactions been reviewed and dispositioned this quarter?"),
     ("2.11", "2.11-copilot-pages-security.md",                 2, "partial", ["M365Admin", "SharePoint_Graph"], "Are Copilot Pages security controls configured to prevent unauthorized sharing and reviewed on a documented cadence?"),
     ("2.12", "2.12-external-sharing-governance.md",            2, "full",    ["SharePoint_Graph"], None),
-    ("2.13", "2.13-plugin-connector-security.md",              2, "partial", ["M365Admin", "Graph_API"], "Is the plug-in / connector inventory reviewed and approved on a documented cadence, with un-approved connectors blocked?"),
+    ("2.13", "2.13-plugin-connector-security.md",              2, "partial", ["M365Admin", "Graph_API"], "Are the Agent Registry, Agent Tools, Copilot connectors, consent controls, and plugin audit evidence reconciled to approved inventory on a documented cadence?"),
     ("2.14", "2.14-declarative-agents-governance.md",          2, "partial", ["M365Admin", "Graph_API"], "Are declarative agents subject to a publishing-approval workflow with a maintained inventory?"),
     ("2.15", "2.15-network-security.md",                       2, "manual",  [], "Are network security controls (Conditional Access named locations, Global Secure Access, tenant restrictions) configured for Copilot workloads per the organization's network security policy?"),
     ("2.16", "2.16-federated-connector-mcp-governance.md",     2, "partial", ["M365Admin", "Graph_API"], "Are federated connectors and MCP endpoints subject to a documented approval, allow-list, and review cycle?"),
