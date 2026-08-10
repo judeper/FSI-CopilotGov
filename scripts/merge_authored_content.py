@@ -83,6 +83,19 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "evidenceExpected",
         "facilitatorNotes",
     },
+    "2.13": {
+        # Control 2.13 was re-authored for Agent Registry, Agent Tools,
+        # connector, consent, and paged audit evidence. Replace the stale
+        # Integrated apps/service-principal-only assessment content.
+        "yesBar",
+        "partialBar",
+        "noBar",
+        "verifyIn",
+        "verifyPowerShell",
+        "evidenceExpected",
+        "sectorYesBar",
+        "facilitatorNotes",
+    },
     "3.1": {
         # Authored checks[] wires the audit_log_enabled evaluator.
         "checks",
