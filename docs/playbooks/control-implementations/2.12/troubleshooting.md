@@ -17,12 +17,13 @@ Common issues and resolution steps for external sharing and guest access control
 ### Issue 2: Guest Access Reviews Not Removing Denied Access
 
 - **Symptoms:** Access reviews complete but denied guest users retain access
-- **Root Cause:** Auto-apply may not be configured, or there may be a processing delay.
+- **Root Cause:** Auto-apply may not be configured, the review may target the wrong resource, or there may be a processing delay. The all-Microsoft-365-groups review mode cannot delete guest accounts.
 - **Resolution:**
   1. Verify auto-apply is enabled on the access review
   2. Wait 24-48 hours after review completion for processing
   3. Manually apply results if auto-apply is not configured
   4. Verify the denied user's group membership has been removed
+  5. If tenant-account deletion is required, verify the review uses **Select Teams + groups**, **If reviewers don't respond** is **Remove access**, and **Action to apply on denied guest users** is **Block user from signing-in for 30 days, then remove user from the tenant**
 
 ### Issue 3: Legitimate External Collaboration Blocked
 
@@ -39,18 +40,19 @@ Common issues and resolution steps for external sharing and guest access control
 - **Symptoms:** Large numbers of guest accounts exist without recent activity or review
 - **Root Cause:** No automated lifecycle management for guest accounts.
 - **Resolution:**
-  1. Implement guest access expiration in Entra ID
-  2. Run Script 2 to identify stale accounts
-  3. Establish a monthly guest account review process
-  4. Enable automated cleanup for inactive guest accounts
+  1. Configure SharePoint/OneDrive guest-access expiration for resource access; this does not alter or delete the Entra guest account
+  2. Run the guest inventory script to identify stale account candidates
+  3. Establish a monthly guest access review process
+  4. If account deletion is required, use the specifically configured **Select Teams + groups** review described above; do not rely on the all-groups review mode
 
 ## Diagnostic Steps
 
 1. **Check tenant sharing:** `(Get-SPOTenant).SharingCapability`
 2. **Audit sites:** Run Script 1 for site-level sharing status
-3. **Review guests:** Run Script 2 for guest account inventory
-4. **Check reviews:** Entra ID > Access Reviews status
-5. **Test sharing:** Attempt external sharing on key sites
+3. **Check resource expiration:** Review `ExternalUserExpirationRequired` and `ExternalUserExpireInDays`
+4. **Review guests:** Run Script 3 for guest account inventory
+5. **Check reviews:** Verify Entra ID access-review scope and post-review actions
+6. **Test sharing:** Attempt external sharing on key sites
 
 ## Escalation
 

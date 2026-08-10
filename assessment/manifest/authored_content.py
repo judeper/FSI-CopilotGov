@@ -1815,12 +1815,15 @@ AUTHORED: dict[str, dict] = {
             "External sharing and guest access settings are reviewed for "
             "Copilot-grounded sites. Guest access is restricted to approved "
             "domains, Entra access reviews are configured for guest accounts, "
-            "and sharing activity is monitored."
+            "SharePoint/OneDrive access expiration is distinguished from "
+            "optional Entra guest-account deletion, and sharing activity is "
+            "monitored."
         ),
         "partialBar": (
             "External sharing is restricted but guest access reviews are "
-            "not configured, or sharing activity is not monitored for "
-            "Copilot-grounded sites."
+            "not configured, SharePoint/OneDrive access expiration is "
+            "conflated with Entra account deletion, or sharing activity is "
+            "not monitored for Copilot-grounded sites."
         ),
         "noBar": (
             "External sharing is unrestricted for Copilot-grounded sites, "
@@ -1832,16 +1835,23 @@ AUTHORED: dict[str, dict] = {
                 "path": "Policies > Sharing",
                 "url": "https://admin.microsoft.com/sharepoint",
             },
+            {
+                "portal": "Microsoft Entra admin center",
+                "path": "ID Governance > Access Reviews",
+                "url": "https://entra.microsoft.com/",
+            },
         ],
         "verifyPowerShell": (
             "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; "
             "Get-SPOTenant | Select-Object SharingCapability, "
-            "RequireAcceptingAccountMatchInvitedAccount"
+            "RequireAcceptingAccountMatchInvitedAccount, "
+            "ExternalUserExpirationRequired, ExternalUserExpireInDays"
         ),
         "evidenceExpected": [
             "Tenant and site-level sharing policy configuration",
             "Approved external domain list (if domain restriction is used)",
-            "Entra access review configuration for guest accounts",
+            "SharePoint/OneDrive guest-access expiration settings, effective date, and overrides",
+            "Entra access review scope and post-review actions for guest accounts",
             "Sharing activity monitoring report from audit logs",
         ],
         "sectorYesBar": _sector_map(
@@ -1861,9 +1871,11 @@ AUTHORED: dict[str, dict] = {
                 "and reviewed for Copilot-grounded sites?"
             ),
             "followUp": (
-                "Open SharePoint admin center > Sharing. Verify tenant and "
-                "site-level settings. Check Entra access reviews for guest "
-                "accounts."
+                "Open SharePoint admin center > Sharing and verify tenant, "
+                "site-level, and guest-access expiration settings. Then check "
+                "Entra access-review scope and post-review actions; account "
+                "deletion requires a Select Teams + groups review and is "
+                "unavailable in all-Microsoft-365-groups mode."
             ),
             "timeBudgetMinutes": 6,
         },

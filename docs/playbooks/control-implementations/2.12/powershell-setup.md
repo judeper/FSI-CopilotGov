@@ -36,7 +36,20 @@ Write-Host "Sites with external sharing enabled: $externalEnabled of $($sharingR
 $sharingReport | Export-Csv "ExternalSharing_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 2: Guest User Inventory and Activity Report
+### Script 2: SharePoint and OneDrive Guest-Access Expiration Audit
+
+```powershell
+# Review the tenant-level resource-access expiration setting
+$tenant = Get-SPOTenant
+$tenant | Select-Object ExternalUserExpirationRequired, ExternalUserExpireInDays
+
+# Example: expire guest access to sites and OneDrive after 90 days
+Set-SPOTenant -ExternalUserExpirationRequired $true -ExternalUserExpireInDays 90
+```
+
+This SharePoint setting expires access to sites and OneDrive resources. It does not alter or delete the Microsoft Entra B2B guest account.
+
+### Script 3: Guest User Inventory and Activity Report
 
 ```powershell
 # Inventory guest users and their last activity
@@ -63,35 +76,25 @@ Write-Host "Guest users: $($guestReport.Count) | Stale (>90 days): $stale"
 $guestReport | Export-Csv "GuestUsers_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 3: Bulk Remove Stale Guest Accounts
+### Script 4: Export Stale Guest Candidates for Access Review
 
 ```powershell
-# Remove stale guest accounts (requires review before execution)
-Import-Module Microsoft.Graph.Users
-Connect-MgGraph -Scopes "User.ReadWrite.All"
-
+# Prepare candidates for a governed access review; this script does not delete accounts
 $staleGuests = Import-Csv "GuestUsers_reviewed.csv" | Where-Object { $_.IsStale -eq "True" }
-Write-Host "Stale guests to remove: $($staleGuests.Count)"
-Write-Host "WARNING: Review the list before proceeding."
-
-foreach ($guest in $staleGuests) {
-    try {
-        # Block sign-in first, then remove after grace period
-        Update-MgUser -UserId $guest.UPN -AccountEnabled:$false
-        Write-Host "Disabled: $($guest.UPN)"
-    } catch {
-        Write-Host "Failed: $($guest.UPN) - $($_.Exception.Message)" -ForegroundColor Red
-    }
-}
+Write-Host "Stale guest candidates for review: $($staleGuests.Count)"
+$staleGuests | Export-Csv "GuestAccessReviewCandidates_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
+
+The candidate report is not an account-deletion mechanism. Automatic tenant-account deletion requires a specifically configured Entra access review for **Select Teams + groups** with auto-apply enabled, nonresponse set to remove access, and the denied-guest action set to **Block user from signing-in for 30 days, then remove user from the tenant**. That deletion option is unavailable for **All Microsoft 365 groups with guest users** reviews.
 
 ## Scheduled Tasks
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
 | External Sharing Audit | Monthly | Verify sharing settings remain restrictive |
+| Guest-Access Expiration Audit | Monthly | Verify SharePoint/OneDrive access-expiration settings and overrides |
 | Guest User Inventory | Monthly | Track and review guest accounts |
-| Stale Guest Cleanup | Quarterly | Remove inactive guest accounts |
+| Stale Guest Access Review | Quarterly | Reconcile candidates through the approved access-review process |
 
 ## Next Steps
 

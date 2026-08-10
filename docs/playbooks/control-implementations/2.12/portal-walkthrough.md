@@ -29,16 +29,29 @@ Configure guest access restrictions:
 - Guest user access: Set to "Limited access" (guests cannot enumerate directory)
 - Guest invite restrictions: Only admins or specific roles can invite guests
 - Collaboration restrictions: Define allowed or denied domains for external collaboration
-- Guest access expiration: Configure automatic expiration for guest accounts
 
-### Step 3: Restrict Guest Access to Copilot-Accessible Content
+These Entra external collaboration settings do not configure SharePoint/OneDrive guest-access expiration or delete guest accounts.
+
+### Step 3: Configure SharePoint and OneDrive Guest-Access Expiration
+
+**Portal:** SharePoint Admin Center
+**Path:** SharePoint Admin > Policies > Sharing > More external sharing settings
+
+- Configure **Guest access to a site or OneDrive will expire automatically after this many days**
+- Document who reviews expiration notices and who may extend approved access
+- Review site-level overrides under **Active sites > [Site] > Settings > More sharing settings**
+- Inventory pre-existing guest access separately because the expiration policy applies to access granted after the policy is enabled
+
+This setting expires access to SharePoint sites and OneDrive resources. It does not alter or delete the Microsoft Entra B2B guest account.
+
+### Step 4: Restrict Guest Access to Copilot-Accessible Content
 
 **Portal:** SharePoint Admin Center
 **Path:** SharePoint Admin > Active Sites > [Site] > Sharing
 
 For sites in the Copilot grounding scope, verify external sharing is disabled or appropriately restricted. Guests should not have access to sites that Copilot uses for grounding responses unless explicitly approved.
 
-### Step 4: Configure Conditional Access for Guest Users
+### Step 5: Configure Conditional Access for Guest Users
 
 **Portal:** Entra ID Admin Center
 **Path:** Entra ID > Protection > Conditional Access > Create Policy
@@ -48,15 +61,17 @@ Create a Conditional Access policy for guest users accessing content:
 - Grant: Require MFA, require terms of use acceptance
 - Session: Limited session duration (4 hours maximum)
 
-### Step 5: Set Up Guest Access Reviews
+### Step 6: Set Up Guest Access Reviews
 
 **Portal:** Entra ID Admin Center
 **Path:** Entra ID > Identity Governance > Access Reviews
 
 Create recurring access reviews for guest users:
-- Review scope: All guest users with access to SharePoint or Teams
+- Review scope: A selected Team or group, or an application, matching the access being reviewed
 - Frequency: Monthly for sites with sensitive content
 - Auto-apply: Remove access for denied or non-responded reviews
+
+The recurring **All Microsoft 365 groups with guest users** mode can remove group access, but it cannot delete guest accounts from the tenant. If automatic account deletion is required, create a specifically scoped **Select Teams + groups** review, enable **Auto apply results to resource**, set **If reviewers don't respond** to **Remove access**, and set **Action to apply on denied guest users** to **Block user from signing-in for 30 days, then remove user from the tenant**.
 
 ## FSI Recommendations
 
@@ -64,7 +79,7 @@ Create recurring access reviews for guest users:
 |------|---------------|
 | **Baseline** | Disable anonymous sharing; restrict external sharing to existing guests; guest access reviews |
 | **Recommended** | Organization-only sharing on Copilot-scoped sites; domain restrictions; monthly guest reviews |
-| **Regulated** | External sharing disabled on all Copilot-accessible sites; guest accounts require governance approval; automated expiration and quarterly reviews |
+| **Regulated** | External sharing disabled on all Copilot-accessible sites; guest accounts require governance approval; SharePoint/OneDrive access expiration and quarterly reviews; specifically configured account deletion where required |
 
 ## Next Steps
 

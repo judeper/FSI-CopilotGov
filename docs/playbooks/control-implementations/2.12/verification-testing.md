@@ -26,7 +26,30 @@ Test cases and evidence collection for validating external sharing controls.
 - **Expected Result:** Reviews completing on schedule with access changes applied
 - **Evidence:** Access review completion records
 
-### Test 3: Anonymous Link Prevention
+### Test 3: SharePoint/OneDrive Guest-Access Expiration
+
+- **Objective:** Verify resource-access expiration is configured without misrepresenting it as Entra guest-account deletion
+- **Steps:**
+  1. Review `ExternalUserExpirationRequired` and `ExternalUserExpireInDays`
+  2. Confirm site-level overrides are documented
+  3. Confirm pre-existing guest access is inventoried separately because the policy applies to access granted after enablement
+  4. Verify the renewal or removal process for expiring access
+  5. Confirm the evidence states that SharePoint guest-access expiration does not alter or delete the Entra B2B account
+- **Expected Result:** Guest access to SharePoint/OneDrive expires according to policy while the separate Entra account lifecycle remains governed independently
+- **Evidence:** Tenant setting export, site override record, and expiration notification or test record
+
+### Test 4: Guest Account Deletion Review Configuration
+
+- **Objective:** Verify automatic B2B guest-account deletion, if required, uses a supported access-review configuration
+- **Steps:**
+  1. Confirm the review is scoped to **Select Teams + groups**, not **All Microsoft 365 groups with guest users**
+  2. Confirm **Auto apply results to resource** is enabled
+  3. Confirm **If reviewers don't respond** is set to **Remove access**
+  4. Confirm **Action to apply on denied guest users** is set to **Block user from signing-in for 30 days, then remove user from the tenant**
+- **Expected Result:** Account deletion is configured only through the supported selected-groups review mode
+- **Evidence:** Access-review scope and post-review action screenshots or exported configuration
+
+### Test 5: Anonymous Link Prevention
 
 - **Objective:** Confirm anonymous sharing links cannot be created
 - **Steps:**
@@ -43,6 +66,7 @@ Test cases and evidence collection for validating external sharing controls.
 | External sharing configuration | CSV | Compliance evidence repository | 7 years |
 | Guest user inventory | CSV | Compliance evidence repository | 7 years |
 | Access review records | PDF | Compliance evidence repository | 7 years |
+| Guest-access expiration configuration | PDF/CSV | Compliance evidence repository | 7 years |
 | Sharing block test results | PDF | Compliance evidence repository | 7 years |
 
 ## Compliance Mapping

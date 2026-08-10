@@ -71,8 +71,16 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
     },
     "2.12": {
         # Authored checks[] wires the no_external_sharing_on_grounding evaluator.
+        # Guest-lifecycle fields distinguish SharePoint/OneDrive resource-access
+        # expiration from the separately configured Entra account-deletion action.
         "checks",
         "zone_thresholds",
+        "yesBar",
+        "partialBar",
+        "verifyIn",
+        "verifyPowerShell",
+        "evidenceExpected",
+        "facilitatorNotes",
     },
     "3.1": {
         # Authored checks[] wires the audit_log_enabled evaluator.

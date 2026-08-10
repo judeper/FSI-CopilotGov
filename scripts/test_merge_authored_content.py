@@ -38,6 +38,15 @@ FORCED_311_FIELDS = (
     "sectorYesBar",
 )
 
+FORCED_212_FIELDS = (
+    "yesBar",
+    "partialBar",
+    "verifyIn",
+    "verifyPowerShell",
+    "evidenceExpected",
+    "facilitatorNotes",
+)
+
 
 def _load_authored() -> dict[str, dict]:
     authored_path = REPO_ROOT / "assessment" / "manifest" / "authored_content.py"
@@ -81,6 +90,27 @@ def test_45_forced_fields_in_manifest_match_authored_source():
 
     for field in FORCED_45_FIELDS:
         assert manifest_45[field] == authored_45[field]
+
+
+def test_212_guest_lifecycle_fields_in_manifest_match_authored_source():
+    authored_212 = _load_authored()["2.12"]
+    manifest_212 = _load_manifest_control("2.12")
+
+    for field in FORCED_212_FIELDS:
+        assert manifest_212[field] == authored_212[field]
+
+
+def test_212_manifest_distinguishes_access_expiration_from_account_deletion():
+    manifest_212 = _load_manifest_control("2.12")
+    payload = json.dumps(
+        {field: manifest_212.get(field) for field in FORCED_212_FIELDS},
+        ensure_ascii=False,
+    )
+
+    assert "ExternalUserExpirationRequired" in payload
+    assert "Select Teams + groups" in payload
+    assert "all-Microsoft-365-groups mode" in payload
+    assert "Copilot license" not in payload
 
 
 def test_415_forced_fields_do_not_contain_obsolete_frontier_default_guidance():

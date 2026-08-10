@@ -50,9 +50,9 @@ Common issues and resolution steps for permission model auditing.
 - **Root Cause:** Guest access is typically not automatically revoked when a project ends. Without regular access reviews, guest accounts persist indefinitely.
 - **Resolution:**
   1. Configure guest access reviews in Entra ID Identity Governance
-  2. Set guest access expiration policies using `Set-MgPolicyAuthorizationPolicy`
+  2. Configure SharePoint/OneDrive guest-access expiration for site and file access; this setting does not alter or delete the Entra B2B guest account
   3. Run a guest user audit: `Get-MgUser -Filter "userType eq 'Guest'"` and review against active engagements
-  4. Remove stale guest access and block sign-in for departed external collaborators
+  4. Remove stale resource access; if automatic tenant-account deletion is required, use a specifically configured **Select Teams + groups** access review because the deletion action is unavailable in **All Microsoft 365 groups with guest users** mode
 
 ### Issue 6: PnP PowerShell Connection Failures
 
