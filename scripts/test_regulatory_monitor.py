@@ -21,6 +21,18 @@ def _load_config() -> dict:
     return yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
 
 
+def test_exit_code_contract_is_unambiguous():
+    assert regulatory_monitor.EXIT_CLEAN == 0
+    assert regulatory_monitor.EXIT_FAILURE == 2
+    assert regulatory_monitor.EXIT_FINDINGS == 3
+    assert len({
+        regulatory_monitor.EXIT_CLEAN,
+        regulatory_monitor.EXIT_FAILURE,
+        regulatory_monitor.EXIT_FINDINGS,
+    }) == 3
+    assert regulatory_monitor.EXIT_FINDINGS != 1
+
+
 def test_federal_register_rule_2210_title_classifies_high_with_null_abstract():
     config = _load_config()
     title = (
@@ -433,6 +445,7 @@ def test_federal_register_missing_identity_fails_closed():
 
 def _assert_finra_listing_failure_does_not_advance_state(
     monkeypatch,
+    caplog,
     *,
     fetch_result: dict,
     expected_message: str,
@@ -487,19 +500,21 @@ def _assert_finra_listing_failure_does_not_advance_state(
         ["regulatory_monitor.py", "--source", "finra"],
     )
 
-    with pytest.raises(
-        regulatory_monitor.FinraListingError,
-        match=expected_message,
-    ):
-        regulatory_monitor.main()
+    exit_code = regulatory_monitor.main()
 
+    assert exit_code == regulatory_monitor.EXIT_FAILURE
+    assert expected_message in caplog.text
     assert loaded_state == initial_state
     assert save_calls == []
 
 
-def test_finra_listing_http_failure_fails_closed_without_state_advance(monkeypatch):
+def test_finra_listing_http_failure_fails_closed_without_state_advance(
+    monkeypatch,
+    caplog,
+):
     _assert_finra_listing_failure_does_not_advance_state(
         monkeypatch,
+        caplog,
         fetch_result={
             "url": regulatory_monitor.FINRA_NOTICES_URL,
             "status_code": 503,
@@ -512,9 +527,13 @@ def test_finra_listing_http_failure_fails_closed_without_state_advance(monkeypat
     )
 
 
-def test_finra_listing_parse_failure_fails_closed_without_state_advance(monkeypatch):
+def test_finra_listing_parse_failure_fails_closed_without_state_advance(
+    monkeypatch,
+    caplog,
+):
     _assert_finra_listing_failure_does_not_advance_state(
         monkeypatch,
+        caplog,
         fetch_result={
             "url": regulatory_monitor.FINRA_NOTICES_URL,
             "status_code": 200,
@@ -528,9 +547,13 @@ def test_finra_listing_parse_failure_fails_closed_without_state_advance(monkeypa
     )
 
 
-def test_finra_listing_empty_result_fails_closed_without_state_advance(monkeypatch):
+def test_finra_listing_empty_result_fails_closed_without_state_advance(
+    monkeypatch,
+    caplog,
+):
     _assert_finra_listing_failure_does_not_advance_state(
         monkeypatch,
+        caplog,
         fetch_result={
             "url": regulatory_monitor.FINRA_NOTICES_URL,
             "status_code": 200,
@@ -541,6 +564,65 @@ def test_finra_listing_empty_result_fails_closed_without_state_advance(monkeypat
         },
         expected_message="no regulatory notice links",
     )
+
+
+def test_federal_register_failure_maps_to_failure_exit_without_state_advance(
+    monkeypatch,
+):
+    config = _load_config()
+    initial_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-08-01",
+                "entries": {"2026-00001": "existing-hash"},
+            }
+        },
+    }
+    loaded_state = deepcopy(initial_state)
+    save_calls = []
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    def fail_fetch(*_args, **_kwargs):
+        raise regulatory_monitor.FederalRegisterPaginationError(
+            "Federal Register pagination failed closed"
+        )
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "load_monitoring_config",
+        lambda _path: config,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "load_state",
+        lambda _path: loaded_state,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda *args: save_calls.append(args),
+    )
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        fail_fetch,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor.sys,
+        "argv",
+        ["regulatory_monitor.py", "--source", "federal-register"],
+    )
+
+    exit_code = regulatory_monitor.main()
+
+    assert exit_code == regulatory_monitor.EXIT_FAILURE
+    assert loaded_state == initial_state
+    assert save_calls == []
 
 
 def test_finra_notice_body_fallback_promotes_genai_notice_to_high(monkeypatch):
@@ -931,12 +1013,68 @@ def test_limited_cli_run_does_not_mutate_entries_or_watermark(monkeypatch):
         ["regulatory_monitor.py", "--source", "federal-register", "--limit", "1"],
     )
 
-    with pytest.raises(SystemExit) as exc_info:
-        regulatory_monitor.main()
+    exit_code = regulatory_monitor.main()
 
-    assert exc_info.value.code == 1
+    assert exit_code == regulatory_monitor.EXIT_FINDINGS
     assert loaded_state == initial_state
     assert save_calls == []
+
+
+def test_main_returns_clean_exit_when_no_findings(monkeypatch):
+    config = _load_config()
+    loaded_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-08-01",
+                "entries": {},
+            }
+        },
+    }
+    save_calls = []
+    report_calls = []
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "load_monitoring_config",
+        lambda _path: config,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "load_state",
+        lambda _path: loaded_state,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda *args: save_calls.append(args),
+    )
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda _session, _since_date, _config, limit=None: [],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "generate_regulatory_report",
+        lambda *_args, **_kwargs: report_calls.append((_args, _kwargs)),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor.sys,
+        "argv",
+        ["regulatory_monitor.py", "--source", "federal-register"],
+    )
+
+    exit_code = regulatory_monitor.main()
+
+    assert exit_code == regulatory_monitor.EXIT_CLEAN
+    assert len(save_calls) == 1
+    assert report_calls == []
 
 
 def test_dry_run_does_not_mutate_state(monkeypatch):
@@ -982,10 +1120,9 @@ def test_dry_run_does_not_mutate_state(monkeypatch):
         ["regulatory_monitor.py", "--source", "federal-register", "--dry-run"],
     )
 
-    with pytest.raises(SystemExit) as exc_info:
-        regulatory_monitor.main()
+    exit_code = regulatory_monitor.main()
 
-    assert exc_info.value.code == 0
+    assert exit_code == regulatory_monitor.EXIT_CLEAN
     assert loaded_state == initial_state
     assert save_calls == []
 

@@ -5,8 +5,10 @@ config regression tests (``scripts/test_regulatory_monitor.py``) and the
 classification config they exercise (``scripts/config/monitoring-config.yaml``)
 must be wired into the Regulatory Monitor workflow so a classification-pattern
 regression cannot merge without CI actually running the tests. It also verifies
-that pull-request code runs only in a read-only job while scheduled/manual
-monitoring retains the write permissions needed to open and supersede PRs.
+that the workflow shares the monitor's three-way exit contract, only writes PRs
+for the findings code, and propagates source/execution failures. Pull-request
+code remains isolated in a read-only job while scheduled/manual monitoring
+retains the write permissions needed to open and supersede PRs.
 
 Mirrors the YAML-aware pattern in ``test_branch_protection_config.py``: the
 workflow is parsed with ``yaml.BaseLoader`` so the ``on:`` mapping key stays the
@@ -20,16 +22,24 @@ workflow's own PR test step.
 from __future__ import annotations
 
 from pathlib import Path
+import re
+import sys
 
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "regulatory-monitoring.yml"
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+
+import regulatory_monitor  # noqa: E402
 
 MONITOR_TEST_FILE = "scripts/test_regulatory_monitor.py"
 WORKFLOW_TEST_FILE = "scripts/test_regulatory_monitoring_workflow.py"
 VALIDATION_JOB = "validate"
 MONITOR_JOB = "monitor"
+CLEAN_EXIT_CODE = str(regulatory_monitor.EXIT_CLEAN)
+FAILURE_EXIT_CODE = str(regulatory_monitor.EXIT_FAILURE)
+FINDINGS_EXIT_CODE = str(regulatory_monitor.EXIT_FINDINGS)
 
 # Changes to any of these must (re)trigger the Regulatory Monitor PR validation
 # so config-only and test-only edits cannot bypass CI. Kept to the exact files
@@ -56,6 +66,16 @@ def _job(job_name: str) -> dict:
 
 def _steps(job_name: str) -> list[dict]:
     return _job(job_name)["steps"]
+
+
+def _step(job_name: str, step_name: str) -> dict:
+    matches = [
+        step
+        for step in _steps(job_name)
+        if step.get("name") == step_name
+    ]
+    assert len(matches) == 1, f"expected one {step_name!r} step in {job_name!r}"
+    return matches[0]
 
 
 def test_pr_triggers_cover_impl_config_and_tests() -> None:
@@ -135,21 +155,49 @@ def test_offline_dry_run_smoke_is_preserved() -> None:
     assert _job(VALIDATION_JOB)["if"] == "github.event_name == 'pull_request'"
 
 
-def test_unexpected_monitor_exit_is_explicitly_failed() -> None:
-    fail_steps = [
-        step
-        for step in _steps(MONITOR_JOB)
-        if "unexpected Regulatory Monitor exit" in step.get("name", "")
-    ]
-    assert fail_steps, (
-        "unexpected monitor exit codes must have a dedicated failing workflow step"
+def test_monitor_step_enforces_three_way_exit_contract() -> None:
+    monitor_step = _step(
+        MONITOR_JOB,
+        "Run Regulatory Monitor (scheduled / manual)",
+    )
+    run = monitor_step["run"]
+
+    assert monitor_step.get("continue-on-error") is None
+    assert FINDINGS_EXIT_CODE != "1"
+
+    clean_branch = re.search(
+        rf"(?ms)^\s*{re.escape(CLEAN_EXIT_CODE)}\)\s*(.*?)^\s*;;",
+        run,
+    )
+    findings_branch = re.search(
+        rf"(?ms)^\s*{re.escape(FINDINGS_EXIT_CODE)}\)\s*(.*?)^\s*;;",
+        run,
+    )
+    failure_branch = re.search(
+        rf"(?ms)^\s*{re.escape(FAILURE_EXIT_CODE)}\)\s*(.*?)^\s*;;",
+        run,
     )
 
-    fail_step = fail_steps[0]
-    assert "steps.monitor.outputs.exit_code" in fail_step.get("if", "")
-    assert "exit 1" in fail_step.get("run", "")
-    assert "!= '0'" in fail_step.get("if", "")
-    assert "!= '1'" in fail_step.get("if", "")
+    assert clean_branch and "exit 0" in clean_branch.group(1)
+    assert findings_branch and "report_file=" in findings_branch.group(1)
+    assert "exit 0" in findings_branch.group(1)
+    assert failure_branch and 'exit "$EXIT_CODE"' in failure_branch.group(1)
+    assert 'exit "$EXIT_CODE"' in run.split("*)", maxsplit=1)[1]
+
+
+def test_pr_write_path_is_gated_on_findings_exit() -> None:
+    findings_condition = (
+        f"steps.monitor.outputs.exit_code == '{FINDINGS_EXIT_CODE}'"
+    )
+
+    assert _step(MONITOR_JOB, "Detect state changes")["if"] == findings_condition
+
+    for step_name in (
+        "Generate GitHub App token",
+        "Open / update PR with regulatory findings",
+        "Close prior superseded Regulatory Monitor PRs",
+    ):
+        assert findings_condition in _step(MONITOR_JOB, step_name)["if"]
 
 
 def test_pr_title_identifies_run_number_not_item_count() -> None:

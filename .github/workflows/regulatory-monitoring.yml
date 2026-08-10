@@ -78,7 +78,6 @@ jobs:
 
       - name: Run Regulatory Monitor (scheduled / manual)
         id: monitor
-        continue-on-error: true
         run: |
           set +e
           python scripts/regulatory_monitor.py
@@ -86,28 +85,35 @@ jobs:
           set -e
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
 
+          # Contract: 0 = clean, 3 = findings, 2 = source/execution failure.
+          # Any other non-zero code is also a failure, including Python's
+          # default exit code 1 for an uncaught exception.
           case "$EXIT_CODE" in
             0)
+              exit 0
               ;;
-            1)
-              REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md 2>/dev/null | head -1)
-              if [ -n "$REPORT_FILE" ]; then
-                echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+            3)
+              REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md 2>/dev/null | head -1) || true
+              if [ -z "$REPORT_FILE" ]; then
+                echo "::error::Regulatory Monitor reported findings but produced no report"
+                exit 2
               fi
+              echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+            2)
+              echo "::error::Regulatory Monitor source/execution failure"
+              exit "$EXIT_CODE"
               ;;
             *)
               echo "::error::Regulatory Monitor failed with unexpected exit code $EXIT_CODE"
+              exit "$EXIT_CODE"
               ;;
           esac
 
-      - name: Fail on unexpected Regulatory Monitor exit
-        if: steps.monitor.outputs.exit_code != '0' && steps.monitor.outputs.exit_code != '1'
-        run: |
-          echo "::error::Regulatory Monitor returned unexpected exit code ${{ steps.monitor.outputs.exit_code }}"
-          exit 1
-
       - name: Detect state changes
         id: diff
+        if: steps.monitor.outputs.exit_code == '3'
         run: |
           if [ -n "$(git status --porcelain data/monitor-state.json reports/monitoring/ 2>/dev/null)" ]; then
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
@@ -117,7 +123,7 @@ jobs:
 
       - name: Generate GitHub App token
         id: app-token
-        if: steps.diff.outputs.has_changes == 'true'
+        if: steps.monitor.outputs.exit_code == '3' && steps.diff.outputs.has_changes == 'true'
         uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
@@ -125,7 +131,7 @@ jobs:
 
       - name: Open / update PR with regulatory findings
         id: cpr
-        if: steps.diff.outputs.has_changes == 'true'
+        if: steps.monitor.outputs.exit_code == '3' && steps.diff.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -162,7 +168,7 @@ jobs:
             *Automated PR created by `.github/workflows/regulatory-monitoring.yml`.*
 
       - name: Close prior superseded Regulatory Monitor PRs
-        if: steps.cpr.outputs.pull-request-number != ''
+        if: steps.monitor.outputs.exit_code == '3' && steps.cpr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}

@@ -16,8 +16,11 @@ Usage:
 
 Exit Codes:
     0 - No new regulatory items detected
-    1 - New regulatory items detected (triggers PR in CI)
-    2 - Error during execution
+    3 - New regulatory items detected (triggers PR in CI)
+    2 - Source or execution failure
+
+Exit code 1 is deliberately not used for findings because Python uses it for
+uncaught exceptions. The workflow treats every code except 0 and 3 as failure.
 
 Environment Variables:
     REGULATORY_MONITOR_DEBUG=1  - Enable debug output
@@ -71,6 +74,12 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 DATA_DIR = PROJECT_ROOT / 'data'
 REPORTS_DIR = PROJECT_ROOT / 'reports' / 'monitoring'
 STATE_FILE = DATA_DIR / 'monitor-state.json'
+
+# Exit-code contract. Keep findings away from Python's generic unhandled-
+# exception code (1), so a crash can never be mistaken for monitor output.
+EXIT_CLEAN = 0
+EXIT_FAILURE = 2
+EXIT_FINDINGS = 3
 
 # Source keys for unified state file
 SOURCE_KEY_FEDERAL_REGISTER = "regulatory-federal-register"
@@ -1191,8 +1200,8 @@ def generate_regulatory_report(
     logger.info(f"Report written to {report_path}")
 
 
-def main():
-    """Main execution."""
+def _run_monitor() -> int:
+    """Execute the monitor and return a contract exit code."""
     parser = argparse.ArgumentParser(
         description="Monitor regulatory changes from Federal Register and FINRA"
     )
@@ -1243,12 +1252,12 @@ def main():
         is_valid, errors = validate_config(config)
         if is_valid:
             print(f"Config valid: {config_path}")
-            sys.exit(0)
+            return EXIT_CLEAN
         else:
             print(f"Config errors in {config_path}:")
             for err in errors:
                 print(f"  - {err}")
-            sys.exit(2)
+            return EXIT_FAILURE
 
     logger.info("=== Regulatory Monitor ===")
     logger.info(f"Source: {args.source}")
@@ -1271,7 +1280,7 @@ def main():
     if args.dry_run:
         logger.info("Dry run: skipping all network calls (offline mode)")
         print("INFO: regulatory_monitor dry-run — network calls skipped (offline mode).")
-        sys.exit(0)
+        return EXIT_CLEAN
 
     # Create session
     session = requests.Session()
@@ -1352,8 +1361,7 @@ def main():
         else:
             logger.info("State not updated (dry-run or limited run)")
 
-        # Exit code 1 indicates new items (triggers PR in CI)
-        sys.exit(1)
+        return EXIT_FINDINGS
 
     else:
         logger.info("\n=== No new regulatory items detected ===")
@@ -1364,14 +1372,23 @@ def main():
         else:
             logger.info("State not updated (dry-run or limited run)")
 
-        # Exit code 0 indicates no changes
-        sys.exit(0)
+        return EXIT_CLEAN
+
+
+def main() -> int:
+    """Run the monitor without allowing source/execution failures to escape."""
+    try:
+        return _run_monitor()
+    except SystemExit as exc:
+        if exc.code == EXIT_CLEAN:
+            return EXIT_CLEAN
+        logger.error("Monitor terminated before completion with exit code %s", exc.code)
+        return EXIT_FAILURE
+    except Exception as exc:
+        logger.error("Fatal error: %s", exc)
+        logger.debug("Traceback:", exc_info=True)
+        return EXIT_FAILURE
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as e:
-        logger.error(f"Fatal error: {e}")
-        logger.debug("Traceback:", exc_info=True)
-        sys.exit(2)
+    raise SystemExit(main())
