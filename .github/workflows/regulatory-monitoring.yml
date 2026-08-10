@@ -21,19 +21,20 @@ concurrency:
   group: regulatory-monitor
   cancel-in-progress: false
 
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write  # required for `gh pr comment` (PR comments are issue comments)
+permissions: {}
 
 jobs:
-  monitor:
+  validate:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -46,17 +47,37 @@ jobs:
         run: pip install -r scripts/requirements.txt pytest
 
       - name: Run regulatory monitor tests (classifier + config regression)
-        if: github.event_name == 'pull_request'
         run: python -m pytest scripts/test_regulatory_monitor.py scripts/test_regulatory_monitoring_workflow.py -v
 
       - name: Run Regulatory Monitor (PR smoke, dry-run)
-        if: github.event_name == 'pull_request'
         run: python scripts/regulatory_monitor.py --dry-run
+
+  monitor:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write  # required for `gh pr comment` (PR comments are issue comments)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'scripts/requirements.txt'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt pytest
 
       - name: Run Regulatory Monitor (scheduled / manual)
         id: monitor
-        if: github.event_name != 'pull_request'
-        continue-on-error: true
         run: |
           set +e
           python scripts/regulatory_monitor.py
@@ -64,16 +85,35 @@ jobs:
           set -e
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
 
-          if [ "$EXIT_CODE" -eq 1 ]; then
-            REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md 2>/dev/null | head -1)
-            if [ -n "$REPORT_FILE" ]; then
+          # Contract: 0 = clean, 3 = findings, 2 = source/execution failure.
+          # Any other non-zero code is also a failure, including Python's
+          # default exit code 1 for an uncaught exception.
+          case "$EXIT_CODE" in
+            0)
+              exit 0
+              ;;
+            3)
+              REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md 2>/dev/null | head -1) || true
+              if [ -z "$REPORT_FILE" ]; then
+                echo "::error::Regulatory Monitor reported findings but produced no report"
+                exit 2
+              fi
               echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
-            fi
-          fi
+              exit 0
+              ;;
+            2)
+              echo "::error::Regulatory Monitor source/execution failure"
+              exit "$EXIT_CODE"
+              ;;
+            *)
+              echo "::error::Regulatory Monitor failed with unexpected exit code $EXIT_CODE"
+              exit "$EXIT_CODE"
+              ;;
+          esac
 
       - name: Detect state changes
-        if: github.event_name != 'pull_request'
         id: diff
+        if: steps.monitor.outputs.exit_code == '3'
         run: |
           if [ -n "$(git status --porcelain data/monitor-state.json reports/monitoring/ 2>/dev/null)" ]; then
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
@@ -83,7 +123,7 @@ jobs:
 
       - name: Generate GitHub App token
         id: app-token
-        if: github.event_name != 'pull_request' && steps.diff.outputs.has_changes == 'true'
+        if: steps.monitor.outputs.exit_code == '3' && steps.diff.outputs.has_changes == 'true'
         uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
@@ -91,7 +131,7 @@ jobs:
 
       - name: Open / update PR with regulatory findings
         id: cpr
-        if: github.event_name != 'pull_request' && steps.diff.outputs.has_changes == 'true'
+        if: steps.monitor.outputs.exit_code == '3' && steps.diff.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -99,7 +139,7 @@ jobs:
           branch: monitoring/regulatory-${{ github.run_number }}
           delete-branch: true
           base: main
-          title: "Regulatory Monitor: new findings (${{ github.run_number }})"
+          title: "Regulatory Monitor: new findings (run ${{ github.run_number }})"
           labels: |
             monitoring
             regulatory
@@ -128,7 +168,7 @@ jobs:
             *Automated PR created by `.github/workflows/regulatory-monitoring.yml`.*
 
       - name: Close prior superseded Regulatory Monitor PRs
-        if: github.event_name != 'pull_request' && steps.cpr.outputs.pull-request-number != ''
+        if: steps.monitor.outputs.exit_code == '3' && steps.cpr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
