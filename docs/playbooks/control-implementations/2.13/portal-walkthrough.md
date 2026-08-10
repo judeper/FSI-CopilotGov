@@ -74,7 +74,7 @@ For usage telemetry:
 
 1. In Microsoft Purview **Audit**, search for the `CopilotInteraction` operation and record type.
 2. Export the results and filter the audit data offline by exact `AppIdentity`.
-3. Accept Microsoft 365 Copilot plugin evidence only when the `AppIdentity` is in the approved application inventory and `AISystemPlugin.ID` is in the approved plugin inventory.
+3. Accept Microsoft 365 Copilot plugin evidence only when the `AppIdentity` is in the approved application inventory and `CopilotEventData.AISystemPlugin.ID` is in the approved plugin inventory.
 4. Keep `Copilot.Security.SecurityCopilot` and all unknown application identities in a separate, non-Microsoft-365-Copilot evidence set.
 
 Do not use `EnablePlugin` by itself as Microsoft 365 Copilot evidence. Microsoft lists that operation for both Microsoft 365 Copilot administration and Security Copilot platform management. See Script 4 in [PowerShell Setup](powershell-setup.md) for a fail-closed export.

@@ -47,7 +47,7 @@ Common issues and resolution steps for plugin and connector security.
 ### Issue 5: Security Copilot Events Appear in the Microsoft 365 Plugin Report
 
 - **Symptoms:** The evidence export contains Security Copilot activity or plugin IDs that are not in the approved Microsoft 365 inventory.
-- **Root Cause:** The search used the overloaded `EnablePlugin` operation, or accepted every `CopilotInteraction` / `Workload = Copilot` record without filtering `AppIdentity` and `AISystemPlugin.ID`.
+- **Root Cause:** The search used the overloaded `EnablePlugin` operation, read plugin fields from the `AuditData` root, or accepted every `CopilotInteraction` / `Workload = Copilot` record without filtering `AppIdentity` and `CopilotEventData.AISystemPlugin.ID`.
 - **Resolution:**
   1. Use the Agent Registry and **Agents > Tools** inventory for enabled or blocked configuration state
   2. Run Script 4 with exact approved application and plugin IDs

@@ -39,13 +39,15 @@ Test cases and evidence collection for validating plugin and connector security.
 
 - **Objective:** Confirm plugin usage evidence cannot include Security Copilot or an unapproved application or plugin
 - **Steps:**
-  1. Populate Script 4 with exact `AppIdentity` and `AISystemPlugin.ID` values from the approved inventory
+  1. Populate Script 4 with exact `AppIdentity` and `CopilotEventData.AISystemPlugin.ID` values from the approved inventory
   2. Invoke an approved plugin from an approved Microsoft 365 Copilot host
   3. Run Script 4 after audit ingestion completes
-  4. Confirm every output row has `Workload = Copilot`, an exact approved `AppIdentity`, and an exact approved plugin ID
-  5. Confirm `Copilot.Security.SecurityCopilot`, unknown application identities, and unapproved plugin IDs do not appear; retain rejected values separately for investigation
+  4. Confirm the paged 30-day retrieval completes without a paging-safety or 50,000-record segment-limit error; if the limit is reached, shorten the segment duration and rerun
+  5. Confirm every output row has `Workload = Copilot`, an exact approved `AppIdentity`, and an exact approved plugin ID
+  6. Confirm `AppHost` and plugin fields came from `AuditData.CopilotEventData`
+  7. Confirm `Copilot.Security.SecurityCopilot`, unknown application identities, and unapproved plugin IDs do not appear; retain rejected values separately for investigation
 - **Expected Result:** The evidence set contains only inventory-matched Microsoft 365 Copilot plugin usage
-- **Evidence:** Script 4 CSV, the application and plugin allow-lists used for the run, and the matching approval records
+- **Evidence:** Script 4 accepted and rejected CSVs, the application and plugin allow-lists, retrieval interval and segment duration, and the matching approval records
 
 ## Evidence Collection
 
