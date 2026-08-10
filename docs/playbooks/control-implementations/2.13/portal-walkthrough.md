@@ -66,6 +66,19 @@ Create plugin security standards document covering:
 - Plugin testing procedures (security scan, data flow analysis)
 - Periodic review cadence for approved plugins
 
+### Step 7: Separate Configuration and Usage Evidence
+
+Use the Agent Registry and **Agents > Tools** inventory as the evidence of which tools are enabled, blocked, and scoped to users. Retain the associated approval record with that export.
+
+For usage telemetry:
+
+1. In Microsoft Purview **Audit**, search for the `CopilotInteraction` operation and record type.
+2. Export the results and filter the audit data offline by exact `AppIdentity`.
+3. Accept Microsoft 365 Copilot plugin evidence only when the `AppIdentity` is in the approved application inventory and `AISystemPlugin.ID` is in the approved plugin inventory.
+4. Keep `Copilot.Security.SecurityCopilot` and all unknown application identities in a separate, non-Microsoft-365-Copilot evidence set.
+
+Do not use `EnablePlugin` by itself as Microsoft 365 Copilot evidence. Microsoft lists that operation for both Microsoft 365 Copilot administration and Security Copilot platform management. See Script 4 in [PowerShell Setup](powershell-setup.md) for a fail-closed export.
+
 ## FSI Recommendations
 
 | Tier | Recommendation |
@@ -81,6 +94,8 @@ Create plugin security standards document covering:
 - [Manage access permissions for connectors](https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/manage-access-permissions)
 - [Configure how users consent to applications](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-user-consent)
 - [Configure the admin consent workflow](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-admin-consent-workflow)
+- [Audit logs for Copilot and AI applications](https://learn.microsoft.com/en-us/purview/audit-copilot)
+- [Microsoft 365 audit log activities](https://learn.microsoft.com/en-us/purview/audit-log-activities)
 
 ## Next Steps
 

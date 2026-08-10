@@ -44,13 +44,23 @@ Common issues and resolution steps for plugin and connector security.
   3. Use standardized assessment templates to streamline reviews
   4. Maintain a pre-approved plugin catalog that does not require individual review
 
+### Issue 5: Security Copilot Events Appear in the Microsoft 365 Plugin Report
+
+- **Symptoms:** The evidence export contains Security Copilot activity or plugin IDs that are not in the approved Microsoft 365 inventory.
+- **Root Cause:** The search used the overloaded `EnablePlugin` operation, or accepted every `CopilotInteraction` / `Workload = Copilot` record without filtering `AppIdentity` and `AISystemPlugin.ID`.
+- **Resolution:**
+  1. Use the Agent Registry and **Agents > Tools** inventory for enabled or blocked configuration state
+  2. Run Script 4 with exact approved application and plugin IDs
+  3. Keep `Copilot.Security.SecurityCopilot` and unknown `AppIdentity` values in a separate evidence set
+  4. Reconcile each accepted `AgentId`, `AppIdentity`, and plugin ID to the approval record
+
 ## Diagnostic Steps
 
 1. **Check agent status:** Review the agent in Agents > All Agents > Registry
 2. **Review permissions:** Run Script 1 for plugin permission audit
 3. **Test connector ACLs:** Verify access control on connector content
 4. **Check consent policy:** Run Script 3 and review existing grants separately
-5. **Review audit logs:** Search for plugin-related events
+5. **Review usage evidence:** Run Script 4 and investigate rejected or unknown `AppIdentity` and plugin ID values separately
 
 ## Escalation
 

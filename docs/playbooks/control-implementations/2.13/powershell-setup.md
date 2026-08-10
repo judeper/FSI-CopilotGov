@@ -111,6 +111,87 @@ if (-not $result.AdminConsentWorkflowEnabled) {
 
 `AllowedToCreateApps` controls whether users can register applications; it does not report whether users can grant OAuth consent. User consent is disabled only when no `managePermissionGrantsForSelf.*` policy is assigned to the default user role. Existing grants must be reviewed and revoked separately.
 
+### Script 4: Microsoft 365 Copilot Plugin Usage Evidence
+
+```powershell
+# Populate exact values from the approved agent and plugin inventory.
+# Microsoft documents values such as Copilot.MicrosoftCopilot.BizChat and
+# Copilot.Studio.<app-id>; do not add Copilot.Security.SecurityCopilot.
+$approvedAppIdentities = @(
+    # "Copilot.MicrosoftCopilot.BizChat"
+    # "Copilot.Studio.<approved-app-id>"
+)
+$approvedPluginIds = @(
+    # "<approved-plugin-id>"
+)
+
+if ($approvedAppIdentities.Count -eq 0 -or $approvedPluginIds.Count -eq 0) {
+    throw "Populate the approved AppIdentity and plugin ID allow-lists before collecting evidence."
+}
+
+$records = Search-UnifiedAuditLog `
+    -StartDate (Get-Date).AddDays(-30) `
+    -EndDate (Get-Date) `
+    -RecordType CopilotInteraction `
+    -Operations "CopilotInteraction" `
+    -ResultSize 5000
+
+$pluginUsageRows = @(
+    foreach ($record in $records) {
+        $auditData = $record.AuditData | ConvertFrom-Json
+
+        foreach ($plugin in @($auditData.AISystemPlugin)) {
+            if ($null -eq $plugin) {
+                continue
+            }
+
+            $rejectionReasons = @()
+            if ($auditData.Workload -ne "Copilot") {
+                $rejectionReasons += "Unexpected workload"
+            }
+            if (([string]$auditData.AppIdentity) -like "Copilot.Security.*") {
+                $rejectionReasons += "Security Copilot is out of scope"
+            }
+            elseif ($approvedAppIdentities -notcontains [string]$auditData.AppIdentity) {
+                $rejectionReasons += "AppIdentity is not approved"
+            }
+            if ($approvedPluginIds -notcontains [string]$plugin.ID) {
+                $rejectionReasons += "Plugin ID is not approved"
+            }
+
+            [PSCustomObject]@{
+                EvidenceStatus  = if ($rejectionReasons.Count -eq 0) { "Accepted" } else { "Rejected" }
+                RejectionReason = $rejectionReasons -join "; "
+                CreationDate    = $record.CreationDate
+                UserId           = $record.UserIds -join "; "
+                Workload         = $auditData.Workload
+                AppIdentity      = $auditData.AppIdentity
+                AppHost          = $auditData.AppHost
+                AgentId          = $auditData.AgentId
+                AgentName        = $auditData.AgentName
+                PluginName       = $plugin.Name
+                PluginId         = $plugin.ID
+                PluginVersion    = $plugin.Version
+            }
+        }
+    }
+)
+
+$m365PluginUsage = @($pluginUsageRows | Where-Object EvidenceStatus -eq "Accepted")
+$rejectedPluginUsage = @($pluginUsageRows | Where-Object EvidenceStatus -eq "Rejected")
+
+$m365PluginUsage |
+    Export-Csv "M365CopilotPluginUsage_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+$rejectedPluginUsage |
+    Export-Csv "RejectedCopilotPluginUsage_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+
+if ($rejectedPluginUsage.Count -gt 0) {
+    Write-Warning "$($rejectedPluginUsage.Count) plugin record(s) were excluded from M365 evidence; review the rejected export."
+}
+```
+
+The Microsoft audit catalog lists `EnablePlugin` for both Microsoft 365 Copilot administration and Security Copilot platform management, so this script does not use that overloaded operation. `CopilotInteraction` also spans multiple Microsoft Copilot products, and `Workload = Copilot` is not a sufficient product boundary. Microsoft's [audit examples](https://learn.microsoft.com/en-us/purview/audit-copilot#example-copilot-scenarios-for-user-activities) show distinct `AppIdentity` values for Microsoft Copilot and Security Copilot, and Microsoft directs administrators to export records and filter that property offline. This script additionally requires an exact `AISystemPlugin.ID` match. Unknown identities and `Copilot.Security.SecurityCopilot` therefore fail closed into a separate rejected export instead of entering the Microsoft 365 Copilot evidence set.
+
 ## Scheduled Tasks
 
 | Task | Frequency | Purpose |
@@ -118,11 +199,14 @@ if (-not $result.AdminConsentWorkflowEnabled) {
 | Plugin Permission Audit | Monthly | Reconcile portal inventory and delegated OAuth scope |
 | Connector Security Audit | Monthly | Verify connector configurations |
 | Consent Policy Check | Quarterly | Verify self-consent is disabled and request workflow is active |
+| M365 Copilot Plugin Usage Audit | Monthly | Filter interaction telemetry by approved application and plugin IDs |
 
 ## Microsoft Guidance
 
 - [Configure how users consent to applications](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-user-consent?pivots=ms-powershell)
 - [Configure the admin consent workflow](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-admin-consent-workflow)
+- [Audit logs for Copilot and AI applications](https://learn.microsoft.com/en-us/purview/audit-copilot)
+- [Microsoft 365 audit log activities](https://learn.microsoft.com/en-us/purview/audit-log-activities)
 
 ## Next Steps
 
