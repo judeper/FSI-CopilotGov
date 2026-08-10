@@ -52,7 +52,7 @@ Common issues and resolution steps for permission model auditing.
   1. Configure guest access reviews in Entra ID Identity Governance
   2. Configure SharePoint/OneDrive guest-access expiration for site and file access; this setting does not alter or delete the Entra B2B guest account
   3. Run a guest user audit: `Get-MgUser -Filter "userType eq 'Guest'"` and review against active engagements
-  4. Remove stale resource access; if automatic tenant-account deletion is required, use a specifically configured **Select Teams + groups** access review because the deletion action is unavailable in **All Microsoft 365 groups with guest users** mode
+  4. Remove stale resource access only from the reviewed resource. If a tenant-wide account block or deletion is required, use a separate dedicated guest-lifecycle review after verifying all direct, group, Teams, SharePoint, application, and other engagements are obsolete and obtaining required approvals
 
 ### Issue 6: PnP PowerShell Connection Failures
 

@@ -88,7 +88,7 @@ Write-Host "Stale guest candidates for review: $($staleGuests.Count)"
 $staleGuests | Export-Csv "GuestAccessReviewCandidates_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-The candidate report is not an account-deletion or complete-access-removal mechanism. Reconcile direct permissions, sharing links, Microsoft 365 groups, security groups, Teams, and application assignments separately. Automatic tenant-account deletion requires a specifically configured Entra access review for **Select Teams + groups** with auto-apply enabled, nonresponse set to remove access, and the denied-guest action set to **Block user from signing-in for 30 days, then remove user from the tenant**. That deletion option is unavailable for **All Microsoft 365 groups with guest users** reviews.
+The candidate report is not an account-deletion or complete-access-removal mechanism. Reconcile direct permissions, sharing links, Microsoft 365 groups, security groups, Teams, SharePoint access, application assignments, and other active engagements separately. A resource-review denial removes only the reviewed resource's access. If a tenant-wide account block or deletion is required, handle it through a separate dedicated guest-lifecycle review after every access path and active engagement is verified obsolete and the tenant's required approvals are obtained.
 
 ## Scheduled Tasks
 

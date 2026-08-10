@@ -23,7 +23,7 @@ Common issues and resolution steps for external sharing and guest access control
   2. Wait 24-48 hours after review completion for processing
   3. Manually apply results if auto-apply is not configured
   4. Verify the denied user's membership has been removed from the reviewed resource, then reconcile every other group, Team, application, direct permission, and sharing-link access path
-  5. If tenant-account deletion is required, verify the review uses **Select Teams + groups**, **If reviewers don't respond** is **Remove access**, and **Action to apply on denied guest users** is **Block user from signing-in for 30 days, then remove user from the tenant**
+  5. If a tenant-wide account block or deletion is required, start a separate dedicated guest-lifecycle review; verify all direct, group, Teams, SharePoint, application, and other engagements are obsolete and obtain the tenant's required approvals before taking the account-level action
 
 ### Issue 3: Legitimate External Collaboration Blocked
 
@@ -44,7 +44,7 @@ Common issues and resolution steps for external sharing and guest access control
   2. Reconcile pre-existing access and access through Microsoft 365 groups, security groups, and Teams because those paths can survive SharePoint expiration
   3. Run the guest inventory script to identify stale account candidates
   4. Establish a monthly guest access review process
-  5. If account deletion is required, use the specifically configured **Select Teams + groups** review described above; do not rely on the all-groups review mode
+  5. If an account-level action is required, use a separate dedicated guest-lifecycle review after confirming every access path and active engagement is obsolete; do not elevate a resource-review denial into a tenant-wide decision
 
 ### Issue 5: Guest Still Has Access After SharePoint Expiration
 

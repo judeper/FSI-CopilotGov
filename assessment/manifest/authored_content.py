@@ -1850,6 +1850,7 @@ AUTHORED: dict[str, dict] = {
             "Get-SPOTenant | Select-Object SharingCapability, "
             "RequireAcceptingAccountMatchInvitedAccount, "
             "ExternalUserExpirationRequired, ExternalUserExpireInDays; "
+            "Connect-MgGraph -Scopes User.Read.All; "
             "Get-MgUserTransitiveMemberOf -UserId <guest-object-id> -All"
         ),
         "evidenceExpected": [
@@ -1857,7 +1858,7 @@ AUTHORED: dict[str, dict] = {
             "Approved external domain list (if domain restriction is used)",
             "SharePoint/OneDrive guest-access expiration settings, policy enablement date, and overrides",
             "Microsoft 365 group, security group, and Teams access-path reconciliation for guests",
-            "Entra access review scope and post-review actions for guest accounts",
+            "Resource-scoped Entra access review scope and results, plus separate guest-lifecycle review evidence for any tenant-wide account action",
             "Sharing activity monitoring report from audit logs",
         ],
         "sectorYesBar": _sector_map(
@@ -1882,9 +1883,11 @@ AUTHORED: dict[str, dict] = {
                 "enablement date. Confirm expiration is limited to eligible "
                 "direct or sharing-link access, then reconcile Microsoft 365 "
                 "group, security group, and Teams access separately. Check "
-                "Entra access-review scope and post-review actions; account "
-                "deletion requires a Select Teams + groups review and is "
-                "unavailable in all-Microsoft-365-groups mode."
+                "Entra resource-review scope and results; denial removes only "
+                "the reviewed resource's access. Before any tenant-wide account "
+                "block or deletion, require a separate dedicated guest-lifecycle "
+                "review confirming that all direct, group, Teams, SharePoint, "
+                "application, and other engagements are obsolete."
             ),
             "timeBudgetMinutes": 6,
         },

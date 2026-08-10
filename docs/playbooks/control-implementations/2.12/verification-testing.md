@@ -41,16 +41,16 @@ Test cases and evidence collection for validating external sharing controls.
 - **Expected Result:** Eligible direct or sharing-link access expires according to policy; surviving pre-existing, Microsoft 365 group, security group, and Teams access is separately identified and reconciled; the Entra account lifecycle remains governed independently
 - **Evidence:** Tenant setting export, policy enablement date, site override record, expiration notification or test record, and group/Teams membership reconciliation
 
-### Test 4: Guest Account Deletion Review Configuration
+### Test 4: Guest Account Lifecycle Review
 
-- **Objective:** Verify automatic B2B guest-account deletion, if required, uses a supported access-review configuration
+- **Objective:** Verify any tenant-wide B2B guest-account action is decided separately from resource access reviews
 - **Steps:**
-  1. Confirm the review is scoped to **Select Teams + groups**, not **All Microsoft 365 groups with guest users**
-  2. Confirm **Auto apply results to resource** is enabled
-  3. Confirm **If reviewers don't respond** is set to **Remove access**
-  4. Confirm **Action to apply on denied guest users** is set to **Block user from signing-in for 30 days, then remove user from the tenant**
-- **Expected Result:** Account deletion is configured only through the supported selected-groups review mode
-- **Evidence:** Access-review scope and post-review action screenshots or exported configuration
+  1. Confirm Team, group, application, and other resource-review denials remove access only to the reviewed resource
+  2. Confirm account blocking or deletion, if required, is handled through a separate dedicated guest-lifecycle review
+  3. Verify the lifecycle review checks direct permissions, sharing links, Microsoft 365 groups, security groups, Teams, SharePoint access, application assignments, and other active engagements
+  4. Confirm every access path and engagement is obsolete and required approvals are recorded before an account-level action
+- **Expected Result:** No tenant-wide account block or deletion is based solely on a resource-review denial
+- **Evidence:** Resource-review results, access-path reconciliation, guest-lifecycle review record, and account-action approval
 
 ### Test 5: Anonymous Link Prevention
 

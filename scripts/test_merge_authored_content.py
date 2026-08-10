@@ -113,8 +113,11 @@ def test_212_manifest_distinguishes_access_expiration_from_account_deletion():
     assert "Microsoft 365 group" in payload
     assert "security group" in payload
     assert "Teams" in payload
-    assert "Select Teams + groups" in payload
-    assert "all-Microsoft-365-groups mode" in payload
+    assert "reviewed resource's access" in payload
+    assert "dedicated guest-lifecycle review" in payload
+    assert "all direct, group, Teams, SharePoint, application" in payload
+    assert "Select Teams + groups" not in payload
+    assert "Block user from signing-in for 30 days" not in payload
     assert "Copilot license" not in payload
 
 
@@ -157,6 +160,9 @@ def test_212_docs_require_separate_reconciliation_of_surviving_access_paths():
         assert "security group" in text, path
         assert "Teams" in text, path
         assert "reconcil" in text.lower(), path
+        assert "guest-lifecycle" in text.lower(), path
+        assert "Select Teams + groups" not in text, path
+        assert "Block user from signing-in for 30 days" not in text, path
         assert (
             "This setting expires access to SharePoint sites and OneDrive resources."
             not in text

@@ -73,7 +73,7 @@ Create recurring access reviews for guest users:
 - Auto-apply: Remove access to the reviewed resource for denied or non-responded reviews
 - Post-review reconciliation: Verify the guest has no surviving access through another Microsoft 365 group, security group, Team, application, direct permission, or sharing link
 
-The recurring **All Microsoft 365 groups with guest users** mode can remove group access, but it cannot delete guest accounts from the tenant. If automatic account deletion is required, create a specifically scoped **Select Teams + groups** review, enable **Auto apply results to resource**, set **If reviewers don't respond** to **Remove access**, and set **Action to apply on denied guest users** to **Block user from signing-in for 30 days, then remove user from the tenant**.
+A denial in a Team, group, or application review removes access to that reviewed resource only; it must not by itself trigger a tenant-wide B2B guest-account block or deletion. If an account-level action is required, conduct a separate, dedicated guest-lifecycle review and first verify that all direct permissions, sharing links, Microsoft 365 group and security group memberships, Teams and SharePoint access, application assignments, and other active engagements are obsolete. Apply any approved account action through the tenant's guest-lifecycle procedure rather than treating the resource-review denial as a tenant-wide decision.
 
 ## FSI Recommendations
 
@@ -81,7 +81,7 @@ The recurring **All Microsoft 365 groups with guest users** mode can remove grou
 |------|---------------|
 | **Baseline** | Disable anonymous sharing; restrict external sharing to existing guests; guest access reviews |
 | **Recommended** | Organization-only sharing on Copilot-scoped sites; domain restrictions; monthly guest reviews |
-| **Regulated** | External sharing disabled on all Copilot-accessible sites; guest accounts require governance approval; SharePoint/OneDrive access expiration plus separate Microsoft 365 group, security group, and Teams reconciliation; quarterly reviews; specifically configured account deletion where required |
+| **Regulated** | External sharing disabled on all Copilot-accessible sites; guest accounts require governance approval; SharePoint/OneDrive access expiration plus separate Microsoft 365 group, security group, and Teams reconciliation; quarterly resource reviews; dedicated guest-lifecycle review before any tenant-wide account action |
 
 ## Next Steps
 
