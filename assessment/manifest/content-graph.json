@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-08-02T00:00:00Z",
+  "generatedAt": "2026-08-10T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -406,7 +406,7 @@
       "tier": "Recommended",
       "title": "Control 2.12: External Sharing and Guest Access Governance",
       "path": "docs/controls/pillar-2-security/2.12-external-sharing-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-10",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P"
@@ -418,7 +418,7 @@
       "tier": "Recommended",
       "title": "Control 2.13: Plugin and Graph Connector Security Governance",
       "path": "docs/controls/pillar-2-security/2.13-plugin-connector-security.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-09",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC"
@@ -441,7 +441,7 @@
       "tier": "Regulated",
       "title": "Control 2.15: Network Security and Private Connectivity",
       "path": "docs/controls/pillar-2-security/2.15-network-security.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-09",
       "regulatory_references": [
         "NYDFS Part 500",
         "FFIEC"

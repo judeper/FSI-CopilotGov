@@ -11,8 +11,8 @@ Common issues and resolution steps for network security controls.
 - **Resolution:**
   1. Run Script 1 to test endpoint connectivity and latency
   2. Compare latency against baselines — anything above 200ms may impact experience
-  3. Check if a proxy server is inspecting Microsoft 365 traffic (recommended: bypass proxy for M365)
-  4. Verify SSL inspection exceptions are configured for Microsoft 365 endpoints
+  3. Check whether proxy or TLS inspection behavior is interrupting WSS or adding latency
+  4. Verify TLS inspection and proxy settings preserve full WSS connectivity; test a scoped exception if needed
   5. Review firewall logs for blocked connections to Copilot service endpoints
 
 ### Issue 2: Private Link DNS Resolution Failures (Adjacent Azure Resources)
@@ -41,12 +41,12 @@ Common issues and resolution steps for network security controls.
 ### Issue 4: SSL Inspection Degrading Copilot Performance
 
 - **Symptoms:** Copilot works but is noticeably slower than expected, or certificate errors appear intermittently
-- **Root Cause:** SSL/TLS inspection devices add latency and may interfere with certificate pinning used by Microsoft 365 services.
+- **Root Cause:** TLS inspection devices can add latency or interrupt the full WSS connectivity Copilot requires.
 - **Resolution:**
-  1. Configure SSL inspection bypass for all Microsoft 365 endpoint categories
-  2. Verify the bypass is effective by checking the certificate presented by M365 endpoints (should be Microsoft-issued, not the proxy's CA)
+  1. Confirm full WSS connectivity to `*.cloud.microsoft` and `*.office.com`
+  2. Test a narrowly scoped TLS inspection exception for the affected published endpoints
   3. Test Copilot performance before and after bypass to quantify the improvement
-  4. Document the bypass in the network security architecture
+  4. If the exception is necessary, document its scope and evidence in the network security architecture
 
 ### Issue 5: Branch Office Connectivity Issues
 

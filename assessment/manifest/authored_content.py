@@ -1815,11 +1815,18 @@ AUTHORED: dict[str, dict] = {
             "External sharing and guest access settings are reviewed for "
             "Copilot-grounded sites. Guest access is restricted to approved "
             "domains, Entra access reviews are configured for guest accounts, "
-            "and sharing activity is monitored."
+            "SharePoint/OneDrive expiration is limited to eligible direct or "
+            "sharing-link access granted after enablement, surviving access "
+            "through Microsoft 365 groups, security groups, and Teams is "
+            "separately reconciled, expiration is distinguished from optional "
+            "Entra guest-account deletion, and sharing activity is monitored."
         ),
         "partialBar": (
             "External sharing is restricted but guest access reviews are "
-            "not configured, or sharing activity is not monitored for "
+            "not configured, SharePoint/OneDrive expiration is treated as "
+            "complete access removal without reconciling Microsoft 365 group, "
+            "security group, or Teams access, expiration is conflated with "
+            "Entra account deletion, or sharing activity is not monitored for "
             "Copilot-grounded sites."
         ),
         "noBar": (
@@ -1832,16 +1839,33 @@ AUTHORED: dict[str, dict] = {
                 "path": "Policies > Sharing",
                 "url": "https://admin.microsoft.com/sharepoint",
             },
+            {
+                "portal": "Microsoft Entra admin center",
+                "path": "ID Governance > Access Reviews",
+                "url": "https://entra.microsoft.com/",
+            },
         ],
         "verifyPowerShell": (
             "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; "
             "Get-SPOTenant | Select-Object SharingCapability, "
-            "RequireAcceptingAccountMatchInvitedAccount"
+            "RequireAcceptingAccountMatchInvitedAccount, "
+            "ExternalUserExpirationRequired, ExternalUserExpireInDays; "
+            "Connect-MgGraph -Scopes User.Read.All,GroupMember.Read.All; "
+            "Get-MgUserTransitiveMemberOfAsGroup "
+            "-UserId <guest-object-id> -All "
+            "-ConsistencyLevel eventual "
+            "-CountVariable transitiveGroupCount "
+            "-Property Id,DisplayName,GroupTypes,SecurityEnabled,"
+            "MailEnabled,ResourceProvisioningOptions | "
+            "Select-Object Id,DisplayName,GroupTypes,SecurityEnabled,"
+            "MailEnabled,ResourceProvisioningOptions"
         ),
         "evidenceExpected": [
             "Tenant and site-level sharing policy configuration",
             "Approved external domain list (if domain restriction is used)",
-            "Entra access review configuration for guest accounts",
+            "SharePoint/OneDrive guest-access expiration settings, policy enablement date, and overrides",
+            "Microsoft 365 group, security group, and Teams access-path reconciliation for guests",
+            "Resource-scoped Entra access review scope and results, plus separate guest-lifecycle review evidence for any tenant-wide account action",
             "Sharing activity monitoring report from audit logs",
         ],
         "sectorYesBar": _sector_map(
@@ -1861,9 +1885,18 @@ AUTHORED: dict[str, dict] = {
                 "and reviewed for Copilot-grounded sites?"
             ),
             "followUp": (
-                "Open SharePoint admin center > Sharing. Verify tenant and "
-                "site-level settings. Check Entra access reviews for guest "
-                "accounts."
+                "Open SharePoint admin center > Sharing and verify tenant, "
+                "site-level, and guest-access expiration settings and policy "
+                "enablement date. Confirm expiration is limited to eligible "
+                "direct or sharing-link access, then reconcile Microsoft 365 "
+                "group, security group, and Teams access separately. Check "
+                "that every Entra resource-scoped review has no account-level "
+                "denied-guest action configured: no sign-in block or guest "
+                "deletion. Denial removes only the reviewed resource's access. "
+                "Before any tenant-wide account block or deletion, require a "
+                "separate dedicated guest-lifecycle review confirming that all "
+                "direct, group, Teams, SharePoint, application, and other "
+                "engagements are obsolete."
             ),
             "timeBudgetMinutes": 6,
         },
@@ -1891,75 +1924,109 @@ AUTHORED: dict[str, dict] = {
     "2.13": {
         "priority": "high",
         "yesBar": (
-            "The plug-in and Graph connector inventory is maintained, "
-            "reviewed, and approved on a documented cadence. Unapproved "
-            "connectors are blocked, and each approved connector has a "
-            "documented risk classification and data-flow assessment."
+            "The Agent Registry, Agent Tools inventory, and Copilot connector "
+            "connections are reconciled to documented owners and approvals on "
+            "a defined cadence. Unapproved tools and connectors are blocked, "
+            "connector ACLs and data flows are verified, OAuth consent is "
+            "restricted, and complete-or-explicitly-limited audit evidence is "
+            "reviewed against approved application and plugin IDs."
         ),
         "partialBar": (
-            "An inventory exists but is incomplete, review cadence is not "
-            "documented, or unapproved connectors are not blocked."
+            "One or more inventories exist, but Agent Registry, Agent Tools, "
+            "connector, consent, or audit evidence is incomplete; review "
+            "cadence is undocumented; or unapproved access is not blocked."
         ),
         "noBar": (
-            "No plug-in or connector inventory or governance exists."
+            "Agents, tools, connectors, consent grants, and plugin usage are "
+            "not governed through an approved inventory and review process."
         ),
         "verifyIn": [
             {
                 "portal": "Microsoft 365 admin center",
-                "path": "Settings > Integrated apps",
-                "url": "https://admin.microsoft.com/AdminPortal/Home#/Settings/IntegratedApps",
+                "path": "Agents > All agents > Registry",
+                "url": "https://admin.microsoft.com/Adminportal/Home#/agents",
+            },
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Agents > Tools",
+                "url": "https://admin.microsoft.com/",
+            },
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Copilot > Connectors > Your Connections",
+                "url": "https://admin.microsoft.com/",
+            },
+            {
+                "portal": "Microsoft Entra admin center",
+                "path": "Identity > Applications > Enterprise apps > Consent and permissions",
+                "url": "https://entra.microsoft.com/",
+            },
+            {
+                "portal": "Microsoft Purview portal",
+                "path": "Audit > Search",
+                "url": "https://purview.microsoft.com/audit/auditsearch",
             },
         ],
         "verifyPowerShell": (
-            "Connect-MgGraph -Scopes Application.Read.All; "
-            "Get-MgServicePrincipal -Filter \"tags/any(t:t eq "
-            "'WindowsAzureActiveDirectoryIntegratedApp')\" | "
-            "Select-Object DisplayName, AppId"
+            "Connect-MgGraph -Scopes Application.Read.All,Policy.Read.All; "
+            "Get-MgServicePrincipal -All | Select-Object DisplayName,AppId,"
+            "AccountEnabled; Get-MgPolicyAuthorizationPolicy; "
+            "Get-MgPolicyAdminConsentRequestPolicy; Connect-ExchangeOnline; "
+            "Write-Host 'Run Control 2.13 Script 4 for paged audit evidence.'"
         ),
         "evidenceExpected": [
-            "Plug-in and connector inventory with approval status",
-            "Risk classification for each approved connector",
-            "Data-flow assessment for connectors accessing regulated data",
-            "Documented review cadence and most recent review date",
+            "Agent Registry export with owner, availability, and approval status",
+            "Agent Tools registry, plugin, and request export with user/group scope",
+            "Copilot connector inventory with authentication, ACL, schema, sync, and risk review",
+            "Entra user-consent policy, admin-consent workflow, and existing-grant review",
+            "Paged 30-day accepted and rejected plugin-usage exports, allow-lists, and segment settings",
+            "Documented review cadence, decisions, and most recent review date",
         ],
         "sectorYesBar": _sector_map(
             bank=(
-                "Connector risk classification aligned to OCC Bulletin "
-                "2023-17; each connector assessed for NPI data-flow risk."
+                "Agent, tool, and connector inventories are reconciled; "
+                "connector risk reviews address NPI data flows under OCC "
+                "Bulletin 2023-17, with restricted consent and audit review."
             ),
             broker_dealer=(
-                "Connector inventory reviewed by supervisory principal; "
-                "data-flow assessments cover MNPI exposure per FINRA "
-                "guidance."
+                "Agent, tool, connector, consent, and usage evidence is "
+                "reviewed by the supervisory principal; data-flow assessments "
+                "cover MNPI exposure per FINRA guidance."
             ),
             investment_adviser=(
-                "Connectors assessed for client data exposure per SEC "
-                "Reg S-P; approved connectors reviewed quarterly by CCO."
+                "Agents, tools, and connectors are assessed for client-data "
+                "exposure under SEC Reg S-P; consent and usage evidence is "
+                "reviewed quarterly by the CCO."
             ),
             insurance_carrier=(
-                "Connector data-flow assessments cover PHI/PII exposure; "
-                "risk classification aligned to NYDFS Part 500."
+                "Agent-tool and connector data-flow assessments cover PHI/PII "
+                "exposure; consent and audit review align to NYDFS Part 500."
             ),
             credit_union=(
-                "Connector inventory maintained per NCUA examination "
-                "expectations; unapproved connectors blocked."
+                "Agent, tool, and connector inventories are maintained per "
+                "NCUA examination expectations; unapproved access is blocked "
+                "and usage evidence is reviewed."
             ),
             other=(
-                "Connector inventory maintained and reviewed per "
-                "organization's third-party risk management policy."
+                "Agent, tool, connector, consent, and usage evidence is "
+                "maintained and reviewed under the organization's third-party "
+                "risk management policy."
             ),
         ),
         "facilitatorNotes": {
             "ask": (
-                "Is the plug-in and connector inventory reviewed and "
-                "approved on a documented cadence with unapproved "
-                "connectors blocked?"
+                "Are the Agent Registry, Agent Tools, Copilot connectors, "
+                "consent controls, and plugin audit evidence reconciled to "
+                "approved inventory on a documented cadence?"
             ),
             "followUp": (
-                "Open Microsoft 365 admin center > Integrated apps. Verify "
-                "inventory completeness and check for unapproved apps."
+                "Review Agents > All agents > Registry, Agents > Tools, and "
+                "Copilot > Connectors > Your Connections. Confirm Entra user "
+                "consent is restricted, existing grants were reviewed, and "
+                "Script 4 completed its paged audit export without a service-"
+                "limit completeness warning."
             ),
-            "timeBudgetMinutes": 6,
+            "timeBudgetMinutes": 10,
         },
     },
     # ---------------------------------------------------------------

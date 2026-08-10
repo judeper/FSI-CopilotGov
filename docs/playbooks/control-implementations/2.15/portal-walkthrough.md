@@ -40,7 +40,7 @@ Use Private Link **only** for *adjacent Azure resources* an internal Copilot Stu
 
 Review firewall and proxy rules for Microsoft 365 Copilot endpoints:
 - Allow required Copilot endpoints per Microsoft's published endpoint list
-- Configure SSL inspection exceptions for Microsoft 365 traffic (if applicable)
+- Verify TLS inspection and proxy settings preserve full WSS connectivity to `*.cloud.microsoft` and `*.office.com`; scope exceptions only where required
 - Verify no content inspection is degrading Copilot response quality
 - Document all network path configurations for compliance
 
@@ -69,7 +69,7 @@ Create a network security document for Copilot connectivity:
 | Tier | Recommendation |
 |------|---------------|
 | **Baseline** | Verify Microsoft 365 endpoint access; configure trusted locations in Conditional Access |
-| **Recommended** | Optimize network paths; SSL inspection exceptions for M365; network monitoring for Copilot traffic |
+| **Recommended** | Optimize network paths; validate WSS through proxy/TLS inspection and scope exceptions as needed; network monitoring for Copilot traffic |
 | **Regulated** | Global Secure Access (Entra Internet Access) + universal tenant restrictions for Copilot; Private Link only for adjacent Azure resources an internal agent calls; network segmentation for Copilot traffic; continuous network monitoring with SIEM integration |
 
 ## Next Steps
