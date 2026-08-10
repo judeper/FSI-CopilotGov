@@ -2262,17 +2262,17 @@
         "2026-15170": "sha256:11209343cfc00786e161c9c08ff35db935de1b59ff9eee4980a20488506e287a",
         "2026-15169": "sha256:a96cd35f19a1eb68c68a7ed1a88d788337378b2ca667412c372424ffbcd92cf2"
       },
-      "last_run": "2026-08-09T10:20:44.885461+00:00",
-      "last_checked": "2026-08-09"
+      "last_run": "2026-08-10T10:55:08.548720+00:00",
+      "last_checked": "2026-08-10"
     },
     "regulatory-finra": {
       "entries": {
         "FINRA 26-10": "sha256:ab71def0075c51f2d70a00315ee1de99a6a71ee9ba20c2ef35e143ee08ccc6a3",
         "FINRA 26-11": "sha256:30d305d3a73c5e4d02ac8a2df32f77af552212cf05cda6550285310381c77a8a",
         "FINRA 26-14": "sha256:9c94e0d65fa0258b9c50a425d50cddc807036c9a5df4e8bdc23a3c6d2330ab21",
-        "https://www.finra.org/rules-guidance/notices/information-notice-20260803": "sha256:82482238da0f19f8b738c5e9d2cb9db523b1a42685a180e2315fca2bd926b2f0"
+        "https://www.finra.org/rules-guidance/notices/information-notice-20260803": "sha256:43a72514f9b3c81f1423d13f9824dde73f0f645e533c6c89306325513c0e43be"
       },
-      "last_run": "2026-08-09T10:20:45.080820+00:00"
+      "last_run": "2026-08-10T10:55:08.700972+00:00"
     }
   }
 }
