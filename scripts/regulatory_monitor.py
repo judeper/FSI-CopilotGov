@@ -101,6 +101,10 @@ FEDERAL_REGISTER_DETAIL_SIGNAL = re.compile(
     re.IGNORECASE,
 )
 FINRA_NOTICE_ID_PATTERN = re.compile(r'/notices/(\d{2})-(\d{2})', re.IGNORECASE)
+FINRA_INFORMATION_NOTICE_DATE_PATTERN = re.compile(
+    r'/notices/information-notice-(\d{4})(\d{2})(\d{2})(?:[/?#]|$)',
+    re.IGNORECASE,
+)
 FINRA_DETAIL_TITLE_SIGNAL = re.compile(
     r'\b(request\s+for\s+comment|regulatory\s+notice\s+\d{2}-\d{2}|rule\s*2210|communications?\s+with\s+the\s+public)\b',
     re.IGNORECASE,
@@ -225,6 +229,7 @@ class RegulatoryItem:
     doc_type: Optional[str] = None  # 'RULE', 'PRORULE', 'NOTICE' (Federal Register only)
     abstract: str = ""
     document_id: str = ""  # Federal Register document number or FINRA URL
+    publication_date_is_synthetic: bool = False
     classification: str = CLASSIFICATION_NOISE
     classification_reason: str = ""
     affected_controls: list = None
@@ -847,12 +852,13 @@ def fetch_finra_notices(
         if match:
             year_short = match.group(1)
             notice_num = match.group(2)
-            year = f"20{year_short}"
-            publication_date = f"{year}-01-01"
             document_id = f"FINRA {year_short}-{notice_num}"
         else:
-            publication_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
             document_id = url
+
+        publication_date, publication_date_is_synthetic = (
+            _derive_finra_publication_date(link, url)
+        )
 
         tier, reason = classify_regulatory_relevance(title, "", config)
         effective_text = ""
@@ -890,6 +896,7 @@ def fetch_finra_notices(
             doc_type='NOTICE',
             abstract=effective_text,
             document_id=document_id,
+            publication_date_is_synthetic=publication_date_is_synthetic,
             classification=tier,
             classification_reason=reason,
             affected_controls=affected_controls,
@@ -897,6 +904,51 @@ def fetch_finra_notices(
         items.append(item)
 
     return items
+
+
+def _parse_finra_publication_date(raw_value: str) -> str:
+    """Return an ISO date from FINRA metadata, or an empty string if invalid."""
+    value = (raw_value or "").strip()
+    if not value:
+        return ""
+
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).date().isoformat()
+    except ValueError:
+        return ""
+
+
+def _derive_finra_publication_date(link, url: str) -> tuple[str, bool]:
+    """Return ``(date, is_synthetic)`` for a FINRA notice.
+
+    The listing's row-level ``time[datetime]`` value is authoritative. FINRA
+    information-notice URLs also encode a full publication date. Older
+    regulatory-notice URLs encode only a year, so their January 1 fallback
+    remains explicitly synthetic; opaque URLs retain the observed run date as
+    a display fallback, but synthetic dates are excluded from fingerprints.
+    """
+    row = link.find_parent("tr")
+    if row:
+        time_node = row.find("time", datetime=True)
+        if time_node:
+            publication_date = _parse_finra_publication_date(time_node.get("datetime", ""))
+            if publication_date:
+                return publication_date, False
+
+    information_notice_match = FINRA_INFORMATION_NOTICE_DATE_PATTERN.search(url)
+    if information_notice_match:
+        compact_date = "".join(information_notice_match.groups())
+        try:
+            publication_date = datetime.strptime(compact_date, "%Y%m%d").date().isoformat()
+            return publication_date, False
+        except ValueError:
+            logger.warning("FINRA information-notice URL contains an invalid date: %s", url)
+
+    regulatory_notice_match = FINRA_NOTICE_ID_PATTERN.search(url)
+    if regulatory_notice_match:
+        return f"20{regulatory_notice_match.group(1)}-01-01", True
+
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d"), True
 
 
 def _normalize_hash_field(text: str) -> str:
@@ -920,11 +972,45 @@ def _normalize_hash_field(text: str) -> str:
 
 def _content_fingerprint(item: RegulatoryItem) -> str:
     """Whitespace-normalized ``title|abstract|publication_date`` used as the
-    change-detection hash input, so cosmetic churn does not re-emit an item."""
+    change-detection hash input, so cosmetic churn does not re-emit an item.
+
+    Synthetic FINRA dates are run metadata, not notice content. Keeping their
+    field position but hashing an empty value preserves deterministic identity
+    without allowing the daily fallback date to create false updates.
+    """
+    publication_date = (
+        "" if item.publication_date_is_synthetic else item.publication_date
+    )
     return "|".join(
         _normalize_hash_field(part)
-        for part in (item.title, item.abstract, item.publication_date)
+        for part in (item.title, item.abstract, publication_date)
     )
+
+
+def _legacy_finra_content_hashes(
+    item: RegulatoryItem,
+    source_state: dict,
+) -> set[str]:
+    """Return hashes emitted by the pre-fix FINRA date fallback behavior."""
+    legacy_dates = set()
+
+    regulatory_notice_match = FINRA_NOTICE_ID_PATTERN.search(item.url or "")
+    if regulatory_notice_match:
+        legacy_dates.add(f"20{regulatory_notice_match.group(1)}-01-01")
+    else:
+        last_run_date = _parse_finra_publication_date(
+            str(source_state.get("last_run") or "")
+        )
+        if last_run_date:
+            legacy_dates.add(last_run_date)
+
+    return {
+        compute_hash("|".join(
+            _normalize_hash_field(part)
+            for part in (item.title, item.abstract, legacy_date)
+        ))
+        for legacy_date in legacy_dates
+    }
 
 
 def check_for_new_items(source_key: str, items: list[RegulatoryItem], source_state: dict) -> list[RegulatoryItem]:
@@ -954,7 +1040,14 @@ def check_for_new_items(source_key: str, items: list[RegulatoryItem], source_sta
         if entry_key not in existing_entries:
             logger.info(f"  New item: {item.title[:60]}... ({item.agency})")
             new_items.append(item)
-        elif existing_entries[entry_key] != content_hash:
+        elif (
+            existing_entries[entry_key] != content_hash
+            and (
+                source_key != SOURCE_KEY_FINRA
+                or existing_entries[entry_key]
+                not in _legacy_finra_content_hashes(item, source_state)
+            )
+        ):
             logger.info(f"  Updated item: {item.title[:60]}... ({item.agency})")
             new_items.append(item)
 
