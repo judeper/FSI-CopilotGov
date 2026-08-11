@@ -674,6 +674,165 @@ def test_finra_notice_body_fallback_promotes_genai_notice_to_high(monkeypatch):
     assert "genai" in items[0].abstract.lower()
 
 
+def test_finra_publication_date_uses_authoritative_listing_metadata(monkeypatch):
+    config = _load_config()
+    listing_html = """
+    <html><body><div class="notices-view"><table><tbody><tr>
+      <td><time datetime="2026-08-03T12:00:00Z">August 3, 2026</time></td>
+      <td>
+        <a href="/rules-guidance/notices/information-notice-20260803">
+          Information Notice 8/3/26
+        </a>
+      </td>
+    </tr></tbody></table></div></body></html>
+    """
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        lambda url, _session, max_retries=3: {
+            "url": url,
+            "status_code": 200,
+            "content": listing_html,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        },
+    )
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(),
+        config=config,
+        limit=1,
+    )
+
+    assert len(items) == 1
+    assert items[0].publication_date == "2026-08-03"
+    assert items[0].publication_date_is_synthetic is False
+
+
+def test_finra_publication_date_falls_back_to_authoritative_url():
+    link = regulatory_monitor.BeautifulSoup(
+        '<a href="/rules-guidance/notices/information-notice-20260803">'
+        "Information Notice 8/3/26</a>",
+        "html.parser",
+    ).find("a")
+
+    publication_date, is_synthetic = (
+        regulatory_monitor._derive_finra_publication_date(
+            link,
+            "https://www.finra.org/rules-guidance/notices/"
+            "information-notice-20260803",
+        )
+    )
+
+    assert publication_date == "2026-08-03"
+    assert is_synthetic is False
+
+
+def _finra_information_notice(
+    *,
+    title: str = "Information Notice 8/3/26",
+    abstract: str = "",
+    publication_date: str,
+    publication_date_is_synthetic: bool,
+) -> "regulatory_monitor.RegulatoryItem":
+    url = (
+        "https://www.finra.org/rules-guidance/notices/"
+        "information-notice-20260803"
+    )
+    return regulatory_monitor.RegulatoryItem(
+        source="FINRA",
+        agency="FINRA",
+        title=title,
+        url=url,
+        publication_date=publication_date,
+        doc_type="NOTICE",
+        abstract=abstract,
+        document_id=url,
+        publication_date_is_synthetic=publication_date_is_synthetic,
+        classification=regulatory_monitor.CLASSIFICATION_NOISE,
+        affected_controls=[],
+    )
+
+
+def test_same_finra_notice_does_not_reappear_across_synthetic_daily_runs():
+    august_9 = _finra_information_notice(
+        publication_date="2026-08-09",
+        publication_date_is_synthetic=True,
+    )
+    state: dict = {}
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FINRA,
+        [august_9],
+        state,
+    )
+    source_state = regulatory_monitor.get_source_state(
+        state,
+        regulatory_monitor.SOURCE_KEY_FINRA,
+    )
+
+    august_10 = _finra_information_notice(
+        publication_date="2026-08-10",
+        publication_date_is_synthetic=True,
+    )
+
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FINRA,
+        [august_10],
+        source_state,
+    ) == []
+
+
+def test_changed_finra_notice_still_registers_with_synthetic_date():
+    original = _finra_information_notice(
+        publication_date="2026-08-09",
+        publication_date_is_synthetic=True,
+    )
+    state: dict = {}
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FINRA,
+        [original],
+        state,
+    )
+    source_state = regulatory_monitor.get_source_state(
+        state,
+        regulatory_monitor.SOURCE_KEY_FINRA,
+    )
+
+    changed = _finra_information_notice(
+        title="Information Notice 8/3/26 — Updated Requirements",
+        publication_date="2026-08-10",
+        publication_date_is_synthetic=True,
+    )
+
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FINRA,
+        [changed],
+        source_state,
+    ) == [changed]
+
+
+def test_finra_legacy_daily_hash_migrates_without_false_finding():
+    current = _finra_information_notice(
+        publication_date="2026-08-03",
+        publication_date_is_synthetic=False,
+    )
+    legacy_hash = regulatory_monitor.compute_hash(
+        "Information Notice 8/3/26||2026-08-09"
+    )
+    source_state = {
+        "entries": {current.document_id: legacy_hash},
+        "last_run": "2026-08-09T10:20:45.080820+00:00",
+    }
+
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FINRA,
+        [current],
+        source_state,
+    ) == []
+
+
 def test_finra_notice_body_fetch_failure_keeps_item_and_avoids_crash(monkeypatch):
     config = _load_config()
     listing_html = """
