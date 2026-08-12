@@ -1,0 +1,55 @@
+# Regulatory Monitor Report
+
+**Run Date:** 2026-08-11
+**Run Time:** 2026-08-11T10:40:09+00:00
+**New Items:** 13
+**Classified Items:** 13
+**Sources:** Federal Register (SEC, CFTC, OCC, Federal Reserve) + FINRA Regulatory Notices
+**Fetched Items:** 14
+**FINRA Fetched:** 1
+**FINRA New:** 0
+**Federal Register Fetched:** 13
+**Federal Register New:** 13
+
+---
+## Executive Summary
+
+| Category | Count |
+|----------|-------|
+| HIGH Changes | 1 |
+| NOISE Changes | 12 |
+
+---
+## Summary (Quick Scan)
+| # | Source | Agency | Classification | Affected Controls | Action |
+|---|--------|--------|----------------|-------------------|--------|
+| 1 | Federal Register | CFTC | HIGH | 3.8a | Review |
+
+## HIGH Priority Items
+These regulatory changes reference AI, ML, automation, or FSI-specific requirements relevant to Copilot governance.
+
+### 1. [Innovation Advisory Committee](https://www.federalregister.gov/documents/2026/08/11/2026-16328/innovation-advisory-committee)
+
+- **Source:** CFTC via Federal Register
+- **Published:** 2026-08-11
+- **Type:** Notice
+- **Classification:** HIGH — References artificial intelligence
+- **Abstract:** The Commodity Futures Trading Commission (CFTC) announces that on August 20, 2026, from 1:00 p.m. to 4:00 p.m. Eastern Daylight Time, the Innovation Advisory Committee (IAC or Committee) will hold an in- person meeting for IAC members, with options for the public to attend virtually. At this meeting...
+- **Potentially Affected Controls:** 3.8a
+
+## NOISE Items
+Regulatory items with no FSI Copilot governance relevance.
+
+- [Formations of, Acquisitions by, and Mergers of Bank Holding Companies](https://www.federalregister.gov/documents/2026/08/11/2026-16310/formations-of-acquisitions-by-and-mergers-of-bank-holding-companies) (Federal Reserve)
+- [Self-Regulatory Organizations; Nasdaq GEMX, LLC; Notice of Filing and Immediate Effectiveness of Proposed Rule Change To Amend the Exchange's Transaction Fees at Options 7, Section 3, Note 18](https://www.federalregister.gov/documents/2026/08/11/2026-16287/self-regulatory-organizations-nasdaq-gemx-llc-notice-of-filing-and-immediate-effectiveness-of) (SEC)
+- [Self-Regulatory Organizations; MIAX PEARL, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Exchange Rule 3100, Interpretation and Policy .06, To Reduce the Waiting Periods for Retaking FINRA Qualification Examinations](https://www.federalregister.gov/documents/2026/08/11/2026-16286/self-regulatory-organizations-miax-pearl-llc-notice-of-filing-and-immediate-effectiveness-of-a) (SEC)
+- [Self-Regulatory Organizations; Miami International Securities Exchange, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Exchange Rule 515A Related to PRIME and cPRIME Functionality](https://www.federalregister.gov/documents/2026/08/11/2026-16285/self-regulatory-organizations-miami-international-securities-exchange-llc-notice-of-filing-and) (SEC)
+- [Self-Regulatory Organizations; Miami International Securities Exchange, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Exchange Rule 1900, Interpretation and Policy .06, To Reduce the Waiting Periods for Retaking FINRA Qualification Examinations](https://www.federalregister.gov/documents/2026/08/11/2026-16284/self-regulatory-organizations-miami-international-securities-exchange-llc-notice-of-filing-and) (SEC)
+- [Self-Regulatory Organizations; MIAX Emerald, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Exchange Rule 1900, Interpretation and Policy .06, To Reduce the Waiting Periods for Retaking FINRA Qualification Examinations](https://www.federalregister.gov/documents/2026/08/11/2026-16283/self-regulatory-organizations-miax-emerald-llc-notice-of-filing-and-immediate-effectiveness-of-a) (SEC)
+- [Self-Regulatory Organizations; Fixed Income Clearing Corporation; Notice of Filing of Proposed Rule Change, as Modified by Partial Amendment No. 1, To Establish a Guaranty Fund at the Government Securities Division](https://www.federalregister.gov/documents/2026/08/11/2026-16282/self-regulatory-organizations-fixed-income-clearing-corporation-notice-of-filing-of-proposed-rule) (SEC)
+- [Self-Regulatory Organizations; Fixed Income Clearing Corporation; Notice of Filing and Extension of the Review Period of an Advance Notice, as Modified by Partial Amendment No. 1, To Establish a Guaranty Fund at the Government Securities Division](https://www.federalregister.gov/documents/2026/08/11/2026-16281/self-regulatory-organizations-fixed-income-clearing-corporation-notice-of-filing-and-extension-of) (SEC)
+- [Self-Regulatory Organizations; Fixed Income Clearing Corporation; Notice of Designation of Longer Period for Commission Action on Proposed Rule Change To Modify the GSD Rules To Adopt a U.S. Treasury Clearing Trade Submission Requirement](https://www.federalregister.gov/documents/2026/08/11/2026-16280/self-regulatory-organizations-fixed-income-clearing-corporation-notice-of-designation-of-longer) (SEC)
+- [Self-Regulatory Organizations; Investors Exchange LLC; Notice of Filing and Immediate Effectiveness of Proposed Rule Change To Amend Rule 11.280 (Limit Up-Limit Down Plan and Trading Halts on the Exchange) To Reflect That IEX Will Not Cancel Outstanding Orders During a Regulatory Halt or Operational Halt in Anticipation of the SIP Implementation of the New Regulatory Halt Rules](https://www.federalregister.gov/documents/2026/08/11/2026-16279/self-regulatory-organizations-investors-exchange-llc-notice-of-filing-and-immediate-effectiveness-of) (SEC)
+- [Self-Regulatory Organizations; Texas Stock Exchange LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Offer Additional Tickets Under the Exchange's Rodeo Program and Re-Open the Application Window for the Rodeo Program; and Permit Sponsored Participants To Participate in the Rodeo Program Together With a Sponsoring Member of the Exchange as Joint Participants](https://www.federalregister.gov/documents/2026/08/11/2026-16278/self-regulatory-organizations-texas-stock-exchange-llc-notice-of-filing-and-immediate-effectiveness) (SEC)
+- [Self-Regulatory Organizations; MIAX Sapphire, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Amend Exchange Rule 1900, Interpretation and Policy .06, To Reduce the Waiting Periods for Retaking FINRA Qualification Examinations](https://www.federalregister.gov/documents/2026/08/11/2026-16277/self-regulatory-organizations-miax-sapphire-llc-notice-of-filing-and-immediate-effectiveness-of-a) (SEC)
+
