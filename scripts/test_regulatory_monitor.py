@@ -86,10 +86,14 @@ def _federal_register_page(
             {
                 "document_number": document_id,
                 "title": f"Federal Register document {document_id}",
-                "abstract": "A regulatory notice with no special relevance.",
+                "abstract": "A broker-dealer regulatory notice.",
                 "publication_date": "2026-07-27",
                 "type": "NOTICE",
                 "html_url": f"https://www.federalregister.gov/documents/{document_id}",
+                "raw_text_url": (
+                    "https://www.federalregister.gov/documents/full_text/text/"
+                    f"{document_id}.txt"
+                ),
                 "agencies": [
                     {
                         "slug": "securities-and-exchange-commission",
@@ -136,6 +140,152 @@ def test_federal_register_production_zero_results_may_omit_results():
 
     assert items == []
     assert [call["page"] for call in session.calls] == [1]
+
+
+def _federal_register_source_text_page(
+    *,
+    document_id: str = "2026-16471",
+    abstract=None,
+) -> dict:
+    return {
+        "count": 1,
+        "total_pages": 1,
+        "results": [
+            {
+                "document_number": document_id,
+                "title": "Administrative securities notice",
+                "abstract": abstract,
+                "publication_date": "2026-08-13",
+                "type": "NOTICE",
+                "html_url": (
+                    "https://www.federalregister.gov/documents/2026/08/13/"
+                    f"{document_id}/administrative-securities-notice"
+                ),
+                "raw_text_url": (
+                    "https://www.federalregister.gov/documents/full_text/text/"
+                    f"2026/08/13/{document_id}.txt"
+                ),
+                "agencies": [
+                    {
+                        "slug": "securities-and-exchange-commission",
+                        "name": "Securities and Exchange Commission",
+                    }
+                ],
+            }
+        ],
+    }
+
+
+@pytest.mark.parametrize("abstract", [None, "Administrative procedural update."])
+def test_federal_register_insufficient_text_fetches_full_text_and_classifies_medium(
+    monkeypatch,
+    abstract,
+):
+    config = _load_config()
+    session = _PagedFederalRegisterSession(
+        {1: _federal_register_source_text_page(abstract=abstract)}
+    )
+    raw_text_url = session.pages[1]["results"][0]["raw_text_url"]
+    full_text = (
+        "<html><body><pre>"
+        + ("Unrelated preamble " * 400)
+        + "broker-dealer requirements apply.</pre></body></html>"
+    )
+    fetched_urls = []
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        fetched_urls.append(url)
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": full_text,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-08-13",
+        config=config,
+    )
+
+    assert fetched_urls == [raw_text_url]
+    assert "raw_text_url" in session.calls[0]["fields[]"]
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_MEDIUM
+    assert "broker-dealer" in items[0].abstract
+    assert "<pre>" not in items[0].abstract
+    assert len(items[0].abstract) > regulatory_monitor.FALLBACK_TEXT_MAX_CHARS
+
+
+@pytest.mark.parametrize(
+    ("raw_text_url", "detail_fetch_limit", "expected_message"),
+    [
+        ("", None, "URL was missing"),
+        (
+            "https://www.federalregister.gov/documents/full_text/text/"
+            "2026/08/13/2026-16471.txt",
+            0,
+            "fetch limit reached",
+        ),
+    ],
+)
+def test_federal_register_required_source_text_preconditions_fail_closed(
+    monkeypatch,
+    raw_text_url,
+    detail_fetch_limit,
+    expected_message,
+):
+    config = _load_config()
+    page = _federal_register_source_text_page()
+    page["results"][0]["raw_text_url"] = raw_text_url
+    session = _PagedFederalRegisterSession({1: page})
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    with pytest.raises(
+        regulatory_monitor.RequiredSourceTextError,
+        match=expected_message,
+    ):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-08-13",
+            config=config,
+            detail_fetch_limit=detail_fetch_limit,
+        )
+
+
+def test_federal_register_required_source_text_fetch_failure_fails_closed(monkeypatch):
+    config = _load_config()
+    session = _PagedFederalRegisterSession(
+        {1: _federal_register_source_text_page()}
+    )
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        lambda url, _session, max_retries=3: {
+            "url": url,
+            "status_code": 503,
+            "content": "",
+            "final_url": url,
+            "was_redirected": False,
+            "error": "service unavailable",
+        },
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    with pytest.raises(
+        regulatory_monitor.RequiredSourceTextError,
+        match="authoritative text fetch failed",
+    ):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-08-13",
+            config=config,
+        )
 
 
 def test_federal_register_uncounted_empty_first_page_fails_closed():
@@ -566,8 +716,21 @@ def test_finra_listing_empty_result_fails_closed_without_state_advance(
     )
 
 
+@pytest.mark.parametrize(
+    "fetch_error",
+    [
+        regulatory_monitor.FederalRegisterPaginationError(
+            "Federal Register pagination failed closed"
+        ),
+        regulatory_monitor.RequiredSourceTextError(
+            "Federal Register authoritative text fetch failed closed"
+        ),
+    ],
+    ids=["pagination", "required-source-text"],
+)
 def test_federal_register_failure_maps_to_failure_exit_without_state_advance(
     monkeypatch,
+    fetch_error,
 ):
     config = _load_config()
     initial_state = {
@@ -587,9 +750,7 @@ def test_federal_register_failure_maps_to_failure_exit_without_state_advance(
             self.headers = {}
 
     def fail_fetch(*_args, **_kwargs):
-        raise regulatory_monitor.FederalRegisterPaginationError(
-            "Federal Register pagination failed closed"
-        )
+        raise fetch_error
 
     monkeypatch.setattr(
         regulatory_monitor,
