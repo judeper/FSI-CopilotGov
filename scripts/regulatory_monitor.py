@@ -91,15 +91,11 @@ FEDERAL_REGISTER_API_BASE = "https://www.federalregister.gov/api/v1"
 # FINRA notices page
 FINRA_NOTICES_URL = "https://www.finra.org/rules-guidance/notices"
 
-FEDERAL_REGISTER_DETAIL_FETCH_LIMIT = 20
+FEDERAL_REGISTER_DETAIL_FETCH_LIMIT: Optional[int] = None
 FEDERAL_REGISTER_PAGE_SIZE = 100
 FEDERAL_REGISTER_MAX_PAGES = 100
 FINRA_DETAIL_FETCH_LIMIT = 20
 FALLBACK_TEXT_MAX_CHARS = 4000
-FEDERAL_REGISTER_DETAIL_SIGNAL = re.compile(
-    r'\b(finra|rule\s*2210|communications?\s+with\s+the\s+public|retail\s+communications?|project(?:ed|ion)\s+performance|target(?:ed)?\s+returns?)\b',
-    re.IGNORECASE,
-)
 FINRA_NOTICE_ID_PATTERN = re.compile(r'/notices/(\d{2})-(\d{2})', re.IGNORECASE)
 FINRA_INFORMATION_NOTICE_DATE_PATTERN = re.compile(
     r'/notices/information-notice-(\d{4})(\d{2})(\d{2})(?:[/?#]|$)',
@@ -135,6 +131,10 @@ logger = logging.getLogger(__name__)
 
 class FederalRegisterPaginationError(RuntimeError):
     """Raised when a paginated Federal Register response cannot be completed."""
+
+
+class RequiredSourceTextError(RuntimeError):
+    """Raised when authoritative text required for classification is unavailable."""
 
 
 class FinraListingError(RuntimeError):
@@ -196,6 +196,7 @@ def _federal_register_document_fingerprint(document: dict) -> str:
         "publication_date",
         "type",
         "html_url",
+        "raw_text_url",
         "agencies",
     )
 
@@ -352,17 +353,16 @@ def _extract_compact_text(html: str, selectors: list[str]) -> str:
     return re.sub(r"\s+", " ", body.get_text(" ", strip=True)).strip()[:FALLBACK_TEXT_MAX_CHARS]
 
 
-def _extract_federal_register_fallback_text(html: str) -> str:
-    """Extract fallback text from a Federal Register document page."""
-    return _extract_compact_text(
-        html,
-        selectors=[
-            "section#fulltext_content",
-            "div#fulltext_content",
-            "article",
-            "main",
-        ],
+def _extract_federal_register_source_text(text: str) -> str:
+    """Normalize the authoritative Federal Register raw-text document."""
+    soup = BeautifulSoup(text or "", "html.parser")
+    preformatted_text = soup.find("pre")
+    source_text = (
+        preformatted_text.get_text(" ", strip=True)
+        if preformatted_text
+        else soup.get_text(" ", strip=True)
     )
+    return re.sub(r"\s+", " ", source_text).strip()
 
 
 def _extract_finra_notice_fallback_text(html: str) -> str:
@@ -386,29 +386,45 @@ def _fetch_cached_fallback_text(
     request_delay: float,
     max_retries: int,
     extractor,
+    required: bool = False,
+    source_label: str = "detail",
 ) -> tuple[str, bool]:
     """Fetch fallback text once per URL and return (text, fetched_new)."""
     if not url:
+        if required:
+            raise RequiredSourceTextError(
+                f"{source_label} URL was missing for required classification text"
+            )
         return "", False
 
     if url in cache:
-        return cache[url], False
+        cached_text = cache[url]
+        if required and not cached_text:
+            raise RequiredSourceTextError(
+                f"{source_label} text was empty for {url}"
+            )
+        return cached_text, False
 
     if request_delay > 0:
         time.sleep(request_delay)
 
     result = fetch_page(url, session, max_retries=max_retries)
     if result["status_code"] != 200:
-        logger.warning(
-            "Detail fetch failed for %s (status=%s, error=%s)",
-            url,
-            result["status_code"],
-            result.get("error"),
+        message = (
+            f"{source_label} fetch failed for {url} "
+            f"(status={result['status_code']}, error={result.get('error')})"
         )
+        if required:
+            raise RequiredSourceTextError(message)
+        logger.warning(message)
         cache[url] = ""
         return "", True
 
     fallback_text = extractor(result["content"])
+    if required and not fallback_text:
+        raise RequiredSourceTextError(
+            f"{source_label} text was empty for {url}"
+        )
     cache[url] = fallback_text
     return fallback_text, True
 
@@ -419,14 +435,8 @@ def _should_fetch_federal_register_detail(
     classification: str,
     doc_type: str,
 ) -> bool:
-    """Determine if a Federal Register body fetch is warranted."""
-    if (abstract or "").strip():
-        return False
-    if classification in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}:
-        return False
-    if doc_type not in {"NOTICE", "PRORULE"}:
-        return False
-    return bool(FEDERAL_REGISTER_DETAIL_SIGNAL.search(title or ""))
+    """Require authoritative text when API classification text is incomplete."""
+    return not (abstract or "").strip() or classification == CLASSIFICATION_NOISE
 
 
 def _should_fetch_finra_notice_detail(title: str, url: str, classification: str) -> bool:
@@ -490,7 +500,16 @@ def fetch_federal_register_documents(
         'conditions[publication_date][gte]': since_date,
         'per_page': FEDERAL_REGISTER_PAGE_SIZE,
         'order': 'newest',
-        'fields[]': ['document_number', 'title', 'abstract', 'publication_date', 'type', 'html_url', 'agencies'],
+        'fields[]': [
+            'document_number',
+            'title',
+            'abstract',
+            'publication_date',
+            'type',
+            'html_url',
+            'raw_text_url',
+            'agencies',
+        ],
     }
 
     unique_documents: dict[str, dict] = {}
@@ -687,7 +706,6 @@ def fetch_federal_register_documents(
 
     detail_cache: dict[str, str] = {}
     detail_fetches = 0
-    detail_limit_logged = False
 
     for doc in documents:
         # Extract agency names
@@ -719,26 +737,32 @@ def fetch_federal_register_documents(
             classification=tier,
             doc_type=doc_type,
         )
-        if should_fetch_detail and detail_fetches < detail_fetch_limit:
+        raw_text_url = doc.get('raw_text_url', '')
+        if (
+            should_fetch_detail
+            and raw_text_url not in detail_cache
+            and detail_fetch_limit is not None
+            and detail_fetches >= detail_fetch_limit
+        ):
+            raise RequiredSourceTextError(
+                "Federal Register authoritative-text fetch limit reached before "
+                f"classification completed for {doc.get('document_number') or url}"
+            )
+        if should_fetch_detail:
             fallback_text, fetched_new = _fetch_cached_fallback_text(
-                url=url,
+                url=raw_text_url,
                 session=session,
                 cache=detail_cache,
                 request_delay=request_delay,
                 max_retries=max_retries,
-                extractor=_extract_federal_register_fallback_text,
+                extractor=_extract_federal_register_source_text,
+                required=True,
+                source_label="Federal Register authoritative text",
             )
             if fetched_new:
                 detail_fetches += 1
-            if fallback_text:
-                effective_text = fallback_text
-                tier, reason = classify_regulatory_relevance(title, effective_text, config)
-        elif should_fetch_detail and not detail_limit_logged:
-            logger.info(
-                "Federal Register detail fetch limit reached (%s); skipping additional fallback fetches",
-                detail_fetch_limit,
-            )
-            detail_limit_logged = True
+            effective_text = fallback_text
+            tier, reason = classify_regulatory_relevance(title, effective_text, config)
 
         affected_controls = find_affected_controls_by_keywords(title, effective_text, config)
 
