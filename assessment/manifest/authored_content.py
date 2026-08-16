@@ -1461,10 +1461,11 @@ AUTHORED: dict[str, dict] = {
     "2.6": {
         "priority": "high",
         "yesBar": (
-            "Web search and web grounding in Copilot Chat are configured "
-            "per the organization's risk appetite: enabled for approved "
-            "user groups via Microsoft 365 admin center, with DLP policies "
-            "blocking SIT-based queries from triggering external web search, "
+            "Web search and web grounding in Copilot are configured "
+            "per the organization's risk appetite: the 'Allow web search in "
+            "Copilot' Cloud Policy is explicitly configured and scoped to "
+            "approved Microsoft Entra security groups, with DLP policies "
+            "blocking SIT-based prompts from triggering external web search, "
             "and usage monitored via audit logs."
         ),
         "partialBar": (
@@ -1478,14 +1479,22 @@ AUTHORED: dict[str, dict] = {
         ),
         "verifyIn": [
             {
+                "portal": "Microsoft 365 Apps admin center (Cloud Policy)",
+                "path": "Customization > Policy Management > Allow web search in Copilot",
+                "url": "https://config.office.com",
+            },
+            {
                 "portal": "Microsoft 365 admin center",
-                "path": "Copilot > Settings > Web Content",
-                "url": "https://admin.microsoft.com/AdminPortal/Home#/copilot/settings/webcontent",
+                "path": (
+                    "Copilot > Settings > Data Access > Web search for "
+                    "Microsoft 365 Copilot and Microsoft 365 Copilot Chat"
+                ),
+                "url": "https://admin.microsoft.com/AdminPortal/Home#/copilot",
             },
         ],
         "verifyPowerShell": "",
         "evidenceExpected": [
-            "Microsoft 365 admin center Web Content setting screenshot",
+            "Cloud Policy configuration screenshot for 'Allow web search in Copilot'",
             "Approved user group list for web search enablement",
             "DLP policy evidence showing SIT-based web-search restriction",
             "Audit log review cadence for web-search usage",
@@ -1508,8 +1517,9 @@ AUTHORED: dict[str, dict] = {
                 "Copilot Chat with appropriate DLP restrictions?"
             ),
             "followUp": (
-                "Open Microsoft 365 admin center > Copilot > Settings > Web "
-                "Content. Verify user group scoping and DLP web-search rules."
+                "Open https://config.office.com > Customization > Policy "
+                "Management and check 'Allow web search in Copilot'. Verify "
+                "Entra security group scoping and DLP web-search rules."
             ),
             "timeBudgetMinutes": 6,
         },

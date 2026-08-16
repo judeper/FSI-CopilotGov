@@ -8,12 +8,12 @@ Test cases and evidence collection for validating web search and grounding contr
 
 - **Objective:** Confirm web search is disabled for Copilot users
 - **Steps:**
-  1. Verify web search is toggled off in Admin Center > Copilot > Web Search
+  1. Verify the **Allow web search in Copilot** Cloud Policy is configured to off in the Microsoft 365 Apps admin center (`https://config.office.com` > Customization > Policy Management), and confirm the policy exists rather than relying on the unconfigured default
   2. As a Copilot user, ask a question about a current event not in organizational data
-  3. Verify Copilot does not return web-sourced content
+  3. Verify Copilot does not return web-sourced content, and that the **Web content** toggle is turned off and dimmed for the user
   4. Verify Copilot indicates it can only reference organizational data
 - **Expected Result:** Copilot does not use web search; responses based only on organizational data
-- **Evidence:** Admin Center screenshot and Copilot response showing no web content
+- **Evidence:** Cloud Policy configuration screenshot and Copilot response showing no web content
 
 ### Test 2: Web Plugin Block Verification
 
@@ -39,7 +39,7 @@ Test cases and evidence collection for validating web search and grounding contr
 
 | Evidence Item | Format | Storage Location | Retention |
 |--------------|--------|-----------------|-----------|
-| Web search configuration screenshot | PNG | Compliance evidence repository | 7 years |
+| Web search Cloud Policy configuration screenshot | PNG | Compliance evidence repository | 7 years |
 | Web search test results | PDF | Compliance evidence repository | 7 years |
 | Web search audit log report | CSV | Compliance evidence repository | 7 years |
 

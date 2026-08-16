@@ -24,8 +24,9 @@ $org = Get-MgOrganization
 Write-Host "=== Copilot Web Search Configuration ==="
 Write-Host "Tenant: $($org.DisplayName)"
 Write-Host ""
-Write-Host "NOTE: Web search toggle is managed via Microsoft 365 Admin Center."
-Write-Host "Verify at: Admin Center > Copilot > Settings > Data access > Web search"
+Write-Host "NOTE: Web search is managed by the 'Allow web search in Copilot' Cloud Policy."
+Write-Host "Configure at: https://config.office.com > Customization > Policy Management"
+Write-Host "Shortcut: Admin Center > Copilot > Settings > Data Access > Web search"
 Write-Host ""
 Write-Host "Recommended FSI setting: DISABLED for all users"
 ```
@@ -65,8 +66,9 @@ $webApps | Export-Csv "WebPlugins_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInf
 ### Script 3: Monitor for Web Search Usage in Audit Logs
 
 ```powershell
-# Search audit logs for web search activity in Copilot
+# Search audit logs for Bing-backed web search activity in Copilot interactions
 # Requires: Security & Compliance PowerShell
+# Microsoft documents Bing web search as an entry in CopilotEventData.AISystemPlugin
 
 Import-Module ExchangeOnlineManagement
 Connect-IPPSSession
@@ -80,11 +82,12 @@ $webSearchEvents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDat
 $webGrounded = @()
 foreach ($event in $webSearchEvents) {
     $data = $event.AuditData | ConvertFrom-Json
-    if ($data.CopilotEventData.WebSearchUsed -eq $true) {
+    if ($data.CopilotEventData.AISystemPlugin.Id -contains 'BingWebSearch') {
         $webGrounded += [PSCustomObject]@{
             Date     = $event.CreationDate
             User     = $event.UserIds
             Activity = $event.Operations
+            AppHost  = $data.CopilotEventData.AppHost
         }
     }
 }
@@ -95,6 +98,9 @@ if ($webGrounded.Count -gt 0) {
     $webGrounded | Export-Csv "WebSearchUsage_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 }
 ```
+
+!!! note "Schema reference"
+    Microsoft documents the `CopilotEventData` properties (including `AppHost`, `Contexts`, `AccessedResources`, and `AISystemPlugin`) in [Copilot interaction events overview](https://learn.microsoft.com/en-us/office/office-365-management-api/copilot-schema). Organizations should verify the current schema before relying on any single property, and should corroborate results with Microsoft Purview DSPM for AI activity explorer.
 
 ## Scheduled Tasks
 
