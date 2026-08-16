@@ -1,6 +1,6 @@
 # Control 2.2: Sensitivity Labels and Copilot Content Classification — Troubleshooting
 
-Common issues and resolution steps for sensitivity label enforcement with Copilot. This playbook covers label groups migration issues, agent label inheritance gaps, and nested auto-labeling condition troubleshooting.
+Common issues and resolution steps for sensitivity label enforcement with Copilot. This playbook covers label groups migration issues, agent knowledge source label gaps, and nested auto-labeling condition troubleshooting.
 
 ## Common Issues
 
@@ -26,18 +26,18 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
   3. If automatic inheritance is not supported, configure mandatory labeling so users must select a label
   4. Document the expected behavior for each Copilot feature and communicate to users
 
-### Issue 3: Copilot Studio Agent Inheriting Unexpected Label
+### Issue 3: Copilot Studio Agent Response Shows an Unexpected Label
 
-- **Symptoms:** A Copilot Studio agent appears to trigger DLP policies or label enforcement at a higher sensitivity level than expected based on its described purpose
-- **Root Cause:** The agent is inheriting the highest sensitivity label from all connected knowledge sources, including sources that may have been labeled at a higher tier than intended. One Highly Confidential document in a knowledge source elevates the entire agent's inherited label.
+- **Symptoms:** A Copilot Studio agent surfaces a higher sensitivity label on its responses, or triggers DLP policies at a higher tier than expected based on its described purpose
+- **Root Cause:** The response label is the highest-priority label across the content the agent used to generate that response. One Highly Confidential document reachable through a knowledge source can raise the label shown on responses that cite it.
 - **Resolution:**
-  1. Review all knowledge sources connected to the agent in MAC > Agents > All agents / Registry > [Agent] > Details
+  1. Review all knowledge sources connected to the agent in Microsoft 365 admin center > Agents > All agents > [Agent]
   2. Identify the highest-labeled document or source in the knowledge base
   3. Determine whether that content should be in the agent's knowledge base:
      - If not needed: remove the high-sensitivity source from the agent's knowledge configuration
-     - If needed: document the high inherited label and confirm compliance approval is in place
-  4. After removing or adjusting knowledge sources, verify the effective inherited label updates as expected
-  5. For regulated environments: treat any agent knowledge source change as requiring a new label inheritance assessment
+     - If needed: document the high label and confirm compliance approval is in place
+  4. After removing or adjusting knowledge sources, verify the label shown on responses updates as expected
+  5. For regulated environments: treat any agent knowledge source change as requiring a new knowledge source label assessment
 
 ### Issue 4: Nested Auto-Labeling Conditions Not Applying Labels Correctly
 
@@ -52,47 +52,48 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
      - Add the second condition group and verify the combined logic
   5. Review the simulation mode results for sample documents to understand which conditions are and are not matching
 
-### Issue 4: Auto-Labeling Overriding Manually Applied Labels on Files
+### Issue 5: Auto-Labeling Overriding Manually Applied Labels on Files
 
-- **Symptoms:** Files that users manually labeled at a lower sensitivity level are being upgraded by an auto-labeling policy, overriding the user's deliberate classification choice.
-- **Root Cause:** Auto-labeling can now override manually applied labels for files (not just emails). If an auto-labeling policy is configured to apply a higher-priority label, it will override the existing manual label on files.
+- **Symptoms:** Files that users manually labeled at a lower sensitivity level are being replaced by an auto-labeling policy, overriding the user's deliberate classification choice.
+- **Root Cause:** Auto-labeling policies can override manually applied labels for files in SharePoint and OneDrive (Microsoft 365 Roadmap ID 558342, general availability April 2026) when the policy's **Additional label settings** page is set to **All locations**. The override applies only where the policy's label has a higher priority than the existing label — a manually applied higher-priority label is never replaced.
 - **Resolution:**
-  1. Review auto-labeling policy priority and override settings in Purview > Information Protection > Auto-labeling.
+  1. Review the policy's **Additional label settings** page in Microsoft Purview portal > Solutions > Information Protection > Policies > Auto-labeling policies. Select **Emails only** to limit the override to email, or clear the setting to stop overriding manually applied labels.
   2. If override behavior is undesired for specific content, add exclusion conditions (e.g., path-based NOT conditions) to the auto-labeling policy.
-  3. Communicate the new override behavior to users and update training materials.
-  4. For regulated content where manual classification decisions must be preserved, configure the auto-labeling policy to not override manually applied labels (if the option is available) or use monitoring mode.
+  3. Communicate the override behavior to users and update training materials.
+  4. For regulated content where manual classification decisions must be preserved, leave the override setting off and use simulation mode to report on the mismatches instead.
 
-### Issue 5: Users Bypassing Mandatory Labeling
+### Issue 6: Users Bypassing Mandatory Labeling
 
 - **Symptoms:** Documents found in SharePoint without sensitivity labels despite mandatory labeling policy being enabled
 - **Root Cause:** Mandatory labeling is enforced client-side and may not apply to all document creation paths. Files uploaded via sync client, migrated from other systems, or created by automated processes may bypass labeling.
 - **Resolution:**
   1. Enable auto-labeling policies as a safety net for unlabeled content
-  2. Configure a default label at the site level for documents without labels
+  2. Configure a default sensitivity label on the SharePoint document libraries that hold Copilot-accessible content — this is location-based labeling and raises files that carry a lower-priority label
   3. Run the unlabeled content detection scripts (Script 3 or Script 4) weekly to catch gaps
-  4. Review upload paths and ensure all channels enforce labeling
+  4. Review upload paths and confirm all channels enforce labeling
 
-### Issue 6: Label Conflicts with Multiple Source Documents
+### Issue 7: Label Conflicts with Multiple Source Documents
 
 - **Symptoms:** When Copilot references multiple source documents with different sensitivity labels, the resulting content label is inconsistent or unexpected
-- **Root Cause:** When multiple sources with different labels are combined, the inheritance behavior may default to the highest label or may be unpredictable depending on the Copilot feature.
+- **Root Cause:** Where more than one labeled source is referenced, sensitivity label inheritance selects the highest-priority label. Support varies by surface — Copilot in Word, Copilot in PowerPoint, and Copilot in Outlook support inheritance for newly created content, and a user can replace an inherited label unless mandatory labeling and downgrade justification are configured.
 - **Resolution:**
-  1. Document the expected behavior: most restrictive label should win
+  1. Document the expected behavior: the highest-priority label wins
   2. Test multi-source scenarios with different label combinations
   3. If behavior is inconsistent, configure mandatory labeling as the backup
   4. Train users to verify the label on Copilot-generated content that references multiple sources
 
-### Issue 7: Encrypted Label Blocking Copilot Access
+### Issue 8: Encrypted Label Blocking Copilot Access
 
 - **Symptoms:** Copilot reports it cannot access content or returns incomplete responses when source documents have encryption-enabled labels
-- **Root Cause:** Labels with encryption restrict access to authorized users only. Copilot accesses content as the current user, so if the user has decryption rights, Copilot should work. If not, Copilot is correctly blocked.
+- **Root Cause:** Copilot and agents display text from encrypted content only where the user holds the EXTRACT usage right (shown as **Copy**). Where a user has VIEW but not EXTRACT, Copilot does not summarize the item but can still return a link to it. Copilot accesses content as the current user, so if the user holds EXTRACT, Copilot should work. If not, Copilot is correctly withholding the content.
 - **Resolution:**
-  1. Verify the user has the required rights for the encrypted content
-  2. If the user should have access, check the encryption configuration and add the user to the authorized list. Note: the permission level previously called "Reviewer" is now **Restricted Editor**, and "Co-author" is now **Editor** — use the updated names when configuring encryption permissions.
+  1. Verify the user has the required usage rights — specifically EXTRACT — for the encrypted content
+  2. If the user should have access, check the encryption configuration and add the user to the authorized list. Note: in the Microsoft Purview portal and the custom permissions dialog in Word, Excel, and PowerPoint for Windows (version 2411 and later), the permission level previously called "Reviewer" is now **Restricted Editor**, "Co-Author" is now **Editor**, and "Co-Owner" is now **Owner** — use the updated names when configuring encryption permissions. Restricted Editor does not include EXTRACT (Copy); Editor and Owner do
   3. If Copilot should not access the encrypted content, this is expected behavior — document it
-  4. Consider using labels without encryption but with other protections (content marking, DLP) if Copilot access is required
+  4. Check whether the label carries the `BlockContentAnalysisServices` PowerShell advanced setting, which stops Office apps from sending the labeled content to connected experiences that analyze content, including Copilot
+  5. Consider using labels without encryption but with other protections (content marking, DLP) if Copilot access is required
 
-### Issue 8: Label Analytics Showing Incomplete Data
+### Issue 9: Label Analytics Showing Incomplete Data
 
 - **Symptoms:** Label analytics reports in Purview show lower label counts than expected or data appears to be delayed
 - **Root Cause:** Label analytics data has a reporting lag of up to 7 days. Additionally, label events from all workloads may not be aggregated in real-time.
@@ -119,14 +120,14 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 | **Low** | Label analytics reporting delays | Monitor and recheck after 7 days |
 | **Low** | Auto-labeling false positive pattern in nested conditions | DLP/label policy tuning team |
 | **Medium** | Inconsistent label inheritance behavior post-migration | Information protection team |
-| **Medium** | Agent inheriting unexpected label causing DLP disruption | Information protection team + agent owner |
+| **Medium** | Agent response label higher than expected, causing DLP disruption | Information protection team + agent owner |
 | **High** | Mandatory labeling bypassed for sensitive content | Security Operations |
 | **High** | DLP policies failing after label groups migration | Security Operations + Information protection team |
 | **Critical** | Encrypted content accessible through Copilot without authorization | Security incident response |
 
 ## Related Resources
 
-- [Portal Walkthrough](portal-walkthrough.md) — Label configuration for Copilot including label groups and agent inheritance
+- [Portal Walkthrough](portal-walkthrough.md) — Label configuration for Copilot including label groups and agent knowledge source label review
 - [PowerShell Setup](powershell-setup.md) — Label management scripts with PnP custom app registration
 - [Verification & Testing](verification-testing.md) — Label validation procedures
 - Back to [Control 2.2](../../../controls/pillar-2-security/2.2-sensitivity-labels-classification.md)

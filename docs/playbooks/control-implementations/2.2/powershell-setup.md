@@ -56,6 +56,10 @@ foreach ($policy in $policies) {
 ```powershell
 # Analyze label application on recently created or modified documents
 # Requires: Security & Compliance PowerShell
+# NOTE: filter by operation, not by RecordType "MipLabel" — MipLabel covers email
+# transport-pipeline events only. Service-side item labeling (Office for the web,
+# the SharePoint details pane, the Teams Files tab, and auto-labeling policies) is
+# recorded under the File* operations; Microsoft 365 apps use the others.
 
 Import-Module ExchangeOnlineManagement
 Connect-IPPSSession
@@ -63,8 +67,17 @@ Connect-IPPSSession
 $startDate = (Get-Date).AddDays(-30).ToString("MM/dd/yyyy")
 $endDate = (Get-Date).ToString("MM/dd/yyyy")
 
+$labelOperations = @(
+    "FileSensitivityLabelApplied",
+    "SensitivityLabelApplied",
+    "FileSensitivityLabelChanged",
+    "SensitivityLabelUpdated",
+    "FileSensitivityLabelRemoved",
+    "SensitivityLabelRemoved"
+)
+
 $labelEvents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate `
-    -RecordType "MipLabel" -ResultSize 5000
+    -Operations $labelOperations -ResultSize 5000
 
 $labelReport = @()
 foreach ($event in $labelEvents) {
@@ -166,7 +179,8 @@ $allUnlabeled | Export-Csv "UnlabeledContent_AllSites_$(Get-Date -Format 'yyyyMM
 
 ```powershell
 # Check current label taxonomy structure and identify labels still in parent/child hierarchy
-# Helps plan the migration to label groups (GA January 2026)
+# Helps plan the migration to label groups (M365 Roadmap ID 386900, GA December 2025;
+# rollout is gradual, so the migration banner may not yet appear in a given tenant)
 # Requires: Security & Compliance PowerShell
 
 Import-Module ExchangeOnlineManagement
@@ -189,7 +203,7 @@ if ($parentLabels.Count -gt 0) {
     Write-Host ""
     Write-Host "=== Labels requiring label groups migration ==="
     $parentLabels | Format-Table Name, DisplayName, Priority
-    Write-Host "Action: Navigate to Purview > Information Protection > Labels > Migrate sensitivity label scheme"
+    Write-Host "Action: In the Microsoft Purview portal, go to Solutions > Information Protection > Sensitivity labels and use the 'Migrate to the modern label scheme' banner. Migration is irreversible — test it first in a non-production tenant."
 }
 
 $allLabels | Export-Csv "LabelTaxonomy_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
@@ -206,6 +220,6 @@ $allLabels | Export-Csv "LabelTaxonomy_$(Get-Date -Format 'yyyyMMdd').csv" -NoTy
 
 ## Next Steps
 
-- See [Verification & Testing](verification-testing.md) for label enforcement validation, including label groups and agent inheritance
+- See [Verification & Testing](verification-testing.md) for label enforcement validation, including label groups and agent knowledge source labels
 - See [Troubleshooting](troubleshooting.md) for label issues including migration problems
 - Back to [Control 2.2](../../../controls/pillar-2-security/2.2-sensitivity-labels-classification.md)

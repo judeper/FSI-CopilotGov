@@ -1205,12 +1205,12 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "Microsoft Purview portal",
-                "path": "Information Protection > Labels",
+                "path": "Solutions > Information Protection > Sensitivity labels",
                 "url": "https://purview.microsoft.com/informationprotection/labels",
             },
             {
                 "portal": "Microsoft Purview portal",
-                "path": "Information Protection > Label policies",
+                "path": "Solutions > Information Protection > Publishing policies",
                 "url": "https://purview.microsoft.com/informationprotection/labelpolicies",
             },
         ],
