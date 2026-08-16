@@ -6,6 +6,7 @@ Step-by-step portal configuration for limiting Copilot's data grounding scope to
 
 - Entra Global Admin or SharePoint Admin role
 - Microsoft 365 Copilot licenses deployed
+- SharePoint Advanced Management prerequisites met (required for Restricted Content Discovery)
 - Data classification inventory completed (Control 1.1)
 - Governance committee approval on grounding scope decisions
 
@@ -18,12 +19,14 @@ Step-by-step portal configuration for limiting Copilot's data grounding scope to
 
 Review the current Copilot data access configuration. Copilot grounds its responses on content the user has access to across Microsoft 365. Data minimization limits this scope to only what is necessary for the intended use cases.
 
-### Step 2: Implement Restricted SharePoint Search
+### Step 2: Apply Restricted Content Discovery to High-Risk Sites
 
-**Portal:** SharePoint Admin Center
-**Path:** SharePoint Admin > Settings > Search > Restricted SharePoint Search
+**Portal:** SharePoint admin center
+**Path:** Sites > Active sites > [Site] > Settings > **Restrict content from Microsoft 365 Copilot**
 
-Enable Restricted SharePoint Search (Control 1.3) as the primary mechanism for grounding scope limitation. This restricts Copilot to only reference content from approved sites on the allowed list, reducing the grounding scope to vetted content sources.
+Apply Restricted Content Discovery (RCD) as the primary mechanism for grounding scope limitation. RCD hides site content from organization-wide discovery experiences and Microsoft 365 Copilot discovery scenarios, and removes AI entry points such as the Copilot button, AI actions menus, and **Create pages with AI** on the site. It does not change permissions. RCD requires SharePoint Advanced Management availability and a Microsoft 365 Copilot license.
+
+Restricted SharePoint Search (Control 1.3) is retiring — Microsoft blocks new enablement starting July 31, 2026 and directs organizations to RCD for content discoverability. Where RSS is already enabled, maintain the allow list while planning its retirement.
 
 ### Step 3: Configure Site-Level Access Restrictions
 
@@ -57,7 +60,7 @@ Record all data minimization decisions including:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Enable RSS to limit grounding scope; disable unnecessary Copilot features |
+| **Baseline** | Apply RCD to high-risk sites to limit grounding scope; disable unnecessary Copilot features |
 | **Recommended** | Granular site-level restrictions; feature-level controls per workload; quarterly scope review |
 | **Regulated** | Formal data minimization policy; governance committee approval for scope expansion; continuous monitoring of grounding behavior |
 

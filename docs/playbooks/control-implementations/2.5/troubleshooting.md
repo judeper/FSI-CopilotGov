@@ -6,13 +6,15 @@ Common issues and resolution steps for data minimization and grounding scope con
 
 ### Issue 1: Copilot Returning Content from Outside Grounding Scope
 
-- **Symptoms:** Copilot responses reference content from sites not on the RSS allowed list
-- **Root Cause:** RSS may not be fully propagated, content may be cached from before RSS was enabled, or the content may be in OneDrive or Exchange rather than SharePoint.
+- **Symptoms:** Copilot responses reference content from sites that are restricted or not on the RSS allowed list
+- **Root Cause:** Neither Restricted Content Discovery (RCD) nor Restricted SharePoint Search (RSS) is a security boundary. Microsoft documents that users continue to see content they own, recently accessed, or that was shared with them directly or via Teams/Outlook. Index propagation can also lag, and the content may be in OneDrive or Exchange rather than SharePoint.
 - **Resolution:**
-  1. Verify RSS is enabled: `Get-SPOTenantRestrictedSearchMode`
-  2. Check if content is in a workload not covered by RSS (Exchange, OneDrive personal)
-  3. Allow 24-48 hours for RSS changes to fully propagate
-  4. Verify the specific content source and determine if additional scoping controls are needed
+  1. Confirm the content is not owned by, recently accessed by, or directly shared with the test user — these are documented exceptions, not failures
+  2. Verify RCD on the site: `Get-SPOSite -Identity <site-url> | Select RestrictContentOrgWideSearch`
+  3. Verify RSS mode where still in use: `Get-SPOTenantRestrictedSearchMode`
+  4. Allow time for index propagation. Microsoft states RSS takes effect within about an hour; RCD propagation depends on site size and can take more than a week for sites with over 500,000 items
+  5. Check if content is in a workload not covered by these controls (Exchange, OneDrive personal)
+  6. Verify the specific content source and determine if permissions, sensitivity labels, or DLP are the appropriate control
 
 ### Issue 2: Grounding Scope Too Restrictive — Poor Copilot Quality
 
@@ -20,7 +22,7 @@ Common issues and resolution steps for data minimization and grounding scope con
 - **Root Cause:** The grounding scope may be too narrow, excluding content sources needed for productive Copilot use.
 - **Resolution:**
   1. Review user feedback to identify which content types are missing
-  2. Evaluate whether additional sites should be added to the allowed list
+  2. Evaluate whether Restricted Content Discovery should be removed from specific sites, or whether additional sites should be added to a remaining RSS allowed list
   3. Submit a scope expansion request through the governance change process
   4. Balance data minimization with utility — the scope should include content needed for approved use cases
 
@@ -46,11 +48,13 @@ Common issues and resolution steps for data minimization and grounding scope con
 
 ## Diagnostic Steps
 
-1. **Check RSS status:** `Get-SPOTenantRestrictedSearchMode`
-2. **Review allowed list:** `Get-SPOTenantRestrictedSearchAllowedList`
-3. **Verify feature settings:** Check Admin Center Copilot configuration
-4. **Test as user:** Query Copilot for known content and verify scope
-5. **Review audit logs:** Check for configuration changes
+1. **Check RCD status for a site:** `Get-SPOSite -Identity <site-url> | Select RestrictContentOrgWideSearch`
+2. **Report RCD coverage across the tenant:** `Start-SPORestrictedContentDiscoverabilityReport` then `Get-SPORestrictedContentDiscoverabilityReport`
+3. **Check RSS status (where still in use):** `Get-SPOTenantRestrictedSearchMode`
+4. **Review allowed list:** `Get-SPOTenantRestrictedSearchAllowedList`
+5. **Verify feature settings:** Check Admin Center Copilot configuration
+6. **Test as user:** Query Copilot for known content and verify scope
+7. **Review audit logs:** Check for configuration changes, including RCD enable/disable and justification events in Microsoft Purview audit log activities
 
 ## Escalation
 
