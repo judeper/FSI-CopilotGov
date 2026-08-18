@@ -4,8 +4,9 @@ Step-by-step portal configuration for controlling Copilot's ability to search th
 
 ## Prerequisites
 
-- Entra Global Admin or AI Administrator role
-- Microsoft 365 Admin Center access
+- For the Microsoft 365 admin center review: Entra Global Admin or AI Administrator role
+- For the Cloud Policy configuration: Office Apps Administrator (Microsoft's recommended role), Security Administrator, or Entra Global Admin
+- Microsoft 365 Admin Center and Microsoft 365 Apps admin center (config.office.com) access
 - Governance committee decision on web search policy for Copilot
 
 ## Steps
@@ -13,31 +14,31 @@ Step-by-step portal configuration for controlling Copilot's ability to search th
 ### Step 1: Review Web Search Settings
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Copilot > Settings > Data access > Web search for Microsoft 365 Copilot and Microsoft 365 Copilot Chat
+**Path:** Admin Center > Copilot > Settings > Data Access > Web search for Microsoft 365 Copilot and Microsoft 365 Copilot Chat
 
-Review the current web search configuration for Copilot. The admin control is the **Allow web search in Copilot** policy in the Cloud Policy service for Microsoft 365 Apps; the Microsoft 365 admin center Data access page provides a shortcut that creates this policy. In commercial tenants, if the policy is not configured, web search is on by default and may use Bing web search to supplement responses with public web content. For FSI environments, this behavior requires careful governance.
+Review the current web search configuration for Copilot. The admin control is the **Allow web search in Copilot** policy in the Cloud Policy service for Microsoft 365 Apps; Microsoft states the Microsoft 365 admin center Data Access page is a shortcut only and that the scenario is not configured there. In commercial tenants, if the policy is not configured, web search is on by default (unless **Allow the use of additional optional connected experiences in Office** is set to **Disabled**) and may use the Bing search service to supplement responses with public web content. For FSI environments, this behavior requires careful governance.
 
 ### Step 2: Disable or Restrict Web Search
 
-**Portal:** Microsoft 365 Cloud Policy service (Microsoft 365 Apps)
-**Path:** `https://config.office.com` > Customization > Policy Management > Allow web search in Copilot (reachable via the web search shortcut on Admin Center > Copilot > Settings > Data access)
+**Portal:** Microsoft 365 Cloud Policy service (Microsoft 365 Apps admin center)
+**Path:** `https://config.office.com` > Customization > Policy Management > Allow web search in Copilot (reachable via the web search shortcut on Admin Center > Copilot > Settings > Data Access)
 
 For most FSI deployments, configure the **Allow web search in Copilot** policy and set it off to prevent Copilot from:
 - Grounding responses on unverified external content
-- Potentially sending organizational context to web search services
+- Potentially sending generated search queries informed by organizational context to the Bing search service
 - Generating responses that mix internal and external data without clear distinction
 
-Set the policy to off for all users, or scope it to specific user groups based on governance policy. In commercial tenants, web search stays on until this policy is configured to off, so create the policy explicitly rather than relying on defaults.
+Set the policy to off for all users, or scope it to specific Microsoft Entra security groups based on governance policy. In commercial tenants, web search stays on until this policy is configured to off, so create the policy explicitly rather than relying on defaults. Microsoft documents that Click-to-Run checks in with the Cloud Policy service roughly every 90 minutes for users covered by a policy configuration, and that policies take effect the next time the Office app is restarted.
 
-### Step 3: Configure Web Content Plugin Settings
+### Step 3: Restrict Web Search for Sensitive Prompts
 
-**Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Agents > Settings and Settings > Integrated apps
+**Portal:** Microsoft Purview portal
+**Path:** Purview > Data Loss Prevention > Policies > Create policy (Custom) > **Microsoft 365 Copilot and Copilot Chat** location
 
-If web search is selectively enabled, configure the web content plugin:
-- Restrict to specific user groups with business justification
-- Enable content attribution so users can distinguish web-sourced content
-- Configure data handling policies for web-retrieved content
+If web search is selectively enabled, add a DLP rule that blocks external web search for prompts containing regulated data:
+- Add a rule with the **Content contains > Sensitive information types** condition
+- Set the action to **Prevent Copilot from processing content > Performing Web Searches**
+- Microsoft states DLP policy updates can take up to four hours to take effect in the Copilot experience
 
 ### Step 4: Set Up Third-Party Plugin Web Access Controls
 

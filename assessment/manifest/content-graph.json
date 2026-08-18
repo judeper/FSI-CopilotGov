@@ -331,7 +331,7 @@
       "tier": "Baseline",
       "title": "Control 2.6: Copilot Web Search and Web Grounding Controls",
       "path": "docs/controls/pillar-2-security/2.6-web-search-controls.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-16",
       "regulatory_references": [
         "GLBA §501(b)",
         "Data Residency Considerations"
