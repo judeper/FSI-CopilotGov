@@ -203,7 +203,8 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 | Sharing settings | Policies > Sharing | Tenant-specific URL |
 | Access control | Policies > Access control | Tenant-specific URL |
 | Site creation settings | Settings > Site creation | Tenant-specific URL |
-| Restricted SharePoint Search | Settings > Search > Restricted SharePoint Search | Tenant-specific URL |
+| Restricted Content Discovery (per site) | Sites > Active sites > [site] > Settings > Restrict content from Microsoft 365 Copilot | Tenant-specific URL |
+| Restricted SharePoint Search *(legacy — retiring; new enablement blocked from July 31, 2026)* | Settings > Search > Restricted SharePoint Search | Tenant-specific URL |
 | Copilot agents (SharePoint) | Settings > Copilot agents | Tenant-specific URL |
 | Data Access Governance reports | Reports > Data access governance | Tenant-specific URL |
 | Catalog management | Reports > Catalog management | Tenant-specific URL |

@@ -99,8 +99,11 @@ Microsoft's cloud-native Security Information and Event Management (SIEM) and Se
 ### Plugins
 Extensions that allow Copilot to interact with external services and APIs during a conversation. Plugins can retrieve real-time data, perform actions, or connect to line-of-business applications. Each plugin requires governance review for data handling and security.
 
+### Restricted Content Discovery (RCD)
+The current Microsoft-recommended per-site discoverability control for Microsoft 365 Copilot governance, replacing Restricted SharePoint Search (RSS) which is retiring. RCD is a site-level setting that excludes specific SharePoint sites from organization-wide search results and Copilot grounding while leaving permissions and direct user access unchanged. RCD also removes AI-powered entry points (Copilot button, AI action menus) from restricted sites. Requires a Microsoft 365 Copilot license or standalone SharePoint Advanced Management (SAM) license. Cannot be applied to OneDrive sites. *(See [Control 1.3](../controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md).)*
+
 ### Restricted SharePoint Search (RSS)
-A SharePoint Admin Center setting that limits Copilot Chat's grounding to a curated list of up to 100 SharePoint sites. Useful during oversharing remediation or for environments requiring tight control over which content Copilot can access in Copilot Chat.
+**Legacy — retiring.** A SharePoint Admin Center tenant-level setting that limited Copilot Chat's grounding to a curated allow-list of up to 100 SharePoint sites. Useful during Copilot onboarding for organizations needing a temporary positive-list posture while permissions and labels were remediated. RSS is retiring: Microsoft has blocked new enablement starting July 31, 2026. Organizations with existing RSS configurations should plan migration to Restricted Content Discovery (RCD), which is the current per-site discoverability control. *(See [Control 1.3](../controls/pillar-1-readiness/1.3-restricted-sharepoint-search.md).)*
 
 ### Semantic Index
 Microsoft's AI-powered index that enhances Microsoft 365 search and Copilot grounding by understanding the meaning and relationships in organizational content. The Semantic Index processes content that users already have access to and respects existing permissions.
@@ -266,6 +269,7 @@ Prohibition under federal consumer financial protection law against unfair, dece
 | MNPI | Material Nonpublic Information |
 | OCC | Office of the Comptroller of the Currency |
 | RAG | Retrieval-Augmented Generation |
+| RCD | Restricted Content Discovery |
 | RSS | Restricted SharePoint Search |
 | SAM | SharePoint Advanced Management |
 | SEC | Securities and Exchange Commission |
