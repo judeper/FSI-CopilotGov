@@ -123,11 +123,11 @@ Microsoft 365 Copilot interaction data is stored within the Microsoft 365 compli
 
 ### Does Copilot web search share organizational data externally?
 
-**When web search is enabled:** Copilot may send search queries to Bing to retrieve additional grounding information. Microsoft states that these queries do not include the full user prompt or organizational data — they are derived search queries. However, the queries themselves could potentially reveal information about the user's intent.
+**When web search is enabled:** Copilot may send a generated search query to the Bing search service to retrieve additional grounding information. Microsoft states these generated queries have user and tenant identifiers removed, include no identifying information based on the user's Microsoft Entra ID, and are typically a few words rather than the entire prompt — although a very short prompt may be used as the query. Microsoft also states it acts as a data controller for these generated queries and that the Data Protection Addendum does not apply to them, so the queries themselves could potentially reveal information about the user's intent.
 
 **FSI recommendation:** Disable web search for Copilot in regulated environments. This is a Baseline governance recommendation in this framework for all FSI organizations. With web search disabled, Copilot responses are grounded exclusively in organizational data from the Microsoft Graph.
 
-**How to disable:** M365 Admin Center > Copilot > Settings > Data access > Web search > Turn off.
+**How to disable:** Configure the **Allow web search in Copilot** policy to off in the Cloud Policy service for Microsoft 365 Apps (`https://config.office.com` > Customization > Policy Management). M365 Admin Center > Copilot > Settings > Data Access > Web search provides a shortcut; Microsoft states the scenario is not configured in the admin center itself.
 
 **Relevant controls:** Control 2.6 (Web Search and Web Grounding Controls). See also: [Copilot Admin Toggles](copilot-admin-toggles.md)
 
