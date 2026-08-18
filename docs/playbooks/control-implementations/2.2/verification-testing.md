@@ -1,12 +1,12 @@
 # Control 2.2: Sensitivity Labels and Copilot Content Classification — Verification & Testing
 
-Test cases and evidence collection for validating sensitivity label enforcement with Copilot. This playbook covers verification for label groups, Copilot Studio agent label inheritance, and nested auto-labeling conditions.
+Test cases and evidence collection for validating sensitivity label enforcement with Copilot. This playbook covers verification for label groups, Copilot Studio agent knowledge source labels, and nested auto-labeling condition groups.
 
 ## Test Cases
 
 ### Test 1: Label Taxonomy Structure Verification (Label Groups)
 
-- **Objective:** Confirm the label taxonomy has been migrated to or is configured correctly with label groups (GA January 2026)
+- **Objective:** Confirm the label taxonomy has been migrated to or is configured correctly with label groups (Microsoft 365 Roadmap ID 386900, general availability December 2025; rollout is gradual, so the migration banner may not yet appear in a given tenant)
 - **Steps:**
   1. Run Script 5 (Label Groups Migration Status Check) to inventory current label structure
   2. Verify all labels are organized within the expected label groups (Public, Internal, Confidential, Highly Confidential)
@@ -26,41 +26,43 @@ Test cases and evidence collection for validating sensitivity label enforcement 
 - **Expected Result:** Generated content inherits the source document's sensitivity label
 - **Evidence:** Screenshots showing source label and generated content label
 
-### Test 3: Copilot Studio Agent Label Inheritance Verification
+### Test 3: Copilot Studio Agent Knowledge Source Label Verification
 
-- **Objective:** Confirm Copilot Studio agents inherit the highest sensitivity label from their knowledge sources
+- **Objective:** Confirm a Copilot Studio agent response displays the highest-priority sensitivity label from the content the agent used (sensitivity labels in Copilot Studio are in preview and are on by default for agents with supported knowledge sources)
 - **Steps:**
   1. Identify a deployed Copilot Studio agent with knowledge sources carrying different sensitivity labels
   2. Document the labels on each knowledge source (e.g., "Confidential — Standard" and "Internal — General")
-  3. Interact with the agent and confirm DLP monitoring triggers at the appropriate label tier (Confidential in this example)
-  4. Verify the agent deployment record documents the inherited label
-  5. For a new agent with an unlabeled knowledge source: add a labeled document to the knowledge base and verify the inherited label updates
-- **Expected Result:** Agent's effective inherited label matches the highest label across all knowledge sources; DLP policies respond at the appropriate tier
-- **Evidence:** Agent knowledge source label inventory and DLP monitoring evidence
+  3. Interact with the agent and confirm the response shield displays the highest-priority label from the content used, and that each citation shows its own label
+  4. Confirm DLP monitoring triggers at the appropriate label tier (Confidential in this example)
+  5. Verify the agent deployment record documents the highest label reachable through its knowledge sources
+  6. For a new agent with an unlabeled knowledge source: add a labeled document to the knowledge base and verify the label shown on responses updates
+- **Expected Result:** The label displayed on agent responses matches the highest-priority label across the content used; DLP policies respond at the appropriate tier
+- **Evidence:** Agent knowledge source label inventory, response screenshots showing the label shield and citation labels, and DLP monitoring evidence
 
-### Test 4: Auto-Labeling with Nested Conditions
+### Test 4: Auto-Labeling with Nested Condition Groups
 
-- **Objective:** Verify nested AND/OR/NOT auto-labeling conditions apply labels correctly to FSI financial content, including the ability to override manually applied labels on files
+- **Objective:** Verify nested AND/OR/NOT auto-labeling conditions apply labels correctly to FSI financial content, including the ability to override manually applied lower-priority labels on SharePoint and OneDrive files
 - **Steps:**
   1. Create a test document that matches a nested condition (e.g., contains both a CUSIP pattern AND an earnings context keyword)
   2. Upload the document to a SharePoint site covered by the auto-labeling policy
   3. Verify the policy applies the expected label (Confidential — MNPI per the nested rule)
   4. Create a second test document matching only part of the nested condition (e.g., CUSIP pattern only, no earnings keyword) and verify the label is NOT applied
   5. Create a third test document that would match conditions but is in an excluded folder (NOT condition) and verify the label is NOT applied
-  6. **Override test:** Manually apply a lower-sensitivity label (e.g., "Internal — General") to a file that matches auto-labeling conditions. Verify the auto-labeling policy overrides the manual label and applies the correct higher-sensitivity label.
-- **Expected Result:** Nested auto-labeling conditions correctly apply and withhold labels based on combined condition logic; auto-labeling overrides manually applied labels on files when configured
-- **Evidence:** Screenshots of labeled and unlabeled test documents with condition logic documentation, including override scenario
+  6. **Override test:** Confirm the policy's **Additional label settings** page is set to **All locations**. Manually apply a lower-priority label (e.g., "Internal — General") to a file that matches auto-labeling conditions. Verify the auto-labeling policy replaces the manual label with the higher-priority label
+  7. **Negative override test:** Manually apply a *higher*-priority label to a matching file and verify the auto-labeling policy does not downgrade it
+- **Expected Result:** Nested auto-labeling conditions correctly apply and withhold labels based on combined condition logic; auto-labeling replaces manually applied lower-priority labels on files when **All locations** is configured, and leaves higher-priority manual labels intact
+- **Evidence:** Screenshots of labeled and unlabeled test documents with condition logic documentation, including both override scenarios
 
-### Test 4a: Default Labeling for Teams Meetings
+### Test 4a: Default Labeling for Meetings and Calendar Events
 
 - **Objective:** Verify default sensitivity labels are applied to Teams meetings for regulated user groups
 - **Steps:**
-  1. Confirm that a Teams meeting label policy is configured with a default label for regulated user groups.
+  1. Confirm the label policy setting **Apply a default label to meetings and calendar events** is configured for regulated user groups.
   2. Create a new Teams meeting as a user in the regulated group.
-  3. Verify the default sensitivity label is automatically applied to the meeting.
+  3. Verify the default sensitivity label is automatically applied to the meeting. For Teams, the default label applies to new calendar events but is not applied automatically when an existing unlabeled meeting is updated.
   4. Confirm that meeting artifacts (transcripts, notes, recordings) inherit the meeting's sensitivity label.
   5. Verify Copilot-generated meeting summaries respect the meeting label classification.
-- **Expected Result:** Default label is applied to Teams meetings; meeting artifacts inherit the label.
+- **Expected Result:** Default label is applied to new Teams meetings; meeting artifacts inherit the label.
 - **Evidence:** Meeting properties showing applied label; Copilot summary with inherited label.
 
 ### Test 5: Default Label Application
@@ -103,7 +105,7 @@ Test cases and evidence collection for validating sensitivity label enforcement 
 |--------------|--------|-----------------|-----------|
 | Label taxonomy export (label groups migration status) | CSV | Compliance evidence repository | 7 years |
 | Label inheritance test results | PDF with screenshots | Compliance evidence repository | 7 years |
-| Agent label inheritance inventory | PDF | Compliance evidence repository | 7 years |
+| Agent knowledge source label inventory | PDF | Compliance evidence repository | 7 years |
 | Nested auto-labeling condition test results | PDF with screenshots | Compliance evidence repository | 7 years |
 | Default label verification | Screenshots | Compliance evidence repository | 7 years |
 | Mandatory labeling test | Screenshots | Compliance evidence repository | 7 years |

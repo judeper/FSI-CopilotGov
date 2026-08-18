@@ -58,7 +58,7 @@ Organizations should adapt timelines and priorities based on their specific regu
 
 - [ ] Configure DLP policies for sensitive information types (SSN, account numbers, financial data) -- Control 2.1
 - [ ] Deploy sensitivity labels to priority content (or validate existing labels) -- Control 2.2
-- [ ] Configure web search policy (enable/disable per governance level decision) -- Control 2.7
+- [ ] Configure web search policy (enable/disable per governance level decision) -- Control 2.6
 - [ ] Review and configure plugin/connector policies (default deny recommended) -- Control 2.8
 - [ ] Enable Copilot audit logging (verify CopilotInteraction events flow to Unified Audit Log) -- Control 3.1
 
@@ -80,7 +80,7 @@ Organizations should adapt timelines and priorities based on their specific regu
 | 1.2 | SharePoint Permissions Remediation | **Critical** | SharePoint Admin |
 | 2.1 | DLP Policy Configuration | **Critical** | Purview Admin |
 | 2.2 | Sensitivity Label Deployment | **Critical** | Purview Admin |
-| 2.7 | Web Search Controls | High | M365 Admin |
+| 2.6 | Web Search Controls | High | M365 Admin |
 | 3.1 | Copilot Audit Logging | **Critical** | Purview Admin |
 | 3.2 | Retention Policies | **Critical** | Purview Admin |
 | 4.1 | Feature Toggle Management | High | M365 Admin |
@@ -219,7 +219,7 @@ Organizations should adapt timelines and priorities based on their specific regu
 **Week 10: Advanced Controls**
 
 - [ ] Enable eDiscovery for Copilot content -- Control 3.3
-- [ ] For Regulated: Configure information barriers between business units -- Control 2.6
+- [ ] For Regulated: Configure information barriers between business units -- Control 2.4
 - [ ] Enable Defender for Cloud Apps integration -- Control 2.9
 - [ ] Configure cost tracking and license optimization -- Control 4.4
 - [ ] For Regulated: Implement DSPM for AI -- Control 2.12
@@ -250,7 +250,7 @@ Organizations should adapt timelines and priorities based on their specific regu
 | Control | Name | Priority | Owner |
 |---------|------|----------|-------|
 | 3.3 | eDiscovery for Copilot Content | **Critical** | Purview Admin |
-| 2.6 | Information Barriers | Critical (Regulated) | Compliance Officer |
+| 2.4 | Information Barriers | Critical (Regulated) | Compliance Officer |
 | 2.9 | Defender for Cloud Apps | High | CISO |
 | 2.12 | DSPM for AI | High (Regulated) | Purview Admin |
 | 3.8 | Model Risk Documentation | Critical (Regulated) | AI Governance Lead |
@@ -344,7 +344,7 @@ These controls must be implemented first as they enable other governance capabil
 
 **Risk:** Copilot sends search queries containing sensitive context (client names, deal terms) to Bing.
 
-**How to avoid:** Make an explicit, documented decision about web search (Control 2.7) based on your governance level. Default to disabled for Regulated environments.
+**How to avoid:** Make an explicit, documented decision about web search (Control 2.6) based on your governance level. Default to disabled for Regulated environments.
 
 ### Pitfall 4: Ignoring Teams Meeting Transcription
 

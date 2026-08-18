@@ -96,6 +96,18 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "sectorYesBar",
         "facilitatorNotes",
     },
+    "2.6": {
+        # Force-apply the corrected web search navigation. The stale value in
+        # controls.json points at a "Copilot > Settings > Web Content" node
+        # and a fabricated /copilot/settings/webcontent route. Microsoft
+        # documents the setting as the "Allow web search in Copilot" Cloud
+        # Policy, with the admin center Data Access page as a shortcut only
+        # (issue #439 drift re-verification).
+        "yesBar",
+        "verifyIn",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
     "3.1": {
         # Authored checks[] wires the audit_log_enabled evaluator.
         "checks",
@@ -126,6 +138,15 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         # controls.json points at the retired "DSPM for AI > Reports" /aihub
         # route; the current path is DSPM > Discover > Data risk assessments
         # (issue #350 drift re-verification).
+        "verifyIn",
+    },
+    "2.2": {
+        # Force-apply the corrected Purview navigation. The stale value in
+        # controls.json names the retired "Information Protection > Labels" /
+        # "Label policies" pages; the current paths are Solutions >
+        # Information Protection > Sensitivity labels and Solutions >
+        # Information Protection > Publishing policies
+        # (issue #437 drift re-verification).
         "verifyIn",
     },
     "3.11": {
