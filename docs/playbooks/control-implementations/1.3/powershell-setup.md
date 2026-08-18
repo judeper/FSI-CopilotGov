@@ -12,25 +12,70 @@ Automation scripts for managing Restricted SharePoint Search (RSS) and Restricte
 
 ## Scripts
 
-### Script 1: Enable Restricted SharePoint Search (RSS)
+### Script 1: Enable Restricted Content Discovery (RCD) on a Site (Current Path)
 
 ```powershell
-# Enable RSS and verify the setting
+# Enable RCD on a site to exclude it from Copilot discovery and organization-wide search
+# RCD is the current recommended control — new RSS enablement is blocked from July 31, 2026
+# Requires: SharePoint Online Management Shell
+
+Import-Module Microsoft.Online.SharePoint.PowerShell
+Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
+
+# Enable RCD on a single site
+$siteUrl = "https://<tenant>.sharepoint.com/sites/<sensitive-site>"
+Set-SPOSite -Identity $siteUrl -RestrictContentOrgWideSearch $true
+Write-Host "RCD enabled for: $siteUrl" -ForegroundColor Green
+
+# Verify the setting
+$site = Get-SPOSite -Identity $siteUrl
+Write-Host "RestrictContentOrgWideSearch: $($site.RestrictContentOrgWideSearch)"
+```
+
+### Script 1b: Check Existing Restricted SharePoint Search (RSS) Status (Legacy — Existing Configurations Only)
+
+!!! warning "RSS is retiring"
+    RSS new enablement is blocked from July 31, 2026. Script 1b is for organizations checking or managing an existing RSS configuration enabled before that date.
+
+```powershell
+# Check and manage existing RSS status
 # Requires: SharePoint Online Management Shell
 
 Import-Module Microsoft.Online.SharePoint.PowerShell
 
 Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 
-# Enable Restricted SharePoint Search
-Set-SPOTenantRestrictedSearchMode -Mode Enabled
-
-# Verify the setting
+# Check current RSS mode
 $mode = Get-SPOTenantRestrictedSearchMode
 Write-Host "Restricted SharePoint Search mode: $($mode.Mode)"
+
+# To disable RSS (after confirming RCD covers required exclusions):
+# Set-SPOTenantRestrictedSearchMode -Mode Disabled
 ```
 
-### Script 2: Bulk Add Sites to Allowed List
+### Script 1c: Monitor RCD Status Across Tenant
+
+```powershell
+# Generate a tenant-wide report of sites with Restricted Content Discovery enabled
+# Requires: SharePoint Online Management Shell
+
+Import-Module Microsoft.Online.SharePoint.PowerShell
+Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
+
+# Start the report generation (asynchronous)
+Start-SPORestrictedContentDiscoverabilityReport
+
+# Check report status
+Get-SPORestrictedContentDiscoverabilityReport
+
+# Download report when complete (replace ReportGUID with the GUID from the status output)
+# Get-SPORestrictedContentDiscoverabilityReport -Action Download -ReportId "<ReportGUID>"
+```
+
+### Script 2: Bulk Add Sites to RSS Allowed List *(Legacy — Existing Configurations Only)*
+
+!!! warning "RSS is retiring"
+    Script 2 applies only to organizations managing an existing RSS configuration enabled before July 31, 2026.
 
 ```powershell
 # Add approved sites to the RSS allowed list from CSV
@@ -66,7 +111,7 @@ $results | Export-Csv "RSSAllowedList_Changes_$(Get-Date -Format 'yyyyMMdd').csv
 Write-Host "`nTotal: $($results.Count) | Added: $(($results | Where-Object Status -eq 'Added').Count)"
 ```
 
-### Script 3: Audit and Export Current Allowed List
+### Script 3: Audit and Export Current RSS Allowed List *(Legacy — Existing Configurations Only)*
 
 ```powershell
 # Export the current RSS allowed sites list for audit and review
@@ -94,7 +139,7 @@ $auditReport | Export-Csv "RSSAllowedList_Audit_$(Get-Date -Format 'yyyyMMdd').c
 Write-Host "Exported $($auditReport.Count) allowed sites to audit report."
 ```
 
-### Script 4: Remove Sites from Allowed List
+### Script 4: Remove Sites from RSS Allowed List *(Legacy — Existing Configurations Only)*
 
 ```powershell
 # Remove sites from the RSS allowed list (e.g., during quarterly review)
@@ -204,10 +249,10 @@ $rcdEnabledSites | Export-Csv "RCDAudit_$(Get-Date -Format 'yyyyMMdd').csv" -NoT
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
-| RSS Allowed List Audit Export | Monthly | Generate audit trail of allowed sites |
-| RCD Configuration Audit | Monthly | Confirm which sites have RCD enabled and review for accuracy |
-| Governance Review Report | Quarterly | Support governance committee review of RSS allowed list and RCD exclusion list |
-| RSS Mode Verification | Weekly | Confirm RSS remains enabled and has not been toggled off |
+| RCD Tenant Report | Monthly | Generate audit trail of RCD-excluded sites using `Start-SPORestrictedContentDiscoverabilityReport` |
+| RCD Configuration Review | Monthly | Confirm RCD sites are still appropriate; remove RCD where remediation is complete |
+| Governance Review Report | Quarterly | Support governance committee review of RCD governance log and any remaining RSS configuration |
+| RSS Mode Verification *(legacy)* | Weekly (if RSS is active) | Confirm existing RSS remains in expected state; plan migration to RCD |
 
 ## Next Steps
 

@@ -7,12 +7,13 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 ### Issue 1: RSS or RCD Not Available in SharePoint Admin Center
 
 - **Symptoms:** The Restricted SharePoint Search option does not appear under Settings > Search, or `Set-SPOSite -RestrictContentOrgWideSearch` returns "unrecognized parameter" or "property not found"
-- **Root Cause:** Both RSS and RCD require SharePoint Advanced Management (SAM) licensing. SAM is included with Microsoft 365 Copilot licenses at no additional cost; tenants without Copilot licenses need the standalone SAM add-on. Older versions of the SPO Management Shell may not include RCD or RSS cmdlets.
+- **Root Cause:** RCD requires SharePoint Advanced Management (SAM) licensing — included with Microsoft 365 Copilot licenses at no additional cost; tenants without Copilot licenses need the standalone SAM add-on. Older versions of the SPO Management Shell may not include RCD or RSS cmdlets. **Note:** RSS new enablement is blocked from July 31, 2026 — if the RSS toggle is unavailable for enablement after that date, this is expected behavior.
 - **Resolution:**
   1. Verify SharePoint Advanced Management is licensed and activated in the tenant (check Microsoft 365 Admin Center > Billing > Licenses)
   2. Update the SharePoint Online Management Shell to the latest version: `Update-Module Microsoft.Online.SharePoint.PowerShell`
-  3. If SAM is licensed but features are not visible, check your tenant's release ring and allow 24-48 hours for feature propagation
-  4. Contact Microsoft support if the feature remains unavailable after licensing and module updates
+  3. If SAM is licensed but RCD features are not visible, check your tenant's release ring and allow 24-48 hours for feature propagation
+  4. For RSS: if trying to enable RSS after July 31, 2026, this is expected — use RCD instead
+  5. Contact Microsoft support if RCD remains unavailable after licensing and module updates
 
 ### Issue 1b: RCD-Enabled Site Content Still Appearing in Copilot
 
@@ -56,23 +57,36 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
   3. Verify the site URL in the allowed list matches exactly (no trailing slashes or variations)
   4. Request a re-index of the site if content was recently added using PnP PowerShell (`Request-PnPReindexWeb`) or the SharePoint site settings UI under Search and Offline Availability
 
-### Issue 5: RSS Accidentally Disabled
+### Issue 5: RSS Accidentally Disabled (Existing Configurations Only)
 
-- **Symptoms:** Users suddenly report seeing search results from sites that were previously restricted
+!!! warning "RSS is retiring"
+    If RSS was never enabled in your tenant, or you are deploying Copilot for the first time after July 31, 2026, use RCD instead — do not attempt to enable RSS.
+
+- **Symptoms:** (Existing RSS configurations only) Users suddenly report seeing search results from sites that were previously restricted
 - **Root Cause:** An administrator may have toggled RSS off via the admin center or PowerShell, or a service update may have reset the setting.
 - **Resolution:**
-  1. Immediately re-enable RSS: `Set-SPOTenantRestrictedSearchMode -Mode Enabled`
-  2. Verify the allowed list is intact: `Get-SPOTenantRestrictedSearchAllowedList`
-  3. Review the audit log for who changed the setting: `Search-UnifiedAuditLog -Operations "Set-SPOTenantRestrictedSearchMode"`
-  4. Implement alerting on RSS configuration changes to detect future unauthorized modifications
+  1. Evaluate whether the RSS disable was intentional as part of migration to RCD — if RCD is already covering the required sites, disabling RSS may be expected
+  2. If RSS should remain active during ongoing migration, re-enable it: `Set-SPOTenantRestrictedSearchMode -Mode Enabled`
+  3. Verify the allowed list is intact: `Get-SPOTenantRestrictedSearchAllowedList`
+  4. Review the audit log for who changed the setting: `Search-UnifiedAuditLog -Operations "Set-SPOTenantRestrictedSearchMode"`
+  5. Implement alerting on RSS configuration changes to detect future unauthorized modifications
+  6. Accelerate migration to RCD so the RSS dependency can be formally retired
 
 ## Diagnostic Steps
 
-1. **Check RSS mode:** `Get-SPOTenantRestrictedSearchMode` should return "Enabled"
-2. **Verify allowed list:** `Get-SPOTenantRestrictedSearchAllowedList` returns expected sites
-3. **Test as specific user:** Use a non-admin account to test search behavior
-4. **Review audit logs:** Search for RSS-related admin operations in unified audit log
+**Current (RCD):**
+
+1. **Check RCD state on a site:** `(Get-SPOSite -Identity <url>).RestrictContentOrgWideSearch` should return `True` for RCD-excluded sites
+2. **Review RCD report:** Run `Start-SPORestrictedContentDiscoverabilityReport` / `Get-SPORestrictedContentDiscoverabilityReport` and confirm the site list matches the governance log
+3. **Test as specific user:** Use a non-admin account with no prior interaction history to test Copilot discovery behavior
+4. **Review audit logs:** Search Microsoft Purview audit logs for RCD enablement, disablement, and justification changes
 5. **Check search health:** Verify the SharePoint search service is healthy in the admin dashboard
+
+**Legacy (existing RSS configurations only):**
+
+1. **Check RSS mode:** `Get-SPOTenantRestrictedSearchMode` returns the documented state (`Enabled` while an existing configuration remains in use during migration to RCD)
+2. **Verify allowed list:** `Get-SPOTenantRestrictedSearchAllowedList` returns expected sites
+3. **Review audit logs:** Search for RSS-related admin operations in the unified audit log
 
 ## Escalation
 
