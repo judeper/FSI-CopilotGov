@@ -1,6 +1,6 @@
 # Control 2.2: Sensitivity Labels and Copilot Content Classification — Portal Walkthrough
 
-Step-by-step portal configuration for enforcing sensitivity label classification on Copilot-generated and Copilot-referenced content. This playbook covers the current label groups taxonomy structure (GA January 2026), Copilot Studio agent label inheritance review, and auto-labeling with nested conditions.
+Step-by-step portal configuration for enforcing sensitivity label classification on Copilot-generated and Copilot-referenced content. This playbook covers the label groups taxonomy structure, Copilot Studio agent knowledge source label review, and auto-labeling policies with nested condition groups.
 
 ## Prerequisites
 
@@ -14,16 +14,17 @@ Step-by-step portal configuration for enforcing sensitivity label classification
 
 ### Step 1: Assess and Configure Label Taxonomy Structure (Label Groups)
 
-**Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Labels
+**Portal:** Microsoft Purview portal
+**Path:** Solutions > Information Protection > Sensitivity labels
 
-Microsoft Purview has migrated from parent/child label hierarchy to **label groups** (GA January 2026, MC1111778). Before configuring label policies, assess your current taxonomy state:
+Microsoft Purview has replaced the parent/child label hierarchy with **label groups** as the modern label scheme (Microsoft 365 Roadmap ID 386900, general availability December 2025). Migration is rolling out gradually and might not yet be available in a given tenant; it is automatic for tenants created on or after October 1, 2025. Before configuring label policies, assess your current taxonomy state:
 
 1. Review existing labels — note whether they are currently organized as parent/child labels or label groups
 2. If still using parent/child structure, plan the migration timeline:
-   - **Path:** Purview > Information Protection > Labels > Migrate sensitivity label scheme
-   - Run the migration in a test environment first
+   - **Path:** Solutions > Information Protection > Sensitivity labels — when the **Migrate to the modern label scheme** banner appears, select **Get started**, review the proposed scheme, resolve naming conflicts, then select **Migrate**
+   - Migration is **irreversible** — run it first in a test tenant that has the same label configuration as production
    - Document all DLP policies that reference parent label names — these conditions must be verified after migration
+   - Label groups carry only name, description, color, and priority. Where a parent label was configured for label actions, published separately, or scoped differently from its sublabels, migration also creates a new sublabel with the same name, GUID, and settings; decide in advance whether to leave that sublabel published
 3. After migration, verify labels appear correctly grouped in the label groups structure
 4. Confirm that labels previously referenced as "sub-labels" now appear as individual labels within their label group
 
@@ -31,22 +32,22 @@ Microsoft Purview has migrated from parent/child label hierarchy to **label grou
 
 ### Step 2: Configure Label Inheritance for Copilot
 
-**Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Label Policies > [Select policy] > Settings
+**Portal:** Microsoft Purview portal
+**Path:** Solutions > Information Protection > Publishing policies > [Select policy]
 
-Configure how sensitivity labels apply to Copilot-generated content. When Copilot creates new content based on source documents, the label inheritance behavior determines what label the new content receives. Configure the policy to apply the most restrictive label from source materials.
+Configure how sensitivity labels apply to Copilot-generated content. Copilot in Word, Copilot in PowerPoint, and Copilot in Outlook inherit the sensitivity label of the referenced source item for newly created content, and where more than one labeled source is referenced, the highest-priority label is used. Publish the labels that should be available for inheritance with the **Files & other data assets** and **Emails** scopes, and confirm the label's protection settings are the ones you want carried forward.
 
 ### Step 3: Set Default Labels for Copilot Outputs
 
-**Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Label Policies > Default settings
+**Portal:** Microsoft Purview portal
+**Path:** Solutions > Information Protection > Publishing policies > [Policy] > Policy settings
 
-Set the default sensitivity label for new documents created through Copilot. For FSI environments, the default should be at least "Internal — General" to prevent unlabeled content creation. Users can upgrade the label but should not be able to create unlabeled documents.
+Set the default sensitivity label for new documents created through Copilot. For FSI environments, the default should be at least "Internal — General" to prevent unlabeled content creation. Users can upgrade the label but should not be able to create unlabeled documents. A default label from a label policy never overrides an existing label — use a default sensitivity label for a SharePoint document library where a lower-priority label should be raised.
 
 ### Step 4: Configure Mandatory Labeling for Copilot Content
 
-**Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Label Policies > [Policy] > Require labeling
+**Portal:** Microsoft Purview portal
+**Path:** Solutions > Information Protection > Publishing policies > [Policy] > Policy settings > Require users to apply a label to their emails and documents
 
 Enable mandatory labeling for all content types where Copilot generates output:
 - Documents created in Word, Excel, PowerPoint via Copilot
@@ -55,80 +56,83 @@ Enable mandatory labeling for all content types where Copilot generates output:
 
 Verify that the mandatory labeling prompt appears when Copilot creates content without a label.
 
-### Step 5: Review Copilot Studio Agent Label Inheritance
+### Step 5: Review Copilot Studio Agent Knowledge Source Labels
 
-**Portal:** Microsoft 365 Admin Center
-**Path:** MAC > Agents > All agents / Registry
+**Portal:** Microsoft 365 admin center
+**Path:** Agents > All agents (Agent inventory tab, within the Copilot Control System)
 
-Before activating any Copilot Studio agent, review its knowledge source labels to determine the effective inherited label:
+Microsoft Purview sensitivity labels in Copilot Studio are in **preview** and are on by default for agents with supported knowledge sources (SharePoint, OneDrive for Business, SQL, Dataverse, Cosmos, Azure Blob Storage, Word, Excel, Outlook, Office groups, Office users). An agent response displays the highest-priority label from the content used for that response, plus a label on each citation — Microsoft does not assign a persistent effective label to the agent object. Before activating any Copilot Studio agent, review its knowledge source labels:
 
-1. In MAC > Agents > All agents / Registry, select the agent to review
+1. In Microsoft 365 admin center > Agents > All agents, select the agent to review
 2. Navigate to the agent's knowledge sources configuration
 3. For each knowledge source, note the sensitivity label applied to the connected content (SharePoint sites, documents, or data sources)
-4. The agent's effective inherited label is the **highest label** found across all knowledge sources
-5. Document the inherited label in the agent deployment record
-6. Confirm that the appropriate DLP policies are in place for the inherited label tier before activating
+4. Identify the **highest-priority label** reachable through those knowledge sources — this is the label an agent response can display
+5. Document that label in the agent deployment record
+6. Confirm that the appropriate DLP policies are in place for that label tier before activating
 
-**Example:** An agent with knowledge sources labeled "Confidential — Standard" and "Internal — General" inherits "Confidential — Standard." Users interacting with this agent may trigger Confidential-tier DLP monitoring.
+**Example:** An agent with knowledge sources labeled "Confidential — Standard" and "Internal — General" can surface "Confidential — Standard" on its responses. Users interacting with this agent may trigger Confidential-tier DLP monitoring.
 
-**Governance gate for Recommended/Regulated:** Agents with inherited Confidential or higher labels require compliance sign-off as part of the deployment approval workflow.
+**Note on encryption:** Label-applied encryption is honored for the SharePoint knowledge source. Copilot Studio agents return content from encrypted items only where the user holds the EXTRACT usage right.
 
-### Step 6: Configure Auto-Labeling with Nested Conditions
+**Governance gate for Recommended/Regulated:** Agents that can surface Confidential or higher labels require compliance sign-off as part of the deployment approval workflow.
 
-**Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Auto-labeling > Create auto-labeling policy
+### Step 6: Configure Auto-Labeling Policies with Nested Conditions
 
-Auto-labeling now supports nested AND/OR/NOT conditions (GA December 2025), enabling complex FSI classification rules. Additionally, **auto-labeling can now override manually applied labels for files** (not just emails). This means an auto-labeling policy can upgrade a file's sensitivity label even if a user previously applied a lower label manually. Organizations should verify their auto-labeling priority and override settings to avoid unintended label changes on files where users have made deliberate classification decisions.
+**Portal:** Microsoft Purview portal
+**Path:** Solutions > Information Protection > Policies > Auto-labeling policies > **+ Create auto-labeling policy**
+
+Service-side auto-labeling policies support nested rule logic (AND/OR/NOT) through condition groups with logical operators between groups, the same way DLP complex rule design works. The client-side label setting *auto-labeling for files and emails* does not support nested rule logic. Auto-labeling policies can also **override manually applied labels on files in SharePoint and OneDrive** (Microsoft 365 Roadmap ID 558342, general availability April 2026), but only where the policy's label has a higher priority than the existing label — a manually applied higher-priority label is never overridden. Organizations should verify their label priorities and override settings to avoid unintended label changes on files where users have made deliberate classification decisions.
 
 1. Create or edit an auto-labeling policy
 2. In the conditions section, create condition groups:
-   - Click "Add condition group" to add a grouped set of conditions
+   - Add a condition group for each grouped set of conditions
    - Within a group, select AND (all conditions must match) or OR (any condition matches)
-   - Between groups, select NOT to exclude specific scenarios
+   - Between groups, select the operator that excludes the scenarios you do not want labeled
 3. **FSI example — MNPI auto-labeling with contextual exclusion:**
    - Condition Group 1 (AND): Contains CUSIP/ISIN pattern AND contains earnings/M&A context keyword
    - OR
    - Condition Group 2: Contains MNPI keyword dictionary match
    - NOT: File path contains "/public-disclosures/" (exclude investor relations materials)
-4. Run in simulation mode for 14 days before enforcing
-5. Review simulation false positive rate (target <3% before enforcement)
+4. On the **Additional label settings** page, select **All locations** to override manually applied lower-priority labels on emails and on SharePoint and OneDrive files. **Emails only** limits the override to email
+5. New policies save in simulation mode — run simulation for 14 days before enforcing
+6. Review simulation false positive rate (target <3% before enforcement)
 
 ### Step 7: Configure Label-Based Access Restrictions for Copilot
 
-**Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Labels > [Label] > Encryption settings
+**Portal:** Microsoft Purview portal
+**Path:** Solutions > Information Protection > Sensitivity labels > [Label] > Encryption settings
 
 For labels that include encryption, review how Copilot interacts with encrypted content:
 - Copilot accesses content using the current user's permissions
-- If the user has rights to encrypted content, Copilot can read it
+- Copilot and agents display text from encrypted content only where the user holds the EXTRACT usage right (shown as **Copy**). With VIEW but not EXTRACT, Copilot does not summarize the item but can still return a link to it
 - If the user lacks rights, Copilot cannot access the content
 - New content created from encrypted sources inherits the encryption settings
 
-> **Permission Level Renames:** Microsoft has renamed two encryption permission levels — **Reviewer** is now **Restricted Editor**, and **Co-author** is now **Editor**. Existing labels using the old permission names continue to function, but new label configurations and documentation should use the updated names. Organizations should update internal label documentation and user training materials to reflect these renames.
+> **Permission Level Names:** The Microsoft Purview portal and the custom permissions dialog in Word, Excel, and PowerPoint for Windows (version 2411 and later) use updated permissions level names — **Reviewer** is now **Restricted Editor**, **Co-Author** is now **Editor**, and **Co-Owner** is now **Owner**. Other applications continue to use the original naming. **Save As, Export is not included in the Editor level when it is configured in the Microsoft Purview portal** — assign it through custom permissions where users need to create derivative documents. Existing labels using the old permission names continue to function, but new label configurations and documentation should use the updated names.
 
 ### Step 8: Enable Label Analytics for Copilot Content
 
-**Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Label Analytics
+**Portal:** Microsoft Purview portal
+**Path:** Solutions > Information Protection > Label analytics
 
 Enable label analytics to monitor how labels are applied to Copilot-generated content. Track:
 - Label distribution on Copilot-generated documents
 - Label changes (upgrades and downgrades) on Copilot content
 - Unlabeled Copilot content (should be zero with mandatory labeling)
 - Agent-generated content label distribution (where applicable)
-- **Default labels for Teams meetings** — verify that Teams meeting sensitivity labels are applied by default for regulated user groups. Default labeling for Teams meetings helps prevent unclassified meeting content (transcripts, notes, recordings) from being surfaced by Copilot without appropriate classification.
+- **Default labels for meetings and calendar events** — verify the label policy setting **Apply a default label to meetings and calendar events** is configured for regulated user groups. For Teams, the default label applies to new calendar events but is not applied automatically when an existing unlabeled meeting is updated. Default labeling helps prevent unclassified meeting content (transcripts, notes, recordings) from being surfaced by Copilot without appropriate classification.
 
 ## FSI Recommendations
 
 | Tier | Recommendation |
 |------|---------------|
 | **Baseline** | Default label on Copilot-created content; label inheritance from source documents; assess label groups migration status; audit Copilot Studio agent knowledge source labels |
-| **Recommended** | Mandatory labeling; most-restrictive label inheritance; label groups migration completed and DLP policies tested; auto-labeling with nested conditions for FSI data patterns; agent label inheritance review as part of deployment approval |
+| **Recommended** | Mandatory labeling; highest-priority label inheritance; label groups migration completed and DLP policies tested; auto-labeling policies with nested condition groups for FSI data patterns; agent knowledge source label review as part of deployment approval |
 | **Regulated** | Mandatory labeling with no downgrade option for Copilot content; full auto-labeling with nested conditions covering all FSI SIT categories; automated classification with justification auditing; agents require compliance sign-off; real-time label compliance monitoring |
 
 ## Next Steps
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for label enforcement automation
-- See [Verification & Testing](verification-testing.md) to validate label behavior, label groups, and agent inheritance
+- See [Verification & Testing](verification-testing.md) to validate label behavior, label groups, and agent knowledge source labels
 - Review Control 2.1 for DLP integration with sensitivity labels, including label-based response blocking (Type 1)
 - Back to [Control 2.2](../../../controls/pillar-2-security/2.2-sensitivity-labels-classification.md)

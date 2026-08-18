@@ -9,11 +9,13 @@ Test cases and evidence collection for validating data minimization and groundin
 - **Objective:** Confirm Copilot only accesses content within the approved grounding scope
 - **Steps:**
   1. Create unique test content on a site outside the grounding scope
-  2. As a Copilot user, query Copilot for the unique test content
-  3. Verify Copilot does not return results from the out-of-scope site
-  4. Create similar test content on an in-scope site and verify Copilot finds it
-- **Expected Result:** Copilot responses limited to in-scope content only
-- **Evidence:** Copilot query results showing scope enforcement
+  2. Select a test user who does not own, has not recently accessed, and has not been directly or Teams/Outlook-shared that content — Microsoft documents these as cases where content still surfaces
+  3. As that Copilot user, query Copilot for the unique test content
+  4. Allow for index propagation before testing; propagation depends on site size
+  5. Verify Copilot does not return results from the out-of-scope site
+  6. Create similar test content on an in-scope site and verify Copilot finds it
+- **Expected Result:** Copilot responses limited to in-scope content for users outside the documented exception cases; any exception observed is recorded with its cause
+- **Evidence:** Copilot query results showing scope enforcement, plus the documented exception log
 
 ### Test 2: Feature Minimization Verification
 
@@ -30,7 +32,7 @@ Test cases and evidence collection for validating data minimization and groundin
 
 - **Objective:** Verify the grounding scope has not expanded without governance approval
 - **Steps:**
-  1. Compare current allowed sites list against the last governance-approved list
+  1. Compare the current grounding scope (sites covered by RCD, plus any RSS allowed list) against the last governance-approved list
   2. Identify any additions or removals
   3. Verify all changes have documented approval
 - **Expected Result:** Scope matches governance-approved list with no unauthorized changes

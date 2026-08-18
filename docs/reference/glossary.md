@@ -152,7 +152,7 @@ An administrative control that allows specifying external domains to exclude fro
 The process of identifying, collecting, producing, and reviewing electronically stored information (ESI) for legal, regulatory, or investigative purposes. Microsoft Purview eDiscovery enables searching and exporting Copilot interaction data.
 
 ### Editor
-A sensitivity label permission level (formerly "Co-author") that grants users edit rights to labeled content. As of April 2026, the Editor permission no longer includes "Save as, Export" permissions for sensitivity labels. See also *Restricted Editor*.
+A sensitivity label permission level (formerly "Co-Author") that grants view, edit, copy, and print rights to labeled content. When the level is configured in the Microsoft Purview portal, "Save As, Export" is not included — assign it through custom permissions where it is required. See also *Restricted Editor*.
 
 ### Graph Grounding
 The process by which Copilot retrieves relevant organizational data from the Microsoft Graph to inform its responses. Grounding data includes emails, documents, chats, meetings, and other Microsoft 365 content the user can access.
@@ -161,7 +161,7 @@ The process by which Copilot retrieves relevant organizational data from the Mic
 Microsoft Purview policies that restrict communication and collaboration between specific groups of users. In FSI, information barriers support compliance with MNPI walls between departments such as investment banking and research.
 
 ### Label Inheritance
-The behavior where Copilot applies the highest sensitivity label from all source documents used to generate a response. For example, if Copilot references one "Internal" document and one "Confidential" document, the output inherits the "Confidential" label.
+The behavior where Copilot applies the highest-priority sensitivity label from the source items used to generate new content. For example, if Copilot references one "Internal" document and one "Confidential" document, the new content inherits the "Confidential" label. Supported for Copilot in Word, Copilot in PowerPoint, and Copilot in Outlook.
 
 ### Oversharing
 A condition where Microsoft 365 content is accessible to more users than intended, typically due to broad SharePoint permissions (e.g., "Everyone except external users"), open Microsoft 365 Group membership, or permissive OneDrive sharing defaults. Copilot amplifies the impact of oversharing through discovery amplification.
