@@ -74,11 +74,19 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 
 ## Diagnostic Steps
 
-1. **Check RSS mode:** `Get-SPOTenantRestrictedSearchMode` should return "Enabled"
-2. **Verify allowed list:** `Get-SPOTenantRestrictedSearchAllowedList` returns expected sites
-3. **Test as specific user:** Use a non-admin account to test search behavior
-4. **Review audit logs:** Search for RSS-related admin operations in unified audit log
+**Current (RCD):**
+
+1. **Check RCD state on a site:** `(Get-SPOSite -Identity <url>).RestrictContentOrgWideSearch` should return `True` for RCD-excluded sites
+2. **Review RCD report:** Run `Start-SPORestrictedContentDiscoverabilityReport` / `Get-SPORestrictedContentDiscoverabilityReport` and confirm the site list matches the governance log
+3. **Test as specific user:** Use a non-admin account with no prior interaction history to test Copilot discovery behavior
+4. **Review audit logs:** Search Microsoft Purview audit logs for RCD enablement, disablement, and justification changes
 5. **Check search health:** Verify the SharePoint search service is healthy in the admin dashboard
+
+**Legacy (existing RSS configurations only):**
+
+1. **Check RSS mode:** `Get-SPOTenantRestrictedSearchMode` returns the documented state (`Enabled` while an existing configuration remains in use during migration to RCD)
+2. **Verify allowed list:** `Get-SPOTenantRestrictedSearchAllowedList` returns expected sites
+3. **Review audit logs:** Search for RSS-related admin operations in the unified audit log
 
 ## Escalation
 
