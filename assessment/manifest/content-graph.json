@@ -319,7 +319,7 @@
       "tier": "Recommended",
       "title": "Control 2.5: Data Minimization and Grounding Scope",
       "path": "docs/controls/pillar-2-security/2.5-data-minimization-grounding-scope.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-16",
       "regulatory_references": [
         "GLBA §501(b)",
         "Data Minimization Principles"

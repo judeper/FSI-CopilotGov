@@ -15,11 +15,14 @@ Automation scripts for implementing and monitoring data minimization controls fo
 ```powershell
 # Generate inventory of content accessible to Copilot for grounding
 # Requires: SharePoint Online Management Shell
+# Note: Restricted SharePoint Search is retiring — Microsoft blocks new
+# enablement starting July 31, 2026. Restricted Content Discovery (RCD) is
+# the mechanism Microsoft directs organizations to for content discoverability.
 
 Import-Module Microsoft.Online.SharePoint.PowerShell
 Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 
-# Check if RSS is enabled (primary grounding control)
+# Check if RSS is enabled (legacy grounding control, where already in use)
 $rssMode = Get-SPOTenantRestrictedSearchMode -ErrorAction SilentlyContinue
 
 if ($rssMode.Mode -eq "Enabled") {
@@ -29,8 +32,12 @@ if ($rssMode.Mode -eq "Enabled") {
 } else {
     $allSites = Get-SPOSite -Limit All -IncludePersonalSite $false
     Write-Host "RSS Mode: Not Restricted — ALL $($allSites.Count) sites in grounding scope"
-    Write-Host "WARNING: Data minimization requires RSS or alternative scoping controls."
+    Write-Host "Verify RCD, permissions, labels, and DLP provide the required scoping controls."
 }
+
+# Report which sites are covered by Restricted Content Discovery
+Start-SPORestrictedContentDiscoverabilityReport
+Get-SPORestrictedContentDiscoverabilityReport
 ```
 
 ### Script 2: Content Volume Analysis by Scope
@@ -79,10 +86,22 @@ Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 $checks = @()
 $rssMode = Get-SPOTenantRestrictedSearchMode -ErrorAction SilentlyContinue
 
+# RSS is retiring (new enablement blocked from 2026-07-31), so report its state
+# for information rather than treating "Disabled" as a failure.
 $checks += [PSCustomObject]@{
-    Control  = "Restricted SharePoint Search"
-    Status   = if ($rssMode.Mode -eq "Enabled") { "PASS" } else { "FAIL" }
+    Control  = "Restricted SharePoint Search (legacy)"
+    Status   = "INFO"
     Detail   = "RSS Mode: $($rssMode.Mode)"
+}
+
+# Restricted Content Discovery is the current scoping control
+$rcdSites = Get-SPOSite -Limit All -IncludePersonalSite $false |
+    Where-Object { $_.RestrictContentOrgWideSearch -eq $true }
+
+$checks += [PSCustomObject]@{
+    Control  = "Restricted Content Discovery"
+    Status   = if ($rcdSites.Count -gt 0) { "PASS" } else { "FAIL" }
+    Detail   = "Sites with RestrictContentOrgWideSearch: $($rcdSites.Count)"
 }
 
 $tenant = Get-SPOTenant
