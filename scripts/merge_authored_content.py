@@ -140,6 +140,15 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         # (issue #350 drift re-verification).
         "verifyIn",
     },
+    "2.2": {
+        # Force-apply the corrected Purview navigation. The stale value in
+        # controls.json names the retired "Information Protection > Labels" /
+        # "Label policies" pages; the current paths are Solutions >
+        # Information Protection > Sensitivity labels and Solutions >
+        # Information Protection > Publishing policies
+        # (issue #437 drift re-verification).
+        "verifyIn",
+    },
     "3.11": {
         # Force-apply the corrected Rule 17a-4(f)(2) storage-system citation
         # (with SEC adopting release No. 34-96034) and the audit-trail-aligned

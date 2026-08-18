@@ -281,7 +281,7 @@
       "tier": "Baseline",
       "title": "Control 2.2: Sensitivity Labels and Copilot Content Classification",
       "path": "docs/controls/pillar-2-security/2.2-sensitivity-labels-classification.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-16",
       "regulatory_references": [
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404"
