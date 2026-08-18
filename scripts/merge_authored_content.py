@@ -96,6 +96,18 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "sectorYesBar",
         "facilitatorNotes",
     },
+    "2.6": {
+        # Force-apply the corrected web search navigation. The stale value in
+        # controls.json points at a "Copilot > Settings > Web Content" node
+        # and a fabricated /copilot/settings/webcontent route. Microsoft
+        # documents the setting as the "Allow web search in Copilot" Cloud
+        # Policy, with the admin center Data Access page as a shortcut only
+        # (issue #439 drift re-verification).
+        "yesBar",
+        "verifyIn",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
     "3.1": {
         # Authored checks[] wires the audit_log_enabled evaluator.
         "checks",
