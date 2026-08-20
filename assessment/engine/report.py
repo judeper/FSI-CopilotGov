@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -300,12 +301,30 @@ def prepare_report_data(
 # ---------------------------------------------------------------------------
 
 
+_MARKDOWN_META_RE = re.compile(r"([\\`*_{}\[\]()#+\-.!|])")
+_MARKDOWN_CONTROL_RE = re.compile(r"[\x00-\x20\x7f-\x9f\u2028\u2029]+")
+
+
+def _markdown_plain_text(value: object) -> object:
+    """Render dynamic strings as single-line Markdown plain text."""
+    if value is None:
+        return ""
+    if not isinstance(value, str):
+        return value
+    text = _MARKDOWN_CONTROL_RE.sub(" ", str(value))
+    return _MARKDOWN_META_RE.sub(r"\\\1", text)
+
+
 def _markdown_environment() -> Environment:
     """Create a Jinja environment safe for Markdown-to-HTML rendering."""
-    # Dynamic values are plain text. Escaping them here prevents raw HTML from
-    # becoming active when a generated Markdown report is rendered as HTML.
-    # The JSON summary bypasses Jinja and therefore retains its original values.
-    return Environment(keep_trailing_newline=True, autoescape=True)
+    # HTML escaping neutralizes raw tags; finalization also escapes Markdown
+    # structure and collapses line breaks before any dynamic value reaches an
+    # inline, heading, blockquote, or table-cell context.
+    return Environment(
+        keep_trailing_newline=True,
+        autoescape=True,
+        finalize=_markdown_plain_text,
+    )
 
 
 def generate_prefilled_md(data: dict) -> str:

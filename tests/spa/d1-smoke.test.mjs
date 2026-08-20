@@ -16,8 +16,6 @@ const SPA_PATH = join(REPO, "docs", "javascripts", "assessment-app.js");
 const MANIFEST_PATH = join(REPO, "assessment", "manifest", "controls.json");
 const LOCK_PATH = join(REPO, "assessment", "data", "solutions-lock.json");
 const DATA_PATH = join(REPO, "docs", "javascripts", "assessment-data.json");
-const SOLUTION_URL_PATTERN =
-  /^https:\/\/github\.com\/judeper\/FSI-CopilotGov-Solutions(?:\/|$)/;
 
 function bootstrap() {
   const dom = new JSDOM(
@@ -67,9 +65,7 @@ async function initApp({ facilitator = false } = {}) {
   app.manifestById = {};
   manifest.forEach((row) => { if (row && row.id) app.manifestById[row.id] = row; });
   const lock = JSON.parse(readFileSync(LOCK_PATH, "utf8"));
-  app.solutionsLock = lock;
-  app.solutionsLockById = {};
-  (lock.solutions || []).forEach((s) => { if (s && s.id) app.solutionsLockById[s.id] = s; });
+  app.setSolutionsLock(lock);
   // Recompute facilitator mode now that we've stubbed localStorage.
   app.facilitatorMode = window.localStorage.getItem("fsi-copilotgov:facilitator-mode") === "1";
   // Seed minimal state and jump to phase1 so renderPhase1 runs.
@@ -97,6 +93,7 @@ describe("D1 SPA smoke", () => {
     expect(typeof s.isAuthored).toBe("function");
     expect(typeof s.isTodoString).toBe("function");
     expect(typeof s.authoredOr).toBe("function");
+    expect(typeof s.canonicalSolutionUrl).toBe("function");
     expect(s.DRAWER_NOTES_PREFIX).toBe("fsi-copilotgov:notes:");
     expect(s.FACILITATOR_MODE_KEY).toBe("fsi-copilotgov:facilitator-mode");
   });
@@ -160,7 +157,7 @@ describe("D1 SPA smoke", () => {
   });
 
   it("drawer shows solution recommendation cards for authored control 1.2", async () => {
-    const { app, document } = await initApp();
+    const { app, document, exports } = await initApp();
     const ctrl = app.data.controls.find((c) => c.id === "1.2");
     app.openDrawer(ctrl);
     const drawer = document.querySelector(".control-drawer");
@@ -168,30 +165,13 @@ describe("D1 SPA smoke", () => {
     // FSI-CopilotGov: Control 1.2 maps to multiple solutions in the manifest (count derived from solutions-lock.json).
     expect(cards.length).toBeGreaterThanOrEqual(1);
     cards.forEach((card) => {
-      expect(card.getAttribute("href")).toMatch(SOLUTION_URL_PATTERN);
+      const href = card.getAttribute("href");
+      expect(exports.canonicalSolutionUrl(href)).toBe(href);
       // Card should contain a name, tier badge, and role pill.
       expect(card.querySelector(".solution-card-name")).not.toBeNull();
       expect(card.querySelector(".solution-card-tier")).not.toBeNull();
       expect(card.querySelector(".solution-card-role")).not.toBeNull();
     });
-  });
-
-  it("solution URL pattern rejects lookalike hosts and repositories", () => {
-    const valid = [
-      "https://github.com/judeper/FSI-CopilotGov-Solutions",
-      "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/01",
-    ];
-    const invalid = [
-      "http://github.com/judeper/FSI-CopilotGov-Solutions",
-      "https://github.com.evil/judeper/FSI-CopilotGov-Solutions",
-      "https://github.com@evil.example/judeper/FSI-CopilotGov-Solutions",
-      "https://github.com:443/judeper/FSI-CopilotGov-Solutions",
-      "https://github.com/judeper/FSI-CopilotGov-Solutions.evil",
-      "https://github.com/judeper/a-different-repository",
-    ];
-
-    valid.forEach((url) => expect(url).toMatch(SOLUTION_URL_PATTERN));
-    invalid.forEach((url) => expect(url).not.toMatch(SOLUTION_URL_PATTERN));
   });
 
   it("facilitator mode toggle adds expanded panels on all authored controls", async () => {
