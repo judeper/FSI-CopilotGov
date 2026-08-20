@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 
 import markdown
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ENGINE_DIR = REPO_ROOT / "assessment" / "engine"
@@ -45,40 +46,40 @@ class _RenderedHtml(HTMLParser):
         self.text.append(data)
 
 
-def _report_data(dynamic_text: str = HTML_PAYLOAD) -> dict:
+def _report_data(dynamic_value: object = HTML_PAYLOAD) -> dict:
     control = {
-        "control_id": dynamic_text,
-        "title": dynamic_text,
+        "control_id": dynamic_value,
+        "title": dynamic_value,
         "maturity_score": 1,
-        "confidence": dynamic_text,
-        "status": dynamic_text,
+        "confidence": dynamic_value,
+        "status": dynamic_value,
         "evidence_rows": [
             {
-                "description": dynamic_text,
-                "icon": dynamic_text,
-                "result_label": dynamic_text,
-                "value": dynamic_text,
-                "source_label": dynamic_text,
-                "date": dynamic_text,
+                "description": dynamic_value,
+                "icon": dynamic_value,
+                "result_label": dynamic_value,
+                "value": dynamic_value,
+                "source_label": dynamic_value,
+                "date": dynamic_value,
             }
         ],
-        "gap": dynamic_text,
+        "gap": dynamic_value,
         "needs_manual": True,
-        "manual_question": dynamic_text,
-        "auto_summary": dynamic_text,
+        "manual_question": dynamic_value,
+        "auto_summary": dynamic_value,
     }
     return {
-        "customer": dynamic_text,
-        "date": dynamic_text,
+        "customer": dynamic_value,
+        "date": dynamic_value,
         "zone": 2,
-        "zone_description": dynamic_text,
+        "zone_description": dynamic_value,
         "total_controls": 1,
         "auto_scored": 0,
         "needs_manual": 1,
         "average_maturity": 1.0,
         "pillars": {
-            dynamic_text: {
-                "name": dynamic_text,
+            dynamic_value if isinstance(dynamic_value, str) else "1": {
+                "name": dynamic_value,
                 "controls": [control],
                 "manual_controls": [control],
             }
@@ -149,6 +150,45 @@ def test_markdown_plain_text_sanitizer_collapses_line_breaks_and_escapes_syntax(
     assert r"\)" in sanitized
     assert r"\!" in sanitized
     assert r"\#" in sanitized
+
+
+@pytest.mark.parametrize(
+    "dynamic_value",
+    [
+        [
+            "![pixel](javascript:alert(1))",
+            "[run](javascript:alert(2))",
+        ],
+        {
+            "outer": {
+                "items": [
+                    "![pixel](data:image/svg+xml,boom)",
+                    {"link": "[run](javascript:alert(3))"},
+                ]
+            }
+        },
+    ],
+)
+def test_non_scalar_values_render_only_as_plain_text(dynamic_value: object) -> None:
+    sanitized = report_mod._markdown_plain_text(dynamic_value)
+    assert isinstance(sanitized, str)
+
+    data = _report_data(dynamic_value)
+    for output in (
+        report_mod.generate_prefilled_md(data),
+        report_mod.generate_questionnaire_md(data),
+    ):
+        _rendered, parsed = _render_html(output)
+        assert not {"a", "img", "script"}.intersection(parsed.tags)
+        assert not any(
+            name in {"href", "src"} for name, _value in parsed.attributes
+        )
+        assert "javascript:" in "".join(parsed.text)
+
+
+@pytest.mark.parametrize("value", [0, 1.5, True, ["safe"], {"nested": ["safe"]}])
+def test_every_non_none_dynamic_value_is_stringified(value: object) -> None:
+    assert isinstance(report_mod._markdown_plain_text(value), str)
 
 
 def test_json_summary_preserves_original_plain_text_values() -> None:

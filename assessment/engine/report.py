@@ -305,13 +305,23 @@ _MARKDOWN_META_RE = re.compile(r"([\\`*_{}\[\]()#+\-.!|])")
 _MARKDOWN_CONTROL_RE = re.compile(r"[\x00-\x20\x7f-\x9f\u2028\u2029]+")
 
 
-def _markdown_plain_text(value: object) -> object:
-    """Render dynamic strings as single-line Markdown plain text."""
+def _markdown_plain_text(value: object) -> str:
+    """Render every dynamic value as single-line Markdown plain text."""
     if value is None:
         return ""
-    if not isinstance(value, str):
-        return value
-    text = _MARKDOWN_CONTROL_RE.sub(" ", str(value))
+    if isinstance(value, (dict, list, tuple)):
+        try:
+            text = json.dumps(
+                value,
+                ensure_ascii=False,
+                sort_keys=True,
+                default=str,
+            )
+        except (TypeError, ValueError):
+            text = str(value)
+    else:
+        text = str(value)
+    text = _MARKDOWN_CONTROL_RE.sub(" ", text)
     return _MARKDOWN_META_RE.sub(r"\\\1", text)
 
 
