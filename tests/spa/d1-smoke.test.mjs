@@ -16,6 +16,8 @@ const SPA_PATH = join(REPO, "docs", "javascripts", "assessment-app.js");
 const MANIFEST_PATH = join(REPO, "assessment", "manifest", "controls.json");
 const LOCK_PATH = join(REPO, "assessment", "data", "solutions-lock.json");
 const DATA_PATH = join(REPO, "docs", "javascripts", "assessment-data.json");
+const SOLUTION_URL_PATTERN =
+  /^https:\/\/github\.com\/judeper\/FSI-CopilotGov-Solutions(?:\/|$)/;
 
 function bootstrap() {
   const dom = new JSDOM(
@@ -165,12 +167,31 @@ describe("D1 SPA smoke", () => {
     const cards = drawer.querySelectorAll(".solution-card");
     // FSI-CopilotGov: Control 1.2 maps to multiple solutions in the manifest (count derived from solutions-lock.json).
     expect(cards.length).toBeGreaterThanOrEqual(1);
-    const first = cards[0];
-    expect(first.getAttribute("href")).toMatch(/^https:\/\/github\.com/);
-    // Card should contain a name, tier badge, and role pill.
-    expect(first.querySelector(".solution-card-name")).not.toBeNull();
-    expect(first.querySelector(".solution-card-tier")).not.toBeNull();
-    expect(first.querySelector(".solution-card-role")).not.toBeNull();
+    cards.forEach((card) => {
+      expect(card.getAttribute("href")).toMatch(SOLUTION_URL_PATTERN);
+      // Card should contain a name, tier badge, and role pill.
+      expect(card.querySelector(".solution-card-name")).not.toBeNull();
+      expect(card.querySelector(".solution-card-tier")).not.toBeNull();
+      expect(card.querySelector(".solution-card-role")).not.toBeNull();
+    });
+  });
+
+  it("solution URL pattern rejects lookalike hosts and repositories", () => {
+    const valid = [
+      "https://github.com/judeper/FSI-CopilotGov-Solutions",
+      "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/01",
+    ];
+    const invalid = [
+      "http://github.com/judeper/FSI-CopilotGov-Solutions",
+      "https://github.com.evil/judeper/FSI-CopilotGov-Solutions",
+      "https://github.com@evil.example/judeper/FSI-CopilotGov-Solutions",
+      "https://github.com:443/judeper/FSI-CopilotGov-Solutions",
+      "https://github.com/judeper/FSI-CopilotGov-Solutions.evil",
+      "https://github.com/judeper/a-different-repository",
+    ];
+
+    valid.forEach((url) => expect(url).toMatch(SOLUTION_URL_PATTERN));
+    invalid.forEach((url) => expect(url).not.toMatch(SOLUTION_URL_PATTERN));
   });
 
   it("facilitator mode toggle adds expanded panels on all authored controls", async () => {
