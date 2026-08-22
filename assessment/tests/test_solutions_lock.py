@@ -17,6 +17,7 @@ CONTENT_GRAPH = ROOT / "assessment" / "manifest" / "content-graph.json"
 # constant rather than hardcoding a version string in the test.
 sys.path.insert(0, str(ROOT / "scripts"))
 import generate_solutions_lock  # noqa: E402
+import validate_solutions_lock  # noqa: E402
 
 EXPECTED_SCHEMA = "0.2.0"
 # Solution count is derived from the canonical content graph (built from the
@@ -67,7 +68,38 @@ def test_lock_has_all_solutions(lock: dict) -> None:
         assert SLUG_RE.match(s["id"]), s["id"]
         assert s["tier"] in (1, 2, 3), s
         assert s["name"] and s["version"] and s["domain"]
-        assert s["url"].startswith("https://")
+        assert validate_solutions_lock.canonical_solution_url(s["url"]) == s["url"]
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://github.com/judeper/FSI-CopilotGov-Solutions",
+        "https://user@github.com/judeper/FSI-CopilotGov-Solutions",
+        "https://user:pass@github.com/judeper/FSI-CopilotGov-Solutions",
+        "https://github.com:443/judeper/FSI-CopilotGov-Solutions",
+        "https://github.com:444/judeper/FSI-CopilotGov-Solutions",
+        "https://github.com.evil/judeper/FSI-CopilotGov-Solutions",
+        "https://github.com./judeper/FSI-CopilotGov-Solutions",
+        "https://GitHub.com/judeper/FSI-CopilotGov-Solutions",
+        "https://github.com/judeper/a-different-repository",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions.evil",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions/../../attacker/repo",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions/%2e%2e/attacker",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions/%2F..%2Fattacker",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions/%5c..%5cattacker",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions\\..\\attacker",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions//tree/main",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions/тест",
+        " https://github.com/judeper/FSI-CopilotGov-Solutions",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions ",
+        "https://github.com/judeper/FSI-CopilotGov-Solutions\n.evil",
+        "javascript:alert(1)",
+        "data:text/html,<script>alert(1)</script>",
+    ],
+)
+def test_solution_url_validator_rejects_noncanonical_urls(url: str) -> None:
+    assert validate_solutions_lock.canonical_solution_url(url) is None
 
 
 def test_tier_metadata_present_and_valid(lock: dict) -> None:

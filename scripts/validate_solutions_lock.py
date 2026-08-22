@@ -14,7 +14,8 @@ Rules enforced:
 * ``solutions`` is a non-empty list.
 * every solution has required fields: ``id``, ``slug``, ``tier``
   (int in {1,2,3}), ``name``, ``version`` (bare semver),
-  ``domain``, ``summary``, ``repoPath``, ``url``.
+  ``domain``, ``summary``, ``repoPath``, ``url``. URLs must be canonical
+  HTTPS links inside the expected GitHub repository.
 * schema 0.2.0 tier metadata is present and enum-valid:
   ``tiersSupported`` (non-empty array of {baseline, recommended,
   regulated}), ``tierRecommended`` (one of the same set),
@@ -42,6 +43,7 @@ import re
 import sys
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit, urlunsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK_DEFAULT = ROOT / "assessment" / "data" / "solutions-lock.json"
@@ -58,6 +60,7 @@ ALLOWED_MATURITY = {"documentation-first-scaffold", "preview", "live"}
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
 ISO_UTC_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+SOLUTION_REPO_PATH = "/judeper/FSI-CopilotGov-Solutions"
 
 REQUIRED_SOLUTION_FIELDS = (
     "id",
@@ -70,6 +73,47 @@ REQUIRED_SOLUTION_FIELDS = (
     "repoPath",
     "url",
 )
+
+
+def canonical_solution_url(raw: Any) -> str | None:
+    """Return a canonical in-repository GitHub URL, or ``None``."""
+    if not isinstance(raw, str) or not raw or raw != raw.strip():
+        return None
+    if "\\" in raw or not raw.isascii():
+        return None
+    if any(
+        char.isspace() or ord(char) < 32 or ord(char) == 127
+        for char in raw
+    ):
+        return None
+
+    try:
+        parsed = urlsplit(raw)
+        port = parsed.port
+    except ValueError:
+        return None
+
+    if (
+        parsed.scheme != "https"
+        or parsed.netloc != "github.com"
+        or parsed.hostname != "github.com"
+        or parsed.username is not None
+        or parsed.password is not None
+        or port is not None
+    ):
+        return None
+    if "%" in parsed.path or "//" in parsed.path:
+        return None
+    if any(segment in {".", ".."} for segment in parsed.path.split("/")):
+        return None
+    if not (
+        parsed.path == SOLUTION_REPO_PATH
+        or parsed.path.startswith(SOLUTION_REPO_PATH + "/")
+    ):
+        return None
+    if urlunsplit(parsed) != raw:
+        return None
+    return raw
 
 
 def _validate_solution(idx: int, body: Any) -> list[str]:
@@ -99,8 +143,11 @@ def _validate_solution(idx: int, body: Any) -> list[str]:
     if not (isinstance(ver, str) and SEMVER_RE.match(ver)):
         errs.append(f"solutions[{sid}].version must be bare semver (got {ver!r})")
     url = body.get("url")
-    if not (isinstance(url, str) and url.startswith(("http://", "https://"))):
-        errs.append(f"solutions[{sid}].url must be http(s) (got {url!r})")
+    if canonical_solution_url(url) is None:
+        errs.append(
+            f"solutions[{sid}].url must be a canonical HTTPS URL under "
+            f"https://github.com{SOLUTION_REPO_PATH} (got {url!r})"
+        )
     repo_path = body.get("repoPath")
     if not (isinstance(repo_path, str) and repo_path):
         errs.append(f"solutions[{sid}].repoPath must be non-empty string")

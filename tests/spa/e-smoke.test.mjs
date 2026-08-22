@@ -53,9 +53,7 @@ async function initApp() {
   const app = new AssessmentApp(container);
   await app.loadData();
   const lock = JSON.parse(readFileSync(LOCK_PATH, "utf8"));
-  app.solutionsLock = lock;
-  app.solutionsLockById = {};
-  (lock.solutions || []).forEach((s) => { if (s && s.id) app.solutionsLockById[s.id] = s; });
+  app.setSolutionsLock(lock);
   app.state = {
     schemaVersion: 2,
     assessmentId: "test-e",
