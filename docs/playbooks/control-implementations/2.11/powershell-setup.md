@@ -84,7 +84,7 @@ $sharingEvents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate 
     -Operations "SharingSet","SharingInvitationCreated","AnonymousLinkCreated" `
     -ResultSize 1000
 
-# Filter for Pages content (stored as .page/.pod files in OneDrive/SharePoint)
+# Filter for Pages/Notebooks content stored as .page/.pod files in SharePoint Embedded
 $pagesSharing = $sharingEvents | Where-Object {
     $auditData = $_.AuditData | ConvertFrom-Json
     $auditData.ObjectId -match "\.page$|\.pod$" -or

@@ -55,7 +55,7 @@ DLP, sensitivity labels, conditional access, information barriers, data minimiza
 
 | | # | Control | Level | Status | Owner | Notes |
 |---|---|---------|-------|--------|-------|-------|
-| [ ] | 2.1 | DLP Policies for Copilot | B | | | Deploy DLP policies targeting the M365 Copilot location for sensitive data in prompts and responses |
+| [ ] | 2.1 | DLP Policies for Copilot | B | | | Deploy supported rules for labeled source content, typed prompts, external web search, and tenant-available external-email exclusion |
 | [ ] | 2.2 | Sensitivity Labels and Classification | B | | | Label taxonomy and auto-labeling strategy governing Copilot content classification |
 | [ ] | 2.3 | Conditional Access Policies | B | | | Entra CA policies for device compliance, location restrictions, and risk-based authentication |
 | [ ] | 2.4 | Information Barriers (Chinese Wall) | Reg | | | Purview Information Barriers to enforce MNPI separation across Copilot interactions |

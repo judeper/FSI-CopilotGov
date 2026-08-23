@@ -9,12 +9,11 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 - **Symptoms:** After migrating from parent/child label hierarchy to label groups, label-based DLP policies (Control 2.1, Type 1) no longer block Copilot from processing labeled content as expected
 - **Root Cause:** DLP policies may reference the old parent label name in their conditions. After migration to label groups, the label container name changes — DLP policy conditions that used the parent label name to match all sub-labels may not automatically update to reference the new label group structure.
 - **Resolution:**
-  1. After completing the label groups migration, audit all DLP policies that reference sensitivity labels:
-     - `Get-DlpComplianceRule | Where-Object { $_.ContentContainsSensitivityLabel -ne $null }`
+  1. After completing the label groups migration, audit the Copilot DLP policies and rules using the verification commands in the Control 2.1 PowerShell playbook; inspect each rule's documented `AdvancedRule` label GUIDs
   2. Verify that each policy condition correctly matches the new label or label group names
   3. Test each DLP policy with a document carrying a migrated label to confirm blocking behavior
   4. Update any DLP conditions that reference old parent label names
-  5. Allow 24 hours for DLP policy changes to propagate after updates
+  5. Allow up to four hours for Copilot DLP policy changes to apply
 
 ### Issue 2: Copilot Content Not Inheriting Source Labels
 
@@ -28,7 +27,7 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 
 ### Issue 3: Copilot Studio Agent Response Shows an Unexpected Label
 
-- **Symptoms:** A Copilot Studio agent surfaces a higher sensitivity label on its responses, or triggers DLP policies at a higher tier than expected based on its described purpose
+- **Symptoms:** A Copilot Studio agent displays a higher sensitivity label on its response than expected based on its described purpose
 - **Root Cause:** The response label is the highest-priority label across the content the agent used to generate that response. One Highly Confidential document reachable through a knowledge source can raise the label shown on responses that cite it.
 - **Resolution:**
   1. Review all knowledge sources connected to the agent in Microsoft 365 admin center > Agents > All agents > [Agent]
@@ -120,7 +119,7 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 | **Low** | Label analytics reporting delays | Monitor and recheck after 7 days |
 | **Low** | Auto-labeling false positive pattern in nested conditions | DLP/label policy tuning team |
 | **Medium** | Inconsistent label inheritance behavior post-migration | Information protection team |
-| **Medium** | Agent response label higher than expected, causing DLP disruption | Information protection team + agent owner |
+| **Medium** | Agent response label higher than expected | Information protection team + agent owner |
 | **High** | Mandatory labeling bypassed for sensitive content | Security Operations |
 | **High** | DLP policies failing after label groups migration | Security Operations + Information protection team |
 | **Critical** | Encrypted content accessible through Copilot without authorization | Security incident response |

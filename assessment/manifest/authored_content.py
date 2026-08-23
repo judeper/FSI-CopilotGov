@@ -1090,18 +1090,25 @@ AUTHORED: dict[str, dict] = {
         "priority": "critical",
         "yesBar": (
             "DLP controls target the Microsoft 365 Copilot and Copilot Chat "
-            "location and cover all three current Copilot scenarios: "
+            "location and cover the applicable supported Copilot scenarios: "
             "(a) sensitivity-label files/emails excluded from Copilot response "
             "processing, (b) SIT-based prompt processing blocked for regulated "
-            "data, and (c) SIT-based external web search / web grounding blocked. "
-            "Policies are in Enforce mode with documented owner, override "
+            "data where the preview has reached the tenant, and (c) SIT-based "
+            "external web search / web grounding blocked, and (where the preview "
+            "has reached the tenant) external email excluded based on sender-domain "
+            "metadata. Tenant availability "
+            "and the direct-upload file-content limitation are documented. "
+            "Applicable rules are enforced with a documented owner, exception "
             "workflow, and match-event review cadence."
         ),
         "partialBar": (
             "At least one DLP rule targets the Microsoft 365 Copilot and "
             "Copilot Chat location, but sensitivity-label content processing, "
-            "SIT prompt processing, or SIT external web-search restriction is "
-            "missing; the policy is in test/audit mode only; or match events "
+            "a tenant-available SIT prompt-processing action, SIT external "
+            "web-search restriction, or assessed preview external-email exclusion "
+            "is missing; the policy is in test/audit "
+            "mode only without an approved rollout plan; the direct-upload "
+            "limitation isn't addressed; or match events "
             "are not reviewed on a documented cadence."
         ),
         "noBar": (
@@ -1116,49 +1123,50 @@ AUTHORED: dict[str, dict] = {
                 "url": "https://purview.microsoft.com/datalossprevention/policies",
             },
             {
-                "portal": "Microsoft 365 admin center",
-                "path": "Copilot > Settings > Web Content",
-                "url": "https://admin.microsoft.com/AdminPortal/Home#/copilot/settings/webcontent",
+                "portal": "Cloud Policy service for Microsoft 365",
+                "path": "Customization > Policy Management > Allow web search in Copilot",
+                "url": "https://config.office.com",
             },
         ],
         "verifyPowerShell": (
             "Connect-IPPSSession; "
             "Get-DlpCompliancePolicy | Where-Object { "
-            "$_.EnforcementPlanes -contains 'CopilotExperiences' -or "
-            "$_.Locations -match '470f2276-e011-4e9d-a6ec-20768be3a4b0' } | "
+            "$_.EnforcementPlanes -contains 'CopilotExperiences' -and "
+            "[string]$_.Locations -match '470f2276-e011-4e9d-a6ec-20768be3a4b0' } | "
             "Select-Object Name, Mode, Enabled, Locations, EnforcementPlanes"
         ),
         "evidenceExpected": [
-            "DLP policy export showing 'Microsoft 365 Copilot and Copilot Chat' location or CopilotExperiences enforcement plane in scope",
-            "Three Copilot DLP scenarios present: sensitivity-label content processing, SIT prompt processing, and SIT external web-search restriction",
-            "Microsoft 365 admin center Web Content setting evidence showing web search scoped per approved user/group",
-            "Policy mode = Enforce (not Test / TestWithNotifications)",
-            "Match-event report from Microsoft Purview portal > Activity Explorer for the last 30 days",
-            "Override workflow document showing who can request and approve overrides",
+            "DLP policy export showing the 'Microsoft 365 Copilot and Copilot Chat' location and CopilotExperiences enforcement plane in scope",
+            "Applicable Copilot DLP scenarios present: sensitivity-label content processing, SIT prompt processing where available, SIT external web-search restriction, and assessment of preview external-email exclusion",
+            "Cloud Policy service evidence for Allow web search in Copilot showing the approved user/group scope",
+            "Policy mode and rollout evidence showing applicable rules are enforced after simulation",
+            "Match-event report from Microsoft Purview portal > Solutions > DSPM > Discover > Activity explorer for the last 30 days",
+            "Direct-upload file-content limitation test and compensating source-control evidence",
+            "Exception workflow showing who can request and approve policy-scope changes",
         ],
         "sectorYesBar": _sector_map(
             bank=(
-                "All three Copilot DLP scenarios enforced; SIT set covers ABA "
+                "All applicable, tenant-available Copilot DLP scenarios enforced; SIT set covers ABA "
                 "routing, account numbers, SSN, ITIN, and GLBA §501(b) NPI; "
                 "label and external web-search rules cover customer NPI and MNPI labels."
             ),
             broker_dealer=(
-                "All three scenarios enforced; SIT set covers CRD numbers, "
+                "All applicable, tenant-available scenarios enforced; SIT set covers CRD numbers, "
                 "account numbers, SSN; label and web-search rules align with "
                 "Research and IB Confidential labels supporting information-barrier policy."
             ),
             investment_adviser=(
-                "All three scenarios enforced; SIT set covers SSN, account numbers, "
+                "All applicable, tenant-available scenarios enforced; SIT set covers SSN, account numbers, "
                 "and adviser-firm-defined SITs for client portfolio identifiers, "
                 "including external web-search restrictions for those SITs."
             ),
             insurance_carrier=(
-                "All three scenarios enforced; SIT set covers SSN, policy numbers, "
+                "All applicable, tenant-available scenarios enforced; SIT set covers SSN, policy numbers, "
                 "and PHI patterns; label and web-search rules align with PHI "
                 "sensitivity labels."
             ),
             credit_union=(
-                "All three scenarios enforced; SITs cover member account numbers "
+                "All applicable, tenant-available scenarios enforced; SITs cover member account numbers "
                 "+ SSN; label and web-search rules align to NCUA NPI categories."
             ),
         ),
@@ -1166,18 +1174,21 @@ AUTHORED: dict[str, dict] = {
             "ask": (
                 "Are Copilot DLP controls enforced for the Microsoft 365 Copilot "
                 "and Copilot Chat location across sensitivity-label content, "
-                "SIT prompt processing, and external web search / web grounding?"
+                "SIT prompt processing, external web search / web grounding, and "
+                "preview external-email exclusion where available?"
             ),
             "followUp": (
                 "Open Microsoft Purview portal > Data Loss Prevention > Policies. "
                 "Filter by location 'Microsoft 365 Copilot and Copilot Chat' "
                 "or policies using the CopilotExperiences enforcement plane. "
-                "Confirm three rule/action patterns exist: sensitivity-label "
-                "content processing, SIT prompt processing, and SIT external "
-                "web-search restriction, all in Enforce mode. Then open "
-                "Microsoft 365 admin center > Copilot > Settings > Web Content "
-                "to verify web search is scoped to approved users/groups, and "
-                "use Activity Explorer to show match events from the last 30 days."
+                "Confirm applicable rule/action patterns exist: sensitivity-label "
+                "content processing, SIT prompt processing where the preview has "
+                "reached the tenant, SIT external web-search restriction, and "
+                "preview external-email exclusion where available. "
+                "Then open Cloud Policy service > Customization > Policy Management "
+                "> Allow web search in Copilot to verify scope, and use current "
+                "DSPM > Discover > Activity explorer to show match events. Request "
+                "the direct-upload limitation test and source-control evidence."
             ),
             "timeBudgetMinutes": 12,
         },
@@ -2984,14 +2995,19 @@ AUTHORED: dict[str, dict] = {
         "priority": "critical",
         "yesBar": (
             "SEC Reg S-P / GLBA §501(b) privacy controls have been reviewed "
-            "for Copilot processing of customer NPI. DLP policies prevent "
-            "Copilot from surfacing NPI outside authorized workflows, and "
-            "privacy impact is documented."
+            "for Copilot processing of customer NPI. Applicable supported DLP "
+            "rules exclude labeled source content, restrict sensitive external "
+            "web searches, block sensitive typed prompts where the preview "
+            "has reached the tenant, and assess preview external-email exclusion. "
+            "Purview Audit, DLP alerts, and current DSPM "
+            "are reviewed; the direct-upload and SharePoint Embedded limitations "
+            "and privacy impact are documented."
         ),
         "partialBar": (
             "Privacy controls exist but have not been specifically reviewed "
-            "for Copilot NPI processing, or DLP policies do not target "
-            "NPI in Copilot workflows."
+            "for Copilot NPI processing; only some applicable supported DLP "
+            "actions are configured; monitoring isn't operational; or the "
+            "direct-upload and SharePoint Embedded limitations aren't documented."
         ),
         "noBar": (
             "No privacy control review has been performed for Copilot "
@@ -3003,25 +3019,36 @@ AUTHORED: dict[str, dict] = {
                 "path": "Data Loss Prevention > Policies",
                 "url": "https://purview.microsoft.com/datalossprevention/policies",
             },
+            {
+                "portal": "Microsoft Purview portal",
+                "path": "Solutions > DSPM > Discover > Activity explorer > AI activities",
+                "url": "https://purview.microsoft.com/datasecurityposturemanagement",
+            },
+            {
+                "portal": "Microsoft Purview portal",
+                "path": "Audit > Copilot activities",
+                "url": "https://purview.microsoft.com/auditlogsearch",
+            },
         ],
         "verifyPowerShell": (
             "Connect-IPPSSession; "
             "$policies = @(Get-DlpCompliancePolicy); "
             "if (-not $policies -or $policies.Count -lt 1) { "
             "throw 'Fail closed: no DLP compliance policies returned.' }; "
-            "$required = 'Workload','EnforcementPlanes','Locations'; "
-            "foreach ($p in $policies) { foreach ($name in $required) { "
-            "if (-not $p.PSObject.Properties[$name]) { "
-            "throw 'Fail closed: DlpCompliancePolicy missing required verification properties.' } } }; "
+            "$id = '470f2276-e011-4e9d-a6ec-20768be3a4b0'; "
             "$matches = @($policies | Where-Object { "
-            "$_.Workload -eq 'Applications' -and $_.EnforcementPlanes -contains 'CopilotExperiences' }); "
+            "$_.EnforcementPlanes -contains 'CopilotExperiences' -and "
+            "[string]$_.Locations -match [regex]::Escape($id) }); "
             "if (-not $matches -or $matches.Count -lt 1) { "
-            "throw 'Fail closed: no Copilot DLP policy found for Workload=Applications and EnforcementPlane=CopilotExperiences.' }; "
-            "$matches | Select-Object Name, Mode, Enabled, Workload, EnforcementPlanes, Locations"
+            "throw 'Fail closed: no policy targets the Microsoft 365 Copilot and Copilot Chat location.' }; "
+            "$matches | Select-Object Name, Mode, Enabled, EnforcementPlanes, Locations"
         ),
         "evidenceExpected": [
             "Privacy impact assessment for Copilot NPI processing",
-            "DLP policy configuration preventing NPI surfacing outside authorized workflows",
+            "Custom DLP policy configuration showing the Copilot location, applicable supported actions, mode, scope, and alerts",
+            "Synthetic tests for label exclusion, typed-prompt blocking where available, web-search restriction, external-email exclusion where available, and the direct-upload limitation",
+            "Purview Audit CopilotInteraction evidence and DSPM AI activity review",
+            "Copilot Pages and Notebooks SharePoint Embedded limitation review and admin-policy disposition",
             "SEC Reg S-P alignment documentation for Copilot",
             "GLBA §501(b) safeguards review covering Copilot",
         ],
@@ -3058,8 +3085,10 @@ AUTHORED: dict[str, dict] = {
                 "reviewed for Copilot processing of customer NPI?"
             ),
             "followUp": (
-                "Request the privacy impact assessment. Verify DLP policies "
-                "prevent NPI surfacing outside authorized workflows."
+                "Request the privacy impact assessment. Verify applicable supported "
+                "Copilot DLP actions including preview external-email exclusion where "
+                "available, Purview Audit and DSPM evidence, direct-upload "
+                "testing, and the Pages/Notebooks SharePoint Embedded disposition."
             ),
             "timeBudgetMinutes": 8,
         },

@@ -32,7 +32,7 @@ For FSI environments, evaluate whether all content sources should be indexed. Co
 ### Step 3: Review Item-Level Processing
 
 **Portal:** Microsoft Purview
-**Path:** Purview > Data Security Posture Management for AI > Activity Explorer
+**Path:** Purview > Solutions > DSPM > Discover > Activity explorer > AI activities
 
 Review Copilot activity and content interaction patterns. DSPM for AI Activity Explorer shows how Copilot interacts with organizational content, including which sensitivity labels are present on accessed items.
 

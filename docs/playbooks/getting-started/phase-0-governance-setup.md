@@ -86,7 +86,7 @@ Complete all prerequisite governance, security, and compliance steps so that the
 **Why:** Data Security Posture Management (DSPM) for AI identifies content that may be overshared relative to its sensitivity. Copilot respects existing permissions, so overshared content becomes accessible through Copilot interactions.
 
 **Portal:** Microsoft Purview
-**Path:** Purview > Data Security Posture Management > AI Security > Oversharing Assessment
+**Path:** Purview > Solutions > DSPM > Discover > Data risk assessments
 
 **Actions:**
 
@@ -178,10 +178,10 @@ See also: [Control 3.1 -- Copilot Audit Logging](../control-implementations/3.1/
 
 ### Step 5: Review and Update Sensitivity Label Taxonomy
 
-**Why:** Sensitivity labels govern how Copilot handles classified content. Copilot inherits the highest sensitivity label from source content when generating outputs. A well-structured label taxonomy supports appropriate content handling.
+**Why:** Sensitivity labels govern how Copilot handles classified content. In supported content-creation experiences, a destination can inherit the highest-priority applicable label from source content. A well-structured label taxonomy supports appropriate content handling.
 
 **Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Labels
+**Path:** Purview > Solutions > Information Protection > Sensitivity labels
 
 **Actions:**
 

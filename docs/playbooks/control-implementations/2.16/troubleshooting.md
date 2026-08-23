@@ -19,10 +19,10 @@ Common issues and resolution steps for federated connector inventory, scoping, a
 - **Symptoms:** Invocation audit pull returns zero rows for known connector activity.
 - **Resolution:** Verify unified audit logging is enabled and that the operations list in the PowerShell setup matches the operations published by Microsoft for the tenant. Add any newly published operations and rerun.
 
-### Issue 4: DLP Does Not Trigger on a Federated Response
+### Issue 4: Expected Output DLP Match Doesn't Occur
 
-- **Symptoms:** A controlled test response containing a known DLP keyword surfaced through a federated connector but did not raise an alert.
-- **Resolution:** Confirm the DLP policy includes Copilot interactions in scope. Federated connector content is evaluated at the response layer; policies scoped only to email or SharePoint will not match Copilot responses.
+- **Symptoms:** A controlled response containing a known SIT surfaced through a federated connector but didn't raise a Copilot DLP alert.
+- **Resolution:** Don't treat this as proof that a configured Copilot rule failed: the Microsoft 365 Copilot and Copilot Chat DLP location isn't a general SIT scanner over generated or connector-supplied output. Validate source-system controls, access scope, sensitivity-label source exclusion where supported, typed-prompt/web-search rules where applicable, and the documented audit trail.
 
 ### Issue 5: A Vendor Reassessment Is Overdue
 

@@ -4,16 +4,15 @@ Automation scripts for implementing and monitoring privacy controls for consumer
 
 ## Prerequisites
 
-- **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph`
-- **Permissions:** Purview Compliance Admin, Information Protection Administrator
-- **PowerShell:** Version 7.x recommended
+- **Module:** `ExchangeOnlineManagement`
+- **Permissions:** A role Microsoft documents for editing Copilot DLP policies, such as Purview Compliance Admin or Purview Information Protection Admin
+- **PowerShell:** A version supported by the current Exchange Online Management module
 
 ## Connect to Required Services
 
 ```powershell
 Import-Module ExchangeOnlineManagement
 Connect-IPPSSession -UserPrincipalName admin@contoso.com
-Connect-MgGraph -Scopes "InformationProtectionPolicy.ReadWrite.All", "AuditLog.Read.All"
 ```
 
 ## Scripts
@@ -21,84 +20,98 @@ Connect-MgGraph -Scopes "InformationProtectionPolicy.ReadWrite.All", "AuditLog.R
 ### Script 1: Create DLP Policy for Consumer Financial Information
 
 ```powershell
-# Create DLP policy protecting consumer financial data in Copilot interactions
-New-DlpCompliancePolicy `
-    -Name "FSI-RegSP-Copilot-Privacy-Protection" `
-    -Comment "Protects consumer financial information per SEC Reg S-P" `
-    -Locations '[{"Workload":"Applications","Region":null,"AddInclusions":[{"Type":"All","Identity":"All"}],"RemoveInclusions":[],"AddExclusions":[],"RemoveExclusions":[]}]' `
-    -EnforcementPlanes @("CopilotExperiences") `
-    -Mode Enable
+$policyName = "FSI-RegSP-Copilot-Privacy-Protection"
+$labelDisplayName = "Confidential - Client NPI"
 
-# Rule for low-volume NPI detection
-New-DlpComplianceRule `
-    -Name "RegSP-LowVolume-NPI-Warn" `
-    -Policy "FSI-RegSP-Copilot-Privacy-Protection" `
-    -ContentContainsSensitiveInformation @(
-        @{Name="U.S. Social Security Number (SSN)"; minCount="1"; maxCount="9"},
-        @{Name="Credit Card Number"; minCount="1"; maxCount="9"},
-        @{Name="U.S. Bank Account Number"; minCount="1"; maxCount="9"}
-    ) `
-    -NotifyUser Owner `
-    -NotifyUserType Sender
-
-# Rule for high-volume NPI detection
-New-DlpComplianceRule `
-    -Name "RegSP-HighVolume-NPI-Block" `
-    -Policy "FSI-RegSP-Copilot-Privacy-Protection" `
-    -ContentContainsSensitiveInformation @(
-        @{Name="U.S. Social Security Number (SSN)"; minCount="10"},
-        @{Name="Credit Card Number"; minCount="10"},
-        @{Name="U.S. Bank Account Number"; minCount="10"}
-    ) `
-    -BlockAccess $true `
-    -NotifyUser Owner, SiteAdmin
-
-$policy = Get-DlpCompliancePolicy -Identity "FSI-RegSP-Copilot-Privacy-Protection"
-foreach ($name in @("Workload","EnforcementPlanes","Locations")) {
-    if (-not $policy.PSObject.Properties[$name]) {
-        throw "Fail closed: FSI-RegSP-Copilot-Privacy-Protection missing required property '$name'."
-    }
+$label = Get-Label |
+    Where-Object DisplayName -eq $labelDisplayName |
+    Select-Object -First 1
+if (-not $label) {
+    throw "Required sensitivity label '$labelDisplayName' wasn't found."
 }
-if ($policy.Workload -ne "Applications") {
-    throw "Fail closed: expected Workload=Applications, got '$($policy.Workload)'."
+
+$locations = @'
+[{
+  "Workload": "Applications",
+  "Location": "470f2276-e011-4e9d-a6ec-20768be3a4b0",
+  "Inclusions": [{"Type": "Tenant", "Identity": "All"}]
+}]
+'@
+
+New-DlpCompliancePolicy `
+    -Name $policyName `
+    -Comment "Copilot policy for approved NPI safeguards" `
+    -Locations $locations `
+    -EnforcementPlanes @("CopilotExperiences") `
+    -Mode TestWithoutNotifications
+
+$advancedRule = @{
+    Version = "1.0"
+    Condition = @{
+        Operator = "And"
+        SubConditions = @(
+            @{
+                ConditionName = "ContentContainsSensitiveInformation"
+                Value = @(
+                    @{
+                        groups = @(
+                            @{
+                                Operator = "Or"
+                                labels = @(
+                                    @{
+                                        name = $label.Guid.ToString()
+                                        type = "Sensitivity"
+                                    }
+                                )
+                                name = "Default"
+                            }
+                        )
+                    }
+                )
+            }
+        )
+    }
+} | ConvertTo-Json -Depth 100
+
+New-DlpComplianceRule `
+    -Name "Exclude labeled client NPI from Copilot processing" `
+    -Policy $policyName `
+    -AdvancedRule $advancedRule `
+    -RestrictAccess @(@{
+        setting = "ExcludeContentProcessing"
+        value = "Block"
+    })
+```
+
+This uses Microsoft's documented PowerShell pattern for sensitivity-label exclusion. The Copilot location also supports two SIT-based actions: **Processing prompts** (preview and rolling out) and **Performing Web Searches**, plus the preview **Email is received from > External users** condition with content-processing exclusion. Configure those rules in the Purview portal unless Microsoft documents the applicable `New-DlpComplianceRule` syntax for the module version in use; don't substitute generic `BlockAccess` or volume-threshold actions from other DLP workloads.
+
+### Script 2: Verify Copilot Policy and Rules
+
+```powershell
+$policyName = "FSI-RegSP-Copilot-Privacy-Protection"
+$copilotLocationId = "470f2276-e011-4e9d-a6ec-20768be3a4b0"
+
+$policy = Get-DlpCompliancePolicy -Identity $policyName
+if (-not $policy) {
+    throw "Policy '$policyName' wasn't returned."
 }
 if (-not ($policy.EnforcementPlanes -contains "CopilotExperiences")) {
-    throw "Fail closed: policy missing EnforcementPlanes=CopilotExperiences."
+    throw "Policy is missing the CopilotExperiences enforcement plane."
+}
+if ([string]$policy.Locations -notmatch [regex]::Escape($copilotLocationId)) {
+    throw "Policy is missing the Microsoft 365 Copilot and Copilot Chat location."
 }
 
-Write-Host "Reg S-P DLP policy created and verified for Workload=Applications with EnforcementPlanes=CopilotExperiences" -ForegroundColor Green
+$policy | Format-List Name, Mode, Enabled, Locations, EnforcementPlanes
+Get-DlpComplianceRule -Policy $policyName |
+    Format-Table Name, Disabled, Priority -AutoSize
 ```
 
-### Script 2: DLP Incident Report for Privacy Violations
+Don't require a top-level `Workload` property from `Get-DlpCompliancePolicy`; Microsoft documents `Workload: "Applications"` inside the `Locations` JSON.
+
+### Script 3: Verify NPI Sensitive Information Types
 
 ```powershell
-# Generate a report of DLP incidents involving consumer financial data
-$startDate = (Get-Date).AddDays(-30)
-$endDate = Get-Date
-
-$dlpIncidents = Search-UnifiedAuditLog `
-    -StartDate $startDate -EndDate $endDate `
-    -RecordType DLP `
-    -ResultSize 5000
-
-$npiIncidents = $dlpIncidents | Where-Object {
-    $_.AuditData -like "*SSN*" -or
-    $_.AuditData -like "*Credit Card*" -or
-    $_.AuditData -like "*Bank Account*"
-}
-
-Write-Host "Reg S-P Privacy Incident Summary (Last 30 Days):"
-Write-Host "Total DLP incidents: $($dlpIncidents.Count)"
-Write-Host "NPI-related incidents: $($npiIncidents.Count)"
-
-$npiIncidents | Select-Object CreationDate, UserIds, Operations |
-    Export-Csv "RegSP_PrivacyIncidents_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
-```
-
-### Script 3: Content Explorer NPI Location Report
-
-```powershell
-# Identify locations containing consumer financial information
 $sensitiveTypes = @(
     "U.S. Social Security Number (SSN)",
     "Credit Card Number",
@@ -107,33 +120,43 @@ $sensitiveTypes = @(
 )
 
 foreach ($type in $sensitiveTypes) {
-    $results = Get-DlpSensitiveInformationTypeRulePackage |
-        Where-Object { $_.Name -like "*$type*" }
-    Write-Host "SIT: $type — Rule Package: $($results.Name)" -ForegroundColor Cyan
+    $result = Get-DlpSensitiveInformationType |
+        Where-Object Name -eq $type |
+        Select-Object -First 1
+    if ($result) {
+        $result | Format-Table Name, Id, RecommendedConfidence -AutoSize
+    } else {
+        Write-Warning "Sensitive information type '$type' wasn't found."
+    }
 }
 
-Write-Host "`nUse Content Explorer in the Purview portal to identify NPI locations." -ForegroundColor Yellow
-Write-Host "Path: Purview > Data classification > Content explorer > Sensitive info types"
+Write-Host "`nReview aggregate classifications at:" -ForegroundColor Yellow
+Write-Host "Purview > Solutions > Information Protection > Explorers > Data explorer"
 ```
 
-### Script 4: Privacy Control Compliance Scorecard
+`Get-DlpSensitiveInformationTypeRulePackage` returns rule packages, not the individual sensitive information types used in policy rules.
+
+### Script 4: Export Copilot Interaction Audit Evidence
 
 ```powershell
-# Generate Reg S-P compliance scorecard for Copilot privacy controls
-$scorecard = @(
-    [PSCustomObject]@{Control="DLP for NPI"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
-    [PSCustomObject]@{Control="Information Barriers"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
-    [PSCustomObject]@{Control="Sensitivity Labels"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
-    [PSCustomObject]@{Control="Access Controls"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
-    [PSCustomObject]@{Control="Privacy Impact Assessment"; Status="Completed"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
-    [PSCustomObject]@{Control="Written IRP (Rule 248.30(a)(4))"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")},
-    [PSCustomObject]@{Control="72-Hour Vendor Notification Procedure (Rule 248.30(a)(3))"; Status="Active"; LastVerified=(Get-Date -Format "yyyy-MM-dd")}
-)
+$startDate = (Get-Date).AddDays(-30)
+$endDate = Get-Date
 
-Write-Host "Reg S-P Privacy Control Scorecard:"
-$scorecard | Format-Table -AutoSize
-$scorecard | Export-Csv "RegSP_Scorecard_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+$copilotEvents = Search-UnifiedAuditLog `
+    -StartDate $startDate `
+    -EndDate $endDate `
+    -Operations CopilotInteraction `
+    -ResultSize 5000
+
+$copilotEvents |
+    Select-Object CreationDate, UserIds, Operations, AuditData |
+    Export-Csv "CopilotInteraction_Audit_$(Get-Date -Format 'yyyyMMdd').csv" `
+        -NoTypeInformation
+
+Write-Host "Exported $($copilotEvents.Count) CopilotInteraction records."
 ```
+
+Use **Purview > Data Loss Prevention > Alerts** for DLP alert investigation and **Purview > Solutions > DSPM > Discover > Activity explorer > AI activities** for sensitive interaction details. Viewing prompt and response bodies requires the additional content-viewer permissions Microsoft documents.
 
 ### Script 5: Incident Response Timer and Notification Tracking (Rule 248.30(a)(3))
 
@@ -159,13 +182,13 @@ $notificationDeadline30day = $DetectionTime.AddDays(30)
 
 $incidentRecord = [PSCustomObject]@{
     IncidentId            = $incidentId
-    DetectedAt            = $DetectionTime.ToString("yyyy-MM-dd HH:mm:ss UTC")
+    DetectedAt            = $DetectionTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
     Severity              = $Severity
     Description           = $IncidentDescription
-    InternalEscalationBy  = $DetectionTime.AddHours(4).ToString("yyyy-MM-dd HH:mm:ss UTC")
-    ExecutiveNotificationBy = $DetectionTime.AddHours(24).ToString("yyyy-MM-dd HH:mm:ss UTC")
-    VendorNotificationBy  = $notificationDeadline72hr.ToString("yyyy-MM-dd HH:mm:ss UTC")  # Rule 248.30(a)(3)
-    CustomerNotificationBy = $notificationDeadline30day.ToString("yyyy-MM-dd HH:mm:ss UTC")
+    InternalEscalationBy  = $DetectionTime.AddHours(4).ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
+    ExecutiveNotificationBy = $DetectionTime.AddHours(24).ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
+    VendorNotificationBy  = $notificationDeadline72hr.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")  # Rule 248.30(a)(3)
+    CustomerNotificationBy = $notificationDeadline30day.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
     VendorNotified        = "PENDING"
     CustomerNotified      = "PENDING"
 }
@@ -177,10 +200,11 @@ Write-Host ""
 Write-Host "REQUIRED NOTIFICATION DEADLINES:"
 Write-Host "  Internal escalation:    $($incidentRecord.InternalEscalationBy)"
 Write-Host "  Executive notification: $($incidentRecord.ExecutiveNotificationBy)"
-Write-Host "  Microsoft notification: $($incidentRecord.VendorNotificationBy)  [Rule 248.30(a)(3) — 72-HOUR DEADLINE]" -ForegroundColor Red
+Write-Host "  Service-provider notification tracking: $($incidentRecord.VendorNotificationBy)  [Rule 248.30(a)(3) — 72-HOUR DEADLINE]" -ForegroundColor Red
 Write-Host "  Customer notification:  $($incidentRecord.CustomerNotificationBy)  [30-day deadline]"
 Write-Host ""
-Write-Host "Microsoft notification channel: Microsoft Security Response Center (msrc.microsoft.com)"
+Write-Host "This tracker doesn't send a notification. Use the institution's approved incident workflow."
+Write-Host "For Microsoft-determined service incidents, monitor designated tenant admin contacts and Microsoft 365 Service health."
 
 $incidentRecord | Export-Csv "RegSP_Incident_$incidentId.csv" -NoTypeInformation
 Write-Host "`nIncident record saved to: RegSP_Incident_$incidentId.csv" -ForegroundColor Green
@@ -195,9 +219,9 @@ Write-Host "`nIncident record saved to: RegSP_Incident_$incidentId.csv" -Foregro
 
 | Task | Frequency | Script |
 |------|-----------|--------|
-| DLP incident report | Weekly | Script 2 |
-| NPI location assessment | Quarterly | Script 3 |
-| Privacy control scorecard | Monthly | Script 4 |
+| Copilot policy and rule verification | Weekly | Script 2 |
+| NPI SIT verification | Quarterly | Script 3 |
+| Copilot interaction audit export | Monthly | Script 4 |
 | Incident response timer | On-demand (at incident detection) | Script 5 |
 
 ## Next Steps

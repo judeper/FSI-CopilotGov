@@ -22,11 +22,11 @@ Test cases and evidence collection for validating federated connector inventory,
 - **Expected Result:** Sign-in records show only firm-managed identities authenticating to in-scope connectors, or out-of-scope authentications are detected and routed to compliance.
 - **Evidence:** `federated-signins.csv` and any compliance routing records.
 
-### Test 4: DLP Evaluates Federated Connector Responses
+### Test 4: DLP Boundaries for Federated Connector Data
 
-- **Objective:** Validate that DLP policies covering Copilot interactions also evaluate federated connector responses surfaced in those interactions.
-- **Expected Result:** A controlled prompt that pulls a sensitive-keyword response from a federated connector triggers the expected DLP policy tip or block.
-- **Evidence:** DLP alert record and Copilot interaction transcript.
+- **Objective:** Identify which source controls and explicitly supported Copilot DLP actions apply without assuming general generated-response SIT scanning.
+- **Expected Result:** The test documents source-system enforcement, sensitivity-label source exclusion where supported, typed-prompt/web-search behavior where applicable, and any uncovered connector-output path.
+- **Evidence:** Source-policy configuration, supported-path test results, Copilot transcript, and documented gaps.
 
 ### Test 5: Invocation Audit Trail Supports Reconstruction
 

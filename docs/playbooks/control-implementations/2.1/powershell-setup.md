@@ -1,193 +1,167 @@
-# Control 2.1: DLP Policies for M365 Copilot Interactions — PowerShell Setup
+# Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions — PowerShell Setup
 
-Automation scripts for managing DLP policies that protect Copilot interactions. Control 2.1 requires two separate DLP policies — scripts are provided for both the label-based response blocking policy (Type 1) and the SIT-based prompt blocking policy (Type 2).
+PowerShell examples for creating and verifying the documented sensitivity-label exclusion rule for the **Microsoft 365 Copilot and Copilot Chat** DLP location.
 
 ## Prerequisites
 
-- Security & Compliance PowerShell (`ExchangeOnlineManagement`)
-- Purview Compliance Admin role
-- Microsoft 365 E5 or E5 Compliance license
+- **Module:** `ExchangeOnlineManagement`
+- **Permissions:** A role Microsoft documents for editing Copilot DLP policies, such as Purview Compliance Admin or Purview Information Protection Admin
+- **PowerShell:** A version supported by the current Exchange Online Management module
+- **Licensing:** An eligible Purview Information Protection and Governance entitlement for file/email exclusion
 
-## Scripts
-
-### Script 1: Create Label-Based Response Blocking Policy (Type 1)
+## Connect to Required Services
 
 ```powershell
-# Create DLP policy for label-based response blocking in Copilot
-# This policy blocks Copilot from surfacing Highly Confidential labeled content
-# Requires: Security & Compliance PowerShell
-
 Import-Module ExchangeOnlineManagement
-Connect-IPPSSession
-
-# Create the label-based DLP policy (Type 1)
-New-DlpCompliancePolicy -Name "FSI Copilot DLP - Label-Based Response Blocking" `
-    -Comment "Blocks Copilot from surfacing Highly Confidential and MNPI labeled content in responses" `
-    -Mode "TestWithNotifications" `
-    -M365CopilotLocation All
-
-# Create DLP rule for Highly Confidential label
-# NOTE: Verify -ContentContainsSensitivityLabels syntax against your live tenant —
-# parameter name and hashtable structure may vary by module version.
-New-DlpComplianceRule -Name "Block HC Label in Copilot Response" `
-    -Policy "FSI Copilot DLP - Label-Based Response Blocking" `
-    -ContentContainsSensitivityLabel @{
-        LabelName = "Highly Confidential"
-        IncludeSubLabels = $true
-    } `
-    -BlockAccess $true `
-    -NotifyUser "SiteAdmin","LastModifier" `
-    -GenerateIncidentReport "SiteAdmin" `
-    -IncidentReportContent "All"
-
-Write-Host "Type 1 (label-based) DLP policy created in test mode."
-Write-Host "Review matches before enabling enforcement."
+Connect-IPPSSession -UserPrincipalName admin@contoso.com
 ```
 
-### Script 2: Create SIT-Based Prompt Blocking Policy (Type 2)
+## Script 1: Create the Copilot Policy and Label-Exclusion Rule
 
 ```powershell
-# Create DLP policy for SIT-based prompt blocking in Copilot
-# This policy blocks Copilot from processing prompts containing sensitive data
-# These two policy types must be configured as separate DLP rules — they cannot be
-# combined within a single DLP rule, but may exist as separate rules within the same policy
-# Requires: Security & Compliance PowerShell
+$policyName = "FSI-Copilot-DLP-Protection"
+$labelDisplayName = "Highly Confidential"
 
-Import-Module ExchangeOnlineManagement
-Connect-IPPSSession
-
-# Create the SIT-based prompt blocking policy (Type 2)
-New-DlpCompliancePolicy -Name "FSI Copilot DLP - SIT-Based Prompt Blocking" `
-    -Comment "Blocks Copilot from processing user prompts containing FSI-sensitive information types" `
-    -Mode "TestWithNotifications" `
-    -M365CopilotLocation All
-
-# Create DLP rule for SSN detection in prompts
-New-DlpComplianceRule -Name "Block SSN in Copilot Prompt" `
-    -Policy "FSI Copilot DLP - SIT-Based Prompt Blocking" `
-    -ContentContainsSensitiveInformation @{
-        Name = "U.S. Social Security Number (SSN)"
-        MinCount = 1
-        MinConfidence = 85
-    } `
-    -BlockAccess $true `
-    -NotifyUser "SiteAdmin","LastModifier" `
-    -NotifyUserType "NotSet"
-
-# Create DLP rule for credit card detection in prompts
-New-DlpComplianceRule -Name "Block Credit Card in Copilot Prompt" `
-    -Policy "FSI Copilot DLP - SIT-Based Prompt Blocking" `
-    -ContentContainsSensitiveInformation @{
-        Name = "Credit Card Number"
-        MinCount = 1
-        MinConfidence = 85
-    } `
-    -BlockAccess $true `
-    -NotifyUser "SiteAdmin","LastModifier" `
-    -NotifyUserType "NotSet"
-
-# Create DLP rule for ABA routing number detection in prompts
-New-DlpComplianceRule -Name "Block ABA Routing in Copilot Prompt" `
-    -Policy "FSI Copilot DLP - SIT-Based Prompt Blocking" `
-    -ContentContainsSensitiveInformation @{
-        Name = "ABA Routing Number"
-        MinCount = 1
-        MinConfidence = 85
-    } `
-    -BlockAccess $true `
-    -NotifyUser "SiteAdmin","LastModifier" `
-    -NotifyUserType "NotSet"
-
-Write-Host "Type 2 (SIT-based prompt blocking) DLP policy created in test mode."
-Write-Host "This is a separate policy from the label-based policy - both are required."
-```
-
-### Script 3: DLP Policy Status and Match Report
-
-```powershell
-# Report on all Copilot DLP policies - includes both policy types
-# Requires: Security & Compliance PowerShell
-
-Import-Module ExchangeOnlineManagement
-Connect-IPPSSession
-
-$policies = Get-DlpCompliancePolicy | Where-Object { $_.Name -match "Copilot|FSI" }
-
-$policyReport = @()
-foreach ($policy in $policies) {
-    $rules = Get-DlpComplianceRule -Policy $policy.Name
-    $policyReport += [PSCustomObject]@{
-        PolicyName  = $policy.Name
-        Mode        = $policy.Mode
-        Enabled     = $policy.Enabled
-        RuleCount   = $rules.Count
-        Priority    = $policy.Priority
-        Created     = $policy.CreationDate
-    }
+$label = Get-Label |
+    Where-Object DisplayName -eq $labelDisplayName |
+    Select-Object -First 1
+if (-not $label) {
+    throw "Required sensitivity label '$labelDisplayName' wasn't found."
 }
 
-Write-Host "=== Copilot DLP Policies (Both Policy Types) ==="
-$policyReport | Format-Table PolicyName, Mode, Enabled, RuleCount -AutoSize
+$locations = @'
+[{
+  "Workload": "Applications",
+  "Location": "470f2276-e011-4e9d-a6ec-20768be3a4b0",
+  "Inclusions": [{"Type": "Tenant", "Identity": "All"}]
+}]
+'@
 
-# Verify both policy types exist
-$labelBasedExists = $policyReport | Where-Object PolicyName -match "Label-Based"
-$sitBasedExists = $policyReport | Where-Object PolicyName -match "SIT-Based|Prompt"
-if (-not $labelBasedExists) { Write-Warning "MISSING: Label-Based Response Blocking policy not found" }
-if (-not $sitBasedExists) { Write-Warning "MISSING: SIT-Based Prompt Blocking policy not found" }
+New-DlpCompliancePolicy `
+    -Name $policyName `
+    -Comment "Copilot policy for approved sensitivity-label exclusions" `
+    -Locations $locations `
+    -EnforcementPlanes @("CopilotExperiences") `
+    -Mode TestWithoutNotifications
 
-$policyReport | Export-Csv "CopilotDLPPolicies_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+$advancedRule = @{
+    Version = "1.0"
+    Condition = @{
+        Operator = "And"
+        SubConditions = @(
+            @{
+                ConditionName = "ContentContainsSensitiveInformation"
+                Value = @(
+                    @{
+                        groups = @(
+                            @{
+                                Operator = "Or"
+                                labels = @(
+                                    @{
+                                        name = $label.Guid.ToString()
+                                        type = "Sensitivity"
+                                    }
+                                )
+                                name = "Default"
+                            }
+                        )
+                    }
+                )
+            }
+        )
+    }
+} | ConvertTo-Json -Depth 100
+
+New-DlpComplianceRule `
+    -Name "Exclude highly confidential content from Copilot processing" `
+    -Policy $policyName `
+    -AdvancedRule $advancedRule `
+    -RestrictAccess @(@{
+        setting = "ExcludeContentProcessing"
+        value = "Block"
+    })
 ```
 
-### Script 4: DLP Incident Report Export
+This is Microsoft's documented PowerShell pattern for sensitivity-label exclusion. The Copilot location also supports two SIT-based actions: **Processing prompts** (preview and rolling out) and **Performing Web Searches**, plus the preview **Email is received from > External users** condition with content-processing exclusion. Configure those rules in the Purview portal unless Microsoft documents the applicable `New-DlpComplianceRule` syntax for the module version in use; don't substitute generic `BlockAccess`, workload-specific threshold, or guessed `-M365CopilotLocation` parameters.
+
+## Script 2: Verify the Copilot Policy and Rules
 
 ```powershell
-# Export DLP incident data for compliance review - covers both policy types
-# Requires: Security & Compliance PowerShell
+$policyName = "FSI-Copilot-DLP-Protection"
+$copilotLocationId = "470f2276-e011-4e9d-a6ec-20768be3a4b0"
 
-Import-Module ExchangeOnlineManagement
-Connect-IPPSSession
-
-$startDate = (Get-Date).AddDays(-30).ToString("MM/dd/yyyy")
-$endDate = (Get-Date).ToString("MM/dd/yyyy")
-
-$incidents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate `
-    -RecordType "DlpAll" -ResultSize 1000
-
-$incidentReport = @()
-foreach ($incident in $incidents) {
-    $data = $incident.AuditData | ConvertFrom-Json
-    $incidentReport += [PSCustomObject]@{
-        Date          = $incident.CreationDate
-        User          = $incident.UserIds
-        Operation     = $incident.Operations
-        PolicyName    = $data.PolicyDetails.PolicyName
-        SensitiveInfo = ($data.SensitiveInfoDetectionIsIncluded -join ", ")
-        Action        = $data.Actions
-    }
+$policy = Get-DlpCompliancePolicy -Identity $policyName
+if (-not $policy) {
+    throw "Policy '$policyName' wasn't returned."
+}
+if (-not ($policy.EnforcementPlanes -contains "CopilotExperiences")) {
+    throw "Policy is missing the CopilotExperiences enforcement plane."
+}
+if ([string]$policy.Locations -notmatch [regex]::Escape($copilotLocationId)) {
+    throw "Policy is missing the Microsoft 365 Copilot and Copilot Chat location."
 }
 
-Write-Host "DLP incidents in last 30 days: $($incidentReport.Count)"
-
-# Separate incidents by policy type for reporting
-$labelBasedIncidents = $incidentReport | Where-Object PolicyName -match "Label-Based"
-$sitBasedIncidents = $incidentReport | Where-Object PolicyName -match "SIT-Based|Prompt"
-Write-Host "  Label-based (Type 1) matches: $($labelBasedIncidents.Count)"
-Write-Host "  SIT-based prompt (Type 2) matches: $($sitBasedIncidents.Count)"
-
-$incidentReport | Export-Csv "DLPIncidents_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+$policy | Format-List Name, Mode, Enabled, Locations, EnforcementPlanes
+Get-DlpComplianceRule -Policy $policyName |
+    Format-Table Name, Disabled, Priority -AutoSize
 ```
 
-## Scheduled Tasks
+Don't require a top-level `Workload` property from `Get-DlpCompliancePolicy`; Microsoft documents `Workload: "Applications"` inside the `Locations` JSON.
 
-| Task | Frequency | Purpose |
-|------|-----------|---------|
-| Policy Status Check | Daily | Verify both DLP policy types remain active |
-| Default Policy Review | Weekly (first 30 days) | Review simulation mode matches before enabling enforcement |
-| Incident Report | Weekly | Review DLP matches by policy type for false positives |
-| Policy Configuration Export | Monthly | Document policy settings for audit trail |
+## Script 3: Verify Sensitive Information Types
+
+```powershell
+$requiredSensitiveTypes = @(
+    "U.S. Social Security Number (SSN)",
+    "Credit Card Number",
+    "U.S. Bank Account Number"
+)
+
+foreach ($type in $requiredSensitiveTypes) {
+    $result = Get-DlpSensitiveInformationType |
+        Where-Object Name -eq $type |
+        Select-Object -First 1
+    if ($result) {
+        $result | Format-Table Name, Id, RecommendedConfidence -AutoSize
+    } else {
+        Write-Warning "Sensitive information type '$type' wasn't found."
+    }
+}
+```
+
+`Get-DlpSensitiveInformationTypeRulePackage` returns rule packages, not the individual sensitive information types used in policy rules.
+
+## Script 4: Export Copilot Interaction Audit Evidence
+
+```powershell
+$startDate = (Get-Date).AddDays(-30)
+$endDate = Get-Date
+
+$copilotEvents = Search-UnifiedAuditLog `
+    -StartDate $startDate `
+    -EndDate $endDate `
+    -Operations CopilotInteraction `
+    -ResultSize 5000
+
+$copilotEvents |
+    Select-Object CreationDate, UserIds, Operations, AuditData |
+    Export-Csv "CopilotInteraction_Audit_$(Get-Date -Format 'yyyyMMdd').csv" `
+        -NoTypeInformation
+
+Write-Host "Exported $($copilotEvents.Count) CopilotInteraction records."
+```
+
+Use **Purview > Data Loss Prevention > Alerts** for DLP alert investigation and **Purview > Solutions > DSPM > Discover > Activity explorer > AI activities** for sensitive interaction details. Viewing prompt and response bodies requires the additional content-viewer permissions Microsoft documents.
+
+## Operational Notes
+
+- Policy changes can take up to four hours to apply.
+- Sensitivity-label exclusion can leave the protected item visible as a citation.
+- Copilot DLP doesn't scan the contents of files uploaded directly into prompts; it evaluates typed prompt text.
+- Validate prompt blocking separately because that action is in preview and rolling out.
 
 ## Next Steps
 
-- See [Verification & Testing](verification-testing.md) to validate both DLP policy types
-- See [Troubleshooting](troubleshooting.md) for DLP policy issues, including guidance on why label-based and SIT-based policies cannot be combined
+- See [Verification & Testing](verification-testing.md) to validate each supported DLP action
+- See [Troubleshooting](troubleshooting.md) for enforcement issues
 - Back to [Control 2.1](../../../controls/pillar-2-security/2.1-dlp-policies-for-copilot.md)

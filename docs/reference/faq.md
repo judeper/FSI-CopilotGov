@@ -261,7 +261,7 @@ Copilot, like all large language models, can generate inaccurate or "hallucinate
 
 Sensitivity labels interact with Copilot in three key ways:
 
-1. **Label inheritance:** When Copilot generates content based on one or more labeled source documents, the output inherits the highest sensitivity label. If Copilot references both an "Internal" document and a "Highly Confidential" document, the generated content receives the "Highly Confidential" label.
+1. **Label inheritance:** When Copilot creates content in a supported labeling experience from one or more labeled source items, the destination inherits the highest-priority applicable label. Unsupported source types and some encryption configurations are exceptions, so validate each in-scope surface.
 
 2. **Encryption enforcement:** If a sensitivity label includes encryption settings, Copilot respects those settings. Users who do not have decryption rights cannot use Copilot to access the encrypted content.
 

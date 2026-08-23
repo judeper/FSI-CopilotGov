@@ -62,13 +62,13 @@ Item-level remediation is particularly valuable for sites where broad access is 
 ### Step 4: Enable AI Observability and Shadow AI Discovery
 
 **Portal:** Microsoft Purview portal
-**Path:** Data Security Posture Management > AI hub > AI observability
+**Path:** Solutions > DSPM > Discover > Activity explorer > AI activities; Discover > AI apps
 
 Configure the unified AI observability view to monitor AI activity across Microsoft 365 Copilot and any third-party AI apps in use:
 
-1. Navigate to the AI observability section
-2. Review the unified view of AI activity across all monitored AI surfaces
-3. Check **Shadow AI discovery** findings for unsanctioned AI tools detected in the organization
+1. Open **Discover > Activity explorer > AI activities**
+2. Review AI activity across the monitored surfaces
+3. Open **Discover > AI apps** and review findings for unsanctioned AI tools detected in the organization
 4. Configure alerts for new Shadow AI tool detections
 
 **Quick access:** Microsoft 365 Admin Center > Copilot > Security shows a summary of Shadow AI findings and provides a link to the full Purview DSPM experience.

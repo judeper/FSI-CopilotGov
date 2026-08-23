@@ -33,7 +33,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | Draft documents, rewrite text, summarize, generate from prompts, transform existing content |
 | **Data Sources** | Current document, referenced files, Microsoft Graph (user's accessible content) |
-| **Governance Considerations** | Copilot-generated content inherits the sensitivity label of the current document. Content generated from grounded data may surface information from other documents the user can access. Output may contain hallucinated content that appears authoritative in document form. |
+| **Governance Considerations** | Content inserted into a labeled document remains governed by that document's label, and supported creation scenarios can inherit a higher-priority label from referenced sources. Content generated from grounded data may surface information from other documents the user can access. Output may contain hallucinated content that appears authoritative in document form. |
 | **Key Controls** | 2.2 (Sensitivity labels), 2.1 (DLP), 3.1 (Audit logging), 3.5 (Communication review for client-facing documents) |
 
 ### Excel
@@ -144,7 +144,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | File search, summarization, content generation from personal files |
 | **Data Sources** | User's OneDrive files, shared files |
-| **Governance Considerations** | OneDrive is the default storage location for many M365 outputs including Copilot Pages, Loop components, and Whiteboard files. Files shared from OneDrive may not have sensitivity labels applied. "Shared with me" content is accessible to Copilot. |
+| **Governance Considerations** | OneDrive stores many Microsoft 365 outputs and personal files, but Copilot Pages and Copilot Notebooks use a user-owned SharePoint Embedded container instead. Files shared from OneDrive may not have sensitivity labels applied. "Shared with me" content is accessible to Copilot. |
 | **Key Controls** | 1.12 (OneDrive governance), 2.2 (Sensitivity labels), 3.2 (Retention) |
 
 ### Planner
@@ -257,7 +257,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | AI-powered search from within the Microsoft 365 Copilot app — returns enriched, contextual results from organizational data with Copilot-generated summaries and follow-up suggestions |
 | **Data Sources** | Microsoft Graph (SharePoint, OneDrive, Exchange, Teams), Semantic Index, tenant-scoped organizational content |
-| **Governance Considerations** | Copilot Search operates within the Copilot app and uses the user's Microsoft Graph permissions to surface organizational content. Like Copilot Chat, it amplifies discovery of content the user already has access to, but the search-focused interface may encourage more targeted data retrieval. Restricted SharePoint Search limits the grounding scope. DLP applies to content returned by Copilot Search but does not inspect data at the search source — source-level DLP should be configured separately. |
+| **Governance Considerations** | Copilot Search operates within the Copilot app and uses the user's Microsoft Graph permissions to surface organizational content. Like Copilot Chat, it amplifies discovery of content the user already has access to, but the search-focused interface may encourage more targeted data retrieval. Restricted SharePoint Search limits the grounding scope. Don't assume general DLP scanning of returned content; apply source-level controls and validate each explicitly documented Copilot enforcement path. |
 | **Key Controls** | 1.1 (Oversharing assessment), 1.4 (Restricted SharePoint Search), 2.1 (DLP), 2.2 (Sensitivity labels), 3.1 (Audit logging) |
 | **Access** | Premium only (requires Copilot license). |
 

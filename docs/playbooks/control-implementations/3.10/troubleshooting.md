@@ -4,15 +4,18 @@ Common issues and resolution steps for privacy controls protecting consumer fina
 
 ## Common Issues
 
-### Issue 1: DLP Not Detecting NPI in Copilot Responses
+### Issue 1: A Copilot DLP Rule Doesn't Trigger
 
-- **Symptoms:** Copilot generates responses containing SSNs, account numbers, or other NPI without triggering DLP.
-- **Root Cause:** DLP policies may not cover Copilot interaction locations, or the sensitive information types do not match the data format in Copilot outputs.
+- **Symptoms:** A labeled source is processed, a typed prompt containing an SIT isn't blocked, external web search still runs, or a configured external-email exclusion doesn't act.
+- **Root Cause:** The policy might use an unsupported condition/action pair, target the wrong location, still be propagating, or test a path the feature doesn't cover.
 - **Resolution:**
-  1. Verify the Copilot DLP policy is configured on Workload `Applications` with Enforcement Plane `CopilotExperiences` and includes Copilot location JSON.
-  2. Test the sensitive information type against the specific data format appearing in Copilot responses.
-  3. Update SIT patterns if Copilot formats data differently (e.g., partial masking, different separators).
-  4. Enable DLP for the Copilot interaction workload if available in the tenant.
+  1. Verify that the policy was created from the **Custom** template and uses location GUID `470f2276-e011-4e9d-a6ec-20768be3a4b0` with enforcement plane `CopilotExperiences`.
+  2. Verify the supported condition/action pair: sensitivity label > prevent content processing; SIT > process prompts; SIT > perform web searches; or external email > prevent content processing. Put label and SIT conditions in separate rules.
+  3. Allow up to four hours for a policy update to appear in Copilot experiences.
+  4. For prompt blocking and external-email exclusion, confirm that the preview feature has reached the tenant.
+  5. Confirm that the SIT appears in text typed directly into the prompt. DLP doesn't scan the contents of files uploaded directly into prompts.
+  6. Don't expect these rules to act as a general SIT scanner over generated responses.
+  7. For label rules, use a supported stored/open file or an email sent on or after January 1, 2025; calendar invites aren't supported. For external-email rules, validate the sender against the tenant's accepted domains because only sender metadata is evaluated.
 
 ### Issue 2: Information Barriers Not Blocking Copilot Cross-Segment Access
 
@@ -23,6 +26,7 @@ Common issues and resolution steps for privacy controls protecting consumer fina
   2. Confirm segment assignments include all relevant users.
   3. Check that SharePoint sites containing NPI have correct segment associations.
   4. Test with Content Search to verify the same user cannot access cross-segment content through other search tools.
+  5. If the test uses Copilot Pages or Copilot Notebooks, stop treating it as an Information Barriers failure. Their SharePoint Embedded content doesn't support Information Barriers; use the available admin policies where this gap isn't acceptable.
 
 ### Issue 3: Excessive DLP False Positives on Financial Data
 
@@ -32,38 +36,38 @@ Common issues and resolution steps for privacy controls protecting consumer fina
   1. Review false positive incidents to identify pattern-matching issues.
   2. Add exclusion rules for known false positive patterns.
   3. Increase the confidence threshold for SIT detections.
-  4. Implement context-based rules that require NPI to appear alongside other identifying information.
+  4. If context is needed, refine or create a custom SIT that incorporates the required evidence rather than adding an unsupported Copilot policy condition.
 
 ### Issue 4: NPI Exposure in Copilot Meeting Summaries
 
 - **Symptoms:** Copilot meeting summaries in Teams capture verbally discussed NPI such as account numbers or SSNs.
 - **Root Cause:** Copilot transcribes meeting audio and may include NPI spoken during the meeting in summaries.
 - **Resolution:**
-  1. Implement DLP policies on Teams meeting transcripts and summaries.
+  1. Apply source permissions, sensitivity labels, retention, and supported DLP controls to recordings and transcripts stored in OneDrive or SharePoint.
   2. Train users to avoid verbalizing full NPI during Copilot-enabled meetings.
-  3. Configure Copilot meeting settings to restrict summary distribution.
-  4. Apply sensitivity labels to meeting recordings and transcripts containing financial discussions.
+  3. Use Teams meeting policies, meeting templates, sensitivity labels, and organizer options to control Copilot, recording, transcription, and who can access the recording and transcript. Some options require Teams Premium or a Microsoft Copilot license.
+  4. Verify the resulting OneDrive/SharePoint permissions and lifecycle rather than assuming a separate Copilot summary distribution control exists.
 
-### Issue 5: 72-Hour Vendor Notification Window — Calculation and Triggering
+### Issue 5: Service Provider Notification Tracking Isn't Operationalized
 
-- **Symptoms:** Uncertainty about when the 72-hour clock starts under SEC Rule 248.30(a)(3), or the institution cannot determine whether the window has been met for a past incident.
-- **Root Cause:** The rule requires notification within 72 hours of "detection," but "detection" is not precisely defined in the amended regulation. Institutions may not have a consistent definition, making clock-start determination inconsistent.
+- **Symptoms:** The institution can't evidence how it receives, timestamps, evaluates, and escalates a service provider notification under its approved Rule 248.30(a)(3) procedure.
+- **Root Cause:** Tenant contacts, Service health monitoring, contract contacts, and the institution's incident system might not be mapped into one tested process.
 - **Resolution:**
-  1. Define "detection" in writing in the incident response program: the 72-hour clock starts at the earliest of: (a) a DLP alert flagging NPI exposure through Copilot, (b) a user report of NPI exposure, or (c) any other event giving the institution reason to believe unauthorized access occurred. Document this definition in the IRP.
-  2. Use the incident response timer script (Script 5 in the PowerShell Setup guide) to track the notification deadline from the moment of detection. Run it at detection, not at the end of investigation.
-  3. Note that the 72-hour window is a notification deadline, not an investigation completion deadline — the notification to Microsoft can precede a completed investigation. The notification should describe the known facts and the status of the ongoing investigation.
-  4. If a past incident is discovered to have missed the 72-hour window: document the gap, notify Microsoft as soon as possible, and consult legal counsel regarding voluntary self-disclosure to the SEC.
+  1. Use the institution's legal-approved interpretation and incident system to define and track applicable deadlines; no Copilot or Purview control calculates a Reg S-P deadline.
+  2. Keep designated Microsoft online-services tenant administrator contacts accurate.
+  3. Monitor Microsoft 365 Service health and the contractual communication channels identified by the institution.
+  4. Test intake, timestamping, internal escalation, and evidence retention in a tabletop exercise.
+  5. Treat Script 5 in the PowerShell guide as a local tracker only, not a Microsoft notification integration or legal deadline calculator.
 
-### Issue 6: Microsoft Notification Procedure for Copilot NPI Incidents
+### Issue 6: Microsoft Service Incident Notification Isn't Reaching the Team
 
-- **Symptoms:** When a Copilot NPI incident occurs, the compliance team cannot determine how to formally notify Microsoft as the service provider under Rule 248.30(a)(3).
-- **Root Cause:** Microsoft's notification path for Reg S-P vendor notification is not the same as general support requests. The correct channel is not obvious from standard Microsoft 365 admin documentation.
+- **Symptoms:** The privacy team doesn't receive or can't locate notification of a Microsoft-determined service incident.
+- **Root Cause:** Designated tenant contacts might be stale, Service health isn't monitored, or the internal routing process doesn't include privacy and compliance stakeholders.
 - **Resolution:**
-  1. **Primary channel — Microsoft Security Response Center (MSRC):** For security incidents involving unauthorized access to NPI through Copilot, report to MSRC at msrc.microsoft.com. This is Microsoft's designated security incident response team.
-  2. **Secondary channel — Microsoft 365 admin portal:** For incidents reportable under the data processing terms in the Microsoft Online Subscription Agreement or Data Processing Agreement, use the admin portal (admin.microsoft.com > Support > New service request) and explicitly reference "Reg S-P Rule 248.30(a)(3) notification."
-  3. **Microsoft account team:** Contact the Microsoft account team to confirm the correct notification path and to confirm that Microsoft acknowledges receipt of the notification — confirmation is important for documentation.
-  4. Pre-stage the notification: draft a notification template before an incident occurs. The template should include: institution name and contact, incident description, NPI categories affected, estimated scope, containment status, and the regulatory citation (17 CFR 248.30(a)(3)).
-  5. Document the Microsoft notification in the incident record: date/time, channel used, Microsoft confirmation of receipt, and any Microsoft response.
+  1. Microsoft documents delivery of security-incident notifications to designated administrators of the affected online-services tenant and, depending on the incident, through Microsoft 365 Service health.
+  2. Verify tenant administrator contact information and the organization's Service health monitoring.
+  3. Map those channels into the approved incident response and service-provider oversight procedures.
+  4. Don't use MSRC vulnerability reporting as a substitute for the institution's Reg S-P workflow; Microsoft doesn't document it as that customer notification channel.
 
 ### Issue 7: Incident Response Program Not Meeting "Written" Requirement
 
@@ -75,25 +79,47 @@ Common issues and resolution steps for privacy controls protecting consumer fina
   3. The IRP does not need to be a standalone document — it can be a section of a broader information security program or privacy policy document. What matters is that it is written, approved, and accessible to those responsible for responding to incidents.
   4. Conduct a tabletop exercise after documentation is complete to verify that the written procedures are actionable.
 
+### Issue 8: DSPM Doesn't Show Expected Copilot Details
+
+- **Symptoms:** AI activity is absent, or the reviewer can see an event but not its prompt and response.
+- **Root Cause:** The reviewer may be using **DSPM for AI (classic)**, initial setup might still be populating, or the account lacks the additional content-viewer permissions.
+- **Resolution:**
+  1. Use **Purview > Solutions > DSPM**, not **DSPM for AI (classic)**.
+  2. Review **Discover > Activity explorer > AI activities** and allow approximately a day after first-time DSPM setup for tenant data to appear.
+  3. Assign DSPM view permissions according to least privilege.
+  4. To view prompt and response bodies, use the additional Content Explorer Content Viewer and Microsoft Purview Data Security AI Content Viewer permissions documented by Microsoft.
+
+### Issue 9: Copilot Pages or Notebooks Controls Differ from OneDrive
+
+- **Symptoms:** The expected OneDrive container, Notebook sensitivity label, or Information Barriers behavior isn't present.
+- **Root Cause:** Copilot Pages and Copilot Notebooks are stored together in a user-owned SharePoint Embedded container, not OneDrive. Pages support sensitivity labels, but Notebooks don't have a container sensitivity label, and Information Barriers don't support SharePoint Embedded content.
+- **Resolution:**
+  1. Manage the content as SharePoint Embedded and verify that storage counts against the organization's SharePoint quota.
+  2. Validate DLP and policy-tip behavior; apply sensitivity labels to Copilot Pages where appropriate.
+  3. Document the Notebook label and Information Barriers limitations.
+  4. Use the available admin policies to disable creation where those limitations aren't acceptable.
+
 ## Diagnostic Steps
 
-1. **Check DLP policy status (fail closed):** `Connect-IPPSSession; $p = @(Get-DlpCompliancePolicy); if(-not $p){ throw 'Fail closed: no DLP policies returned.' }; foreach($x in $p){ foreach($name in @('Workload','EnforcementPlanes','Locations')){ if(-not $x.PSObject.Properties[$name]){ throw 'Fail closed: missing required verification property.' } } }; $m = @($p | Where-Object { $_.Workload -eq 'Applications' -and $_.EnforcementPlanes -contains 'CopilotExperiences' }); if(-not $m){ throw 'Fail closed: no Copilot DLP policy found for Workload=Applications and EnforcementPlane=CopilotExperiences.' }; $m | Select Name, Enabled, Mode, Workload, EnforcementPlanes, Locations`
+1. **Check DLP policy status (fail closed):** `Connect-IPPSSession; $id = '470f2276-e011-4e9d-a6ec-20768be3a4b0'; $m = @(Get-DlpCompliancePolicy | Where-Object { $_.EnforcementPlanes -contains 'CopilotExperiences' -and [string]$_.Locations -match [regex]::Escape($id) }); if(-not $m){ throw 'Fail closed: no policy targets the Microsoft 365 Copilot and Copilot Chat location.' }; $m | Select-Object Name, Enabled, Mode, EnforcementPlanes, Locations`
 2. **Review SIT accuracy:** Test each sensitive information type against known NPI samples.
 3. **Verify barrier status:** `Get-InformationBarrierPolicy | Select Name, State, Segments`
-4. **Test Copilot responses:** Prompt Copilot with queries that might surface NPI from test data.
+4. **Test supported Copilot actions:** Separately test labeled source exclusion, typed-prompt blocking where available, web-search restriction, and external-email exclusion where available. Include the direct-upload limitation test.
 5. **Verify IRP exists and is written:** Confirm the incident response program is a documented, approved policy.
-6. **Check 72-hour procedure:** Confirm the Microsoft notification path and contact are documented and accessible.
+6. **Check service-provider notification procedure:** Confirm tenant contacts, Service health monitoring, internal routing, and the legal-approved procedure are documented and accessible.
+7. **Check DLP alerts:** Review **Purview > Data Loss Prevention > Alerts**.
+8. **Check Copilot audit:** Review **Purview > Audit > Copilot activities** for `CopilotInteraction` records.
 
 ## Escalation
 
 | Severity | Condition | Escalation Path |
 |----------|-----------|-----------------|
 | Critical | Confirmed NPI breach via Copilot interactions | Privacy Officer + Chief Compliance Officer + Legal |
-| Critical | 72-hour Microsoft notification window at risk of being missed | Privacy Officer + Legal — execute notification immediately |
+| Critical | Service-provider notification response process at risk of missing an applicable deadline | Privacy Officer + Legal — execute the approved procedure immediately |
 | High | Systematic DLP gaps allowing NPI exposure | IT Security + Compliance team |
 | High | Written IRP does not meet Rule 248.30(a)(4) requirements | Chief Compliance Officer + Legal |
 | Medium | Information barrier gaps for specific segments | IT + Compliance for barrier reconfiguration |
-| Medium | 72-hour notification window calculation unclear | Compliance counsel for definition clarification |
+| Medium | Service-provider notification deadline calculation unclear | Compliance counsel for definition clarification |
 | Low | False positive rate affecting operations | Compliance team for policy tuning |
 
 ## Related Resources
@@ -101,5 +127,7 @@ Common issues and resolution steps for privacy controls protecting consumer fina
 - [Control 3.4: Communication Compliance Monitoring](../3.4/portal-walkthrough.md)
 - [Control 3.11: Record Keeping Compliance](../3.11/portal-walkthrough.md)
 - [SEC Reg S-P Rule 248.30 (17 CFR 248.30)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)
-- [Microsoft Security Response Center (MSRC)](https://msrc.microsoft.com)
+- [Microsoft Purview DLP for Microsoft 365 Copilot and Copilot Chat](https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about)
+- [Microsoft security incident management: customer notification](https://learn.microsoft.com/en-us/compliance/assurance/assurance-sim-containment-eradication-recovery#customer-notification-of-security-incident)
+- [Copilot Pages and Notebooks compliance summary](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide)
 - Back to [Control 3.10](../../../controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md)

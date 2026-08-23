@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-08-18T00:00:00Z",
+  "generatedAt": "2026-08-22T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -610,7 +610,7 @@
       "tier": "Regulated",
       "title": "Control 3.10: SEC Reg S-P -- Privacy of Consumer Financial Information",
       "path": "docs/controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-22",
       "regulatory_references": [
         "SEC Regulation S-P (17 CFR 248.30)",
         "GLBA Title V (Privacy)",

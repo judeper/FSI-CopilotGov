@@ -17,13 +17,13 @@ Test cases and evidence collection for validating sensitivity label enforcement 
 
 ### Test 2: Label Inheritance from Source Documents
 
-- **Objective:** Verify Copilot-generated content inherits the appropriate sensitivity label from source documents
+- **Objective:** Verify label inheritance in a supported Copilot content-creation experience
 - **Steps:**
   1. Create a test document labeled "Confidential — Standard" in SharePoint
-  2. Use Copilot to create a summary of the Confidential document
-  3. Check the sensitivity label on the Copilot-generated summary
+  2. In Copilot for Word, create content in a destination document from the Confidential source
+  3. Check the sensitivity label on the destination document
   4. Verify it inherits the "Confidential" label (or higher)
-- **Expected Result:** Generated content inherits the source document's sensitivity label
+- **Expected Result:** The destination document inherits the source document's sensitivity label
 - **Evidence:** Screenshots showing source label and generated content label
 
 ### Test 3: Copilot Studio Agent Knowledge Source Label Verification
@@ -33,11 +33,11 @@ Test cases and evidence collection for validating sensitivity label enforcement 
   1. Identify a deployed Copilot Studio agent with knowledge sources carrying different sensitivity labels
   2. Document the labels on each knowledge source (e.g., "Confidential — Standard" and "Internal — General")
   3. Interact with the agent and confirm the response shield displays the highest-priority label from the content used, and that each citation shows its own label
-  4. Confirm DLP monitoring triggers at the appropriate label tier (Confidential in this example)
+  4. If a separate supported DLP rule applies to the source, test that enforcement path independently; don't infer a DLP event from the response shield
   5. Verify the agent deployment record documents the highest label reachable through its knowledge sources
   6. For a new agent with an unlabeled knowledge source: add a labeled document to the knowledge base and verify the label shown on responses updates
-- **Expected Result:** The label displayed on agent responses matches the highest-priority label across the content used; DLP policies respond at the appropriate tier
-- **Evidence:** Agent knowledge source label inventory, response screenshots showing the label shield and citation labels, and DLP monitoring evidence
+- **Expected Result:** The label displayed on agent responses matches the highest-priority label across the content used, and each citation displays its source label where supported; no general generated-response DLP scan is inferred
+- **Evidence:** Agent knowledge source label inventory, response screenshots showing the label shield and citation labels, and separate source/enforcement-path test evidence
 
 ### Test 4: Auto-Labeling with Nested Condition Groups
 

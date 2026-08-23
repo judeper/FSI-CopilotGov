@@ -70,7 +70,7 @@ Microsoft Purview sensitivity labels in Copilot Studio are in **preview** and ar
 5. Document that label in the agent deployment record
 6. Confirm that the appropriate DLP policies are in place for that label tier before activating
 
-**Example:** An agent with knowledge sources labeled "Confidential — Standard" and "Internal — General" can surface "Confidential — Standard" on its responses. Users interacting with this agent may trigger Confidential-tier DLP monitoring.
+**Example:** An agent with supported knowledge sources labeled "Confidential — Standard" and "Internal — General" can display "Confidential — Standard" on its responses and show labels on citations. This display doesn't itself establish DLP scanning of generated responses.
 
 **Note on encryption:** Label-applied encryption is honored for the SharePoint knowledge source. Copilot Studio agents return content from encrypted items only where the user holds the EXTRACT usage right.
 
@@ -134,5 +134,5 @@ Enable label analytics to monitor how labels are applied to Copilot-generated co
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for label enforcement automation
 - See [Verification & Testing](verification-testing.md) to validate label behavior, label groups, and agent knowledge source labels
-- Review Control 2.1 for DLP integration with sensitivity labels, including label-based response blocking (Type 1)
+- Review Control 2.1 for DLP integration with sensitivity labels, including label-based source-content exclusion (Type 1)
 - Back to [Control 2.2](../../../controls/pillar-2-security/2.2-sensitivity-labels-classification.md)

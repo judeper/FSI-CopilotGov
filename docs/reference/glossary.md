@@ -164,7 +164,7 @@ The process by which Copilot retrieves relevant organizational data from the Mic
 Microsoft Purview policies that restrict communication and collaboration between specific groups of users. In FSI, information barriers support compliance with MNPI walls between departments such as investment banking and research.
 
 ### Label Inheritance
-The behavior where Copilot applies the highest-priority sensitivity label from the source items used to generate new content. For example, if Copilot references one "Internal" document and one "Confidential" document, the new content inherits the "Confidential" label. Supported for Copilot in Word, Copilot in PowerPoint, and Copilot in Outlook.
+The behavior where Copilot applies the highest-priority applicable sensitivity label from source items to a destination item in a supported content-creation experience. Unsupported source types and some encryption configurations are exceptions.
 
 ### Oversharing
 A condition where Microsoft 365 content is accessible to more users than intended, typically due to broad SharePoint permissions (e.g., "Everyone except external users"), open Microsoft 365 Group membership, or permissive OneDrive sharing defaults. Copilot amplifies the impact of oversharing through discovery amplification.

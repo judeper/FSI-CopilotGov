@@ -6,7 +6,7 @@ Step-by-step governance workflow for inventorying federated connectors, scoping 
 
 - [Control 1.10 Vendor Risk Management](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md) assessment is in place for each federated connector vendor in scope.
 - [Control 2.13 Plugin and Connector Security](../../../controls/pillar-2-security/2.13-plugin-connector-security.md) is implemented to control admin-managed plugins and Graph connectors.
-- DLP policies for sensitive data (Control 2.1) are evaluated for whether they apply to federated connector responses.
+- DLP policies for sensitive data (Control 2.1) are mapped to their documented source and prompt paths; generated connector-output scanning isn't assumed.
 - A governance owner is named for federated connector posture review.
 
 ## Access Paths
@@ -34,7 +34,7 @@ Document that federated connectors authenticate with end-user credentials (deleg
 
 ### Step 4: Wire DLP and audit-log review into the operating model
 
-Federated connector responses are evaluated by DLP at the response layer, not at ingestion. Confirm that current DLP policies cover Copilot interactions and that audit-log review includes federated connector invocation events on the governance cadence.
+Don't assume Copilot DLP performs general SIT scanning over federated connector output. Document which source controls and supported Copilot DLP actions apply, test each enforcement path, record gaps, and include connector invocation events in the approved audit-log review.
 
 ### Step 5: Establish ongoing third-party monitoring
 

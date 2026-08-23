@@ -31,7 +31,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
 - **Symptoms:** The DSPM for AI report shows fewer sites than expected, or known sensitive sites are not appearing in the oversharing assessment
 - **Root Cause:** DSPM scanning may not cover all site types by default. Personal OneDrive sites, Teams-connected sites with specific configurations, or recently created sites may be excluded from the initial scan scope.
 - **Resolution:**
-  1. Verify DSPM for AI is enabled in Microsoft Purview > Data Security Posture Management
+  1. Verify current DSPM is available in Microsoft Purview > Solutions > DSPM
   2. Check that the scan scope includes all relevant site templates
   3. Manually add missing sites to the DSPM assessment scope
   4. Allow 24-48 hours for newly added sites to appear in reports

@@ -69,6 +69,18 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "checks",
         "zone_thresholds",
     },
+    "2.1": {
+        # Force-apply corrected Copilot DLP capability qualifiers, the Cloud
+        # Policy service path for Allow web search in Copilot, current DSPM
+        # activity navigation, and the direct-upload limitation (issue #463).
+        "yesBar",
+        "partialBar",
+        "verifyIn",
+        "verifyPowerShell",
+        "evidenceExpected",
+        "sectorYesBar",
+        "facilitatorNotes",
+    },
     "2.12": {
         # Authored checks[] wires the no_external_sharing_on_grounding evaluator.
         # Guest-lifecycle fields limit SharePoint/OneDrive expiration to eligible
@@ -131,7 +143,15 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "facilitatorNotes",
     },
     "3.10": {
+        # Re-authored after live Microsoft verification of the Copilot DLP
+        # location/actions, current DSPM and Audit navigation, and SharePoint
+        # Embedded limitations for Pages and Notebooks (issue #463).
+        "yesBar",
+        "partialBar",
+        "verifyIn",
         "verifyPowerShell",
+        "evidenceExpected",
+        "facilitatorNotes",
     },
     "1.14": {
         # Force-apply the corrected Purview navigation. The stale value in

@@ -45,10 +45,10 @@ Write-Host "AI-Assisted Content label created and published" -ForegroundColor Gr
 Write-Host "Label propagation may take up to 24 hours across all workloads" -ForegroundColor Yellow
 ```
 
-### Script 2: Create DLP Policy for NPI Detection in AI-Generated Content
+### Script 2: Create DLP Policy for Saved or Shared AI-Assisted Content
 
 ```powershell
-# Create DLP policy detecting NPI in content shared externally from Copilot workloads
+# Create standard workload DLP policy detecting NPI in saved or shared content
 # Covers SharePoint, OneDrive, Exchange, and Teams locations
 # Requires Connect-IPPSSession (Security & Compliance PowerShell)
 # NOTE: Policy name "FSI-AI-Disclosure-Enforcement" in portal-walkthrough.md refers to the
@@ -60,7 +60,7 @@ New-DlpCompliancePolicy -Name "FSI-AIDisclosure-DLP" `
     -ExchangeLocation All `
     -TeamsLocation All `
     -Mode Enable `
-    -Comment "Detects NPI in AI-generated content shared externally — FSI regulatory requirement"
+    -Comment "Detects NPI in saved or shared AI-assisted content — FSI regulatory requirement"
 
 # Rule using built-in SITs with external-sharing scope
 New-DlpComplianceRule -Name "FSI-AIDisclosure-ExternalShare-Rule" `
@@ -77,9 +77,9 @@ New-DlpComplianceRule -Name "FSI-AIDisclosure-ExternalShare-Rule" `
     -NotifyUser @("compliance@contoso.com") `
     -GenerateIncidentReport "SiteAdmin" `
     -IncidentReportContent @("Title","Severity","MachineTranslatedMessages","RulesMatched","Detections") `
-    -NotifyEmailCustomText "AI-generated content containing NPI detected in external share. Reg S-P review required." `
+    -NotifyEmailCustomText "Saved or shared AI-assisted content containing NPI detected in external share. Reg S-P review required." `
     -Severity High `
-    -Comment "Block external sharing of NPI from Copilot-generated content"
+    -Comment "Block external sharing of NPI from saved or shared AI-assisted content"
 
 Write-Host "AI disclosure DLP policy created with real SIT detection" -ForegroundColor Green
 ```

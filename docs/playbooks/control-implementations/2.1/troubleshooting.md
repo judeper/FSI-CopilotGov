@@ -1,121 +1,124 @@
-# Control 2.1: DLP Policies for M365 Copilot Interactions — Troubleshooting
+# Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions — Troubleshooting
 
-Common issues and resolution steps for DLP policies governing Copilot interactions. Control 2.1 uses two distinct DLP policy types — troubleshooting guidance distinguishes between label-based response blocking (Type 1) and SIT-based prompt blocking (Type 2) issues.
+Common issues and resolution steps for the supported Microsoft 365 Copilot and Copilot Chat DLP condition/action patterns.
 
 ## Common Issues
 
-### Issue 1: Attempting to Combine Both Policy Types in a Single Policy
+### Issue 1: Sensitivity-Label and SIT Conditions Combined in One Rule
 
-- **Symptoms:** Administrator creates one DLP policy intending to cover both label-based response blocking and SIT-based prompt blocking, but only one mechanism appears to work (or neither does correctly)
-- **Root Cause:** Label-based response blocking and SIT-based prompt blocking are architecturally distinct enforcement mechanisms that operate at different points in the Copilot interaction chain. They cannot be combined within a single DLP rule because they target different enforcement points: Type 1 blocks at the grounding/response phase, Type 2 blocks at the user prompt phase. However, they may exist as separate rules within the same policy.
+- **Symptoms:** Only one intended action appears or the rule can't be saved.
+- **Root Cause:** Sensitivity-label and sensitive-information-type conditions can't be combined within one Copilot DLP rule.
 - **Resolution:**
-  1. Create two separate DLP rules (they may exist within the same policy or as separate policies):
-     - Rule 1 (Type 1 — Label-Based): conditions use "Content contains sensitivity label" — blocks Copilot from including labeled content in responses
-     - Rule 2 (Type 2 — SIT-Based): conditions use "Content contains sensitive information types" — blocks Copilot from processing prompts containing sensitive data
-  2. Each rule must be independently configured, tested in simulation mode, and transitioned to enforcement separately
-  3. Verify both policies appear in Purview > DLP > Policies as distinct entries
+  1. Use a separate sensitivity-label rule with **Prevent Copilot from processing content**.
+  2. Use separate SIT rules for **Processing prompts** and **Performing Web Searches**, as applicable.
+  3. The rules can be in one Custom policy, but the policy must use only the **Microsoft 365 Copilot and Copilot Chat** location.
+  4. Test each rule in simulation mode before enforcement.
 
-### Issue 2: DLP Policy Not Detecting Sensitive Data in Copilot
+### Issue 2: Policy Has Unsupported Locations or Scope
 
-- **Symptoms:** Copilot interactions involving known sensitive data do not trigger DLP policy matches or policy tips
-- **Root Cause (Type 1):** The label-based policy may not include the Copilot location, or the sensitivity label on the source document may not match the label specified in the policy condition.
-- **Root Cause (Type 2):** The SIT-based prompt blocking policy may not include the Copilot location, the SIT definition may not match the data pattern typed in the prompt, or the confidence level may be set too high.
+- **Symptoms:** The policy can't be created, a Copilot location error appears, or enforcement doesn't match the design.
+- **Root Cause:** The Copilot location can't be combined with other DLP policy locations, and it doesn't support administrative units.
 - **Resolution:**
-  1. Verify both policies include Microsoft 365 Copilot as a monitored location (in Purview DLP policy scope)
-  2. For Type 1: test the sensitivity label condition by opening the labeled document in Office apps and confirming the label is applied correctly
-  3. For Type 2: test the SIT against the specific data pattern using Purview > Data Classification > Content Explorer
-  4. Lower the confidence level threshold (try 75 instead of 85) and re-test
-  5. Verify each policy is not in "off" mode — check both policy and rule enable status
-  6. Allow 24 hours for policy propagation after any changes
+  1. Confirm `Locations` contains `470f2276-e011-4e9d-a6ec-20768be3a4b0`.
+  2. Confirm all other policy locations are disabled.
+  3. Confirm `EnforcementPlanes` contains `CopilotExperiences`.
+  4. Use the supported tenant or user/group inclusion model rather than an administrative unit.
 
-### Issue 3: Default Copilot DLP Policy Not Visible
+### Issue 3: Label-Based Rule Doesn't Exclude Source Content
 
-- **Symptoms:** The Microsoft-deployed default Copilot DLP policy does not appear in Purview > DLP > Policies, or match data is not populating in simulation mode
-- **Root Cause:** The default policy (GA January 2026, MC1182689) should auto-appear for tenants with appropriate licenses. If it does not appear, the policy may not have been provisioned for the tenant, or the admin may lack visibility permissions.
+- **Symptoms:** Copilot uses content from a file or email carrying a matching sensitivity label.
+- **Root Cause:** The source label doesn't match the rule, the user isn't in scope, the policy/rule isn't enabled, or the update hasn't propagated.
 - **Resolution:**
-  1. Verify access via MAC > Copilot > Security (an alternative access point for the default policy)
-  2. Confirm the tenant has Microsoft 365 E5 or E5 Compliance licenses (required for Copilot DLP)
-  3. Wait 48-72 hours after license assignment for the default policy to provision
-  4. If the policy does not appear, open a Microsoft support ticket referencing MC1182689
-  5. In the interim, create a manual SIT-based prompt blocking policy (Type 2) covering the same SITs as the default policy
+  1. Confirm the label on the source item and the label GUID in the rule.
+  2. Confirm the policy and rule modes and the user's scope.
+  3. Allow up to four hours for Copilot policy changes to apply.
+  4. Retest in a new Copilot interaction.
+  5. Don't treat a remaining citation as failed enforcement; Microsoft documents that the item can remain visible as a citation while its content isn't processed.
 
-### Issue 4: Excessive False Positives Disrupting Users
+### Issue 4: Typed-Prompt Rule Doesn't Appear or Trigger
 
-- **Symptoms:** Users frequently receive DLP policy tips for content that is not actually sensitive, causing frustration and reduced Copilot productivity
-- **Root Cause:** Sensitive information type patterns may be too broad, confidence levels too low, or custom SIT definitions may match non-sensitive data patterns.
+- **Symptoms:** The **Processing prompts** action isn't present or a matching typed prompt isn't blocked.
+- **Root Cause:** Prompt blocking is in preview and rolling out, or the SIT/confidence configuration doesn't match the typed text.
 - **Resolution:**
-  1. Increase the minimum confidence level (recommend 85+ for FSI)
-  2. Increase the minimum instance count for common patterns (e.g., require 3+ credit card matches, not 1)
-  3. Refine custom sensitive information type patterns to be more specific
-  4. Use "except if" conditions to exclude known false positive sources
-  5. Review false positive samples to identify pattern improvements
-  6. For Type 2 prompt blocking specifically: use the default policy simulation mode data to tune before enforcing
+  1. Confirm the feature has reached the tenant.
+  2. Test the exact synthetic value with `Get-DlpSensitiveInformationType` and the relevant Purview classifier tools.
+  3. Confirm the value is typed directly into the prompt.
+  4. Review the rule's SIT, confidence, scope, and mode.
+  5. Allow up to four hours after a policy change before retesting.
 
-### Issue 5: DLP Policy Conflict with Other Policies
+### Issue 5: Uploaded File Content Doesn't Trigger an SIT Prompt/Web Rule
 
-- **Symptoms:** Multiple DLP policies trigger simultaneously, resulting in confusing user notifications or unexpected blocking behavior
-- **Root Cause:** Overlapping DLP policies with different actions create conflict scenarios. SharePoint DLP, Exchange DLP, and Copilot DLP policies may all evaluate the same content.
+- **Symptoms:** A directly uploaded file contains a configured SIT, but the prompt or web-search rule doesn't trigger.
+- **Root Cause:** This is a documented limitation. Copilot DLP doesn't scan the contents of files uploaded directly into prompts; it evaluates typed prompt text.
 - **Resolution:**
-  1. Review all DLP policies for scope overlap using `Get-DlpCompliancePolicy`
-  2. Set explicit priority ordering so the most restrictive policy takes precedence
-  3. Consolidate overlapping policies where possible (but do NOT consolidate Type 1 and Type 2 — keep them as separate policies)
-  4. Use policy conditions to differentiate scope (e.g., by location, content type, or label)
-  5. Test the combined effect of all policies on sample content
+  1. Don't represent prompt/web SIT rules as upload-content inspection.
+  2. Validate source permissions and sensitivity-label source exclusion.
+  3. Evaluate separately documented Endpoint/browser DLP controls for the approved upload activity, device, browser, and file type.
+  4. Record the limitation and compensating controls in test evidence.
 
-### Issue 6: DLP Alerts Not Being Reviewed
+### Issue 6: Web-Search Rule Appears Ineffective
 
-- **Symptoms:** DLP incident queue grows without review, policy matches accumulate but no remediation occurs
-- **Root Cause:** Alert fatigue from high volume, unclear ownership of DLP incident review, or missing escalation procedures.
+- **Symptoms:** The expected difference between benign and matching prompts isn't visible.
+- **Root Cause:** Web search might already be disabled by Cloud Policy, the prompt might not match the SIT, or the tester might be looking for a full response block rather than only a web-search restriction.
 - **Resolution:**
-  1. Assign specific team members or roles as DLP alert reviewers
-  2. Set up alert severity thresholds — high confidence matches generate high-severity alerts
-  3. Configure alert aggregation to reduce volume (digest rather than individual)
-  4. Implement a triage process: auto-close known false positives, escalate true positives
-  5. Define SLAs for alert review (critical: 4 hours, high: 24 hours, medium: 72 hours)
+  1. Check **Allow web search in Copilot** in the Microsoft 365 Apps admin center (`config.office.com`).
+  2. Use an approved benign prompt to confirm the test user can receive web citations.
+  3. Retest with an approved synthetic SIT value typed into the prompt.
+  4. Confirm the matching prompt has no external web search or web citation.
+  5. Internal Microsoft 365 grounding can continue; don't classify an internal answer as failed web-search enforcement.
 
-### Issue 7: Edge Browser DLP Not Applying to Copilot
+### Issue 6a: External-Email Rule Doesn't Exclude a Message
 
-- **Symptoms:** Copilot interactions accessed through Microsoft Edge browser do not trigger DLP policies that work correctly in native M365 apps
-- **Root Cause:** Edge browser DLP requires Endpoint DLP configuration and a supported Edge browser version. If Edge is not configured as a monitored browser in Endpoint DLP settings, browser-based Copilot interactions will not be covered.
+- **Symptoms:** A configured external-email rule is present, but Copilot still uses the message.
+- **Root Cause:** The preview might not have reached the tenant, the sender domain might be in the tenant's accepted domains, or the test expects email-body SIT scanning.
 - **Resolution:**
-  1. Navigate to Purview > Data loss prevention > Endpoint DLP settings
-  2. Verify Microsoft Edge is listed as a monitored browser and the setting is enabled
-  3. Confirm Edge browser version meets minimum requirements (check Purview documentation for supported versions)
-  4. Verify endpoint devices have the Purview client extension installed (required for browser-based DLP)
-  5. Allow 24 hours for Endpoint DLP policy changes to propagate to managed devices
+  1. Confirm preview availability.
+  2. Compare the sender domain with the tenant's accepted domains.
+  3. Confirm the rule uses **Email is received from > External users** with **Prevent Copilot from processing content**.
+  4. Retest after up to four hours.
+  5. Expect matching email to be excluded from grounding, summarization, and citation. The condition evaluates sender metadata, not body content.
 
-### Issue 8: Policy Changes Not Taking Effect
+### Issue 7: Alerts or Detailed AI Activity Aren't Visible
 
-- **Symptoms:** After modifying a DLP policy or rule, the changes do not appear to take effect in Copilot interactions
-- **Root Cause:** DLP policy changes can take up to 24 hours to propagate across all workloads. Cached policy states on client applications may also delay enforcement.
+- **Symptoms:** A tested rule acts, but the reviewer can't find the alert or detailed interaction.
+- **Root Cause:** The reviewer may be using the wrong portal view, the alert isn't configured, or required content-viewer permissions are missing.
 - **Resolution:**
-  1. Wait 24 hours after making policy changes before testing
-  2. Verify the change was saved: `Get-DlpComplianceRule -Policy <name>` and check rule conditions
-  3. Have test users sign out and back in to refresh policy cache
-  4. If changes still do not take effect, deactivate and reactivate the policy
+  1. Review **Purview > Data Loss Prevention > Alerts**.
+  2. Review **Purview > Solutions > DSPM > Discover > Activity explorer > AI activities**.
+  3. Confirm the rule's alert configuration.
+  4. Assign only the Microsoft-documented roles required for the view. Prompt/response bodies require additional Content Explorer Content Viewer and Data Security AI Content Viewer permissions.
+
+### Issue 8: Policy Changes Haven't Taken Effect
+
+- **Symptoms:** A saved Copilot policy or rule change isn't reflected in testing.
+- **Root Cause:** Copilot DLP policy updates can take up to four hours to apply.
+- **Resolution:**
+  1. Verify the saved policy with `Get-DlpCompliancePolicy -Identity <name>`.
+  2. Verify rules with `Get-DlpComplianceRule -Policy <name>`.
+  3. Wait up to four hours and retest in a new interaction.
+  4. If the documented window has elapsed, gather policy/rule output and open a Microsoft support case.
 
 ## Diagnostic Steps
 
-1. **Verify both policy types exist:** `Get-DlpCompliancePolicy | Where-Object { $_.Name -match "Copilot" } | Select Name, Mode, Enabled`
-2. **Check rule configuration for each policy type:** `Get-DlpComplianceRule -Policy <name>`
-3. **Review recent incidents by policy type:** Run Script 4 for the past 7 days and filter by policy name
-4. **Locate default policy:** Check MAC > Copilot > Security for the Microsoft-deployed default policy
-5. **Test with known data:** Create a test prompt with known SIT patterns; create a test document with a known label
-6. **Check audit logs:** Search for DLP events in the unified audit log
-7. **Use Security Copilot policy explanations:** In the Purview DLP console, use AI-powered policy explanations to review complex rule logic and verify both policy types are configured as intended
+1. **Check the policy:** `Get-DlpCompliancePolicy -Identity <name> | Format-List Name,Mode,Enabled,Locations,EnforcementPlanes`
+2. **Check rules:** `Get-DlpComplianceRule -Policy <name> | Format-Table Name,Disabled,Priority`
+3. **Check the Copilot location:** Search the string form of `Locations` for `470f2276-e011-4e9d-a6ec-20768be3a4b0`
+4. **Check SITs:** Use `Get-DlpSensitiveInformationType`; don't substitute `Get-DlpSensitiveInformationTypeRulePackage`, which returns packages
+5. **Check DLP evidence:** Review DLP Alerts and DSPM AI activities
+6. **Test each documented enforcement path:** Labeled source content, typed-prompt blocking if available, web-search restriction, external-email exclusion if available, and the direct-upload limitation
 
 ## Escalation
 
 | Severity | Condition | Escalation Path |
 |----------|-----------|----------------|
-| **Low** | False positive pattern identified in either policy type | DLP policy tuning team |
-| **Medium** | Policy type not detecting known sensitive data | Information protection team |
-| **High** | DLP bypassed — sensitive data exposed through Copilot prompt or response | Security Operations and CISO |
-| **Critical** | All DLP policies disabled or non-functional | Security Operations — incident response |
+| **Low** | False-positive pattern identified | DLP policy tuning team |
+| **Medium** | A tenant-available supported action doesn't match its test case after propagation | Information protection team |
+| **High** | Sensitive data path bypasses the documented and approved controls | Security Operations and CISO |
+| **Critical** | Applicable DLP policies are disabled or non-functional | Security Operations — incident response |
 
 ## Related Resources
 
-- [Portal Walkthrough](portal-walkthrough.md) — DLP policy configuration for both policy types
-- [PowerShell Setup](powershell-setup.md) — DLP automation scripts for both policy types
-- [Verification & Testing](verification-testing.md) — DLP validation procedures
+- [Portal Walkthrough](portal-walkthrough.md) — supported DLP configuration
+- [PowerShell Setup](powershell-setup.md) — documented policy and label-rule automation
+- [Verification & Testing](verification-testing.md) — supported-action test procedures
 - Back to [Control 2.1](../../../controls/pillar-2-security/2.1-dlp-policies-for-copilot.md)

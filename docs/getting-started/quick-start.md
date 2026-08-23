@@ -84,13 +84,13 @@ Copilot respects existing Microsoft 365 permissions. If users have access to con
 
 **Time:** 30-45 minutes | **Governance Level:** Baseline | **Pillar:** 2 (Security)
 
-Sensitivity labels control how Copilot can interact with classified content. Copilot inherits the highest sensitivity label from all source documents when generating new content.
+Sensitivity labels control how Copilot can interact with classified content. When Copilot creates content in a supported labeling experience, the destination can inherit the highest-priority label from labeled sources; unsupported sources and encryption configurations create exceptions.
 
 **What to do:**
 
 1. Review your existing sensitivity label taxonomy — confirm labels exist for at least: Public, Internal, Confidential, Highly Confidential
 2. Verify **auto-labeling policies** are active for common patterns (account numbers, SSNs, credit card numbers)
-3. Confirm **label inheritance** behavior: when Copilot references a "Highly Confidential" document, the output retains that label
+3. Confirm **label inheritance** behavior in each in-scope supported creation experience: when Copilot creates content from a "Highly Confidential" document, the destination item receives or retains that label
 4. Test label behavior in Word, Excel, and PowerPoint with Copilot prompts that reference labeled content
 5. Enable **mandatory labeling** for at least Word, Excel, PowerPoint, and Outlook if not already in place
 

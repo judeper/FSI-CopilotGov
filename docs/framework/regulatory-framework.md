@@ -199,7 +199,7 @@ This document maps the FSI Copilot Governance Framework controls to applicable U
 | 3.10 | Privacy Controls (Reg S-P) | Privacy program for Copilot-processed consumer data |
 | 1.1 | Oversharing Assessment | Identify consumer financial data exposure before Copilot |
 | 1.2 | Permissions Remediation | Restrict access to consumer data to authorized users |
-| 2.1 | DLP Policies | Detect and block consumer financial information in Copilot outputs |
+| 2.1 | DLP Policies | Apply documented Copilot controls and saved/shared-artifact DLP to consumer financial information |
 | 2.2 | Sensitivity Labels | Classify consumer financial information |
 
 **Governance Level Requirements:**

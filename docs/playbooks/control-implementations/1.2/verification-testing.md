@@ -8,7 +8,7 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
 
 - **Objective:** Confirm DSPM is enabled and the unified experience is accessible from both Purview and MAC
 - **Steps:**
-  1. Navigate to Microsoft Purview > Data Security Posture Management > Overview
+  1. Navigate to Microsoft Purview > Solutions > DSPM and review the overview
   2. Verify the service status shows "Active"
   3. Confirm the last scan date is within the past 7 days
   4. Check that the scan scope includes all SharePoint Online sites
@@ -56,7 +56,7 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
 
 - **Objective:** Verify Shadow AI discovery is detecting unsanctioned AI tool usage
 - **Steps:**
-  1. Navigate to Microsoft Purview > Data Security Posture Management > AI Observability
+  1. Navigate to Microsoft Purview > Solutions > DSPM > Discover > Activity explorer > AI activities
   2. Confirm Shadow AI discovery section is enabled and populated with data
   3. Verify the governance team has reviewed Shadow AI findings in the past 30 days
   4. Confirm alert configurations exist for new Shadow AI tool detections
