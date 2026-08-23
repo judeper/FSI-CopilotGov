@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-08-18T00:00:00Z",
+  "generatedAt": "2026-08-22T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -356,7 +356,7 @@
       "tier": "Baseline",
       "title": "Control 2.8: Encryption (Data in Transit and at Rest)",
       "path": "docs/controls/pillar-2-security/2.8-encryption.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-22",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC",
