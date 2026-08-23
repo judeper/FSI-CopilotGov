@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-08-18T00:00:00Z",
+  "generatedAt": "2026-08-22T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -369,7 +369,7 @@
       "tier": "Recommended",
       "title": "Control 2.9: Defender for Cloud Apps — Copilot Session Controls",
       "path": "docs/controls/pillar-2-security/2.9-defender-cloud-apps.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-22",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC"

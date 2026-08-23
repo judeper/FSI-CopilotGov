@@ -53,13 +53,14 @@ Test cases and evidence collection for validating session controls.
 
 - **Objective:** Confirm agent threat detection is operational for Copilot agent deployments
 - **Steps:**
-  1. Navigate to Defender portal > Incidents & alerts and filter for agent-related alerts
-  2. Confirm that agent monitoring is active for organizational Copilot agent deployments
-  3. Review any existing agent-related incidents to verify the detection is surfacing actionable intelligence
-  4. Verify at least one custom agent anomaly detection rule is configured
-  5. Confirm agent threat alert routing: alerts should reach the SOC or security team within the defined SLA
-- **Expected Result:** Agent threat detection is active, alerts are routing correctly, and custom rules are configured
-- **Evidence:** Agent alert configuration; sample agent incident records; alert routing confirmation
+  1. Confirm the tenant holds a Microsoft Agent 365-eligible license (Microsoft 365 E5 prerequisite) — required as of July 1, 2026 for Copilot Studio/Foundry agent threat detection coverage
+  2. Navigate to Defender portal > Assets > AI agents and confirm Copilot agent deployments appear with a current risk level
+  3. Navigate to Defender portal > Incidents & alerts and filter for agent-related alerts
+  4. Review any existing agent-related incidents to verify the detection is surfacing actionable intelligence
+  5. Verify at least one custom agent anomaly detection rule is configured
+  6. Confirm agent threat alert routing: alerts should reach the SOC or security team within the defined SLA
+- **Expected Result:** The tenant's Agent 365 license is confirmed, agents appear in the AI agent inventory with a risk level, alerts are routing correctly, and custom rules are configured
+- **Evidence:** Agent 365 license confirmation; agent inventory screenshot; sample agent incident records; alert routing confirmation
 
 ## Evidence Collection
 
