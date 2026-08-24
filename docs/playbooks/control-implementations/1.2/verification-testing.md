@@ -52,16 +52,16 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
 - **Expected Result:** Alert is generated and delivered to configured recipients within the expected timeframe
 - **Evidence:** Alert record from Purview and email notification screenshot
 
-### Test 5a: AI App and Agent Discovery Functional Verification
+### Test 5a: Shadow AI Discovery and AI-Interaction Evidence Verification
 
-- **Objective:** Verify current DSPM inventory surfaces AI apps and agents that require governance review
+- **Objective:** Verify that Shadow AI app discovery uses Microsoft Defender for Cloud Apps, while DSPM is used for AI interaction evidence with its documented prerequisites.
 - **Steps:**
-  1. Navigate to Microsoft Purview > Solutions > DSPM
-  2. Review **AI observability** for AI apps and agents active in the last 30 days
-  3. Open **Discover > Apps and agents** and identify entries that aren't sanctioned through the organization's governance process
-  4. Verify the governance team has reviewed those entries in the past 30 days
-- **Expected Result:** DSPM inventory is populated and the governance team has a process to review unsanctioned apps and agents
-- **Evidence:** Screenshots of AI observability and Apps and agents; governance review record
+  1. In the Microsoft Defender portal, open **Cloud Apps** > **Cloud app catalog**, filter **App category** to **Generative AI**, and review discovered app risk and usage details.
+  2. Confirm the governance team has classified applicable apps as **Sanctioned** or **Unsanctioned** and reviewed the findings in the past 30 days.
+  3. Separately navigate to Microsoft Purview > Solutions > DSPM and review **AI observability** and **Discover > Activity explorer > AI activities**. Do not use these views alone as proof of Shadow AI discovery.
+  4. Verify prerequisites for the selected Purview evidence source: auditing for Microsoft 365 Copilot interactions; device onboarding for sensitive-data visibility and endpoint DLP on third-party AI sites; an Edge configuration policy for Browser Data Security; and the Microsoft Purview browser extension on Windows users where an Insider Risk Management site-visit policy is used.
+- **Expected Result:** Microsoft Defender for Cloud Apps provides the app-discovery and sanctioning evidence; DSPM provides separately sourced AI interaction evidence only where its prerequisites are met.
+- **Evidence:** Defender Generative AI discovery/risk/classification export or screenshot; governance review record; DSPM AI observability or Activity explorer screenshot; prerequisite configuration evidence.
 
 ### Test 6: Copilot Access Validation Post-Remediation
 

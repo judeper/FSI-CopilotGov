@@ -71,29 +71,30 @@ Test cases and evidence collection procedures to validate privacy controls for c
 - **Expected Result:** NPI documents are labeled, encrypted, and Copilot respects label-based access controls.
 - **Evidence:** Document properties showing label and encryption status.
 
-### Test 6: Incident Response Program Verification (Rule 248.30(a)(4))
+### Test 6: Response, Affected-Individual Notice, and Service-Provider Verification
 
-- **Objective:** Verify that the written incident response program covers Copilot-related NPI incidents and includes the required notification procedures
+- **Objective:** Verify that Copilot-related NPI procedures correctly distinguish the Rule 248.30(a)(3) response program, Rule 248.30(a)(4) affected-individual notification, and Rule 248.30(a)(5) service-provider oversight and provider-to-institution notification.
 - **Steps:**
-  1. Review the firm's written incident response program (IRP) for Copilot NPI coverage.
-  2. Confirm the IRP is written (not informal) and includes: Copilot-specific incident scenarios, severity classification, escalation paths, containment steps, and notification procedures.
-  3. Verify the service provider notification receipt and escalation procedure is documented (SEC Rule 248.30(a)(3)). For Microsoft-determined service incidents, confirm designated tenant administrator contacts are current and Microsoft 365 Service health is monitored.
-  4. Verify the 30-day customer notification timeline is documented.
-  5. Confirm a named individual is responsible for receiving, assessing, and escalating service provider notifications.
-- **Expected Result:** Written IRP exists, covers Copilot scenarios, and documents both the 72-hour vendor notification and 30-day customer notification procedures.
-- **Evidence:** IRP document with Copilot section; service provider notification intake procedure; tenant contact and Service health monitoring evidence; responsible party assignment.
+  1. Review the firm's written Rule 248.30(a)(3) response program for Copilot NPI coverage.
+  2. Confirm it includes Copilot-specific incident scenarios, severity classification, scope assessment, containment, recovery, and notification procedures.
+  3. Verify Rule 248.30(a)(5) written service-provider oversight procedures and a tested intake record that captures provider awareness time, institution receipt time, provider-reported scope, and the 72-hour timing evaluation. For Microsoft-determined service incidents, confirm designated tenant administrator contacts are current and Microsoft 365 Service health is monitored.
+  4. Verify the Rule 248.30(a)(4) reasonable-investigation and affected-individual notification process is documented separately, including the institution's as-soon-as-practicable/no-later-than-30-day timing when notice is required.
+  5. Confirm a named individual is responsible for receiving, assessing, and escalating provider notifications, and that the process does not assert a general written-contract requirement removed from the final rule.
+- **Expected Result:** Written procedures cover the three distinct provisions, preserve the provider-to-institution direction and provider-awareness trigger for the 72-hour evaluation, and separate it from the institution's response and affected-individual notification processes.
+- **Evidence:** Response program with Copilot section; provider oversight and notification-intake record; timing evaluation; affected-individual determination/notice procedure; tenant contact and Service health monitoring evidence; responsible party assignment.
 
 ### Test 7: Incident Response Simulation — NPI Exposure via Copilot
 
-- **Objective:** Simulate a Copilot NPI exposure event to test the incident response program and verify the 72-hour notification window is achievable
+- **Objective:** Simulate a Copilot NPI exposure event to test the separate Rule 248.30(a)(3), (a)(4), and (a)(5) procedures.
 - **Steps:**
   1. Run a tabletop exercise scenario: "Copilot Chat surfaced client account numbers to a user without appropriate permissions due to a permission misconfiguration. The exposure was detected via a DLP alert."
-  2. Walk through the IRP steps: detection confirmation → severity classification → internal escalation → service provider notification intake and assessment → customer notification decision workflow.
-  3. Time the exercise and test the institution's documented service provider notification and customer notification procedures.
-  4. Identify any gaps in the notification chain (for example, stale tenant administrator contacts or an unmonitored Service health dashboard).
-  5. Document exercise outcomes and any remediation items.
-- **Expected Result:** Tabletop exercise completed with documented outcome; notification chain is achievable within the 72-hour and 30-day windows; gaps identified and assigned for remediation.
-- **Evidence:** Exercise facilitation notes and outcome documentation; gap remediation log.
+  2. Walk through the response program: detection confirmation → severity classification → scope assessment → containment/recovery → affected-individual notification decision.
+  3. In a separate provider-notice branch, record provider awareness time, institution receipt time, provider-reported scope, and the Rule 248.30(a)(5) 72-hour timing evaluation. Confirm the institution starts its Rule 248.30(a)(3) program on receipt.
+  4. Test the Rule 248.30(a)(4) affected-individual notification decision and, if required, the institution's as-soon-as-practicable/no-later-than-30-day timeline without deriving it from the provider notice.
+  5. Identify any gaps in provider intake or notification evidence (for example, stale tenant administrator contacts or an unmonitored Service health dashboard).
+  6. Document exercise outcomes and remediation items.
+- **Expected Result:** Tabletop exercise completed with documented outcome; the provider-to-institution 72-hour evaluation begins at provider awareness, and the institution's response and affected-individual notification processes remain separate.
+- **Evidence:** Exercise facilitation notes and outcome documentation; provider-notice timing record; affected-individual determination evidence; gap remediation log.
 
 ### Test 8: Privacy Incident Response Alert Workflow
 
@@ -131,15 +132,17 @@ Test cases and evidence collection procedures to validate privacy controls for c
 | Pages and Notebooks limitation review | SharePoint Embedded and admin policy evidence | Screenshot | With control documentation |
 | Privacy impact assessment | Assessment document | PDF | 7 years |
 | Written IRP with Copilot section | IRP document | PDF | 7 years (updated annually) |
-| 72-hour notification procedure | IRP or standalone document | PDF | 7 years |
+| Provider-to-institution 72-hour timing evidence | Service-provider oversight and intake record | PDF or CSV export | 7 years |
+| Affected-individual notification determination and notice, if required | IRP or standalone procedure | PDF | 7 years |
 | Tabletop exercise documentation | Exercise records | PDF | 7 years |
 
 ## Compliance Mapping
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Reg S-P Rule 248.30(a)(3) | 72-hour vendor notification for unauthorized NPI access | Test 6 and 7 verify documented procedure and achievable window |
-| SEC Reg S-P Rule 248.30(a)(4) | Written incident response program | Test 6 verifies existence and completeness of written IRP |
+| [SEC Reg S-P Rule 248.30(a)(3)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30) | Written response program for unauthorized access to or use of customer information | Test 6 and 7 verify written procedures and response evidence |
+| [SEC Reg S-P Rule 248.30(a)(4)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30) | Affected-individual notification determination, timing, and contents | Test 6 and 7 verify the separate investigation and notification process |
+| [SEC Reg S-P Rule 248.30(a)(5)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30) | Service-provider oversight and provider-to-institution notice within 72 hours of provider awareness | Test 6 and 7 verify direction, trigger, timing evidence, and oversight |
 | SEC Reg S-P Rule 30 | Safeguard customer records | Supports compliance with NPI safeguarding in AI interactions |
 | GLBA Title V | Financial privacy | Helps meet privacy requirements for consumer financial information |
 | GLBA §501(b) | Safeguards provision for NPI | Supports requirements for protecting customer information at banks and broker-dealers (statutory basis for SEC Reg S-P safeguards; the FTC Safeguards Rule is a separate implementing regulation outside SEC jurisdiction) |

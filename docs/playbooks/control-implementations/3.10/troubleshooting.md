@@ -1,6 +1,6 @@
 # Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information — Troubleshooting
 
-Common issues and resolution steps for privacy controls protecting consumer financial information in Copilot interactions, including incident response program and vendor notification issues.
+Common issues and resolution steps for privacy controls protecting consumer financial information in Copilot interactions, including the distinct response-program, affected-individual notification, and service-provider oversight requirements in the Reg S-P amendments.
 
 ## Common Issues
 
@@ -48,16 +48,17 @@ Common issues and resolution steps for privacy controls protecting consumer fina
   3. Use Teams meeting policies, meeting templates, sensitivity labels, and organizer options to control Copilot, recording, transcription, and who can access the recording and transcript. Some options require Teams Premium or a Microsoft Copilot license.
   4. Verify the resulting OneDrive/SharePoint permissions and lifecycle rather than assuming a separate Copilot summary distribution control exists.
 
-### Issue 5: Service Provider Notification Tracking Isn't Operationalized
+### Issue 5: Service-Provider Notification Intake Isn't Operationalized
 
-- **Symptoms:** The institution can't evidence how it receives, timestamps, evaluates, and escalates a service provider notification under its approved Rule 248.30(a)(3) procedure.
-- **Root Cause:** Tenant contacts, Service health monitoring, contract contacts, and the institution's incident system might not be mapped into one tested process.
+- **Symptoms:** The institution can't evidence how it receives, timestamps, evaluates, and escalates a service provider notification under its approved Rule 248.30(a)(5) procedure.
+- **Root Cause:** Tenant contacts, Service health monitoring, provider awareness records, and the institution's incident system might not be mapped into one tested process.
 - **Resolution:**
-  1. Use the institution's legal-approved interpretation and incident system to define and track applicable deadlines; no Copilot or Purview control calculates a Reg S-P deadline.
-  2. Keep designated Microsoft online-services tenant administrator contacts accurate.
-  3. Monitor Microsoft 365 Service health and the contractual communication channels identified by the institution.
-  4. Test intake, timestamping, internal escalation, and evidence retention in a tabletop exercise.
-  5. Treat Script 5 in the PowerShell guide as a local tracker only, not a Microsoft notification integration or legal deadline calculator.
+  1. Use the institution's legal-approved process to record the provider's awareness time, institution receipt time, provider-reported scope, and 72-hour timing evaluation. The Rule 248.30(a)(5) clock starts with provider awareness of a qualifying breach in a provider-maintained customer-information system, not with the institution's detection time.
+  2. On receipt, initiate the Rule 248.30(a)(3) response program and retain the response and recovery evidence.
+  3. Keep designated Microsoft online-services tenant administrator contacts accurate and monitor Microsoft 365 Service health and the institution's documented provider-notification channels.
+  4. Keep the Rule 248.30(a)(4) affected-individual determination and any 30-day notification clock separate from the provider timing evaluation.
+  5. Do not invent a general written-contract requirement. Rule 248.30(a)(5) requires written oversight policies and procedures; it permits a written agreement for a provider to notify affected individuals on the institution's behalf.
+  6. Treat Script 5 in the PowerShell guide as a local evidence tracker only, not a Microsoft notification integration or legal deadline calculator.
 
 ### Issue 6: Microsoft Service Incident Notification Isn't Reaching the Team
 
@@ -69,12 +70,12 @@ Common issues and resolution steps for privacy controls protecting consumer fina
   3. Map those channels into the approved incident response and service-provider oversight procedures.
   4. Don't use MSRC vulnerability reporting as a substitute for the institution's Reg S-P workflow; Microsoft doesn't document it as that customer notification channel.
 
-### Issue 7: Incident Response Program Not Meeting "Written" Requirement
+### Issue 7: Response Program Not Meeting the Written Requirement
 
-- **Symptoms:** The institution has informal processes for handling NPI incidents but has not documented a formal written incident response program as required by Rule 248.30(a)(4).
+- **Symptoms:** The institution has informal processes for handling NPI incidents but has not documented the formal written response program required by Rule 248.30(a)(3).
 - **Root Cause:** Incident response may have evolved organically without formal documentation, or the existing IRP does not explicitly cover Copilot scenarios or the amended Reg S-P notification requirements.
 - **Resolution:**
-  1. Draft or update the written IRP to explicitly address: (a) Copilot-related NPI incidents, (b) the 72-hour vendor notification procedure per Rule 248.30(a)(3), and (c) the 30-day customer notification timeline.
+  1. Draft or update the written response program to explicitly address: (a) Copilot-related NPI incidents, (b) detection, response, recovery, scope assessment, and containment under Rule 248.30(a)(3), (c) the Rule 248.30(a)(4) affected-individual notification determination and timing, and (d) Rule 248.30(a)(5) provider oversight and provider-to-institution intake.
   2. Ensure the IRP is formally approved (signed by the designated individual responsible for the safeguards program) and version-controlled.
   3. The IRP does not need to be a standalone document — it can be a section of a broader information security program or privacy policy document. What matters is that it is written, approved, and accessible to those responsible for responding to incidents.
   4. Conduct a tabletop exercise after documentation is complete to verify that the written procedures are actionable.
@@ -115,9 +116,9 @@ Common issues and resolution steps for privacy controls protecting consumer fina
 | Severity | Condition | Escalation Path |
 |----------|-----------|-----------------|
 | Critical | Confirmed NPI breach via Copilot interactions | Privacy Officer + Chief Compliance Officer + Legal |
-| Critical | Service-provider notification response process at risk of missing an applicable deadline | Privacy Officer + Legal — execute the approved procedure immediately |
+| Critical | Rule 248.30(a)(5) provider-to-institution notification process at risk of missing an applicable deadline | Privacy Officer + Legal — execute the approved procedure immediately |
 | High | Systematic DLP gaps allowing NPI exposure | IT Security + Compliance team |
-| High | Written IRP does not meet Rule 248.30(a)(4) requirements | Chief Compliance Officer + Legal |
+| High | Written response program does not meet Rule 248.30(a)(3) requirements | Chief Compliance Officer + Legal |
 | Medium | Information barrier gaps for specific segments | IT + Compliance for barrier reconfiguration |
 | Medium | Service-provider notification deadline calculation unclear | Compliance counsel for definition clarification |
 | Low | False positive rate affecting operations | Compliance team for policy tuning |
@@ -127,6 +128,7 @@ Common issues and resolution steps for privacy controls protecting consumer fina
 - [Control 3.4: Communication Compliance Monitoring](../3.4/portal-walkthrough.md)
 - [Control 3.11: Record Keeping Compliance](../3.11/portal-walkthrough.md)
 - [SEC Reg S-P Rule 248.30 (17 CFR 248.30)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)
+- [SEC Final Rule — Regulation S-P Amendments (Release No. 34-100155)](https://www.sec.gov/files/rules/final/2024/34-100155.pdf)
 - [Microsoft Purview DLP for Microsoft 365 Copilot and Copilot Chat](https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about)
 - [Microsoft security incident management: customer notification](https://learn.microsoft.com/en-us/compliance/assurance/assurance-sim-containment-eradication-recovery#customer-notification-of-security-incident)
 - [Copilot Pages and Notebooks compliance summary](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide)

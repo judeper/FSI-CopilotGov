@@ -59,17 +59,18 @@ For high-priority findings, use item-level remediation to address individual fil
 
 Item-level remediation is particularly valuable for sites where broad access is legitimate but specific sensitive files need to be protected.
 
-### Step 4: Enable AI Observability and AI App/Agent Discovery
+### Step 4: Review AI Interaction Signals and Separately Govern Shadow AI
 
-**Portal:** Microsoft Purview portal
-**Path:** Solutions > DSPM > AI observability; Discover > Activity explorer > AI activities; Discover > Apps and agents
+**Portal:** Microsoft Purview portal / Microsoft Defender portal
+**Path:** Purview > Solutions > DSPM > AI observability; Discover > Activity explorer > AI activities; Defender > Cloud Apps > Cloud app catalog
 
-Configure the unified AI observability view to monitor AI activity across Microsoft 365 Copilot and any third-party AI apps in use:
+Use DSPM for AI activity and interaction evidence, and use Microsoft Defender for Cloud Apps for Shadow AI app discovery:
 
 1. Open **AI observability** and review AI apps and agents active in the last 30 days
 2. Open **Discover > Activity explorer > AI activities** and review sensitive AI interactions
-3. Open **Discover > Apps and agents** and review apps or agents that aren't sanctioned through the organization's governance process
-4. Document the review, classification, and escalation process for entries that aren't sanctioned
+3. Do not treat DSPM AI observability or **Apps and agents** as Shadow AI discovery. For third-party AI app discovery, follow [Microsoft's Defender for Cloud Apps guidance](https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-data-leak-shadow-ai-step1): open **Cloud Apps** > **Cloud app catalog**, filter **App category** to **Generative AI**, review risk and usage details, and tag apps **Sanctioned** or **Unsanctioned**.
+4. Record the prerequisite for every Purview signal used: auditing for Microsoft 365 Copilot interactions; device onboarding for sensitive-data visibility and endpoint DLP on third-party AI sites; an Edge configuration policy for Browser Data Security; and the Microsoft Purview browser extension on Windows users for Insider Risk Management site-visit detection. See [DSPM for AI prerequisites](https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations).
+5. Document the review, classification, and escalation process, identifying whether each finding came from Defender discovery or Purview interaction evidence.
 
 ### Step 5: Use Recommendations for Remediation Actions
 
@@ -100,14 +101,14 @@ The Data Security Posture Agent enables natural language investigation of data r
 **Portal:** Microsoft Purview portal
 **Path:** Data Security Posture Management > Reports and Recommendations
 
-Configure monitoring and notification cadence for ongoing oversight. Set up email notifications to the governance team when new oversharing instances are detected. Recommended alert frequency is daily digest for medium-risk and immediate notification for critical findings. Configure separate alerts or review queues for Shadow AI tool detections.
+Configure monitoring and notification cadence for ongoing oversight. Set up email notifications to the governance team when new oversharing instances are detected. Recommended alert frequency is daily digest for medium-risk and immediate notification for critical findings. Route Microsoft Defender for Cloud Apps Generative AI discovery findings through a separate governance review queue; do not represent that queue as a DSPM Shadow AI feature.
 
 ## FSI Recommendations
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Enable current DSPM and remediate all Critical findings before Copilot pilot. Enable Shadow AI discovery |
-| **Recommended** | Remediate Critical and High findings; implement Recommendations-based remediation actions; configure AI observability and Data Security Posture Agent |
+| **Baseline** | Enable current DSPM and remediate all Critical findings before Copilot pilot. Use Microsoft Defender for Cloud Apps Cloud Discovery and the Generative AI cloud app catalog for Shadow AI discovery |
+| **Recommended** | Remediate Critical and High findings; implement Recommendations-based remediation actions; configure AI observability and Data Security Posture Agent, documenting the prerequisites for selected third-party AI interaction signals |
 | **Regulated** | Remediate all findings; use item-level remediation for surgical fixes; require governance approval for any exceptions; continuous monitoring with SLA-based remediation; full AI observability alerting |
 
 ## Next Steps

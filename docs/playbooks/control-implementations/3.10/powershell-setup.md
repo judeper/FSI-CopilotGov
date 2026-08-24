@@ -1,6 +1,6 @@
 # Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information — PowerShell Setup
 
-Automation scripts for implementing and monitoring privacy controls for consumer financial information when using Copilot, including incident response automation for the 72-hour vendor notification requirement under SEC Rule 248.30(a)(3).
+Automation scripts for implementing and monitoring privacy controls for consumer financial information when using Copilot, including local intake and timing evidence for the provider-to-institution notification requirement in SEC Rule 248.30(a)(5).
 
 ## Prerequisites
 
@@ -158,11 +158,13 @@ Write-Host "Exported $($copilotEvents.Count) CopilotInteraction records."
 
 Use **Purview > Data Loss Prevention > Alerts** for DLP alert investigation and **Purview > Solutions > DSPM > Discover > Activity explorer > AI activities** for sensitive interaction details. Viewing prompt and response bodies requires the additional content-viewer permissions Microsoft documents.
 
-### Script 5: Incident Response Timer and Notification Tracking (Rule 248.30(a)(3))
+### Script 5: Service-Provider Intake and Separate Notification Clocks (Rule 248.30(a)(5))
 
 ```powershell
-# Track the 72-hour vendor notification window for Reg S-P compliance
-# Run this script when a Copilot NPI incident is detected
+# Record a provider-to-institution notice for Reg S-P evidence.
+# The 72-hour timing evaluation starts when the service provider becomes aware
+# of a qualifying breach in a customer-information system it maintains.
+# This local tracker neither sends notices nor substitutes for legal review.
 
 param(
     [Parameter(Mandatory=$true)]
@@ -172,39 +174,78 @@ param(
     [ValidateSet("Critical","High","Medium","Low")]
     [string]$Severity,
 
+    [Parameter(Mandatory=$true)]
+    [string]$ServiceProvider,
+
+    [Parameter(Mandatory=$true)]
+    [datetime]$ProviderAwarenessTime,
+
+    [Parameter(Mandatory=$true)]
+    [datetime]$InstitutionReceiptTime,
+
+    [Parameter(Mandatory=$true)]
+    [datetime]$InstitutionAwarenessTime,
+
+    [Parameter(Mandatory=$true)]
+    [string]$ProviderReportedScope,
+
     [Parameter(Mandatory=$false)]
-    [datetime]$DetectionTime = (Get-Date)
+    [ValidateSet("Pending investigation","Notification required","Notification not required")]
+    [string]$AffectedIndividualNotificationStatus = "Pending investigation",
+
+    [Parameter(Mandatory=$false)]
+    [datetime]$InstitutionResponseInitiatedTime = (Get-Date)
 )
 
 $incidentId = "REGSP-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
-$notificationDeadline72hr = $DetectionTime.AddHours(72)
-$notificationDeadline30day = $DetectionTime.AddDays(30)
+$providerNotificationDue = $ProviderAwarenessTime.AddHours(72)
+$affectedIndividualNotificationDue = $InstitutionAwarenessTime.AddDays(30)
+
+$providerNotificationSlaEvaluation = if ($InstitutionReceiptTime -le $providerNotificationDue) {
+    "MET: institution receipt was on or before the provider-awareness deadline."
+} else {
+    "LATE: institution receipt was after the provider-awareness deadline."
+}
 
 $incidentRecord = [PSCustomObject]@{
-    IncidentId            = $incidentId
-    DetectedAt            = $DetectionTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
-    Severity              = $Severity
-    Description           = $IncidentDescription
-    InternalEscalationBy  = $DetectionTime.AddHours(4).ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
-    ExecutiveNotificationBy = $DetectionTime.AddHours(24).ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
-    VendorNotificationBy  = $notificationDeadline72hr.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")  # Rule 248.30(a)(3)
-    CustomerNotificationBy = $notificationDeadline30day.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
-    VendorNotified        = "PENDING"
-    CustomerNotified      = "PENDING"
+    IncidentId                              = $incidentId
+    Severity                                = $Severity
+    Description                             = $IncidentDescription
+    ServiceProvider                         = $ServiceProvider
+    ProviderNotificationDirection           = "Provider to institution"
+    ProviderAwarenessAt                     = $ProviderAwarenessTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
+    InstitutionReceiptAt                    = $InstitutionReceiptTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
+    ProviderNotificationDueBy               = $providerNotificationDue.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
+    ProviderNotificationSlaEvaluation       = $providerNotificationSlaEvaluation
+    ProviderReportedScope                   = $ProviderReportedScope
+    InstitutionAwarenessAt                  = $InstitutionAwarenessTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
+    InstitutionResponseInitiatedAt          = $InstitutionResponseInitiatedTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
+    AffectedIndividualNotificationStatus    = $AffectedIndividualNotificationStatus
+    AffectedIndividualNotificationDueBy     = $affectedIndividualNotificationDue.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'")
 }
 
 Write-Host "=== Reg S-P NPI Incident Tracker ===" -ForegroundColor Yellow
 Write-Host "Incident ID: $incidentId" -ForegroundColor Cyan
 Write-Host "Severity: $Severity" -ForegroundColor $(if ($Severity -eq "Critical") { "Red" } else { "Yellow" })
 Write-Host ""
-Write-Host "REQUIRED NOTIFICATION DEADLINES:"
-Write-Host "  Internal escalation:    $($incidentRecord.InternalEscalationBy)"
-Write-Host "  Executive notification: $($incidentRecord.ExecutiveNotificationBy)"
-Write-Host "  Service-provider notification tracking: $($incidentRecord.VendorNotificationBy)  [Rule 248.30(a)(3) — 72-HOUR DEADLINE]" -ForegroundColor Red
-Write-Host "  Customer notification:  $($incidentRecord.CustomerNotificationBy)  [30-day deadline]"
+Write-Host "SERVICE PROVIDER -> INSTITUTION (Rule 248.30(a)(5)):"
+Write-Host "  Provider awareness:     $($incidentRecord.ProviderAwarenessAt)"
+Write-Host "  Institution receipt:    $($incidentRecord.InstitutionReceiptAt)"
+Write-Host "  Provider deadline:      $($incidentRecord.ProviderNotificationDueBy)  [72 hours from provider awareness]"
+Write-Host "  Timing evaluation:      $($incidentRecord.ProviderNotificationSlaEvaluation)"
+Write-Host "  Provider-reported scope: $($incidentRecord.ProviderReportedScope)"
 Write-Host ""
-Write-Host "This tracker doesn't send a notification. Use the institution's approved incident workflow."
-Write-Host "For Microsoft-determined service incidents, monitor designated tenant admin contacts and Microsoft 365 Service health."
+Write-Host "INSTITUTION RESPONSE PROGRAM (Rule 248.30(a)(3)):"
+Write-Host "  Institution awareness:  $($incidentRecord.InstitutionAwarenessAt)"
+Write-Host "  Response initiated:     $($incidentRecord.InstitutionResponseInitiatedAt)"
+Write-Host ""
+Write-Host "AFFECTED-INDIVIDUAL NOTIFICATION (Rule 248.30(a)(4)):"
+Write-Host "  Status:                 $($incidentRecord.AffectedIndividualNotificationStatus)"
+Write-Host "  Planning deadline:      $($incidentRecord.AffectedIndividualNotificationDueBy)  [only if notice is required]"
+Write-Host ""
+Write-Host "This tracker does not send a notification or make the Rule 248.30(a)(4) determination."
+Write-Host "Do not use the institution's detection time as the Rule 248.30(a)(5) 72-hour trigger."
+Write-Host "Use the institution's approved incident workflow and retain the supporting evidence."
 
 $incidentRecord | Export-Csv "RegSP_Incident_$incidentId.csv" -NoTypeInformation
 Write-Host "`nIncident record saved to: RegSP_Incident_$incidentId.csv" -ForegroundColor Green
@@ -212,7 +253,14 @@ Write-Host "`nIncident record saved to: RegSP_Incident_$incidentId.csv" -Foregro
 
 **Usage example:**
 ```powershell
-.\Script5-IncidentTracker.ps1 -IncidentDescription "Copilot Chat surfaced client SSN to unauthorized advisor" -Severity "Critical"
+.\Script5-IncidentTracker.ps1 `
+    -IncidentDescription "Provider reported unauthorized access to a Copilot customer-information system" `
+    -Severity "Critical" `
+    -ServiceProvider "Contoso service provider" `
+    -ProviderAwarenessTime "2026-08-24T09:00:00Z" `
+    -InstitutionReceiptTime "2026-08-24T11:00:00Z" `
+    -InstitutionAwarenessTime "2026-08-24T11:00:00Z" `
+    -ProviderReportedScope "Potential exposure of customer account records; investigation ongoing"
 ```
 
 ## Scheduled Tasks
@@ -222,7 +270,12 @@ Write-Host "`nIncident record saved to: RegSP_Incident_$incidentId.csv" -Foregro
 | Copilot policy and rule verification | Weekly | Script 2 |
 | NPI SIT verification | Quarterly | Script 3 |
 | Copilot interaction audit export | Monthly | Script 4 |
-| Incident response timer | On-demand (at incident detection) | Script 5 |
+| Service-provider intake and notification timing evidence | On-demand (on provider notice or institution awareness) | Script 5 |
+
+## Regulatory Basis
+
+- [SEC Rule 248.30 — current regulatory text](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)
+- [SEC Final Rule — Regulation S-P Amendments (Release No. 34-100155)](https://www.sec.gov/files/rules/final/2024/34-100155.pdf)
 
 ## Next Steps
 

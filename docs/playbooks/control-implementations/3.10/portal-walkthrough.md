@@ -2,7 +2,7 @@
 
 # Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information — Portal Walkthrough
 
-Step-by-step portal configuration for implementing privacy controls that support compliance with SEC Regulation S-P, including the amendments proposed in 2023 and adopted in May 2024 (SEC Release No. 34-100155), when using Microsoft 365 Copilot with consumer financial information.
+Step-by-step portal configuration for implementing privacy controls that support compliance with SEC Regulation S-P, including the amendments proposed in 2023 and adopted in May 2024 ([SEC Release No. 34-100155](https://www.sec.gov/files/rules/final/2024/34-100155.pdf)), when using Microsoft 365 Copilot with consumer financial information.
 
 ## Prerequisites
 
@@ -68,18 +68,18 @@ Step-by-step portal configuration for implementing privacy controls that support
 4. Assess whether Copilot prompts and responses may expose nonpublic personal information (NPI).
 5. Configure source access controls and the supported Copilot DLP actions to limit NPI processing.
 
-### Step 5: Configure the Incident Response Program for Copilot NPI Events (Reg S-P Rule 248.30(a)(4))
+### Step 5: Configure Response, Affected-Individual Notification, and Service-Provider Oversight
 
 **Portal:** Microsoft Purview portal / Internal incident response documentation
 **Path:** Microsoft Purview > Data Loss Prevention > Alerts; Microsoft Purview > Audit; Internal IRP documentation system
 
-The amended Reg S-P requires a written incident response program addressing unauthorized access to or use of customer information. Configure the following for Copilot NPI incident coverage:
+The [final rule text](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30) assigns the response program to Rule 248.30(a)(3), affected-individual notification to (a)(4), and service-provider oversight and provider-to-institution notification to (a)(5). Configure and evidence those distinct responsibilities for Copilot NPI incidents:
 
-1. **Document Copilot NPI scenarios in the written IRP:**
+1. **Document Copilot NPI scenarios in the written response program (Rule 248.30(a)(3)):**
    - Scenario: Copilot surfaces client NPI to unauthorized user (oversharing or permission misconfiguration)
    - Scenario: Copilot-drafted communication contains NPI that should not have been disclosed
    - Scenario: Copilot Chat response aggregates NPI from multiple sources into a single response accessible to an unauthorized party
-   For each scenario, document: detection method, severity classification, escalation path, containment steps, and notification workflow.
+   For each scenario, document: detection method, severity classification, scope assessment, escalation path, containment and recovery steps, and notification workflow.
 
 2. **Configure and review Copilot DLP alerts:**
    - Navigate to **Microsoft Purview > Data Loss Prevention > Alerts**
@@ -88,22 +88,24 @@ The amended Reg S-P requires a written incident response program addressing unau
    - Configure alerts to route to the designated Privacy Officer and Compliance team
    - In **Microsoft Purview > Audit**, search **Copilot activities** / **Interacted with Copilot** for `CopilotInteraction` evidence
 
-3. **Verify service provider notification arrangements (Reg S-P Rule 248.30(a)(3)):**
-   - Verify that service provider agreements require Microsoft to notify the institution within 72 hours of becoming aware of unauthorized access to customer information
-   - Document the institution's process for receiving and acting on service provider notifications
-   - Keep designated tenant administrator contacts current and monitor Microsoft 365 Service health. Microsoft documents these as channels for Microsoft-determined service incident notifications
+3. **Operate service-provider oversight and notification intake (Rule 248.30(a)(5)):**
+   - Maintain written policies and procedures for due diligence and monitoring of applicable service providers.
+   - When a provider reports a qualifying breach in a customer-information system it maintains, capture the provider's awareness time, the institution's receipt time, the provider-reported scope, and the provider-to-institution 72-hour timing evaluation. The 72-hour trigger is provider awareness, not the institution's detection time.
+   - On receipt, initiate the institution's Rule 248.30(a)(3) response program. Keep designated tenant administrator contacts current and monitor Microsoft 365 Service health as part of the institution's tested intake process for Microsoft-determined incidents.
+   - Do not state that Rule 248.30(a)(5) imposes a general written-contract requirement. The rule permits a written agreement for a provider to notify affected individuals on the institution's behalf, but the institution retains that notification obligation.
 
-4. **Set up the incident response notification timeline:**
-   - Internal escalation: Per the institution's incident response procedures
-   - Customer notification: Per amended Reg S-P requirements
+4. **Maintain the affected-individual notification process separately (Rule 248.30(a)(4)):**
+   - Document the reasonable investigation and determination whether sensitive customer information was, or is reasonably likely to have been, used in a manner that would result in substantial harm or inconvenience.
+   - If notification is required, track the institution's affected-individual notification clock separately: notice is due as soon as practicable and no later than 30 days after the institution becomes aware of qualifying unauthorized access or use.
 
 ### Step 6: Test the Incident Response Program Configuration
 
 1. Conduct a tabletop exercise simulating a Copilot NPI incident.
 2. Walk through each stage of the incident response procedures per the institution's written program.
-3. Verify that service provider notification arrangements are documented and tested.
-4. Document the exercise outcomes and any gaps identified.
-5. Update the IRP based on exercise findings.
+3. Verify provider-to-institution notification intake, provider-awareness timing evidence, and service-provider oversight are documented and tested.
+4. Verify the Rule 248.30(a)(4) affected-individual notification decision and clock are not conflated with the provider timing evaluation.
+5. Document the exercise outcomes and any gaps identified.
+6. Update the response program based on exercise findings.
 
 ## FSI Recommendations
 
@@ -113,14 +115,16 @@ The amended Reg S-P requires a written incident response program addressing unau
 | Information barriers | Assess applicability | Business unit boundaries on supported sources | Full supported-source segregation; disable Pages/Notebooks where the SharePoint Embedded gap isn't acceptable |
 | NPI detection in Copilot | Audit and DSPM review | DLP alerts and review cadence | Enforced supported actions and documented alert response |
 | Privacy impact assessment | Annual | Semi-annual | Annual + event-driven |
-| Written incident response program | Required (Rule 248.30(a)(4)) | With Copilot scenarios | With tabletop exercise documentation |
-| Service provider notification requirement | Verify agreements | Test in tabletop | Quarterly drill |
+| Written response program | Required (Rule 248.30(a)(3)) | With Copilot scenarios | With tabletop exercise documentation |
+| Affected-individual notification | Document Rule 248.30(a)(4) determination | Test the institution's separate notification clock | Retain investigation and notice evidence |
+| Service-provider oversight and notice | Written due diligence/monitoring procedures (Rule 248.30(a)(5)) | Test provider awareness, institution receipt, reported scope, and timing evidence | Quarterly drill without asserting a general written-contract requirement |
 
 ## Regulatory Alignment
 
-- **SEC Final Rule, Release No. 34-100155 (May 2024)** — Primary SEC source for the Reg S-P amendments proposed in 2023 and adopted in 2024
-- **SEC Reg S-P Rule 248.30(a)(3)** — Requires institutions to adopt policies requiring service providers to notify the institution within 72 hours of unauthorized access to customer information
-- **SEC Reg S-P Rule 248.30(a)(4)** — Mandatory written incident response program; Copilot-specific scenarios must be included
+- **[SEC Final Rule, Release No. 34-100155 (May 2024)](https://www.sec.gov/files/rules/final/2024/34-100155.pdf)** — Primary SEC source for the Reg S-P amendments proposed in 2023 and adopted in 2024
+- **[SEC Reg S-P Rule 248.30(a)(3)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)** — Response program for unauthorized access to or use of customer information
+- **[SEC Reg S-P Rule 248.30(a)(4)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)** — Affected-individual notification obligation, determination, timing, and contents
+- **[SEC Reg S-P Rule 248.30(a)(5)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)** — Service-provider oversight and provider-to-institution notification within 72 hours of provider awareness of a qualifying breach
 - **SEC Reg S-P (Rule 30)** — Supports compliance with safeguarding requirements for customer records and information
 - **GLBA Title V** — Helps meet financial privacy requirements for nonpublic personal information
 - **GLBA §501(b)** — Helps meet safeguards provisions for nonpublic personal information at banks and broker-dealers (the statutory authority for SEC Reg S-P safeguards for SEC-regulated entities; the FTC Safeguards Rule is a separate implementing regulation that applies to FTC-jurisdiction institutions, not to SEC-regulated broker-dealers)

@@ -186,6 +186,7 @@ Use the current DSPM for AI overview as the primary reference; the classic AI hu
 | Get started with DSPM for AI (classic) | [https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations](https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations) |
 | Learn about DSPM | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about](https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about) |
 | DSPM data risk assessments (oversharing) | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing](https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing) |
+| Discover AI apps and distinguish Defender discovery from Purview interaction evidence | [https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-data-leak-shadow-ai-step1](https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-data-leak-shadow-ai-step1) |
 | eDiscovery changes announcement | [https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084](https://techcommunity.microsoft.com/blog/microsoft-security-blog/upcoming-changes-to-microsoft-purview-ediscovery/4405084) |
 
 ---
