@@ -1,6 +1,6 @@
 # Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information — Verification & Testing
 
-Test cases and evidence collection procedures to validate privacy controls for consumer financial information in Copilot interactions, including the incident response program requirements from the Reg S-P amendments proposed in 2023 and adopted by the SEC in May 2024 (Release No. 34-100155).
+Test cases and evidence collection procedures to validate privacy controls for consumer financial information in Copilot interactions, covering the institution's written response program under Rule 248.30(a)(3), the reasonable-investigation and sensitive-customer-information determination for affected-individual notification under (a)(4), and service-provider oversight and provider-to-institution notice under (a)(5). The (a)(3) response program has no fixed statutory clock; when notice is required under (a)(4), it is due as soon as practicable and no later than 30 days from institution awareness; and (a)(5) provider notice is due within 72 hours of provider awareness. These provisions are from the Reg S-P amendments proposed in 2023 and adopted by the SEC in May 2024 (Release No. 34-100155).
 
 ## Test Cases
 

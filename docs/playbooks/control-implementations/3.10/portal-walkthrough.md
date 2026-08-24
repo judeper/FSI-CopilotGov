@@ -122,6 +122,7 @@ The [final rule text](https://www.ecfr.gov/current/title-17/chapter-II/part-248/
 ## Regulatory Alignment
 
 - **[SEC Final Rule, Release No. 34-100155 (May 2024)](https://www.sec.gov/files/rules/final/2024/34-100155.pdf)** — Primary SEC source for the Reg S-P amendments proposed in 2023 and adopted in 2024
+- **[Federal Register, 89 FR 47688 (June 3, 2024), document 2024-11116](https://www.federalregister.gov/documents/2024/06/03/2024-11116/regulation-s-p-privacy-of-consumer-financial-information-and-safeguarding-customer-information)** — Machine-checkable publication of the final rule
 - **[SEC Reg S-P Rule 248.30(a)(3)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)** — Response program for unauthorized access to or use of customer information
 - **[SEC Reg S-P Rule 248.30(a)(4)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)** — Affected-individual notification obligation, determination, timing, and contents
 - **[SEC Reg S-P Rule 248.30(a)(5)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)** — Service-provider oversight and provider-to-institution notification within 72 hours of provider awareness of a qualifying breach

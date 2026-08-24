@@ -64,7 +64,7 @@
       "tier": "Baseline",
       "title": "Control 1.2: SharePoint Oversharing Detection and Remediation (DSPM for AI)",
       "path": "docs/controls/pillar-1-readiness/1.2-sharepoint-oversharing-detection.md",
-      "last_verified": "2026-07-26",
+      "last_verified": "2026-08-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Regulation S-P (Rule 248.30)",

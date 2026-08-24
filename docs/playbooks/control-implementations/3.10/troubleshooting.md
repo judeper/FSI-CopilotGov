@@ -129,6 +129,7 @@ Common issues and resolution steps for privacy controls protecting consumer fina
 - [Control 3.11: Record Keeping Compliance](../3.11/portal-walkthrough.md)
 - [SEC Reg S-P Rule 248.30 (17 CFR 248.30)](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)
 - [SEC Final Rule — Regulation S-P Amendments (Release No. 34-100155)](https://www.sec.gov/files/rules/final/2024/34-100155.pdf)
+- [Federal Register — Regulation S-P, 89 FR 47688 (June 3, 2024), document 2024-11116](https://www.federalregister.gov/documents/2024/06/03/2024-11116/regulation-s-p-privacy-of-consumer-financial-information-and-safeguarding-customer-information)
 - [Microsoft Purview DLP for Microsoft 365 Copilot and Copilot Chat](https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about)
 - [Microsoft security incident management: customer notification](https://learn.microsoft.com/en-us/compliance/assurance/assurance-sim-containment-eradication-recovery#customer-notification-of-security-incident)
 - [Copilot Pages and Notebooks compliance summary](https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-compliance-summary?view=o365-worldwide)

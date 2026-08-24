@@ -177,13 +177,14 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 ## DSPM (Data Security Posture Management) and DSPM for AI
 
-Use the current DSPM for AI overview as the primary reference; the classic AI hub URLs are retained for organizations that have not yet migrated.
+Use the current DSPM overview as the primary reference; the classic DSPM for AI URLs are retained for organizations that have not yet migrated.
 
 | Topic | URL |
 |-------|-----|
-| DSPM for AI overview (current) | [https://learn.microsoft.com/en-us/purview/dspm-for-ai](https://learn.microsoft.com/en-us/purview/dspm-for-ai) |
-| DSPM for AI (classic) overview | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
-| Get started with DSPM for AI (classic) | [https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations](https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations) |
+| Data Security Posture Management overview (current) | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about](https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about) |
+| DSPM for AI overview (classic; superseded) | [https://learn.microsoft.com/en-us/purview/dspm-for-ai](https://learn.microsoft.com/en-us/purview/dspm-for-ai) |
+| DSPM for AI prerequisites (classic; superseded) | [https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations](https://learn.microsoft.com/en-us/purview/dspm-for-ai-considerations) |
+| Microsoft Purview AI security and compliance protections overview | [https://learn.microsoft.com/en-us/purview/ai-microsoft-purview](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview) |
 | Learn about DSPM | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about](https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about) |
 | DSPM data risk assessments (oversharing) | [https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing](https://learn.microsoft.com/en-us/purview/data-security-posture-management-oversharing) |
 | Discover AI apps and distinguish Defender discovery from Purview interaction evidence | [https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-data-leak-shadow-ai-step1](https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-data-leak-shadow-ai-step1) |

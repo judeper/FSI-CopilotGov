@@ -148,9 +148,13 @@ Search-UnifiedAuditLog -StartDate $start -EndDate $end `
 
 ### Step 3: Regulatory Notification Assessment
 
-| Trigger | Notification Obligation | Timeline |
-|---------|------------------------|----------|
-| NPI accessed by unauthorized agent | SEC Reg S-P 72-hour vendor notification; 30-day customer notification | 72 hours / 30 days |
+For the Reg S-P distinctions and implementation detail, see [Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information](../../controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md).
+
+| Incident scenario | Applicable obligation | Timing / action |
+|------------------|----------------------|-----------------|
+| Institution-side unauthorized access to or use of customer information, including NPI surfaced by an agent | SEC Rule 248.30(a)(3): the institution's written response program must detect, respond to, and recover from the event; this provision has no fixed statutory clock | Start the institution's approved response program promptly; assess the nature and scope, contain and control the event, recover, and follow the notification procedures in the program |
+| Institution-side event requiring an affected-individual assessment | SEC Rule 248.30(a)(4): conduct a reasonable investigation and determine whether sensitive customer information was, or is reasonably likely to have been, used in a manner that would result in substantial harm or inconvenience | If notice is required, provide it as soon as practicable and no later than 30 days from the institution's awareness of qualifying unauthorized access or use |
+| Qualifying security breach involving unauthorized access to a customer-information system maintained by a service provider | SEC Rule 248.30(a)(5): provider-to-institution notice; the trigger is provider awareness | The provider must notify the institution as soon as possible and no later than 72 hours after provider awareness; on receipt, the institution initiates its (a)(3) response program. Do not start this clock from institution detection |
 | MNPI surfaced across barrier | SEC Rule 10b-5 assessment; potential self-report | Immediate assessment |
 | External communications sent | FINRA Rule 3110 supervisory failure review | Within supervisory cycle |
 | BSA/AML data exposed | FinCEN SAR assessment | Per BSA timelines |

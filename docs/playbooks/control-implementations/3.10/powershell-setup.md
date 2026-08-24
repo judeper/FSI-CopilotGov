@@ -276,6 +276,7 @@ Write-Host "`nIncident record saved to: RegSP_Incident_$incidentId.csv" -Foregro
 
 - [SEC Rule 248.30 — current regulatory text](https://www.ecfr.gov/current/title-17/chapter-II/part-248/section-248.30)
 - [SEC Final Rule — Regulation S-P Amendments (Release No. 34-100155)](https://www.sec.gov/files/rules/final/2024/34-100155.pdf)
+- [Federal Register — Regulation S-P, 89 FR 47688 (June 3, 2024), document 2024-11116](https://www.federalregister.gov/documents/2024/06/03/2024-11116/regulation-s-p-privacy-of-consumer-financial-information-and-safeguarding-customer-information)
 
 ## Next Steps
 
