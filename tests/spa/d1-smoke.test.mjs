@@ -65,9 +65,7 @@ async function initApp({ facilitator = false } = {}) {
   app.manifestById = {};
   manifest.forEach((row) => { if (row && row.id) app.manifestById[row.id] = row; });
   const lock = JSON.parse(readFileSync(LOCK_PATH, "utf8"));
-  app.solutionsLock = lock;
-  app.solutionsLockById = {};
-  (lock.solutions || []).forEach((s) => { if (s && s.id) app.solutionsLockById[s.id] = s; });
+  app.setSolutionsLock(lock);
   // Recompute facilitator mode now that we've stubbed localStorage.
   app.facilitatorMode = window.localStorage.getItem("fsi-copilotgov:facilitator-mode") === "1";
   // Seed minimal state and jump to phase1 so renderPhase1 runs.
@@ -95,6 +93,7 @@ describe("D1 SPA smoke", () => {
     expect(typeof s.isAuthored).toBe("function");
     expect(typeof s.isTodoString).toBe("function");
     expect(typeof s.authoredOr).toBe("function");
+    expect(typeof s.canonicalSolutionUrl).toBe("function");
     expect(s.DRAWER_NOTES_PREFIX).toBe("fsi-copilotgov:notes:");
     expect(s.FACILITATOR_MODE_KEY).toBe("fsi-copilotgov:facilitator-mode");
   });
@@ -158,19 +157,21 @@ describe("D1 SPA smoke", () => {
   });
 
   it("drawer shows solution recommendation cards for authored control 1.2", async () => {
-    const { app, document } = await initApp();
+    const { app, document, exports } = await initApp();
     const ctrl = app.data.controls.find((c) => c.id === "1.2");
     app.openDrawer(ctrl);
     const drawer = document.querySelector(".control-drawer");
     const cards = drawer.querySelectorAll(".solution-card");
     // FSI-CopilotGov: Control 1.2 maps to multiple solutions in the manifest (count derived from solutions-lock.json).
     expect(cards.length).toBeGreaterThanOrEqual(1);
-    const first = cards[0];
-    expect(first.getAttribute("href")).toMatch(/^https:\/\/github\.com/);
-    // Card should contain a name, tier badge, and role pill.
-    expect(first.querySelector(".solution-card-name")).not.toBeNull();
-    expect(first.querySelector(".solution-card-tier")).not.toBeNull();
-    expect(first.querySelector(".solution-card-role")).not.toBeNull();
+    cards.forEach((card) => {
+      const href = card.getAttribute("href");
+      expect(exports.canonicalSolutionUrl(href)).toBe(href);
+      // Card should contain a name, tier badge, and role pill.
+      expect(card.querySelector(".solution-card-name")).not.toBeNull();
+      expect(card.querySelector(".solution-card-tier")).not.toBeNull();
+      expect(card.querySelector(".solution-card-role")).not.toBeNull();
+    });
   });
 
   it("facilitator mode toggle adds expanded panels on all authored controls", async () => {
