@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -300,21 +301,50 @@ def prepare_report_data(
 # ---------------------------------------------------------------------------
 
 
+_MARKDOWN_META_RE = re.compile(r"([\\`*_{}\[\]()#+\-.!|])")
+_MARKDOWN_CONTROL_RE = re.compile(r"[\x00-\x20\x7f-\x9f\u2028\u2029]+")
+
+
+def _markdown_plain_text(value: object) -> str:
+    """Render every dynamic value as single-line Markdown plain text."""
+    if value is None:
+        return ""
+    if isinstance(value, (dict, list, tuple)):
+        try:
+            text = json.dumps(
+                value,
+                ensure_ascii=False,
+                sort_keys=True,
+                default=str,
+            )
+        except (TypeError, ValueError):
+            text = str(value)
+    else:
+        text = str(value)
+    text = _MARKDOWN_CONTROL_RE.sub(" ", text)
+    return _MARKDOWN_META_RE.sub(r"\\\1", text)
+
+
+def _markdown_environment() -> Environment:
+    """Create a Jinja environment safe for Markdown-to-HTML rendering."""
+    # HTML escaping neutralizes raw tags; finalization also escapes Markdown
+    # structure and collapses line breaks before any dynamic value reaches an
+    # inline, heading, blockquote, or table-cell context.
+    return Environment(
+        keep_trailing_newline=True,
+        autoescape=True,
+        finalize=_markdown_plain_text,
+    )
+
+
 def generate_prefilled_md(data: dict) -> str:
-    # nosec B701 — autoescape is intentionally off: these templates render
-    # Markdown reports for human review, not HTML. Auto-escaping would
-    # corrupt every ``<``, ``>``, and ``&`` in control titles, regulatory
-    # citations, and verification-criteria text. Inputs come from the
-    # repo-owned ``controls.json`` manifest, not from user input.
-    env = Environment(keep_trailing_newline=True, autoescape=False)  # nosec B701
+    env = _markdown_environment()
     template = env.from_string(PREFILLED_TEMPLATE)
     return template.render(**data)
 
 
 def generate_questionnaire_md(data: dict) -> str:
-    # nosec B701 — see generate_prefilled_md(): Markdown output, manifest-only
-    # inputs, no HTML escaping required.
-    env = Environment(keep_trailing_newline=True, autoescape=False)  # nosec B701
+    env = _markdown_environment()
     template = env.from_string(QUESTIONNAIRE_TEMPLATE)
     return template.render(**data)
 

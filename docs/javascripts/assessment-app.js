@@ -20,6 +20,8 @@
   var DRAWER_NOTES_PREFIX = "fsi-copilotgov:notes:";
   var FACILITATOR_MODE_KEY = "fsi-copilotgov:facilitator-mode";
   var SOLUTIONS_BASE_URL = "https://github.com/judeper/FSI-CopilotGov-Solutions/tree/main/solutions/";
+  var SOLUTIONS_REPO_PATH = "/judeper/FSI-CopilotGov-Solutions";
+  var SOLUTION_ID_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
   // D2: Collector evidence import storage + status-mapping constants.
   var COLLECTOR_EVIDENCE_KEY_PREFIX = "fsi-copilotgov:collector-evidence:";
   var COLLECTOR_STATUS_MAP = { pass: "yes", partial: "partial", fail: "no" };
@@ -119,6 +121,45 @@
     // Prefix dangerous leading characters that trigger formula execution
     if (/^[=+\-@\t\r]/.test(val)) return "'" + val;
     return val;
+  }
+
+  function canonicalSolutionUrl(raw) {
+    if (typeof raw !== "string" || !raw || raw !== raw.trim()) return null;
+    if (/[\u0000-\u0020\u007f]/.test(raw) || raw.indexOf("\\") !== -1) return null;
+
+    var parsed;
+    try {
+      parsed = new URL(raw);
+    } catch (_err) {
+      return null;
+    }
+
+    if (parsed.protocol !== "https:" ||
+        parsed.username || parsed.password ||
+        parsed.hostname !== "github.com" ||
+        parsed.host !== "github.com" ||
+        parsed.port !== "") {
+      return null;
+    }
+    if (parsed.pathname.indexOf("%") !== -1 ||
+        parsed.pathname.indexOf("//") !== -1) {
+      return null;
+    }
+    if (parsed.pathname !== SOLUTIONS_REPO_PATH &&
+        parsed.pathname.indexOf(SOLUTIONS_REPO_PATH + "/") !== 0) {
+      return null;
+    }
+    // Reject URLs whose spelling was changed by parsing, including explicit
+    // default ports and literal or encoded dot-segment traversal.
+    if (parsed.href !== raw) return null;
+    return parsed.href;
+  }
+
+  function solutionUrlForEntry(entry, id) {
+    var locked = canonicalSolutionUrl(entry && entry.url);
+    if (locked) return locked;
+    if (typeof id !== "string" || !SOLUTION_ID_PATTERN.test(id)) return null;
+    return canonicalSolutionUrl(SOLUTIONS_BASE_URL + id);
   }
 
   function downloadBlob(blob, filename) {
@@ -413,6 +454,28 @@
     this._observers = [];
   };
 
+  AssessmentApp.prototype.setSolutionsLock = function (lock) {
+    this.solutionsLock = null;
+    this.solutionsLockById = {};
+    if (!lock || typeof lock !== "object") return;
+
+    var safeLock = Object.assign({}, lock);
+    var entries = Array.isArray(lock.solutions) ? lock.solutions : [];
+    safeLock.solutions = [];
+    entries.forEach(function (entry) {
+      if (!entry || typeof entry !== "object") return;
+      var safeEntry = Object.assign({}, entry);
+      safeEntry.url = canonicalSolutionUrl(entry.url);
+      safeLock.solutions.push(safeEntry);
+    });
+
+    this.solutionsLock = safeLock;
+    var self = this;
+    safeLock.solutions.forEach(function (entry) {
+      if (entry.id) self.solutionsLockById[entry.id] = entry;
+    });
+  };
+
   AssessmentApp.prototype.loadData = function () {
     var self = this;
     var base = "";
@@ -464,12 +527,8 @@
           .then(function (r) { return r.ok ? r.json() : null; })
           .then(function (lock) {
             if (!lock || typeof lock !== "object") return;
-            self.solutionsLock = lock;
-            self.solutionsLockById = {};
-            var entries = Array.isArray(lock.solutions) ? lock.solutions : [];
-            entries.forEach(function (entry) {
-              if (entry && entry.id) self.solutionsLockById[entry.id] = entry;
-            });
+            self.setSolutionsLock(lock);
+            var entries = self.solutionsLock.solutions;
             if (window.console && console.debug) {
               console.debug("[assessment] solutions-lock loaded: " + entries.length + " solutions");
             }
@@ -1989,14 +2048,19 @@
       var role = typeof s === "object" ? s.role : null;
       var entry = lock[id] || null;
       var name = entry && entry.name ? entry.name : id;
-      var url = entry && entry.url ? entry.url : (SOLUTIONS_BASE_URL + id);
-      var card = h("a", {
+      var url = solutionUrlForEntry(entry, id);
+      var cardAttrs = {
         className: "solution-card",
-        href: url,
-        target: "_blank",
-        rel: "noopener noreferrer",
         "data-solution-id": id,
-      });
+      };
+      if (url) {
+        cardAttrs.href = url;
+        cardAttrs.target = "_blank";
+        cardAttrs.rel = "noopener noreferrer";
+      } else {
+        cardAttrs["aria-disabled"] = "true";
+      }
+      var card = h(url ? "a" : "div", cardAttrs);
       card.appendChild(h("span", { className: "solution-card-name" }, name));
       var meta = h("span", { className: "solution-card-meta" });
       if (tier) {
@@ -4348,10 +4412,11 @@
     var tierMeta = this._renderSolutionTierMeta(s, { abbreviate: false });
     if (tierMeta) panel.appendChild(tierMeta);
 
-    if (s.url) {
+    var solutionUrl = solutionUrlForEntry(s, s.id);
+    if (solutionUrl) {
       panel.appendChild(h("a", {
         className: "solution-detail-link",
-        href: s.url, target: "_blank", rel: "noopener noreferrer",
+        href: solutionUrl, target: "_blank", rel: "noopener noreferrer",
       }, "Open solution repo ↗"));
     }
 
@@ -4703,6 +4768,7 @@
       DRAWER_NOTES_PREFIX: DRAWER_NOTES_PREFIX,
       FACILITATOR_MODE_KEY: FACILITATOR_MODE_KEY,
       SOLUTIONS_BASE_URL: SOLUTIONS_BASE_URL,
+      canonicalSolutionUrl: canonicalSolutionUrl,
       COLLECTOR_EVIDENCE_KEY_PREFIX: COLLECTOR_EVIDENCE_KEY_PREFIX,
       COLLECTOR_STATUS_MAP: COLLECTOR_STATUS_MAP,
       ENVELOPE_SCHEMA_VERSION: ENVELOPE_SCHEMA_VERSION,

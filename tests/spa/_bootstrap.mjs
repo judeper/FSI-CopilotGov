@@ -58,9 +58,7 @@ export async function initApp({ step = "phase1", sector = "bank", facilitator = 
   app.manifestById = {};
   manifest.forEach((row) => { if (row && row.id) app.manifestById[row.id] = row; });
   const lock = JSON.parse(readFileSync(LOCK_PATH, "utf8"));
-  app.solutionsLock = lock;
-  app.solutionsLockById = {};
-  (lock.solutions || []).forEach((s) => { if (s && s.id) app.solutionsLockById[s.id] = s; });
+  app.setSolutionsLock(lock);
   app.facilitatorMode = window.localStorage.getItem("fsi-copilotgov:facilitator-mode") === "1";
   app.state = {
     schemaVersion: 2,
