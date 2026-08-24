@@ -59,19 +59,17 @@ For high-priority findings, use item-level remediation to address individual fil
 
 Item-level remediation is particularly valuable for sites where broad access is legitimate but specific sensitive files need to be protected.
 
-### Step 4: Enable AI Observability and Shadow AI Discovery
+### Step 4: Enable AI Observability and AI App/Agent Discovery
 
 **Portal:** Microsoft Purview portal
-**Path:** Solutions > DSPM > Discover > Activity explorer > AI activities; Discover > AI apps
+**Path:** Solutions > DSPM > AI observability; Discover > Activity explorer > AI activities; Discover > Apps and agents
 
 Configure the unified AI observability view to monitor AI activity across Microsoft 365 Copilot and any third-party AI apps in use:
 
-1. Open **Discover > Activity explorer > AI activities**
-2. Review AI activity across the monitored surfaces
-3. Open **Discover > AI apps** and review findings for unsanctioned AI tools detected in the organization
-4. Configure alerts for new Shadow AI tool detections
-
-**Quick access:** Microsoft 365 Admin Center > Copilot > Security shows a summary of Shadow AI findings and provides a link to the full Purview DSPM experience.
+1. Open **AI observability** and review AI apps and agents active in the last 30 days
+2. Open **Discover > Activity explorer > AI activities** and review sensitive AI interactions
+3. Open **Discover > Apps and agents** and review apps or agents that aren't sanctioned through the organization's governance process
+4. Document the review, classification, and escalation process for entries that aren't sanctioned
 
 ### Step 5: Use Recommendations for Remediation Actions
 

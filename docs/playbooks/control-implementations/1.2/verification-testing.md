@@ -52,16 +52,16 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
 - **Expected Result:** Alert is generated and delivered to configured recipients within the expected timeframe
 - **Evidence:** Alert record from Purview and email notification screenshot
 
-### Test 5a: Shadow AI Discovery Functional Verification
+### Test 5a: AI App and Agent Discovery Functional Verification
 
-- **Objective:** Verify Shadow AI discovery is detecting unsanctioned AI tool usage
+- **Objective:** Verify current DSPM inventory surfaces AI apps and agents that require governance review
 - **Steps:**
-  1. Navigate to Microsoft Purview > Solutions > DSPM > Discover > Activity explorer > AI activities
-  2. Confirm Shadow AI discovery section is enabled and populated with data
-  3. Verify the governance team has reviewed Shadow AI findings in the past 30 days
-  4. Confirm alert configurations exist for new Shadow AI tool detections
-- **Expected Result:** Shadow AI discovery is active and governance team has a process to review findings
-- **Evidence:** Screenshot of Shadow AI findings dashboard; alert configuration screenshot
+  1. Navigate to Microsoft Purview > Solutions > DSPM
+  2. Review **AI observability** for AI apps and agents active in the last 30 days
+  3. Open **Discover > Apps and agents** and identify entries that aren't sanctioned through the organization's governance process
+  4. Verify the governance team has reviewed those entries in the past 30 days
+- **Expected Result:** DSPM inventory is populated and the governance team has a process to review unsanctioned apps and agents
+- **Evidence:** Screenshots of AI observability and Apps and agents; governance review record
 
 ### Test 6: Copilot Access Validation Post-Remediation
 

@@ -1,4 +1,4 @@
-# Control 2.1: DLP Policies for M365 Copilot Interactions — Portal Walkthrough
+# Control 2.1: DLP Policies for Microsoft 365 Copilot Interactions — Portal Walkthrough
 
 Step-by-step portal configuration for deploying Data Loss Prevention policies that govern Microsoft 365 Copilot and Copilot Chat interactions. Supported condition/action pairs use separate rules; sensitivity-label and sensitive-information-type conditions can't be combined within one rule.
 
