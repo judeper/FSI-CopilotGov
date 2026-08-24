@@ -80,12 +80,10 @@ Verify that Copilot-related activities appear in the activity log. Configure log
 **Path:** Defender portal > Settings > Security for AI > Get started; agent inventory at Assets > AI agents
 
 1. Confirm the tenant holds a Microsoft Agent 365-eligible license (Microsoft 365 E5 prerequisite) — required as of July 1, 2026 for Copilot Studio and Microsoft Foundry agent threat detection coverage
-2. On the **Security for AI > Get started** page, confirm the **Security for AI Agents** toggle is enabled and the Copilot Studio real-time protection step is completed (this shares an App ID with your Power Platform administrator)
+2. On the **Security for AI > Get started** page, confirm the **Security for AI Agents** toggle is enabled. For Copilot Studio real-time protection, copy the onboarding URL from Defender and send it to the Power Platform administrator; after they complete the Power Platform configuration, obtain the App ID from them, paste it into Defender, and save the connection.
 3. Verify that your Copilot agent deployments (Copilot Studio agents, SharePoint agents) appear in **Assets > AI agents** with a current risk level
 4. Navigate to Incidents & alerts and filter for agent-related incidents to confirm detection is operational
-5. Configure custom detection rules for agent anomalies specific to your organization:
-   - Alerts when an agent accesses data outside its configured knowledge source scope
-   - Alerts when agent interaction volume significantly exceeds baseline
+5. Under **Settings > Security for AI > Policies & rules > Real-time protection**, review the built-in **Default** audit rule and create agent-scoped custom rules for documented detection types that require blocking. Use Advanced Hunting telemetry to create custom detections and downstream automation for organization-specific anomalous behavior.
 6. Integrate agent threat alerts into your SIEM or Microsoft Sentinel workspace for correlation with user activity
 
 ## FSI Recommendations
