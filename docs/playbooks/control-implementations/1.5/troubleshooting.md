@@ -36,15 +36,16 @@ Common issues and resolution steps for sensitivity label taxonomy management.
   3. Enable downgrade justification: In the label policy, set `RequireDowngradeJustification` to `$true`
   4. Test priority behavior by attempting to apply labels in different order
 
-### Issue 4: Encryption Blocking Copilot Content Access
+### Issue 4: Encrypted-content behavior differs by user or surface
 
-- **Symptoms:** Copilot cannot access content protected by encrypted sensitivity labels, resulting in incomplete responses or "I don't have access to that content" messages
-- **Root Cause:** Sensitivity labels with encryption restrict access to specified users or groups. If the Copilot service principal does not have access rights, it cannot read encrypted content.
+- **Symptoms:** Copilot returns a link, an incomplete response, or an unavailable-item message for encrypted sensitivity-label content.
+- **Root Cause:** Copilot evaluates the requesting user’s effective EXTRACT (Copy) right; it does not make a generic service-principal access decision. VIEW without EXTRACT normally prevents summarization but can return a link. OWNER includes EXTRACT, and data-in-use, user-defined permissions, Edge, and external-source behavior have documented exceptions or limitations.
 - **Resolution:**
   1. Review encryption settings on the label: `Get-Label -Identity <name> | Select-Object -ExpandProperty EncryptionRightsDefinitions`
-  2. Verify that Copilot respects the user's access rights (Copilot accesses content as the user, not as a service)
-  3. Confirm the user querying Copilot has the required rights to the encrypted content
-  4. If Copilot should not access certain encrypted content, this is expected behavior — document it as intended
+  2. Verify the requesting user’s effective EXTRACT right and whether that user is the Rights Management owner.
+  3. Test the item unopened, directly referenced where supported, and open in an Office app; record the source and surface.
+  4. If Edge DLP is not deployed, test active encrypted browser-tab behavior; test external plugin/Graph connector sources separately.
+  5. If the organization intends a Copilot exclusion, validate the appropriate DLP, DKE, or connected-experience control rather than relying on an untested label outcome.
 
 ### Issue 5: Sub-Labels Not Displaying Correctly
 

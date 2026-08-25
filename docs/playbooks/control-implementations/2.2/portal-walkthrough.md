@@ -72,7 +72,7 @@ Microsoft Purview sensitivity labels in Copilot Studio are in **preview** and ar
 
 **Example:** An agent with knowledge sources labeled "Confidential — Standard" and "Internal — General" can surface "Confidential — Standard" on its responses. Users interacting with this agent may trigger Confidential-tier DLP monitoring.
 
-**Note on encryption:** Label-applied encryption is honored for the SharePoint knowledge source. Copilot Studio agents return content from encrypted items only where the user holds the EXTRACT usage right.
+**Note on encryption:** Label-applied encryption is honored for the SharePoint knowledge source. For that supported source, Copilot Studio agents return encrypted-item text only where the requesting user holds EXTRACT. Validate additional knowledge sources separately rather than assuming encryption applied to external data is recognized.
 
 **Governance gate for Recommended/Regulated:** Agents that can surface Confidential or higher labels require compliance sign-off as part of the deployment approval workflow.
 
@@ -104,9 +104,11 @@ Service-side auto-labeling policies support nested rule logic (AND/OR/NOT) throu
 
 For labels that include encryption, review how Copilot interacts with encrypted content:
 - Copilot accesses content using the current user's permissions
-- Copilot and agents display text from encrypted content only where the user holds the EXTRACT usage right (shown as **Copy**). With VIEW but not EXTRACT, Copilot does not summarize the item but can still return a link to it
-- If the user lacks rights, Copilot cannot access the content
-- New content created from encrypted sources inherits the encryption settings
+- EXTRACT (shown as **Copy**) controls whether Copilot and agents can display encrypted-item text for the requesting user. With VIEW but not EXTRACT, Copilot normally does not summarize the item but can still return a link to it
+- OWNER includes EXTRACT, and the person applying encryption is the Rights Management owner; do not infer the OWNER outcome from the recipient template alone
+- Test unopened user-defined-permissions items, directly referenced items where supported, and an item open in an Office app; data-in-use is a distinct case
+- If Edge DLP is not deployed, test the active encrypted browser-tab behavior. Test external plugins/Graph connectors separately because their label/encryption metadata is not generally recognized by Microsoft 365 Copilot Chat
+- New content inheritance depends on the supported source/surface and encryption configuration; record the observed result rather than assuming all encrypted sources inherit identically
 
 > **Permission Level Names:** The Microsoft Purview portal and the custom permissions dialog in Word, Excel, and PowerPoint for Windows (version 2411 and later) use updated permissions level names — **Reviewer** is now **Restricted Editor**, **Co-Author** is now **Editor**, and **Co-Owner** is now **Owner**. Other applications continue to use the original naming. **Save As, Export is not included in the Editor level when it is configured in the Microsoft Purview portal** — assign it through custom permissions where users need to create derivative documents. Existing labels using the old permission names continue to function, but new label configurations and documentation should use the updated names.
 

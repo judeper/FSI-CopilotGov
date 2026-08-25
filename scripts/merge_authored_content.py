@@ -108,6 +108,21 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "evidenceExpected",
         "facilitatorNotes",
     },
+    "2.8": {
+        # Control 2.8 has no trustworthy tenant-wide Graph or Purview
+        # collector. Keep the dashboard's manual evidence guidance aligned
+        # with the documented handshake, connector, Customer Key, and key
+        # configuration boundaries rather than preserving the prior false
+        # Graph notification-property evidence.
+        "yesBar",
+        "partialBar",
+        "noBar",
+        "verifyIn",
+        "verifyPowerShell",
+        "evidenceExpected",
+        "sectorYesBar",
+        "facilitatorNotes",
+    },
     "3.1": {
         # Authored checks[] wires the audit_log_enabled evaluator.
         "checks",

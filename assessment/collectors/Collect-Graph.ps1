@@ -287,40 +287,6 @@ catch {
 }
 
 # ═══════════════════════════════════════════════════════════════════════
-# Section 6: Tenant TLS / Encryption Settings
-# Supports: Baseline security posture, encryption-at-rest / in-transit
-# ═══════════════════════════════════════════════════════════════════════
-$tenantSecuritySettings = $null
-try {
-    Write-Verbose "Section 6: Collecting tenant security settings via Get-MgOrganization..."
-    $org = Get-MgOrganization -ErrorAction Stop | Select-Object -First 1
-
-    $tenantSecuritySettings = [PSCustomObject]@{
-        DisplayName               = $org.DisplayName
-        TenantId                  = $org.Id
-        TenantType                = $org.TenantType
-        SecurityComplianceNotificationMails = $org.SecurityComplianceNotificationMails
-        SecurityComplianceNotificationPhones = $org.SecurityComplianceNotificationPhones
-        TechnicalNotificationMails = $org.TechnicalNotificationMails
-        VerifiedDomains           = $org.VerifiedDomains | ForEach-Object {
-            [PSCustomObject]@{
-                Name       = $_.Name
-                IsDefault  = $_.IsDefault
-                IsInitial  = $_.IsInitial
-                Type       = $_.Type
-            }
-        }
-        CreatedDateTime           = $org.CreatedDateTime
-        OnPremisesSyncEnabled     = $org.OnPremisesSyncEnabled
-    }
-    Write-Verbose "  Tenant security settings collected."
-}
-catch {
-    $warnings.Add("Section 6 (Tenant Security Settings) failed: $($_.Exception.Message)")
-    Write-Warning $warnings[-1]
-}
-
-# ═══════════════════════════════════════════════════════════════════════
 # Build Output
 # ═══════════════════════════════════════════════════════════════════════
 $result = [ordered]@{
@@ -329,7 +295,6 @@ $result = [ordered]@{
     information_barriers         = $informationBarriers
     privileged_role_assignments  = $privilegedRoleAssignments
     copilot_service_principals   = $copilotServicePrincipals
-    tenant_security_settings     = $tenantSecuritySettings
     _metadata                  = [ordered]@{
         collector   = 'Collect-Graph'
         timestamp   = (Get-Date -Format 'o')
@@ -348,7 +313,7 @@ try { Disconnect-MgGraph -ErrorAction SilentlyContinue } catch { }
 # ─── Exit Code ───────────────────────────────────────────────────────
 $sectionValues = @(
     $conditionalAccessPolicies, $fsiSecurityGroups, $informationBarriers,
-    $privilegedRoleAssignments, $copilotServicePrincipals, $tenantSecuritySettings
+    $privilegedRoleAssignments, $copilotServicePrincipals
 )
 $nullSections = @($sectionValues | Where-Object { $null -eq $_ })
 

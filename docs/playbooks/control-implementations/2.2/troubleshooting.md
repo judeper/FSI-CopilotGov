@@ -85,13 +85,14 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 ### Issue 8: Encrypted Label Blocking Copilot Access
 
 - **Symptoms:** Copilot reports it cannot access content or returns incomplete responses when source documents have encryption-enabled labels
-- **Root Cause:** Copilot and agents display text from encrypted content only where the user holds the EXTRACT usage right (shown as **Copy**). Where a user has VIEW but not EXTRACT, Copilot does not summarize the item but can still return a link to it. Copilot accesses content as the current user, so if the user holds EXTRACT, Copilot should work. If not, Copilot is correctly withholding the content.
+- **Root Cause:** EXTRACT (shown as **Copy**) controls whether Copilot and agents display encrypted-item text for the requesting user. With VIEW but not EXTRACT, Copilot normally does not summarize the item but can return a link. This is not a categorical access rule: OWNER includes EXTRACT, the person applying encryption is the Rights Management owner, and data-in-use, Edge, user-defined-permissions, and external-source cases have documented distinctions.
 - **Resolution:**
-  1. Verify the user has the required usage rights — specifically EXTRACT — for the encrypted content
-  2. If the user should have access, check the encryption configuration and add the user to the authorized list. Note: in the Microsoft Purview portal and the custom permissions dialog in Word, Excel, and PowerPoint for Windows (version 2411 and later), the permission level previously called "Reviewer" is now **Restricted Editor**, "Co-Author" is now **Editor**, and "Co-Owner" is now **Owner** — use the updated names when configuring encryption permissions. Restricted Editor does not include EXTRACT (Copy); Editor and Owner do
-  3. If Copilot should not access the encrypted content, this is expected behavior — document it
-  4. Check whether the label carries the `BlockContentAnalysisServices` PowerShell advanced setting, which stops Office apps from sending the labeled content to connected experiences that analyze content, including Copilot
-  5. Consider using labels without encryption but with other protections (content marking, DLP) if Copilot access is required
+  1. Verify the requesting user’s effective EXTRACT right and whether that user is the Rights Management owner.
+  2. Test the item unopened, directly referenced where supported, and open in an Office app. For Edge, determine whether Edge DLP is deployed before treating EXTRACT as determinative.
+  3. Identify external plugin/Graph connector sources; do not assume their label/encryption metadata is recognized by Microsoft 365 Copilot Chat.
+  4. If the user should have access, check the encryption configuration and add the user to the authorized list. Note: in the Microsoft Purview portal and the custom permissions dialog in Word, Excel, and PowerPoint for Windows (version 2411 and later), the permission level previously called "Reviewer" is now **Restricted Editor**, "Co-Author" is now **Editor**, and "Co-Owner" is now **Owner** — use the updated names when configuring encryption permissions. Restricted Editor does not include EXTRACT (Copy); Editor and Owner do.
+  5. If Copilot should not use the content, document the observed supported-surface behavior and apply a DLP, DKE, or connected-experience control appropriate to the approved design.
+  6. Check whether the label carries the `BlockContentAnalysisServices` PowerShell advanced setting, which stops Office apps from sending the labeled content to connected experiences that analyze content, including Copilot.
 
 ### Issue 9: Label Analytics Showing Incomplete Data
 

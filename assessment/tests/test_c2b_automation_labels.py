@@ -1,7 +1,7 @@
 """Regression tests for C2b automation label corrections (OceanSquad issue #256).
 
 Covers:
-- Controls 2.4 and 2.15 must be manual with no collection_methods
+- Controls 2.4, 2.8, and 2.15 must be manual with no collection_methods
 - The full-automation-implies-checks invariant (honest-label invariant)
 - Controls 1.3, 2.12, 3.1, 3.2 must be full with non-empty checks
 """
@@ -16,6 +16,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "assessment" / "manifest" / "controls.json"
 VALIDATE = ROOT / "scripts" / "validate_manifest.py"
+CONTRACT = ROOT / "assessment" / "data" / "evidence-contract.json"
+GRAPH_COLLECTOR = ROOT / "assessment" / "collectors" / "Collect-Graph.ps1"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -102,6 +104,48 @@ class TestControl215NetworkSecurity:
         assert controls["2.15"]["checks"] == [], (
             "Control 2.15 must have no automated checks (none are verified)"
         )
+
+
+# ---------------------------------------------------------------------------
+# 2.8 — Encryption: must be manual
+# ---------------------------------------------------------------------------
+
+class TestControl28Encryption:
+    def test_automation_is_manual(self):
+        controls = _load_manifest()
+        assert "2.8" in controls, "Control 2.8 not found in manifest"
+        assert controls["2.8"]["automation"] == "manual", (
+            "Control 2.8 must be manual — Graph organization metadata cannot "
+            "demonstrate tenant-wide encryption"
+        )
+
+    def test_collection_methods_and_checks_are_empty(self):
+        control = _load_manifest()["2.8"]
+        assert control["collection_methods"] == [], (
+            "Control 2.8 must not claim a collector-backed encryption check"
+        )
+        assert control["checks"] == [], (
+            "Control 2.8 must not claim an automated encryption evaluator"
+        )
+
+    def test_manual_question_set(self):
+        question = _load_manifest()["2.8"].get("manual_question")
+        assert question and isinstance(question, str), (
+            "Control 2.8 must retain an assessor question for its manual evidence"
+        )
+
+    def test_contract_and_graph_collector_do_not_claim_encryption_evidence(self):
+        contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+        mapped = [
+            mapping for mapping in contract.get("mappings", [])
+            if mapping.get("controlId") == "2.8"
+        ]
+        assert not mapped, (
+            "Control 2.8 must not map unrelated Graph metadata as encryption evidence"
+        )
+        collector = GRAPH_COLLECTOR.read_text(encoding="utf-8")
+        assert "tenant_security" + "_settings" not in collector
+        assert "SecurityCompliance" + "NotificationPhones" not in collector
 
 
 # ---------------------------------------------------------------------------

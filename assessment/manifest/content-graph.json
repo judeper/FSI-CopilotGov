@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-08-22T00:00:00Z",
+  "generatedAt": "2026-08-25T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -103,7 +103,7 @@
       "tier": "Baseline",
       "title": "Control 1.5: Sensitivity Label Taxonomy Review for Copilot",
       "path": "docs/controls/pillar-1-readiness/1.5-sensitivity-label-taxonomy-review.md",
-      "last_verified": "2026-08-02",
+      "last_verified": "2026-08-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
@@ -281,7 +281,7 @@
       "tier": "Baseline",
       "title": "Control 2.2: Sensitivity Labels and Copilot Content Classification",
       "path": "docs/controls/pillar-2-security/2.2-sensitivity-labels-classification.md",
-      "last_verified": "2026-08-16",
+      "last_verified": "2026-08-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404"
@@ -356,7 +356,7 @@
       "tier": "Baseline",
       "title": "Control 2.8: Encryption (Data in Transit and at Rest)",
       "path": "docs/controls/pillar-2-security/2.8-encryption.md",
-      "last_verified": "2026-08-22",
+      "last_verified": "2026-08-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC",

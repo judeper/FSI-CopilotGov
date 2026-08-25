@@ -1587,57 +1587,101 @@ AUTHORED: dict[str, dict] = {
     "2.8": {
         "priority": "high",
         "yesBar": (
-            "Encryption at rest and in transit meets or exceeds the "
-            "organization's cryptographic standards for all Copilot data "
-            "flows. Customer Key or Double Key Encryption is evaluated "
-            "for regulated workloads, and TLS 1.2+ is enforced."
+            "Current manual evidence documents a TLS 1.2+ negotiated "
+            "handshake for representative Microsoft 365 endpoints, the "
+            "service-encryption review, and applicable Customer Key, DKE, "
+            "connector, and key-management controls."
         ),
         "partialBar": (
-            "Standard Microsoft encryption is in place but Customer Key / "
-            "DKE has not been evaluated for regulated workloads, or TLS "
-            "enforcement has not been verified."
+            "Some encryption evidence exists, but the current negotiated "
+            "handshake, applicable connector evidence, Customer Key or DKE "
+            "review, key configuration, or manual service review is incomplete."
         ),
         "noBar": (
-            "Encryption requirements have not been assessed for Copilot "
-            "data flows, or non-standard encryption is in use."
+            "No current manual encryption evidence pack exists for Copilot "
+            "data flows, or the documented posture contains an unresolved gap."
         ),
         "verifyIn": [
             {
-                "portal": "Microsoft Purview portal",
-                "path": "Information Protection > Encryption",
-                "url": "https://purview.microsoft.com/informationprotection",
+                "portal": "Manual evidence review",
+                "path": (
+                    "Review Microsoft 365 service-encryption documentation "
+                    "and the applicable Service Trust Portal report; there is "
+                    "no tenant-wide Microsoft 365 Admin Center encryption setting."
+                ),
+                "url": "https://learn.microsoft.com/en-us/microsoft-365/compliance/encryption",
+            },
+            {
+                "portal": "Exchange admin center",
+                "path": (
+                    "Mail flow > Connectors, only for configured partner or "
+                    "hybrid mail-flow paths that use forced TLS or mutual TLS."
+                ),
+                "url": "https://admin.exchange.microsoft.com/#/connectors",
+            },
+            {
+                "portal": "Azure portal",
+                "path": (
+                    "Review each Customer Key Azure Key Vault Premium or "
+                    "Managed HSM instance, its subscription context, key type, "
+                    "soft-delete retention, and purge protection."
+                ),
+                "url": "https://portal.azure.com",
             },
         ],
         "verifyPowerShell": (
-            "Connect-MgGraph -Scopes Organization.Read.All; "
-            "Get-MgOrganization | Select-Object -ExpandProperty "
-            "SecurityComplianceNotificationPhones"
+            "Manual evidence only: use the Control 2.8 PowerShell playbook "
+            "to capture a negotiated TLS handshake and, where applicable, "
+            "export Exchange connector, Customer Key policy, onboarding, and "
+            "Azure Key Vault or Managed HSM configuration. Microsoft Graph "
+            "organization notification properties are not encryption evidence."
         ),
         "evidenceExpected": [
-            "TLS 1.2+ enforcement evidence for Copilot data flows",
-            "Customer Key or DKE evaluation documentation (if applicable)",
-            "Encryption-at-rest configuration verification",
-            "Cryptographic standards alignment documentation",
+            (
+                "Timestamped negotiated TLS handshake output for representative "
+                "Microsoft 365 endpoints, including protocol, cipher suite, and certificate"
+            ),
+            (
+                "Exchange connector forced-TLS or mutual-TLS configuration export "
+                "where the tenant uses those mail-flow paths"
+            ),
+            (
+                "Customer Key DEP and Customer Key Onboarding Service validation "
+                "or enablement state, if Customer Key is deployed"
+            ),
+            (
+                "Azure Key Vault Premium or Managed HSM evidence showing two "
+                "distinct paid subscriptions, one vault or HSM per subscription "
+                "for each Customer Key scenario, HSM-protected keys, 90-day "
+                "recovery configuration, and purge protection"
+            ),
+            (
+                "Manual Microsoft 365 service-encryption review and applicable "
+                "Service Trust Portal evidence"
+            ),
         ],
         "sectorYesBar": _sector_map(
             bank=(
-                "TLS 1.2+ enforced; Customer Key evaluated per FFIEC "
-                "cryptographic guidance; encryption-at-rest verified "
-                "quarterly."
+                "A current manual evidence pack records negotiated TLS results "
+                "and the applicable Customer Key, connector, and key-management "
+                "review for Copilot data flows."
             ),
             insurance_carrier=(
-                "Encryption meets NYDFS Part 500 requirements; TLS 1.2+ "
-                "enforced for all Copilot data flows."
+                "A current manual evidence pack records negotiated TLS results "
+                "and the applicable encryption-at-rest and key-management review "
+                "for Copilot data flows."
             ),
         ),
         "facilitatorNotes": {
             "ask": (
-                "Does encryption at rest and in transit meet organizational "
-                "standards for Copilot data flows?"
+                "Does the evidence pack show actual negotiated TLS handshakes "
+                "and the scope-specific Customer Key, connector, and key "
+                "configuration rather than unrelated tenant metadata?"
             ),
             "followUp": (
-                "Verify TLS enforcement and review Customer Key / DKE "
-                "evaluation for regulated workloads."
+                "Capture a current representative endpoint handshake, then "
+                "review applicable Exchange connector, Customer Key onboarding "
+                "or DEP, and Azure Key Vault or Managed HSM evidence."
             ),
             "timeBudgetMinutes": 6,
         },

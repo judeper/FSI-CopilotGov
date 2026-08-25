@@ -1,66 +1,100 @@
 # Control 2.8: Encryption (Data in Transit and at Rest) — Verification & Testing
 
-Test cases and evidence collection for validating encryption controls.
+Control 2.8 requires a manual evidence pack. The tests below deliberately separate evidence that proves an individual negotiated connection from evidence that proves a configured connector, Customer Key deployment, or Microsoft-managed service boundary.
 
-## Test Cases
+## Test cases
 
-### Test 1: Platform Encryption Verification
+### Test 1: Microsoft 365 service-encryption review
 
-- **Objective:** Confirm Microsoft 365 platform encryption is active for all Copilot data
+- **Objective:** Record the Microsoft-managed service encryption boundary without inventing a tenant-wide portal setting.
 - **Steps:**
-  1. Review Microsoft's service encryption documentation in the Service Trust Portal
-  2. Verify BitLocker encryption status is referenced in the SOC 2 report
-  3. Confirm service-level encryption keys are managed per Microsoft's documented process
-- **Expected Result:** Platform encryption is active per Microsoft's documentation and audit reports
-- **Evidence:** SOC 2 report excerpt and Service Trust Portal documentation
+  1. Review the current [Microsoft 365 encryption documentation](https://learn.microsoft.com/en-us/microsoft-365/compliance/encryption).
+  2. Review the current [technical encryption reference](https://learn.microsoft.com/en-us/microsoft-365/compliance/technical-reference-details-about-encryption).
+  3. Obtain the applicable Service Trust Portal report through the organization’s approved process.
+  4. Record source version/date, workload scope, reviewer, and limitation.
+- **Expected result:** The evidence pack identifies Microsoft-managed service assurances and clearly distinguishes them from tenant-configurable evidence.
+- **Evidence:** Documentation review record and approved Service Trust Portal artifact.
 
-### Test 2: TLS Enforcement
+### Test 2: Actual TLS handshake
 
-- **Objective:** Verify TLS 1.2 or higher is enforced for all data in transit
+- **Objective:** Capture the protocol and cipher suite actually negotiated with representative approved Microsoft 365 endpoints.
 - **Steps:**
-  1. Run PowerShell Script 1 to check TLS connector settings
-  2. Use a TLS testing tool to verify the TLS version on Microsoft 365 endpoints
-  3. Confirm no connectors allow TLS below 1.2
-- **Expected Result:** TLS 1.2 or higher enforced on all connections
-- **Evidence:** TLS configuration export and test results
+  1. Run [Script 1](powershell-setup.md#script-1-capture-actual-negotiated-tls-handshakes) from a representative managed client/network location.
+  2. Retain the raw JSON output, endpoint inventory reference, timestamp, protocol, cipher suite, and certificate data.
+  3. Verify that each recorded negotiation is TLS 1.2 or TLS 1.3.
+  4. If TLS 1.3 is not negotiated, record that it is service- and client-dependent rather than declaring it unavailable across Microsoft 365.
+- **Expected result:** Each sampled endpoint has timestamped TLS 1.2+ negotiated-handshake evidence.
+- **Evidence:** Raw handshake output and approved endpoint inventory reference.
 
-### Test 3: Customer Key Functionality (if deployed)
+!!! note "What this test does not prove"
+    A successful sample does not prove every Microsoft 365 endpoint, client, proxy path, or service-to-service flow. It is a scoped observation that must be paired with Microsoft service documentation and the organization’s endpoint inventory.
 
-- **Objective:** Verify Customer Key encryption is operational
+### Test 3: Exchange connector and legacy SMTP AUTH exception
+
+- **Objective:** Review forced-TLS or mutual-TLS settings only where the tenant uses those Exchange mail-flow paths.
 - **Steps:**
-  1. Run PowerShell Script 2 to check DEP status
-  2. Verify key vault accessibility for both key URIs
-  3. Confirm the DEP is in "Active" state
-  4. Test key availability by verifying access to a Customer Key-encrypted mailbox
-- **Expected Result:** Customer Key DEP active with both keys accessible
-- **Evidence:** DEP status report and key vault health check
+  1. Run [Script 2](powershell-setup.md#script-2-export-narrowly-scoped-exchange-connector-and-smtp-auth-evidence).
+  2. For each relevant connector, review TLS requirement, certificate identity, partner domain, and smart-host configuration.
+  3. Review `AllowLegacyTLSClients` only for SMTP AUTH use.
+  4. If the legacy SMTP AUTH endpoint is enabled, document the exception owner, affected devices, compensating controls, and retirement plan.
+- **Expected result:** Connector evidence matches approved connector design, and any SMTP AUTH legacy TLS exception is explicitly governed.
+- **Evidence:** Connector export, approval/change record, and legacy-exception record where applicable.
 
-### Test 4: Sensitivity Label Encryption with Copilot
+### Test 4: Customer Key prerequisite, configuration, and onboarding validation
 
-- **Objective:** Verify Copilot correctly handles encrypted labeled content
+- **Objective:** Verify Customer Key configuration without accepting a single-subscription design as compliant.
 - **Steps:**
-  1. Create a document with an encryption-enabled sensitivity label
-  2. As an authorized user, ask Copilot to summarize the encrypted document
-  3. Verify Copilot can access and process the encrypted content
-  4. As an unauthorized user, verify Copilot cannot access the document
-- **Expected Result:** Copilot respects encryption access controls
-- **Evidence:** Test results from authorized and unauthorized user perspectives
+  1. Record two **different paid** Azure subscription IDs in the Customer Key scenario evidence.
+  2. Verify one Azure Key Vault Premium vault or Managed HSM instance in each subscription for the scenario.
+  3. For Azure Key Vault, verify 90-day soft-delete retention and purge protection; for Managed HSM, verify purge protection and applicable recovery configuration.
+  4. Verify production keys are HSM-protected where that design is required.
+  5. Run the Customer Key Onboarding Service in `Validate` mode and retain `PassedValidations`/`FailedValidations`.
+  6. Before enabling, confirm `ValidationResult` is successful. Retain enablement evidence only after approved enablement completes.
+  7. Review applicable DEP state after onboarding.
+- **Expected result:** The onboarding record verifies two unique subscriptions and the correct recovery/key configuration; it reports no unresolved validation failure.
+- **Evidence:** Subscription/vault/HSM export, onboarding request output, DEP state, and change approval.
 
-## Evidence Collection
+### Test 5: Sensitivity-label encryption and Copilot behavior
 
-| Evidence Item | Format | Storage Location | Retention |
-|--------------|--------|-----------------|-----------|
-| SOC 2 encryption reference | PDF | Compliance evidence repository | 7 years |
-| TLS configuration export | CSV | Compliance evidence repository | 7 years |
-| Customer Key status report | JSON | Compliance evidence repository | 7 years |
-| Encryption label test results | PDF | Compliance evidence repository | 7 years |
+- **Objective:** Verify documented EXTRACT behavior and exceptions rather than asserting that encrypted content is categorically inaccessible.
+- **Steps:**
+  1. Test a requesting user with VIEW but no EXTRACT. Confirm Copilot does not summarize the encrypted item and can reference it with a link.
+  2. Test an OWNER user. Confirm that OWNER includes EXTRACT and record the expected outcome.
+  3. Test an unopened SharePoint/OneDrive item encrypted with user-defined permissions, a direct `/**` reference where supported, and the same item open in an Office app.
+  4. If Edge DLP is not deployed, test the active encrypted browser-tab exception and record the result.
+  5. Test each external plugin or Graph connector source separately; do not assume sensitivity labels/encryption applied to external data are recognized by Microsoft 365 Copilot Chat.
+  6. Test a DKE-protected item separately. Confirm that it is not returned by Copilot/agents and that Copilot cannot be used in the app while the DKE item is open.
+- **Expected result:** Outcomes match the documented user, source, and surface boundary; deviations have an owner and escalation path.
+- **Evidence:** Test matrix with user role/rights, source, surface, expected result, actual result, date, and tester.
 
-## Compliance Mapping
+### Test 6: Current HSM validation evidence
 
-| Regulation | Requirement | How This Control Supports It |
-|-----------|-------------|------------------------------|
-| GLBA §501(b) | Encryption of customer data | Platform encryption supports compliance with data protection requirements |
-| PCI DSS Req 4 | Encrypt transmission of cardholder data | TLS enforcement helps meet transmission encryption requirements |
-| NIST SP 800-171 | Encryption at rest and in transit | Microsoft 365 encryption supports compliance with NIST encryption standards |
-| FFIEC Handbook | Cryptographic controls | Encryption controls support compliance with FFIEC cryptographic requirements |
-- Back to [Control 2.8](../../../controls/pillar-2-security/2.8-encryption.md)
+- **Objective:** Confirm the organization has current evidence for the HSM assurance level it requires.
+- **Steps:**
+  1. Record the actual key type and service configuration.
+  2. For Azure Key Vault Premium or Managed HSM, review the current [firmware validation notice](https://learn.microsoft.com/en-us/azure/key-vault/managed-hsm/firmware-update).
+  3. Record the current validation reference and review date; recheck after firmware or certification changes.
+- **Expected result:** The evidence names the actual HSM-backed key configuration and current validation source, not only a vault SKU.
+- **Evidence:** Key configuration export and validation-reference review record.
+
+## Evidence collection
+
+| Evidence item | Format | Scope / limitation | Storage location |
+|---|---|---|---|
+| Microsoft service-encryption review | Review record + approved service-assurance artifact | Microsoft-managed service boundary; not a tenant setting | Compliance evidence repository |
+| Negotiated TLS handshake | JSON/text | Representative endpoint/client/network observation | Compliance evidence repository |
+| Exchange connector export | JSON/text | Only configured partner/hybrid/forced-TLS or mutual-TLS mail paths | Compliance evidence repository |
+| SMTP AUTH legacy exception record | Change/exception record | Only `smtp-legacy` use controlled by `AllowLegacyTLSClients` | Compliance evidence repository |
+| Customer Key onboarding/DEP state | JSON/text | Only when Customer Key is deployed | Compliance evidence repository |
+| Azure Key Vault/Managed HSM configuration | JSON/text + portal export | Subscription, recovery, key type, and role configuration | Compliance evidence repository |
+| Sensitivity-label/DKE test matrix | Test record | User/source/surface-specific behavior | Compliance evidence repository |
+
+## Compliance mapping
+
+| Regulation | Requirement | How this control supports it |
+|---|---|---|
+| GLBA §501(b) | Safeguards for customer information | Documents encryption evidence and key-management boundaries for Copilot data flows. |
+| NYDFS Part 500 §500.15 | Encryption of NPI in transit and at rest based on risk assessment | Supports a risk-based review of transport, at-rest, and key-management evidence. |
+| FFIEC IT Examination Handbook | Cryptographic controls | Supports examination-ready evidence of actual handshakes, key configuration, and exception decisions. |
+
+- Back to [Control 2.8](../../../controls/pillar-2-security/2.8-encryption.md).
