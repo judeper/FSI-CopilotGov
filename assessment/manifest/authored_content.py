@@ -1589,13 +1589,14 @@ AUTHORED: dict[str, dict] = {
         "yesBar": (
             "Current manual evidence documents a TLS 1.2+ negotiated "
             "handshake for representative Microsoft 365 endpoints, the "
-            "service-encryption review, and applicable Customer Key, DKE, "
-            "connector, and key-management controls."
+            "service-encryption review, and applicable multi-workload Customer "
+            "Key DEP (`MDEP`), DKE, connector, and key-management controls."
         ),
         "partialBar": (
             "Some encryption evidence exists, but the current negotiated "
-            "handshake, applicable connector evidence, Customer Key or DKE "
-            "review, key configuration, or manual service review is incomplete."
+            "handshake, applicable connector evidence, multi-workload Customer "
+            "Key DEP (`MDEP`) or DKE review, key configuration, or manual "
+            "service review is incomplete."
         ),
         "noBar": (
             "No current manual encryption evidence pack exists for Copilot "
@@ -1632,9 +1633,14 @@ AUTHORED: dict[str, dict] = {
         "verifyPowerShell": (
             "Manual evidence only: use the Control 2.8 PowerShell playbook "
             "to capture a negotiated TLS handshake and, where applicable, "
-            "export Exchange connector, Customer Key policy, onboarding, and "
-            "Azure Key Vault or Managed HSM configuration. Microsoft Graph "
-            "organization notification properties are not encryption evidence."
+            "export Exchange connector, the multi-workload Customer Key DEP "
+            "with Get-M365DataAtRestEncryptionPolicy and its tenant assignment "
+            "with Get-M365DataAtRestEncryptionPolicyAssignment, onboarding, "
+            "and Azure Key Vault or Managed HSM configuration. Preserve every "
+            "returned property; Get-DataEncryptionPolicy is Exchange-mailbox "
+            "DEP evidence only and cannot prove Copilot MDEP coverage. "
+            "Microsoft Graph organization notification properties are not "
+            "encryption evidence."
         ),
         "evidenceExpected": [
             (
@@ -1646,8 +1652,12 @@ AUTHORED: dict[str, dict] = {
                 "where the tenant uses those mail-flow paths"
             ),
             (
-                "Customer Key DEP and Customer Key Onboarding Service validation "
-                "or enablement state, if Customer Key is deployed"
+                "Tenant-level multi-workload Customer Key DEP (`MDEP`) policy "
+                "output from Get-M365DataAtRestEncryptionPolicy and tenant "
+                "assignment output from Get-M365DataAtRestEncryptionPolicyAssignment, "
+                "with all returned properties, plus Customer Key Onboarding "
+                "Service validation or enablement state; Exchange-mailbox "
+                "DEP output cannot satisfy this Copilot evidence requirement"
             ),
             (
                 "Azure Key Vault Premium or Managed HSM evidence showing two "
@@ -1663,25 +1673,27 @@ AUTHORED: dict[str, dict] = {
         "sectorYesBar": _sector_map(
             bank=(
                 "A current manual evidence pack records negotiated TLS results "
-                "and the applicable Customer Key, connector, and key-management "
-                "review for Copilot data flows."
+                "and the applicable multi-workload Customer Key DEP, connector, "
+                "and key-management review for Copilot data flows."
             ),
             insurance_carrier=(
                 "A current manual evidence pack records negotiated TLS results "
-                "and the applicable encryption-at-rest and key-management review "
-                "for Copilot data flows."
+                "and the applicable multi-workload Customer Key DEP and "
+                "key-management review for Copilot data flows."
             ),
         ),
         "facilitatorNotes": {
             "ask": (
                 "Does the evidence pack show actual negotiated TLS handshakes "
-                "and the scope-specific Customer Key, connector, and key "
-                "configuration rather than unrelated tenant metadata?"
+                "and the scope-specific multi-workload Customer Key DEP policy "
+                "and assignment, connector, and key configuration rather than "
+                "unrelated tenant metadata?"
             ),
             "followUp": (
                 "Capture a current representative endpoint handshake, then "
-                "review applicable Exchange connector, Customer Key onboarding "
-                "or DEP, and Azure Key Vault or Managed HSM evidence."
+                "review applicable Exchange connector, multi-workload Customer "
+                "Key DEP policy and assignment, onboarding, and Azure Key Vault "
+                "or Managed HSM evidence."
             ),
             "timeBudgetMinutes": 6,
         },

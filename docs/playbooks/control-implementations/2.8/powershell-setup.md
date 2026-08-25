@@ -7,7 +7,7 @@ The procedures distinguish actual endpoint handshakes from connector configurati
 ## Prerequisites
 
 - PowerShell 7 or later for the negotiated TLS handshake procedure.
-- ExchangeOnlineManagement for Exchange connector and data encryption policy review.
+- ExchangeOnlineManagement for Exchange connector and multi-workload Customer Key DEP review.
 - Az.Accounts and Az.KeyVault for Customer Key vault/HSM configuration review.
 - `M365CustomerKeyOnboarding` for Customer Key Onboarding Service validation.
 - Read access appropriate to each target. Customer Key operations run through Exchange Online PowerShell, and Azure review needs access to each stated subscription.
@@ -123,31 +123,84 @@ $connectorEvidence | ConvertTo-Json -Depth 6
 
 `AllowLegacyTLSClients` is relevant only to the opt-in Exchange Online legacy SMTP AUTH endpoint. Document an approved exception and retirement plan if it is enabled; it is not evidence for general Microsoft 365 TLS policy.
 
-## Script 3: Review Customer Key policy and onboarding state
+## Script 3: Review the multi-workload Customer Key DEP and assignment
 
-Use Customer Key onboarding state for the applicable scenario rather than treating a Graph organization object as key-management evidence. `Validate` makes no environment changes; do not use `Enable` until the validation result is successful and the change is approved.
+For Microsoft 365 Copilot, use the tenant-level **multi-workload DEP (`MDEP`)** commands. Microsoft documents `Get-M365DataAtRestEncryptionPolicy` for viewing Microsoft 365 data-at-rest encryption policies and `Get-M365DataAtRestEncryptionPolicyAssignment` for viewing the current tenant assignment. The cmdlet references document summary output and `Format-List` detail, but do not promise a fixed output-property table; the snapshot below retains every property returned by the connected service.
+
+`Get-DataEncryptionPolicy` is the separate Exchange-mailbox DEP command. If it is collected for an Exchange control, label it **Exchange-mailbox DEP evidence**; it must not be used as evidence of Copilot or multi-workload DEP coverage.
+
+`Validate` makes no environment changes; do not use `Enable` until the validation result is successful and the change is approved.
 
 ```powershell
 Import-Module ExchangeOnlineManagement
 Connect-ExchangeOnline
 
-# DEP state is useful where a DEP is already deployed.
-Get-DataEncryptionPolicy |
-    Select-Object Name, State, DataEncryptionPolicyType, AzureKeyIDs |
-    Format-List
+function ConvertTo-PropertySnapshot {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [psobject]$InputObject
+    )
 
-# Review a retained Customer Key Onboarding Service request.
+    process {
+        $snapshot = [ordered]@{}
+        foreach ($property in $InputObject.PSObject.Properties) {
+            try {
+                $snapshot[$property.Name] = $property.Value
+            }
+            catch {
+                $snapshot[$property.Name] = '<unavailable>'
+            }
+        }
+        [pscustomobject]$snapshot
+    }
+}
+
+$multiWorkloadPolicies = @(
+    Get-M365DataAtRestEncryptionPolicy -ErrorAction Stop |
+        ConvertTo-PropertySnapshot
+)
+$multiWorkloadAssignments = @(
+    Get-M365DataAtRestEncryptionPolicyAssignment -ErrorAction Stop |
+        ConvertTo-PropertySnapshot
+)
+
+$policyPropertyNames = @(
+    $multiWorkloadPolicies |
+        ForEach-Object { $_.PSObject.Properties.Name } |
+        Sort-Object -Unique
+)
+$assignmentPropertyNames = @(
+    $multiWorkloadAssignments |
+        ForEach-Object { $_.PSObject.Properties.Name } |
+        Sort-Object -Unique
+)
+
+$evidence = [ordered]@{
+    CollectedUtc = [DateTime]::UtcNow.ToString('o')
+    Scope = 'Microsoft 365 Copilot / Customer Key multi-workload DEP (MDEP)'
+    PolicyPropertyNames = $policyPropertyNames
+    AssignmentPropertyNames = $assignmentPropertyNames
+    Policies = $multiWorkloadPolicies
+    Assignments = $multiWorkloadAssignments
+}
+if ($multiWorkloadPolicies.Count -eq 0 -or
+    $multiWorkloadAssignments.Count -eq 0) {
+    $evidence.Interpretation = 'FAIL CLOSED: a multi-workload DEP policy and its tenant assignment were not both returned; this output does not prove Copilot MDEP coverage.'
+}
+
 Import-Module M365CustomerKeyOnboarding
-$request = Get-CustomerKeyOnboardingRequest `
-    -OrganizationID '<tenant-guid>' `
-    -RequestID '<onboarding-request-guid>'
+$evidence.OnboardingRequests = @(
+    Get-CustomerKeyOnboardingRequest `
+        -OrganizationID '<tenant-guid>' `
+        -ErrorAction Stop |
+        ConvertTo-PropertySnapshot
+)
 
-$request | Format-List ID, CreatedDate, ValidationResult, EnablementResult
-$request.PassedValidations
-$request.FailedValidations
+$evidence | ConvertTo-Json -Depth 20
 ```
 
-For Microsoft 365 Copilot interactions, the Multi-workload DEP (`MDEP`) is the Customer Key scenario documented to include those interactions. Use the workload-specific process for Exchange mailbox or SharePoint/OneDrive scenarios.
+Record the tenant, collection timestamp, policy and assignment property names, all returned values, and the onboarding request state. A successful Exchange `Get-DataEncryptionPolicy` response by itself is not sufficient evidence for Copilot. If an Exchange mailbox DEP is also in scope, retain that output in a separately labelled Exchange-mailbox evidence record.
 
 ## Script 4: Provision and verify one Premium vault per paid subscription
 
@@ -239,7 +292,7 @@ $labels |
 |---|---|---|
 | Negotiated endpoint handshake | Monthly and after material endpoint/proxy changes | Representative approved endpoint/client pairs |
 | Connector and SMTP AUTH exception export | Monthly and after connector changes | Configured Exchange mail-flow paths only |
-| Customer Key policy/onboarding and key configuration | Weekly when deployed; after key changes | Applicable Customer Key scenario |
+| Customer Key multi-workload DEP policy/assignment, onboarding, and key configuration | Weekly when deployed; after key changes | Applicable Customer Key scenario; Copilot requires multi-workload MDEP evidence |
 | Sensitivity-label scenario tests | Quarterly and after label/DLP/Edge/connector changes | Effective-user and source/surface behavior |
 
 ## Next Steps

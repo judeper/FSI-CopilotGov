@@ -40,19 +40,20 @@ Control 2.8 requires a manual evidence pack. The tests below deliberately separa
 - **Expected result:** Connector evidence matches approved connector design, and any SMTP AUTH legacy TLS exception is explicitly governed.
 - **Evidence:** Connector export, approval/change record, and legacy-exception record where applicable.
 
-### Test 4: Customer Key prerequisite, configuration, and onboarding validation
+### Test 4: Multi-workload Customer Key DEP, configuration, and onboarding validation
 
-- **Objective:** Verify Customer Key configuration without accepting a single-subscription design as compliant.
+- **Objective:** Verify the tenant-level multi-workload Customer Key DEP (`MDEP`) and its assignment without accepting Exchange-mailbox evidence or a single-subscription design as Copilot coverage.
 - **Steps:**
-  1. Record two **different paid** Azure subscription IDs in the Customer Key scenario evidence.
-  2. Verify one Azure Key Vault Premium vault or Managed HSM instance in each subscription for the scenario.
-  3. For Azure Key Vault, verify 90-day soft-delete retention and purge protection; for Managed HSM, verify purge protection and applicable recovery configuration.
-  4. Verify production keys are HSM-protected where that design is required.
-  5. Run the Customer Key Onboarding Service in `Validate` mode and retain `PassedValidations`/`FailedValidations`.
-  6. Before enabling, confirm `ValidationResult` is successful. Retain enablement evidence only after approved enablement completes.
-  7. Review applicable DEP state after onboarding.
-- **Expected result:** The onboarding record verifies two unique subscriptions and the correct recovery/key configuration; it reports no unresolved validation failure.
-- **Evidence:** Subscription/vault/HSM export, onboarding request output, DEP state, and change approval.
+  1. Run `Get-M365DataAtRestEncryptionPolicy` and `Get-M365DataAtRestEncryptionPolicyAssignment` after connecting to Exchange Online. Preserve every returned property and the property names, using [Script 3](powershell-setup.md#script-3-review-the-multi-workload-customer-key-dep-and-assignment).
+  2. Confirm both a tenant-level multi-workload DEP policy and its tenant assignment are present and match the approved Copilot scenario. `Get-DataEncryptionPolicy` is Exchange-mailbox DEP evidence only and cannot satisfy this test.
+  3. Record two **different paid** Azure subscription IDs in the Customer Key scenario evidence.
+  4. Verify one Azure Key Vault Premium vault or Managed HSM instance in each subscription for the scenario.
+  5. For Azure Key Vault, verify 90-day soft-delete retention and purge protection; for Managed HSM, verify purge protection and applicable recovery configuration.
+  6. Verify production keys are HSM-protected where that design is required.
+  7. Run the Customer Key Onboarding Service in `Validate` mode and retain the property-preserving onboarding request output.
+  8. Before enabling, confirm `ValidationResult` is successful. Retain enablement evidence only after approved enablement completes.
+- **Expected result:** The multi-workload DEP policy and tenant assignment are both present; the onboarding record verifies two unique subscriptions and the correct recovery/key configuration; it reports no unresolved validation failure.
+- **Evidence:** Multi-workload DEP policy/assignment export, subscription/vault/HSM export, onboarding request output, and change approval. Exchange-mailbox DEP output cannot replace the multi-workload evidence.
 
 ### Test 5: Sensitivity-label encryption and Copilot behavior
 
@@ -60,7 +61,7 @@ Control 2.8 requires a manual evidence pack. The tests below deliberately separa
 - **Steps:**
   1. Test a requesting user with VIEW but no EXTRACT. Confirm Copilot does not summarize the encrypted item and can reference it with a link.
   2. Test an OWNER user. Confirm that OWNER includes EXTRACT and record the expected outcome.
-  3. Test an unopened SharePoint/OneDrive item encrypted with user-defined permissions, a direct `/**` reference where supported, and the same item open in an Office app.
+  3. Test an unopened SharePoint/OneDrive item encrypted with user-defined permissions, a direct `/` reference where supported, and the same item open in an Office app.
   4. If Edge DLP is not deployed, test the active encrypted browser-tab exception and record the result.
   5. Test each external plugin or Graph connector source separately; do not assume sensitivity labels/encryption applied to external data are recognized by Microsoft 365 Copilot Chat.
   6. Test a DKE-protected item separately. Confirm that it is not returned by Copilot/agents and that Copilot cannot be used in the app while the DKE item is open.
@@ -85,7 +86,7 @@ Control 2.8 requires a manual evidence pack. The tests below deliberately separa
 | Negotiated TLS handshake | JSON/text | Representative endpoint/client/network observation | Compliance evidence repository |
 | Exchange connector export | JSON/text | Only configured partner/hybrid/forced-TLS or mutual-TLS mail paths | Compliance evidence repository |
 | SMTP AUTH legacy exception record | Change/exception record | Only `smtp-legacy` use controlled by `AllowLegacyTLSClients` | Compliance evidence repository |
-| Customer Key onboarding/DEP state | JSON/text | Only when Customer Key is deployed | Compliance evidence repository |
+| Multi-workload Customer Key DEP/assignment and onboarding state | JSON/text | Tenant-level Copilot MDEP policy and assignment; Exchange-mailbox DEP output is a separate scope | Compliance evidence repository |
 | Azure Key Vault/Managed HSM configuration | JSON/text + portal export | Subscription, recovery, key type, and role configuration | Compliance evidence repository |
 | Sensitivity-label/DKE test matrix | Test record | User/source/surface-specific behavior | Compliance evidence repository |
 

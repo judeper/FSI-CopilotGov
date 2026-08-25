@@ -15,13 +15,13 @@ Use this guide to diagnose scoped encryption evidence. Do not convert a connecto
   4. Verify the key is appropriate for the selected Customer Key configuration, is not expired, and permits required operations.
   5. Review `$request.FailedValidations`, remediate the stated item, and rerun `Validate`; do not use `Enable` until validation succeeds.
 
-### Issue 2: DEP state is not healthy after onboarding
+### Issue 2: Multi-workload DEP state is not healthy after onboarding
 
-- **Symptoms:** `Get-DataEncryptionPolicy` reports an unexpected state or policy assignment does not match the approved workload.
-- **Likely causes:** Key access, DEP assignment, key-expiry, workload-scenario, or rotation-process error.
+- **Symptoms:** `Get-M365DataAtRestEncryptionPolicy` or `Get-M365DataAtRestEncryptionPolicyAssignment` reports an unexpected state or the tenant assignment does not match the approved Copilot workload.
+- **Likely causes:** Key access, multi-workload DEP assignment, key-expiry, onboarding-scenario, or rotation-process error.
 - **Resolution:**
-  1. Export the actual DEP state and key identifiers.
-  2. Verify the onboarding scenario matches the workload. The Multiple Workloads DEP includes Microsoft 365 Copilot interactions; Exchange mailbox and SharePoint/OneDrive scenarios use their workload-specific processes.
+  1. Export both multi-workload commands with the property-preserving procedure in [PowerShell Setup](powershell-setup.md#script-3-review-the-multi-workload-customer-key-dep-and-assignment), including all returned property names and values.
+  2. Verify the tenant-level multi-workload DEP (`MDEP`) policy and assignment are both present and match the approved workload. `Get-DataEncryptionPolicy` is Exchange-mailbox DEP evidence only and cannot prove Copilot coverage.
   3. Verify both paired keys/vaults/HSMs remain accessible and have not expired.
   4. Review the change and key-rotation records before changing a policy.
   5. Escalate through Microsoft support if the service state remains unresolved after configuration review.
@@ -56,7 +56,7 @@ Use this guide to diagnose scoped encryption evidence. Do not convert a connecto
   1. Inventory the mailbox, device/application, owner, and business reason.
   2. Confirm the exception is limited to SMTP AUTH and not presented as a general Microsoft 365 TLS posture.
   3. Upgrade or replace the client to support TLS 1.2+ and remove the opt-in setting when no longer needed.
-  4. Note that the legacy endpoint is unavailable in GCC, GCC High, and DoD.
+  4. Record any service-specific availability limitation from the current Microsoft documentation; do not generalize the exception beyond the commercial-cloud scope.
 
 ### Issue 6: Connector evidence conflicts with endpoint handshake evidence
 

@@ -48,18 +48,19 @@ Connector evidence applies only to the configured mail-flow path. It does not pr
 
 ### Step 4: Review Customer Key evidence when deployed
 
-Customer Key setup and validation are performed through Exchange Online PowerShell, the Customer Key Onboarding Service, and Azure resource configuration. Do not assume there is a single Purview portal screen that reports complete Customer Key status.
+Customer Key setup and validation are performed through Exchange Online PowerShell, the Customer Key Onboarding Service, and Azure resource configuration. For Microsoft 365 Copilot, the evidence scope is the tenant-level **multi-workload DEP (`MDEP`)** and its assignment. Do not assume there is a single Purview portal screen that reports complete Customer Key status.
 
-1. Retain the relevant DEP state and Customer Key Onboarding Service request result.
-2. Confirm the request used **two distinct paid Azure subscriptions** and that there is one Azure Key Vault Premium vault or Managed HSM in each subscription for the Customer Key scenario.
-3. In the [Azure portal](https://portal.azure.com), review each vault/HSM in its own subscription context:
+1. Run and retain `Get-M365DataAtRestEncryptionPolicy` and `Get-M365DataAtRestEncryptionPolicyAssignment` output, preserving every returned property and the collection timestamp. These are the multi-workload Customer Key evidence sources for Copilot.
+2. Retain the relevant multi-workload DEP state and Customer Key Onboarding Service request result.
+3. Confirm the request used **two distinct paid Azure subscriptions** and that there is one Azure Key Vault Premium vault or Managed HSM in each subscription for the Customer Key scenario.
+4. In the [Azure portal](https://portal.azure.com), review each vault/HSM in its own subscription context:
    - Premium/HSM configuration and HSM-protected production key.
    - Azure Key Vault soft-delete retention of 90 days and purge protection.
    - Managed HSM purge protection and the applicable recovery configuration.
    - Required Microsoft 365 application permissions and key operation access.
-4. Confirm the Customer Key Onboarding Service `Validate` result is successful before retaining `Enable` evidence.
+5. Confirm the Customer Key Onboarding Service `Validate` result is successful before retaining `Enable` evidence.
 
-For Azure Key Vault, separate pairs are required when Multiple Workloads, Exchange, and SharePoint/OneDrive Customer Key scenarios are all deployed. Managed HSM uses two instances, one per subscription, across Customer Key workloads.
+For Azure Key Vault, separate pairs are required when multi-workload, Exchange, and SharePoint/OneDrive Customer Key scenarios are all deployed. Managed HSM uses two instances, one per subscription, across Customer Key workloads. `Get-DataEncryptionPolicy` is Exchange-mailbox DEP evidence only and cannot satisfy the Copilot multi-workload DEP requirement.
 
 ### Step 5: Review sensitivity-label encryption behavior
 
@@ -70,7 +71,7 @@ For each label in scope, capture the effective rights and test outcomes rather t
 
 1. VIEW without EXTRACT: Copilot normally does not summarize the encrypted item but can reference it with a link.
 2. OWNER: Full control includes EXTRACT; the person applying encryption is the Rights Management owner and can receive the content.
-3. User-defined permissions: test unopened SharePoint/OneDrive files, direct `/**` references, and a file open in an Office app.
+3. User-defined permissions: test unopened SharePoint/OneDrive files, direct `/` references, and a file open in an Office app.
 4. Edge: if Edge DLP is not deployed, test the active-browser-tab exception.
 5. External plugins and Graph connectors: test separately because their sensitivity labels/encryption are not recognized by Microsoft 365 Copilot Chat; Power BI is a documented exception.
 6. DKE: test separately as an intentional Copilot/agent exclusion.
@@ -82,7 +83,7 @@ Include:
 - Microsoft documentation and Service Trust Portal review record.
 - Raw negotiated TLS handshake output.
 - Exchange connector and SMTP AUTH exception export, where applicable.
-- Customer Key DEP/onboarding state and Azure Key Vault/Managed HSM configuration, where applicable.
+- Multi-workload Customer Key DEP/assignment, onboarding state, and Azure Key Vault/Managed HSM configuration, where applicable. Keep any Exchange-mailbox DEP output in a separate evidence scope.
 - Sensitivity-label/DKE test matrix and identified exceptions.
 - Scope, date, reviewer, evidence locations, and remediation owner for any gap.
 

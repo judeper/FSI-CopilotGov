@@ -1990,7 +1990,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": "Does a current manual evidence pack document negotiated TLS handshakes, applicable connector controls, and (where deployed) Customer Key and Key Vault or Managed HSM configuration for Copilot-processed data?",
+    "manual_question": "Does a current manual evidence pack document negotiated TLS handshakes, applicable connector controls, and (where deployed) the tenant-level multi-workload Customer Key DEP (`MDEP`) from `Get-M365DataAtRestEncryptionPolicy` plus its assignment from `Get-M365DataAtRestEncryptionPolicyAssignment`, onboarding state, and Key Vault or Managed HSM configuration for Copilot-processed data? Treat `Get-DataEncryptionPolicy` as Exchange-mailbox DEP evidence only; it cannot prove Copilot MDEP coverage.",
     "name": "Encryption (Data in Transit and at Rest)",
     "zonesApplicable": [
       1,
@@ -2006,8 +2006,8 @@
       "NYDFS-500"
     ],
     "priority": "high",
-    "yesBar": "Current manual evidence documents a TLS 1.2+ negotiated handshake for representative Microsoft 365 endpoints, the service-encryption review, and applicable Customer Key, DKE, connector, and key-management controls.",
-    "partialBar": "Some encryption evidence exists, but the current negotiated handshake, applicable connector evidence, Customer Key or DKE review, key configuration, or manual service review is incomplete.",
+    "yesBar": "Current manual evidence documents a TLS 1.2+ negotiated handshake for representative Microsoft 365 endpoints, the service-encryption review, and applicable multi-workload Customer Key DEP (`MDEP`), DKE, connector, and key-management controls.",
+    "partialBar": "Some encryption evidence exists, but the current negotiated handshake, applicable connector evidence, multi-workload Customer Key DEP (`MDEP`) or DKE review, key configuration, or manual service review is incomplete.",
     "noBar": "No current manual encryption evidence pack exists for Copilot data flows, or the documented posture contains an unresolved gap.",
     "verifyIn": [
       {
@@ -2026,11 +2026,11 @@
         "url": "https://portal.azure.com"
       }
     ],
-    "verifyPowerShell": "Manual evidence only: use the Control 2.8 PowerShell playbook to capture a negotiated TLS handshake and, where applicable, export Exchange connector, Customer Key policy, onboarding, and Azure Key Vault or Managed HSM configuration. Microsoft Graph organization notification properties are not encryption evidence.",
+    "verifyPowerShell": "Manual evidence only: use the Control 2.8 PowerShell playbook to capture a negotiated TLS handshake and, where applicable, export Exchange connector, the multi-workload Customer Key DEP with Get-M365DataAtRestEncryptionPolicy and its tenant assignment with Get-M365DataAtRestEncryptionPolicyAssignment, onboarding, and Azure Key Vault or Managed HSM configuration. Preserve every returned property; Get-DataEncryptionPolicy is Exchange-mailbox DEP evidence only and cannot prove Copilot MDEP coverage. Microsoft Graph organization notification properties are not encryption evidence.",
     "evidenceExpected": [
       "Timestamped negotiated TLS handshake output for representative Microsoft 365 endpoints, including protocol, cipher suite, and certificate",
       "Exchange connector forced-TLS or mutual-TLS configuration export where the tenant uses those mail-flow paths",
-      "Customer Key DEP and Customer Key Onboarding Service validation or enablement state, if Customer Key is deployed",
+      "Tenant-level multi-workload Customer Key DEP (`MDEP`) policy output from Get-M365DataAtRestEncryptionPolicy and tenant assignment output from Get-M365DataAtRestEncryptionPolicyAssignment, with all returned properties, plus Customer Key Onboarding Service validation or enablement state; Exchange-mailbox DEP output cannot satisfy this Copilot evidence requirement",
       "Azure Key Vault Premium or Managed HSM evidence showing two distinct paid subscriptions, one vault or HSM per subscription for each Customer Key scenario, HSM-protected keys, 90-day recovery configuration, and purge protection",
       "Manual Microsoft 365 service-encryption review and applicable Service Trust Portal evidence"
     ],
@@ -2038,16 +2038,16 @@
     "portalPlaybookUrl": "/playbooks/control-implementations/2.8/portal-walkthrough/",
     "collectorField": "",
     "sectorYesBar": {
-      "bank": "A current manual evidence pack records negotiated TLS results and the applicable Customer Key, connector, and key-management review for Copilot data flows.",
+      "bank": "A current manual evidence pack records negotiated TLS results and the applicable multi-workload Customer Key DEP, connector, and key-management review for Copilot data flows.",
       "broker-dealer": "TODO: sector-specific yes-bar",
       "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "A current manual evidence pack records negotiated TLS results and the applicable encryption-at-rest and key-management review for Copilot data flows.",
+      "insurance-carrier": "A current manual evidence pack records negotiated TLS results and the applicable multi-workload Customer Key DEP and key-management review for Copilot data flows.",
       "credit-union": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
-      "ask": "Does the evidence pack show actual negotiated TLS handshakes and the scope-specific Customer Key, connector, and key configuration rather than unrelated tenant metadata?",
-      "followUp": "Capture a current representative endpoint handshake, then review applicable Exchange connector, Customer Key onboarding or DEP, and Azure Key Vault or Managed HSM evidence.",
+      "ask": "Does the evidence pack show actual negotiated TLS handshakes and the scope-specific multi-workload Customer Key DEP policy and assignment, connector, and key configuration rather than unrelated tenant metadata?",
+      "followUp": "Capture a current representative endpoint handshake, then review applicable Exchange connector, multi-workload Customer Key DEP policy and assignment, onboarding, and Azure Key Vault or Managed HSM evidence.",
       "timeBudgetMinutes": 6
     },
     "solutions": []
