@@ -4,7 +4,7 @@
     "graph": {
       "filename": "graph.json",
       "collector": "Collect-Graph.ps1",
-      "description": "Microsoft Graph / Entra ID: Conditional Access, security groups, privileged roles, service principals, tenant settings."
+      "description": "Microsoft Graph / Entra ID: Conditional Access, security groups, privileged roles, and service principals."
     },
     "purview": {
       "filename": "purview.json",
@@ -118,14 +118,6 @@
       "jsonPath": "information_barriers",
       "evaluator": "exists_non_empty",
       "evidenceKey": "Information Barrier policies"
-    },
-    {
-      "controlId": "2.8",
-      "collectorField": "Graph_EncryptionSettings",
-      "source": "graph",
-      "jsonPath": "tenant_security_settings",
-      "evaluator": "exists_non_empty",
-      "evidenceKey": "Tenant encryption configuration"
     },
     {
       "controlId": "2.10",

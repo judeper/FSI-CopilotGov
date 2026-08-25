@@ -1,7 +1,9 @@
 """Regression tests for C2b automation label corrections (OceanSquad issue #256).
 
 Covers:
-- Controls 2.4 and 2.15 must be manual with no collection_methods
+- Controls 2.4, 2.8, and 2.15 must be manual with no collection_methods
+- Control 2.8 Customer Key evidence must use multi-workload policy/assignment
+  cmdlets and keep Exchange-mailbox DEP evidence separate
 - The full-automation-implies-checks invariant (honest-label invariant)
 - Controls 1.3, 2.12, 3.1, 3.2 must be full with non-empty checks
 """
@@ -16,6 +18,12 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "assessment" / "manifest" / "controls.json"
 VALIDATE = ROOT / "scripts" / "validate_manifest.py"
+CONTRACT = ROOT / "assessment" / "data" / "evidence-contract.json"
+GRAPH_COLLECTOR = ROOT / "assessment" / "collectors" / "Collect-Graph.ps1"
+CONTROL_28 = ROOT / "docs" / "controls" / "pillar-2-security" / "2.8-encryption.md"
+PLAYBOOK_28 = ROOT / "docs" / "playbooks" / "control-implementations" / "2.8"
+AUTHORED_CONTENT = ROOT / "assessment" / "manifest" / "authored_content.py"
+MANIFEST_GENERATOR = ROOT / "assessment" / "manifest" / "generate_manifest.py"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -102,6 +110,117 @@ class TestControl215NetworkSecurity:
         assert controls["2.15"]["checks"] == [], (
             "Control 2.15 must have no automated checks (none are verified)"
         )
+
+
+# ---------------------------------------------------------------------------
+# 2.8 — Encryption: must be manual
+# ---------------------------------------------------------------------------
+
+class TestControl28Encryption:
+    def test_automation_is_manual(self):
+        controls = _load_manifest()
+        assert "2.8" in controls, "Control 2.8 not found in manifest"
+        assert controls["2.8"]["automation"] == "manual", (
+            "Control 2.8 must be manual — Graph organization metadata cannot "
+            "demonstrate tenant-wide encryption"
+        )
+
+    def test_collection_methods_and_checks_are_empty(self):
+        control = _load_manifest()["2.8"]
+        assert control["collection_methods"] == [], (
+            "Control 2.8 must not claim a collector-backed encryption check"
+        )
+        assert control["checks"] == [], (
+            "Control 2.8 must not claim an automated encryption evaluator"
+        )
+
+    def test_manual_question_set(self):
+        question = _load_manifest()["2.8"].get("manual_question")
+        assert question and isinstance(question, str), (
+            "Control 2.8 must retain an assessor question for its manual evidence"
+        )
+
+    def test_contract_and_graph_collector_do_not_claim_encryption_evidence(self):
+        contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+        mapped = [
+            mapping for mapping in contract.get("mappings", [])
+            if mapping.get("controlId") == "2.8"
+        ]
+        assert not mapped, (
+            "Control 2.8 must not map unrelated Graph metadata as encryption evidence"
+        )
+        collector = GRAPH_COLLECTOR.read_text(encoding="utf-8")
+        assert "tenant_security" + "_settings" not in collector
+        assert "SecurityCompliance" + "NotificationPhones" not in collector
+
+    def test_customer_key_evidence_is_multi_workload_and_exchange_scoped(self):
+        required_sources = [
+            CONTROL_28,
+            PLAYBOOK_28 / "powershell-setup.md",
+            PLAYBOOK_28 / "portal-walkthrough.md",
+            PLAYBOOK_28 / "troubleshooting.md",
+            PLAYBOOK_28 / "verification-testing.md",
+            AUTHORED_CONTENT,
+            MANIFEST_GENERATOR,
+            MANIFEST,
+        ]
+        for source in required_sources:
+            text = source.read_text(encoding="utf-8")
+            assert "Get-M365DataAtRestEncryptionPolicy" in text, (
+                f"{source} must name the multi-workload Customer Key policy cmdlet"
+            )
+            assert "Get-M365DataAtRestEncryptionPolicyAssignment" in text, (
+                f"{source} must name the multi-workload Customer Key assignment cmdlet"
+            )
+            assert "multi-workload" in text.lower(), (
+                f"{source} must state the multi-workload DEP scope"
+            )
+
+        for source in required_sources:
+            text = source.read_text(encoding="utf-8")
+            lower = text.lower()
+            assert "Exchange-mailbox" in text, (
+                f"{source} must distinguish Exchange-mailbox DEP evidence"
+            )
+            assert "Get-DataEncryptionPolicy" in text, (
+                f"{source} must identify the Exchange-only DEP command"
+            )
+            assert any(
+                phrase in lower
+                for phrase in (
+                    "cannot prove copilot",
+                    "cannot satisfy copilot",
+                    "cannot satisfy the copilot",
+                    "cannot satisfy this test",
+                    "cannot replace the multi-workload evidence",
+                    "must not be used as evidence of copilot",
+                    "not sufficient evidence for copilot",
+                )
+            ), (
+                f"{source} must prohibit Exchange-only output from proving Copilot MDEP"
+            )
+
+    def test_customer_key_evidence_and_gesture_propagate_to_generated_manifest(self):
+        manifest = _load_manifest()["2.8"]
+        evidence = "\n".join(manifest.get("evidenceExpected", []))
+        question = manifest.get("manual_question", "")
+        assert "multi-workload" in evidence.lower()
+        assert "Get-M365DataAtRestEncryptionPolicy" in evidence
+        assert "Get-M365DataAtRestEncryptionPolicyAssignment" in evidence
+        assert "Exchange-mailbox" in evidence
+        assert "multi-workload" in question.lower()
+        assert "Get-M365DataAtRestEncryptionPolicy" in question
+        assert "Get-M365DataAtRestEncryptionPolicyAssignment" in question
+        assert "Get-DataEncryptionPolicy" in question
+
+        for source in [
+            CONTROL_28,
+            PLAYBOOK_28 / "portal-walkthrough.md",
+            PLAYBOOK_28 / "verification-testing.md",
+        ]:
+            assert "/**" not in source.read_text(encoding="utf-8"), (
+                f"{source} must use the literal '/' gesture, not '/**'"
+            )
 
 
 # ---------------------------------------------------------------------------

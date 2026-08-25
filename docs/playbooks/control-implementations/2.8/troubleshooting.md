@@ -1,70 +1,92 @@
 # Control 2.8: Encryption (Data in Transit and at Rest) — Troubleshooting
 
-Common issues and resolution steps for encryption controls.
+Use this guide to diagnose scoped encryption evidence. Do not convert a connector setting, Microsoft Graph notification property, TCP test, or client protocol preference into a claim about every Microsoft 365 data flow.
 
-## Common Issues
+## Common issues
 
-### Issue 1: Customer Key DEP in Error State
+### Issue 1: Customer Key onboarding validation fails
 
-- **Symptoms:** `Get-DataEncryptionPolicy` shows DEP in "Error" or "PendingActivation" state
-- **Root Cause:** Key vault access issues, expired keys, or network connectivity problems between Microsoft 365 and Azure Key Vault.
+- **Symptoms:** The Customer Key Onboarding Service reports a failed `ValidationResult`, or `FailedValidations` contains subscription, recovery, key, or permission errors.
+- **Likely causes:** The request reused one subscription, named a vault/HSM outside the declared subscription, used an ineligible subscription, lacks 90-day recovery/purge protection where required, has an expired/unsupported key, or lacks required Microsoft 365 application access.
 - **Resolution:**
-  1. Verify both key vault URIs are accessible
-  2. Check key vault access policies include the Microsoft 365 service principal
-  3. Verify keys have not expired and have the correct permissions (wrap, unwrap)
-  4. If keys were recently rotated, verify the new key URIs are updated in the DEP
-  5. Contact Microsoft support if the DEP remains in error state after verification
+  1. Confirm two **distinct paid** Azure subscription IDs are supplied to the request.
+  2. Select each subscription explicitly with `Set-AzContext` and verify the vault/HSM resides in that subscription.
+  3. For Azure Key Vault, verify 90-day soft-delete retention and purge protection. For Managed HSM, verify purge protection and the applicable recovery settings.
+  4. Verify the key is appropriate for the selected Customer Key configuration, is not expired, and permits required operations.
+  5. Review `$request.FailedValidations`, remediate the stated item, and rerun `Validate`; do not use `Enable` until validation succeeds.
 
-### Issue 2: Copilot Cannot Access Encrypted Content
+### Issue 2: Multi-workload DEP state is not healthy after onboarding
 
-- **Symptoms:** Copilot responds with "I don't have access to that content" when asked about documents protected with encryption-enabled labels
-- **Root Cause:** The user may not have the necessary RMS rights to decrypt the content, or the encryption configuration may not support Copilot access.
+- **Symptoms:** `Get-M365DataAtRestEncryptionPolicy` or `Get-M365DataAtRestEncryptionPolicyAssignment` reports an unexpected state or the tenant assignment does not match the approved Copilot workload.
+- **Likely causes:** Key access, multi-workload DEP assignment, key-expiry, onboarding-scenario, or rotation-process error.
 - **Resolution:**
-  1. Verify the user has at least "View" rights on the encrypted document
-  2. Check the label's encryption settings for the specific rights granted
-  3. Verify the user can open the document directly (outside of Copilot)
-  4. If the user can open it but Copilot cannot, this may be a service limitation — check Microsoft documentation for current encrypted content support in Copilot
+  1. Export both multi-workload commands with the property-preserving procedure in [PowerShell Setup](powershell-setup.md#script-3-review-the-multi-workload-customer-key-dep-and-assignment), including all returned property names and values.
+  2. Verify the tenant-level multi-workload DEP (`MDEP`) policy and assignment are both present and match the approved workload. `Get-DataEncryptionPolicy` is Exchange-mailbox DEP evidence only and cannot prove Copilot coverage.
+  3. Verify both paired keys/vaults/HSMs remain accessible and have not expired.
+  4. Review the change and key-rotation records before changing a policy.
+  5. Escalate through Microsoft support if the service state remains unresolved after configuration review.
 
-### Issue 3: TLS Downgrade Attacks Detected
+### Issue 3: Copilot does not summarize an encrypted item
 
-- **Symptoms:** Security monitoring detects connections using TLS versions below 1.2 to Microsoft 365 endpoints
-- **Root Cause:** Legacy applications, outdated clients, or misconfigured proxy servers may negotiate lower TLS versions.
+- **Symptoms:** Copilot provides a link, an incomplete response, or a message indicating it cannot use an encrypted item.
+- **Likely causes:** The requesting user has VIEW but not EXTRACT, the source is an unopened user-defined-permissions item, a label blocks connected experiences, the source/surface has a documented limitation, or the item is DKE-protected.
 - **Resolution:**
-  1. Identify the source of the lower TLS connections from monitoring logs
-  2. Update legacy applications to support TLS 1.2
-  3. Configure proxy servers to enforce TLS 1.2 minimum for outbound connections
-  4. Microsoft 365 rejects connections below TLS 1.2 by default; the issue may be with on-premises infrastructure
+  1. Check the requesting user’s effective EXTRACT (Copy) right, not just the label template.
+  2. Remember that OWNER includes EXTRACT and that the person applying encryption is the Rights Management owner.
+  3. Test whether the item is open in an Office app, directly referenced where supported, or protected with user-defined permissions.
+  4. For Edge, check whether Edge DLP is deployed before assuming EXTRACT alone controls active-tab behavior.
+  5. Identify whether the source is an external plugin or Graph connector; sensitivity labels/encryption for those external sources are not generally recognized by Microsoft 365 Copilot Chat.
+  6. If the item is DKE-protected, treat the Copilot exclusion as expected behavior.
 
-### Issue 4: Key Rotation Disruption
+### Issue 4: A handshake shows TLS 1.2 instead of TLS 1.3
 
-- **Symptoms:** After rotating Customer Key vault keys, users experience temporary access issues with encrypted content
-- **Root Cause:** Key rotation requires the new key to be available before the old key is decommissioned. If timing is incorrect, content may be temporarily inaccessible.
+- **Symptoms:** The negotiated TLS evidence records TLS 1.2.
+- **Likely causes:** TLS 1.3 is rolling out by Microsoft 365 application/service and is also client/network dependent. The observed endpoint or path may legitimately negotiate TLS 1.2.
 - **Resolution:**
-  1. Follow Microsoft's documented key rotation procedure exactly
-  2. Never decommission the old key until the new key is fully active in the DEP
-  3. Test key rotation in a non-production environment first
-  4. Schedule key rotation during low-activity periods
+  1. Preserve the raw handshake output and endpoint/client/network scope.
+  2. Confirm the result is TLS 1.2 or higher.
+  3. Compare the endpoint to Microsoft’s current service-specific TLS documentation; do not claim TLS 1.3 is universal or unavailable based on one sample.
+  4. Check managed client, proxy, TLS-inspection, and endpoint-inventory changes before escalating.
 
-## Diagnostic Steps
+### Issue 5: A legacy TLS finding appears for SMTP AUTH
 
-1. **Check platform encryption:** Review Service Trust Portal SOC 2 report
-2. **Verify TLS:** Run Script 1 to check connector configurations
-3. **Check Customer Key:** Run Script 2 to verify DEP status
-4. **Test encrypted access:** Open an encrypted document directly and via Copilot
-5. **Review key health:** Check Azure Key Vault health in the Azure portal
+- **Symptoms:** `AllowLegacyTLSClients` is enabled or an SMTP AUTH client is configured for `smtp-legacy.office365.com`.
+- **Likely causes:** A legacy device/application has an approved or unreviewed exception.
+- **Resolution:**
+  1. Inventory the mailbox, device/application, owner, and business reason.
+  2. Confirm the exception is limited to SMTP AUTH and not presented as a general Microsoft 365 TLS posture.
+  3. Upgrade or replace the client to support TLS 1.2+ and remove the opt-in setting when no longer needed.
+  4. Record any service-specific availability limitation from the current Microsoft documentation; do not generalize the exception beyond the commercial-cloud scope.
+
+### Issue 6: Connector evidence conflicts with endpoint handshake evidence
+
+- **Symptoms:** An Exchange connector is configured for forced/mutual TLS but a sampled HTTPS endpoint reports a different protocol/cipher expectation.
+- **Likely causes:** The items cover different transports and scopes. Connector settings cover designated Exchange mail flow; an HTTPS handshake captures one client-to-service endpoint connection.
+- **Resolution:**
+  1. Keep the evidence records separate.
+  2. Label each record with its path and scope.
+  3. Correct only the relevant connector or endpoint configuration; do not use either item as a substitute for the other.
+
+## Diagnostic checklist
+
+1. Review the Microsoft 365 encryption service boundary and applicable Service Trust Portal artifact.
+2. Run the negotiated TLS handshake procedure for the approved endpoint set.
+3. Export Exchange connector and SMTP AUTH exception settings only when those paths exist.
+4. Review Customer Key onboarding/DEP state and the paired Azure Key Vault/Managed HSM configuration when deployed.
+5. Run the sensitivity-label/DKE test matrix with effective user rights and source/surface exceptions.
 
 ## Escalation
 
-| Severity | Condition | Escalation Path |
-|----------|-----------|----------------|
-| **Low** | Minor encryption configuration questions | Security team |
-| **Medium** | Customer Key DEP warnings | Security Operations and Microsoft support |
-| **High** | TLS downgrade detected | Security Operations for investigation |
-| **Critical** | Customer Key DEP in error state — potential data access disruption | CISO, Microsoft TAM, and IT Operations immediately |
+| Severity | Condition | Escalation path |
+|---|---|---|
+| **Low** | Documentation or scoped evidence question | Security/GRC owner |
+| **Medium** | Missing handshake, connector, or sensitivity-label evidence | Security Operations and control owner |
+| **High** | Unapproved SMTP AUTH legacy TLS exception or failed Customer Key validation | Security Operations, Exchange/Azure owner, and change authority |
+| **Critical** | Customer Key/key-access issue that could disrupt protected data access | CISO, Microsoft support/TAM, and IT Operations |
 
-## Related Resources
+## Related resources
 
-- [Portal Walkthrough](portal-walkthrough.md) — Encryption configuration
-- [PowerShell Setup](powershell-setup.md) — Verification scripts
-- [Verification & Testing](verification-testing.md) — Encryption validation
-- Back to [Control 2.8](../../../controls/pillar-2-security/2.8-encryption.md)
+- [Portal Walkthrough](portal-walkthrough.md) — scoped manual evidence.
+- [PowerShell Setup](powershell-setup.md) — handshake, connector, and Customer Key procedures.
+- [Verification & Testing](verification-testing.md) — expected outcomes and evidence matrix.
+- Back to [Control 2.8](../../../controls/pillar-2-security/2.8-encryption.md).
