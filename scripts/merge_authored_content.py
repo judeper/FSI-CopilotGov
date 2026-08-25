@@ -143,9 +143,9 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "facilitatorNotes",
     },
     "3.10": {
-        # Force-apply the Reg S-P notification-direction and amendment-dating
-        # corrections identified in issue #69, with the accompanying
-        # re-authored Microsoft verification fields.
+        # Force-apply Microsoft-verified Copilot DLP qualifiers/actions, current
+        # DSPM and Audit navigation, direct-upload limitations, and SharePoint
+        # Embedded limitations for Pages and Notebooks.
         "yesBar",
         "partialBar",
         "verifyIn",
