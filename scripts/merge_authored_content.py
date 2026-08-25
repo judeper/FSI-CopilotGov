@@ -72,7 +72,7 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
     "2.1": {
         # Force-apply corrected Copilot DLP capability qualifiers, the Cloud
         # Policy service path for Allow web search in Copilot, current DSPM
-        # activity navigation, and the direct-upload limitation (issue #463).
+        # activity navigation, and the direct-upload limitation.
         "yesBar",
         "partialBar",
         "verifyIn",
@@ -143,9 +143,9 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "facilitatorNotes",
     },
     "3.10": {
-        # Re-authored after live Microsoft verification of the Copilot DLP
-        # location/actions, current DSPM and Audit navigation, and SharePoint
-        # Embedded limitations for Pages and Notebooks (issue #463).
+        # Force-apply the Reg S-P notification-direction and amendment-dating
+        # corrections identified in issue #69, with the accompanying
+        # re-authored Microsoft verification fields.
         "yesBar",
         "partialBar",
         "verifyIn",
