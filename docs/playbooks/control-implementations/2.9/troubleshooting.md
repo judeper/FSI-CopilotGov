@@ -47,15 +47,15 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 
 ### Issue 5: Agent Threat Detection Alerts Not Appearing
 
-- **Symptoms:** Copilot agents are deployed but no agent-related alerts appear in Defender XDR; the Incidents & alerts view shows no agent incidents despite agent activity
-- **Root Cause:** Agent threat detection may require specific licensing (Defender for Office 365 P2 or Microsoft Defender XDR) and may need to be explicitly enabled for agent workloads. Agent coverage was added in September 2025 and may require feature updates in older tenants.
+- **Symptoms:** Copilot agents are deployed but no agent-related alerts appear in Microsoft Defender; the Assets > AI agents and Incidents & alerts views show no agent data despite agent activity
+- **Root Cause:** Microsoft identifies Copilot Studio AI agent protection, not Microsoft Foundry coverage, as the Preview item in its November 2025 AI-security release notes. As of July 1, 2026, the licensing cutover applies to both Copilot Studio and Microsoft Foundry agent coverage: the tenant must hold a Microsoft Agent 365-eligible license and complete Agent 365 onboarding. Microsoft 365 E5 is not an exclusive prerequisite; tenants without an eligible license no longer receive the transitioned agent threat-detection coverage.
 - **Resolution:**
-  1. Verify the tenant has the required Defender XDR license tier for agent threat detection (included in M365 E5 Security or Defender for Office 365 P2)
-  2. Navigate to Defender portal > Settings > Microsoft Defender XDR and confirm unified XDR is enabled
-  3. Check that the agents are registered in Agent Registry (MAC > Agents > All agents / Registry) — unregistered agents may not have threat detection coverage
+  1. Verify the tenant holds a Microsoft Agent 365-eligible license using the [Control 2.9 qualifying-license guidance](../../../controls/pillar-2-security/2.9-defender-cloud-apps.md#agent-365-qualifying-license-guidance) and has completed Agent 365 onboarding (required as of July 1, 2026 for Copilot Studio/Foundry agent coverage)
+  2. Navigate to Defender portal > Settings > Security for AI > Get started and confirm the **Security for AI Agents** toggle and the Copilot Studio real-time protection step are both enabled
+  3. Check that agents appear in Defender portal > **Assets > AI agents** with a current risk level — agents not listed there may not be fully onboarded for threat detection coverage
   4. Verify no filter is hiding agent incidents: in Incidents & alerts, clear all filters and search for recent agent-related events
   5. Allow 24-48 hours after enabling detection — initial alert generation may be delayed
-  6. If alerts still do not appear after enabling: open a Microsoft support ticket referencing Defender XDR agent threat detection
+  6. If alerts still do not appear after enabling: open a Microsoft support ticket referencing Microsoft Defender Security for AI agent threat detection
 
 ### Issue 6: Generative AI App Catalog Not Showing Discovered Apps
 

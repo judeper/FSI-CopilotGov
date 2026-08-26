@@ -77,20 +77,20 @@ Verify that Copilot-related activities appear in the activity log. Configure log
 ### Step 7: Configure Agent Threat Detection
 
 **Portal:** Microsoft Defender portal (security.microsoft.com)
-**Path:** Defender portal > Settings > Endpoints > Detection rules OR Incidents & alerts
+**Path:** Defender portal > Settings > Security for AI > Get started; agent inventory at Assets > AI agents
 
-1. Verify that agent-related detection rules are active for your Copilot agent deployments (Copilot Studio agents, SharePoint agents)
-2. Navigate to Incidents & alerts and filter for agent-related incidents to confirm detection is operational
-3. Configure custom detection rules for agent anomalies specific to your organization:
-   - Alerts when an agent accesses data outside its configured knowledge source scope
-   - Alerts when agent interaction volume significantly exceeds baseline
-4. Integrate agent threat alerts into your SIEM or Microsoft Sentinel workspace for correlation with user activity
+1. Confirm the tenant holds a Microsoft Agent 365-eligible license using the [Control 2.9 qualifying-license guidance](../../../controls/pillar-2-security/2.9-defender-cloud-apps.md#agent-365-qualifying-license-guidance); Microsoft 365 E5 is not an exclusive prerequisite. Complete Agent 365 onboarding — required as of July 1, 2026 for Copilot Studio and Microsoft Foundry agent threat-detection coverage
+2. On the **Security for AI > Get started** page, confirm the **Security for AI Agents** toggle is enabled. For Copilot Studio real-time protection, copy the onboarding URL from Defender and send it to the Power Platform administrator; after they complete the Power Platform configuration, obtain the App ID from them, paste it into Defender, and save the connection.
+3. Verify that your Copilot agent deployments (Copilot Studio agents, SharePoint agents) appear in **Assets > AI agents** with a current risk level
+4. Navigate to Incidents & alerts and filter for agent-related incidents to confirm detection is operational
+5. Under **Settings > Security for AI > Policies & rules > Real-time protection**, review the built-in **Default** audit rule and create agent-scoped custom rules for documented detection types that require blocking. Use Advanced Hunting telemetry to create custom detections and downstream automation for organization-specific anomalous behavior.
+6. Integrate agent threat alerts into your SIEM or Microsoft Sentinel workspace for correlation with user activity
 
 ## FSI Recommendations
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Enable session monitoring for Copilot interactions; configure basic alerting; enable agent monitoring alerts in Defender XDR |
+| **Baseline** | Enable session monitoring for Copilot interactions; configure basic alerting; enable agent monitoring alerts in Microsoft Defender for Copilot agent deployments (requires Microsoft Agent 365 license) |
 | **Recommended** | Content inspection with DLP integration; real-time alerts for sensitive data; review generative AI app catalog monthly for Shadow AI governance; configure custom agent anomaly detection rules |
 | **Regulated** | Full session control with content inspection, blocking capabilities, and comprehensive activity logging; integration with SIEM for correlation; agent threat detection integrated into SOC playbooks with mandatory investigation SLAs; quarterly Shadow AI governance review with sanctioned/unsanctioned app list |
 
