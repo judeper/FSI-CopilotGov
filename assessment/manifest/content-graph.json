@@ -369,7 +369,7 @@
       "tier": "Recommended",
       "title": "Control 2.9: Defender for Cloud Apps — Copilot Session Controls",
       "path": "docs/controls/pillar-2-security/2.9-defender-cloud-apps.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-08-25",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC"
@@ -482,7 +482,7 @@
       "tier": "Baseline",
       "title": "Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)",
       "path": "docs/controls/pillar-3-compliance/3.1-copilot-audit-logging.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-08-25",
       "regulatory_references": [
         "FINRA 4511 (Books and Records)",
         "SEC 17a-3/4 (Books and Records)",
@@ -830,7 +830,7 @@
       "tier": "Regulated",
       "title": "Control 4.11: Microsoft Sentinel Integration for Copilot Events",
       "path": "docs/controls/pillar-4-operations/4.11-sentinel-integration.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-08-25",
       "regulatory_references": [
         "FFIEC IT Examination Handbook (Information Security)",
         "Sarbanes-Oxley §§302/404",
