@@ -121,6 +121,8 @@ OPERATIVE_LANGUAGE_PATTERN = re.compile(
     r"|requires?\s+(?:that|each|every|any|all|a|an|the)\b"
     r"|prohibit(?:s|ed|ing|ion)?|mandat(?:e|es|ed|ory)"
     r"|propos(?:e|es|ed|ing)\s+to\s+(?:require|amend|add|adopt|prohibit)"
+    r"|obligated\s+to|obligations?\s+to|responsible\s+(?:for|to)"
+    r"|responsibilit(?:y|ies)\s+to|dut(?:y|ies)\s+to"
     r"|compliance\s+date|effective\s+date)\b",
     re.IGNORECASE,
 )
@@ -139,6 +141,15 @@ REFERENCE_ONLY_PATTERN = re.compile(
 # of hyphens. Context must stop at that boundary, otherwise the citations in an
 # adjacent footnote block would be read as the context of operative body text.
 FOOTNOTE_BLOCK_DELIMITER_PATTERN = re.compile(r"-{5,}")
+
+# A match's evidence is the sentence/clause that actually contains it. Once the
+# footnote block is removed, the context is further clipped at the nearest
+# sentence terminator on each side so that an unrelated obligation, or a
+# citation that merely follows the matched term in the next sentence, is never
+# read as the context of this occurrence. Clipping can only shrink the window,
+# which keeps the fail-open bias: a smaller window is less likely to carry a
+# citation marker, so borderline matches are kept rather than suppressed.
+SENTENCE_BOUNDARY_PATTERN = re.compile(r"[.;!?]")
 
 # Configure logging
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
@@ -188,7 +199,14 @@ def _prepare_classification_text(text: str) -> str:
 
 
 def _occurrence_context(text: str, start: int, end: int) -> str:
-    """Return the local context of a match, clipped at footnote-block edges."""
+    """Return the local context of a match, clipped to its own sentence/clause.
+
+    The window is first bounded to ``REFERENCE_CONTEXT_WINDOW_CHARS`` on each
+    side (runtime safety for very long documents), then clipped at footnote
+    block edges, then clipped at the nearest sentence terminator on each side so
+    the context is match-local: obligation and citation evidence must belong to
+    the same sentence as the matched term to count.
+    """
     before = text[max(0, start - REFERENCE_CONTEXT_WINDOW_CHARS):start]
     after = text[end:end + REFERENCE_CONTEXT_WINDOW_CHARS]
 
@@ -199,6 +217,14 @@ def _occurrence_context(text: str, start: int, end: int) -> str:
     following_delimiter = FOOTNOTE_BLOCK_DELIMITER_PATTERN.search(after)
     if following_delimiter:
         after = after[:following_delimiter.start()]
+
+    preceding_boundaries = list(SENTENCE_BOUNDARY_PATTERN.finditer(before))
+    if preceding_boundaries:
+        before = before[preceding_boundaries[-1].end():]
+
+    following_boundary = SENTENCE_BOUNDARY_PATTERN.search(after)
+    if following_boundary:
+        after = after[:following_boundary.start()]
 
     return f"{before}{text[start:end]}{after}"
 
@@ -447,8 +473,15 @@ def _get_operational_settings(config: dict) -> tuple[int, int, float]:
     return request_timeout, max_retries, request_delay
 
 
-def _extract_compact_text(html: str, selectors: list[str]) -> str:
-    """Extract compact text from the first selector that yields content."""
+def _extract_notice_body_text(html: str, selectors: list[str]) -> str:
+    """Extract the complete normalized text of a notice body.
+
+    The first selector that yields non-empty text wins; otherwise the page
+    ``<body>`` is used. The full normalized text is returned with no length
+    bound: classification must see the entire notice so a mandatory requirement
+    that appears late in a long notice is never hidden. Callers that need a
+    bounded presentation excerpt slice the result themselves.
+    """
     soup = BeautifulSoup(html or "", "html.parser")
 
     for selector in selectors:
@@ -456,12 +489,12 @@ def _extract_compact_text(html: str, selectors: list[str]) -> str:
         if node:
             text = re.sub(r"\s+", " ", node.get_text(" ", strip=True)).strip()
             if text:
-                return text[:FALLBACK_TEXT_MAX_CHARS]
+                return text
 
     body = soup.find("body")
     if not body:
         return ""
-    return re.sub(r"\s+", " ", body.get_text(" ", strip=True)).strip()[:FALLBACK_TEXT_MAX_CHARS]
+    return re.sub(r"\s+", " ", body.get_text(" ", strip=True)).strip()
 
 
 def _extract_federal_register_source_text(text: str) -> str:
@@ -477,8 +510,8 @@ def _extract_federal_register_source_text(text: str) -> str:
 
 
 def _extract_finra_notice_fallback_text(html: str) -> str:
-    """Extract fallback text from a FINRA notice page."""
-    return _extract_compact_text(
+    """Extract the complete normalized body text from a FINRA notice page."""
+    return _extract_notice_body_text(
         html,
         selectors=[
             "div.field--name-body",
@@ -540,14 +573,49 @@ def _fetch_cached_fallback_text(
     return fallback_text, True
 
 
+# Deterministic ordering of the four classification tiers. A higher number is
+# strictly more severe. Used to merge the curated abstract classification with
+# the authoritative full-text classification without ambiguity.
+CLASSIFICATION_SEVERITY = {
+    CLASSIFICATION_NOISE: 0,
+    CLASSIFICATION_MEDIUM: 1,
+    CLASSIFICATION_HIGH: 2,
+    CLASSIFICATION_CRITICAL: 3,
+}
+
+
+def _classification_severity(classification: str) -> int:
+    """Return the severity rank of a classification tier (unknown -> NOISE)."""
+    return CLASSIFICATION_SEVERITY.get(classification, 0)
+
+
 def _should_fetch_federal_register_detail(
     title: str,
     abstract: str,
     classification: str,
     doc_type: str,
 ) -> bool:
-    """Require authoritative text when API classification text is incomplete."""
-    return not (abstract or "").strip() or classification == CLASSIFICATION_NOISE
+    """Consult authoritative full text for any item that could still change tier.
+
+    A curated abstract is only a summary, so a MEDIUM (or even NOISE) abstract
+    can hide HIGH/CRITICAL operative language in the body. The only tier that
+    cannot be raised is CRITICAL -- it is the ceiling -- so authoritative text
+    is fetched for every classification except CRITICAL.
+    """
+    return classification != CLASSIFICATION_CRITICAL
+
+
+def _federal_register_authoritative_text_required(abstract_classification: str) -> bool:
+    """Whether authoritative full text is mandatory (fail closed) for an item.
+
+    When the abstract yields no usable signal (NOISE/blank) there is no curated
+    evidence to fall back on, so classification cannot proceed without the
+    authoritative body and must fail closed if it is unavailable. When the
+    abstract already carries curated MEDIUM/HIGH evidence, the authoritative
+    fetch is best-effort: it may only ever raise the tier, never downgrade it,
+    and a fetch failure leaves the abstract classification intact.
+    """
+    return abstract_classification == CLASSIFICATION_NOISE
 
 
 def _should_fetch_finra_notice_detail(title: str, url: str, classification: str) -> bool:
@@ -840,27 +908,35 @@ def fetch_federal_register_documents(
         url = doc.get('html_url', '')
 
         tier, reason = classify_regulatory_relevance(title, abstract, config)
+        abstract_tier = tier
         effective_text = abstract
         used_source_text = False
 
         should_fetch_detail = _should_fetch_federal_register_detail(
             title=title,
             abstract=abstract,
-            classification=tier,
+            classification=abstract_tier,
             doc_type=doc_type,
         )
+        authoritative_required = _federal_register_authoritative_text_required(
+            abstract_tier
+        )
         raw_text_url = doc.get('raw_text_url', '')
-        if (
-            should_fetch_detail
+        fetch_budget_exhausted = (
+            detail_fetch_limit is not None
             and raw_text_url not in detail_cache
-            and detail_fetch_limit is not None
             and detail_fetches >= detail_fetch_limit
-        ):
+        )
+        # A NOISE/blank abstract cannot be classified without the authoritative
+        # body, so exhausting the fetch budget before reaching it must fail
+        # closed. A MEDIUM/HIGH abstract already carries curated evidence, so a
+        # best-effort fetch that cannot run simply leaves that evidence in place.
+        if should_fetch_detail and fetch_budget_exhausted and authoritative_required:
             raise RequiredSourceTextError(
                 "Federal Register authoritative-text fetch limit reached before "
                 f"classification completed for {doc.get('document_number') or url}"
             )
-        if should_fetch_detail:
+        if should_fetch_detail and not fetch_budget_exhausted:
             fallback_text, fetched_new = _fetch_cached_fallback_text(
                 url=raw_text_url,
                 session=session,
@@ -868,19 +944,30 @@ def fetch_federal_register_documents(
                 request_delay=request_delay,
                 max_retries=max_retries,
                 extractor=_extract_federal_register_source_text,
-                required=True,
+                required=authoritative_required,
                 source_label="Federal Register authoritative text",
             )
             if fetched_new:
                 detail_fetches += 1
-            effective_text = fallback_text
-            used_source_text = True
-            tier, reason = classify_regulatory_relevance(
-                title,
-                effective_text,
-                config,
-                exclude_reference_only=True,
-            )
+            if fallback_text:
+                source_tier, source_reason = classify_regulatory_relevance(
+                    title,
+                    fallback_text,
+                    config,
+                    exclude_reference_only=True,
+                )
+                # Deterministic precedence: the more severe of the curated
+                # abstract and the authoritative body wins, and ties go to the
+                # authoritative body (it is the source of record). Because only a
+                # source tier that meets or exceeds the abstract tier is adopted,
+                # a failed or weaker authoritative read can never downgrade
+                # legitimate abstract evidence.
+                if _classification_severity(source_tier) >= _classification_severity(
+                    abstract_tier
+                ):
+                    tier, reason = source_tier, source_reason
+                    effective_text = fallback_text
+                    used_source_text = True
 
         classification_text = _prepare_classification_text(effective_text)
         affected_controls = (
@@ -1013,7 +1100,12 @@ def fetch_finra_notices(
         )
 
         tier, reason = classify_regulatory_relevance(title, "", config)
-        effective_text = ""
+        # Classification and control mapping run against the COMPLETE normalized
+        # notice body so a mandatory requirement that appears late in a long
+        # notice cannot be truncated away. Only a bounded excerpt is stored on
+        # the item for presentation in reports.
+        notice_body_text = ""
+        presentation_excerpt = ""
 
         should_fetch_detail = _should_fetch_finra_notice_detail(title, url, tier)
         if should_fetch_detail and detail_fetches < detail_fetch_limit:
@@ -1028,8 +1120,11 @@ def fetch_finra_notices(
             if fetched_new:
                 detail_fetches += 1
             if fallback_text:
-                effective_text = fallback_text
-                tier, reason = classify_regulatory_relevance(title, effective_text, config)
+                notice_body_text = fallback_text
+                presentation_excerpt = fallback_text[:FALLBACK_TEXT_MAX_CHARS]
+                tier, reason = classify_regulatory_relevance(
+                    title, notice_body_text, config
+                )
         elif should_fetch_detail and not detail_limit_logged:
             logger.info(
                 "FINRA detail fetch limit reached (%s); skipping additional fallback fetches",
@@ -1037,7 +1132,9 @@ def fetch_finra_notices(
             )
             detail_limit_logged = True
 
-        affected_controls = find_affected_controls_by_keywords(title, effective_text, config)
+        affected_controls = find_affected_controls_by_keywords(
+            title, notice_body_text, config
+        )
 
         item = RegulatoryItem(
             source='FINRA',
@@ -1046,7 +1143,7 @@ def fetch_finra_notices(
             url=url,
             publication_date=publication_date,
             doc_type='NOTICE',
-            abstract=effective_text,
+            abstract=presentation_excerpt,
             document_id=document_id,
             publication_date_is_synthetic=publication_date_is_synthetic,
             classification=tier,

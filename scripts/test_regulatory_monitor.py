@@ -22,6 +22,36 @@ def _load_config() -> dict:
     return yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
 
 
+@pytest.fixture(autouse=True)
+def _offline_network_guard(monkeypatch):
+    """Default every test to an offline, no-op network layer.
+
+    Federal Register classification now consults authoritative full text for
+    every non-CRITICAL item, so a fixture that builds documents without wiring
+    a ``fetch_page`` stub would otherwise reach the real network. This provides
+    a safe offline default -- an empty 200 body, which best-effort MEDIUM/HIGH
+    items treat as "no additional evidence" (and which correctly fails closed
+    for a required NOISE item) -- and removes real sleeps. Tests that exercise
+    fetch behavior set their own ``fetch_page`` in the test body, which runs
+    after this fixture and therefore overrides it.
+    """
+
+    def _offline_fetch_page(url, *_args, **_kwargs):
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": "",
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", _offline_fetch_page)
+    monkeypatch.setattr(
+        regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None
+    )
+
+
 def test_exit_code_contract_is_unambiguous():
     assert regulatory_monitor.EXIT_CLEAN == 0
     assert regulatory_monitor.EXIT_FAILURE == 2
@@ -204,6 +234,78 @@ def test_operative_requirement_survives_an_adjacent_footnote_block():
     assert "artificial intelligence" in reason.lower()
 
 
+@pytest.mark.parametrize(
+    "detail_text",
+    [
+        # Reviewer counterexample #1: an unrelated operative sentence
+        # ("proposes to amend reporting deadlines") sits next to a separate,
+        # citation-only sentence that merely names an AI paper. The obligation
+        # belongs to the deadlines sentence, not the AI mention, so the AI
+        # occurrence must be read as citation-only and suppressed.
+        "The Commission proposes to amend reporting deadlines for covered "
+        "filings. A recent working paper on artificial intelligence is "
+        "available at https://example.org/ai-study.pdf.",
+        # Same defect with the AI citation preceding the unrelated obligation.
+        "A recent working paper on artificial intelligence is available at "
+        "https://example.org/ai-study.pdf. The Commission proposes to amend "
+        "reporting deadlines for covered filings.",
+    ],
+)
+def test_unrelated_obligation_does_not_promote_adjacent_ai_citation(detail_text):
+    """Obligation language in a neighbouring sentence must not rescue an
+    AI mention that is itself only a citation (reviewer counterexample #1)."""
+    config = _load_config()
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        detail_text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in (
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    ), detail_text
+    assert "artificial intelligence" not in reason.lower(), detail_text
+
+
+@pytest.mark.parametrize(
+    "detail_text",
+    [
+        # Reviewer counterexample #2: a genuine obligation to supervise AI,
+        # followed by a citation in a separate sentence. The obligation and the
+        # AI term share a sentence, so the match must survive.
+        "Member firms have an obligation to supervise artificial intelligence "
+        "systems. See Smith et al., AI Governance, Journal of Financial "
+        "Regulation (2025), available at https://example.org/governance.pdf.",
+        # Harder variant: the citation is comma-joined into the SAME clause as
+        # the obligation. Only recognising "obligation to" as operative keeps
+        # this HIGH; without it the citation marker would wrongly suppress a
+        # real requirement.
+        "Member firms have an obligation to supervise artificial intelligence "
+        "systems, available at https://example.org/governance.pdf.",
+        # Non-whitelisted obligation verbs that must also count as operative.
+        "Broker-dealers are responsible for supervising artificial "
+        "intelligence tools, see supra note 12.",
+    ],
+)
+def test_obligation_language_keeps_ai_requirement_high(detail_text):
+    """Operative obligation wording around an AI term must keep the match even
+    when a citation shares the sentence (reviewer counterexample #2)."""
+    config = _load_config()
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        detail_text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH, detail_text
+    assert "artificial intelligence" in reason.lower(), detail_text
+
+
 def test_classification_text_preparation_does_not_truncate():
     """Escaped line breaks are normalized; no source evidence is discarded."""
     body = "a" * 200_000
@@ -308,6 +410,67 @@ def test_recordkeeping_rule_requires_all_three_elements(detail_text):
     )
 
     assert reason != "Electronic recordkeeping", detail_text
+
+
+@pytest.mark.parametrize(
+    "detail_text",
+    [
+        # Reviewer counterexample: obligation and electronic language live in
+        # different sentences, so they must not be joined into a recordkeeping
+        # obligation.
+        "Records must be retained for three years. Applications are submitted "
+        "electronically through the portal.",
+        # Same shape with a semicolon separating the clauses.
+        "Firms must retain records; documents may be filed electronically.",
+        # Electronic modifies an unrelated noun (communications), records are paper.
+        "Firms must supervise electronic communications and keep paper records.",
+        # Obligation + record in sentence one, electronic system in sentence two.
+        "Members must retain records. Electronic systems are optional for other "
+        "filings.",
+    ],
+)
+def test_recordkeeping_rule_does_not_cross_sentence_boundaries(detail_text):
+    """Electronic/digital language in a different sentence than the records
+    obligation must never promote to an electronic recordkeeping HIGH."""
+    config = _load_config()
+
+    for exclude_reference_only in (False, True):
+        classification, reason = regulatory_monitor.classify_regulatory_relevance(
+            "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+            detail_text,
+            config,
+            exclude_reference_only=exclude_reference_only,
+        )
+
+        assert reason != "Electronic recordkeeping", detail_text
+        assert classification == regulatory_monitor.CLASSIFICATION_NOISE, detail_text
+
+
+@pytest.mark.parametrize(
+    "detail_text",
+    [
+        # Storage verb precedes the record, electronic adverb trails it.
+        "Broker-dealers must preserve records digitally for the retention period.",
+        # "books and records" phrasing.
+        "Books and records must be maintained in electronic form.",
+        "Each firm shall keep books and records in electronic format.",
+    ],
+)
+def test_recordkeeping_rule_recognizes_additional_operative_phrasings(detail_text):
+    """Same-sentence electronic recordkeeping obligations regulators actually
+    write must still earn HIGH under the tightened rule."""
+    config = _load_config()
+
+    for exclude_reference_only in (False, True):
+        classification, reason = regulatory_monitor.classify_regulatory_relevance(
+            "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+            detail_text,
+            config,
+            exclude_reference_only=exclude_reference_only,
+        )
+
+        assert classification == regulatory_monitor.CLASSIFICATION_HIGH, detail_text
+        assert reason == "Electronic recordkeeping", detail_text
 
 
 def test_meaningful_electronic_recordkeeping_and_ai_remain_high():
@@ -598,6 +761,118 @@ def test_late_operative_ai_requirement_survives_full_pipeline(monkeypatch):
     assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
     assert "artificial intelligence" in items[0].classification_reason.lower()
     assert items[0].affected_controls
+
+
+def test_federal_register_medium_abstract_upgrades_on_authoritative_critical_body(
+    monkeypatch,
+):
+    """A MEDIUM abstract must not cap classification: authoritative full text is
+    consulted and a late CRITICAL operative requirement in the body wins.
+
+    This is the reviewer defect -- the old rule only fetched authoritative text
+    for blank/NOISE abstracts, so a MEDIUM abstract concealed HIGH/CRITICAL body
+    language.
+    """
+    config = _load_config()
+    document = {
+        "document_number": "2026-90210",
+        "title": "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        "abstract": "A broker-dealer regulatory notice concerning routine fees.",
+        "publication_date": "2026-08-25",
+        "type": "PRORULE",
+        "html_url": "https://www.federalregister.gov/documents/2026-90210",
+        "raw_text_url": "https://example.test/2026-90210.txt",
+        "agencies": [{"slug": "securities-and-exchange-commission", "name": "SEC"}],
+    }
+    session = _PagedFederalRegisterSession(
+        {1: {"count": 1, "total_pages": 1, "results": [document]}}
+    )
+    # The abstract alone classifies MEDIUM; a CRITICAL copilot requirement hides
+    # well past the point a truncating/only-on-NOISE fetch would have reached.
+    abstract_tier, _ = regulatory_monitor.classify_regulatory_relevance(
+        document["title"], document["abstract"], config
+    )
+    assert abstract_tier == regulatory_monitor.CLASSIFICATION_MEDIUM
+
+    source_text = (
+        "This notice concerns exchange connectivity fees. "
+        + LONG_SOURCE_FILLER
+        + "A member firm shall document every copilot deployment and must "
+        "supervise the use of artificial intelligence in communications with "
+        "the public."
+    )
+    assert len(source_text) > 68_000
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        assert url == document["raw_text_url"]
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": f"<html><body><pre>{source_text}</pre></body></html>",
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-08-18",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_CRITICAL
+    # The authoritative body is adopted as the effective text and drives controls.
+    assert "copilot" in items[0].abstract.lower()
+    assert items[0].affected_controls
+
+
+def test_federal_register_medium_abstract_survives_best_effort_fetch_failure(
+    monkeypatch,
+):
+    """A best-effort authoritative fetch that fails must not downgrade or crash a
+    MEDIUM abstract -- the curated evidence is preserved."""
+    config = _load_config()
+    document = {
+        "document_number": "2026-90211",
+        "title": "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        "abstract": "A broker-dealer regulatory notice concerning routine fees.",
+        "publication_date": "2026-08-25",
+        "type": "PRORULE",
+        "html_url": "https://www.federalregister.gov/documents/2026-90211",
+        "raw_text_url": "https://example.test/2026-90211.txt",
+        "agencies": [{"slug": "securities-and-exchange-commission", "name": "SEC"}],
+    }
+    session = _PagedFederalRegisterSession(
+        {1: {"count": 1, "total_pages": 1, "results": [document]}}
+    )
+
+    def failing_fetch_page(url, _session, max_retries=3):
+        return {
+            "url": url,
+            "status_code": 503,
+            "content": "",
+            "final_url": url,
+            "was_redirected": False,
+            "error": "service unavailable",
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", failing_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-08-18",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_MEDIUM
+    # No authoritative text was adopted, so the curated abstract is retained.
+    assert items[0].abstract == document["abstract"]
 
 
 @pytest.mark.parametrize("abstract", [None, "Administrative procedural update."])
@@ -1257,6 +1532,83 @@ def test_finra_notice_body_fallback_promotes_genai_notice_to_high(monkeypatch):
     assert len(items) == 1
     assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
     assert "genai" in items[0].abstract.lower()
+
+
+def test_finra_long_notice_late_mandatory_ai_requirement_elevates(monkeypatch):
+    """A mandatory AI requirement past the presentation-excerpt bound in a long
+    (>8k) notice must still elevate the notice to HIGH.
+
+    Classification runs against the complete normalized body; only the stored
+    abstract is bounded. The reviewer defect was that the fallback extractor
+    truncated to FALLBACK_TEXT_MAX_CHARS before classification, so a late
+    requirement silently vanished.
+    """
+    config = _load_config()
+    listing_html = """
+    <html><body>
+      <a href="/rules-guidance/notices/26-14">Regulatory Notice 26-14: Request for Comment</a>
+    </body></html>
+    """
+    # Neutral filler with no AI/recordkeeping vocabulary, long enough to push
+    # the operative requirement well beyond the legacy 4000-char truncation.
+    filler = (
+        "The committee reviewed meeting logistics and calendar planning for "
+        "upcoming member outreach sessions during the comment period. "
+    ) * 90
+    late_requirement = (
+        "Member firms must supervise the use of artificial intelligence in all "
+        "customer communications."
+    )
+    detail_html = f"<html><body><main>{filler}{late_requirement}</main></body></html>"
+
+    # Preconditions: the extracted body is long and the requirement lands past
+    # the excerpt bound, so a truncating extractor would hide it.
+    extracted = regulatory_monitor._extract_finra_notice_fallback_text(detail_html)
+    assert len(extracted) > 8000
+    assert extracted.lower().index("artificial intelligence") > (
+        regulatory_monitor.FALLBACK_TEXT_MAX_CHARS
+    )
+
+    def fake_fetch_page(url, session, max_retries=3):
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            return {
+                "url": url,
+                "status_code": 200,
+                "content": listing_html,
+                "final_url": url,
+                "was_redirected": False,
+                "error": None,
+            }
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": detail_html,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(),
+        config=config,
+        limit=1,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+    # The stored abstract stays a bounded excerpt that does not itself carry the
+    # late requirement...
+    assert len(items[0].abstract) <= regulatory_monitor.FALLBACK_TEXT_MAX_CHARS
+    assert "artificial intelligence" not in items[0].abstract.lower()
+    # ...proving classification could only have reached HIGH by reading the
+    # complete body: the bounded excerpt alone does not classify HIGH.
+    excerpt_tier, _ = regulatory_monitor.classify_regulatory_relevance(
+        items[0].title, items[0].abstract, config
+    )
+    assert excerpt_tier != regulatory_monitor.CLASSIFICATION_HIGH
 
 
 def test_finra_publication_date_uses_authoritative_listing_metadata(monkeypatch):
