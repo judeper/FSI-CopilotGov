@@ -100,6 +100,18 @@ FEDERAL_REGISTER_MAX_PAGES = 100
 # seam, and reaching it fails closed rather than baselining uninspected items.
 FINRA_DETAIL_FETCH_LIMIT: Optional[int] = None
 FALLBACK_TEXT_MAX_CHARS = 4000
+
+# Change-detection fingerprint schema. Schema 1 (pre-versioning) hashed
+# ``title|content|publication_date`` and is written as a bare ``sha256:`` digest.
+# Schema 2 hashes ``title|report_text|authoritative_body|publication_date`` and
+# is written with an explicit ``v2:`` tag so a stored digest always declares the
+# layout it was produced under. Without that tag a comparison cannot tell a
+# genuine content change from a schema change, which is how a changed late
+# suffix was previously mistaken for a harmless legacy migration.
+CONTENT_HASH_SCHEMA_VERSION = 2
+CONTENT_HASH_SCHEMA_PREFIX = f"v{CONTENT_HASH_SCHEMA_VERSION}:"
+LEGACY_CONTENT_HASH_SCHEMA_VERSION = 1
+CONTENT_HASH_SCHEMA_PATTERN = re.compile(r"^v(\d+):")
 FINRA_NOTICE_PATH_PATTERN = re.compile(
     r'^/rules-guidance/notices/(?:\d{2}-\d+|information-notice-\d{8})/?$',
     re.IGNORECASE,
@@ -112,6 +124,63 @@ FINRA_INFORMATION_NOTICE_DATE_PATTERN = re.compile(
     r'/rules-guidance/notices/information-notice-(\d{4})(\d{2})(\d{2})(?:[/?#]|$)',
     re.IGNORECASE,
 )
+
+# A 200 response is not proof that a notice body was served. FINRA (and the
+# CDN in front of it) answers access-denied, bot-challenge, login, and
+# not-found pages with a fully rendered ``<main>``. Accepting that chrome as
+# authoritative notice text would baseline an uninspected notice, so the
+# leading region of a candidate body is screened for these signatures.
+FINRA_NON_NOTICE_LEAD_CHARS = 400
+FINRA_NOTICE_SUBSTANTIAL_CHARS = 1500
+FINRA_NON_NOTICE_PAGE_PATTERN = re.compile(
+    r"(?:"
+    r"access\s+(?:to\s+[\w\s]{0,40}\s+)?(?:is\s+|has\s+been\s+)?deni(?:ed|al)"
+    r"|access\s+restricted|restricted\s+access"
+    r"|(?:your\s+)?request\s+(?:was\s+|has\s+been\s+|is\s+)?(?:blocked|denied|rejected)"
+    r"|you\s+(?:do\s+not|don't)\s+have\s+(?:permission|access)"
+    r"|you\s+are\s+not\s+authoriz(?:ed|ation)"
+    r"|(?:page|file|content|document)\s+(?:you\s+requested\s+)?"
+    r"(?:could\s+not\s+be\s+found|was\s+not\s+found|not\s+found|is\s+unavailable)"
+    r"|\b40[0-9]\b\s*(?:[-:|\u2013\u2014]|\berror\b|\bforbidden\b|\bnot\s+found\b)"
+    r"|\berror\s*[-:|]?\s*40[0-9]\b|\bhttp\s+40[0-9]\b|\b403\s*forbidden\b"
+    r"|(?:verify|confirm)\s+(?:that\s+)?you\s+are\s+(?:a\s+)?human"
+    r"|\bcaptcha\b|security\s+check|are\s+you\s+a\s+robot"
+    r"|checking\s+your\s+browser|unusual\s+traffic|automated\s+traffic"
+    r"|enable\s+(?:javascript|cookies)"
+    r"|(?:log|sign)\s*in\s+to\s+(?:continue|view|access|proceed|read)"
+    r"|(?:login|log\s*in|sign[-\s]?in|authentication)\s+(?:is\s+)?required"
+    r"|session\s+(?:has\s+)?(?:expired|timed\s+out)"
+    r"|(?:service|site|page)\s+(?:is\s+)?(?:temporarily\s+)?unavailable"
+    r"|rate\s+limit(?:ed|\s+exceeded)?"
+    r"|maintenance\s+mode|under\s+maintenance"
+    r")",
+    re.IGNORECASE,
+)
+# Structure a real FINRA notice body carries. Used only as a safety valve so a
+# long, genuinely structured notice that happens to quote one of the phrases
+# above is not mistaken for an error page.
+FINRA_NOTICE_STRUCTURE_PATTERN = re.compile(
+    r"(?:\bsuggested\s+routing\b|\bkey\s+topics?\b|\bnotice\s+type\b"
+    r"|\breferenced\s+rules?\b|\baction\s+requested\b"
+    r"|\bquestions?\s+(?:concerning|regarding|about)\s+this\s+notice\b"
+    r"|\b(?:regulatory|information)\s+notice\s+\d{2}-\d+\b"
+    r"|\bmember\s+firms?\b|\bbroker[-\s]?dealers?\b|\bfinra\s+rule\s*\d)",
+    re.IGNORECASE,
+)
+
+
+def _is_finra_non_notice_page_text(text: str) -> bool:
+    """Return True when candidate text is error/challenge/login chrome."""
+    if not text:
+        return True
+    if not FINRA_NON_NOTICE_PAGE_PATTERN.search(text[:FINRA_NON_NOTICE_LEAD_CHARS]):
+        return False
+    # A substantial, structurally recognisable notice that merely mentions one
+    # of these phrases is still a notice.
+    return not (
+        len(text) >= FINRA_NOTICE_SUBSTANTIAL_CHARS
+        and FINRA_NOTICE_STRUCTURE_PATTERN.search(text)
+    )
 
 # Federal Register source documents interleave operative rule text with
 # footnote blocks, bibliographies, and literature reviews, and a document can
@@ -158,6 +227,18 @@ FOOTNOTE_BLOCK_DELIMITER_PATTERN = re.compile(r"-{5,}")
 # (for example ``tools.\451\ ``), so they are part of the boundary too.
 SENTENCE_BOUNDARY_PATTERN = re.compile(
     r"[.;!?](?=(?:\s|\\\d+\\(?:\s|$)|$))"
+)
+
+# Obligation language binds the clause it sits in, not the whole sentence. A
+# sentence such as "The Commission proposes to amend quarterly report
+# deadlines, and a recent working paper on artificial intelligence is available
+# at ..." carries a real obligation about reporting deadlines and a separate
+# citation clause that merely names an AI paper. Splitting the sentence at
+# clause punctuation (and at the conjunctions/relative pronouns that introduce
+# a new clause) keeps the obligation attached to the clause it governs.
+CLAUSE_BOUNDARY_PATTERN = re.compile(
+    r"[,:()\[\]]|--+|\u2014|\u2013|\band\s+(?=(?:a|an|the|this|these|those)\b)",
+    re.IGNORECASE,
 )
 
 # Electronic recordkeeping is intentionally implemented as readable semantic
@@ -253,6 +334,67 @@ OPTIONAL_OR_NEGATED_RECORDKEEPING = re.compile(
     re.IGNORECASE,
 )
 
+# Defect: a mandatory-sounding match can end exactly at the electronic term and
+# hide the alternative that follows it ("Records must be retained either
+# electronically or in paper form"). The complete local clause has to be read,
+# because an electronic/paper disjunction means paper storage is still allowed
+# and the clause is therefore not an electronic recordkeeping mandate.
+ELECTRONIC_STORAGE_MENTION = re.compile(
+    rf"\b{ELECTRONIC_STORAGE_LANGUAGE}\b",
+    re.IGNORECASE,
+)
+PAPER_STORAGE_MENTION = re.compile(
+    r"\b(?:paper|physical|hard[-\s]?copy|hardcopy|printed)\b",
+    re.IGNORECASE,
+)
+# Wording between the electronic and paper terms that makes paper an accepted
+# alternative rather than a replaced predecessor.
+PAPER_ALTERNATIVE_CONNECTOR = re.compile(
+    r"\b(?:or|and/or|either|alternativ\w*|option(?:al|ally|s)?|"
+    r"may|might|can|could|permitted|permissible|elect|election|"
+    r"choose|choice|whichever)\b",
+    re.IGNORECASE,
+)
+# Wording that shows paper is being displaced, so the electronic duty stands.
+PAPER_REPLACEMENT_CONNECTOR = re.compile(
+    r"\b(?:rather\s+than|instead\s+of|in\s+lieu\s+of|as\s+opposed\s+to|"
+    r"in\s+place\s+of|replac\w*|supersed\w*|discontinu\w*|eliminat\w*|"
+    r"prohibit\w*|no\s+longer|not|never|cannot|nor)\b",
+    re.IGNORECASE,
+)
+
+
+def _clause_permits_paper_alternative(clause: str) -> bool:
+    """Return True when a clause offers paper as an alternative to electronic.
+
+    Both orderings are semantically identical and must be rejected:
+    "retained either electronically or in paper form" and "retained either in
+    paper form or electronically". A clause that *replaces* paper with an
+    electronic duty ("maintained electronically rather than in paper form",
+    "must be maintained electronically and not in paper form") is a genuine
+    electronic-only mandate and is preserved.
+    """
+    electronic_spans = [match.span() for match in ELECTRONIC_STORAGE_MENTION.finditer(clause)]
+    if not electronic_spans:
+        return False
+
+    for paper_match in PAPER_STORAGE_MENTION.finditer(clause):
+        paper_start, paper_end = paper_match.span()
+        for electronic_start, electronic_end in electronic_spans:
+            if electronic_end <= paper_start:
+                connector = clause[electronic_end:paper_start]
+            elif paper_end <= electronic_start:
+                connector = clause[paper_end:electronic_start]
+            else:
+                continue
+
+            if PAPER_REPLACEMENT_CONNECTOR.search(connector):
+                continue
+            if PAPER_ALTERNATIVE_CONNECTOR.search(connector):
+                return True
+
+    return False
+
 # Configure logging
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
 LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -300,8 +442,8 @@ def _prepare_classification_text(text: str) -> str:
     return text.replace("\\r", " ").replace("\\n", " ")
 
 
-def _occurrence_context(text: str, start: int, end: int) -> str:
-    """Return the local context of a match, clipped to its own sentence/clause.
+def _occurrence_sentence_span(text: str, start: int, end: int) -> tuple[int, int]:
+    """Return the span of the sentence/clause that contains a match.
 
     Unlike the old fixed-size context window, this scans to the actual
     sentence/clause boundaries.  That matters for long sentences such as the
@@ -331,20 +473,65 @@ def _occurrence_context(text: str, start: int, end: int) -> str:
     if following_boundary:
         segment_end = following_boundary.start()
 
+    return segment_start, segment_end
+
+
+def _occurrence_context(text: str, start: int, end: int) -> str:
+    """Return the local context of a match, clipped to its own sentence/clause."""
+    segment_start, segment_end = _occurrence_sentence_span(text, start, end)
     return text[segment_start:segment_end]
+
+
+def _occurrence_clause(text: str, start: int, end: int) -> str:
+    """Return the clause of the sentence that actually contains the match.
+
+    A sentence can weld an obligation about one subject to a citation about
+    another ("... proposes to amend quarterly report deadlines, and a recent
+    working paper on artificial intelligence is available at ..."). Obligation
+    language must be tied to the clause carrying the match, otherwise any
+    unrelated duty in the sentence promotes a bibliographic mention.
+    """
+    sentence_start, sentence_end = _occurrence_sentence_span(text, start, end)
+    clause_start, clause_end = sentence_start, sentence_end
+
+    for boundary in CLAUSE_BOUNDARY_PATTERN.finditer(
+        text, sentence_start, start
+    ):
+        clause_start = boundary.end()
+
+    following_clause_boundary = CLAUSE_BOUNDARY_PATTERN.search(
+        text, end, sentence_end
+    )
+    if following_clause_boundary:
+        clause_end = following_clause_boundary.start()
+
+    return text[clause_start:clause_end]
 
 
 def _is_reference_only_occurrence(text: str, start: int, end: int) -> bool:
     """Return True when a match sits in bibliography/citation-only context.
 
     The check is deliberately asymmetric and fails open toward "operative":
-    any obligation language in the containing sentence/clause keeps the match,
-    and a match is only discarded when that complete clause carries an explicit
-    citation or literature-review marker. Missing a genuine requirement is far
-    worse than reporting an extra item, and inline footnote markers alone
-    (``\\4\\``) are not treated as evidence because operative Federal Register
-    text is full of them.
+    obligation language keeps the match, and a match is only discarded when its
+    context carries an explicit citation or literature-review marker. Missing a
+    genuine requirement is far worse than reporting an extra item, and inline
+    footnote markers alone (``\\4\\``) are not treated as evidence because
+    operative Federal Register text is full of them.
+
+    Scope is asymmetric on purpose. Obligation language is read from the
+    *clause* that contains the match, because a duty governs its own clause and
+    not an unrelated neighbour in the same sentence. Citation markers are read
+    from the containing sentence as well, because a citing sentence is
+    bibliographic throughout ("Another study also found that ... the
+    application of artificial intelligence tools."). A citation marker inside
+    the match's own clause is decisive and is checked first.
     """
+    clause = _occurrence_clause(text, start, end)
+    if OPERATIVE_LANGUAGE_PATTERN.search(clause):
+        return False
+    if REFERENCE_ONLY_PATTERN.search(clause):
+        return True
+
     window = _occurrence_context(text, start, end)
     if OPERATIVE_LANGUAGE_PATTERN.search(window):
         return False
@@ -371,12 +558,17 @@ def _has_electronic_recordkeeping_obligation(text: str) -> bool:
     and semicolon clause terminators, so ``electronic communications`` or an
     unrelated electronic filing cannot satisfy a records obligation.  Clauses
     containing explicit optional, permissive, negated, or paper-only wording
-    are rejected.
+    are rejected, and the *complete* clause is inspected for an
+    electronic-or-paper alternative so wording that continues past the matched
+    span cannot smuggle a permitted paper option through.
     """
     normalized = _prepare_classification_text(text)
     for clause in re.split(r"[.!?;]+", normalized):
         clause = re.sub(r"\s+", " ", clause).strip()
         if not clause:
+            continue
+
+        if _clause_permits_paper_alternative(clause):
             continue
 
         for pattern in ELECTRONIC_RECORDKEEPING_PATTERNS:
@@ -667,14 +859,25 @@ def _extract_federal_register_source_text(text: str) -> str:
 def _extract_finra_notice_fallback_text(html: str) -> str:
     """Extract the complete normalized text of the FINRA notice body.
 
-    FINRA pages can contain a login or access-message ``field--name-body``
-    before the actual notice article.  Never select the first generic body
-    field: prefer semantic article-body/notice-body fields, then scoped fields
-    inside a notice article or ``main`` element.  A page without one of those
-    scoped containers returns an empty string so the caller fails closed.
+    Two independent gates must both pass before text is treated as
+    authoritative notice content:
+
+    1. *Structure.* The text must come from a notice article/body container
+       (``[itemprop=articleBody]``, an ``article``/notice node, or a
+       ``field--name-*body`` field, optionally scoped to ``main``). A non-empty
+       ``<main>`` is **not** sufficient -- FINRA renders access-denied,
+       bot-challenge, login, and not-found pages inside a populated ``<main>``,
+       and accepting those would baseline an uninspected notice.
+    2. *Content.* The candidate must not carry an access-denied, blocked,
+       challenge/captcha, login, error, or not-found signature in its leading
+       region (:func:`_is_finra_non_notice_page_text`).
+
+    A page with no surviving candidate returns an empty string so the caller
+    fails closed with ``RequiredSourceTextError`` before any state advance.
     """
     soup = BeautifulSoup(html or "", "html.parser")
     candidates: list[tuple[int, int, str]] = []
+    rejected_non_notice = False
     excluded_parent_names = {
         "aside",
         "footer",
@@ -698,16 +901,14 @@ def _extract_finra_notice_fallback_text(html: str) -> str:
         return re.sub(r"\s+", " ", " ".join(text_parts)).strip()
 
     def add_candidate(node, score: int) -> None:
+        nonlocal rejected_non_notice
         text = normalized_node_text(node)
         if not text:
             return
-        # A short access/login message is page chrome, not authoritative notice
-        # content.  It must not win over a scoped notice candidate.
-        if re.search(
-            r"\b(?:please\s+)?(?:log\s*in|sign\s*in|login)\b",
-            text,
-            re.IGNORECASE,
-        ) and (len(text) < 500 or score <= 40):
+        # Error, challenge, denial, and login pages are page chrome, not
+        # authoritative notice content, whatever container they render in.
+        if _is_finra_non_notice_page_text(text):
+            rejected_non_notice = True
             return
         candidates.append((score, len(text), text))
 
@@ -743,9 +944,9 @@ def _extract_finra_notice_fallback_text(html: str) -> str:
         for node in soup.select(selector):
             add_candidate(node, 70)
 
-    # Some FINRA templates expose the notice directly under main without an
-    # article element.  Keep this fallback scoped to main and its body fields;
-    # never fall back to the entire document body.
+    # Some FINRA templates expose the notice body field directly under main
+    # without an article element. This stays scoped to a *body field*: a bare
+    # ``main`` is never a notice body, and the whole document never is.
     for selector in (
         "main [itemprop='articleBody']",
         "main .notice-body",
@@ -755,16 +956,19 @@ def _extract_finra_notice_fallback_text(html: str) -> str:
     ):
         for node in soup.select(selector):
             add_candidate(node, 90)
-    for node in soup.select("main"):
-        add_candidate(node, 60)
 
     # A few older FINRA pages expose multiple generic body fields without a
-    # semantic article wrapper. Treat the longest non-login body field as a
-    # low-confidence fallback, never as a whole-document fallback.
+    # semantic article wrapper. Treat the longest one as a low-confidence
+    # fallback, never as a whole-document fallback.
     for node in soup.select("[class*='field--name-body']"):
         add_candidate(node, 40)
 
     if not candidates:
+        if rejected_non_notice:
+            logger.warning(
+                "FINRA detail page carried no notice body: every candidate was "
+                "an error, challenge, login, or not-found page"
+            )
         return ""
     _, _, text = max(candidates, key=lambda candidate: (candidate[0], candidate[1]))
     return text
@@ -843,27 +1047,28 @@ def _should_fetch_federal_register_detail(
     classification: str,
     doc_type: str,
 ) -> bool:
-    """Consult authoritative full text for any item that could still change tier.
+    """Every Federal Register item is classified against its authoritative body.
 
-    A curated abstract is only a summary, so a MEDIUM (or even NOISE) abstract
-    can hide HIGH/CRITICAL operative language in the body. The only tier that
-    cannot be raised is CRITICAL -- it is the ceiling -- so authoritative text
-    is fetched for every classification except CRITICAL.
+    A curated abstract is only a summary, so it can hide operative language at
+    any tier -- including a CRITICAL abstract whose body carries a *different*
+    requirement, and whose body must still be retained and hashed so a later
+    body-only revision is observable. There is therefore no tier that skips the
+    authoritative read.
     """
-    return classification != CLASSIFICATION_CRITICAL
+    return True
 
 
 def _federal_register_authoritative_text_required(abstract_classification: str) -> bool:
-    """Whether authoritative full text is mandatory (fail closed) for an item.
+    """Authoritative full text is mandatory for every Federal Register item.
 
-    When the abstract yields no usable signal (NOISE/blank) there is no curated
-    evidence to fall back on, so classification cannot proceed without the
-    authoritative body and must fail closed if it is unavailable. When the
-    abstract already carries curated MEDIUM/HIGH evidence, the authoritative
-    fetch is best-effort: it may only ever raise the tier, never downgrade it,
-    and a fetch failure leaves the abstract classification intact.
+    The previous best-effort rule let a MEDIUM/HIGH abstract be accepted and
+    baselined when the authoritative read failed, which recorded a fingerprint
+    over summary text and silently suppressed any later body change. An item
+    whose authoritative body cannot be read is not classified, not hashed, and
+    not baselined: the run fails closed with ``RequiredSourceTextError`` and the
+    existing failure exit code.
     """
-    return abstract_classification == CLASSIFICATION_NOISE
+    return True
 
 
 def _should_fetch_finra_notice_detail(title: str, url: str, classification: str) -> bool:
@@ -1231,6 +1436,7 @@ def fetch_federal_register_documents(
         tier, reason = classify_regulatory_relevance(title, abstract, config)
         abstract_tier = tier
         effective_text = abstract
+        authoritative_body = ""
         used_source_text = False
 
         should_fetch_detail = _should_fetch_federal_register_detail(
@@ -1248,10 +1454,9 @@ def fetch_federal_register_documents(
             and raw_text_url not in detail_cache
             and detail_fetches >= detail_fetch_limit
         )
-        # A NOISE/blank abstract cannot be classified without the authoritative
-        # body, so exhausting the fetch budget before reaching it must fail
-        # closed. A MEDIUM/HIGH abstract already carries curated evidence, so a
-        # best-effort fetch that cannot run simply leaves that evidence in place.
+        # No item is classified or baselined without its authoritative body, so
+        # exhausting the fetch budget before reaching it must fail closed
+        # instead of accepting a summary-only record.
         if should_fetch_detail and fetch_budget_exhausted and authoritative_required:
             raise RequiredSourceTextError(
                 "Federal Register authoritative-text fetch limit reached before "
@@ -1271,18 +1476,23 @@ def fetch_federal_register_documents(
             if fetched_new:
                 detail_fetches += 1
             if fallback_text:
+                # The complete normalized authoritative body is always retained
+                # and hashed, whichever tier ultimately wins. Change detection
+                # must see the source of record even when the curated abstract
+                # is the more severe classification evidence.
+                authoritative_body = fallback_text
                 source_tier, source_reason = classify_regulatory_relevance(
                     title,
                     fallback_text,
                     config,
                     exclude_reference_only=True,
                 )
-                # Deterministic precedence: the more severe of the curated
-                # abstract and the authoritative body wins, and ties go to the
-                # authoritative body (it is the source of record). Because only a
-                # source tier that meets or exceeds the abstract tier is adopted,
-                # a failed or weaker authoritative read can never downgrade
-                # legitimate abstract evidence.
+                # Deterministic precedence for *classification only*: the more
+                # severe of the curated abstract and the authoritative body
+                # wins, and ties go to the authoritative body (it is the source
+                # of record). Because only a source tier that meets or exceeds
+                # the abstract tier is adopted, a weaker authoritative read can
+                # never downgrade legitimate abstract evidence.
                 if _classification_severity(source_tier) >= _classification_severity(
                     abstract_tier
                 ):
@@ -1310,7 +1520,7 @@ def fetch_federal_register_documents(
             publication_date=doc.get('publication_date', ''),
             doc_type=doc_type,
             abstract=effective_text,
-            content_text=effective_text,
+            content_text=authoritative_body or effective_text,
             document_id=doc.get('document_number', ''),
             classification=tier,
             classification_reason=reason,
@@ -1442,12 +1652,22 @@ def fetch_finra_notices(
                 detail_fetches += 1
             notice_body_text = fallback_text
             presentation_excerpt = fallback_text[:FALLBACK_TEXT_MAX_CHARS]
+            # A FINRA notice body is authoritative full text, exactly like the
+            # Federal Register raw document, so it gets the same reference-only
+            # filtering: a notice that only *cites* an AI paper must not be
+            # promoted, and must not be mapped onto controls it never touches.
             tier, reason = classify_regulatory_relevance(
-                title, notice_body_text, config
+                title,
+                notice_body_text,
+                config,
+                exclude_reference_only=True,
             )
 
         affected_controls = find_affected_controls_by_keywords(
-            title, notice_body_text, config
+            title,
+            notice_body_text,
+            config,
+            exclude_reference_only=bool(notice_body_text),
         )
 
         item = RegulatoryItem(
@@ -1535,13 +1755,18 @@ def _normalize_hash_field(text: str) -> str:
 
 
 def _content_fingerprint(item: RegulatoryItem) -> str:
-    """Hash the complete normalized content, not the report excerpt.
+    """Hash every substantive field, including the complete authoritative body.
 
-    FINRA items keep a bounded ``abstract`` for report readability, while
-    ``content_text`` retains the complete authoritative body.  Hashing the
-    latter makes wording changes after character 4000 observable.  The
-    ``abstract`` fallback preserves compatibility for callers constructing
-    legacy ``RegulatoryItem`` instances without ``content_text``.
+    Schema 2 layout: ``title|report_text|authoritative_body|publication_date``.
+
+    ``abstract`` is the text shown in reports -- for FINRA a bounded excerpt of
+    the notice, for Federal Register whichever text supplied the classification
+    evidence. ``content_text`` is the complete normalized authoritative body and
+    is hashed unconditionally, so a wording change after the excerpt bound (or a
+    body revision behind an unchanged curated abstract) is always observable.
+    Both are hashed because they can move independently. The ``abstract``
+    fallback preserves compatibility for callers constructing legacy
+    ``RegulatoryItem`` instances without ``content_text``.
 
     Synthetic FINRA dates are run metadata, not notice content. Keeping their
     field position but hashing an empty value preserves deterministic identity
@@ -1553,33 +1778,91 @@ def _content_fingerprint(item: RegulatoryItem) -> str:
     content_text = item.content_text or item.abstract
     return "|".join(
         _normalize_hash_field(part)
-        for part in (item.title, content_text, publication_date)
+        for part in (item.title, item.abstract, content_text, publication_date)
     )
 
 
-def _legacy_finra_content_hashes(
+def _legacy_content_fingerprint(
+    title: str,
+    content: str,
+    publication_date: str,
+) -> str:
+    """Rebuild a schema-1 fingerprint (``title|content|publication_date``)."""
+    return "|".join(
+        _normalize_hash_field(part)
+        for part in (title, content, publication_date)
+    )
+
+
+def _schema_tagged_hash(fingerprint: str) -> str:
+    """Return the stored form of a current-schema content hash."""
+    return f"{CONTENT_HASH_SCHEMA_PREFIX}{compute_hash(fingerprint)}"
+
+
+def _stored_hash_schema_version(stored_hash: str) -> int:
+    """Return the schema version a stored entry declares.
+
+    Untagged values are schema 1: they were written before the fingerprint
+    layout was versioned, so their layout can only be inferred, never trusted.
+    """
+    match = CONTENT_HASH_SCHEMA_PATTERN.match(str(stored_hash or ""))
+    if not match:
+        return LEGACY_CONTENT_HASH_SCHEMA_VERSION
+    try:
+        return int(match.group(1))
+    except ValueError:  # pragma: no cover - pattern guarantees digits
+        return LEGACY_CONTENT_HASH_SCHEMA_VERSION
+
+
+def _legacy_migration_hashes(
+    source_key: str,
     item: RegulatoryItem,
     source_state: dict,
 ) -> set[str]:
-    """Return hashes emitted by the pre-fix FINRA date fallback behavior."""
-    legacy_dates = set()
+    """Schema-1 hashes that *prove* the complete current content is unchanged.
 
-    regulatory_notice_match = FINRA_NOTICE_ID_PATTERN.search(item.url or "")
-    if regulatory_notice_match:
-        legacy_dates.add(f"20{regulatory_notice_match.group(1)}-01-01")
-    else:
-        last_run_date = _parse_finra_publication_date(
-            str(source_state.get("last_run") or "")
-        )
-        if last_run_date:
-            legacy_dates.add(last_run_date)
+    A legacy digest may only suppress a finding when it demonstrably covered
+    the whole of the content now being compared. Two schema-1 shapes qualify:
+
+    * the full-content fingerprint (schema 1 hashed ``content_text`` when the
+      item carried one), and
+    * for FINRA only, the pre-excerpt-fix fingerprint over the bounded
+      ``abstract`` -- but *only* when that excerpt covers the complete body.
+      FINRA's ``abstract`` is a deterministic prefix of ``content_text``, so an
+      excerpt equal to the whole body proves the body, while a truncated
+      excerpt proves nothing about the suffix and must not suppress anything.
+
+    Everything else is unprovable and deliberately produces a one-time finding
+    rather than a silent overwrite.
+    """
+    publication_date = (
+        "" if item.publication_date_is_synthetic else item.publication_date
+    )
+    dates = {publication_date}
+    contents = {item.content_text or item.abstract}
+
+    if source_key == SOURCE_KEY_FINRA:
+        # The pre-fix FINRA date fallback wrote a synthetic or run-date value
+        # into the same field position.
+        regulatory_notice_match = FINRA_NOTICE_ID_PATTERN.search(item.url or "")
+        if regulatory_notice_match:
+            dates.add(f"20{regulatory_notice_match.group(1)}-01-01")
+        else:
+            last_run_date = _parse_finra_publication_date(
+                str(source_state.get("last_run") or "")
+            )
+            if last_run_date:
+                dates.add(last_run_date)
+
+        excerpt = item.abstract or ""
+        body = item.content_text or item.abstract or ""
+        if _normalize_hash_field(excerpt) == _normalize_hash_field(body):
+            contents.add(excerpt)
 
     return {
-        compute_hash("|".join(
-            _normalize_hash_field(part)
-            for part in (item.title, item.abstract, legacy_date)
-        ))
-        for legacy_date in legacy_dates
+        compute_hash(_legacy_content_fingerprint(item.title, content, date))
+        for content in contents
+        for date in dates
     }
 
 
@@ -1604,22 +1887,37 @@ def check_for_new_items(source_key: str, items: list[RegulatoryItem], source_sta
 
         # Compute hash of the item content (whitespace-normalized so cosmetic
         # abstract churn within the since_date window does not re-emit an item).
-        content_hash = compute_hash(_content_fingerprint(item))
+        content_hash = _schema_tagged_hash(_content_fingerprint(item))
 
         # Check if this is a new item or changed item
         if entry_key not in existing_entries:
             logger.info(f"  New item: {item.title[:60]}... ({item.agency})")
             new_items.append(item)
-        elif (
-            existing_entries[entry_key] != content_hash
-            and (
-                source_key != SOURCE_KEY_FINRA
-                or existing_entries[entry_key]
-                not in _legacy_finra_content_hashes(item, source_state)
-            )
+            continue
+
+        stored_hash = existing_entries[entry_key]
+        if stored_hash == content_hash:
+            continue
+
+        stored_version = _stored_hash_schema_version(stored_hash)
+        if stored_version < CONTENT_HASH_SCHEMA_VERSION and stored_hash in (
+            _legacy_migration_hashes(source_key, item, source_state)
         ):
-            logger.info(f"  Updated item: {item.title[:60]}... ({item.agency})")
-            new_items.append(item)
+            # A legacy digest that provably covered the complete content: the
+            # schema changed, the content did not. Migrate silently; the entry
+            # is rewritten under the current schema by update_source_state.
+            logger.info(
+                "  Migrating schema-%s entry with unchanged content: %s",
+                stored_version,
+                entry_key,
+            )
+            continue
+
+        # Either a genuine change, or a legacy digest that cannot prove the
+        # complete content is unchanged. Surface it once rather than silently
+        # overwriting a change that may hide behind a truncated legacy excerpt.
+        logger.info(f"  Updated item: {item.title[:60]}... ({item.agency})")
+        new_items.append(item)
 
     return new_items
 
@@ -1661,7 +1959,7 @@ def update_source_state(source_key: str, items: list[RegulatoryItem], state: dic
 
     for item in _sort_regulatory_items(items):
         entry_key = item.document_id if item.document_id else item.url
-        entries[entry_key] = compute_hash(_content_fingerprint(item))
+        entries[entry_key] = _schema_tagged_hash(_content_fingerprint(item))
 
     source_state['entries'] = entries
     source_state['last_run'] = datetime.now(timezone.utc).isoformat()

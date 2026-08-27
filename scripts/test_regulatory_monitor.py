@@ -22,16 +22,42 @@ def _load_config() -> dict:
     return yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
 
 
+# Neutral authoritative body served by the offline guard. Deliberately free of
+# AI, automation, and recordkeeping vocabulary so it always classifies NOISE.
+OFFLINE_AUTHORITATIVE_BODY = (
+    "Offline placeholder authoritative source text for regression fixtures."
+)
+
+
+def _finra_notice_page(body: str, *, node_type: str = "notice") -> str:
+    """Return live-shaped FINRA notice detail markup.
+
+    A bare ``<main>`` is not a notice body: FINRA serves access-denied,
+    challenge, login, and not-found pages inside a populated ``<main>``, so the
+    extractor requires a notice article/body container. Valid fixtures use the
+    real Drupal shape.
+    """
+    return (
+        "<html><body><main>"
+        f"<article class='node node--type-{node_type}'>"
+        "<h1>Regulatory Notice</h1>"
+        f"<div class='field field--name-body'>{body}</div>"
+        "</article>"
+        "</main></body></html>"
+    )
+
+
 @pytest.fixture(autouse=True)
 def _offline_network_guard(monkeypatch):
     """Default every test to an offline, no-op network layer.
 
-    Federal Register classification now consults authoritative full text for
-    every non-CRITICAL item, so a fixture that builds documents without wiring
-    a ``fetch_page`` stub would otherwise reach the real network. This provides
-    a safe offline default -- an empty 200 body, which best-effort MEDIUM/HIGH
-    items treat as "no additional evidence" (and which correctly fails closed
-    for a required NOISE item) -- and removes real sleeps. Tests that exercise
+    Federal Register classification consults authoritative full text for
+    *every* item and fails closed when that text is unavailable, so a fixture
+    that builds documents without wiring a ``fetch_page`` stub would otherwise
+    reach the real network -- or fail closed for the wrong reason. This
+    provides a safe offline default: a valid 200 response carrying a neutral
+    authoritative body with no AI or recordkeeping vocabulary, so it classifies
+    NOISE and never raises or lowers a fixture's tier. Tests that exercise
     fetch behavior set their own ``fetch_page`` in the test body, which runs
     after this fixture and therefore overrides it.
     """
@@ -40,7 +66,11 @@ def _offline_network_guard(monkeypatch):
         return {
             "url": url,
             "status_code": 200,
-            "content": "",
+            "content": (
+                "<html><body><pre>"
+                f"{OFFLINE_AUTHORITATIVE_BODY}"
+                "</pre></body></html>"
+            ),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -868,11 +898,17 @@ def test_federal_register_medium_abstract_upgrades_on_authoritative_critical_bod
     assert items[0].affected_controls
 
 
-def test_federal_register_medium_abstract_survives_best_effort_fetch_failure(
+def test_federal_register_medium_abstract_fetch_failure_fails_closed(
     monkeypatch,
 ):
-    """A best-effort authoritative fetch that fails must not downgrade or crash a
-    MEDIUM abstract -- the curated evidence is preserved."""
+    """A failed authoritative read must fail closed, not baseline the abstract.
+
+    The reviewer rejected the previous best-effort rule: accepting a MEDIUM/HIGH
+    abstract when the authoritative body could not be read recorded a
+    fingerprint over summary text, so every later body-only revision was
+    silently suppressed. An item whose authoritative body is unavailable is not
+    classified and not baselined.
+    """
     config = _load_config()
     document = {
         "document_number": "2026-90211",
@@ -884,6 +920,13 @@ def test_federal_register_medium_abstract_survives_best_effort_fetch_failure(
         "raw_text_url": "https://example.test/2026-90211.txt",
         "agencies": [{"slug": "securities-and-exchange-commission", "name": "SEC"}],
     }
+    # Precondition: the curated abstract alone is MEDIUM, so this is exactly the
+    # case the old best-effort rule would have accepted.
+    abstract_tier, _ = regulatory_monitor.classify_regulatory_relevance(
+        document["title"], document["abstract"], config
+    )
+    assert abstract_tier == regulatory_monitor.CLASSIFICATION_MEDIUM
+
     session = _PagedFederalRegisterSession(
         {1: {"count": 1, "total_pages": 1, "results": [document]}}
     )
@@ -901,16 +944,15 @@ def test_federal_register_medium_abstract_survives_best_effort_fetch_failure(
     monkeypatch.setattr(regulatory_monitor, "fetch_page", failing_fetch_page)
     monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
 
-    items = regulatory_monitor.fetch_federal_register_documents(
-        session=session,
-        since_date="2026-08-18",
-        config=config,
-    )
-
-    assert len(items) == 1
-    assert items[0].classification == regulatory_monitor.CLASSIFICATION_MEDIUM
-    # No authoritative text was adopted, so the curated abstract is retained.
-    assert items[0].abstract == document["abstract"]
+    with pytest.raises(
+        regulatory_monitor.RequiredSourceTextError,
+        match="authoritative text fetch failed",
+    ):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-08-18",
+            config=config,
+        )
 
 
 @pytest.mark.parametrize("abstract", [None, "Administrative procedural update."])
@@ -1530,14 +1572,11 @@ def test_finra_notice_body_fallback_promotes_genai_notice_to_high(monkeypatch):
       <a href="/rules-guidance/notices/26-14">Regulatory Notice 26-14: Request for Comment</a>
     </body></html>
     """
-    detail_html = """
-    <html><body>
-      <main>
-        GenAI communication tools may be included in a reasonably designed supervisory system
-        when firms vet, test, and continuously monitor for hallucination and data-protection risk.
-      </main>
-    </body></html>
-    """
+    detail_html = _finra_notice_page(
+        "GenAI communication tools may be included in a reasonably designed "
+        "supervisory system when firms vet, test, and continuously monitor for "
+        "hallucination and data-protection risk."
+    )
 
     def fake_fetch_page(url, session, max_retries=3):
         if url == regulatory_monitor.FINRA_NOTICES_URL:
@@ -1597,7 +1636,7 @@ def test_finra_long_notice_late_mandatory_ai_requirement_elevates(monkeypatch):
         "Member firms must supervise the use of artificial intelligence in all "
         "customer communications."
     )
-    detail_html = f"<html><body><main>{filler}{late_requirement}</main></body></html>"
+    detail_html = _finra_notice_page(f"{filler}{late_requirement}")
 
     # Preconditions: the extracted body is long and the requirement lands past
     # the excerpt bound, so a truncating extractor would hide it.
@@ -1989,7 +2028,7 @@ def test_finra_publication_date_uses_authoritative_listing_metadata(monkeypatch)
       </td>
     </tr></tbody></table></div></body></html>
     """
-    detail_html = "<html><body><main>Information notice body.</main></body></html>"
+    detail_html = _finra_notice_page("Information notice body.")
 
     monkeypatch.setattr(
         regulatory_monitor,
@@ -2197,9 +2236,7 @@ def test_finra_notice_body_fetch_uses_cache(monkeypatch):
       <a href="/rules-guidance/notices/26-14">Regulatory Notice 26-14: Request for Comment (duplicate)</a>
     </body></html>
     """
-    detail_html = """
-    <html><body><main>GenAI monitoring language for notice 26-14.</main></body></html>
-    """
+    detail_html = _finra_notice_page("GenAI monitoring language for notice 26-14.")
     detail_calls = {"count": 0}
 
     def fake_fetch_page(url, session, max_retries=3):
@@ -2416,11 +2453,46 @@ def test_change_hash_still_detects_substantive_abstract_change():
 
 def test_content_fingerprint_normalizes_whitespace_only():
     """The fingerprint collapses whitespace but preserves substantive text and
-    field ordering (title|abstract|publication_date)."""
+    the schema-2 field ordering
+    (title|report_text|authoritative_body|publication_date)."""
     item = _fed_item("alpha\n\nbeta   gamma")
     fp = regulatory_monitor._content_fingerprint(item)
     assert "alpha beta gamma" in fp
-    assert fp.split("|")[2] == "2026-07-11"
+    assert fp.split("|") == [
+        "Self-Regulatory Organizations; Notice of Filing",
+        "alpha beta gamma",
+        "alpha beta gamma",
+        "2026-07-11",
+    ]
+
+
+def test_state_entries_declare_the_current_hash_schema():
+    """Stored digests carry an explicit schema tag.
+
+    Without it a comparison cannot tell a fingerprint-layout change from a
+    content change, which is how a changed late suffix was previously mistaken
+    for a harmless legacy migration.
+    """
+    state: dict = {}
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER,
+        [_fed_item("An abstract")],
+        state,
+    )
+    entries = regulatory_monitor.get_source_state(
+        state,
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER,
+    )["entries"]
+
+    stored = entries["2026-00042"]
+    assert stored.startswith(regulatory_monitor.CONTENT_HASH_SCHEMA_PREFIX)
+    assert regulatory_monitor._stored_hash_schema_version(stored) == (
+        regulatory_monitor.CONTENT_HASH_SCHEMA_VERSION
+    )
+    # A pre-versioning entry is recognised as legacy, never as current.
+    assert regulatory_monitor._stored_hash_schema_version(
+        "sha256:" + "0" * 64
+    ) == regulatory_monitor.LEGACY_CONTENT_HASH_SCHEMA_VERSION
 
 
 def test_limited_cli_run_does_not_mutate_entries_or_watermark(monkeypatch):
@@ -2685,3 +2757,1007 @@ def test_electronic_delivery_does_not_override_high_or_critical():
         config,
     )
     assert high == regulatory_monitor.CLASSIFICATION_HIGH
+
+
+# ---------------------------------------------------------------------------
+# Reviewer-mandated adversarial regressions for the five integrity defects.
+#
+# Each block is written to fail against the pre-fix behaviour, not merely to
+# describe the fix. Where a defect had a "looks fine" failure mode (a silent
+# overwrite, an accepted error page, a suppressed finding), the test asserts
+# the observable consequence, not the internal helper.
+# ---------------------------------------------------------------------------
+
+
+def _fr_document(
+    document_id: str,
+    *,
+    title: str = "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+    abstract: str = "A broker-dealer regulatory notice.",
+    publication_date: str = "2026-08-21",
+    doc_type: str = "PRORULE",
+    agency_slug: str = "securities-and-exchange-commission",
+    agency_name: str = "SEC",
+) -> dict:
+    return {
+        "document_number": document_id,
+        "title": title,
+        "abstract": abstract,
+        "publication_date": publication_date,
+        "type": doc_type,
+        "html_url": f"https://www.federalregister.gov/documents/{document_id}",
+        "raw_text_url": f"https://example.test/{document_id}.txt",
+        "agencies": [{"slug": agency_slug, "name": agency_name}],
+    }
+
+
+def _fr_body_session(document: dict, body: str, monkeypatch):
+    """Wire a single-document listing plus a 200 authoritative body fetch."""
+    session = _PagedFederalRegisterSession(
+        {1: {"count": 1, "total_pages": 1, "results": [document]}}
+    )
+    requested: list[str] = []
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        requested.append(url)
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": f"<html><body><pre>{body}</pre></body></html>",
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+    return session, requested
+
+
+# --- Defect 1: Federal Register authoritative body integrity ---------------
+
+
+def test_federal_register_critical_abstract_still_fetches_authoritative_body(
+    monkeypatch,
+):
+    """A CRITICAL abstract must not short-circuit the authoritative read.
+
+    Pre-fix, a CRITICAL abstract skipped the detail fetch entirely, so the
+    baseline hash covered a curated summary and every later body revision was
+    invisible. The classification outcome is not the point -- the retained and
+    hashed evidence is.
+    """
+    config = _load_config()
+    document = _fr_document(
+        "2026-91001",
+        abstract=(
+            "The Commission proposes requirements for Microsoft 365 Copilot "
+            "deployments used by registered broker-dealers."
+        ),
+    )
+    abstract_tier, _ = regulatory_monitor.classify_regulatory_relevance(
+        document["title"], document["abstract"], config
+    )
+    assert abstract_tier == regulatory_monitor.CLASSIFICATION_CRITICAL
+
+    body = (
+        "Authoritative body text for 2026-91001. Each member firm shall "
+        "supervise every copilot deployment used to prepare customer "
+        "communications and shall retain the resulting records."
+    )
+    session, requested = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session, since_date="2026-08-18", config=config
+    )
+
+    assert len(items) == 1
+    assert document["raw_text_url"] in requested, "authoritative body was not fetched"
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_CRITICAL
+    assert "Authoritative body text for 2026-91001" in items[0].content_text
+    # The complete body -- not just the abstract -- is what gets hashed.
+    assert "Authoritative body text for 2026-91001" in (
+        regulatory_monitor._content_fingerprint(items[0])
+    )
+
+
+def test_federal_register_unchanged_abstract_with_changed_late_body_is_a_finding(
+    monkeypatch,
+):
+    """Same abstract, revised body late in the document -> a finding.
+
+    This is the concrete harm of not hashing the authoritative body: a silent
+    substantive revision behind an untouched curated abstract.
+    """
+    config = _load_config()
+    document = _fr_document("2026-91002")
+    filler = "Routine regulatory background text. " * 400
+    first_body = f"Authoritative body. {filler}The compliance date is March 1, 2027."
+    second_body = f"Authoritative body. {filler}The compliance date is June 1, 2027."
+
+    session, _ = _fr_body_session(document, first_body, monkeypatch)
+    first = regulatory_monitor.fetch_federal_register_documents(
+        session=session, since_date="2026-08-18", config=config
+    )
+    state: dict = {}
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, first, state
+    )
+    source_state = regulatory_monitor.get_source_state(
+        state, regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER
+    )
+
+    session, _ = _fr_body_session(document, second_body, monkeypatch)
+    second = regulatory_monitor.fetch_federal_register_documents(
+        session=session, since_date="2026-08-18", config=config
+    )
+
+    assert first[0].abstract != "" and second[0].abstract == first[0].abstract, (
+        "the curated abstract must be identical for this test to be meaningful"
+    )
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, second, source_state
+    ) == second
+
+    # ...and a re-run of the same body is stable, so this is not just churn.
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, second, state
+    )
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER,
+        second,
+        regulatory_monitor.get_source_state(
+            state, regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER
+        ),
+    ) == []
+
+
+def test_federal_register_body_is_hashed_even_when_abstract_sets_severity(
+    monkeypatch,
+):
+    """Severity merge is classification-only; retention is unconditional.
+
+    The abstract wins the tier here (the body is neutral), which is exactly the
+    branch where the old code discarded the body. The body must still be
+    retained and hashed.
+    """
+    config = _load_config()
+    document = _fr_document(
+        "2026-91003",
+        abstract=(
+            "The Commission proposes supervisory requirements for artificial "
+            "intelligence tools that each member firm must implement."
+        ),
+    )
+    neutral_body = (
+        "Table of contents. Paperwork Reduction Act statement. "
+        "Regulatory flexibility certification. Statutory authority citation."
+    )
+    session, _ = _fr_body_session(document, neutral_body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session, since_date="2026-08-18", config=config
+    )
+
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert items[0].abstract == document["abstract"], "abstract evidence was lost"
+    assert "Paperwork Reduction Act statement" in items[0].content_text
+    fingerprint = regulatory_monitor._content_fingerprint(items[0])
+    assert "artificial intelligence tools" in fingerprint
+    assert "Paperwork Reduction Act statement" in fingerprint
+
+
+def test_federal_register_fetch_failure_is_not_baselined(monkeypatch):
+    """A failed authoritative read leaves no state entry behind."""
+    config = _load_config()
+    document = _fr_document("2026-91004")
+    session = _PagedFederalRegisterSession(
+        {1: {"count": 1, "total_pages": 1, "results": [document]}}
+    )
+
+    def failing_fetch_page(url, _session, max_retries=3):
+        return {
+            "url": url,
+            "status_code": 403,
+            "content": "",
+            "final_url": url,
+            "was_redirected": False,
+            "error": "forbidden",
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", failing_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_federal_register_documents(
+            session=session, since_date="2026-08-18", config=config
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, items, state
+        )
+
+    assert state == {}, "a failed authoritative read must not advance state"
+
+
+# --- Defect 2: FINRA non-notice / error-page rejection ---------------------
+
+
+FINRA_NON_NOTICE_FIXTURES = {
+    "access_denied": (
+        "<html><body><main><article class='node node--type-page'>"
+        "<div class='field field--name-body'><h1>Access Denied</h1>"
+        "<p>You do not have permission to access this page.</p>"
+        "</div></article></main></body></html>"
+    ),
+    "request_blocked": (
+        "<html><body><main><article class='node node--type-notice'>"
+        "<div class='field field--name-body'><h1>Request Blocked</h1>"
+        "<p>Your request has been blocked. Reference #18.2b3c4d5e.</p>"
+        "</div></article></main></body></html>"
+    ),
+    "captcha_challenge": (
+        "<html><body><main><article class='node node--type-notice'>"
+        "<div class='field field--name-body'><h1>Verify you are human</h1>"
+        "<p>Please complete the security check to continue.</p>"
+        "</div></article></main></body></html>"
+    ),
+    "login_wall": (
+        "<html><body><main><article class='node node--type-notice'>"
+        "<div class='field field--name-body'>Please log in to view this page. "
+        "Sign in to continue to the requested notice.</div>"
+        "</article></main></body></html>"
+    ),
+    "not_found": (
+        "<html><body><main><article class='node node--type-page'>"
+        "<div class='field field--name-body'><h1>Page not found</h1>"
+        "<p>The page you requested could not be found.</p>"
+        "</div></article></main></body></html>"
+    ),
+    # The reviewer's core objection: a populated <main> is not a notice body.
+    "bare_main_chrome": (
+        "<html><body><main>Rules &amp; Guidance. Notices. Rulebook. "
+        "Contact FINRA. This page could not be displayed.</main></body></html>"
+    ),
+    "bare_main_plausible_prose": (
+        "<html><body><main>Member firms must supervise the use of artificial "
+        "intelligence in all customer communications.</main></body></html>"
+    ),
+}
+
+
+@pytest.mark.parametrize("fixture_name", sorted(FINRA_NON_NOTICE_FIXTURES))
+def test_finra_non_notice_pages_yield_no_body_text(fixture_name):
+    """Every 200-status non-notice shape extracts nothing.
+
+    ``bare_main_plausible_prose`` is the adversarial case: the text reads like a
+    real requirement, so only the *structural* gate can reject it. Accepting it
+    would let page chrome or a templated block be baselined as notice content.
+    """
+    assert regulatory_monitor._extract_finra_notice_fallback_text(
+        FINRA_NON_NOTICE_FIXTURES[fixture_name]
+    ) == ""
+
+
+@pytest.mark.parametrize("fixture_name", sorted(FINRA_NON_NOTICE_FIXTURES))
+def test_finra_two_hundred_status_error_pages_fail_closed(fixture_name, monkeypatch):
+    """A 200 error/challenge page raises rather than advancing state.
+
+    Status code alone proves nothing here: all of these are served with HTTP
+    200, which is precisely why the old ``<main>``-is-enough rule baselined
+    them.
+    """
+    config = _load_config()
+    listing_html = (
+        "<html><body>"
+        "<a href='/rules-guidance/notices/26-14'>Regulatory Notice 26-14: "
+        "Request for Comment</a></body></html>"
+    )
+    detail_html = FINRA_NON_NOTICE_FIXTURES[fixture_name]
+
+    def fake_fetch_page(url, session, max_retries=3):
+        content = (
+            listing_html if url == regulatory_monitor.FINRA_NOTICES_URL else detail_html
+        )
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": content,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_finra_notices(
+            session=object(), config=config, limit=1
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FINRA, items, state
+        )
+
+    assert state == {}, "an error page must not be baselined as notice content"
+
+
+def test_finra_live_shaped_valid_notice_still_succeeds(monkeypatch):
+    """The gate must not be a blanket rejection: a real notice still lands."""
+    config = _load_config()
+    listing_html = (
+        "<html><body>"
+        "<a href='/rules-guidance/notices/26-14'>Regulatory Notice 26-14: "
+        "Request for Comment</a></body></html>"
+    )
+    body = (
+        "Summary: Member firms must supervise the use of artificial intelligence "
+        "in all customer communications and must retain supervisory evidence."
+    )
+    detail_html = _finra_notice_page(body)
+
+    def fake_fetch_page(url, session, max_retries=3):
+        content = (
+            listing_html if url == regulatory_monitor.FINRA_NOTICES_URL else detail_html
+        )
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": content,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(), config=config, limit=1
+    )
+
+    assert len(items) == 1
+    assert "supervise the use of artificial intelligence" in items[0].content_text
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+
+
+def test_finra_substantial_notice_survives_incidental_challenge_wording():
+    """The rejection signature must not eat genuine notices.
+
+    A real notice can legitimately say "security check" or "log in to the FINRA
+    Gateway". The safety valve keeps a long, structurally valid notice that
+    happens to contain such wording.
+    """
+    body = (
+        "Suggested Routing: Compliance, Legal, Senior Management. Member firms "
+        "must complete a security check before onboarding and may log in to the "
+        "FINRA Gateway to file. "
+        + ("This notice explains member supervisory procedures in detail. " * 60)
+    )
+    extracted = regulatory_monitor._extract_finra_notice_fallback_text(
+        _finra_notice_page(body)
+    )
+    assert "Suggested Routing" in extracted
+    assert len(extracted) > regulatory_monitor.FINRA_NOTICE_SUBSTANTIAL_CHARS
+
+
+# --- Defect 3: citation-only AI filtering ---------------------------------
+
+
+REFERENCE_ONLY_SENTENCES = {
+    "obligation_then_citation": (
+        "The Commission proposes to amend quarterly report deadlines for covered "
+        "filings, and a recent working paper on artificial intelligence is "
+        "available at https://example.org/ai-study.pdf."
+    ),
+    "citation_then_obligation": (
+        "A recent working paper on artificial intelligence is available at "
+        "https://example.org/ai-study.pdf, and the Commission proposes to amend "
+        "quarterly report deadlines for covered filings."
+    ),
+    "obligation_then_supra_note": (
+        "Each registrant must file the annual report within 60 days, see supra "
+        "note 14 discussing artificial intelligence in capital markets."
+    ),
+    "obligation_then_journal_survey": (
+        "Each registrant must file the annual report within 60 days, and Smith "
+        "et al. survey artificial intelligence in the Journal of Financial "
+        "Regulation."
+    ),
+    "obligation_then_academic_study": (
+        "Each registrant must file the annual report within 60 days, and a "
+        "recent academic study of artificial intelligence in capital markets is "
+        "available at https://example.org/ai.pdf."
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(REFERENCE_ONLY_SENTENCES))
+def test_unrelated_obligation_beside_ai_citation_stays_non_high(case):
+    """An obligation elsewhere in the sentence must not activate the citation.
+
+    Pre-fix the filter asked "does this sentence contain obligation language?"
+    -- so any duty anywhere in the sentence rescued a purely bibliographic AI
+    mention. The duty must bind the AI-bearing clause itself.
+    """
+    config = _load_config()
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        REFERENCE_ONLY_SENTENCES[case],
+        config,
+        exclude_reference_only=True,
+    )
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }, (classification, reason)
+    assert "artificial intelligence" not in reason.lower()
+
+
+def test_operative_ai_duty_survives_intervening_clause():
+    """Fail-open guard: a real duty separated by an appositive stays HIGH.
+
+    This is the cost side of narrowing the scope -- if the clause split were
+    naive, this genuine requirement would be filtered out as a citation.
+    """
+    config = _load_config()
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulatory Notice 26-10",
+        "Members must, in accordance with Rule 3110, supervise artificial "
+        "intelligence tools used for customer communications.",
+        config,
+        exclude_reference_only=True,
+    )
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert "artificial intelligence" in reason.lower()
+
+
+def _finra_pipeline(body: str, monkeypatch, *, link_text: str):
+    config = _load_config()
+    listing_html = (
+        "<html><body>"
+        f"<a href='/rules-guidance/notices/26-14'>{link_text}</a>"
+        "</body></html>"
+    )
+    detail_html = _finra_notice_page(body)
+
+    def fake_fetch_page(url, session, max_retries=3):
+        content = (
+            listing_html if url == regulatory_monitor.FINRA_NOTICES_URL else detail_html
+        )
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": content,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+    return regulatory_monitor.fetch_finra_notices(
+        session=object(), config=config, limit=1
+    )
+
+
+def test_finra_body_with_only_an_ai_citation_stays_non_high(monkeypatch):
+    """Reference-only filtering was previously Federal Register-only.
+
+    A FINRA notice whose sole AI mention is a bibliographic citation must not
+    be promoted, and must map no controls.
+    """
+    body = (
+        "This notice reminds members of quarterly filing schedules and fee "
+        "obligations. See Smith et al., Governance of Artificial Intelligence in "
+        "Broker-Dealers, Journal of Financial Regulation (2025), available at "
+        "https://example.org/ai-paper.pdf."
+    )
+    items = _finra_pipeline(
+        body, monkeypatch, link_text="Regulatory Notice 26-14: Filing Schedules"
+    )
+
+    assert len(items) == 1
+    assert items[0].classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+    assert "artificial intelligence" not in items[0].classification_reason.lower()
+    assert items[0].affected_controls == [], (
+        "control mapping must apply the same reference-only filter as "
+        "classification, or a citation silently maps governance controls"
+    )
+
+
+def test_finra_genuine_operative_ai_requirement_remains_high(monkeypatch):
+    """The FINRA filter must not suppress real requirements."""
+    body = (
+        "Member firms must supervise the use of artificial intelligence in all "
+        "customer communications and must retain supervisory evidence for the "
+        "period required by the applicable books and records rules."
+    )
+    items = _finra_pipeline(
+        body, monkeypatch, link_text="Regulatory Notice 26-14: Request for Comment"
+    )
+
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert "artificial intelligence" in items[0].classification_reason.lower()
+    assert items[0].affected_controls, "a genuine AI requirement must map controls"
+
+
+def test_federal_register_genuine_operative_ai_requirement_remains_high(monkeypatch):
+    """The 2026-17163 contract shape: a real AI reference stays HIGH."""
+    config = _load_config()
+    document = _fr_document(
+        "2026-17163",
+        title="Request for Comment on the Listing of Compute Derivatives Contracts",
+        abstract="A request for comment on compute derivatives contracts.",
+        agency_slug="commodity-futures-trading-commission",
+        agency_name="CFTC",
+    )
+    body = (
+        "The Commission requests comment on contracts referencing compute "
+        "capacity. A designated contract market must describe how artificial "
+        "intelligence workloads determine the deliverable supply, and shall "
+        "maintain records supporting that determination."
+    )
+    session, _ = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session, since_date="2026-08-18", config=config
+    )
+
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert "artificial intelligence" in items[0].classification_reason.lower()
+    assert items[0].affected_controls
+
+
+def test_federal_register_critical_copilot_requirement_remains_critical(monkeypatch):
+    config = _load_config()
+    document = _fr_document("2026-91005")
+    body = (
+        "A member firm shall document every Microsoft 365 Copilot deployment "
+        "used to generate customer-facing content, and must preserve those "
+        "records."
+    )
+    session, _ = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session, since_date="2026-08-18", config=config
+    )
+
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_CRITICAL
+
+
+# --- Defect 4: electronic-or-paper alternatives ---------------------------
+
+
+ELECTRONIC_ALTERNATIVE_SENTENCES = [
+    "Records must be retained either electronically or in paper form.",
+    "Records must be retained either in paper form or electronically.",
+    "Records must be maintained electronically or in paper form.",
+    "Firms may maintain records in paper form or electronically.",
+    "Each member shall preserve the records in electronic format or in hard copy.",
+    "Books and records may be kept in hard copy or in electronic format.",
+]
+
+ELECTRONIC_MANDATE_SENTENCES = [
+    "Records must be maintained electronically rather than in paper form.",
+    "Records must be maintained electronically and not in paper form.",
+    "All order records must be retained electronically by each member.",
+    "Books and records must be preserved in electronic format.",
+    "Records shall be maintained in electronic form for six years.",
+    "Recordkeeping must transition to electronic systems by the compliance date.",
+]
+
+
+@pytest.mark.parametrize("sentence", ELECTRONIC_ALTERNATIVE_SENTENCES)
+def test_electronic_or_paper_alternative_is_not_an_electronic_mandate(sentence):
+    """Both orderings of the alternative must be rejected.
+
+    A one-directional scan ("is paper mentioned after electronic?") passes the
+    canonical phrasing and fails the reversed one, which is the same defect
+    wearing a different hat.
+    """
+    assert regulatory_monitor._has_electronic_recordkeeping_obligation(sentence) is False
+    config = _load_config()
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        sentence,
+        config,
+    )
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }, sentence
+
+
+@pytest.mark.parametrize("sentence", ELECTRONIC_MANDATE_SENTENCES)
+def test_mandatory_electronic_only_recordkeeping_is_preserved(sentence):
+    """Rejecting alternatives must not cost genuine electronic-only mandates.
+
+    "rather than"/"and not" mention paper precisely to exclude it -- the
+    replacement reading, not the alternative reading.
+    """
+    assert regulatory_monitor._has_electronic_recordkeeping_obligation(sentence) is True
+    config = _load_config()
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        sentence,
+        config,
+    )
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH, sentence
+    assert reason == "Electronic recordkeeping"
+
+
+def test_electronic_alternative_in_one_clause_does_not_suppress_a_separate_mandate():
+    """Scoping is per-clause, so a nearby alternative must not disarm a real
+    mandate elsewhere in the same document."""
+    text = (
+        "Correspondence may be delivered electronically or in paper form. "
+        "All order audit trail records must be retained electronically."
+    )
+    assert regulatory_monitor._has_electronic_recordkeeping_obligation(text) is True
+
+
+# --- Defect 5: legacy FINRA excerpt-hash migration ------------------------
+
+
+def _finra_item_with_body(body: str, *, title: str = "Regulatory Notice 26-14"):
+    url = "https://www.finra.org/rules-guidance/notices/26-14"
+    excerpt = body[: regulatory_monitor.FALLBACK_TEXT_MAX_CHARS]
+    return regulatory_monitor.RegulatoryItem(
+        source="FINRA",
+        agency="FINRA",
+        title=title,
+        url=url,
+        publication_date="2026-08-03",
+        doc_type="NOTICE",
+        abstract=excerpt,
+        content_text=body,
+        document_id=url,
+        publication_date_is_synthetic=False,
+        classification=regulatory_monitor.CLASSIFICATION_NOISE,
+        affected_controls=[],
+    )
+
+
+def _long_finra_body(suffix: str) -> str:
+    """A body longer than the legacy excerpt bound, differing only at the end."""
+    prefix = "Regulatory Notice 26-14 supervisory guidance. " * 150
+    assert len(prefix) > regulatory_monitor.FALLBACK_TEXT_MAX_CHARS
+    return f"{prefix}{suffix}"
+
+
+def test_legacy_excerpt_hash_with_changed_late_suffix_reports_a_finding():
+    """The core defect: a truncated legacy digest cannot prove the suffix.
+
+    The stored schema-1 hash covered only the first
+    ``FALLBACK_TEXT_MAX_CHARS`` characters. A revision after that bound
+    reproduces the identical legacy digest, so treating a legacy match as
+    "harmless migration" silently overwrote a real change. Unprovable means
+    report once, not suppress.
+    """
+    original = _finra_item_with_body(_long_finra_body("The compliance date is March 1, 2027."))
+    revised = _finra_item_with_body(_long_finra_body("The compliance date is June 1, 2027."))
+    assert original.abstract == revised.abstract, (
+        "the legacy excerpt must be identical, or this test proves nothing"
+    )
+
+    legacy_hash = regulatory_monitor.compute_hash(
+        regulatory_monitor._legacy_content_fingerprint(
+            original.title, original.abstract, original.publication_date
+        )
+    )
+    assert regulatory_monitor._stored_hash_schema_version(legacy_hash) == (
+        regulatory_monitor.LEGACY_CONTENT_HASH_SCHEMA_VERSION
+    )
+    source_state = {
+        "entries": {revised.document_id: legacy_hash},
+        "last_run": "2026-08-09T10:20:45.080820+00:00",
+    }
+
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FINRA, [revised], source_state
+    ) == [revised]
+
+
+def test_legacy_migration_finding_does_not_repeat_under_the_new_schema():
+    """One-time only: after the run rewrites the entry, the noise stops."""
+    revised = _finra_item_with_body(_long_finra_body("The compliance date is June 1, 2027."))
+    legacy_hash = regulatory_monitor.compute_hash(
+        regulatory_monitor._legacy_content_fingerprint(
+            revised.title, revised.abstract, revised.publication_date
+        )
+    )
+    state = {
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {revised.document_id: legacy_hash},
+                "last_run": "2026-08-09T10:20:45.080820+00:00",
+            }
+        }
+    }
+
+    first_run = regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FINRA,
+        [revised],
+        regulatory_monitor.get_source_state(
+            state, regulatory_monitor.SOURCE_KEY_FINRA
+        ),
+    )
+    assert first_run == [revised]
+
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FINRA, [revised], state
+    )
+    stored = regulatory_monitor.get_source_state(
+        state, regulatory_monitor.SOURCE_KEY_FINRA
+    )["entries"][revised.document_id]
+    assert stored.startswith(regulatory_monitor.CONTENT_HASH_SCHEMA_PREFIX)
+
+    for _ in range(3):
+        assert regulatory_monitor.check_for_new_items(
+            regulatory_monitor.SOURCE_KEY_FINRA,
+            [revised],
+            regulatory_monitor.get_source_state(
+                state, regulatory_monitor.SOURCE_KEY_FINRA
+            ),
+        ) == []
+
+
+def test_legacy_excerpt_covering_the_whole_body_migrates_silently():
+    """Compatibility side: a provable legacy digest must not flood the report.
+
+    When the notice is shorter than the excerpt bound, the legacy hash covered
+    the complete body, so the schema change is demonstrably content-neutral.
+    """
+    body = "Short FINRA notice body that fits well inside the excerpt bound."
+    item = _finra_item_with_body(body)
+    assert item.abstract == item.content_text
+
+    legacy_hash = regulatory_monitor.compute_hash(
+        regulatory_monitor._legacy_content_fingerprint(
+            item.title, item.abstract, item.publication_date
+        )
+    )
+    source_state = {
+        "entries": {item.document_id: legacy_hash},
+        "last_run": "2026-08-09T10:20:45.080820+00:00",
+    }
+
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FINRA, [item], source_state
+    ) == []
+
+
+def test_legacy_schema_match_is_rejected_when_content_actually_changed():
+    """A provable-shape legacy hash still loses to a genuine content change."""
+    stored_item = _finra_item_with_body("Short FINRA notice body.")
+    legacy_hash = regulatory_monitor.compute_hash(
+        regulatory_monitor._legacy_content_fingerprint(
+            stored_item.title, stored_item.abstract, stored_item.publication_date
+        )
+    )
+    changed = _finra_item_with_body("Short FINRA notice body, as amended.")
+    source_state = {
+        "entries": {changed.document_id: legacy_hash},
+        "last_run": "2026-08-09T10:20:45.080820+00:00",
+    }
+
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FINRA, [changed], source_state
+    ) == [changed]
+
+
+def test_federal_register_legacy_abstract_only_entry_surfaces_one_time_finding():
+    """A schema-1 digest that never saw the body cannot prove it is unchanged.
+
+    Schema 1 hashed whichever text was adopted for the report. Where that was
+    the curated abstract, the authoritative body was outside the digest
+    entirely, so silence would be an assertion the data cannot support. The
+    honest outcome is one re-baseline finding, then stability.
+    """
+    item = regulatory_monitor.RegulatoryItem(
+        source="Federal Register",
+        agency="SEC",
+        title="Self-Regulatory Organizations; Notice of Filing",
+        url="https://www.federalregister.gov/documents/2026-00042/notice",
+        publication_date="2026-07-11",
+        doc_type="NOTICE",
+        abstract="A broker-dealer regulatory notice.",
+        content_text="The complete authoritative body text of the filing.",
+        document_id="2026-00042",
+        classification=regulatory_monitor.CLASSIFICATION_NOISE,
+        classification_reason="Test",
+        affected_controls=[],
+    )
+    legacy_hash = regulatory_monitor.compute_hash(
+        regulatory_monitor._legacy_content_fingerprint(
+            item.title, item.abstract, item.publication_date
+        )
+    )
+    state = {
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "entries": {item.document_id: legacy_hash},
+                "last_run": "2026-08-26T10:24:01+00:00",
+            }
+        }
+    }
+
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER,
+        [item],
+        regulatory_monitor.get_source_state(
+            state, regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER
+        ),
+    ) == [item]
+
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, [item], state
+    )
+    for _ in range(3):
+        assert regulatory_monitor.check_for_new_items(
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER,
+            [item],
+            regulatory_monitor.get_source_state(
+                state, regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER
+            ),
+        ) == []
+
+
+def test_federal_register_legacy_entry_that_already_covered_the_body_is_silent():
+    """Migration noise is bounded, not blanket.
+
+    Where schema 1 already hashed the authoritative body (the body supplied the
+    classification evidence, so it was the text stored), the schema change is
+    demonstrably content-neutral and must migrate silently. Without this the
+    fix would trade a silent-overwrite defect for a full re-baseline flood.
+    """
+    body = "The complete authoritative body text of the filing."
+    item = regulatory_monitor.RegulatoryItem(
+        source="Federal Register",
+        agency="SEC",
+        title="Self-Regulatory Organizations; Notice of Filing",
+        url="https://www.federalregister.gov/documents/2026-00043/notice",
+        publication_date="2026-07-11",
+        doc_type="NOTICE",
+        abstract=body,
+        content_text=body,
+        document_id="2026-00043",
+        classification=regulatory_monitor.CLASSIFICATION_NOISE,
+        classification_reason="Test",
+        affected_controls=[],
+    )
+    legacy_hash = regulatory_monitor.compute_hash(
+        regulatory_monitor._legacy_content_fingerprint(
+            item.title, body, item.publication_date
+        )
+    )
+    source_state = {
+        "entries": {item.document_id: legacy_hash},
+        "last_run": "2026-08-26T10:24:01+00:00",
+    }
+
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, [item], source_state
+    ) == []
+
+
+def test_committed_state_is_legacy_schema_and_is_read_as_such():
+    """The real committed baseline is schema 1 and must be recognised as such.
+
+    Guards against a migration that silently assumes the shipped state was
+    written under the current layout.
+    """
+    import json
+
+    state_path = REPO_ROOT / "data" / "monitor-state.json"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    entries = state["sources"][regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER]["entries"]
+    assert entries, "committed Federal Register baseline is empty"
+    assert all(
+        regulatory_monitor._stored_hash_schema_version(value)
+        == regulatory_monitor.LEGACY_CONTENT_HASH_SCHEMA_VERSION
+        for value in entries.values()
+    )
+
+
+# --- Acceptance contracts pinned to the committed Aug-26 artefacts ---------
+
+
+def test_committed_august_26_report_preserves_acceptance_contracts():
+    """The corrected report is the contract; regressions must not silently
+    invalidate it."""
+    report = (
+        REPO_ROOT / "reports" / "monitoring" / "regulatory-changes-2026-08-26.md"
+    ).read_text(encoding="utf-8")
+
+    high_section = report.split("## HIGH Priority Items", 1)[1].split("\n## ", 1)[0]
+    medium_section = report.split("## MEDIUM Priority Items", 1)[1].split("\n## ", 1)[0]
+    noise_section = report.split("## NOISE", 1)[1]
+
+    assert "| HIGH Changes | 1 |" in report
+    # 2026-17163: the single genuine HIGH, kept.
+    assert "2026-17163" in high_section
+    assert "**Classification:** HIGH — References artificial intelligence" in high_section
+    # 2026-17183: demoted, and with no fabricated AI rationale anywhere.
+    assert "2026-17183" not in high_section
+    assert "2026-17183" in medium_section
+    # 2026-16876: PRA boilerplate stays NOISE.
+    assert "2026-16876" not in high_section
+    assert "2026-16876" not in medium_section
+    assert "2026-16876" in noise_section
+
+
+@pytest.mark.parametrize(
+    "fixture_name", ["access_denied", "request_blocked", "captcha_challenge", "bare_main_plausible_prose"]
+)
+def test_finra_error_detail_page_maps_to_failure_exit_without_state_advance(
+    fixture_name, monkeypatch, caplog
+):
+    """End-to-end: a 200 error page exits 2 and leaves state untouched.
+
+    The unit-level rejection is only half the contract. What matters
+    operationally is that the run reports failure through the existing exit-code
+    semantics instead of quietly writing a new baseline.
+    """
+    config = _load_config()
+    initial_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "last_run": "2026-08-01T10:00:00+00:00",
+                "entries": {"FINRA 26-01": "existing-hash"},
+            }
+        },
+    }
+    loaded_state = deepcopy(initial_state)
+    save_calls: list = []
+    listing_html = (
+        "<html><body>"
+        "<a href='/rules-guidance/notices/26-14'>Regulatory Notice 26-14: "
+        "Request for Comment</a></body></html>"
+    )
+    detail_html = FINRA_NON_NOTICE_FIXTURES[fixture_name]
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        content = (
+            listing_html if url == regulatory_monitor.FINRA_NOTICES_URL else detail_html
+        )
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": content,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(
+        regulatory_monitor, "load_monitoring_config", lambda _path: config
+    )
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _path: loaded_state)
+    monkeypatch.setattr(
+        regulatory_monitor, "save_state_atomic", lambda *args: save_calls.append(args)
+    )
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+    monkeypatch.setattr(
+        regulatory_monitor.sys,
+        "argv",
+        ["regulatory_monitor.py", "--source", "finra"],
+    )
+
+    exit_code = regulatory_monitor.main()
+
+    assert exit_code == regulatory_monitor.EXIT_FAILURE
+    assert loaded_state == initial_state
+    assert save_calls == []
