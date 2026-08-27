@@ -4,37 +4,81 @@ Test cases and evidence collection procedures to validate privacy controls for c
 
 ## Test Cases
 
-### Test 1: DLP Detection of NPI in Copilot Prompts and Policy Location Verification
+### Test 1: DLP Detection of NPI in Copilot Prompts and Policy Configuration Verification
 
-- **Objective:** Verify that DLP policies detect nonpublic personal information entered in Copilot prompts and are configured on the Copilot workload, enforcement plane, and location
+- **Objective:** Verify that DLP policies detect nonpublic personal information **entered as Copilot prompt text**, and that the exact expected policy is enabled on the Copilot location and enforcement plane with both expected rules and their alert configuration
 - **Steps:**
-  1. Using a test account, enter test SSN and account number data directly into a Copilot prompt.
+  1. Using a test account, **type** test SSN and account number data directly into a Copilot prompt. Do not attach the test data as an uploaded file — uploaded file contents are not scanned by this control, so a file-based test proves nothing.
   2. Submit the prompt and observe whether Copilot processing is restricted.
-  3. Verify that the DLP policy tip appears warning about NPI content.
-  4. Run:
+  3. Verify that the DLP policy tip appears warning about NPI content. During the SIT-in-prompts preview, user messaging in Word, Excel, and PowerPoint may not clearly attribute the block to organizational policy; the prompt is still restricted.
+  4. Run the fail-closed verification. Every check throws; the success line prints only if all checks pass:
      ```powershell
-     Connect-IPPSSession
-     $policies = @(Get-DlpCompliancePolicy)
-     if (-not $policies) { throw "Fail closed: no DLP policies returned." }
+     $ErrorActionPreference = 'Stop'
+     Connect-IPPSSession -ErrorAction Stop
+
+     $policyName          = "FSI-RegSP-Copilot-Privacy-Protection"
      $copilotLocationGuid = "470f2276-e011-4e9d-a6ec-20768be3a4b0"
-     foreach ($p in $policies) {
-         foreach ($name in @("Workload","EnforcementPlanes","Locations")) {
-             if (-not $p.PSObject.Properties[$name]) { throw "Fail closed: missing required property for verification." }
+     $expectedRules       = @{
+         "RegSP-LowVolume-NPI-Warn"   = @{ Restrict = $false; Severity = "Medium" }
+         "RegSP-HighVolume-NPI-Block" = @{ Restrict = $true;  Severity = "High"   }
+     }
+
+     function Assert-ExposedProperty {
+         param($InputObject, [string]$Name, [string]$Subject)
+         if (-not $InputObject.PSObject.Properties[$Name]) {
+             throw "Fail closed: '$Subject' does not expose a '$Name' property in this tenant. Verify '$Subject' manually in the Microsoft Purview portal (Data loss prevention > Policies) and record screenshots as the evidence."
          }
      }
-     $matches = @($policies | Where-Object {
-         $_.Workload -eq "Applications" -and
-         $_.EnforcementPlanes -contains "CopilotExperiences" -and
-         ((ConvertTo-Json -InputObject $_.Locations -Depth 10 -Compress) -match [regex]::Escape($copilotLocationGuid))
-     })
-     if (-not $matches) { throw "Fail closed: no Copilot DLP policy found for Workload=Applications, EnforcementPlane=CopilotExperiences, and location GUID=$copilotLocationGuid." }
-     $matches | Select-Object Name, Enabled, Mode, Workload, EnforcementPlanes, Locations
-     ```
-  5. Confirm that high-volume NPI triggers the documented Copilot content-processing restriction.
-- **Expected Result:** DLP detects NPI content, displays policy tips or restricts Copilot processing, and at least one policy is verified with `Workload=Applications`, `CopilotExperiences`, and the documented Copilot location GUID.
-- **Evidence:** Screenshots of DLP policy tips/content-processing restrictions and PowerShell output showing `Workload`, `EnforcementPlanes`, and `Locations`.
 
-> **Documented Copilot DLP limitations:** This prompt control checks text entered in the prompt but does not scan the contents of files uploaded directly into prompts. SIT-based prompt blocking is in preview and rolling out. Email coverage applies only to messages sent on or after January 1, 2025; calendar invites and admin units are not supported. Policy updates can take up to four hours to propagate.
+     $policy = Get-DlpCompliancePolicy -Identity $policyName -ErrorAction Stop
+     if (-not $policy) { throw "Fail closed: DLP policy '$policyName' was not found." }
+
+     Assert-ExposedProperty $policy 'Mode' $policyName
+     if ("$($policy.Mode)" -ne 'Enable') { throw "Fail closed: '$policyName' is Mode=$($policy.Mode); expected Mode=Enable." }
+
+     Assert-ExposedProperty $policy 'Locations' $policyName
+     if ((ConvertTo-Json -InputObject $policy.Locations -Depth 10 -Compress) -notmatch [regex]::Escape($copilotLocationGuid)) {
+         throw "Fail closed: '$policyName' does not target Copilot location GUID $copilotLocationGuid."
+     }
+
+     Assert-ExposedProperty $policy 'EnforcementPlanes' $policyName
+     if (-not (@($policy.EnforcementPlanes) -contains 'CopilotExperiences')) {
+         throw "Fail closed: '$policyName' does not set EnforcementPlanes=CopilotExperiences."
+     }
+
+     $rules = @(Get-DlpComplianceRule -Policy $policyName -ErrorAction Stop)
+     foreach ($ruleName in $expectedRules.Keys) {
+         $rule = $rules | Where-Object { $_.Name -eq $ruleName }
+         if (-not $rule) { throw "Fail closed: expected rule '$ruleName' is missing from '$policyName'." }
+
+         Assert-ExposedProperty $rule 'Disabled' $ruleName
+         if ($rule.Disabled) { throw "Fail closed: rule '$ruleName' is disabled." }
+
+         Assert-ExposedProperty $rule 'GenerateAlert' $ruleName
+         if (-not @($rule.GenerateAlert)) { throw "Fail closed: rule '$ruleName' has no alert recipients, so no notification is produced." }
+
+         Assert-ExposedProperty $rule 'ReportSeverityLevel' $ruleName
+         if ("$($rule.ReportSeverityLevel)" -ne $expectedRules[$ruleName].Severity) {
+             throw "Fail closed: rule '$ruleName' has ReportSeverityLevel=$($rule.ReportSeverityLevel); expected $($expectedRules[$ruleName].Severity)."
+         }
+
+         if ($expectedRules[$ruleName].Restrict) {
+             Assert-ExposedProperty $rule 'RestrictAccess' $ruleName
+             if ((ConvertTo-Json -InputObject $rule.RestrictAccess -Depth 10 -Compress) -notmatch 'ExcludeContentProcessing') {
+                 throw "Fail closed: rule '$ruleName' does not carry the ExcludeContentProcessing restriction."
+             }
+             Assert-ExposedProperty $rule 'RestrictWebGrounding' $ruleName
+             if (-not $rule.RestrictWebGrounding) { throw "Fail closed: rule '$ruleName' does not set RestrictWebGrounding." }
+         }
+     }
+
+     Write-Host "Verified: '$policyName' Mode=Enable, Copilot location $copilotLocationGuid, EnforcementPlanes=CopilotExperiences, rules $($expectedRules.Keys -join ', ') present with expected restriction and alert configuration." -ForegroundColor Green
+     ```
+  5. Confirm that high-volume NPI **in prompt text** triggers the documented Copilot content-processing restriction.
+- **Expected Result:** DLP detects NPI typed into the prompt, displays policy tips or restricts Copilot processing, and the verification script prints its single success line with no exception raised.
+- **Evidence:** Screenshots of DLP policy tips/content-processing restrictions; PowerShell transcript showing the verification success line; if any check stopped the script, the portal screenshots described in the throw message instead.
+
+> **Documented Copilot DLP limitations (read before relying on this control):** In the **Microsoft 365 Copilot and Copilot Chat** location, sensitive information type (SIT) enforcement evaluates **the text a user types into the prompt**. The two documented SIT actions are **Prevent Copilot from processing content > Processing prompts** and **> Performing Web Searches**. Microsoft does not document a DLP action that inspects or blocks the text of a **generated Copilot response**; sensitive data in responses can be *observed* after the fact (DSPM / Activity explorer **AI activities**, Audit, eDiscovery) but is not blocked by this control. DLP also can't scan the contents of files uploaded directly into a prompt — only typed prompt text is checked. SIT-based prompt blocking is in preview and rolling out. The sensitivity label condition covers emails sent on or after January 1, 2025; calendar invites and Admin units are not supported. Policy updates can take up to four hours to take effect in the Copilot experience.
 
 ### Test 2: Information Barrier Enforcement
 
@@ -83,21 +127,26 @@ Test cases and evidence collection procedures to validate privacy controls for c
 
 ### Test 6: Privacy Incident Response Alert Workflow
 
-- **Objective:** Verify that NPI-related DLP incidents trigger the appropriate automated alert workflow
+- **Objective:** Verify that NPI-related DLP rule matches produce the alert and email notification the control promises, and that the alert can be investigated end to end
 - **Steps:**
-  1. Trigger a DLP incident involving consumer financial data (test environment).
-  2. Verify the alert appears on the DLP Alerts dashboard (Microsoft Purview > Data loss prevention > Alerts).
-  3. Confirm the compliance team and Privacy Officer receive notification via configured alert policy.
-  4. Walk through the incident investigation and resolution process in Purview.
-- **Expected Result:** DLP incidents trigger automated notifications, are logged for investigation, and can be resolved.
-- **Evidence:** DLP incident report and notification confirmation.
+  1. Confirm the alert is defined **on the rule**: in Microsoft Purview > Data loss prevention > Policies > FSI-RegSP-Copilot-Privacy-Protection, open each rule and confirm the **Incident reports** section shows the alert toggle on, the expected severity level (Medium / High), and the Privacy Officer plus compliance team as email alert recipients. The PowerShell equivalent is the `GenerateAlert`, `GenerateIncidentReport`, and `ReportSeverityLevel` check in Test 1.
+  2. Trigger a DLP rule match by typing consumer financial test data into a Copilot prompt (test environment).
+  3. Verify the alert appears on the DLP Alerts dashboard (Microsoft Purview > Data loss prevention > Alerts).
+  4. Confirm the compliance team and Privacy Officer received the alert email generated by the rule.
+  5. Cross-check the match in Activity explorer **AI activities** (Workload `Copilot`, activity `DLPRuleMatch` / `DLPRuleEnforce`) and confirm the `PolicyName` and `RuleName` match the expected rule.
+  6. Walk through the incident investigation and resolution process in Purview.
+- **Expected Result:** The rule's own alert configuration produces a dashboard alert and an email to the configured recipients; the match is visible in Activity explorer with the expected policy and rule names.
+- **Evidence:** Screenshot of the rule's **Incident reports** configuration; DLP alert detail; notification email header (redacted); Activity explorer export row.
 
 ## Evidence Collection
 
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
-| DLP policy configuration | Purview portal | Screenshot | With control documentation |
-| DLP incident reports | Audit log | CSV export | 7 years |
+| DLP policy and rule configuration (including Incident reports) | Purview portal | Screenshot | With control documentation |
+| Fail-closed policy verification output | Security & Compliance PowerShell transcript | Text | With control documentation |
+| Copilot interaction audit records (metadata) | Unified audit log (`RecordType CopilotInteraction`) | CSV export | 7 years |
+| Copilot DLP rule-match records | Activity explorer / DSPM **AI activities** (`Export-ActivityExplorerData`) | JSON or CSV export | 7 years |
+| DLP alerts | Purview > Data loss prevention > Alerts | Screenshot / export | 7 years |
 | Information barrier test results | Copilot response | Screenshot | With control documentation |
 | Privacy impact assessment | Assessment document | PDF | 7 years |
 | Written IRP with Copilot section | IRP document | PDF | 7 years (updated annually) |
