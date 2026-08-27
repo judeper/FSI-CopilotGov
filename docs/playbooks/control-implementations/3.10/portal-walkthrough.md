@@ -61,7 +61,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 ### Step 4: Enable Privacy Impact Assessment for Copilot Data Flows
 
 **Portal:** Microsoft Purview portal
-**Path:** Solutions > Data classification > Content Explorer (classic)
+**Path:** Solutions > Data Lifecycle Management > Explorers > Content explorer
 
 1. Use Content Explorer (classic) to identify where consumer financial information resides.
 2. Document the data flow from source systems through Copilot interactions.

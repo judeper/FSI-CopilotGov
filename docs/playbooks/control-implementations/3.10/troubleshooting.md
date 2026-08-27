@@ -81,69 +81,368 @@ Common issues and resolution steps for privacy controls protecting consumer fina
 
 ## Diagnostic Steps
 
-1. **Check the Copilot DLP policy (fail closed).** Run this in Security & Compliance PowerShell. It stops on the first failed check; the success line prints only when everything passes. If a check reports that a property is not exposed, verify that item by hand in **Microsoft Purview portal > Data loss prevention > Policies** rather than assuming it passed.
+1. **Check the Copilot DLP policy (fail closed).** Run this in Security & Compliance PowerShell. It is the same validator as [PowerShell Setup — Script 1b](powershell-setup.md), with the session connect line added. It binds to exactly one case-sensitive policy-name match first (a `$null` or non-existent `Identity` value makes `Get-DlpCompliancePolicy` return every policy in the tenant), then checks tenant-wide Copilot scope, the enforcement plane, each rule's identity and parent policy, conditions and thresholds, the low-volume rule's nonrestricting behavior, the high-volume rule's exact `ExcludeContentProcessing=Block` and `RestrictWebGrounding` actions, and each rule's alert, incident report, severity, and recipient configuration. It stops on the first failed check; the success line prints only when everything passes. If a check reports that a property is not exposed or cannot be read, verify that item by hand in **Microsoft Purview portal > Solutions > Data loss prevention > Policies** and record the portal evidence — do not assume it passed.
 
     ```powershell
     $ErrorActionPreference = 'Stop'
     Connect-IPPSSession -ErrorAction Stop
 
-    $policyName          = "FSI-RegSP-Copilot-Privacy-Protection"
-    $copilotLocationGuid = "470f2276-e011-4e9d-a6ec-20768be3a4b0"
-    $expectedRules       = @{
-        "RegSP-LowVolume-NPI-Warn"   = @{ Restrict = $false; Severity = "Medium" }
-        "RegSP-HighVolume-NPI-Block" = @{ Restrict = $true;  Severity = "High"   }
+    # Expected configuration. Every check below is exact: change these values only when the
+    # approved policy design changes, and treat any deviation the script reports as unvalidated.
+    $policyName             = 'FSI-RegSP-Copilot-Privacy-Protection'
+    $copilotLocationGuid    = '470f2276-e011-4e9d-a6ec-20768be3a4b0'
+    $privacyAlertRecipients = @('privacy-officer@contoso.com', 'compliance-alerts@contoso.com')
+    $expectedRules = [ordered]@{
+        'RegSP-LowVolume-NPI-Warn' = @{
+            Severity       = 'Medium'
+            Restrict       = $false
+            SensitiveTypes = @(
+                @{ Name = 'U.S. Social Security Number (SSN)'; MinCount = 1; MaxCount = 9 },
+                @{ Name = 'Credit Card Number';                MinCount = 1; MaxCount = 9 },
+                @{ Name = 'U.S. Bank Account Number';          MinCount = 1; MaxCount = 9 }
+            )
+        }
+        'RegSP-HighVolume-NPI-Block' = @{
+            Severity       = 'High'
+            Restrict       = $true
+            SensitiveTypes = @(
+                @{ Name = 'U.S. Social Security Number (SSN)'; MinCount = 10; MaxCount = $null },
+                @{ Name = 'Credit Card Number';                MinCount = 10; MaxCount = $null },
+                @{ Name = 'U.S. Bank Account Number';          MinCount = 10; MaxCount = $null }
+            )
+        }
     }
 
-    function Assert-ExposedProperty {
+    $portalEvidence = "Record portal evidence instead: Microsoft Purview portal > Solutions > Data loss prevention > Policies > $policyName — policy status and scope, each rule's conditions and actions, and each rule's Incident reports section (severity, alert toggle, recipients)."
+
+    function Test-DlpMember {
+        param($InputObject, [string]$Name)
+
+        if ($null -eq $InputObject) { return $false }
+        if ($InputObject -is [System.Collections.IDictionary]) { return [bool]$InputObject.Contains($Name) }
+        return ($null -ne $InputObject.PSObject.Properties[$Name])
+    }
+
+    function Get-DlpMember {
+        param($InputObject, [string]$Name)
+
+        if (-not (Test-DlpMember -InputObject $InputObject -Name $Name)) { return $null }
+        if ($InputObject -is [System.Collections.IDictionary]) { return $InputObject[$Name] }
+        return $InputObject.PSObject.Properties[$Name].Value
+    }
+
+    function Get-RequiredDlpMember {
         param($InputObject, [string]$Name, [string]$Subject)
-        if (-not $InputObject.PSObject.Properties[$Name]) {
-            throw "Fail closed: '$Subject' does not expose a '$Name' property in this tenant. Verify '$Subject' manually in the Microsoft Purview portal (Data loss prevention > Policies)."
+
+        if (-not (Test-DlpMember -InputObject $InputObject -Name $Name)) {
+            throw "Fail closed: '$Subject' does not expose '$Name', so this check cannot be completed from cmdlet output and the control is NOT validated. $portalEvidence"
+        }
+        return (Get-DlpMember -InputObject $InputObject -Name $Name)
+    }
+
+    function ConvertTo-DlpBoolean {
+        param($Value, [string]$Subject, [string]$Name)
+
+        if ($null -eq $Value) { return $false }
+        if ($Value -is [bool]) { return $Value }
+        $text = ([string]$Value).Trim()
+        if ($text -eq '') { return $false }
+        if ($text -in @('true', '1')) { return $true }
+        if ($text -in @('false', '0')) { return $false }
+        throw "Fail closed: '$Subject' returned '$text' for '$Name', which cannot be read as a boolean. $portalEvidence"
+    }
+
+    function ConvertTo-DlpCount {
+        param($Value, [string]$Subject, [string]$Name)
+
+        if ($null -eq $Value) { return $null }
+        $text = ([string]$Value).Trim()
+        if ($text -eq '') { return $null }
+        $parsed = 0
+        if (-not [int]::TryParse($text, [ref]$parsed)) {
+            throw "Fail closed: '$Subject' returned '$text' for '$Name', which is not a readable instance count. $portalEvidence"
+        }
+        return $parsed
+    }
+
+    function Get-DlpRecipientAddress {
+        param($Value)
+
+        $text = ([string]$Value).Trim()
+        if ($text -eq '') { return $null }
+        $address = [regex]::Match($text, '[^\s;,<>"]+@[^\s;,<>"]+')
+        if ($address.Success) { return $address.Value.ToLowerInvariant() }
+        return $text.ToLowerInvariant()
+    }
+
+    function Assert-DlpRecipient {
+        param($Value, [string[]]$Expected, [string]$Subject, [string]$Name)
+
+        $actual = @(@($Value) | ForEach-Object { Get-DlpRecipientAddress -Value $_ } | Where-Object { $_ })
+        if ($actual.Count -eq 0) {
+            throw "Fail closed: rule '$Subject' has no '$Name' recipients, so the notification this control promises is not produced. $portalEvidence"
+        }
+        $wanted     = @($Expected | ForEach-Object { Get-DlpRecipientAddress -Value $_ })
+        $missing    = @($wanted | Where-Object { $actual -notcontains $_ })
+        $unexpected = @($actual | Where-Object { $wanted -notcontains $_ })
+        if ($missing.Count -gt 0 -or $unexpected.Count -gt 0) {
+            throw "Fail closed: rule '$Subject' '$Name' recipients are [$($actual -join ', ')] but exactly [$($wanted -join ', ')] was expected (missing: [$($missing -join ', ')]; unexpected: [$($unexpected -join ', ')]). $portalEvidence"
         }
     }
 
-    $policy = Get-DlpCompliancePolicy -Identity $policyName -ErrorAction Stop
-    if (-not $policy) { throw "Fail closed: DLP policy '$policyName' was not found." }
+    function Get-DlpSensitiveTypeEntry {
+        param($Node)
 
-    Assert-ExposedProperty $policy 'Mode' $policyName
-    if ("$($policy.Mode)" -ne 'Enable') { throw "Fail closed: '$policyName' is Mode=$($policy.Mode); expected Mode=Enable." }
-
-    Assert-ExposedProperty $policy 'Locations' $policyName
-    if ((ConvertTo-Json -InputObject $policy.Locations -Depth 10 -Compress) -notmatch [regex]::Escape($copilotLocationGuid)) {
-        throw "Fail closed: '$policyName' does not target Copilot location GUID $copilotLocationGuid."
-    }
-
-    Assert-ExposedProperty $policy 'EnforcementPlanes' $policyName
-    if (-not (@($policy.EnforcementPlanes) -contains 'CopilotExperiences')) {
-        throw "Fail closed: '$policyName' does not set EnforcementPlanes=CopilotExperiences."
-    }
-
-    $rules = @(Get-DlpComplianceRule -Policy $policyName -ErrorAction Stop)
-    foreach ($ruleName in $expectedRules.Keys) {
-        $rule = $rules | Where-Object { $_.Name -eq $ruleName }
-        if (-not $rule) { throw "Fail closed: expected rule '$ruleName' is missing from '$policyName'." }
-
-        Assert-ExposedProperty $rule 'Disabled' $ruleName
-        if ($rule.Disabled) { throw "Fail closed: rule '$ruleName' is disabled." }
-
-        Assert-ExposedProperty $rule 'GenerateAlert' $ruleName
-        if (-not @($rule.GenerateAlert)) { throw "Fail closed: rule '$ruleName' has no alert recipients, so no notification is produced." }
-
-        Assert-ExposedProperty $rule 'ReportSeverityLevel' $ruleName
-        if ("$($rule.ReportSeverityLevel)" -ne $expectedRules[$ruleName].Severity) {
-            throw "Fail closed: rule '$ruleName' has ReportSeverityLevel=$($rule.ReportSeverityLevel); expected $($expectedRules[$ruleName].Severity)."
+        if ($null -eq $Node -or $Node -is [string]) { return }
+        if (($Node -is [System.Collections.IEnumerable]) -and -not ($Node -is [System.Collections.IDictionary])) {
+            foreach ($item in $Node) { Get-DlpSensitiveTypeEntry -Node $item }
+            return
         }
 
-        if ($expectedRules[$ruleName].Restrict) {
-            Assert-ExposedProperty $rule 'RestrictAccess' $ruleName
-            if ((ConvertTo-Json -InputObject $rule.RestrictAccess -Depth 10 -Compress) -notmatch 'ExcludeContentProcessing') {
-                throw "Fail closed: rule '$ruleName' does not carry the ExcludeContentProcessing restriction."
+        $hasChildNode = $false
+        foreach ($childName in @('groups', 'sensitivetypes', 'sensitiveinformation')) {
+            if (Test-DlpMember -InputObject $Node -Name $childName) {
+                $hasChildNode = $true
+                Get-DlpSensitiveTypeEntry -Node (Get-DlpMember -InputObject $Node -Name $childName)
             }
-            Assert-ExposedProperty $rule 'RestrictWebGrounding' $ruleName
-            if (-not $rule.RestrictWebGrounding) { throw "Fail closed: rule '$ruleName' does not set RestrictWebGrounding." }
+        }
+        if ($hasChildNode) { return }
+
+        $name = [string](Get-DlpMember -InputObject $Node -Name 'name')
+        if ([string]::IsNullOrWhiteSpace($name)) { return }
+        [PSCustomObject]@{
+            Name     = $name.Trim()
+            MinCount = (Get-DlpMember -InputObject $Node -Name 'mincount')
+            MaxCount = (Get-DlpMember -InputObject $Node -Name 'maxcount')
         }
     }
 
-    Write-Host "Verified: '$policyName' Mode=Enable, Copilot location $copilotLocationGuid, EnforcementPlanes=CopilotExperiences, rules $($expectedRules.Keys -join ', ') present with expected restriction and alert configuration." -ForegroundColor Green
+    # --- Policy identity -----------------------------------------------------------------
+    # Microsoft documents that a $null or non-existent Identity value makes Get-DlpCompliancePolicy
+    # return *all* policies, so bind to exactly one exact-name match before checking anything.
+    $returnedPolicies = @(Get-DlpCompliancePolicy -Identity $policyName -ErrorAction Stop)
+    $policyMatches = @(
+        foreach ($candidate in $returnedPolicies) {
+            $candidateName = Get-RequiredDlpMember -InputObject $candidate -Name 'Name' -Subject 'a returned DLP policy object'
+            if (([string]$candidateName) -ceq $policyName) { $candidate }
+        }
+    )
+    if ($policyMatches.Count -ne 1) {
+        throw "Fail closed: Get-DlpCompliancePolicy -Identity '$policyName' returned $($returnedPolicies.Count) object(s) with $($policyMatches.Count) exact name match(es); exactly 1 is required. A non-existent Identity value returns every policy in the tenant, so this result does not confirm the expected policy. $portalEvidence"
+    }
+    $policy = $policyMatches[0]
+
+    # --- Policy state and Copilot location -----------------------------------------------
+    $policyMode = Get-RequiredDlpMember -InputObject $policy -Name 'Mode' -Subject $policyName
+    if (([string]$policyMode) -ne 'Enable') {
+        throw "Fail closed: '$policyName' is Mode=$policyMode. Expected Mode=Enable — simulation modes take no action on prompts."
+    }
+
+    $locationValue = Get-RequiredDlpMember -InputObject $policy -Name 'Locations' -Subject $policyName
+    $locationJson = @()
+    if ($locationValue -is [string]) {
+        $locationJson = @($locationValue)
+    }
+    else {
+        $locationJson = @(@($locationValue) | Where-Object { $_ -is [string] })
+        if ($locationJson.Count -eq 0) {
+            $locationJson = @(ConvertTo-Json -InputObject $locationValue -Depth 20)
+        }
+    }
+
+    $locationEntries = @(
+        foreach ($json in $locationJson) {
+            if ([string]::IsNullOrWhiteSpace($json)) { continue }
+            try { ConvertFrom-Json -InputObject $json }
+            catch { throw "Fail closed: '$policyName' returned a Locations value that could not be parsed as JSON, so the policy scope cannot be confirmed. $portalEvidence" }
+        }
+    )
+
+    $copilotLocation = @($locationEntries | Where-Object { ([string](Get-DlpMember -InputObject $_ -Name 'Location')) -ieq $copilotLocationGuid })
+    if ($copilotLocation.Count -ne 1) {
+        throw "Fail closed: '$policyName' does not target exactly one Microsoft 365 Copilot and Copilot Chat location entry (GUID $copilotLocationGuid); $($copilotLocation.Count) matching entr(ies) were found. $portalEvidence"
+    }
+
+    $inclusions = @(Get-RequiredDlpMember -InputObject $copilotLocation[0] -Name 'Inclusions' -Subject "$policyName Copilot location")
+    $tenantInclusions = @($inclusions | Where-Object {
+        (([string](Get-DlpMember -InputObject $_ -Name 'Type')) -ieq 'Tenant') -and
+        (([string](Get-DlpMember -InputObject $_ -Name 'Identity')) -ieq 'All')
+    })
+    if ($inclusions.Count -eq 0 -or $tenantInclusions.Count -ne $inclusions.Count) {
+        $scopeSummary = @($inclusions | ForEach-Object { "$(Get-DlpMember -InputObject $_ -Name 'Type'):$(Get-DlpMember -InputObject $_ -Name 'Identity')" }) -join ', '
+        throw "Fail closed: '$policyName' is not scoped tenant-wide on the Copilot location. Inclusions are [$scopeSummary]; expected exactly Type=Tenant / Identity=All so that every Microsoft Copilot and Copilot Chat user is covered. If the narrower scope is a deliberate, approved deviation, record it and the uncovered users as documented evidence — this script does not validate it. $portalEvidence"
+    }
+
+    $exclusions = @(Get-DlpMember -InputObject $copilotLocation[0] -Name 'Exclusions')
+    $exclusions = @($exclusions | Where-Object { $null -ne $_ })
+    if ($exclusions.Count -gt 0) {
+        $exclusionSummary = @($exclusions | ForEach-Object { "$(Get-DlpMember -InputObject $_ -Name 'Type'):$(Get-DlpMember -InputObject $_ -Name 'Identity')" }) -join ', '
+        throw "Fail closed: '$policyName' excludes [$exclusionSummary] from the Copilot location, so the scope is not tenant-wide. Remove the exclusions or record the approved deviation as documented evidence. $portalEvidence"
+    }
+
+    $enforcementPlanes = @(Get-RequiredDlpMember -InputObject $policy -Name 'EnforcementPlanes' -Subject $policyName)
+    if ($enforcementPlanes -notcontains 'CopilotExperiences') {
+        throw "Fail closed: '$policyName' does not set the Copilot enforcement plane (EnforcementPlanes=CopilotExperiences); found [$($enforcementPlanes -join ', ')]."
+    }
+
+    # --- Rules: identity, conditions, actions, alerts -------------------------------------
+    $policyIdentifiers = @(
+        foreach ($identifierName in @('Name', 'Guid', 'ImmutableId', 'Id', 'Identity', 'ExchangeObjectId')) {
+            $identifier = Get-DlpMember -InputObject $policy -Name $identifierName
+            if ($null -ne $identifier -and -not [string]::IsNullOrWhiteSpace([string]$identifier)) { ([string]$identifier).Trim() }
+        }
+    )
+
+    $returnedRules = @(Get-DlpComplianceRule -Policy $policyName -ErrorAction Stop)
+    $validatedRules = @()
+
+    foreach ($ruleName in $expectedRules.Keys) {
+        $expected = $expectedRules[$ruleName]
+        $ruleMatches = @(
+            foreach ($candidate in $returnedRules) {
+                $candidateName = Get-RequiredDlpMember -InputObject $candidate -Name 'Name' -Subject 'a returned DLP rule object'
+                if (([string]$candidateName) -ceq $ruleName) { $candidate }
+            }
+        )
+        if ($ruleMatches.Count -ne 1) {
+            throw "Fail closed: expected rule '$ruleName' matched $($ruleMatches.Count) of the $($returnedRules.Count) returned rule(s); exactly 1 is required. $portalEvidence"
+        }
+        $rule = $ruleMatches[0]
+
+        # Confirm the rule really belongs to the validated policy rather than to another policy
+        # that a loose Identity/Policy resolution returned.
+        $parentName = $null
+        foreach ($parentProperty in @('ParentPolicyName', 'PolicyName', 'Policy', 'PolicyId')) {
+            if (Test-DlpMember -InputObject $rule -Name $parentProperty) {
+                $parentValue = Get-DlpMember -InputObject $rule -Name $parentProperty
+                if ($null -ne $parentValue -and -not [string]::IsNullOrWhiteSpace([string]$parentValue)) {
+                    $parentName = ([string]$parentValue).Trim()
+                    break
+                }
+            }
+        }
+        if ($null -eq $parentName) {
+            throw "Fail closed: rule '$ruleName' does not expose a parent policy property (ParentPolicyName / PolicyName / Policy / PolicyId), so its membership in '$policyName' cannot be confirmed. $portalEvidence"
+        }
+        if ($policyIdentifiers -notcontains $parentName) {
+            throw "Fail closed: rule '$ruleName' reports parent policy '$parentName', which does not match '$policyName'. $portalEvidence"
+        }
+
+        $ruleDisabled = ConvertTo-DlpBoolean -Value (Get-RequiredDlpMember -InputObject $rule -Name 'Disabled' -Subject $ruleName) -Subject $ruleName -Name 'Disabled'
+        if ($ruleDisabled) { throw "Fail closed: rule '$ruleName' is disabled." }
+
+        # Conditions
+        $conditionValue = Get-RequiredDlpMember -InputObject $rule -Name 'ContentContainsSensitiveInformation' -Subject $ruleName
+        if ($conditionValue -is [string]) {
+            throw "Fail closed: rule '$ruleName' returned its ContentContainsSensitiveInformation condition as raw text, which this script does not parse. $portalEvidence"
+        }
+        $actualTypes = @(Get-DlpSensitiveTypeEntry -Node $conditionValue)
+        foreach ($expectedType in $expected.SensitiveTypes) {
+            $typeMatches = @($actualTypes | Where-Object { $_.Name -ieq $expectedType.Name })
+            if ($typeMatches.Count -ne 1) {
+                throw "Fail closed: rule '$ruleName' matched $($typeMatches.Count) condition entr(ies) for sensitive information type '$($expectedType.Name)'; exactly 1 is required. Found [$(@($actualTypes | ForEach-Object { $_.Name }) -join ', ')]. $portalEvidence"
+            }
+            $actualMin = ConvertTo-DlpCount -Value $typeMatches[0].MinCount -Subject $ruleName -Name "$($expectedType.Name) minCount"
+            if ($actualMin -ne $expectedType.MinCount) {
+                throw "Fail closed: rule '$ruleName' uses minCount=$actualMin for '$($expectedType.Name)'; expected $($expectedType.MinCount). The volume thresholds separate the warn rule from the restrict rule, so a mismatch changes what the control enforces."
+            }
+            $actualMax = ConvertTo-DlpCount -Value $typeMatches[0].MaxCount -Subject $ruleName -Name "$($expectedType.Name) maxCount"
+            if ($null -eq $expectedType.MaxCount) {
+                if ($null -ne $actualMax) {
+                    throw "Fail closed: rule '$ruleName' caps '$($expectedType.Name)' at maxCount=$actualMax; the high-volume rule is expected to have no upper bound, otherwise the largest disclosures fall outside it."
+                }
+            }
+            elseif ($actualMax -ne $expectedType.MaxCount) {
+                throw "Fail closed: rule '$ruleName' uses maxCount=$actualMax for '$($expectedType.Name)'; expected $($expectedType.MaxCount)."
+            }
+        }
+        $extraTypes = @($actualTypes | Where-Object { $expected.SensitiveTypes.Name -notcontains $_.Name })
+        if ($extraTypes.Count -gt 0) {
+            Write-Warning "Rule '$ruleName' also matches [$(@($extraTypes | ForEach-Object { $_.Name }) -join ', ')]. Those conditions are outside this control's approved design and are not validated here; review them separately."
+        }
+
+        # Actions
+        $restrictAccess = @(Get-DlpMember -InputObject $rule -Name 'RestrictAccess')
+        $restrictAccess = @($restrictAccess | Where-Object { $null -ne $_ })
+        $webGroundingValue = $null
+        if (Test-DlpMember -InputObject $rule -Name 'RestrictWebGrounding') {
+            $webGroundingValue = Get-DlpMember -InputObject $rule -Name 'RestrictWebGrounding'
+        }
+        $restrictsWebGrounding = ConvertTo-DlpBoolean -Value $webGroundingValue -Subject $ruleName -Name 'RestrictWebGrounding'
+        $blocksAccess = ConvertTo-DlpBoolean -Value (Get-DlpMember -InputObject $rule -Name 'BlockAccess') -Subject $ruleName -Name 'BlockAccess'
+
+        if ($expected.Restrict) {
+            if (-not (Test-DlpMember -InputObject $rule -Name 'RestrictAccess')) {
+                throw "Fail closed: rule '$ruleName' does not expose 'RestrictAccess', so its Copilot content-processing action cannot be confirmed. $portalEvidence"
+            }
+            $processingActions = @($restrictAccess | Where-Object { ([string](Get-DlpMember -InputObject $_ -Name 'setting')) -ieq 'ExcludeContentProcessing' })
+            if ($processingActions.Count -ne 1) {
+                throw "Fail closed: rule '$ruleName' carries $($processingActions.Count) 'ExcludeContentProcessing' restriction(s); exactly 1 is required so that Copilot prompt processing is restricted. $portalEvidence"
+            }
+            $processingValue = [string](Get-RequiredDlpMember -InputObject $processingActions[0] -Name 'value' -Subject "$ruleName ExcludeContentProcessing")
+            if ($processingValue -ine 'Block') {
+                throw "Fail closed: rule '$ruleName' sets ExcludeContentProcessing=$processingValue; expected Block. Any other value leaves high-volume NPI prompts unrestricted."
+            }
+            $otherActions = @($restrictAccess | Where-Object { ([string](Get-DlpMember -InputObject $_ -Name 'setting')) -ine 'ExcludeContentProcessing' })
+            if ($otherActions.Count -gt 0) {
+                Write-Warning "Rule '$ruleName' also carries RestrictAccess settings [$(@($otherActions | ForEach-Object { Get-DlpMember -InputObject $_ -Name 'setting' }) -join ', ')], which are outside this control's approved design and are not validated here."
+            }
+            if (-not (Test-DlpMember -InputObject $rule -Name 'RestrictWebGrounding')) {
+                throw "Fail closed: rule '$ruleName' does not expose 'RestrictWebGrounding', so the web-grounding restriction cannot be confirmed. $portalEvidence"
+            }
+            if (-not $restrictsWebGrounding) {
+                throw "Fail closed: rule '$ruleName' does not set RestrictWebGrounding, so high-volume NPI prompts can still be sent to web search grounding."
+            }
+        }
+        else {
+            if ($restrictAccess.Count -gt 0) {
+                throw "Fail closed: rule '$ruleName' carries RestrictAccess settings [$(@($restrictAccess | ForEach-Object { "$(Get-DlpMember -InputObject $_ -Name 'setting')=$(Get-DlpMember -InputObject $_ -Name 'value')" }) -join ', ')]. The low-volume rule is designed to notify without restricting Copilot; a restriction here changes the documented user experience and is not validated by this script."
+            }
+            if ($restrictsWebGrounding) {
+                throw "Fail closed: rule '$ruleName' sets RestrictWebGrounding. The low-volume rule is designed to notify without restricting Copilot."
+            }
+            if ($blocksAccess) {
+                throw "Fail closed: rule '$ruleName' sets BlockAccess. The low-volume rule is designed to notify without restricting Copilot."
+            }
+            $notifyUser = @(Get-RequiredDlpMember -InputObject $rule -Name 'NotifyUser' -Subject $ruleName)
+            $notifyUser = @($notifyUser | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+            if ($notifyUser.Count -eq 0) {
+                throw "Fail closed: rule '$ruleName' has no NotifyUser recipients, so the policy tip this control promises for low-volume detections is not shown."
+            }
+        }
+
+        # Alerts, incident reports, severity, recipients
+        Assert-DlpRecipient -Value (Get-RequiredDlpMember -InputObject $rule -Name 'GenerateAlert' -Subject $ruleName) -Expected $privacyAlertRecipients -Subject $ruleName -Name 'GenerateAlert'
+        Assert-DlpRecipient -Value (Get-RequiredDlpMember -InputObject $rule -Name 'GenerateIncidentReport' -Subject $ruleName) -Expected $privacyAlertRecipients -Subject $ruleName -Name 'GenerateIncidentReport'
+
+        $reportContent = @(Get-RequiredDlpMember -InputObject $rule -Name 'IncidentReportContent' -Subject $ruleName)
+        $reportContent = @($reportContent | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | ForEach-Object { ([string]$_).Trim() })
+        if ($reportContent.Count -eq 0) {
+            throw "Fail closed: rule '$ruleName' has no IncidentReportContent fields, so the incident report carries no detection detail. $portalEvidence"
+        }
+        if ($reportContent -contains 'OriginalContent') {
+            throw "Fail closed: rule '$ruleName' includes OriginalContent in its incident report, which copies detected NPI into notification email. Remove it, or record the approved exception as documented evidence."
+        }
+
+        $severity = [string](Get-RequiredDlpMember -InputObject $rule -Name 'ReportSeverityLevel' -Subject $ruleName)
+        if ($severity -ne $expected.Severity) {
+            throw "Fail closed: rule '$ruleName' has ReportSeverityLevel=$severity; expected $($expected.Severity)."
+        }
+
+        $validatedRules += $ruleName
+    }
+
+    $unexpectedRules = @(
+        foreach ($candidate in $returnedRules) {
+            $candidateName = [string](Get-DlpMember -InputObject $candidate -Name 'Name')
+            if ($expectedRules.Keys -notcontains $candidateName) { $candidateName }
+        }
+    )
+    if ($unexpectedRules.Count -gt 0) {
+        Write-Warning "'$policyName' also contains rule(s) [$($unexpectedRules -join ', ')] that are outside this control's approved design. They are not validated here; review them separately."
+    }
+
+    Write-Host "Verified: '$policyName' resolved to exactly one policy, is Mode=Enable, is scoped tenant-wide (Type=Tenant / Identity=All, no exclusions) on Copilot location $copilotLocationGuid with EnforcementPlanes=CopilotExperiences, and rules $($validatedRules -join ', ') are enabled with their expected sensitive information type conditions, restriction actions, incident reports, severity, and alert recipients ($($privacyAlertRecipients -join ', ')). Any warnings above cover configuration outside this control's design and are not validated." -ForegroundColor Green
     ```
 
 2. **Review SIT accuracy:** Test each sensitive information type against known NPI samples, entered as prompt text.
