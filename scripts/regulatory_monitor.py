@@ -106,6 +106,12 @@ FINRA_DETAIL_TITLE_SIGNAL = re.compile(
     re.IGNORECASE,
 )
 
+# Federal Register full text can be hundreds of thousands of characters long.
+# Classifying every citation and appendix makes incidental references look like
+# operative requirements. The title, API abstract, and the authoritative
+# opening portion contain the document's summary and initial substantive text.
+MAX_CLASSIFICATION_TEXT_CHARS = 50_000
+
 # Configure logging
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
 LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -139,6 +145,12 @@ class RequiredSourceTextError(RuntimeError):
 
 class FinraListingError(RuntimeError):
     """Raised when the FINRA notice listing cannot be fetched or verified."""
+
+
+def _prepare_classification_text(text: str) -> str:
+    """Normalize escaped line breaks and bound long-source evidence."""
+    text = text or ""
+    return text.replace("\\r", " ").replace("\\n", " ")[:MAX_CLASSIFICATION_TEXT_CHARS]
 
 
 def _parse_federal_register_metadata_int(
@@ -258,7 +270,11 @@ def classify_regulatory_relevance(title: str, abstract: str, config: dict) -> tu
     # Handle None values
     title = title or ""
     abstract = abstract or ""
-    combined = f"{title.lower()} {abstract.lower()}"
+    # Federal Register raw text sometimes contains escaped line breaks. Treat
+    # those as whitespace, then bound full-text evidence so late citations do
+    # not promote an otherwise unrelated document.
+    classification_text = _prepare_classification_text(abstract)
+    combined = f"{title.lower()} {classification_text.lower()}"
 
     # Get regulatory patterns from config
     regulatory_config = config.get('regulatory', {})
@@ -764,7 +780,12 @@ def fetch_federal_register_documents(
             effective_text = fallback_text
             tier, reason = classify_regulatory_relevance(title, effective_text, config)
 
-        affected_controls = find_affected_controls_by_keywords(title, effective_text, config)
+        classification_text = _prepare_classification_text(effective_text)
+        affected_controls = (
+            find_affected_controls_by_keywords(title, classification_text, config)
+            if tier in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}
+            else []
+        )
 
         item = RegulatoryItem(
             source='Federal Register',

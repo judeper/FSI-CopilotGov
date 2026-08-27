@@ -32,6 +32,9 @@ node_modules/
 
 docs/javascripts/assessment-data.json
 
+# Generated monitoring runtime backup
+data/monitor-state.json.backup
+
 # Copilot logs
 .copilot-logs/
 

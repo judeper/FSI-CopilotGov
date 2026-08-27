@@ -13,6 +13,7 @@ REPO_ROOT = SCRIPTS_DIR.parent
 sys.path.insert(0, str(SCRIPTS_DIR))
 
 import regulatory_monitor  # noqa: E402
+import monitoring_shared  # noqa: E402
 
 CONFIG_PATH = REPO_ROOT / "scripts" / "config" / "monitoring-config.yaml"
 
@@ -47,6 +48,78 @@ def test_federal_register_rule_2210_title_classifies_high_with_null_abstract():
         regulatory_monitor.CLASSIFICATION_HIGH,
         regulatory_monitor.CLASSIFICATION_CRITICAL,
     }
+
+
+def test_late_incidental_ai_reference_does_not_become_high():
+    config = _load_config()
+    detail_text = (
+        "Regulation Crypto Assets describes offering and disclosure requirements. "
+        + ("Routine regulatory text. " * 3000)
+        + r"An unrelated cited study discusses the application of artificial \n"
+        r"intelligence tools."
+    )
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulation Crypto Assets",
+        detail_text,
+        config,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_NOISE
+    assert "artificial intelligence" not in reason.lower()
+
+
+def test_generic_pra_electronic_submission_does_not_become_high():
+    config = _load_config()
+    detail_text = (
+        "This information collection includes registration, reporting, "
+        "recordkeeping requirement, and third-party disclosure requirements. "
+        + "Respondents may use automated electronic techniques, including "
+        "electronic submission of responses."
+    )
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Agency Information Collection Activities: Part 41",
+        detail_text,
+        config,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_NOISE
+    assert "recordkeeping" not in reason.lower()
+
+
+def test_meaningful_electronic_recordkeeping_and_ai_remain_high():
+    config = _load_config()
+    detail_text = (
+        "The proposed compute derivatives market uses processing power for "
+        "large language models and the artificial intelligence economy. "
+        "Covered firms must maintain electronic recordkeeping systems."
+    )
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Request for Comment on the Listing of Compute Derivatives Contracts",
+        detail_text,
+        config,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
+
+
+def test_save_state_atomic_does_not_create_or_rewrite_runtime_backup(tmp_path):
+    state_path = tmp_path / "monitor-state.json"
+    backup_path = tmp_path / "monitor-state.json.backup"
+    state_path.write_text('{"version": 0}', encoding="utf-8")
+    backup_path.write_text("sentinel", encoding="utf-8")
+
+    monitoring_shared.save_state_atomic(
+        {"version": 1, "sources": {}},
+        state_path,
+    )
+
+    assert backup_path.read_text(encoding="utf-8") == "sentinel"
+    assert state_path.read_text(encoding="utf-8") == (
+        '{\n  "version": 1,\n  "sources": {}\n}'
+    )
 
 
 class _FederalRegisterResponse:
@@ -173,6 +246,77 @@ def _federal_register_source_text_page(
                 ],
             }
         ],
+    }
+
+
+def test_disputed_federal_register_items_have_no_affected_controls(monkeypatch):
+    config = _load_config()
+    documents = [
+        {
+            "document_number": "2026-17183",
+            "title": "Regulation Crypto Assets",
+            "abstract": "Offering and disclosure requirements for crypto assets.",
+            "publication_date": "2026-08-21",
+            "type": "PRORULE",
+            "html_url": "https://www.federalregister.gov/documents/2026-17183",
+            "raw_text_url": "https://example.test/2026-17183.txt",
+            "agencies": [{"slug": "securities-and-exchange-commission", "name": "SEC"}],
+        },
+        {
+            "document_number": "2026-16876",
+            "title": "Agency Information Collection Activities: Part 41",
+            "abstract": "A proposed renewal of an information collection.",
+            "publication_date": "2026-08-19",
+            "type": "NOTICE",
+            "html_url": "https://www.federalregister.gov/documents/2026-16876",
+            "raw_text_url": "https://example.test/2026-16876.txt",
+            "agencies": [{"slug": "commodity-futures-trading-commission", "name": "CFTC"}],
+        },
+    ]
+    session = _PagedFederalRegisterSession(
+        {1: {"count": 2, "total_pages": 1, "results": documents}}
+    )
+    detail_text = {
+        documents[0]["raw_text_url"]: (
+            "Regulation Crypto Assets describes offering requirements for an "
+            "investment adviser. "
+            + ("Routine regulatory text. " * 3000)
+            + r"An unrelated cited study discusses artificial \nintelligence tools."
+        ),
+        documents[1]["raw_text_url"]: (
+            "This information collection includes recordkeeping requirements. "
+            + ("Routine PRA burden text. " * 40)
+            + "Respondents may use automated electronic techniques, including "
+            "electronic submission of responses."
+        ),
+    }
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": f"<html><body><pre>{detail_text[url]}</pre></body></html>",
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-08-18",
+        config=config,
+    )
+
+    assert {item.document_id: item.classification for item in items} == {
+        "2026-17183": regulatory_monitor.CLASSIFICATION_MEDIUM,
+        "2026-16876": regulatory_monitor.CLASSIFICATION_NOISE,
+    }
+    assert {item.document_id: item.affected_controls for item in items} == {
+        "2026-17183": [],
+        "2026-16876": [],
     }
 
 

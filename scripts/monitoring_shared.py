@@ -554,7 +554,7 @@ def save_state_atomic(state: dict, state_path):
     """
     Save state to JSON file atomically.
 
-    Uses temp file + rename for atomic writes with backup of previous state.
+    Uses a temporary file and rename so readers never observe a partial state.
 
     Args:
         state: State dict to save
@@ -564,14 +564,6 @@ def save_state_atomic(state: dict, state_path):
     state_path = Path(state_path) if not isinstance(state_path, Path) else state_path
 
     state_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Backup existing state if it exists
-    if state_path.exists():
-        backup_path = state_path.with_suffix('.json.backup')
-        try:
-            backup_path.write_text(state_path.read_text(encoding='utf-8'), encoding='utf-8')
-        except Exception:
-            pass  # Best effort backup
 
     # Write to temp file then rename (atomic)
     with tempfile.NamedTemporaryFile(
