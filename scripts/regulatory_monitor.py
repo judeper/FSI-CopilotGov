@@ -37,7 +37,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 
 # Import shared monitoring framework
 from monitoring_shared import (
@@ -94,15 +94,22 @@ FINRA_NOTICES_URL = "https://www.finra.org/rules-guidance/notices"
 FEDERAL_REGISTER_DETAIL_FETCH_LIMIT: Optional[int] = None
 FEDERAL_REGISTER_PAGE_SIZE = 100
 FEDERAL_REGISTER_MAX_PAGES = 100
-FINRA_DETAIL_FETCH_LIMIT = 20
+# Every eligible FINRA listing entry must be classified from its authoritative
+# detail page before it can be returned to the state layer.  ``None`` means
+# there is no production cap; an explicit limit is retained only as a test
+# seam, and reaching it fails closed rather than baselining uninspected items.
+FINRA_DETAIL_FETCH_LIMIT: Optional[int] = None
 FALLBACK_TEXT_MAX_CHARS = 4000
-FINRA_NOTICE_ID_PATTERN = re.compile(r'/notices/(\d{2})-(\d{2})', re.IGNORECASE)
-FINRA_INFORMATION_NOTICE_DATE_PATTERN = re.compile(
-    r'/notices/information-notice-(\d{4})(\d{2})(\d{2})(?:[/?#]|$)',
+FINRA_NOTICE_PATH_PATTERN = re.compile(
+    r'^/rules-guidance/notices/(?:\d{2}-\d+|information-notice-\d{8})/?$',
     re.IGNORECASE,
 )
-FINRA_DETAIL_TITLE_SIGNAL = re.compile(
-    r'\b(request\s+for\s+comment|regulatory\s+notice\s+\d{2}-\d{2}|rule\s*2210|communications?\s+with\s+the\s+public)\b',
+FINRA_NOTICE_ID_PATTERN = re.compile(
+    r'/rules-guidance/notices/(\d{2})-(\d+)(?:[/?#]|$)',
+    re.IGNORECASE,
+)
+FINRA_INFORMATION_NOTICE_DATE_PATTERN = re.compile(
+    r'/rules-guidance/notices/information-notice-(\d{4})(\d{2})(\d{2})(?:[/?#]|$)',
     re.IGNORECASE,
 )
 
@@ -113,6 +120,8 @@ FINRA_DETAIL_TITLE_SIGNAL = re.compile(
 # document is discarded. Instead each candidate match is judged by the language
 # immediately around it: an occurrence only stops counting when its context is
 # unambiguously bibliographic AND carries no obligation language.
+# Kept as a compatibility constant for callers that imported the old tuning
+# knob.  Reference classification no longer uses a fixed-size window.
 REFERENCE_CONTEXT_WINDOW_CHARS = 200
 
 OPERATIVE_LANGUAGE_PATTERN = re.compile(
@@ -142,14 +151,107 @@ REFERENCE_ONLY_PATTERN = re.compile(
 # adjacent footnote block would be read as the context of operative body text.
 FOOTNOTE_BLOCK_DELIMITER_PATTERN = re.compile(r"-{5,}")
 
-# A match's evidence is the sentence/clause that actually contains it. Once the
-# footnote block is removed, the context is further clipped at the nearest
-# sentence terminator on each side so that an unrelated obligation, or a
-# citation that merely follows the matched term in the next sentence, is never
-# read as the context of this occurrence. Clipping can only shrink the window,
-# which keeps the fail-open bias: a smaller window is less likely to carry a
-# citation marker, so borderline matches are kept rather than suppressed.
-SENTENCE_BOUNDARY_PATTERN = re.compile(r"[.;!?]")
+# A match's evidence is the complete sentence/clause that actually contains it.
+# Require whitespace/end after sentence punctuation so periods in URLs and
+# decimal values do not truncate the containing sentence prematurely. Federal
+# Register footnote markers sit between the punctuation and its whitespace
+# (for example ``tools.\451\ ``), so they are part of the boundary too.
+SENTENCE_BOUNDARY_PATTERN = re.compile(
+    r"[.;!?](?=(?:\s|\\\d+\\(?:\s|$)|$))"
+)
+
+# Electronic recordkeeping is intentionally implemented as readable semantic
+# checks instead of a single configuration regex.  The obligation must connect
+# a recordkeeping noun and a storage/maintenance action to electronic or digital
+# storage in the same sentence/clause.
+RECORDKEEPING_NOUN = (
+    r"(?:records?|record[-\s]?keeping|books\s+and\s+records)"
+)
+RECORDKEEPING_ACTION = (
+    r"(?:maintain(?:ed|s|ing)?|retain(?:ed|s|ing)?|"
+    r"stor(?:e|ed|es|ing|age)|keep|keeps|kept|keeping|"
+    r"preserv(?:e|ed|es|ing|ation)|archiv(?:e|ed|es|ing|al)|"
+    r"transition(?:ed|s|ing)?|convert(?:ed|s|ing)?|"
+    r"migrat(?:e|ed|es|ing)|retention)"
+)
+ELECTRONIC_STORAGE_LANGUAGE = (
+    r"(?:electronically|digitally|machine[-\s]?readable|"
+    r"in\s+(?:an?\s+)?(?:electronic|digital)\s+(?:form|format)|"
+    r"(?:electronic|digital)\s+"
+    r"(?:records?|record[-\s]?keeping|books\s+and\s+records|"
+    r"systems?|storage|media|form|format))"
+)
+ELECTRONIC_RECORDKEEPING_NOUN = (
+    r"(?:electronic|digital)\s+"
+    r"(?:records?|record[-\s]?keeping|books\s+and\s+records|systems?)"
+)
+RECORDKEEPING_OBLIGATION = (
+    r"(?:must|shall|is\s+required\s+to|are\s+required\s+to|"
+    r"was\s+required\s+to|were\s+required\s+to|would\s+require|"
+    r"will\s+require|required\s+to|requires?\s+to|"
+    r"obligated\s+to|obligation\s+to|duty\s+to|"
+    r"responsible\s+(?:for|to)|mandated\s+to)"
+)
+ELECTRONIC_RECORDKEEPING_PATTERNS = (
+    re.compile(
+        rf"\b{RECORDKEEPING_NOUN}\b"
+        rf"(?:(?![.!?;]).){{0,100}}?\b{RECORDKEEPING_OBLIGATION}\b"
+        rf"(?:(?![.!?;]).){{0,50}}?"
+        rf"(?:to\s+)?(?:be\s+)?\b{RECORDKEEPING_ACTION}\b"
+        rf"(?:(?![.!?;]).){{0,35}}?\b{ELECTRONIC_STORAGE_LANGUAGE}\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        rf"\b{RECORDKEEPING_OBLIGATION}\b"
+        rf"(?:(?![.!?;]).){{0,45}}?"
+        rf"(?:to\s+)?(?:be\s+)?\b{RECORDKEEPING_ACTION}\b"
+        rf"(?:(?![.!?;]).){{0,35}}?\b{RECORDKEEPING_NOUN}\b"
+        rf"(?:(?![.!?;]).){{0,35}}?\b{ELECTRONIC_STORAGE_LANGUAGE}\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        rf"\b{RECORDKEEPING_OBLIGATION}\b"
+        rf"(?:(?![.!?;]).){{0,45}}?"
+        rf"(?:to\s+)?(?:be\s+)?\b{RECORDKEEPING_ACTION}\b"
+        rf"(?:(?![.!?;]).){{0,35}}?\b{ELECTRONIC_RECORDKEEPING_NOUN}\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        rf"\b{RECORDKEEPING_OBLIGATION}\b"
+        rf"(?:(?![.!?;]).){{0,45}}?\b{RECORDKEEPING_NOUN}\b"
+        rf"(?:(?![.!?;]).){{0,45}}?"
+        rf"(?:to\s+)?(?:be\s+)?\b{RECORDKEEPING_ACTION}\b"
+        rf"(?:(?![.!?;]).){{0,35}}?\b{ELECTRONIC_STORAGE_LANGUAGE}\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        rf"\b{ELECTRONIC_RECORDKEEPING_NOUN}\b"
+        rf"(?:(?![.!?;]).){{0,60}}?\b{RECORDKEEPING_OBLIGATION}\b"
+        rf"(?:(?![.!?;]).){{0,45}}?"
+        rf"(?:to\s+)?(?:be\s+)?"
+        rf"\b(?:{RECORDKEEPING_ACTION}|implement(?:ed|s|ing)?)\b",
+        re.IGNORECASE,
+    ),
+    # The existing electronic-storage state can precede the operative duty:
+    # "Records maintained electronically must be retained."  Keep both the
+    # preceding storage action and the following required action in the same
+    # clause so an unrelated electronic noun cannot satisfy the rule.
+    re.compile(
+        rf"\b{RECORDKEEPING_NOUN}\b"
+        rf"(?:(?![.!?;]).){{0,45}}?\b{RECORDKEEPING_ACTION}\b"
+        rf"(?:(?![.!?;]).){{0,35}}?\b{ELECTRONIC_STORAGE_LANGUAGE}\b"
+        rf"(?:(?![.!?;]).){{0,45}}?\b{RECORDKEEPING_OBLIGATION}\b"
+        rf"(?:(?![.!?;]).){{0,35}}?"
+        rf"\b(?:{RECORDKEEPING_ACTION}|implement(?:ed|s|ing)?)\b",
+        re.IGNORECASE,
+    ),
+)
+OPTIONAL_OR_NEGATED_RECORDKEEPING = re.compile(
+    r"\b(?:optional|optionally|permitted|may|can|could|might|"
+    r"not\s+required|need\s+not|not\s+obligated|not\s+mandatory|"
+    r"must\s+not|shall\s+not|paper|physical|hard[-\s]?copy)\b",
+    re.IGNORECASE,
+)
 
 # Configure logging
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
@@ -201,44 +303,47 @@ def _prepare_classification_text(text: str) -> str:
 def _occurrence_context(text: str, start: int, end: int) -> str:
     """Return the local context of a match, clipped to its own sentence/clause.
 
-    The window is first bounded to ``REFERENCE_CONTEXT_WINDOW_CHARS`` on each
-    side (runtime safety for very long documents), then clipped at footnote
-    block edges, then clipped at the nearest sentence terminator on each side so
-    the context is match-local: obligation and citation evidence must belong to
-    the same sentence as the matched term to count.
+    Unlike the old fixed-size context window, this scans to the actual
+    sentence/clause boundaries.  That matters for long sentences such as the
+    2026-17183 citation sentence, where the literature marker can be more than
+    200 characters before the artificial-intelligence occurrence.
     """
-    before = text[max(0, start - REFERENCE_CONTEXT_WINDOW_CHARS):start]
-    after = text[end:end + REFERENCE_CONTEXT_WINDOW_CHARS]
+    preceding_delimiters = list(
+        FOOTNOTE_BLOCK_DELIMITER_PATTERN.finditer(text, 0, start)
+    )
+    segment_start = (
+        preceding_delimiters[-1].end() if preceding_delimiters else 0
+    )
+    following_delimiter = FOOTNOTE_BLOCK_DELIMITER_PATTERN.search(text, end)
+    segment_end = (
+        following_delimiter.start() if following_delimiter else len(text)
+    )
 
-    preceding_delimiters = list(FOOTNOTE_BLOCK_DELIMITER_PATTERN.finditer(before))
-    if preceding_delimiters:
-        before = before[preceding_delimiters[-1].end():]
-
-    following_delimiter = FOOTNOTE_BLOCK_DELIMITER_PATTERN.search(after)
-    if following_delimiter:
-        after = after[:following_delimiter.start()]
-
-    preceding_boundaries = list(SENTENCE_BOUNDARY_PATTERN.finditer(before))
+    preceding_boundaries = list(
+        SENTENCE_BOUNDARY_PATTERN.finditer(text, segment_start, start)
+    )
     if preceding_boundaries:
-        before = before[preceding_boundaries[-1].end():]
+        segment_start = preceding_boundaries[-1].end()
 
-    following_boundary = SENTENCE_BOUNDARY_PATTERN.search(after)
+    following_boundary = SENTENCE_BOUNDARY_PATTERN.search(
+        text, end, segment_end
+    )
     if following_boundary:
-        after = after[:following_boundary.start()]
+        segment_end = following_boundary.start()
 
-    return f"{before}{text[start:end]}{after}"
+    return text[segment_start:segment_end]
 
 
 def _is_reference_only_occurrence(text: str, start: int, end: int) -> bool:
     """Return True when a match sits in bibliography/citation-only context.
 
     The check is deliberately asymmetric and fails open toward "operative":
-    any obligation language in the surrounding window keeps the match, and a
-    match is only discarded when the window carries an explicit citation or
-    literature-review marker. Missing a genuine requirement is far worse than
-    reporting an extra item, and inline footnote markers alone (``\\4\\``) are
-    not treated as evidence because operative Federal Register text is full of
-    them.
+    any obligation language in the containing sentence/clause keeps the match,
+    and a match is only discarded when that complete clause carries an explicit
+    citation or literature-review marker. Missing a genuine requirement is far
+    worse than reporting an extra item, and inline footnote markers alone
+    (``\\4\\``) are not treated as evidence because operative Federal Register
+    text is full of them.
     """
     window = _occurrence_context(text, start, end)
     if OPERATIVE_LANGUAGE_PATTERN.search(window):
@@ -255,6 +360,49 @@ def _search_operative_match(pattern: str, text: str, exclude_reference_only: boo
         if not _is_reference_only_occurrence(text, match.start(), match.end()):
             return match
     return None
+
+
+def _has_electronic_recordkeeping_obligation(text: str) -> bool:
+    """Return whether text contains a direct electronic recordkeeping duty.
+
+    This intentionally requires one readable construction that ties together:
+    a recordkeeping noun, an obligation, a storage/maintenance action, and
+    electronic/digital storage language.  Each regex is bounded by sentence
+    and semicolon clause terminators, so ``electronic communications`` or an
+    unrelated electronic filing cannot satisfy a records obligation.  Clauses
+    containing explicit optional, permissive, negated, or paper-only wording
+    are rejected.
+    """
+    normalized = _prepare_classification_text(text)
+    for clause in re.split(r"[.!?;]+", normalized):
+        clause = re.sub(r"\s+", " ", clause).strip()
+        if not clause:
+            continue
+
+        for pattern in ELECTRONIC_RECORDKEEPING_PATTERNS:
+            match = pattern.search(clause)
+            if not match:
+                continue
+
+            matched_text = match.group(0)
+            if OPTIONAL_OR_NEGATED_RECORDKEEPING.search(matched_text):
+                continue
+
+            # A disclaimer before the obligation can turn an otherwise matching
+            # noun/action sequence into a paper-only or permissive alternative.
+            obligation = re.search(
+                rf"\b{RECORDKEEPING_OBLIGATION}\b",
+                matched_text,
+                re.IGNORECASE,
+            )
+            if obligation:
+                before_obligation = matched_text[:obligation.start()]
+                if OPTIONAL_OR_NEGATED_RECORDKEEPING.search(before_obligation):
+                    continue
+
+            return True
+
+    return False
 
 
 def _parse_federal_register_metadata_int(
@@ -345,6 +493,10 @@ class RegulatoryItem:
     publication_date: str  # ISO format YYYY-MM-DD
     doc_type: Optional[str] = None  # 'RULE', 'PRORULE', 'NOTICE' (Federal Register only)
     abstract: str = ""
+    # Complete normalized authoritative body used for classification and
+    # change detection.  ``abstract`` remains the bounded report excerpt for
+    # FINRA notices.
+    content_text: str = ""
     document_id: str = ""  # Federal Register document number or FINRA URL
     publication_date_is_synthetic: bool = False
     classification: str = CLASSIFICATION_NOISE
@@ -409,6 +561,9 @@ def classify_regulatory_relevance(
     for pattern, reason in high_patterns:
         if _search_operative_match(pattern, combined, exclude_reference_only):
             return (CLASSIFICATION_HIGH, reason)
+
+    if _has_electronic_recordkeeping_obligation(combined):
+        return (CLASSIFICATION_HIGH, "Electronic recordkeeping")
 
     # MEDIUM: General FSI regulations that may indirectly affect AI agents
     medium_patterns = [
@@ -510,16 +665,109 @@ def _extract_federal_register_source_text(text: str) -> str:
 
 
 def _extract_finra_notice_fallback_text(html: str) -> str:
-    """Extract the complete normalized body text from a FINRA notice page."""
-    return _extract_notice_body_text(
-        html,
-        selectors=[
-            "div.field--name-body",
-            "article",
-            "main",
-            "div.layout-content",
-        ],
-    )
+    """Extract the complete normalized text of the FINRA notice body.
+
+    FINRA pages can contain a login or access-message ``field--name-body``
+    before the actual notice article.  Never select the first generic body
+    field: prefer semantic article-body/notice-body fields, then scoped fields
+    inside a notice article or ``main`` element.  A page without one of those
+    scoped containers returns an empty string so the caller fails closed.
+    """
+    soup = BeautifulSoup(html or "", "html.parser")
+    candidates: list[tuple[int, int, str]] = []
+    excluded_parent_names = {
+        "aside",
+        "footer",
+        "header",
+        "nav",
+        "noscript",
+        "script",
+        "style",
+    }
+
+    def normalized_node_text(node) -> str:
+        text_parts = []
+        for string in node.find_all(string=True):
+            if any(
+                parent.name in excluded_parent_names
+                for parent in [string.parent, *string.parents]
+                if parent is not None
+            ):
+                continue
+            text_parts.append(str(string))
+        return re.sub(r"\s+", " ", " ".join(text_parts)).strip()
+
+    def add_candidate(node, score: int) -> None:
+        text = normalized_node_text(node)
+        if not text:
+            return
+        # A short access/login message is page chrome, not authoritative notice
+        # content.  It must not win over a scoped notice candidate.
+        if re.search(
+            r"\b(?:please\s+)?(?:log\s*in|sign\s*in|login)\b",
+            text,
+            re.IGNORECASE,
+        ) and (len(text) < 500 or score <= 40):
+            return
+        candidates.append((score, len(text), text))
+
+    # Explicit semantic article-body fields are the strongest signal.
+    for selector in (
+        "[itemprop='articleBody']",
+        "article .notice-body",
+        "article .field--name-field-notice-body",
+        "article .field--name-field-body",
+        "article .field--name-body",
+        "article .field--name-body",
+        ".node--type-finra-notice [class*='field--name-body']",
+        ".node--type-regulatory-notice [class*='field--name-body']",
+        ".node--type-notice [class*='field--name-body']",
+        ".notice-detail [class*='field--name-body']",
+        ".regulatory-notice [class*='field--name-body']",
+    ):
+        for node in soup.select(selector):
+            add_candidate(node, 100)
+
+    # A notice article/container is still authoritative when it has no
+    # dedicated articleBody field; choose the longest scoped body if several
+    # article-like nodes are present.
+    for selector in (
+        "article[class*='notice']",
+        "article",
+        ".node--type-finra-notice",
+        ".node--type-regulatory-notice",
+        ".node--type-notice",
+        ".notice-detail",
+        ".regulatory-notice",
+    ):
+        for node in soup.select(selector):
+            add_candidate(node, 70)
+
+    # Some FINRA templates expose the notice directly under main without an
+    # article element.  Keep this fallback scoped to main and its body fields;
+    # never fall back to the entire document body.
+    for selector in (
+        "main [itemprop='articleBody']",
+        "main .notice-body",
+        "main .field--name-field-notice-body",
+        "main .field--name-field-body",
+        "main .field--name-body",
+    ):
+        for node in soup.select(selector):
+            add_candidate(node, 90)
+    for node in soup.select("main"):
+        add_candidate(node, 60)
+
+    # A few older FINRA pages expose multiple generic body fields without a
+    # semantic article wrapper. Treat the longest non-login body field as a
+    # low-confidence fallback, never as a whole-document fallback.
+    for node in soup.select("[class*='field--name-body']"):
+        add_candidate(node, 40)
+
+    if not candidates:
+        return ""
+    _, _, text = max(candidates, key=lambda candidate: (candidate[0], candidate[1]))
+    return text
 
 
 def _fetch_cached_fallback_text(
@@ -619,20 +867,93 @@ def _federal_register_authoritative_text_required(abstract_classification: str) 
 
 
 def _should_fetch_finra_notice_detail(title: str, url: str, classification: str) -> bool:
-    """Determine if a FINRA notice body fetch is warranted."""
-    if classification in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}:
-        return False
+    """Return whether an eligible FINRA notice needs authoritative detail.
 
-    if FINRA_DETAIL_TITLE_SIGNAL.search(title or ""):
-        return True
+    Classification and title are deliberately not used as a shortcut.  A
+    listing title is not authoritative notice content, and skipping a high
+    title or an older/information notice would allow an uninspected item into
+    the baseline.  URL eligibility is established by the listing parser.
+    """
+    return _canonical_finra_notice_url(url) is not None
 
-    match = FINRA_NOTICE_ID_PATTERN.search(url or "")
-    if not match:
-        return False
 
-    notice_year_short = int(match.group(1))
-    current_year_short = datetime.now(timezone.utc).year % 100
-    return notice_year_short >= (current_year_short - 1)
+def _canonical_finra_notice_url(raw_url: str) -> Optional[str]:
+    """Return a stable FINRA notice URL for supported listing links."""
+    if not raw_url:
+        return None
+
+    candidate = urljoin(
+        FINRA_NOTICES_URL.rstrip("/") + "/",
+        str(raw_url).strip(),
+    )
+    parsed = urlparse(candidate)
+    if parsed.scheme.lower() not in {"http", "https"}:
+        return None
+    if (parsed.hostname or "").lower() not in {"finra.org", "www.finra.org"}:
+        return None
+
+    path = re.sub(r"/+", "/", parsed.path or "/")
+    if not FINRA_NOTICE_PATH_PATTERN.fullmatch(path):
+        return None
+
+    return f"https://www.finra.org{path.rstrip('/')}"
+
+
+def _extract_finra_notice_links(content: str | bytes) -> list:
+    """Enumerate and deduplicate eligible links from a FINRA listing.
+
+    FINRA renders notices in table rows/list items and may repeat the same
+    detail URL in a title link and a secondary view link.  Filtering every
+    anchor by the supported notice URL shapes avoids broad-container
+    first-link loss while preserving DOM order and one link per notice.
+    """
+    soup = BeautifulSoup(content, "html.parser")
+    links_by_url: dict[str, object] = {}
+
+    def link_quality(link) -> tuple[int, int]:
+        title = re.sub(r"\s+", " ", link.get_text(" ", strip=True)).strip()
+        row = link.find_parent("tr")
+        has_row_date = int(
+            bool(row and row.find("time", datetime=True))
+        )
+        return has_row_date, len(title)
+
+    scoped_links = []
+    for container in soup.select(
+        "table tr, .views-row, ul.notices-list li, ol.notices-list li, "
+        "ul[class*='notice'] li, ol[class*='notice'] li"
+    ):
+        if container.find_parent("nav"):
+            continue
+        scoped_links.extend(container.find_all("a", href=True))
+
+    # Older/simple fixtures and templates may not expose a recognizable row
+    # class.  Fall back to all anchors only when no eligible row/list links were
+    # found; URL filtering still limits the fallback to supported notice shapes.
+    eligible_scoped_links = [
+        link
+        for link in scoped_links
+        if _canonical_finra_notice_url(link.get("href", "")) is not None
+    ]
+    candidate_links = eligible_scoped_links or soup.find_all("a", href=True)
+    for link in candidate_links:
+        canonical_url = _canonical_finra_notice_url(link.get("href", ""))
+        if canonical_url is None:
+            continue
+
+        existing = links_by_url.get(canonical_url)
+        if existing is None or link_quality(link) > link_quality(existing):
+            links_by_url[canonical_url] = link
+
+    # Store the canonical URL on each selected tag for the caller.  Beautiful
+    # Soup tags permit attributes, and this prevents a second URL normalization
+    # pass from reintroducing query/fragment variants.
+    selected = []
+    for link in links_by_url.values():
+        canonical_url = _canonical_finra_notice_url(link.get("href", ""))
+        link["data-monitor-canonical-url"] = canonical_url
+        selected.append(link)
+    return selected
 
 
 def fetch_federal_register_documents(
@@ -989,6 +1310,7 @@ def fetch_federal_register_documents(
             publication_date=doc.get('publication_date', ''),
             doc_type=doc_type,
             abstract=effective_text,
+            content_text=effective_text,
             document_id=doc.get('document_number', ''),
             classification=tier,
             classification_reason=reason,
@@ -1003,7 +1325,7 @@ def fetch_finra_notices(
     session: requests.Session,
     config: dict,
     limit: Optional[int] = None,
-    detail_fetch_limit: int = FINRA_DETAIL_FETCH_LIMIT,
+    detail_fetch_limit: Optional[int] = FINRA_DETAIL_FETCH_LIMIT,
 ) -> list[RegulatoryItem]:
     """
     Scrape FINRA regulatory notices page.
@@ -1012,7 +1334,8 @@ def fetch_finra_notices(
         session: requests.Session instance
         config: Configuration dict for classification
         limit: Maximum notices to fetch (for testing)
-        detail_fetch_limit: Maximum notice pages to fetch for fallback text
+        detail_fetch_limit: Optional safety limit for tests.  Production uses
+            ``None`` and fetches every eligible notice body.
 
     Returns:
         list[RegulatoryItem]: FINRA notices
@@ -1044,24 +1367,7 @@ def fetch_finra_notices(
         raise FinraListingError("FINRA notices page parsing failed: invalid content")
 
     try:
-        soup = BeautifulSoup(content, 'html.parser')
-
-        # FINRA notices are in a table with class 'notices-table' or similar.
-        notice_links = []
-
-        for article in soup.find_all(
-            ['article', 'div'],
-            class_=re.compile(r'notice|regulatory'),
-        ):
-            link = article.find('a', href=re.compile(r'/rules-guidance/notices/'))
-            if link:
-                notice_links.append(link)
-
-        if not notice_links:
-            notice_links = soup.find_all(
-                'a',
-                href=re.compile(r'/rules-guidance/notices/\d{2}-\d{2}'),
-            )
+        notice_links = _extract_finra_notice_links(content)
     except Exception as exc:
         raise FinraListingError("FINRA notices page parsing failed") from exc
 
@@ -1078,14 +1384,18 @@ def fetch_finra_notices(
 
     detail_cache: dict[str, str] = {}
     detail_fetches = 0
-    detail_limit_logged = False
 
     for link in notice_links:
         title = link.get_text(strip=True)
-        url = link.get('href', '')
-
-        if url.startswith('/'):
-            url = f"https://www.finra.org{url}"
+        url = link.get("data-monitor-canonical-url") or _canonical_finra_notice_url(
+            link.get("href", "")
+        )
+        if url is None:
+            # The helper already filters these, but fail closed if a caller
+            # mutates a parsed tag between extraction and processing.
+            raise FinraListingError(
+                "FINRA notices page parsing failed: unsupported notice URL"
+            )
 
         match = FINRA_NOTICE_ID_PATTERN.search(url)
         if match:
@@ -1108,7 +1418,16 @@ def fetch_finra_notices(
         presentation_excerpt = ""
 
         should_fetch_detail = _should_fetch_finra_notice_detail(title, url, tier)
-        if should_fetch_detail and detail_fetches < detail_fetch_limit:
+        fetch_limit_exhausted = (
+            detail_fetch_limit is not None
+            and detail_fetches >= detail_fetch_limit
+        )
+        if should_fetch_detail and fetch_limit_exhausted:
+            raise RequiredSourceTextError(
+                "FINRA authoritative notice body fetch limit reached before "
+                f"classification completed for {url}"
+            )
+        if should_fetch_detail:
             fallback_text, fetched_new = _fetch_cached_fallback_text(
                 url=url,
                 session=session,
@@ -1116,21 +1435,16 @@ def fetch_finra_notices(
                 request_delay=request_delay,
                 max_retries=max_retries,
                 extractor=_extract_finra_notice_fallback_text,
+                required=True,
+                source_label="FINRA authoritative notice body",
             )
             if fetched_new:
                 detail_fetches += 1
-            if fallback_text:
-                notice_body_text = fallback_text
-                presentation_excerpt = fallback_text[:FALLBACK_TEXT_MAX_CHARS]
-                tier, reason = classify_regulatory_relevance(
-                    title, notice_body_text, config
-                )
-        elif should_fetch_detail and not detail_limit_logged:
-            logger.info(
-                "FINRA detail fetch limit reached (%s); skipping additional fallback fetches",
-                detail_fetch_limit,
+            notice_body_text = fallback_text
+            presentation_excerpt = fallback_text[:FALLBACK_TEXT_MAX_CHARS]
+            tier, reason = classify_regulatory_relevance(
+                title, notice_body_text, config
             )
-            detail_limit_logged = True
 
         affected_controls = find_affected_controls_by_keywords(
             title, notice_body_text, config
@@ -1144,6 +1458,7 @@ def fetch_finra_notices(
             publication_date=publication_date,
             doc_type='NOTICE',
             abstract=presentation_excerpt,
+            content_text=notice_body_text,
             document_id=document_id,
             publication_date_is_synthetic=publication_date_is_synthetic,
             classification=tier,
@@ -1220,8 +1535,13 @@ def _normalize_hash_field(text: str) -> str:
 
 
 def _content_fingerprint(item: RegulatoryItem) -> str:
-    """Whitespace-normalized ``title|abstract|publication_date`` used as the
-    change-detection hash input, so cosmetic churn does not re-emit an item.
+    """Hash the complete normalized content, not the report excerpt.
+
+    FINRA items keep a bounded ``abstract`` for report readability, while
+    ``content_text`` retains the complete authoritative body.  Hashing the
+    latter makes wording changes after character 4000 observable.  The
+    ``abstract`` fallback preserves compatibility for callers constructing
+    legacy ``RegulatoryItem`` instances without ``content_text``.
 
     Synthetic FINRA dates are run metadata, not notice content. Keeping their
     field position but hashing an empty value preserves deterministic identity
@@ -1230,9 +1550,10 @@ def _content_fingerprint(item: RegulatoryItem) -> str:
     publication_date = (
         "" if item.publication_date_is_synthetic else item.publication_date
     )
+    content_text = item.content_text or item.abstract
     return "|".join(
         _normalize_hash_field(part)
-        for part in (item.title, item.abstract, publication_date)
+        for part in (item.title, content_text, publication_date)
     )
 
 

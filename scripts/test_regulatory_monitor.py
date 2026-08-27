@@ -121,16 +121,46 @@ def _assert_free_of_ai_vocabulary(text: str) -> None:
 def test_reference_only_ai_mention_in_source_text_does_not_become_high():
     """A bibliography/literature-review mention is not an operative requirement.
 
-    This is the 2026-17183 shape: a single cited-study mention of AI inside a
-    very long document that is otherwise about crypto-asset offerings.
+    This is the exact 2026-17183 authoritative sentence: the literature marker
+    is more than 200 characters before the AI occurrence, so a fixed context
+    window cannot identify the citation-only clause.
     """
     config = _load_config()
+    authoritative_citation_sentence = (
+        "Another study also found that blockchain application was the most "
+        "discussed topic in ICO whitepapers, followed by information on the "
+        "network's development and discussions regarding data management and "
+        r"the application of artificial \nintelligence tools.\451\ "
+        "This study observed that ICO whitepapers distinctly entailed "
+        "substantial discussions on decentralization and network building."
+    )
+    assert authoritative_citation_sentence.index("artificial") > 200
     detail_text = (
         "Regulation Crypto Assets describes offering and disclosure requirements. "
         + LONG_SOURCE_FILLER
-        + r"Another study also found that whitepapers discussed the application of "
-        r"artificial \nintelligence tools.\451\ This study observed no change in "
-        "offering practices."
+        + authoritative_citation_sentence
+    )
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulation Crypto Assets",
+        detail_text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_NOISE
+    assert "artificial intelligence" not in reason.lower()
+
+
+def test_reference_sentence_stops_at_federal_register_footnote_marker():
+    """A later operative sentence must not rescue a citation-only AI mention."""
+    config = _load_config()
+    detail_text = (
+        "Another study also found that blockchain application was the most "
+        "discussed topic in ICO whitepapers, followed by information on the "
+        "network's development and discussions regarding data management and "
+        r"the application of artificial \nintelligence tools.\451\ "
+        "Members must retain records for three years."
     )
 
     classification, reason = regulatory_monitor.classify_regulatory_relevance(
@@ -363,7 +393,10 @@ def test_generic_pra_electronic_submission_does_not_become_high():
         "Records shall be maintained in electronic form for six years.",
         "All order records must be retained electronically by each member.",
         "All order records must be retained digitally by each member.",
+        "Records must be kept electronically for the retention period.",
         "Each member must maintain electronic records of every covered order.",
+        "Records maintained electronically must be retained for six years.",
+        "Records maintained in electronic form shall be retained for six years.",
         "Electronic recordkeeping systems must be implemented by covered members.",
         "The proposed rule would require records to be preserved in electronic form.",
     ],
@@ -427,6 +460,11 @@ def test_recordkeeping_rule_requires_all_three_elements(detail_text):
         # Obligation + record in sentence one, electronic system in sentence two.
         "Members must retain records. Electronic systems are optional for other "
         "filings.",
+        # Electronic records are explicitly optional; the operative duty is
+        # instead to file paper copies.
+        "Electronic records are optional, but firms must file paper copies.",
+        # The electronic modifier belongs to communications, not record storage.
+        "Members must retain records and use electronic communications.",
     ],
 )
 def test_recordkeeping_rule_does_not_cross_sentence_boundaries(detail_text):
@@ -1611,6 +1649,334 @@ def test_finra_long_notice_late_mandatory_ai_requirement_elevates(monkeypatch):
     assert excerpt_tier != regulatory_monitor.CLASSIFICATION_HIGH
 
 
+def test_finra_listing_enumerates_and_deduplicates_table_and_list_notice_links(
+    monkeypatch,
+):
+    """Live-shaped table/list markup must yield every eligible notice once."""
+    config = _load_config()
+    listing_html = """
+    <html><body>
+      <nav><a href="/rules-guidance/notices">All notices</a></nav>
+      <table class="views-table">
+        <tbody>
+          <tr class="views-row">
+            <td><a href="/rules-guidance/notices/26-01">
+              Regulatory Notice 26-01
+            </a></td>
+            <td><a href="/rules-guidance/notices/26-01?view=full">
+              View notice
+            </a></td>
+          </tr>
+          <tr class="views-row">
+            <td><a href="https://www.finra.org/rules-guidance/notices/26-02/">
+              Regulatory Notice 26-02
+            </a></td>
+          </tr>
+        </tbody>
+      </table>
+      <ul class="notices-list">
+        <li><a href="26-03">Regulatory Notice 26-03</a></li>
+        <li><a href="/rules-guidance/notices/information-notice-20260803">
+          Information Notice 8/3/26
+        </a></li>
+        <li><a href="/rules-guidance/notices/information-notice-20260803?dup=1">
+          Information Notice 8/3/26 (duplicate)
+        </a></li>
+      </ul>
+    </body></html>
+    """
+    detail_calls = []
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            content = listing_html
+        else:
+            detail_calls.append(url)
+            content = (
+                "<html><body><article class='node--type-notice'>"
+                "<div class='field--name-body'>Authoritative notice body.</div>"
+                "</article></body></html>"
+            )
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": content,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(),
+        config=config,
+    )
+
+    expected_urls = {
+        "https://www.finra.org/rules-guidance/notices/26-01",
+        "https://www.finra.org/rules-guidance/notices/26-02",
+        "https://www.finra.org/rules-guidance/notices/26-03",
+        "https://www.finra.org/rules-guidance/notices/information-notice-20260803",
+    }
+    assert {item.url for item in items} == expected_urls
+    assert len(items) == len(expected_urls)
+    assert set(detail_calls) == expected_urls
+    assert len(detail_calls) == len(expected_urls)
+
+
+def test_finra_information_notice_body_evidence_is_classified(monkeypatch):
+    """Information-notice URLs are eligible and use their authoritative body."""
+    config = _load_config()
+    listing_html = """
+    <html><body><ul class="notices-list"><li>
+      <a href="/rules-guidance/notices/information-notice-20260803">
+        Information Notice 8/3/26
+      </a>
+    </li></ul></body></html>
+    """
+    detail_html = """
+    <html><body><article class="node--type-notice">
+      <div class="field--name-body">
+        Members must supervise the use of artificial intelligence systems.
+      </div>
+    </article></body></html>
+    """
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": listing_html if url == regulatory_monitor.FINRA_NOTICES_URL else detail_html,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(),
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert "artificial intelligence" in items[0].content_text.lower()
+    assert "artificial intelligence" in items[0].abstract.lower()
+
+
+def test_finra_fetches_more_than_twenty_generic_titles_and_reads_late_ai_body(
+    monkeypatch,
+):
+    """The production path has no 20-item cap or title-based body shortcut."""
+    config = _load_config()
+    notice_ids = [f"26-{index:02d}" for index in range(1, 23)]
+    listing_rows = "".join(
+        f"<tr><td><a href='/rules-guidance/notices/{notice_id}'>"
+        f"Listing entry {notice_id}</a></td></tr>"
+        for notice_id in notice_ids
+    )
+    listing_html = (
+        "<html><body><table class='views-table'><tbody>"
+        + listing_rows
+        + "</tbody></table></body></html>"
+    )
+    filler = (
+        "The committee reviewed meeting logistics and calendar planning. "
+    ) * 100
+    late_requirement = (
+        "Members must supervise the use of artificial intelligence in customer "
+        "communications."
+    )
+    detail_bodies = {
+        notice_id: (
+            filler + late_requirement
+            if notice_id == "26-22"
+            else f"Routine authoritative body for {notice_id}."
+        )
+        for notice_id in notice_ids
+    }
+    detail_calls = []
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            content = listing_html
+        else:
+            detail_calls.append(url)
+            notice_id = url.rsplit("/", 1)[-1]
+            content = (
+                "<html><body><article class='node--type-notice'>"
+                f"<div class='field--name-body'>{detail_bodies[notice_id]}</div>"
+                "</article></body></html>"
+            )
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": content,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(),
+        config=config,
+    )
+
+    assert len(items) == 22
+    assert len(detail_calls) == 22
+    late_item = next(item for item in items if item.document_id == "FINRA 26-22")
+    assert late_item.classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert len(late_item.abstract) <= regulatory_monitor.FALLBACK_TEXT_MAX_CHARS
+    assert "artificial intelligence" not in late_item.abstract.lower()
+    assert "artificial intelligence" in late_item.content_text.lower()
+
+
+def test_finra_notice_body_parser_excludes_login_chrome_and_keeps_long_body():
+    """The first generic body field can be login chrome, not notice content."""
+    actual_body = (
+        "Actual FINRA notice body. "
+        + "The notice explains member procedures. " * 250
+        + "Members must supervise artificial intelligence systems."
+    )
+    html = f"""
+    <html><body>
+      <div class="field field--name-body">
+        Please log in to view this page.
+      </div>
+      <main>
+        <article class="node node--type-notice">
+          <h1>Regulatory Notice</h1>
+          <div class="field field--name-body">{actual_body}</div>
+        </article>
+      </main>
+    </body></html>
+    """
+
+    extracted = regulatory_monitor._extract_finra_notice_fallback_text(html)
+
+    assert len(extracted) > 8000
+    assert "Please log in" not in extracted
+    assert extracted.startswith("Actual FINRA notice body.")
+    assert "artificial intelligence systems" in extracted
+
+
+def test_finra_detail_fetch_failure_does_not_advance_state(monkeypatch, caplog):
+    """A failed detail read must return failure and leave the baseline intact."""
+    config = _load_config()
+    initial_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "last_run": "2026-08-01T10:00:00+00:00",
+                "entries": {"FINRA 26-01": "existing-hash"},
+            }
+        },
+    }
+    loaded_state = deepcopy(initial_state)
+    save_calls = []
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    listing_html = """
+    <html><body><table><tbody><tr>
+      <td><a href="/rules-guidance/notices/26-15">Listing entry</a></td>
+    </tr></tbody></table></body></html>
+    """
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            return {
+                "url": url,
+                "status_code": 200,
+                "content": listing_html,
+                "final_url": url,
+                "was_redirected": False,
+                "error": None,
+            }
+        return {
+            "url": url,
+            "status_code": 503,
+            "content": "",
+            "final_url": url,
+            "was_redirected": False,
+            "error": "service unavailable",
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _path: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _path: loaded_state)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda *args: save_calls.append(args),
+    )
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        regulatory_monitor.sys,
+        "argv",
+        ["regulatory_monitor.py", "--source", "finra"],
+    )
+
+    exit_code = regulatory_monitor.main()
+
+    assert exit_code == regulatory_monitor.EXIT_FAILURE
+    assert "FINRA authoritative notice body fetch failed" in caplog.text
+    assert loaded_state == initial_state
+    assert save_calls == []
+
+
+def test_finra_change_hash_uses_late_authoritative_body_not_excerpt():
+    """Identical 4k excerpts with different late bodies are a change."""
+    prefix = "Routine authoritative notice text. " * 180
+    first_body = prefix + "Late section version one."
+    updated_body = prefix + "Late section version two."
+    assert first_body[:4000] == updated_body[:4000]
+
+    def make_item(body: str) -> "regulatory_monitor.RegulatoryItem":
+        return regulatory_monitor.RegulatoryItem(
+            source="FINRA",
+            agency="FINRA",
+            title="Regulatory Notice 26-22",
+            url="https://www.finra.org/rules-guidance/notices/26-22",
+            publication_date="2026-08-22",
+            doc_type="NOTICE",
+            abstract=body[:regulatory_monitor.FALLBACK_TEXT_MAX_CHARS],
+            content_text=body,
+            document_id="FINRA 26-22",
+            classification=regulatory_monitor.CLASSIFICATION_MEDIUM,
+            classification_reason="Test",
+            affected_controls=[],
+        )
+
+    state: dict = {}
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FINRA,
+        [make_item(first_body)],
+        state,
+    )
+    source_state = regulatory_monitor.get_source_state(
+        state,
+        regulatory_monitor.SOURCE_KEY_FINRA,
+    )
+
+    changed = make_item(updated_body)
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FINRA,
+        [changed],
+        source_state,
+    ) == [changed]
+
+
 def test_finra_publication_date_uses_authoritative_listing_metadata(monkeypatch):
     config = _load_config()
     listing_html = """
@@ -1623,18 +1989,30 @@ def test_finra_publication_date_uses_authoritative_listing_metadata(monkeypatch)
       </td>
     </tr></tbody></table></div></body></html>
     """
+    detail_html = "<html><body><main>Information notice body.</main></body></html>"
 
     monkeypatch.setattr(
         regulatory_monitor,
         "fetch_page",
-        lambda url, _session, max_retries=3: {
-            "url": url,
-            "status_code": 200,
-            "content": listing_html,
-            "final_url": url,
-            "was_redirected": False,
-            "error": None,
-        },
+        lambda url, _session, max_retries=3: (
+            {
+                "url": url,
+                "status_code": 200,
+                "content": listing_html,
+                "final_url": url,
+                "was_redirected": False,
+                "error": None,
+            }
+            if url == regulatory_monitor.FINRA_NOTICES_URL
+            else {
+                "url": url,
+                "status_code": 200,
+                "content": detail_html,
+                "final_url": url,
+                "was_redirected": False,
+                "error": None,
+            }
+        ),
     )
 
     items = regulatory_monitor.fetch_finra_notices(
@@ -1770,7 +2148,7 @@ def test_finra_legacy_daily_hash_migrates_without_false_finding():
     ) == []
 
 
-def test_finra_notice_body_fetch_failure_keeps_item_and_avoids_crash(monkeypatch):
+def test_finra_notice_body_fetch_failure_fails_closed(monkeypatch):
     config = _load_config()
     listing_html = """
     <html><body>
@@ -1800,15 +2178,15 @@ def test_finra_notice_body_fetch_failure_keeps_item_and_avoids_crash(monkeypatch
     monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
     monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
 
-    items = regulatory_monitor.fetch_finra_notices(
-        session=object(),
-        config=config,
-        limit=1,
-    )
-
-    assert len(items) == 1
-    assert items[0].classification == regulatory_monitor.CLASSIFICATION_MEDIUM
-    assert items[0].abstract == ""
+    with pytest.raises(
+        regulatory_monitor.RequiredSourceTextError,
+        match="FINRA authoritative notice body fetch failed",
+    ):
+        regulatory_monitor.fetch_finra_notices(
+            session=object(),
+            config=config,
+            limit=1,
+        )
 
 
 def test_finra_notice_body_fetch_uses_cache(monkeypatch):
@@ -1853,7 +2231,7 @@ def test_finra_notice_body_fetch_uses_cache(monkeypatch):
         limit=2,
     )
 
-    assert len(items) == 2
+    assert len(items) == 1
     assert detail_calls["count"] == 1
 
 

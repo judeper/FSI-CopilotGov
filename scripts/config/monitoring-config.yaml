@@ -122,29 +122,9 @@ regulatory:
       reason: "FINRA 4511 (recordkeeping)"
     - pattern: '\bsec\s+17a-[34]'
       reason: "SEC 17a-3 or 17a-4 (recordkeeping)"
-    # Electronic recordkeeping obligations. The rule requires a records term,
-    # an obligation term, AND electronic/digital language that actually
-    # modifies record storage/maintenance/retention/recordkeeping -- all
-    # within the SAME sentence/clause. Every internal gap uses [^.;!?] so a
-    # match can never cross a sentence terminator (that is what keeps the
-    # reviewer counterexample "Records must be retained for three years.
-    # Applications are submitted electronically through the portal." NOISE:
-    # the obligation and the electronic language live in different sentences).
-    # The electronic/digital term must sit next to a storage noun ("electronic
-    # form/records/systems"), a storage verb ("retained ... electronically",
-    # "preserve records digitally"), or a record noun ("electronic records"),
-    # so a stray "submitted electronically" that merely touches an unrelated
-    # record word can no longer promote. Five orderings cover the phrasings
-    # regulators actually write ("Recordkeeping must transition to electronic
-    # systems", "Records shall be maintained in electronic form", "records
-    # must be retained electronically/digitally", "must maintain electronic
-    # records", "electronic recordkeeping systems must ...", "must preserve
-    # records digitally"). The same-sentence scope also keeps PRA boilerplate
-    # NOISE: a paperwork notice lists a "recordkeeping requirement" in one
-    # sentence and unrelated "automated electronic ... collection techniques"
-    # in another, with no single sentence tying them together.
-    - pattern: '\b(?:records?|record[-\s]?keeping|books\s+and\s+records)\b[^.;!?]{0,80}?\b(?:must|shall|required\s+to|require[sd]?)\b[^.;!?]{0,80}?(?:\b(?:electronic(?:ally)?|digital(?:ly)?|machine[-\s]?readable)\s+(?:form|format|system|systems|media|medium|means|storage|record|records|record[-\s]?keeping|book|books|file|files|cop(?:y|ies)|archives?|repositor(?:y|ies)|databases?)|\b(?:maintain(?:ed|s|ing)?|retain(?:ed|s|ing)?|retention|stor(?:e|ed|es|ing|age)|kept|keep(?:s|ing)?|preserv(?:e|ed|es|ing|ation)|archiv(?:e|ed|es|ing|al)|transition(?:ed|s|ing)?|convert(?:ed|s|ing)?|migrat(?:e|ed|es|ing|ion))\s+(?:[a-z]+\s+){0,3}?(?:electronic(?:ally)?|digital(?:ly)?|machine[-\s]?readable))|\b(?:must|shall|required\s+to|require[sd]?)\b[^.;!?]{0,40}?\b(?:records?|record[-\s]?keeping|books\s+and\s+records)\b[^.;!?]{0,80}?(?:\b(?:electronic(?:ally)?|digital(?:ly)?|machine[-\s]?readable)\s+(?:form|format|system|systems|media|medium|means|storage|record|records|record[-\s]?keeping|book|books|file|files|cop(?:y|ies)|archives?|repositor(?:y|ies)|databases?)|\b(?:maintain(?:ed|s|ing)?|retain(?:ed|s|ing)?|retention|stor(?:e|ed|es|ing|age)|kept|keep(?:s|ing)?|preserv(?:e|ed|es|ing|ation)|archiv(?:e|ed|es|ing|al)|transition(?:ed|s|ing)?|convert(?:ed|s|ing)?|migrat(?:e|ed|es|ing|ion))\s+(?:[a-z]+\s+){0,3}?(?:electronic(?:ally)?|digital(?:ly)?|machine[-\s]?readable))|\b(?:must|shall|required\s+to|require[sd]?)\b[^.;!?]{0,80}?\b(?:electronic(?:ally)?|digital(?:ly)?|machine[-\s]?readable)\s+(?:record|records|record[-\s]?keeping|book|books)|\b(?:electronic(?:ally)?|digital(?:ly)?|machine[-\s]?readable)\s+(?:record|records|record[-\s]?keeping|book|books)[^.;!?]{0,80}?\b(?:must|shall|required\s+to|require[sd]?)\b|\b(?:must|shall|required\s+to|require[sd]?)\b[^.;!?]{0,40}?\b(?:maintain(?:ed|s|ing)?|retain(?:ed|s|ing)?|retention|stor(?:e|ed|es|ing|age)|kept|keep(?:s|ing)?|preserv(?:e|ed|es|ing|ation)|archiv(?:e|ed|es|ing|al)|transition(?:ed|s|ing)?|convert(?:ed|s|ing)?|migrat(?:e|ed|es|ing|ion))\s+(?:[a-z]+\s+){0,3}?(?:record|records|record[-\s]?keeping|book|books)\s+(?:[a-z]+\s+){0,2}?\b(?:electronic(?:ally)?|digital(?:ly)?|machine[-\s]?readable)\b'
-      reason: "Electronic recordkeeping"
+    # Electronic recordkeeping is evaluated by explicit semantic checks in
+    # regulatory_monitor.py so optional, negated, paper-only, and unrelated
+    # electronic-communications clauses cannot satisfy the high tier.
     - pattern: '\bmodel\s+risk\s+management'
       reason: "Model risk management"
 
