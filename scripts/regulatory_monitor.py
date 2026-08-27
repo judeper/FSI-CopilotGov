@@ -37,7 +37,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, parse_qs
 
 # Import shared monitoring framework
 from monitoring_shared import (
@@ -116,6 +116,23 @@ FINRA_NOTICE_PATH_PATTERN = re.compile(
     r'^/rules-guidance/notices/(?:\d{2}-\d+|information-notice-\d{8})/?$',
     re.IGNORECASE,
 )
+# The notices listing itself (page 0 has no query; page N is ``?page=N``).
+FINRA_LISTING_PATH_PATTERN = re.compile(
+    r'^/rules-guidance/notices/?$',
+    re.IGNORECASE,
+)
+# Hard bound on how many listing pages the crawler will follow. The live
+# listing is ~92 pages; this leaves generous headroom while capping a hostile
+# or malformed pager that would otherwise declare pages without end. Reaching
+# it fails closed (see fetch_finra_notices) rather than baselining a partial
+# crawl as complete.
+FINRA_MAX_LISTING_PAGES = 200
+# A leading ``/index.php`` front-controller segment is an accepted alias for
+# the bare path ("/index.php/rules-guidance/notices/26-12" == the notice). It
+# is stripped before path validation; a lookalike such as "/index.phpx/..." is
+# not stripped (the ``(?=/)`` lookahead requires a following slash) and is
+# rejected by the path patterns.
+FINRA_INDEX_PHP_PREFIX_PATTERN = re.compile(r'(?i)^/index\.php(?=/)')
 FINRA_NOTICE_ID_PATTERN = re.compile(
     r'/rules-guidance/notices/(\d{2})-(\d+)(?:[/?#]|$)',
     re.IGNORECASE,
@@ -205,13 +222,56 @@ OPERATIVE_LANGUAGE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+# Shared citation vocabulary. A research/study *subject* paired with a
+# reporting verb marks a citing clause; the same building blocks drive both the
+# reference-only detector and the citation-subject clause boundary so the two
+# always agree on what counts as a citation.
+_RESEARCHER_SUBJECT_NOUN = (
+    r"(?:researchers?|scholars?|commentators?|academics?|economists?)"
+)
+_CITATION_REPORTING_VERB = (
+    r"(?:discuss(?:es|ed)?|survey(?:s|ed)?|examin(?:e|es|ed)|analy[sz](?:e|es|ed)|"
+    r"argu(?:e|es|ed)|find|finds|found|show(?:s|ed|n)?|observ(?:e|es|ed)|"
+    r"note[sd]?|conclud(?:e|es|ed)|report(?:s|ed)?|document(?:s|ed)?|"
+    r"suggest(?:s|ed)?|demonstrat(?:e|es|ed)|review(?:s|ed)?|propos(?:e|es|ed)|"
+    r"describ(?:e|es|ed)|estimat(?:e|es|ed)|highlight(?:s|ed)?|explor(?:e|es|ed)|"
+    r"present(?:s|ed)?|investigat(?:e|es|ed)|consider(?:s|ed)?|debat(?:e|es|ed)|"
+    r"stud(?:y|ies|ied)|posit(?:s|ed)?|contend(?:s|ed)?|assess(?:es|ed)?|"
+    r"evaluat(?:e|es|ed)|caution(?:s|ed)?|warn(?:s|ed)?|emphasiz(?:e|es|ed)|"
+    r"theoriz(?:e|es|ed)|publish(?:es|ed)?)"
+)
+# A parenthetical publication year ("(2026)") is a strong author-date citation
+# signal. Paired with a reporting verb it marks a citing clause even for a
+# single lowercase surname the casing heuristic cannot see ("... and jones
+# (2026) surveys artificial intelligence ...").
+_CITATION_YEAR_PAREN = r"\(\d{4}[a-z]?\)"
+_CITATION_AUTHOR_YEAR_SUBJECT = (
+    r"[\w.'-]+(?:\s+(?:and|&)\s+[\w.'-]+)?(?:\s+et\s+al\.)?\s*"
+    + _CITATION_YEAR_PAREN
+)
+_CITATION_RESEARCH_NOUN = (
+    r"(?:" + _RESEARCHER_SUBJECT_NOUN + r"|analysts?|authors?|"
+    r"stud(?:y|ies)|papers?|articles?|surveys?|literature|working\s+papers?)"
+)
+
 REFERENCE_ONLY_PATTERN = re.compile(
     r"(?:\bsee\s+(?:also|generally|supra|infra)\b|\bsee,\s*e\.g\.|\bsupra\b|\bid\.\s|\bibid\b"
     r"|\bcf\.\s|\bet\s+al\.|\bavailable\s+at\b|https?://|\bwww\.|\bcit(?:ed|ing|ation)\b"
     r"|\b(?:an|another|one|a|the|this|these|those|recent|prior|earlier|academic|empirical|several)\s+"
     r"[a-z ,'-]{0,26}?(?:study|studies|paper|papers|article|articles|survey|working\s+paper)\b"
     r"|\bstudies\s+(?:have\s+)?(?:found|find|show|shown|suggest|document)"
-    r"|\bresearchers?\b|\bthe\s+literature\b|\bjournal\b|\bworking\s+paper\b)",
+    r"|\b" + _RESEARCHER_SUBJECT_NOUN + r"\b|\bthe\s+literature\b|\bjournal\b|\bworking\s+paper\b"
+    # A researcher/study subject followed by a reporting verb is a citing
+    # clause even without an article ("researchers document ...", "scholars
+    # examine ...", "studies survey ..."). This mirrors the citation-subject
+    # clause boundary so a clause it splits off is recognised here too.
+    r"|\b" + _CITATION_RESEARCH_NOUN + r"\s+(?:et\s+al\.\s+)?(?:have\s+|has\s+|also\s+)?"
+    + _CITATION_REPORTING_VERB
+    # An author-date citation: a parenthetical year followed by a reporting
+    # verb ("(2026) surveys ..."). Kept in sync with the citation-subject
+    # clause boundary so a clause it splits off is recognised here too.
+    + r"|" + _CITATION_YEAR_PAREN + r"\s+(?:have\s+|has\s+|also\s+)?"
+    + _CITATION_REPORTING_VERB + r")",
     re.IGNORECASE,
 )
 
@@ -238,6 +298,58 @@ SENTENCE_BOUNDARY_PATTERN = re.compile(
 # a new clause) keeps the obligation attached to the clause it governs.
 CLAUSE_BOUNDARY_PATTERN = re.compile(
     r"[,:()\[\]]|--+|\u2014|\u2013|\band\s+(?=(?:a|an|the|this|these|those)\b)",
+    re.IGNORECASE,
+)
+
+# Citation/Latin abbreviations whose trailing period is part of the token, not
+# a sentence terminator. Classification text is lowercased before it reaches
+# the boundary scan, so these are matched in lowercase. "et al." is the
+# load-bearing case: splitting the sentence at its period detaches an
+# author-list citation from the artificial-intelligence mention it annotates
+# and lets an unrelated operative duty ("Members must file annual reports")
+# promote the citation to HIGH.
+_CITATION_ABBREVIATION_TAILS = (
+    "et al",
+    "et seq",
+    "e.g",
+    "i.e",
+    "cf",
+    "ibid",
+    "viz",
+)
+
+# A new *citation subject* opens a fresh clause even when only a plain
+# conjunction separates it from a preceding operative duty about a different
+# subject. Capitalization is unavailable (the text is lowercased), so the two
+# recognised shapes key on citation markers instead of proper-noun casing:
+#   * "<conj> <name words> et al." -- an author-list citation.
+#   * "<conj> <research-noun subject> <reporting verb>" -- a study/researcher
+#     led clause ("and researchers document ...", "because scholars observe").
+# A bare coordinated predicate ("and govern", "and conduct annual studies") is
+# NOT a new subject: its verb (or verb+object) follows the conjunction directly
+# with no citing subject, so it stays welded to the operative duty and is
+# preserved as HIGH. The reporting-verb and research-noun vocabularies are the
+# shared blocks defined next to REFERENCE_ONLY_PATTERN.
+_CITATION_CONJUNCTION = (
+    r"(?:and|but|while|whereas|although|though|because|since|as|when|where)"
+)
+CITATION_SUBJECT_BOUNDARY_PATTERN = re.compile(
+    r"\b" + _CITATION_CONJUNCTION + r"\s+"
+    r"(?="
+    r"(?:[\w.'-]+(?:\s+[\w.'-]+){0,3}?\s+et\s+al\.)"
+    r"|"
+    r"(?:(?:the\s+|a\s+|an\s+|one\s+|another\s+|several\s+|recent\s+|prior\s+|"
+    r"earlier\s+|many\s+|some\s+|numerous\s+|academic\s+|empirical\s+|"
+    r"various\s+|two\s+|three\s+|four\s+)*"
+    + _CITATION_RESEARCH_NOUN + r"\s+(?:et\s+al\.\s+)?(?:have\s+|has\s+|also\s+)?"
+    + _CITATION_REPORTING_VERB + r")"
+    r"|"
+    # "<name(s)> (2026) surveys ..." -- an author-date citation whose only
+    # casing cue is unavailable in the lowercased text; the parenthetical year
+    # plus a reporting verb identifies the citing subject.
+    r"(?:" + _CITATION_AUTHOR_YEAR_SUBJECT
+    + r"\s+(?:have\s+|has\s+|also\s+)?" + _CITATION_REPORTING_VERB + r")"
+    r")",
     re.IGNORECASE,
 )
 
@@ -330,7 +442,7 @@ ELECTRONIC_RECORDKEEPING_PATTERNS = (
 OPTIONAL_OR_NEGATED_RECORDKEEPING = re.compile(
     r"\b(?:optional|optionally|permitted|may|can|could|might|"
     r"not\s+required|need\s+not|not\s+obligated|not\s+mandatory|"
-    r"must\s+not|shall\s+not|paper|physical|hard[-\s]?copy)\b",
+    r"must\s+not|shall\s+not)\b",
     re.IGNORECASE,
 )
 
@@ -348,11 +460,14 @@ PAPER_STORAGE_MENTION = re.compile(
     re.IGNORECASE,
 )
 # Wording between the electronic and paper terms that makes paper an accepted
-# alternative rather than a replaced predecessor.
+# alternative rather than a replaced predecessor. Exception connectors such as
+# "unless"/"except" introduce a permitted paper fallback ("maintained
+# electronically unless retained in paper form"), so paper storage is still
+# allowed and the clause is not an electronic-only mandate.
 PAPER_ALTERNATIVE_CONNECTOR = re.compile(
     r"\b(?:or|and/or|either|alternativ\w*|option(?:al|ally|s)?|"
     r"may|might|can|could|permitted|permissible|elect|election|"
-    r"choose|choice|whichever)\b",
+    r"choose|choice|whichever|unless|except(?:ing|ed)?)\b",
     re.IGNORECASE,
 )
 # Wording that shows paper is being displaced, so the electronic duty stands.
@@ -394,6 +509,46 @@ def _clause_permits_paper_alternative(clause: str) -> bool:
                 return True
 
     return False
+
+
+# A paper *prohibition* is the opposite of a paper alternative: it forbids
+# paper storage, which reinforces (rather than negates) an electronic-only
+# duty. The negation words that express it ("cannot", "may not", "must not",
+# "shall not") also appear in OPTIONAL_OR_NEGATED_RECORDKEEPING, where they are
+# meant to catch a negated *electronic* duty. When such a negation is bound to
+# the paper term it must not be read as negating the electronic obligation, so
+# the prohibition phrase is masked out before the optional/negated check runs.
+_PAPER_TERM = (
+    r"(?:paper|physical\s+(?:form|copy|copies|record\w*|storage)|"
+    r"hard[-\s]?cop(?:y|ies)|hardcop(?:y|ies)|printed\s+(?:form|record\w*))"
+)
+PAPER_PROHIBITION_PATTERN = re.compile(
+    r"(?:"
+    r"\b(?:can\s*not|cannot|may\s+not|must\s+not|shall\s+not|should\s+not|"
+    r"will\s+not|would\s+not|prohibited\s+from|barred\s+from|precluded\s+from|"
+    r"forbidden\s+(?:from|to))"
+    r"\s+(?:\w+\s+){0,4}?(?:on\s+|in\s+|to\s+|using\s+|via\s+|onto\s+)?" + _PAPER_TERM +
+    r"|"
+    + _PAPER_TERM + r"\s+(?:\w+\s+){0,3}?"
+    r"(?:is|are|be|being|remains?|may|shall|can|will)?\s*"
+    r"(?:not\s+)?"
+    r"(?:prohibited|forbidden|barred|impermissible|disallowed|precluded|"
+    r"not\s+permitted|not\s+allowed|no\s+longer\s+(?:permitted|allowed|accepted))"
+    r")",
+    re.IGNORECASE,
+)
+
+
+def _mask_paper_prohibition(clause: str) -> str:
+    """Blank out explicit paper-prohibition phrases in a clause.
+
+    A prohibition such as "records may not be retained on paper and must be
+    maintained electronically" carries the negation on *paper*, not on the
+    electronic duty. Removing the prohibition phrase keeps the affirmative
+    electronic obligation intact while preventing its paper-bound negation from
+    being mistaken for a negated electronic duty.
+    """
+    return PAPER_PROHIBITION_PATTERN.sub(" ", clause)
 
 # Configure logging
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
@@ -442,13 +597,43 @@ def _prepare_classification_text(text: str) -> str:
     return text.replace("\\r", " ").replace("\\n", " ")
 
 
+def _is_citation_abbreviation_boundary(text: str, index: int) -> bool:
+    """Return True when the punctuation at ``index`` is an abbreviation dot.
+
+    Only ``.`` can be an abbreviation dot; ``;``/``!``/``?`` are always real
+    boundaries. The dot is treated as part of a token (not a sentence
+    terminator) when the text ending at it closes a known citation/Latin
+    abbreviation that stands as its own token (e.g. the period in "et al.").
+    """
+    if index < 0 or index >= len(text) or text[index] != ".":
+        return False
+    preceding = text[:index]
+    lowered = preceding.lower()
+    for abbr in _CITATION_ABBREVIATION_TAILS:
+        if lowered.endswith(abbr):
+            token_start = len(preceding) - len(abbr)
+            if token_start == 0 or not text[token_start - 1].isalnum():
+                return True
+    return False
+
+
+def _real_sentence_boundaries(text: str, lo: int, hi: int):
+    """Yield sentence-boundary matches in ``text[lo:hi]`` minus abbreviation dots."""
+    for boundary in SENTENCE_BOUNDARY_PATTERN.finditer(text, lo, hi):
+        if _is_citation_abbreviation_boundary(text, boundary.start()):
+            continue
+        yield boundary
+
+
 def _occurrence_sentence_span(text: str, start: int, end: int) -> tuple[int, int]:
     """Return the span of the sentence/clause that contains a match.
 
     Unlike the old fixed-size context window, this scans to the actual
     sentence/clause boundaries.  That matters for long sentences such as the
     2026-17183 citation sentence, where the literature marker can be more than
-    200 characters before the artificial-intelligence occurrence.
+    200 characters before the artificial-intelligence occurrence. Citation
+    abbreviation dots (``et al.``) are not treated as sentence terminators, so
+    an author-list citation stays attached to the mention it annotates.
     """
     preceding_delimiters = list(
         FOOTNOTE_BLOCK_DELIMITER_PATTERN.finditer(text, 0, start)
@@ -462,13 +647,13 @@ def _occurrence_sentence_span(text: str, start: int, end: int) -> tuple[int, int
     )
 
     preceding_boundaries = list(
-        SENTENCE_BOUNDARY_PATTERN.finditer(text, segment_start, start)
+        _real_sentence_boundaries(text, segment_start, start)
     )
     if preceding_boundaries:
         segment_start = preceding_boundaries[-1].end()
 
-    following_boundary = SENTENCE_BOUNDARY_PATTERN.search(
-        text, end, segment_end
+    following_boundary = next(
+        _real_sentence_boundaries(text, end, segment_end), None
     )
     if following_boundary:
         segment_end = following_boundary.start()
@@ -490,20 +675,50 @@ def _occurrence_clause(text: str, start: int, end: int) -> str:
     working paper on artificial intelligence is available at ..."). Obligation
     language must be tied to the clause carrying the match, otherwise any
     unrelated duty in the sentence promotes a bibliographic mention.
+
+    Besides clause punctuation, a new *citation subject* introduced by a plain
+    conjunction ("... and Smith et al. discuss ...", "... because researchers
+    document ...") opens a fresh clause. That trims a preceding operative duty
+    about a different subject out of the citation's clause, while a coordinated
+    predicate ("... monitor and govern ...") has no citing subject and stays
+    joined so genuine operative duties are preserved.
     """
     sentence_start, sentence_end = _occurrence_sentence_span(text, start, end)
     clause_start, clause_end = sentence_start, sentence_end
 
-    for boundary in CLAUSE_BOUNDARY_PATTERN.finditer(
-        text, sentence_start, start
-    ):
-        clause_start = boundary.end()
+    clause_boundaries = [
+        boundary.end()
+        for boundary in CLAUSE_BOUNDARY_PATTERN.finditer(text, sentence_start, start)
+    ]
+    citation_starts = [
+        boundary.end()
+        for boundary in CITATION_SUBJECT_BOUNDARY_PATTERN.finditer(
+            text, sentence_start, start
+        )
+    ]
+    if citation_starts:
+        # A citation subject is a single clause. Punctuation inside it (a
+        # parenthetical year "(2026)", an internal comma) must not trim its
+        # markers ("et al.") off, so only clause boundaries at or before the
+        # nearest citation subject apply.
+        citation_start = max(citation_starts)
+        clause_start = max(
+            [sentence_start, citation_start]
+            + [cb for cb in clause_boundaries if cb <= citation_start]
+        )
+    elif clause_boundaries:
+        clause_start = max(clause_boundaries)
 
     following_clause_boundary = CLAUSE_BOUNDARY_PATTERN.search(
         text, end, sentence_end
     )
     if following_clause_boundary:
         clause_end = following_clause_boundary.start()
+    following_citation_subject = CITATION_SUBJECT_BOUNDARY_PATTERN.search(
+        text, end, sentence_end
+    )
+    if following_citation_subject:
+        clause_end = min(clause_end, following_citation_subject.start())
 
     return text[clause_start:clause_end]
 
@@ -557,10 +772,12 @@ def _has_electronic_recordkeeping_obligation(text: str) -> bool:
     electronic/digital storage language.  Each regex is bounded by sentence
     and semicolon clause terminators, so ``electronic communications`` or an
     unrelated electronic filing cannot satisfy a records obligation.  Clauses
-    containing explicit optional, permissive, negated, or paper-only wording
-    are rejected, and the *complete* clause is inspected for an
-    electronic-or-paper alternative so wording that continues past the matched
-    span cannot smuggle a permitted paper option through.
+    containing explicit optional, permissive, or negated wording are rejected,
+    and the *complete* clause is inspected for an electronic-or-paper
+    alternative (including exception forms such as "unless"/"except") so
+    wording that continues past the matched span cannot smuggle a permitted
+    paper option through.  A clause that *prohibits* paper ("cannot be retained
+    on paper and must be maintained electronically") remains a mandate.
     """
     normalized = _prepare_classification_text(text)
     for clause in re.split(r"[.!?;]+", normalized):
@@ -576,7 +793,10 @@ def _has_electronic_recordkeeping_obligation(text: str) -> bool:
             if not match:
                 continue
 
-            matched_text = match.group(0)
+            # A paper prohibition ("cannot/may not/must not ... on paper")
+            # reinforces the electronic duty; mask it so its paper-bound
+            # negation is not misread as a negated electronic obligation.
+            matched_text = _mask_paper_prohibition(match.group(0))
             if OPTIONAL_OR_NEGATED_RECORDKEEPING.search(matched_text):
                 continue
 
@@ -1083,7 +1303,14 @@ def _should_fetch_finra_notice_detail(title: str, url: str, classification: str)
 
 
 def _canonical_finra_notice_url(raw_url: str) -> Optional[str]:
-    """Return a stable FINRA notice URL for supported listing links."""
+    """Return a stable FINRA notice URL for supported listing links.
+
+    A leading ``/index.php`` front-controller segment is canonicalized away so
+    ``/index.php/rules-guidance/notices/26-12`` resolves to the same accepted
+    notice path. Off-origin hosts and lookalike prefixes (``/index.phpx/...``)
+    are still rejected: the hostname allow-list and the path pattern are applied
+    after the (slash-only) ``/index.php`` strip.
+    """
     if not raw_url:
         return None
 
@@ -1098,10 +1325,77 @@ def _canonical_finra_notice_url(raw_url: str) -> Optional[str]:
         return None
 
     path = re.sub(r"/+", "/", parsed.path or "/")
+    path = FINRA_INDEX_PHP_PREFIX_PATTERN.sub("", path)
     if not FINRA_NOTICE_PATH_PATTERN.fullmatch(path):
         return None
 
     return f"https://www.finra.org{path.rstrip('/')}"
+
+
+def _finra_listing_page_number(raw_url: str) -> Optional[int]:
+    """Return the 0-indexed page for a same-origin notices *listing* link.
+
+    Only same-origin links whose canonical path is the notices listing itself
+    (after the shared ``/index.php`` strip) and that carry a non-negative
+    ``page`` query parameter are recognised. Off-origin, lookalike, and
+    notice-detail links return ``None`` so pagination can never follow a
+    hostile href; the crawler constructs page URLs itself.
+    """
+    if not raw_url:
+        return None
+
+    candidate = urljoin(
+        FINRA_NOTICES_URL.rstrip("/") + "/",
+        str(raw_url).strip(),
+    )
+    parsed = urlparse(candidate)
+    if parsed.scheme.lower() not in {"http", "https"}:
+        return None
+    if (parsed.hostname or "").lower() not in {"finra.org", "www.finra.org"}:
+        return None
+
+    path = re.sub(r"/+", "/", parsed.path or "/")
+    path = FINRA_INDEX_PHP_PREFIX_PATTERN.sub("", path)
+    if not FINRA_LISTING_PATH_PATTERN.fullmatch(path):
+        return None
+
+    values = parse_qs(parsed.query).get("page")
+    if not values:
+        return None
+    try:
+        page = int(values[0])
+    except (TypeError, ValueError):
+        return None
+    if page < 0:
+        return None
+    return page
+
+
+def _extract_finra_last_page(content: str | bytes) -> int:
+    """Return the highest 0-indexed listing page declared by the pager.
+
+    The FINRA pager only renders a sliding window of page numbers plus a
+    "Last" link, so the maximum ``?page=N`` on any single page is a lower
+    bound on the true last page. The crawler re-reads this on every page and
+    keeps the running maximum, extending the crawl as later pages reveal
+    higher numbers. Returns ``0`` when no pager is present (single-page
+    listings and legacy fixtures), so only the base page is fetched.
+    """
+    soup = BeautifulSoup(content, "html.parser")
+    last_page = 0
+    for link in soup.find_all("a", href=True):
+        page = _finra_listing_page_number(link.get("href", ""))
+        if page is not None:
+            last_page = max(last_page, page)
+    return last_page
+
+
+def _finra_link_quality(link) -> tuple[int, int]:
+    """Rank duplicate anchors for the same notice (row-date presence, title length)."""
+    title = re.sub(r"\s+", " ", link.get_text(" ", strip=True)).strip()
+    row = link.find_parent("tr")
+    has_row_date = int(bool(row and row.find("time", datetime=True)))
+    return has_row_date, len(title)
 
 
 def _extract_finra_notice_links(content: str | bytes) -> list:
@@ -1114,14 +1408,6 @@ def _extract_finra_notice_links(content: str | bytes) -> list:
     """
     soup = BeautifulSoup(content, "html.parser")
     links_by_url: dict[str, object] = {}
-
-    def link_quality(link) -> tuple[int, int]:
-        title = re.sub(r"\s+", " ", link.get_text(" ", strip=True)).strip()
-        row = link.find_parent("tr")
-        has_row_date = int(
-            bool(row and row.find("time", datetime=True))
-        )
-        return has_row_date, len(title)
 
     scoped_links = []
     for container in soup.select(
@@ -1147,7 +1433,7 @@ def _extract_finra_notice_links(content: str | bytes) -> list:
             continue
 
         existing = links_by_url.get(canonical_url)
-        if existing is None or link_quality(link) > link_quality(existing):
+        if existing is None or _finra_link_quality(link) > _finra_link_quality(existing):
             links_by_url[canonical_url] = link
 
     # Store the canonical URL on each selected tag for the caller.  Beautiful
@@ -1554,39 +1840,129 @@ def fetch_finra_notices(
     _, max_retries, request_delay = _get_operational_settings(config)
 
     logger.info(f"Fetching FINRA notices from {FINRA_NOTICES_URL}...")
-    try:
-        result = fetch_page(FINRA_NOTICES_URL, session, max_retries=max_retries)
-    except Exception as exc:
-        raise FinraListingError("FINRA notices page request failed") from exc
 
-    if not isinstance(result, dict):
-        raise FinraListingError("FINRA notices page request returned an invalid result")
-
-    status_code = result.get('status_code')
-    if status_code != 200:
-        error_detail = result.get("error")
-        logger.error(f"FINRA notices page returned status {status_code}")
-        if error_detail:
-            logger.error("FINRA notices fetch error: %s", error_detail)
-        raise FinraListingError(
-            f"FINRA notices page request failed with status {status_code}"
+    def _fetch_listing_page(page_index: int) -> str | bytes:
+        """Fetch one listing page and return its validated content, failing closed."""
+        page_url = (
+            FINRA_NOTICES_URL
+            if page_index == 0
+            else f"{FINRA_NOTICES_URL}?page={page_index}"
         )
+        try:
+            result = fetch_page(page_url, session, max_retries=max_retries)
+        except Exception as exc:
+            raise FinraListingError(
+                f"FINRA notices page request failed for page {page_index}"
+            ) from exc
 
-    content = result.get('content')
-    if not isinstance(content, (str, bytes)):
-        raise FinraListingError("FINRA notices page parsing failed: invalid content")
+        if not isinstance(result, dict):
+            raise FinraListingError(
+                "FINRA notices page request returned an invalid result"
+            )
 
-    try:
-        notice_links = _extract_finra_notice_links(content)
-    except Exception as exc:
-        raise FinraListingError("FINRA notices page parsing failed") from exc
+        status_code = result.get('status_code')
+        if status_code != 200:
+            error_detail = result.get("error")
+            logger.error(
+                "FINRA notices page %s returned status %s", page_index, status_code
+            )
+            if error_detail:
+                logger.error("FINRA notices fetch error: %s", error_detail)
+            raise FinraListingError(
+                f"FINRA notices page request failed with status {status_code} "
+                f"for page {page_index}"
+            )
 
+        content = result.get('content')
+        if not isinstance(content, (str, bytes)):
+            raise FinraListingError(
+                "FINRA notices page parsing failed: invalid content"
+            )
+        return content
+
+    # Crawl every declared listing page. ``declared_last`` is the running
+    # maximum last-page number the pager has advertised; because the pager
+    # only shows a sliding window, later pages can raise it, extending the
+    # crawl until the true final page is reached. The crawl fails closed on a
+    # hostile/oversized pager, a duplicate (looping) page, and any declared
+    # page that yields no notices, so a partial crawl is never baselined as
+    # complete.
+    collected: dict[str, object] = {}
+    seen_fingerprints: dict[frozenset, int] = {}
+    declared_last = 0
+    page_index = 0
+    pages_fetched = 0
+
+    while True:
+        content = _fetch_listing_page(page_index)
+        pages_fetched += 1
+
+        try:
+            page_links = _extract_finra_notice_links(content)
+        except Exception as exc:
+            raise FinraListingError("FINRA notices page parsing failed") from exc
+
+        try:
+            page_last = _extract_finra_last_page(content)
+        except Exception as exc:
+            raise FinraListingError(
+                "FINRA notices pagination parsing failed"
+            ) from exc
+        declared_last = max(declared_last, page_last)
+
+        if declared_last >= FINRA_MAX_LISTING_PAGES:
+            raise FinraListingError(
+                "FINRA notices pagination exceeded the maximum of "
+                f"{FINRA_MAX_LISTING_PAGES} pages (declared last page "
+                f"{declared_last}); refusing to baseline a partial crawl"
+            )
+
+        if not page_links:
+            if page_index == 0:
+                raise FinraListingError(
+                    "FINRA notices page returned no regulatory notice links"
+                )
+            raise FinraListingError(
+                f"FINRA notices page {page_index} was declared by pagination "
+                "but returned no notice links"
+            )
+
+        fingerprint = frozenset(
+            link.get("data-monitor-canonical-url") for link in page_links
+        )
+        previous_page = seen_fingerprints.get(fingerprint)
+        if previous_page is not None and previous_page != page_index:
+            raise FinraListingError(
+                f"FINRA notices pagination loop detected: page {page_index} "
+                f"repeats the notices of page {previous_page}"
+            )
+        seen_fingerprints.setdefault(fingerprint, page_index)
+
+        for link in page_links:
+            canonical_url = link.get("data-monitor-canonical-url")
+            existing = collected.get(canonical_url)
+            if existing is None:
+                collected[canonical_url] = link
+            elif _finra_link_quality(link) > _finra_link_quality(existing):
+                collected[canonical_url] = link
+
+        if limit and len(collected) >= limit:
+            break
+        if page_index >= declared_last:
+            break
+        page_index += 1
+
+    notice_links = list(collected.values())
     if not notice_links:
         raise FinraListingError(
             "FINRA notices page returned no regulatory notice links"
         )
 
-    logger.info(f"Found {len(notice_links)} FINRA notice links")
+    logger.info(
+        "Found %s FINRA notice links across %s listing page(s)",
+        len(notice_links),
+        pages_fetched,
+    )
 
     if limit:
         notice_links = notice_links[:limit]

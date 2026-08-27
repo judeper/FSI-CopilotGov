@@ -3761,3 +3761,592 @@ def test_finra_error_detail_page_maps_to_failure_exit_without_state_advance(
     assert exit_code == regulatory_monitor.EXIT_FAILURE
     assert loaded_state == initial_state
     assert save_calls == []
+
+
+# ===========================================================================
+# Revision-6 adversarial regressions
+#   Finding 1: FINRA listing pagination completeness + link canonicalization
+#   Finding 2: electronic-recordkeeping polarity (paper permission vs paper
+#              prohibition)
+#   Finding 3: citation clause boundaries (author-date / researcher-led /
+#              subordinate citations vs operative coordinated duties)
+# Live-shaped fixtures. Each test proves a specific release-blocking defect is
+# repaired and bounds its fail-open/fail-closed cost.
+# ===========================================================================
+
+_SRO_TITLE = (
+    "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change"
+)
+
+
+def _finra_listing_page_html(notice_hrefs, *, last_page=0, window_pages=None):
+    """Return live-shaped FINRA notices *listing* markup.
+
+    Mirrors the real Drupal listing: notices rendered as table rows (a title
+    link plus a ``<time>`` cell) and, when paginated, a ``<nav>`` pager. The
+    live pager renders only a sliding window of ``?page=N`` links plus a "Last"
+    link, so two shapes are supported:
+
+    * ``last_page > 0`` (window_pages is None): a short window plus an explicit
+      "Last" link to ``?page={last_page}`` -- the real pager, where page 0 does
+      reveal the true last page.
+    * ``window_pages`` given: only those numbered links and no "Last" link -- a
+      degraded/hostile pager that never advertises the true last, exercising the
+      crawler's running-maximum page discovery.
+    """
+    rows = "".join(
+        (
+            "<tr><td class='views-field views-field-title'>"
+            f"<a href=\"{href}\">Regulatory Notice "
+            f"{href.rstrip('/').rsplit('/', 1)[-1]}</a></td>"
+            "<td class='views-field views-field-field-date'>"
+            "<time datetime='2026-08-01'>August 1, 2026</time></td></tr>"
+        )
+        for href in notice_hrefs
+    )
+    table = f"<table class='notices-table'><tbody>{rows}</tbody></table>"
+
+    pager = ""
+    if window_pages is not None:
+        window = "".join(
+            f"<li class='pager__item'><a href=\"?page={n}\">Page {n + 1}</a></li>"
+            for n in window_pages
+        )
+        pager = (
+            "<nav aria-labelledby='pagination-heading' role='navigation'>"
+            f"<ul class='pagination js-pager__items'>{window}</ul></nav>"
+        )
+    elif last_page > 0:
+        window = "".join(
+            f"<li class='pager__item'><a href=\"?page={n}\">Page {n + 1}</a></li>"
+            for n in range(1, min(last_page, 3) + 1)
+        )
+        pager = (
+            "<nav aria-labelledby='pagination-heading' role='navigation'>"
+            "<ul class='pagination js-pager__items'>"
+            f"{window}"
+            "<li class='pager__item pager__item--last'>"
+            f"<a href=\"/rules-guidance/notices?page={last_page}\" rel='last'>"
+            "Last &raquo;</a></li></ul></nav>"
+        )
+    return f"<html><body><main>{table}{pager}</main></body></html>"
+
+
+def _finra_multipage_fetch(
+    pages,
+    *,
+    record=None,
+    detail_body="Neutral supervisory guidance for member firms.",
+):
+    """Build a ``fetch_page`` stub serving a multi-page FINRA listing.
+
+    ``pages`` maps a 0-indexed listing page to its HTML. Page 0 is served for
+    the bare ``FINRA_NOTICES_URL`` (backward compatibility with the single-page
+    mocks), page N for ``?page=N``. Any other URL is a notice detail page. A
+    listing page absent from ``pages`` returns HTTP 404 so a "declared but
+    failing" page can be exercised. When given, ``record`` accumulates every
+    requested URL for fetch-count assertions.
+    """
+    detail_html = _finra_notice_page(detail_body)
+    prefix = f"{regulatory_monitor.FINRA_NOTICES_URL}?page="
+
+    def fake_fetch_page(url, session, max_retries=3):
+        if record is not None:
+            record.append(url)
+        page_index = None
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            page_index = 0
+        elif url.startswith(prefix):
+            try:
+                page_index = int(url[len(prefix):])
+            except ValueError:
+                page_index = None
+        if page_index is not None:
+            content = pages.get(page_index)
+            if content is None:
+                return {
+                    "url": url,
+                    "status_code": 404,
+                    "content": "",
+                    "final_url": url,
+                    "was_redirected": False,
+                    "error": "not found",
+                }
+            return {
+                "url": url,
+                "status_code": 200,
+                "content": content,
+                "final_url": url,
+                "was_redirected": False,
+                "error": None,
+            }
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": detail_html,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    return fake_fetch_page
+
+
+def _run_finra_crawl(monkeypatch, pages, *, record=None, limit=None):
+    config = _load_config()
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_multipage_fetch(pages, record=record),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+    return regulatory_monitor.fetch_finra_notices(
+        session=object(), config=config, limit=limit, detail_fetch_limit=None
+    )
+
+
+def _finra_listing_urls(record):
+    base = regulatory_monitor.FINRA_NOTICES_URL
+    return [u for u in record if u == base or u.startswith(f"{base}?page=")]
+
+
+# --- Finding 1: pagination completeness --------------------------------------
+
+
+def test_finra_pagination_discovers_page_two_notices(monkeypatch):
+    """Notices on listing page 1 (the second page) must be discovered.
+
+    The reviewer defect fetched only listing page 1, silently dropping every
+    notice on pages 2..92.
+    """
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-100"], last_page=1
+        ),
+        1: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-200"], last_page=1
+        ),
+    }
+    items = _run_finra_crawl(monkeypatch, pages)
+    urls = {item.url for item in items}
+    assert "https://www.finra.org/rules-guidance/notices/26-100" in urls
+    assert "https://www.finra.org/rules-guidance/notices/26-200" in urls
+
+
+def test_finra_pagination_completes_full_92_page_style_crawl(monkeypatch):
+    """A 92-page listing must be crawled to the final page, not truncated.
+
+    Every page advertises the true last page (0-indexed 91 == 92 pages). The
+    crawl must fetch all 92 pages and collect every notice.
+    """
+    pages = {
+        p: _finra_listing_page_html(
+            [f"/rules-guidance/notices/26-{p + 100}"], last_page=91
+        )
+        for p in range(92)
+    }
+    record = []
+    items = _run_finra_crawl(monkeypatch, pages, record=record)
+
+    assert len(items) == 92
+    assert len(_finra_listing_urls(record)) == 92
+    assert f"{regulatory_monitor.FINRA_NOTICES_URL}?page=91" in record
+    assert "https://www.finra.org/rules-guidance/notices/26-191" in {
+        item.url for item in items
+    }
+
+
+def test_finra_pagination_follows_sliding_window_to_true_last_page(monkeypatch):
+    """The live pager shows only a window; the running maximum must complete it.
+
+    No single page reveals the true last page: each renders a small window whose
+    maximum is only two pages ahead and there is no "Last" link. The crawl must
+    still extend page-by-page to the real final page, or older eligible notices
+    are silently skipped.
+    """
+    true_last = 10
+    pages = {}
+    for p in range(true_last + 1):
+        window = list(range(max(0, p - 1), min(true_last, p + 2) + 1))
+        pages[p] = _finra_listing_page_html(
+            [f"/rules-guidance/notices/26-{p + 100}"], window_pages=window
+        )
+    # Precondition: page 0 only advertises up to page 2, never the true last.
+    assert "page=10" not in pages[0]
+
+    record = []
+    items = _run_finra_crawl(monkeypatch, pages, record=record)
+    assert len(items) == true_last + 1
+    assert f"{regulatory_monitor.FINRA_NOTICES_URL}?page={true_last}" in record
+    assert "https://www.finra.org/rules-guidance/notices/26-110" in {
+        item.url for item in items
+    }
+
+
+def test_finra_pagination_deduplicates_notices_across_pages(monkeypatch):
+    """A notice repeated across pages is collected exactly once."""
+    pages = {
+        0: _finra_listing_page_html(
+            [
+                "/rules-guidance/notices/26-100",
+                "/rules-guidance/notices/26-200",
+            ],
+            last_page=1,
+        ),
+        1: _finra_listing_page_html(
+            [
+                "/rules-guidance/notices/26-200",
+                "/rules-guidance/notices/26-300",
+            ],
+            last_page=1,
+        ),
+    }
+    items = _run_finra_crawl(monkeypatch, pages)
+    urls = [item.url for item in items]
+    assert len(urls) == len(set(urls))
+    assert sorted(set(urls)) == [
+        "https://www.finra.org/rules-guidance/notices/26-100",
+        "https://www.finra.org/rules-guidance/notices/26-200",
+        "https://www.finra.org/rules-guidance/notices/26-300",
+    ]
+
+
+def test_finra_pagination_loop_is_detected_and_fails_closed(monkeypatch):
+    """A pager repeating an earlier page's notices must raise, not loop.
+
+    Fail-closed: identical content at a new page index must never be baselined
+    as a completed crawl.
+    """
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-100"], last_page=1
+        ),
+        1: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-100"], last_page=1
+        ),
+    }
+    with pytest.raises(regulatory_monitor.FinraListingError, match="loop"):
+        _run_finra_crawl(monkeypatch, pages)
+
+
+def test_finra_pagination_missing_declared_page_fails_closed(monkeypatch):
+    """A declared page that yields no notices must raise (incomplete crawl)."""
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-100"], last_page=1
+        ),
+        1: (
+            "<html><body><main><table class='notices-table'>"
+            "<tbody></tbody></table></main></body></html>"
+        ),
+    }
+    with pytest.raises(regulatory_monitor.FinraListingError, match="declared"):
+        _run_finra_crawl(monkeypatch, pages)
+
+
+def test_finra_pagination_failing_declared_page_fails_closed(monkeypatch):
+    """A declared page returning a non-200 must raise (no partial baseline)."""
+    # Page 1 is declared by page 0's pager but absent from the fixture -> 404.
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-100"], last_page=1
+        ),
+    }
+    with pytest.raises(regulatory_monitor.FinraListingError):
+        _run_finra_crawl(monkeypatch, pages)
+
+
+def test_finra_pagination_hostile_unbounded_pager_is_bounded(monkeypatch):
+    """A pager declaring an enormous last page raises before crawling it.
+
+    Bounded safety against hostile/infinite pagination: reaching the page cap
+    fails closed after a single fetch instead of issuing thousands of requests.
+    """
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-100"], last_page=999
+        ),
+    }
+    record = []
+    with pytest.raises(regulatory_monitor.FinraListingError, match="maximum"):
+        _run_finra_crawl(monkeypatch, pages, record=record)
+    assert len(_finra_listing_urls(record)) == 1
+
+
+def test_finra_index_php_links_canonicalized_lookalikes_rejected(monkeypatch):
+    """`/index.php/...` notice links canonicalize; lookalikes/off-origin rejected.
+
+    The live listing exposes `/index.php/rules-guidance/notices/26-12` links;
+    dropping them loses eligible notices. A lookalike `/index.phpx/...` prefix
+    and an off-origin host must NOT be accepted (no origin/path broadening),
+    and the detail fetch must use the canonical URL, never the alias.
+    """
+    pages = {
+        0: _finra_listing_page_html(
+            [
+                "/index.php/rules-guidance/notices/26-12",
+                "/index.phpx/rules-guidance/notices/26-99",
+                "https://finra.org.attacker.example/rules-guidance/notices/26-77",
+            ],
+            last_page=0,
+        ),
+    }
+    record = []
+    items = _run_finra_crawl(monkeypatch, pages, record=record)
+    urls = {item.url for item in items}
+    assert urls == {"https://www.finra.org/rules-guidance/notices/26-12"}
+    assert not any("index.php" in u for u in urls)
+    assert not any("26-99" in u for u in urls)
+    assert not any("26-77" in u for u in urls)
+    assert "https://www.finra.org/rules-guidance/notices/26-12" in record
+    assert not any("index.php" in u for u in record)
+
+
+def test_finra_link_canonicalization_unit_matrix():
+    """Direct accept/reject coverage of the canonicalizer and listing recogniser."""
+    accept = {
+        "/index.php/rules-guidance/notices/26-12":
+            "https://www.finra.org/rules-guidance/notices/26-12",
+        "/rules-guidance/notices/26-06":
+            "https://www.finra.org/rules-guidance/notices/26-06",
+        "https://www.finra.org/index.php/rules-guidance/notices/"
+        "information-notice-20260114":
+            "https://www.finra.org/rules-guidance/notices/"
+            "information-notice-20260114",
+        "/INDEX.PHP/rules-guidance/notices/26-01":
+            "https://www.finra.org/rules-guidance/notices/26-01",
+    }
+    for raw, want in accept.items():
+        assert regulatory_monitor._canonical_finra_notice_url(raw) == want, raw
+
+    reject = [
+        "/index.phpx/rules-guidance/notices/26-12",
+        "/rules-guidance/notices/index.php/26-12",
+        "https://finra.org.attacker.example/rules-guidance/notices/26-12",
+        "https://notfinra.org/rules-guidance/notices/26-12",
+        "//index.php//rules-guidance//notices//26-04",
+    ]
+    for raw in reject:
+        assert regulatory_monitor._canonical_finra_notice_url(raw) is None, raw
+
+    assert (
+        regulatory_monitor._finra_listing_page_number(
+            "/rules-guidance/notices?page=5"
+        )
+        == 5
+    )
+    assert (
+        regulatory_monitor._finra_listing_page_number(
+            "/index.php/rules-guidance/notices?page=91"
+        )
+        == 91
+    )
+    assert (
+        regulatory_monitor._finra_listing_page_number(
+            "/rules-guidance/notices/26-12?page=3"
+        )
+        is None
+    )
+    assert (
+        regulatory_monitor._finra_listing_page_number(
+            "https://evil.example/rules-guidance/notices?page=2"
+        )
+        is None
+    )
+    assert (
+        regulatory_monitor._finra_listing_page_number(
+            "/rules-guidance/notices?page=-4"
+        )
+        is None
+    )
+
+
+# --- Finding 2: electronic-recordkeeping polarity ----------------------------
+
+_RECORDKEEPING_PAPER_PERMITTED = [
+    # The reviewer's false-HIGH counterexample.
+    "Records must be maintained electronically unless retained in paper form.",
+    "Records must be maintained electronically except where paper copies are "
+    "required.",
+    "Records may be maintained electronically or retained in paper form.",
+    "Records must be maintained electronically, or alternatively retained in "
+    "paper form.",
+    "Firms may keep records electronically; paper copies are also permitted.",
+    "Either electronic or paper records may be maintained by the member.",
+]
+
+
+@pytest.mark.parametrize("detail_text", _RECORDKEEPING_PAPER_PERMITTED)
+def test_recordkeeping_paper_permitted_is_not_electronic_mandate(detail_text):
+    """False-HIGH repair: an electronic option that still permits paper (via
+    unless/except/or/either/also-permitted) is not a mandatory electronic
+    recordkeeping duty."""
+    config = _load_config()
+    for exclude_reference_only in (False, True):
+        classification, reason = regulatory_monitor.classify_regulatory_relevance(
+            _SRO_TITLE,
+            detail_text,
+            config,
+            exclude_reference_only=exclude_reference_only,
+        )
+        assert reason != "Electronic recordkeeping", detail_text
+        assert classification == regulatory_monitor.CLASSIFICATION_NOISE, detail_text
+
+
+_RECORDKEEPING_PAPER_PROHIBITED = [
+    # The reviewer's false-NOISE counterexample.
+    "Records cannot be retained on paper and must be maintained electronically.",
+    "Records may not be retained on paper and must be maintained "
+    "electronically.",
+    "Records must not be retained on paper and must be maintained "
+    "electronically.",
+    "Records shall not be retained in paper form and must be preserved "
+    "electronically.",
+    "Paper records are prohibited, and all records must be maintained "
+    "electronically.",
+]
+
+
+@pytest.mark.parametrize("detail_text", _RECORDKEEPING_PAPER_PROHIBITED)
+def test_recordkeeping_paper_prohibited_stays_electronic_mandate(detail_text):
+    """False-NOISE repair: prohibiting paper (cannot/may not/must not/shall
+    not/prohibited) while mandating electronic storage is an electronic
+    recordkeeping HIGH, not permissive language."""
+    config = _load_config()
+    for exclude_reference_only in (False, True):
+        classification, reason = regulatory_monitor.classify_regulatory_relevance(
+            _SRO_TITLE,
+            detail_text,
+            config,
+            exclude_reference_only=exclude_reference_only,
+        )
+        assert classification == regulatory_monitor.CLASSIFICATION_HIGH, detail_text
+        assert reason == "Electronic recordkeeping", detail_text
+
+
+def test_recordkeeping_polarity_preserves_prior_positive_and_negative():
+    """Guard both directions: an unconditional electronic mandate stays HIGH and
+    an explicitly optional electronic record stays NOISE."""
+    config = _load_config()
+    positive = (
+        "All books and records must be preserved in an electronic storage medium."
+    )
+    negative = "Electronic records are optional, but firms must file paper copies."
+    pc, pr = regulatory_monitor.classify_regulatory_relevance(
+        _SRO_TITLE, positive, config
+    )
+    nc, nr = regulatory_monitor.classify_regulatory_relevance(
+        _SRO_TITLE, negative, config
+    )
+    assert (pc, pr) == (
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        "Electronic recordkeeping",
+    )
+    assert nr != "Electronic recordkeeping"
+    assert nc == regulatory_monitor.CLASSIFICATION_NOISE
+
+
+# --- Finding 3: citation clause boundaries -----------------------------------
+
+_CITATION_NON_HIGH = {
+    "and_smith_et_al_discuss": (
+        "Members must file annual reports and Smith et al. discuss artificial "
+        "intelligence in capital markets."
+    ),
+    "and_single_author_year": (
+        "Members must file annual reports and Jones (2026) surveys artificial "
+        "intelligence in capital markets."
+    ),
+    "and_two_authors_year": (
+        "Members must file annual reports and Smith and Lee (2025) examine "
+        "artificial intelligence adoption."
+    ),
+    "and_researchers_examine": (
+        "Members must file annual reports and researchers examine artificial "
+        "intelligence adoption."
+    ),
+    "and_scholars_debate": (
+        "Members must file annual reports and scholars debate artificial "
+        "intelligence governance."
+    ),
+    "and_economists_study": (
+        "Members must file annual reports and economists study artificial "
+        "intelligence in markets."
+    ),
+    "and_commentators_caution": (
+        "Members must file annual reports and commentators caution about "
+        "artificial intelligence risk."
+    ),
+    "and_recent_study_examines": (
+        "Members must file annual reports and a recent study examines "
+        "artificial intelligence in capital markets."
+    ),
+    "because_researchers_survey": (
+        "Members must file annual reports because researchers survey artificial "
+        "intelligence adoption."
+    ),
+    "although_smith_et_al": (
+        "Members must file annual reports although Smith et al. discuss "
+        "artificial intelligence."
+    ),
+    "while_economists_study": (
+        "Members must file annual reports while economists study artificial "
+        "intelligence in markets."
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(_CITATION_NON_HIGH))
+def test_citation_led_clause_beside_unrelated_duty_stays_non_high(case):
+    """A citing subject -- author-date "(2026) surveys", `et al.`, or a
+    researcher-led clause, coordinated or subordinate -- opens a fresh clause,
+    so an unrelated duty elsewhere in the sentence cannot promote the
+    bibliographic AI mention to HIGH."""
+    config = _load_config()
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulatory Notice 26-10",
+        _CITATION_NON_HIGH[case],
+        config,
+        exclude_reference_only=True,
+    )
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }, (case, classification, reason)
+    assert "artificial intelligence" not in reason.lower()
+
+
+_CITATION_OPERATIVE_HIGH = {
+    "monitor_and_govern": (
+        "Members must monitor and govern artificial intelligence systems."
+    ),
+    "supervise_and_govern": (
+        "Members must supervise and govern artificial intelligence tools."
+    ),
+    "review_and_study": (
+        "Members must review and study artificial intelligence systems."
+    ),
+    "monitor_and_conduct_studies": (
+        "Members must monitor and conduct annual studies of artificial "
+        "intelligence systems."
+    ),
+    "duty_with_intervening_reference": (
+        "Members must, in accordance with Rule 3110, supervise artificial "
+        "intelligence tools used for customer communications."
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(_CITATION_OPERATIVE_HIGH))
+def test_operative_coordinated_ai_duty_stays_high(case):
+    """The cost guard: a coordinated predicate ("and govern", "and study",
+    "and conduct annual studies") has no citing subject and must remain an
+    operative AI duty (HIGH), never mis-split as a citation."""
+    config = _load_config()
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulatory Notice 26-10",
+        _CITATION_OPERATIVE_HIGH[case],
+        config,
+        exclude_reference_only=True,
+    )
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH, case
