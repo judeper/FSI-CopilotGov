@@ -716,7 +716,7 @@ def test_disputed_federal_register_items_have_no_affected_controls(monkeypatch):
             "publication_date": "2026-08-21",
             "type": "PRORULE",
             "html_url": "https://www.federalregister.gov/documents/2026-17183",
-            "raw_text_url": "https://example.test/2026-17183.txt",
+            "raw_text_url": "https://www.federalregister.gov/documents/full_text/text/2026/01/14/2026-17183.txt",
             "agencies": [{"slug": "securities-and-exchange-commission", "name": "SEC"}],
         },
         {
@@ -726,7 +726,7 @@ def test_disputed_federal_register_items_have_no_affected_controls(monkeypatch):
             "publication_date": "2026-08-19",
             "type": "NOTICE",
             "html_url": "https://www.federalregister.gov/documents/2026-16876",
-            "raw_text_url": "https://example.test/2026-16876.txt",
+            "raw_text_url": "https://www.federalregister.gov/documents/full_text/text/2026/01/14/2026-16876.txt",
             "agencies": [{"slug": "commodity-futures-trading-commission", "name": "CFTC"}],
         },
     ]
@@ -793,7 +793,7 @@ def test_late_operative_ai_requirement_survives_full_pipeline(monkeypatch):
         "publication_date": "2026-08-24",
         "type": "PRORULE",
         "html_url": "https://www.federalregister.gov/documents/2026-99001",
-        "raw_text_url": "https://example.test/2026-99001.txt",
+        "raw_text_url": "https://www.federalregister.gov/documents/full_text/text/2026/01/14/2026-99001.txt",
         "agencies": [{"slug": "securities-and-exchange-commission", "name": "SEC"}],
     }
     session = _PagedFederalRegisterSession(
@@ -853,7 +853,7 @@ def test_federal_register_medium_abstract_upgrades_on_authoritative_critical_bod
         "publication_date": "2026-08-25",
         "type": "PRORULE",
         "html_url": "https://www.federalregister.gov/documents/2026-90210",
-        "raw_text_url": "https://example.test/2026-90210.txt",
+        "raw_text_url": "https://www.federalregister.gov/documents/full_text/text/2026/01/14/2026-90210.txt",
         "agencies": [{"slug": "securities-and-exchange-commission", "name": "SEC"}],
     }
     session = _PagedFederalRegisterSession(
@@ -921,7 +921,7 @@ def test_federal_register_medium_abstract_fetch_failure_fails_closed(
         "publication_date": "2026-08-25",
         "type": "PRORULE",
         "html_url": "https://www.federalregister.gov/documents/2026-90211",
-        "raw_text_url": "https://example.test/2026-90211.txt",
+        "raw_text_url": "https://www.federalregister.gov/documents/full_text/text/2026/01/14/2026-90211.txt",
         "agencies": [{"slug": "securities-and-exchange-commission", "name": "SEC"}],
     }
     # Precondition: the curated abstract alone is MEDIUM, so this is exactly the
@@ -2790,7 +2790,10 @@ def _fr_document(
         "publication_date": publication_date,
         "type": doc_type,
         "html_url": f"https://www.federalregister.gov/documents/{document_id}",
-        "raw_text_url": f"https://example.test/{document_id}.txt",
+        "raw_text_url": (
+            "https://www.federalregister.gov/documents/full_text/text/"
+            f"{document_id}.txt"
+        ),
         "agencies": [{"slug": agency_slug, "name": agency_name}],
     }
 
@@ -5468,3 +5471,1049 @@ def test_large_document_classification_completes_in_seconds():
         regulatory_monitor.CLASSIFICATION_CRITICAL,
     }, "the large corpus is bibliographic; semantics must be unchanged"
     assert controls == []
+
+
+# ===========================================================================
+# Release review round 8 -- adversarial coverage for the seven findings
+# ===========================================================================
+
+
+# --- Finding 1: FINRA notice slug eligibility -------------------------------
+#
+# Live-verified on 2026 with HEAD requests against www.finra.org: each of these
+# single-segment slugs answers 200. The previous eligibility rule accepted only
+# ``NN-NNN`` and ``information-notice-YYYYMMDD``, so entire authoritative
+# families were silently dropped from the crawl -- a completeness failure that
+# looked like a clean run.
+FINRA_LIVE_NOTICE_SLUGS = (
+    "26-12",
+    "26-1",
+    "26-100",
+    "trade-reporting-notice-20260114",
+    "special-notice-031726",
+    "information-notice-20260114",
+    "regulatory-notice-20260114",
+    "election-notice-031726",
+)
+
+
+@pytest.mark.parametrize("slug", FINRA_LIVE_NOTICE_SLUGS)
+def test_finra_live_notice_family_slugs_are_eligible(slug):
+    """Every live notice family shape must canonicalize, not be dropped."""
+    expected = f"https://www.finra.org/rules-guidance/notices/{slug}"
+
+    assert regulatory_monitor._canonical_finra_notice_url(
+        f"/rules-guidance/notices/{slug}"
+    ) == expected
+    assert regulatory_monitor._canonical_finra_notice_url(expected) == expected
+    # The legacy Drupal front-controller prefix is the same document.
+    assert regulatory_monitor._canonical_finra_notice_url(
+        f"https://www.finra.org/index.php/rules-guidance/notices/{slug}"
+    ) == expected
+    assert regulatory_monitor._canonical_finra_notice_url(
+        f"/index.php/rules-guidance/notices/{slug}/"
+    ) == expected
+
+
+FINRA_REJECTED_NOTICE_URLS = (
+    # Traversal, encoded traversal, and separator smuggling.
+    "/rules-guidance/notices/../../etc/passwd",
+    "/rules-guidance/notices/..%2f..%2fetc%2fpasswd",
+    "/rules-guidance/notices/%2e%2e/26-12",
+    "/rules-guidance/notices/26-12/../../admin",
+    "/rules-guidance/notices/26-12%2f..",
+    "/rules-guidance/notices/.",
+    "/rules-guidance/notices/..",
+    "/rules-guidance/notices/sub/26-12",
+    "/rules-guidance/notices/26-12/attachment",
+    r"/rules-guidance/notices/26-12\..\admin",
+    # Lookalike and off-origin hosts.
+    "https://finra.org.attacker.example/rules-guidance/notices/26-12",
+    "https://www.finra.org.evil.test/rules-guidance/notices/26-12",
+    "https://notfinra.org/rules-guidance/notices/26-12",
+    "https://www-finra.org/rules-guidance/notices/26-12",
+    "https://finra.org@attacker.example/rules-guidance/notices/26-12",
+    "https://user:pass@www.finra.org/rules-guidance/notices/26-12",
+    "https://www.finra.org:8443/rules-guidance/notices/26-12",
+    # Non-https schemes are not aliases of the authoritative document.
+    "http://www.finra.org/rules-guidance/notices/26-12",
+    "ftp://www.finra.org/rules-guidance/notices/26-12",
+    "javascript:alert('/rules-guidance/notices/26-12')",
+    "data:text/html,/rules-guidance/notices/26-12",
+    # Not the notices tree at all.
+    "https://www.finra.org/rules-guidance/rulebooks/26-12",
+    "https://www.finra.org/rules-guidance/notices",
+    "https://www.finra.org/index.phpx/rules-guidance/notices/26-12",
+    "https://www.finra.org/rules-guidance/notices/index.php/26-12",
+    # Slug shapes that are not notices.
+    "/rules-guidance/notices/notice",
+    "/rules-guidance/notices/2026-annual-report",
+    "/rules-guidance/notices/trade-reporting-notice-2026011",
+    "/rules-guidance/notices/trade-reporting-notice-",
+    "/rules-guidance/notices/-notice-20260114",
+    "/rules-guidance/notices/trade_reporting_notice_20260114",
+    "/rules-guidance/notices/26-",
+    "/rules-guidance/notices/26-12345",
+)
+
+
+@pytest.mark.parametrize("candidate", FINRA_REJECTED_NOTICE_URLS)
+def test_finra_unsafe_or_foreign_urls_are_rejected(candidate):
+    """Broadening the family rule must not broaden what counts as authoritative."""
+    assert regulatory_monitor._canonical_finra_notice_url(candidate) is None
+
+
+def test_finra_notice_slug_safety_gate_is_syntactic_before_family_matching():
+    """Traversal is refused by shape, not by an allow-list of known families."""
+    assert regulatory_monitor._is_safe_finra_notice_slug("26-12")
+    assert regulatory_monitor._is_safe_finra_notice_slug(
+        "trade-reporting-notice-20260114"
+    )
+    for unsafe in (
+        "..",
+        ".",
+        "26-12/..",
+        "26-12%2e%2e",
+        "26 12",
+        "26-12\t",
+        "26--12",
+        "-26-12",
+        "26-12-",
+        "a" * 65,
+        "",
+    ):
+        assert not regulatory_monitor._is_safe_finra_notice_slug(unsafe), unsafe
+
+
+def test_finra_live_family_notices_are_crawled_classified_and_hashed(monkeypatch):
+    """End-to-end: a live-shaped listing of every family yields operative items.
+
+    Eligibility is only half the fix. The families must survive discovery,
+    detail fetching, classification, and body hashing, otherwise "eligible"
+    would still mean "silently absent from the baseline".
+    """
+    hrefs = [f"/rules-guidance/notices/{slug}" for slug in FINRA_LIVE_NOTICE_SLUGS]
+    pages = {0: _finra_listing_page_html(hrefs)}
+    config = _load_config()
+    operative_body = (
+        "Member firms must supervise artificial intelligence tools used to "
+        "generate customer communications and must retain the resulting "
+        "records in an electronic format for six years."
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_multipage_fetch(pages, detail_body=operative_body),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(), config=config, limit=None, detail_fetch_limit=None
+    )
+
+    urls = {item.url for item in items}
+    for slug in FINRA_LIVE_NOTICE_SLUGS:
+        assert f"https://www.finra.org/rules-guidance/notices/{slug}" in urls
+
+    hashes = set()
+    for item in items:
+        assert item.classification == regulatory_monitor.CLASSIFICATION_HIGH, item.url
+        assert operative_body in item.content_text
+        hashes.add(
+            regulatory_monitor._schema_tagged_hash(
+                regulatory_monitor._content_fingerprint(item)
+            )
+        )
+    assert len(hashes) == len(items), "each notice hashes under its own identity"
+
+    state: dict = {}
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FINRA, items, state
+    )
+    entries = state["sources"][regulatory_monitor.SOURCE_KEY_FINRA]["entries"]
+    assert len(entries) == len(FINRA_LIVE_NOTICE_SLUGS)
+    assert all(
+        digest.startswith(regulatory_monitor.CONTENT_HASH_SCHEMA_PREFIX)
+        for digest in entries.values()
+    )
+
+
+# --- Finding 2: FINRA listing/detail trust ----------------------------------
+
+
+FINRA_DENIAL_LISTING_BODIES = {
+    "pardon_our_interruption": (
+        "<html><head><title>Pardon Our Interruption</title></head><body>"
+        "<h1>Pardon Our Interruption</h1>"
+        "<p>As you were browsing something about your browser made us think "
+        "you were a bot.</p>"
+    ),
+    "sorry_blocked": (
+        "<html><head><title>Access to this page has been denied</title></head>"
+        "<body><h1>Sorry, you have been blocked</h1>"
+        "<p>You are unable to access finra.org</p>"
+    ),
+    "just_a_moment": (
+        "<html><head><title>Just a moment...</title></head><body>"
+        "<h1>Just a moment...</h1>"
+        "<p>Checking if the site connection is secure. Cloudflare Ray ID: "
+        "8f2b1c9d0e7a4c11</p>"
+    ),
+    "bot_detection": (
+        "<html><head><title>Bot detection</title></head><body>"
+        "<h1>Additional security check is required</h1>"
+        "<p>Please enable JavaScript and cookies to continue.</p>"
+    ),
+    "access_denied": (
+        "<html><head><title>Access Denied</title></head><body>"
+        "<h1>Access Denied</h1><p>You do not have permission to access this "
+        "document on this server.</p>"
+    ),
+}
+
+
+def _finra_denial_listing_html(kind: str) -> str:
+    """A denial page that still renders real notice links in its navigation.
+
+    This is the shape that made the anchor fallback dangerous: a blocked
+    response is not an empty response, and its site chrome links to genuine
+    notice URLs. Parsing it produced a plausible, short, *silently incomplete*
+    crawl.
+    """
+    navigation = (
+        "<nav class='site-nav'><ul>"
+        "<li><a href='/rules-guidance/notices/26-01'>Regulatory Notice 26-01</a></li>"
+        "<li><a href='/rules-guidance/notices/26-02'>Regulatory Notice 26-02</a></li>"
+        "<li><a href='/rules-guidance/notices'>All Notices</a></li>"
+        "</ul></nav>"
+    )
+    return FINRA_DENIAL_LISTING_BODIES[kind] + navigation + "</body></html>"
+
+
+@pytest.mark.parametrize("kind", sorted(FINRA_DENIAL_LISTING_BODIES))
+def test_finra_denial_listing_fails_closed_and_is_never_crawled(monkeypatch, kind):
+    """A 200 denial listing must abort the run, not become a complete crawl."""
+    config = _load_config()
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+    requested: list[str] = []
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        requested.append(url)
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": _finra_denial_listing_html(kind),
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+
+    with pytest.raises(regulatory_monitor.FinraListingError):
+        regulatory_monitor.fetch_finra_notices(
+            session=object(), config=config, limit=None, detail_fetch_limit=None
+        )
+
+    assert requested == [regulatory_monitor.FINRA_NOTICES_URL], (
+        "no notice detail page may be fetched from a denial listing",
+        requested,
+    )
+
+
+def test_finra_denial_listing_navigation_links_are_not_a_crawl():
+    """The unit-level guarantee behind the fail-closed listing behaviour."""
+    html = _finra_denial_listing_html("pardon_our_interruption")
+
+    assert regulatory_monitor._finra_listing_denial_reason(html)
+    # The links really are there -- the screen is what stops them being used.
+    assert "26-01" in html
+
+
+def test_finra_off_origin_two_hundred_listing_fails_closed(monkeypatch):
+    """A 200 served from another origin is not the FINRA notices listing."""
+    config = _load_config()
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": _finra_listing_page_html(
+                ["/rules-guidance/notices/26-01"]
+            ),
+            "final_url": "https://cdn.attacker.example/rules-guidance/notices",
+            "was_redirected": True,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+
+    with pytest.raises(regulatory_monitor.FinraListingError) as excinfo:
+        regulatory_monitor.fetch_finra_notices(
+            session=object(), config=config, limit=None, detail_fetch_limit=None
+        )
+    assert "listing" in str(excinfo.value).lower()
+
+
+def test_finra_listing_url_validation_covers_request_and_response():
+    """Both ends of the hop are validated, not just the one we control."""
+    assert (
+        regulatory_monitor._finra_listing_url_rejection_reason(
+            regulatory_monitor.FINRA_NOTICES_URL, "requested"
+        )
+        is None
+    )
+    assert (
+        regulatory_monitor._finra_listing_url_rejection_reason(
+            f"{regulatory_monitor.FINRA_NOTICES_URL}?page=7", "requested"
+        )
+        is None
+    )
+    for bad in (
+        "http://www.finra.org/rules-guidance/notices",
+        "https://cdn.attacker.example/rules-guidance/notices",
+        "https://www.finra.org/rules-guidance/notices/26-01",
+        "https://www.finra.org.evil.test/rules-guidance/notices",
+        "https://www.finra.org:8443/rules-guidance/notices",
+    ):
+        assert regulatory_monitor._finra_listing_url_rejection_reason(bad, "x"), bad
+
+
+def test_finra_detail_denial_beside_unrelated_article_fails_closed():
+    """A surviving unrelated article is not evidence the notice was served."""
+    html = (
+        "<html><head><title>Access Denied</title></head><body>"
+        "<main><div class='field field--name-body'>"
+        "Access Denied. You do not have permission to access this document on "
+        "this server."
+        "</div></main>"
+        "<article class='node node--type-notice'>"
+        "<div class='field field--name-body'>"
+        + ("Unrelated surviving article about membership dues and fees. " * 80)
+        + "</div></article>"
+        "</body></html>"
+    )
+
+    text, _reason, rejected = regulatory_monitor._scan_finra_notice_body(html)
+
+    assert rejected is True
+    assert text == "", "denial chrome outranks a neighbouring article"
+    assert regulatory_monitor._extract_finra_notice_required_text(html) == ""
+    assert regulatory_monitor._extract_finra_notice_fallback_text(html) == ""
+
+
+def test_finra_detail_login_chrome_below_a_real_article_still_returns_the_body():
+    """The inverse must keep working: subordinate chrome does not fail closed.
+
+    Failing closed on *any* rejected candidate would take FINRA monitoring down
+    on ordinary pages whose low-confidence generic field is login chrome, so the
+    rule is container authority, not mere presence.
+    """
+    body = (
+        "Actual FINRA notice body. "
+        + "The notice explains member supervisory procedures. " * 220
+    )
+    html = (
+        "<html><body>"
+        "<div class='field field--name-body'>Please log in to view this page.</div>"
+        "<main><article class='node node--type-notice'>"
+        f"<div class='field field--name-body'>{body}</div>"
+        "</article></main></body></html>"
+    )
+
+    extracted = regulatory_monitor._extract_finra_notice_fallback_text(html)
+
+    assert "Actual FINRA notice body." in extracted
+
+
+def test_finra_detail_identity_mismatch_fails_closed():
+    """A 200 rendering *a* notice is not proof it rendered *this* notice."""
+    body = "Member firms must supervise artificial intelligence tools. " * 40
+    html = (
+        "<html><head>"
+        "<link rel='canonical' href='https://www.finra.org/rules-guidance/notices/26-99'/>"
+        "</head><body><main><article class='node node--type-notice'>"
+        f"<div class='field field--name-body'>{body}</div>"
+        "</article></main></body></html>"
+    )
+    requested = "https://www.finra.org/rules-guidance/notices/26-12"
+
+    assert regulatory_monitor._finra_detail_identity_mismatch(html, requested)
+    assert (
+        regulatory_monitor._extract_finra_notice_required_text(
+            html, expected_url=requested
+        )
+        == ""
+    )
+    # The same page served under its own URL is fine.
+    assert regulatory_monitor._extract_finra_notice_required_text(
+        html, expected_url="https://www.finra.org/rules-guidance/notices/26-99"
+    )
+
+
+def test_finra_detail_identity_declaring_a_foreign_url_fails_closed():
+    """An identity that is not a supported notice URL is a mismatch too."""
+    body = "Member firms must retain records electronically. " * 40
+    html = (
+        "<html><head>"
+        "<meta property='og:url' content='https://cdn.attacker.example/26-12'/>"
+        "</head><body><main><article class='node node--type-notice'>"
+        f"<div class='field field--name-body'>{body}</div>"
+        "</article></main></body></html>"
+    )
+
+    assert regulatory_monitor._finra_detail_identity_mismatch(
+        html, "https://www.finra.org/rules-guidance/notices/26-12"
+    )
+
+
+def test_finra_detail_without_declared_identity_is_not_a_mismatch():
+    """Most live notices never declare a canonical URL; they must still work."""
+    body = "Member firms must retain records electronically. " * 40
+    html = _finra_notice_page(body)
+
+    assert (
+        regulatory_monitor._finra_detail_identity_mismatch(
+            html, "https://www.finra.org/rules-guidance/notices/26-12"
+        )
+        is None
+    )
+    assert regulatory_monitor._extract_finra_notice_required_text(
+        html, expected_url="https://www.finra.org/rules-guidance/notices/26-12"
+    )
+
+
+# --- Finding 3: Federal Register authoritative-text URL trust ---------------
+
+
+FEDERAL_REGISTER_REJECTED_TEXT_URLS = {
+    "http_scheme": "http://www.federalregister.gov/documents/full_text/text/a.txt",
+    "no_scheme": "//www.federalregister.gov/documents/full_text/text/a.txt",
+    "file_scheme": "file:///etc/passwd",
+    "ipv4_literal": "https://127.0.0.1/documents/full_text/text/a.txt",
+    "ipv4_public_literal": "https://93.184.216.34/documents/full_text/text/a.txt",
+    "ipv4_metadata": "https://169.254.169.254/documents/full_text/text/a.txt",
+    "ipv6_literal": "https://[::1]/documents/full_text/text/a.txt",
+    "localhost": "https://localhost/documents/full_text/text/a.txt",
+    "localhost_suffix": "https://api.localhost/documents/full_text/text/a.txt",
+    "credentials": (
+        "https://user:pass@www.federalregister.gov/documents/full_text/text/a.txt"
+    ),
+    "credential_at_trick": (
+        "https://www.federalregister.gov@attacker.example/documents/full_text/"
+        "text/a.txt"
+    ),
+    "alternate_port": (
+        "https://www.federalregister.gov:8443/documents/full_text/text/a.txt"
+    ),
+    "lookalike_suffix": (
+        "https://federalregister.gov.attacker.example/documents/full_text/text/a.txt"
+    ),
+    "lookalike_hyphen": (
+        "https://federalregister-gov.attacker.example/documents/full_text/text/a.txt"
+    ),
+    "lookalike_subdomain_word": (
+        "https://notfederalregister.gov/documents/full_text/text/a.txt"
+    ),
+    "fragment": (
+        "https://www.federalregister.gov/documents/full_text/text/a.txt#frag"
+    ),
+    "traversal": (
+        "https://www.federalregister.gov/documents/full_text/text/../../secret"
+    ),
+    "encoded_traversal": (
+        "https://www.federalregister.gov/documents/full_text/text/%2e%2e/secret"
+    ),
+    "challenge_path": "https://www.federalregister.gov/cdn-cgi/challenge",
+    "login_path": "https://www.federalregister.gov/login",
+    "unrelated_path": "https://www.federalregister.gov/search",
+    "empty": "",
+    "whitespace_padded": (
+        " https://www.federalregister.gov/documents/full_text/text/a.txt"
+    ),
+    "not_a_string": None,
+}
+
+FEDERAL_REGISTER_ACCEPTED_TEXT_URLS = (
+    "https://www.federalregister.gov/documents/full_text/text/2026-17183.txt",
+    "https://federalregister.gov/documents/full_text/xml/2026-17183.xml",
+    "https://www.federalregister.gov/documents/full_text/text/2026/01/14/a.txt",
+    "https://www.federalregister.gov/documents/2026/01/14/2026-17183.txt",
+    "https://www.federalregister.gov/api/v1/documents/2026-17183.txt",
+    "https://www.govinfo.gov/content/pkg/FR-2026-01-14/html/2026-17183.htm",
+    "https://www.gpo.gov/fdsys/pkg/FR-2026-01-14/pdf/2026-17183.pdf",
+)
+
+
+@pytest.mark.parametrize(
+    "case", sorted(FEDERAL_REGISTER_REJECTED_TEXT_URLS), ids=str
+)
+def test_federal_register_text_url_allowlist_rejects_untrusted_urls(case):
+    reason = regulatory_monitor._federal_register_text_url_rejection_reason(
+        FEDERAL_REGISTER_REJECTED_TEXT_URLS[case]
+    )
+    assert reason, case
+
+
+@pytest.mark.parametrize("url", FEDERAL_REGISTER_ACCEPTED_TEXT_URLS)
+def test_federal_register_text_url_allowlist_accepts_authoritative_urls(url):
+    assert (
+        regulatory_monitor._federal_register_text_url_rejection_reason(url) is None
+    ), url
+
+
+@pytest.mark.parametrize(
+    "case", sorted(FEDERAL_REGISTER_REJECTED_TEXT_URLS), ids=str
+)
+def test_federal_register_untrusted_text_url_is_never_requested(monkeypatch, case):
+    """SSRF proof: the request must not be issued at all, and state must not move.
+
+    Rejecting after the fetch would already have contacted the attacker-chosen
+    host, which is the whole exposure. The assertion is therefore on the
+    absence of a request, not on the absence of a result.
+    """
+    config = _load_config()
+    document = _fr_document("2026-17183")
+    document["raw_text_url"] = FEDERAL_REGISTER_REJECTED_TEXT_URLS[case]
+    session = _PagedFederalRegisterSession(
+        {1: {"count": 1, "total_pages": 1, "results": [document]}}
+    )
+    requested: list[str] = []
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        requested.append(url)
+        raise AssertionError(f"unexpected request to {url}")
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session, since_date="2026-08-18", config=config
+        )
+
+    assert requested == [], (case, requested)
+
+
+def test_federal_register_valid_text_url_is_still_fetched(monkeypatch):
+    """The allow-list must not break the authoritative read it protects."""
+    config = _load_config()
+    document = _fr_document("2026-17183")
+    body = (
+        "Authoritative body. Each member firm shall supervise every copilot "
+        "deployment and shall retain the resulting records."
+    )
+    session, requested = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session, since_date="2026-08-18", config=config
+    )
+
+    assert requested == [document["raw_text_url"]]
+    assert items and items[0].content_text
+
+
+def test_federal_register_final_url_is_revalidated_after_the_fetch(monkeypatch):
+    """A redirect can land anywhere; the destination is checked, not assumed."""
+    config = _load_config()
+    document = _fr_document("2026-17183")
+    session = _PagedFederalRegisterSession(
+        {1: {"count": 1, "total_pages": 1, "results": [document]}}
+    )
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": "<html><body><pre>Body text.</pre></body></html>",
+            "final_url": "https://cdn.attacker.example/full_text/a.txt",
+            "was_redirected": True,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        regulatory_monitor.fetch_federal_register_documents(
+            session=session, since_date="2026-08-18", config=config
+        )
+
+
+FEDERAL_REGISTER_CHALLENGE_BODIES = {
+    "pardon_our_interruption": (
+        "Pardon Our Interruption. As you were browsing, something about your "
+        "browser made us think you were a bot."
+    ),
+    "sorry_blocked": (
+        "Sorry, you have been blocked. You are unable to access "
+        "federalregister.gov."
+    ),
+    "just_a_moment": (
+        "Just a moment... Checking if the site connection is secure. "
+        "Cloudflare Ray ID: 8f2b1c9d0e7a4c11"
+    ),
+    "bot_detection": (
+        "Bot detection triggered. Additional security check is required. "
+        "Please enable JavaScript and cookies to continue."
+    ),
+    "attention_required": (
+        "Attention Required! Cloudflare Ray ID: 91ab22cd33ef4455. Why have I "
+        "been blocked?"
+    ),
+    "one_more_step": (
+        "One more step. Please complete the security check to access "
+        "federalregister.gov."
+    ),
+    "verifying_human": (
+        "Verifying you are human. This may take a few seconds. Performance & "
+        "security by Cloudflare."
+    ),
+    "request_unsuccessful": (
+        "Request unsuccessful. Incapsula incident ID: 1234-567890123456789-123"
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(FEDERAL_REGISTER_CHALLENGE_BODIES))
+def test_federal_register_challenge_bodies_fail_closed_without_state_advance(
+    monkeypatch, case
+):
+    """An interstitial is not a document; it must never become the baseline."""
+    config = _load_config()
+    document = _fr_document("2026-17183")
+    session, _requested = _fr_body_session(
+        document, FEDERAL_REGISTER_CHALLENGE_BODIES[case], monkeypatch
+    )
+    state: dict = {}
+
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_federal_register_documents(
+            session=session, since_date="2026-08-18", config=config
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, items, state
+        )
+
+    assert state == {}
+
+
+def test_federal_register_challenge_signatures_do_not_eat_valid_documents():
+    """Counterexample: the words also occur innocently in real documents.
+
+    An over-broad signature would fail the run closed on genuine text, which is
+    the same outage the challenge screen is meant to prevent -- just triggered
+    by the source being correct instead of blocked.
+    """
+    incidental = (
+        "The Commission will pause for a moment to address comments received "
+        "during the comment period. One commenter asked whether a bot may be "
+        "used to prepare filings, and whether a firm is blocked from using "
+        "automated tools. The Commission notes that a security check of each "
+        "system is required at least annually. "
+        + (
+            "Each member firm shall supervise the deployment and shall retain "
+            "the resulting records for six years. " * 40
+        )
+    )
+
+    assert not regulatory_monitor._is_federal_register_non_document_text(incidental)
+
+
+# --- Finding 4: citation forms ----------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "text",
+    (
+        'The staff stated that "firms must retain records." Artificial '
+        "intelligence is discussed in a recent working paper (Smith, Jones, "
+        "and Lee, 2026).",
+        "The order requires supervision of trading [emphasis added]. "
+        "Artificial intelligence is described in a working paper (Smith, "
+        "Jones, and Lee, 2026).",
+        "Members must file annual reports. Smith, Jones, and Lee (2026) "
+        "survey artificial intelligence adoption in capital markets.",
+        "Members must file annual reports. Smith, Jones, Lee, and Chen (2026) "
+        "survey artificial intelligence adoption in capital markets.",
+        'The rule text says "members shall file reports.") Artificial '
+        "intelligence adoption is uneven (Smith, Jones, and Lee, 2026).",
+    ),
+)
+def test_multi_author_citations_after_closing_punctuation_are_not_operative(text):
+    """A quoted/bracketed duty must not leak into the citation sentence."""
+    config = _load_config()
+
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing", text, config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }, text
+
+
+@pytest.mark.parametrize(
+    "text",
+    (
+        "Member firms must supervise artificial intelligence systems used for "
+        "recommendations.",
+        'The rule states that "firms must supervise artificial intelligence '
+        'tools." Firms should review the guidance.',
+        "Smith, Jones, and Lee (2026) surveyed the market, and member firms "
+        "must supervise artificial intelligence tools used for "
+        "recommendations.",
+        "According to Smith, Jones, and Lee (2026), adoption is uneven, but "
+        "each member firm shall retain artificial intelligence supervisory "
+        "records.",
+    ),
+)
+def test_multi_author_support_does_not_suppress_real_duties(text):
+    """Precedence is preserved: an operative duty still outranks a citation."""
+    config = _load_config()
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing", text, config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH, (text, reason)
+
+
+def test_sentence_boundary_matches_closing_quotes_and_brackets():
+    """The boundary must be recognised, and must still consume one character."""
+    for text in (
+        'firms must retain records." next sentence',
+        "firms must retain records.) next sentence",
+        "firms must retain records.] next sentence",
+        "firms must retain records.\u201d next sentence",
+    ):
+        match = regulatory_monitor.SENTENCE_BOUNDARY_PATTERN.search(text)
+        assert match, text
+        assert match.end() == match.start() + 1, text
+        assert text[match.start()] == "."
+
+    # Decimals, section numbers, and URLs are still not sentence ends.
+    for text in ("rule 17a-4(f)(3)", "12.5 percent", "https://www.finra.org/x"):
+        for match in regulatory_monitor.SENTENCE_BOUNDARY_PATTERN.finditer(text):
+            assert match.start() == len(text) - 1, (text, match.start())
+
+
+def test_citation_name_series_accepts_comma_separated_authors():
+    pattern = re.compile(regulatory_monitor._CITATION_PARENTHETICAL, re.IGNORECASE)
+    for citation in (
+        "(smith, 2026)",
+        "(smith and lee, 2026)",
+        "(smith, jones, and lee, 2026)",
+        "(smith, jones, lee, and chen, 2026)",
+        "(smith, jones & lee, 2026)",
+        "(smith et al., 2026)",
+    ):
+        assert pattern.search(citation), citation
+
+    # A date parenthetical is still not a citation.
+    for non_citation in ("(september 2026)", "(effective 2027)", "(2026)"):
+        assert not pattern.search(non_citation), non_citation
+
+
+# --- Findings 5 and 6: recordkeeping qualifier and subject binding ----------
+
+
+RECORDKEEPING_NON_HIGH_SENTENCES = (
+    "Firms are not required to store records electronically.",
+    "Firms are not required to maintain books and records in an electronic "
+    "format.",
+    "Records must be retained for six years, and electronic storage is an "
+    "optional method.",
+    "Records must be stored electronically, although the storage method is "
+    "optional.",
+    "Although the storage method is optional, records must be stored "
+    "electronically.",
+    "Records must be stored electronically, but paper copies are also "
+    "permitted.",
+    "Records must be stored electronically or alternatively retained in paper "
+    "form.",
+    "Records may be retained electronically.",
+    "Records must be retained either electronically or in paper form.",
+    "Firms need not store records electronically.",
+)
+
+RECORDKEEPING_HIGH_SENTENCES = (
+    "Books and records must be stored electronically, while employee "
+    "handbooks may be printed on paper.",
+    "Books and records must be stored electronically, while marketing "
+    "brochures may be distributed on paper.",
+    "Books and records must be stored electronically, while training manuals "
+    "may be issued in printed form.",
+    "Member firms must maintain books and records in an electronic format.",
+    "Records must be maintained electronically rather than in paper form.",
+    "Records may not be retained on paper and must be maintained "
+    "electronically.",
+    "Records that may contain customer information must be retained "
+    "electronically.",
+    "Records must be stored electronically, and firms must not alter them.",
+    "Records must be preserved in a machine-readable format for six years.",
+)
+
+
+@pytest.mark.parametrize("sentence", RECORDKEEPING_NON_HIGH_SENTENCES)
+def test_qualified_storage_language_is_not_an_electronic_mandate(sentence):
+    """Qualifiers bind the storage predicate even when outside the match span."""
+    assert not regulatory_monitor._has_electronic_recordkeeping_obligation(sentence)
+
+
+@pytest.mark.parametrize("sentence", RECORDKEEPING_HIGH_SENTENCES)
+def test_mandatory_storage_language_remains_an_electronic_mandate(sentence):
+    """A permission granted to a different subject cannot cancel this duty."""
+    assert regulatory_monitor._has_electronic_recordkeeping_obligation(sentence)
+
+
+@pytest.mark.parametrize("sentence", RECORDKEEPING_HIGH_SENTENCES)
+def test_mandatory_storage_language_classifies_high(sentence):
+    config = _load_config()
+
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulatory Notice 26-10", sentence, config, exclude_reference_only=True
+    )
+
+    assert classification in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }, sentence
+
+
+def test_paper_permission_for_a_different_subject_does_not_travel_backwards():
+    """The exact reviewer counterexample, at unit level."""
+    sentence = (
+        "Books and records must be stored electronically, while employee "
+        "handbooks may be printed on paper."
+    )
+    clause = re.sub(r"\s+", " ", sentence.rstrip(".")).strip()
+    match = None
+    for pattern in regulatory_monitor.ELECTRONIC_RECORDKEEPING_PATTERNS:
+        match = pattern.search(clause)
+        if match:
+            break
+    assert match is not None
+
+    local = regulatory_monitor._local_storage_clause(
+        clause, match.start(), match.end()
+    )
+
+    assert "employee handbooks" not in local
+    assert regulatory_monitor._segment_opens_different_subject(
+        "while employee handbooks may be printed on paper"
+    )
+    assert not regulatory_monitor._segment_opens_different_subject(
+        "although the storage method is optional"
+    )
+    assert not regulatory_monitor._segment_opens_different_subject(
+        "but paper copies are also permitted"
+    )
+    assert not regulatory_monitor._segment_opens_different_subject(
+        "or alternatively retained in paper form"
+    )
+
+
+def test_unbound_negation_does_not_defeat_a_storage_mandate():
+    """"must not" bound to something else is not a negated storage duty."""
+    masked = regulatory_monitor._mask_unbound_negations(
+        "records must be stored electronically and firms must not alter them"
+    )
+    assert "must not" not in masked
+
+    bound = regulatory_monitor._mask_unbound_negations(
+        "firms are not required to store records electronically"
+    )
+    assert "not required" in bound
+
+
+# --- Finding 7: many mentions in one long sentence --------------------------
+
+
+def _single_sentence_mention_corpus(mentions: int) -> str:
+    """One ~770k-character sentence carrying ``mentions`` AI mentions.
+
+    Deliberately free of clause punctuation and sentence terminators, so every
+    mention resolves to the *same* full-document span. Boundary indexing alone
+    does not help here: the index is built once, but the span was re-sliced and
+    re-scanned once per mention, which is the residual O(document x mentions)
+    term the reviewer found.
+    """
+    filler = "the commission discusses market structure considerations at length "
+    parts = []
+    for _ in range(mentions):
+        parts.append(filler * 180)
+        parts.append("artificial intelligence adoption is described at length ")
+    return (
+        "the commission notes that "
+        + "".join(parts)
+        + "as summarized in a recent working paper on the topic."
+    )
+
+
+def test_many_mentions_in_one_long_sentence_scale_near_linearly():
+    """Operation-count regression that a fast machine cannot mask.
+
+    Measured on this corpus (775,503 characters, one sentence, 64 mentions):
+    56.6s and 154,612,736 scanned characters without span memoisation versus
+    0.9s and 3,101,904 scanned characters with it. The character counter is the
+    machine-independent evidence; the wall-clock ceiling is the user-visible
+    contract.
+    """
+    config = _load_config()
+    text = _single_sentence_mention_corpus(64)
+    assert len(text) > 750_000
+    assert len(re.findall(r"[.;!?](?=\s|$)", text)) == 1, "must be one sentence"
+    assert len(re.findall("artificial intelligence", text)) == 64
+
+    regulatory_monitor._boundary_index.cache_clear()
+    regulatory_monitor._SPAN_MARKER_SCANS = 0
+    regulatory_monitor._SPAN_MARKER_CHARS = 0
+    builds_before = regulatory_monitor._BOUNDARY_INDEX_BUILDS
+
+    started = time.perf_counter()
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing",
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+    controls = regulatory_monitor.find_affected_controls_by_keywords(
+        "Self-Regulatory Organizations; Notice of Filing",
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+    elapsed = time.perf_counter() - started
+
+    assert elapsed < 10.0, (
+        f"classification+control mapping took {elapsed:.1f}s for 64 mentions "
+        f"in one {len(text)}-character sentence"
+    )
+    assert regulatory_monitor._BOUNDARY_INDEX_BUILDS - builds_before <= 4
+    assert regulatory_monitor._SPAN_MARKER_CHARS < 8 * len(text), (
+        "span scanning must not repeat per mention",
+        regulatory_monitor._SPAN_MARKER_CHARS,
+        len(text),
+    )
+    assert regulatory_monitor._SPAN_MARKER_SCANS <= 16, (
+        "distinct spans, not mentions, bound the number of marker scans",
+        regulatory_monitor._SPAN_MARKER_SCANS,
+    )
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+    assert controls == []
+
+
+def test_span_marker_cost_does_not_grow_with_mention_count():
+    """The defining property: fixed input, more mentions, same scanning cost."""
+    costs = {}
+    for mentions in (16, 64):
+        text = _single_sentence_mention_corpus(64)
+        regulatory_monitor._boundary_index.cache_clear()
+        regulatory_monitor._SPAN_MARKER_CHARS = 0
+        occurrences = list(re.finditer("artificial intelligence", text))[:mentions]
+        for occurrence in occurrences:
+            regulatory_monitor._is_reference_only_occurrence(
+                text, occurrence.start(), occurrence.end()
+            )
+        costs[mentions] = regulatory_monitor._SPAN_MARKER_CHARS
+
+    assert costs[16] == costs[64], costs
+
+
+def test_span_memoisation_preserves_per_occurrence_verdicts():
+    """Caching must not change a single verdict.
+
+    The cache is keyed by span, so a stale or over-shared entry would silently
+    reclassify mentions. Every occurrence is compared against a scan of exactly
+    the same span computed without the cache.
+    """
+    text = (
+        "Members must file annual reports and Smith, Jones, and Lee (2026) "
+        "discuss artificial intelligence in capital markets. Each member firm "
+        "shall supervise artificial intelligence tools used for "
+        "recommendations. Artificial intelligence is surveyed in a recent "
+        "working paper. According to Smith, Jones, and Lee (2026), artificial "
+        "intelligence adoption is uneven."
+    )
+    regulatory_monitor._boundary_index.cache_clear()
+
+    for occurrence in re.finditer(
+        "artificial intelligence", text, re.IGNORECASE
+    ):
+        start, end = occurrence.span()
+        index = regulatory_monitor._boundary_index(text)
+        clause_start, clause_end = regulatory_monitor._occurrence_clause_span(
+            text, start, end
+        )
+        sentence_start, sentence_end = (
+            regulatory_monitor._occurrence_sentence_span(text, start, end)
+        )
+        clause = text[clause_start:clause_end]
+        sentence = text[sentence_start:sentence_end]
+
+        if regulatory_monitor.OPERATIVE_LANGUAGE_PATTERN.search(clause):
+            expected = False
+        elif regulatory_monitor.REFERENCE_ONLY_PATTERN.search(clause):
+            expected = True
+        elif regulatory_monitor.OPERATIVE_LANGUAGE_PATTERN.search(sentence):
+            expected = False
+        else:
+            expected = bool(
+                regulatory_monitor.REFERENCE_ONLY_PATTERN.search(sentence)
+            )
+
+        assert (
+            regulatory_monitor._is_reference_only_occurrence(text, start, end)
+            is expected
+        ), (text[start:end], start)
+        assert index is regulatory_monitor._boundary_index(text)
+
+
+def test_legitimate_finra_listing_is_not_flagged_as_a_denial():
+    """Counterexample: the denial screen must not close the source it guards.
+
+    A screen that fires on real listings would be indistinguishable from the
+    outage it prevents, so the passing case is asserted explicitly rather than
+    left implicit in the crawl tests.
+    """
+    html = _finra_listing_page_html(
+        [f"/rules-guidance/notices/26-{n:02d}" for n in range(1, 26)],
+        last_page=3,
+    )
+
+    assert regulatory_monitor._finra_listing_denial_reason(html) is None
+
+
+def test_finra_notice_body_mentioning_interstitial_words_survives():
+    """Incidental wording is not a challenge signature.
+
+    "just a moment", "bot", and "blocked" all occur in ordinary regulatory
+    prose. Only branded/unambiguous signatures, or ambiguous ones in the lead
+    region of a short page, may reject a body.
+    """
+    body = (
+        "Members asked the staff to pause for a moment on the question of "
+        "whether a bot may submit orders and whether an account can be "
+        "blocked. "
+        + (
+            "Member firms must supervise every automated tool used to prepare "
+            "customer communications and must retain the resulting records. "
+            * 40
+        )
+    )
+
+    text, reason, rejected = regulatory_monitor._scan_finra_notice_body(
+        _finra_notice_page(body)
+    )
+
+    assert reason is None
+    assert rejected is False
+    assert "Member firms must supervise every automated tool" in text
