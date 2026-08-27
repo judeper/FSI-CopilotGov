@@ -106,11 +106,39 @@ FINRA_DETAIL_TITLE_SIGNAL = re.compile(
     re.IGNORECASE,
 )
 
-# Federal Register full text can be hundreds of thousands of characters long.
-# Classifying every citation and appendix makes incidental references look like
-# operative requirements. The title, API abstract, and the authoritative
-# opening portion contain the document's summary and initial substantive text.
-MAX_CLASSIFICATION_TEXT_CHARS = 50_000
+# Federal Register source documents interleave operative rule text with
+# footnote blocks, bibliographies, and literature reviews, and a document can
+# run to hundreds of thousands of characters. Position is not evidence of
+# relevance -- operative requirements routinely appear late -- so no part of a
+# document is discarded. Instead each candidate match is judged by the language
+# immediately around it: an occurrence only stops counting when its context is
+# unambiguously bibliographic AND carries no obligation language.
+REFERENCE_CONTEXT_WINDOW_CHARS = 200
+
+OPERATIVE_LANGUAGE_PATTERN = re.compile(
+    r"\b(?:must|shall|may\s+not|is\s+required|are\s+required"
+    r"|(?:would|will)\s+be\s+required|required\s+to"
+    r"|requires?\s+(?:that|each|every|any|all|a|an|the)\b"
+    r"|prohibit(?:s|ed|ing|ion)?|mandat(?:e|es|ed|ory)"
+    r"|propos(?:e|es|ed|ing)\s+to\s+(?:require|amend|add|adopt|prohibit)"
+    r"|compliance\s+date|effective\s+date)\b",
+    re.IGNORECASE,
+)
+
+REFERENCE_ONLY_PATTERN = re.compile(
+    r"(?:\bsee\s+(?:also|generally|supra|infra)\b|\bsee,\s*e\.g\.|\bsupra\b|\bid\.\s|\bibid\b"
+    r"|\bcf\.\s|\bet\s+al\.|\bavailable\s+at\b|https?://|\bwww\.|\bcit(?:ed|ing|ation)\b"
+    r"|\b(?:an|another|one|a|the|this|these|those|recent|prior|earlier|academic|empirical|several)\s+"
+    r"[a-z ,'-]{0,26}?(?:study|studies|paper|papers|article|articles|survey|working\s+paper)\b"
+    r"|\bstudies\s+(?:have\s+)?(?:found|find|show|shown|suggest|document)"
+    r"|\bresearchers?\b|\bthe\s+literature\b|\bjournal\b|\bworking\s+paper\b)",
+    re.IGNORECASE,
+)
+
+# Federal Register raw text separates footnote blocks from body text with a run
+# of hyphens. Context must stop at that boundary, otherwise the citations in an
+# adjacent footnote block would be read as the context of operative body text.
+FOOTNOTE_BLOCK_DELIMITER_PATTERN = re.compile(r"-{5,}")
 
 # Configure logging
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
@@ -148,9 +176,59 @@ class FinraListingError(RuntimeError):
 
 
 def _prepare_classification_text(text: str) -> str:
-    """Normalize escaped line breaks and bound long-source evidence."""
+    """Normalize escaped line breaks in source text used for classification.
+
+    Federal Register raw text sometimes carries literal ``\\n``/``\\r`` escape
+    sequences that would otherwise weld two words together and hide a match.
+    No part of the document is dropped: relevance is decided by context, not by
+    position (see ``_is_reference_only_occurrence``).
+    """
     text = text or ""
-    return text.replace("\\r", " ").replace("\\n", " ")[:MAX_CLASSIFICATION_TEXT_CHARS]
+    return text.replace("\\r", " ").replace("\\n", " ")
+
+
+def _occurrence_context(text: str, start: int, end: int) -> str:
+    """Return the local context of a match, clipped at footnote-block edges."""
+    before = text[max(0, start - REFERENCE_CONTEXT_WINDOW_CHARS):start]
+    after = text[end:end + REFERENCE_CONTEXT_WINDOW_CHARS]
+
+    preceding_delimiters = list(FOOTNOTE_BLOCK_DELIMITER_PATTERN.finditer(before))
+    if preceding_delimiters:
+        before = before[preceding_delimiters[-1].end():]
+
+    following_delimiter = FOOTNOTE_BLOCK_DELIMITER_PATTERN.search(after)
+    if following_delimiter:
+        after = after[:following_delimiter.start()]
+
+    return f"{before}{text[start:end]}{after}"
+
+
+def _is_reference_only_occurrence(text: str, start: int, end: int) -> bool:
+    """Return True when a match sits in bibliography/citation-only context.
+
+    The check is deliberately asymmetric and fails open toward "operative":
+    any obligation language in the surrounding window keeps the match, and a
+    match is only discarded when the window carries an explicit citation or
+    literature-review marker. Missing a genuine requirement is far worse than
+    reporting an extra item, and inline footnote markers alone (``\\4\\``) are
+    not treated as evidence because operative Federal Register text is full of
+    them.
+    """
+    window = _occurrence_context(text, start, end)
+    if OPERATIVE_LANGUAGE_PATTERN.search(window):
+        return False
+    return bool(REFERENCE_ONLY_PATTERN.search(window))
+
+
+def _search_operative_match(pattern: str, text: str, exclude_reference_only: bool):
+    """Find the first match that is not a bibliography/citation-only mention."""
+    if not exclude_reference_only:
+        return re.search(pattern, text)
+
+    for match in re.finditer(pattern, text):
+        if not _is_reference_only_occurrence(text, match.start(), match.end()):
+            return match
+    return None
 
 
 def _parse_federal_register_metadata_int(
@@ -252,7 +330,12 @@ class RegulatoryItem:
             self.affected_controls = []
 
 
-def classify_regulatory_relevance(title: str, abstract: str, config: dict) -> tuple[str, str]:
+def classify_regulatory_relevance(
+    title: str,
+    abstract: str,
+    config: dict,
+    exclude_reference_only: bool = False,
+) -> tuple[str, str]:
     """
     Classify regulatory item for FSI Copilot governance relevance.
 
@@ -263,6 +346,10 @@ def classify_regulatory_relevance(title: str, abstract: str, config: dict) -> tu
         title: Document title
         abstract: Document abstract
         config: Configuration dict with pattern definitions
+        exclude_reference_only: Ignore matches whose surrounding context is a
+            bibliography/citation/literature-review mention. Enable this for
+            authoritative full-document source text; API abstracts are
+            summaries and are always classified as written.
 
     Returns:
         tuple: (tier, reason)
@@ -271,8 +358,8 @@ def classify_regulatory_relevance(title: str, abstract: str, config: dict) -> tu
     title = title or ""
     abstract = abstract or ""
     # Federal Register raw text sometimes contains escaped line breaks. Treat
-    # those as whitespace, then bound full-text evidence so late citations do
-    # not promote an otherwise unrelated document.
+    # those as whitespace. The whole document is classified regardless of
+    # length; relevance is judged per occurrence by context, never by position.
     classification_text = _prepare_classification_text(abstract)
     combined = f"{title.lower()} {classification_text.lower()}"
 
@@ -285,7 +372,7 @@ def classify_regulatory_relevance(title: str, abstract: str, config: dict) -> tu
         for p in regulatory_config.get('critical_patterns', [])
     ]
     for pattern, reason in critical_patterns:
-        if re.search(pattern, combined):
+        if _search_operative_match(pattern, combined, exclude_reference_only):
             return (CLASSIFICATION_CRITICAL, reason)
 
     # HIGH: AI, ML, automation terms + FSI-specific requirements
@@ -294,7 +381,7 @@ def classify_regulatory_relevance(title: str, abstract: str, config: dict) -> tu
         for p in regulatory_config.get('high_patterns', [])
     ]
     for pattern, reason in high_patterns:
-        if re.search(pattern, combined):
+        if _search_operative_match(pattern, combined, exclude_reference_only):
             return (CLASSIFICATION_HIGH, reason)
 
     # MEDIUM: General FSI regulations that may indirectly affect AI agents
@@ -303,14 +390,19 @@ def classify_regulatory_relevance(title: str, abstract: str, config: dict) -> tu
         for p in regulatory_config.get('medium_patterns', [])
     ]
     for pattern, reason in medium_patterns:
-        if re.search(pattern, combined):
+        if _search_operative_match(pattern, combined, exclude_reference_only):
             return (CLASSIFICATION_MEDIUM, reason)
 
     # NOISE: Everything else (general regulatory items with no FSI/AI relevance)
     return (CLASSIFICATION_NOISE, "No FSI Copilot governance relevance detected")
 
 
-def find_affected_controls_by_keywords(title: str, abstract: str, config: dict) -> list[str]:
+def find_affected_controls_by_keywords(
+    title: str,
+    abstract: str,
+    config: dict,
+    exclude_reference_only: bool = False,
+) -> list[str]:
     """
     Find potentially affected controls based on keyword matching.
 
@@ -318,6 +410,9 @@ def find_affected_controls_by_keywords(title: str, abstract: str, config: dict) 
         title: Document title
         abstract: Document abstract
         config: Configuration dict with keyword_control_map
+        exclude_reference_only: Ignore keyword hits that only occur in
+            bibliography/citation context, so a cited paper does not map a
+            document onto controls it never touches.
 
     Returns:
         list: Control IDs (e.g., ['1.3', '1.5', '2.6'])
@@ -336,8 +431,8 @@ def find_affected_controls_by_keywords(title: str, abstract: str, config: dict) 
 
     for keyword, controls in keyword_map.items():
         # Use word boundary matching to avoid partial matches
-        pattern = rf'\b{re.escape(keyword)}\b'
-        if re.search(pattern, combined, re.IGNORECASE):
+        pattern = rf'\b{re.escape(keyword.lower())}\b'
+        if _search_operative_match(pattern, combined, exclude_reference_only):
             affected.update(controls)
 
     return sorted(list(affected))
@@ -746,6 +841,7 @@ def fetch_federal_register_documents(
 
         tier, reason = classify_regulatory_relevance(title, abstract, config)
         effective_text = abstract
+        used_source_text = False
 
         should_fetch_detail = _should_fetch_federal_register_detail(
             title=title,
@@ -778,11 +874,22 @@ def fetch_federal_register_documents(
             if fetched_new:
                 detail_fetches += 1
             effective_text = fallback_text
-            tier, reason = classify_regulatory_relevance(title, effective_text, config)
+            used_source_text = True
+            tier, reason = classify_regulatory_relevance(
+                title,
+                effective_text,
+                config,
+                exclude_reference_only=True,
+            )
 
         classification_text = _prepare_classification_text(effective_text)
         affected_controls = (
-            find_affected_controls_by_keywords(title, classification_text, config)
+            find_affected_controls_by_keywords(
+                title,
+                classification_text,
+                config,
+                exclude_reference_only=used_source_text,
+            )
             if tier in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}
             else []
         )

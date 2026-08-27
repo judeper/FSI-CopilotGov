@@ -50,42 +50,264 @@ def test_federal_register_rule_2210_title_classifies_high_with_null_abstract():
     }
 
 
-def test_late_incidental_ai_reference_does_not_become_high():
+AI_VOCABULARY = (
+    "ai agent",
+    "agent ai",
+    " ai ",
+    "copilot",
+    "artificial intelligence",
+    "machine learning",
+    "generative",
+    "genai",
+    "llm",
+    "chatbot",
+    "robo",
+    "automated advice",
+    "algorithm",
+    "model risk",
+)
+
+# Long-source filler used to prove that classification is decided by context and
+# not by position: 4,000 repeats is ~144,000 characters, far beyond the 68,000
+# characters at which a genuine late requirement was previously lost, and beyond
+# any prior positional bound.
+LONG_SOURCE_FILLER = "Routine regulatory background text. " * 4000
+
+FOOTNOTE_BLOCK = (
+    " --------------------------------------------------------------------------- "
+    "\\53\\ See supra note 45. \\54\\ See also Release No. 34-98765, available at "
+    "https://www.sec.gov/rules/sro.htm. "
+    "--------------------------------------------------------------------------- "
+)
+
+
+def _assert_free_of_ai_vocabulary(text: str) -> None:
+    """Guard: a recordkeeping regression must not be able to pass via AI terms."""
+    lowered = f" {text.lower()} "
+    for token in AI_VOCABULARY:
+        assert token not in lowered, f"sample text leaks AI vocabulary: {token!r}"
+
+
+def test_reference_only_ai_mention_in_source_text_does_not_become_high():
+    """A bibliography/literature-review mention is not an operative requirement.
+
+    This is the 2026-17183 shape: a single cited-study mention of AI inside a
+    very long document that is otherwise about crypto-asset offerings.
+    """
     config = _load_config()
     detail_text = (
         "Regulation Crypto Assets describes offering and disclosure requirements. "
-        + ("Routine regulatory text. " * 3000)
-        + r"An unrelated cited study discusses the application of artificial \n"
-        r"intelligence tools."
+        + LONG_SOURCE_FILLER
+        + r"Another study also found that whitepapers discussed the application of "
+        r"artificial \nintelligence tools.\451\ This study observed no change in "
+        "offering practices."
     )
 
     classification, reason = regulatory_monitor.classify_regulatory_relevance(
         "Regulation Crypto Assets",
         detail_text,
         config,
+        exclude_reference_only=True,
     )
 
     assert classification == regulatory_monitor.CLASSIFICATION_NOISE
     assert "artificial intelligence" not in reason.lower()
 
 
-def test_generic_pra_electronic_submission_does_not_become_high():
+def test_citation_only_copilot_mention_in_source_text_does_not_become_critical():
+    """A footnote citation naming a product is a reference, not a requirement."""
     config = _load_config()
     detail_text = (
-        "This information collection includes registration, reporting, "
-        "recordkeeping requirement, and third-party disclosure requirements. "
-        + "Respondents may use automated electronic techniques, including "
-        "electronic submission of responses."
+        "The proposal addresses trading halt procedures. "
+        + LONG_SOURCE_FILLER
+        + "\\77\\ See also Smith et al., Governance of Microsoft Copilot, "
+        "Journal of Financial Regulation (2025), available at "
+        "https://example.org/paper.pdf."
+    )
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Notice of Filing of a Proposed Rule Change Regarding Trading Halts",
+        detail_text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_NOISE
+
+
+@pytest.mark.parametrize(
+    "operative_sentence,expected_tier",
+    [
+        (
+            "Each member must supervise the use of artificial intelligence in "
+            "communications with customers.",
+            regulatory_monitor.CLASSIFICATION_HIGH,
+        ),
+        (
+            "A member firm shall document every copilot deployment used to "
+            "generate customer-facing content.",
+            regulatory_monitor.CLASSIFICATION_CRITICAL,
+        ),
+    ],
+)
+def test_operative_requirement_late_in_long_source_text_is_not_suppressed(
+    operative_sentence,
+    expected_tier,
+):
+    """Operative text must classify wherever it appears in the document.
+
+    The prior positional bound truncated classification evidence, so a genuine
+    requirement appearing beyond ~68,000 characters silently became NOISE.
+    """
+    config = _load_config()
+    detail_text = (
+        "This notice concerns exchange connectivity fees. "
+        + LONG_SOURCE_FILLER
+        + operative_sentence
+    )
+    assert len(detail_text) > 68_000
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        detail_text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == expected_tier
+
+
+def test_operative_requirement_survives_an_adjacent_footnote_block():
+    """Citations in the neighbouring footnote block must not mute body text.
+
+    Federal Register source text places footnote blocks immediately after the
+    paragraph that cites them, so an unclipped context window would read
+    ``See supra note 45`` as the context of operative language.
+    """
+    config = _load_config()
+    detail_text = (
+        "This notice concerns exchange connectivity fees. "
+        + LONG_SOURCE_FILLER
+        + "The Exchange believes members shall retain artificial intelligence "
+        "supervisory evidence.\\53\\"
+        + FOOTNOTE_BLOCK
     )
 
     classification, reason = regulatory_monitor.classify_regulatory_relevance(
-        "Agency Information Collection Activities: Part 41",
+        "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        detail_text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert "artificial intelligence" in reason.lower()
+
+
+def test_classification_text_preparation_does_not_truncate():
+    """Escaped line breaks are normalized; no source evidence is discarded."""
+    body = "a" * 200_000
+    source_text = body + r"\nrequirement"
+
+    prepared = regulatory_monitor._prepare_classification_text(source_text)
+
+    # Only the two-character ``\n`` escape collapses to a single space; every
+    # other character of the source document survives.
+    assert len(prepared) == len(source_text) - 1
+    assert prepared.startswith(body)
+    assert prepared.endswith(" requirement")
+
+
+def test_generic_pra_electronic_submission_does_not_become_high():
+    """2026-16876 shape: PRA boilerplate is not an operative recordkeeping change.
+
+    The notice mentions a "recordkeeping requirement" in one clause and
+    "automated electronic ... collection techniques" hundreds of characters
+    later, with no obligation joining them.
+    """
+    config = _load_config()
+    detail_text = (
+        "The rules associated with this information collection include registration, "
+        "reporting requirements, recordkeeping requirement, and third-party disclosure "
+        "requirements. With respect to the collection of information, the Commission "
+        "invites comments on: Whether the proposed collection of information is "
+        "necessary for the proper performance of the functions of the Commission; The "
+        "accuracy of the Commission's estimate of the burden of the proposed collection "
+        "of information; Ways to enhance the quality, usefulness, and clarity of the "
+        "information to be collected; and Ways to minimize the burden of collection of "
+        "information on those who are to respond, including through the use of "
+        "appropriate automated electronic, mechanical, or other technological collection "
+        "techniques or other forms of information technology, e.g., permitting "
+        "electronic submission of responses."
+    )
+
+    for exclude_reference_only in (False, True):
+        classification, reason = regulatory_monitor.classify_regulatory_relevance(
+            "Agency Information Collection Activities: Notice of Intent To Extend "
+            "Collection 3038-0059: Part 41, Relating to Security Futures Products",
+            detail_text,
+            config,
+            exclude_reference_only=exclude_reference_only,
+        )
+
+        assert classification == regulatory_monitor.CLASSIFICATION_NOISE
+        assert "recordkeeping" not in reason.lower()
+
+
+@pytest.mark.parametrize(
+    "detail_text",
+    [
+        "Recordkeeping must transition to electronic systems by the compliance date.",
+        "Records shall be maintained in electronic form for six years.",
+        "All order records must be retained electronically by each member.",
+        "All order records must be retained digitally by each member.",
+        "Each member must maintain electronic records of every covered order.",
+        "Electronic recordkeeping systems must be implemented by covered members.",
+        "The proposed rule would require records to be preserved in electronic form.",
+    ],
+)
+def test_electronic_recordkeeping_obligations_classify_high(detail_text):
+    """Recordkeeping-only regressions: HIGH must be earned by the recordkeeping
+    rule alone, with no AI/ML vocabulary anywhere in the sample."""
+    config = _load_config()
+    title = "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change"
+    _assert_free_of_ai_vocabulary(f"{title} {detail_text}")
+
+    for exclude_reference_only in (False, True):
+        classification, reason = regulatory_monitor.classify_regulatory_relevance(
+            title,
+            detail_text,
+            config,
+            exclude_reference_only=exclude_reference_only,
+        )
+
+        assert classification == regulatory_monitor.CLASSIFICATION_HIGH, detail_text
+        assert reason == "Electronic recordkeeping", detail_text
+
+
+@pytest.mark.parametrize(
+    "detail_text",
+    [
+        "Each member must retain records of every transaction for three years.",
+        "Respondents must submit the required form electronically through the portal.",
+        (
+            "The proposed rule sets forth conditions for covered entities to deliver "
+            "covered information to covered recipients electronically."
+        ),
+    ],
+)
+def test_recordkeeping_rule_requires_all_three_elements(detail_text):
+    """Records alone, or an electronic medium alone, is not an electronic
+    recordkeeping obligation."""
+    config = _load_config()
+
+    _, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
         detail_text,
         config,
     )
 
-    assert classification == regulatory_monitor.CLASSIFICATION_NOISE
-    assert "recordkeeping" not in reason.lower()
+    assert reason != "Electronic recordkeeping", detail_text
 
 
 def test_meaningful_electronic_recordkeeping_and_ai_remain_high():
@@ -318,6 +540,64 @@ def test_disputed_federal_register_items_have_no_affected_controls(monkeypatch):
         "2026-17183": [],
         "2026-16876": [],
     }
+
+
+def test_late_operative_ai_requirement_survives_full_pipeline(monkeypatch):
+    """A genuine requirement deep in a long source document must still surface.
+
+    This is the failure the positional bound introduced: the operative sentence
+    sits past 68,000 characters, so truncated classification evidence turned a
+    real Copilot/AI supervisory requirement into NOISE with no affected
+    controls.
+    """
+    config = _load_config()
+    document = {
+        "document_number": "2026-99001",
+        "title": "Self-Regulatory Organizations; Notice of Filing of a Proposed Rule Change",
+        "abstract": None,
+        "publication_date": "2026-08-24",
+        "type": "PRORULE",
+        "html_url": "https://www.federalregister.gov/documents/2026-99001",
+        "raw_text_url": "https://example.test/2026-99001.txt",
+        "agencies": [{"slug": "securities-and-exchange-commission", "name": "SEC"}],
+    }
+    session = _PagedFederalRegisterSession(
+        {1: {"count": 1, "total_pages": 1, "results": [document]}}
+    )
+    source_text = (
+        "This notice concerns exchange connectivity fees. "
+        + LONG_SOURCE_FILLER
+        + "Each member must supervise the use of artificial intelligence tools in "
+        "communications with the public and must retain the resulting records "
+        "electronically.\\53\\"
+        + FOOTNOTE_BLOCK
+    )
+    assert len(source_text) > 68_000
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        assert url == document["raw_text_url"]
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": f"<html><body><pre>{source_text}</pre></body></html>",
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_args, **_kwargs: None)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-08-18",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert "artificial intelligence" in items[0].classification_reason.lower()
+    assert items[0].affected_controls
 
 
 @pytest.mark.parametrize("abstract", [None, "Administrative procedural update."])
