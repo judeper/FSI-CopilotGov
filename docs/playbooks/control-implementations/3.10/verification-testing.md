@@ -4,30 +4,37 @@ Test cases and evidence collection procedures to validate privacy controls for c
 
 ## Test Cases
 
-### Test 1: DLP Detection of NPI in Copilot Interactions and Policy Plane Verification
+### Test 1: DLP Detection of NPI in Copilot Prompts and Policy Location Verification
 
-- **Objective:** Verify that DLP policies detect nonpublic personal information in Copilot-assisted communications and are configured on the Copilot workload/enforcement plane
+- **Objective:** Verify that DLP policies detect nonpublic personal information entered in Copilot prompts and are configured on the Copilot workload, enforcement plane, and location
 - **Steps:**
-  1. Using a test account, draft an email with Copilot that contains test SSN and account number data.
-  2. Attempt to send the email to an external recipient.
+  1. Using a test account, enter test SSN and account number data directly into a Copilot prompt.
+  2. Submit the prompt and observe whether Copilot processing is restricted.
   3. Verify that the DLP policy tip appears warning about NPI content.
   4. Run:
      ```powershell
      Connect-IPPSSession
      $policies = @(Get-DlpCompliancePolicy)
      if (-not $policies) { throw "Fail closed: no DLP policies returned." }
+     $copilotLocationGuid = "470f2276-e011-4e9d-a6ec-20768be3a4b0"
      foreach ($p in $policies) {
          foreach ($name in @("Workload","EnforcementPlanes","Locations")) {
              if (-not $p.PSObject.Properties[$name]) { throw "Fail closed: missing required property for verification." }
          }
      }
-     $matches = @($policies | Where-Object { $_.Workload -eq "Applications" -and $_.EnforcementPlanes -contains "CopilotExperiences" })
-     if (-not $matches) { throw "Fail closed: no Copilot DLP policy found for Workload=Applications and EnforcementPlane=CopilotExperiences." }
+     $matches = @($policies | Where-Object {
+         $_.Workload -eq "Applications" -and
+         $_.EnforcementPlanes -contains "CopilotExperiences" -and
+         ((ConvertTo-Json -InputObject $_.Locations -Depth 10 -Compress) -match [regex]::Escape($copilotLocationGuid))
+     })
+     if (-not $matches) { throw "Fail closed: no Copilot DLP policy found for Workload=Applications, EnforcementPlane=CopilotExperiences, and location GUID=$copilotLocationGuid." }
      $matches | Select-Object Name, Enabled, Mode, Workload, EnforcementPlanes, Locations
      ```
-  5. Confirm that high-volume NPI triggers blocking behavior.
-- **Expected Result:** DLP detects NPI content, displays policy tips, blocks high-volume transmissions, and at least one policy is verified with `Workload=Applications` and `CopilotExperiences` enforcement.
-- **Evidence:** Screenshots of DLP policy tips/block notifications and PowerShell output showing `Workload`, `EnforcementPlanes`, and `Locations`.
+  5. Confirm that high-volume NPI triggers the documented Copilot content-processing restriction.
+- **Expected Result:** DLP detects NPI content, displays policy tips or restricts Copilot processing, and at least one policy is verified with `Workload=Applications`, `CopilotExperiences`, and the documented Copilot location GUID.
+- **Evidence:** Screenshots of DLP policy tips/content-processing restrictions and PowerShell output showing `Workload`, `EnforcementPlanes`, and `Locations`.
+
+> **Documented Copilot DLP limitations:** This prompt control checks text entered in the prompt but does not scan the contents of files uploaded directly into prompts. SIT-based prompt blocking is in preview and rolling out. Email coverage applies only to messages sent on or after January 1, 2025; calendar invites and admin units are not supported. Policy updates can take up to four hours to propagate.
 
 ### Test 2: Information Barrier Enforcement
 
@@ -79,7 +86,7 @@ Test cases and evidence collection procedures to validate privacy controls for c
 - **Objective:** Verify that NPI-related DLP incidents trigger the appropriate automated alert workflow
 - **Steps:**
   1. Trigger a DLP incident involving consumer financial data (test environment).
-  2. Verify the incident appears in the DLP incident report (Purview > Data loss prevention > Incidents).
+  2. Verify the alert appears on the DLP Alerts dashboard (Microsoft Purview > Data loss prevention > Alerts).
   3. Confirm the compliance team and Privacy Officer receive notification via configured alert policy.
   4. Walk through the incident investigation and resolution process in Purview.
 - **Expected Result:** DLP incidents trigger automated notifications, are logged for investigation, and can be resolved.

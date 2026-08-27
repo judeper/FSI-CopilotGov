@@ -7,7 +7,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 ## Prerequisites
 
 - **Role:** Purview Compliance Admin, Privacy Officer
-- **License:** Microsoft 365 E5 or E5 Compliance add-on
+- **License:** Required Microsoft 365 and Purview licensing for the features used; verify current eligibility in the applicable Microsoft service descriptions
 - **Access:** Microsoft Purview portal
 
 ## Steps
@@ -15,7 +15,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 ### Step 1: Configure Sensitive Information Types for Consumer Financial Data
 
 **Portal:** Microsoft Purview portal
-**Path:** Solutions > Data classification > Sensitive info types
+**Path:** Information Protection > Classifiers > Sensitive info types
 
 1. Review built-in sensitive information types relevant to Reg S-P:
    - U.S. Social Security Number (SSN)
@@ -33,13 +33,14 @@ Step-by-step portal configuration for implementing privacy controls that support
 **Path:** Solutions > Data loss prevention > Policies > Create policy
 
 1. Create a DLP policy named "FSI-RegSP-Copilot-Privacy-Protection".
-2. Select the **U.S. Financial** regulatory template as a starting point.
-3. For the Copilot interaction policy, select the **Microsoft 365 Copilot and Copilot Chat** location (custom policy template) and leave non-Copilot workloads disabled in this policy.
-4. Configure rules:
+2. Select the **Microsoft 365 Copilot and Copilot Chat** location under the Custom policy template and leave non-Copilot workloads disabled in this policy.
+3. Configure rules:
    - **Low volume (1-9 instances):** Notify user with policy tip
-   - **High volume (10+ instances):** Block sharing and notify compliance team
-5. Enable the policy for all Copilot-licensed users.
-6. In policy details (or Security & Compliance PowerShell output), verify this policy resolves to `Workload=Applications` and `EnforcementPlanes` includes `CopilotExperiences` before publishing.
+   - **High volume (10+ instances):** Prevent Copilot from processing content and, where approved, restrict web grounding; notify the compliance team
+4. Enable the policy for all Copilot-licensed users.
+5. In policy details (or Security & Compliance PowerShell output), verify this policy resolves to `Workload=Applications`, `EnforcementPlanes` includes `CopilotExperiences`, and `Locations` contains the documented Copilot location GUID `470f2276-e011-4e9d-a6ec-20768be3a4b0` before publishing.
+
+> **Documented Copilot DLP limitations:** This prompt control checks text entered in the prompt but does not scan the contents of files uploaded directly into prompts. SIT-based prompt blocking is in preview and rolling out. Email coverage applies only to messages sent on or after January 1, 2025; calendar invites and admin units are not supported. Policy updates can take up to four hours to propagate.
 
 ### Step 3: Configure Information Barriers for Privacy Segregation
 
@@ -53,9 +54,9 @@ Step-by-step portal configuration for implementing privacy controls that support
 ### Step 4: Enable Privacy Impact Assessment for Copilot Data Flows
 
 **Portal:** Microsoft Purview portal
-**Path:** Solutions > Data classification > Content explorer
+**Path:** Solutions > Data classification > Content Explorer (classic)
 
-1. Use Content Explorer to identify where consumer financial information resides.
+1. Use Content Explorer (classic) to identify where consumer financial information resides.
 2. Document the data flow from source systems through Copilot interactions.
 3. Assess whether Copilot prompts and responses may expose nonpublic personal information (NPI).
 4. Configure appropriate access controls to limit NPI exposure in Copilot responses.
@@ -63,7 +64,7 @@ Step-by-step portal configuration for implementing privacy controls that support
 ### Step 5: Configure the Incident Response Program for Copilot NPI Events (Reg S-P Rule 248.30(a)(4))
 
 **Portal:** Microsoft Purview portal / Internal incident response documentation
-**Path:** Microsoft Purview > Audit > Alert policies; Internal IRP documentation system
+**Path:** Microsoft Purview > Data loss prevention > Alerts; Microsoft Defender portal > Alert policies; Internal IRP documentation system
 
 The amended Reg S-P requires a written incident response program addressing unauthorized access to or use of customer information. Configure the following for Copilot NPI incident coverage:
 
@@ -74,7 +75,7 @@ The amended Reg S-P requires a written incident response program addressing unau
    For each scenario, document: detection method, severity classification, escalation path, containment steps, and notification workflow.
 
 2. **Configure alert policies for Copilot NPI events:**
-   - Navigate to **Microsoft Purview > Audit > Alert policies**
+   - Navigate to **Microsoft Defender portal > Alert policies**, or use `New-ProtectionAlert`
    - Create or verify an alert policy that triggers on DLP policy matches involving Copilot interactions
    - Set alert severity to High for SSN/account credential exposure; Medium for other NPI types
    - Configure alerts to route to the designated Privacy Officer and Compliance team

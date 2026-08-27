@@ -9,10 +9,11 @@ Common issues and resolution steps for privacy controls protecting consumer fina
 - **Symptoms:** Copilot generates responses containing SSNs, account numbers, or other NPI without triggering DLP.
 - **Root Cause:** DLP policies may not cover Copilot interaction locations, or the sensitive information types do not match the data format in Copilot outputs.
 - **Resolution:**
-  1. Verify the Copilot DLP policy is configured on Workload `Applications` with Enforcement Plane `CopilotExperiences` and includes Copilot location JSON.
+  1. Verify the Copilot DLP policy is configured on Workload `Applications` with Enforcement Plane `CopilotExperiences` and that its `Locations` value contains the documented Copilot location GUID `470f2276-e011-4e9d-a6ec-20768be3a4b0`; policy updates can take up to four hours to propagate.
   2. Test the sensitive information type against the specific data format appearing in Copilot responses.
   3. Update SIT patterns if Copilot formats data differently (e.g., partial masking, different separators).
   4. Enable DLP for the Copilot interaction workload if available in the tenant.
+  5. For prompt tests, enter test data as prompt text rather than an uploaded file; this control does not scan the contents of files uploaded directly into prompts, and SIT-based prompt blocking is in preview and rolling out.
 
 ### Issue 2: Information Barriers Not Blocking Copilot Cross-Segment Access
 
@@ -77,7 +78,7 @@ Common issues and resolution steps for privacy controls protecting consumer fina
 
 ## Diagnostic Steps
 
-1. **Check DLP policy status (fail closed):** `Connect-IPPSSession; $p = @(Get-DlpCompliancePolicy); if(-not $p){ throw 'Fail closed: no DLP policies returned.' }; foreach($x in $p){ foreach($name in @('Workload','EnforcementPlanes','Locations')){ if(-not $x.PSObject.Properties[$name]){ throw 'Fail closed: missing required verification property.' } } }; $m = @($p | Where-Object { $_.Workload -eq 'Applications' -and $_.EnforcementPlanes -contains 'CopilotExperiences' }); if(-not $m){ throw 'Fail closed: no Copilot DLP policy found for Workload=Applications and EnforcementPlane=CopilotExperiences.' }; $m | Select Name, Enabled, Mode, Workload, EnforcementPlanes, Locations`
+1. **Check DLP policy status (fail closed):** `Connect-IPPSSession; $p = @(Get-DlpCompliancePolicy); if(-not $p){ throw 'Fail closed: no DLP policies returned.' }; $copilotLocationGuid = '470f2276-e011-4e9d-a6ec-20768be3a4b0'; foreach($x in $p){ foreach($name in @('Workload','EnforcementPlanes','Locations')){ if(-not $x.PSObject.Properties[$name]){ throw 'Fail closed: missing required verification property.' } } }; $m = @($p | Where-Object { $_.Workload -eq 'Applications' -and $_.EnforcementPlanes -contains 'CopilotExperiences' -and ((ConvertTo-Json -InputObject $_.Locations -Depth 10 -Compress) -match [regex]::Escape($copilotLocationGuid)) }); if(-not $m){ throw "Fail closed: no Copilot DLP policy found for Workload=Applications, EnforcementPlane=CopilotExperiences, and location GUID=$copilotLocationGuid." }; $m | Select Name, Enabled, Mode, Workload, EnforcementPlanes, Locations`
 2. **Review SIT accuracy:** Test each sensitive information type against known NPI samples.
 3. **Verify barrier status:** `Get-InformationBarrierPolicy | Select Name, State, Segments`
 4. **Test Copilot responses:** Prompt Copilot with queries that might surface NPI from test data.

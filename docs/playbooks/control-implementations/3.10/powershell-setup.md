@@ -25,7 +25,7 @@ Connect-MgGraph -Scopes "InformationProtectionPolicy.ReadWrite.All", "AuditLog.R
 New-DlpCompliancePolicy `
     -Name "FSI-RegSP-Copilot-Privacy-Protection" `
     -Comment "Protects consumer financial information per SEC Reg S-P" `
-    -Locations '[{"Workload":"Applications","Region":null,"AddInclusions":[{"Type":"All","Identity":"All"}],"RemoveInclusions":[],"AddExclusions":[],"RemoveExclusions":[]}]' `
+    -Locations '[{"Workload":"Applications","Location":"470f2276-e011-4e9d-a6ec-20768be3a4b0","Inclusions":[{"Type":"Tenant","Identity":"All"}]}]' `
     -EnforcementPlanes @("CopilotExperiences") `
     -Mode Enable
 
@@ -38,8 +38,7 @@ New-DlpComplianceRule `
         @{Name="Credit Card Number"; minCount="1"; maxCount="9"},
         @{Name="U.S. Bank Account Number"; minCount="1"; maxCount="9"}
     ) `
-    -NotifyUser Owner `
-    -NotifyUserType Sender
+    -NotifyUser Owner
 
 # Rule for high-volume NPI detection
 New-DlpComplianceRule `
@@ -50,10 +49,11 @@ New-DlpComplianceRule `
         @{Name="Credit Card Number"; minCount="10"},
         @{Name="U.S. Bank Account Number"; minCount="10"}
     ) `
-    -BlockAccess $true `
-    -NotifyUser Owner, SiteAdmin
+    -RestrictAccess @(@{setting="ExcludeContentProcessing";value="Block"}) `
+    -RestrictWebGrounding $true
 
 $policy = Get-DlpCompliancePolicy -Identity "FSI-RegSP-Copilot-Privacy-Protection"
+$copilotLocationGuid = "470f2276-e011-4e9d-a6ec-20768be3a4b0"
 foreach ($name in @("Workload","EnforcementPlanes","Locations")) {
     if (-not $policy.PSObject.Properties[$name]) {
         throw "Fail closed: FSI-RegSP-Copilot-Privacy-Protection missing required property '$name'."
@@ -65,9 +65,15 @@ if ($policy.Workload -ne "Applications") {
 if (-not ($policy.EnforcementPlanes -contains "CopilotExperiences")) {
     throw "Fail closed: policy missing EnforcementPlanes=CopilotExperiences."
 }
+$locationsJson = ConvertTo-Json -InputObject $policy.Locations -Depth 10 -Compress
+if ($locationsJson -notmatch [regex]::Escape($copilotLocationGuid)) {
+    throw "Fail closed: policy missing Copilot location GUID=$copilotLocationGuid."
+}
 
-Write-Host "Reg S-P DLP policy created and verified for Workload=Applications with EnforcementPlanes=CopilotExperiences" -ForegroundColor Green
+Write-Host "Reg S-P DLP policy created and verified for Copilot location GUID=$copilotLocationGuid, Workload=Applications, and EnforcementPlanes=CopilotExperiences" -ForegroundColor Green
 ```
+
+> **Documented Copilot DLP limitations:** This prompt control checks text entered in the prompt but does not scan the contents of files uploaded directly into prompts. SIT-based prompt blocking is in preview and rolling out. Email coverage applies only to messages sent on or after January 1, 2025; calendar invites and admin units are not supported. Policy updates can take up to four hours to propagate.
 
 ### Script 2: DLP Incident Report for Privacy Violations
 
@@ -78,7 +84,8 @@ $endDate = Get-Date
 
 $dlpIncidents = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -RecordType DLP `
+    -RecordType CopilotInteraction `
+    -Operations "DlpRuleMatch" `
     -ResultSize 5000
 
 $npiIncidents = $dlpIncidents | Where-Object {
@@ -95,7 +102,7 @@ $npiIncidents | Select-Object CreationDate, UserIds, Operations |
     Export-Csv "RegSP_PrivacyIncidents_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 3: Content Explorer NPI Location Report
+### Script 3: Content Explorer (classic) NPI Location Report
 
 ```powershell
 # Identify locations containing consumer financial information
@@ -107,13 +114,13 @@ $sensitiveTypes = @(
 )
 
 foreach ($type in $sensitiveTypes) {
-    $results = Get-DlpSensitiveInformationTypeRulePackage |
+    $results = Get-DlpSensitiveInformationType |
         Where-Object { $_.Name -like "*$type*" }
-    Write-Host "SIT: $type — Rule Package: $($results.Name)" -ForegroundColor Cyan
+    Write-Host "SIT: $type — Sensitive information type: $($results.Name)" -ForegroundColor Cyan
 }
 
-Write-Host "`nUse Content Explorer in the Purview portal to identify NPI locations." -ForegroundColor Yellow
-Write-Host "Path: Purview > Data classification > Content explorer > Sensitive info types"
+Write-Host "`nUse Content Explorer (classic) in the Purview portal to identify NPI locations." -ForegroundColor Yellow
+Write-Host "Path: Purview > Information Protection > Classifiers > Sensitive info types; Content Explorer (classic) is under Solutions > Data classification."
 ```
 
 ### Script 4: Privacy Control Compliance Scorecard
