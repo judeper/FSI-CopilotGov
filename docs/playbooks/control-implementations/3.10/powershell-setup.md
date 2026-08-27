@@ -38,7 +38,45 @@ $privacyAlertRecipients = @("privacy-officer@contoso.com", "compliance-alerts@co
 
 # Incident report content deliberately excludes OriginalContent so that detected NPI is not
 # copied into notification email. Detection metadata is enough to open an investigation.
+# Title alone is not enough — Severity and DetectionDetails are what make the report
+# actionable, and Script 1b requires this exact set.
 $incidentReportFields = @("Title", "Service", "RulesMatched", "Severity", "DetectionDetails")
+
+# Conditions use the documented operator/groups/sensitivetypes syntax rather than a bare
+# array of sensitive information types. Microsoft documents the groups shape and shows
+# operator="Or" inside a group, but it does not document which operator a bare array
+# implies — and that operator is the whole control: "Or" matches a prompt containing any
+# one of these types, while "And" would only match a prompt containing all three at once.
+# Stating it explicitly is also what makes it verifiable in Script 1b.
+$lowVolumeNpiCondition = @{
+    operator = "And"
+    groups   = @(
+        @{
+            operator       = "Or"
+            name           = "RegSP NPI types"
+            sensitivetypes = @(
+                @{ name = "U.S. Social Security Number (SSN)"; mincount = "1"; maxcount = "9" },
+                @{ name = "Credit Card Number";                mincount = "1"; maxcount = "9" },
+                @{ name = "U.S. Bank Account Number";          mincount = "1"; maxcount = "9" }
+            )
+        }
+    )
+}
+
+$highVolumeNpiCondition = @{
+    operator = "And"
+    groups   = @(
+        @{
+            operator       = "Or"
+            name           = "RegSP NPI types"
+            sensitivetypes = @(
+                @{ name = "U.S. Social Security Number (SSN)"; mincount = "10" },
+                @{ name = "Credit Card Number";                mincount = "10" },
+                @{ name = "U.S. Bank Account Number";          mincount = "10" }
+            )
+        }
+    )
+}
 
 New-DlpCompliancePolicy `
     -Name $policyName `
@@ -49,15 +87,14 @@ New-DlpCompliancePolicy `
     -ErrorAction Stop
 
 # Rule for low-volume NPI detection: user notification plus a medium-severity admin alert.
+# NotifyUserType is set explicitly rather than left to the service default: the default is
+# not documented, and Script 1b validates the notification target and channel exactly.
 New-DlpComplianceRule `
     -Name "RegSP-LowVolume-NPI-Warn" `
     -Policy $policyName `
-    -ContentContainsSensitiveInformation @(
-        @{Name="U.S. Social Security Number (SSN)"; minCount="1"; maxCount="9"},
-        @{Name="Credit Card Number"; minCount="1"; maxCount="9"},
-        @{Name="U.S. Bank Account Number"; minCount="1"; maxCount="9"}
-    ) `
+    -ContentContainsSensitiveInformation $lowVolumeNpiCondition `
     -NotifyUser Owner `
+    -NotifyUserType "Email,PolicyTip" `
     -GenerateAlert $privacyAlertRecipients `
     -GenerateIncidentReport $privacyAlertRecipients `
     -IncidentReportContent $incidentReportFields `
@@ -69,11 +106,7 @@ New-DlpComplianceRule `
 New-DlpComplianceRule `
     -Name "RegSP-HighVolume-NPI-Block" `
     -Policy $policyName `
-    -ContentContainsSensitiveInformation @(
-        @{Name="U.S. Social Security Number (SSN)"; minCount="10"},
-        @{Name="Credit Card Number"; minCount="10"},
-        @{Name="U.S. Bank Account Number"; minCount="10"}
-    ) `
+    -ContentContainsSensitiveInformation $highVolumeNpiCondition `
     -RestrictAccess @(@{setting="ExcludeContentProcessing";value="Block"}) `
     -RestrictWebGrounding $true `
     -GenerateAlert $privacyAlertRecipients `
@@ -101,19 +134,27 @@ first binds to exactly one case-sensitive name match and rejects any other count
 validates anything. It then confirms, in order: `Mode=Enable`; exactly one Microsoft 365 Copilot
 and Copilot Chat location entry scoped tenant-wide (`Type=Tenant` / `Identity=All`) with no
 exclusions; `EnforcementPlanes=CopilotExperiences`; that each expected rule resolves to exactly
-one name match **and** reports the validated policy as its parent; each rule's sensitive
-information type conditions and volume thresholds; that the low-volume rule restricts nothing
-(no `RestrictAccess`, no `RestrictWebGrounding`, no `BlockAccess`) and still notifies the user;
-that the high-volume rule carries exactly one `ExcludeContentProcessing` restriction with the
-value `Block` plus `RestrictWebGrounding`; and each rule's `GenerateAlert`,
-`GenerateIncidentReport` (with the exact configured recipient set), `IncidentReportContent`, and
+one name match **and** reports the validated policy as its parent; that each rule's condition
+uses the documented `operator` / `groups` / `sensitivetypes` shape with **exactly one** group
+whose operator is **`Or`** (an `And` group would only match a prompt carrying every NPI type at
+once, so a prompt containing only Social Security numbers would slip past); each rule's
+sensitive information type conditions and volume thresholds; that the low-volume rule restricts
+nothing (no `RestrictAccess`, no `RestrictWebGrounding`, no `BlockAccess`) and notifies exactly
+the configured target (`NotifyUser=Owner` and `NotifyUserType=Email,PolicyTip` — a
+`SiteAdmin`-only value notifies an administrator and no one else, so it fails); that the
+high-volume rule carries exactly one `ExcludeContentProcessing` restriction with the value
+`Block` plus `RestrictWebGrounding`; and each rule's `GenerateAlert`, `GenerateIncidentReport`
+(with the exact configured recipient set), `IncidentReportContent` (the exact configured field
+set — a `Title`-only report, the documented `Default` set, or `All` all fail), and
 `ReportSeverityLevel`.
 
 Where a property is not exposed by the tenant's cmdlet build, or its value cannot be read
 reliably, the script stops and tells you exactly what to verify by hand rather than silently
-passing. Configuration that is outside this control's approved design — extra sensitive
-information types, extra `RestrictAccess` settings, extra rules in the policy — is reported as a
-warning and is explicitly **not** validated here.
+passing. That includes the condition operator: a rule created from a bare array of sensitive
+information types does not state the operator between the types, so the script fails closed and
+points at the portal instead of assuming `Or`. Configuration that is outside this control's
+approved design — extra sensitive information types, extra `RestrictAccess` settings, extra
+rules in the policy — is reported as a warning and is explicitly **not** validated here.
 
 ```powershell
 $ErrorActionPreference = 'Stop'
@@ -123,6 +164,24 @@ $ErrorActionPreference = 'Stop'
 $policyName             = 'FSI-RegSP-Copilot-Privacy-Protection'
 $copilotLocationGuid    = '470f2276-e011-4e9d-a6ec-20768be3a4b0'
 $privacyAlertRecipients = @('privacy-officer@contoso.com', 'compliance-alerts@contoso.com')
+
+# The exact notification target and channel Script 1 configures on the low-volume rule.
+# 'SiteAdmin' is an administrator target: a rule that notifies only SiteAdmin produces no
+# notification for the person who typed the prompt, so it is not this design.
+$expectedNotifyUser     = @('Owner')
+$expectedNotifyUserType = @('Email', 'PolicyTip')
+
+# The exact incident-report field set Script 1 configures. Microsoft documents the full value
+# list below; 'Default' is documented to expand to DocumentAuthor/MatchedItem/RulesMatched/
+# Service/Title and to make any other value ignored, and 'All' is documented as usable only by
+# itself and does not exclude OriginalContent — neither is this design.
+$expectedIncidentReportContent  = @('Title', 'Service', 'RulesMatched', 'Severity', 'DetectionDetails')
+$documentedIncidentReportFields = @(
+    'All', 'Default', 'DetectionDetails', 'Detections', 'DocumentAuthor', 'DocumentLastModifier',
+    'MatchedItem', 'OriginalContent', 'RulesMatched', 'Service', 'Severity', 'Title'
+)
+$documentedNotifyUserTypes = @('NotSet', 'Email', 'PolicyTip')
+
 $expectedRules = [ordered]@{
     'RegSP-LowVolume-NPI-Warn' = @{
         Severity       = 'Medium'
@@ -146,20 +205,34 @@ $expectedRules = [ordered]@{
 
 $portalEvidence = "Record portal evidence instead: Microsoft Purview portal > Solutions > Data loss prevention > Policies > $policyName — policy status and scope, each rule's conditions and actions, and each rule's Incident reports section (severity, alert toggle, recipients)."
 
+function Get-DlpMemberName {
+    param($InputObject, [string]$Name)
+
+    if ($null -eq $InputObject) { return $null }
+    if ($InputObject -is [System.Collections.IDictionary]) {
+        foreach ($key in $InputObject.Keys) {
+            if (([string]$key) -ieq $Name) { return $key }
+        }
+        return $null
+    }
+    $property = $InputObject.PSObject.Properties[$Name]
+    if ($null -ne $property) { return $property.Name }
+    return $null
+}
+
 function Test-DlpMember {
     param($InputObject, [string]$Name)
 
-    if ($null -eq $InputObject) { return $false }
-    if ($InputObject -is [System.Collections.IDictionary]) { return [bool]$InputObject.Contains($Name) }
-    return ($null -ne $InputObject.PSObject.Properties[$Name])
+    return ($null -ne (Get-DlpMemberName -InputObject $InputObject -Name $Name))
 }
 
 function Get-DlpMember {
     param($InputObject, [string]$Name)
 
-    if (-not (Test-DlpMember -InputObject $InputObject -Name $Name)) { return $null }
-    if ($InputObject -is [System.Collections.IDictionary]) { return $InputObject[$Name] }
-    return $InputObject.PSObject.Properties[$Name].Value
+    $key = Get-DlpMemberName -InputObject $InputObject -Name $Name
+    if ($null -eq $key) { return $null }
+    if ($InputObject -is [System.Collections.IDictionary]) { return $InputObject[$key] }
+    return $InputObject.PSObject.Properties[$key].Value
 }
 
 function Get-RequiredDlpMember {
@@ -221,30 +294,82 @@ function Assert-DlpRecipient {
     }
 }
 
+function Assert-DlpExactSet {
+    param([string[]]$Actual, [string[]]$Expected, [string]$Subject, [string]$Name)
+
+    $actualSet  = @($Actual   | ForEach-Object { ([string]$_).Trim().ToLowerInvariant() } | Where-Object { $_ } | Sort-Object -Unique)
+    $wantedSet  = @($Expected | ForEach-Object { ([string]$_).Trim().ToLowerInvariant() } | Where-Object { $_ } | Sort-Object -Unique)
+    $missing    = @($wantedSet | Where-Object { $actualSet -notcontains $_ })
+    $unexpected = @($actualSet | Where-Object { $wantedSet -notcontains $_ })
+    if ($missing.Count -gt 0 -or $unexpected.Count -gt 0) {
+        throw "Fail closed: rule '$Subject' '$Name' is [$(@($Actual) -join ', ')] but exactly [$($Expected -join ', ')] was expected (missing: [$($missing -join ', ')]; unexpected: [$($unexpected -join ', ')]). $portalEvidence"
+    }
+}
+
+function Get-DlpTokenList {
+    param($Value)
+
+    return @(
+        @($Value) |
+            Where-Object { $null -ne $_ } |
+            ForEach-Object { ([string]$_) -split ',' } |
+            ForEach-Object { $_.Trim() } |
+            Where-Object { $_ -ne '' }
+    )
+}
+
+# --- Condition structure -------------------------------------------------------------
+# Microsoft documents the ContentContainsSensitiveInformation condition as an
+# operator/groups/sensitivetypes structure. The operator inside a group is what decides
+# whether the rule matches ANY of the listed NPI types or only a prompt that carries ALL of
+# them, so it is read explicitly here instead of flattening the structure and assuming.
+function Get-DlpConditionRoot {
+    param($Value, [string]$Subject)
+
+    $candidates = @()
+    if (($Value -is [System.Collections.IEnumerable]) -and
+        -not ($Value -is [System.Collections.IDictionary]) -and
+        -not ($Value -is [string])) {
+        $candidates = @($Value | Where-Object { $null -ne $_ })
+    }
+    else {
+        $candidates = @($Value | Where-Object { $null -ne $_ })
+    }
+
+    $roots = @($candidates | Where-Object { Test-DlpMember -InputObject $_ -Name 'groups' })
+    if ($roots.Count -ne 1) {
+        throw "Fail closed: rule '$Subject' returned a ContentContainsSensitiveInformation value carrying $($roots.Count) documented condition container(s) ('groups'); exactly 1 is required. A condition built from a bare array of sensitive information types does not state the operator between those types, so this script cannot tell whether the rule matches any one NPI type or only a prompt containing all of them. Recreate the rule with the documented groups syntax shown in Script 1, or record portal evidence. $portalEvidence"
+    }
+    return $roots[0]
+}
+
+function Get-DlpConditionOperator {
+    param($Node, [string]$Subject, [string]$Scope)
+
+    if (-not (Test-DlpMember -InputObject $Node -Name 'operator')) {
+        throw "Fail closed: rule '$Subject' does not expose the $Scope 'operator', so the logic joining its sensitive information type conditions cannot be confirmed from cmdlet output. $portalEvidence"
+    }
+    $operator = ([string](Get-DlpMember -InputObject $Node -Name 'operator')).Trim()
+    if ($operator -ieq 'And' -or $operator -ieq 'Or') { return $operator }
+    throw "Fail closed: rule '$Subject' returned $Scope operator '$operator'. Microsoft documents only 'And' and 'Or' for this key, so the condition logic cannot be read from cmdlet output. $portalEvidence"
+}
+
 function Get-DlpSensitiveTypeEntry {
-    param($Node)
+    param($Node, [string]$Subject)
 
-    if ($null -eq $Node -or $Node -is [string]) { return }
-    if (($Node -is [System.Collections.IEnumerable]) -and -not ($Node -is [System.Collections.IDictionary])) {
-        foreach ($item in $Node) { Get-DlpSensitiveTypeEntry -Node $item }
-        return
-    }
-
-    $hasChildNode = $false
-    foreach ($childName in @('groups', 'sensitivetypes', 'sensitiveinformation')) {
-        if (Test-DlpMember -InputObject $Node -Name $childName) {
-            $hasChildNode = $true
-            Get-DlpSensitiveTypeEntry -Node (Get-DlpMember -InputObject $Node -Name $childName)
+    foreach ($item in @($Node)) {
+        if ($null -eq $item -or $item -is [string]) {
+            throw "Fail closed: rule '$Subject' returned a sensitive information type entry that is not a readable object, so its name and instance counts cannot be checked. $portalEvidence"
         }
-    }
-    if ($hasChildNode) { return }
-
-    $name = [string](Get-DlpMember -InputObject $Node -Name 'name')
-    if ([string]::IsNullOrWhiteSpace($name)) { return }
-    [PSCustomObject]@{
-        Name     = $name.Trim()
-        MinCount = (Get-DlpMember -InputObject $Node -Name 'mincount')
-        MaxCount = (Get-DlpMember -InputObject $Node -Name 'maxcount')
+        $name = [string](Get-DlpMember -InputObject $item -Name 'name')
+        if ([string]::IsNullOrWhiteSpace($name)) {
+            throw "Fail closed: rule '$Subject' returned a sensitive information type entry with no readable 'name', so the condition cannot be checked. $portalEvidence"
+        }
+        [PSCustomObject]@{
+            Name     = $name.Trim()
+            MinCount = (Get-DlpMember -InputObject $item -Name 'mincount')
+            MaxCount = (Get-DlpMember -InputObject $item -Name 'maxcount')
+        }
     }
 }
 
@@ -367,7 +492,34 @@ foreach ($ruleName in $expectedRules.Keys) {
     if ($conditionValue -is [string]) {
         throw "Fail closed: rule '$ruleName' returned its ContentContainsSensitiveInformation condition as raw text, which this script does not parse. $portalEvidence"
     }
-    $actualTypes = @(Get-DlpSensitiveTypeEntry -Node $conditionValue)
+
+    $conditionRoot = Get-DlpConditionRoot -Value $conditionValue -Subject $ruleName
+    $rootOperator = Get-DlpConditionOperator -Node $conditionRoot -Subject $ruleName -Scope 'top-level'
+    if ($rootOperator -ine 'And') {
+        throw "Fail closed: rule '$ruleName' joins its condition groups with operator '$rootOperator'; the approved design is the documented 'And' top-level operator over a single group. $portalEvidence"
+    }
+
+    $conditionGroups = @(Get-DlpMember -InputObject $conditionRoot -Name 'groups' | Where-Object { $null -ne $_ })
+    if ($conditionGroups.Count -ne 1) {
+        throw "Fail closed: rule '$ruleName' carries $($conditionGroups.Count) condition group(s); the approved design is exactly 1 group holding the NPI sensitive information types. Extra or missing groups change what the rule matches and are not validated here. $portalEvidence"
+    }
+    $conditionGroup = $conditionGroups[0]
+
+    $groupOperator = Get-DlpConditionOperator -Node $conditionGroup -Subject $ruleName -Scope 'condition group'
+    if ($groupOperator -ine 'Or') {
+        throw "Fail closed: rule '$ruleName' joins its sensitive information types with operator '$groupOperator'. With 'And' the rule matches only a prompt that carries every listed NPI type at the same time, so a prompt containing nothing but Social Security numbers would not match it. This control requires 'Or' so that any one of the NPI types triggers the rule on its own. $portalEvidence"
+    }
+    if (Test-DlpMember -InputObject $conditionGroup -Name 'groups') {
+        throw "Fail closed: rule '$ruleName' nests further condition groups inside its NPI group, so the effective match logic is not the flat 'any one of these types' design this script validates. $portalEvidence"
+    }
+    if (-not (Test-DlpMember -InputObject $conditionGroup -Name 'sensitivetypes')) {
+        throw "Fail closed: rule '$ruleName' condition group does not expose 'sensitivetypes', so the sensitive information types it matches cannot be confirmed from cmdlet output. $portalEvidence"
+    }
+    if (Test-DlpMember -InputObject $conditionGroup -Name 'labels') {
+        Write-Warning "Rule '$ruleName' also carries a sensitivity label condition in the same group. That condition is outside this control's approved design and is not validated here; review it separately."
+    }
+
+    $actualTypes = @(Get-DlpSensitiveTypeEntry -Node (Get-DlpMember -InputObject $conditionGroup -Name 'sensitivetypes') -Subject $ruleName)
     foreach ($expectedType in $expected.SensitiveTypes) {
         $typeMatches = @($actualTypes | Where-Object { $_.Name -ieq $expectedType.Name })
         if ($typeMatches.Count -ne 1) {
@@ -436,24 +588,52 @@ foreach ($ruleName in $expectedRules.Keys) {
             throw "Fail closed: rule '$ruleName' sets BlockAccess. The low-volume rule is designed to notify without restricting Copilot."
         }
         $notifyUser = @(Get-RequiredDlpMember -InputObject $rule -Name 'NotifyUser' -Subject $ruleName)
-        $notifyUser = @($notifyUser | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+        $notifyUser = @($notifyUser | ForEach-Object { ([string]$_).Trim() } | Where-Object { $_ -ne '' })
         if ($notifyUser.Count -eq 0) {
-            throw "Fail closed: rule '$ruleName' has no NotifyUser recipients, so the policy tip this control promises for low-volume detections is not shown."
+            throw "Fail closed: rule '$ruleName' has no NotifyUser recipients, so the end-user notification this control expects for low-volume detections is not configured. $portalEvidence"
         }
+        $endUserTargets = @($notifyUser | Where-Object { $_ -ine 'SiteAdmin' })
+        if ($endUserTargets.Count -eq 0) {
+            throw "Fail closed: rule '$ruleName' sets NotifyUser=[$($notifyUser -join ', ')]. SiteAdmin is an administrator target, so nothing reaches the person who typed the prompt and the low-volume rule notifies no user at all. Expected NotifyUser exactly [$($expectedNotifyUser -join ', ')]. $portalEvidence"
+        }
+        Assert-DlpExactSet -Actual $notifyUser -Expected $expectedNotifyUser -Subject $ruleName -Name 'NotifyUser'
+
+        $notifyUserTypes = @(Get-DlpTokenList -Value (Get-RequiredDlpMember -InputObject $rule -Name 'NotifyUserType' -Subject $ruleName))
+        if ($notifyUserTypes.Count -eq 0) {
+            throw "Fail closed: rule '$ruleName' returned an empty NotifyUserType, so the notification channel cannot be confirmed. $portalEvidence"
+        }
+        $undocumentedTypes = @($notifyUserTypes | Where-Object { $documentedNotifyUserTypes -notcontains $_ })
+        if ($undocumentedTypes.Count -gt 0) {
+            throw "Fail closed: rule '$ruleName' returned NotifyUserType value(s) [$($undocumentedTypes -join ', ')] that are not in the documented set [$($documentedNotifyUserTypes -join ', ')], so the notification channel cannot be read from cmdlet output. $portalEvidence"
+        }
+        if ($notifyUserTypes -contains 'NotSet') {
+            throw "Fail closed: rule '$ruleName' has NotifyUserType=NotSet, so no notification channel is selected and the notification this rule is designed to produce cannot be confirmed. $portalEvidence"
+        }
+        Assert-DlpExactSet -Actual $notifyUserTypes -Expected $expectedNotifyUserType -Subject $ruleName -Name 'NotifyUserType'
     }
 
     # Alerts, incident reports, severity, recipients
     Assert-DlpRecipient -Value (Get-RequiredDlpMember -InputObject $rule -Name 'GenerateAlert' -Subject $ruleName) -Expected $privacyAlertRecipients -Subject $ruleName -Name 'GenerateAlert'
     Assert-DlpRecipient -Value (Get-RequiredDlpMember -InputObject $rule -Name 'GenerateIncidentReport' -Subject $ruleName) -Expected $privacyAlertRecipients -Subject $ruleName -Name 'GenerateIncidentReport'
 
-    $reportContent = @(Get-RequiredDlpMember -InputObject $rule -Name 'IncidentReportContent' -Subject $ruleName)
-    $reportContent = @($reportContent | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | ForEach-Object { ([string]$_).Trim() })
+    $reportContent = @(Get-DlpTokenList -Value (Get-RequiredDlpMember -InputObject $rule -Name 'IncidentReportContent' -Subject $ruleName))
     if ($reportContent.Count -eq 0) {
         throw "Fail closed: rule '$ruleName' has no IncidentReportContent fields, so the incident report carries no detection detail. $portalEvidence"
+    }
+    $undocumentedFields = @($reportContent | Where-Object { $documentedIncidentReportFields -notcontains $_ })
+    if ($undocumentedFields.Count -gt 0) {
+        throw "Fail closed: rule '$ruleName' returned IncidentReportContent value(s) [$($undocumentedFields -join ', ')] that are not in the documented value list, so the report contents cannot be read from cmdlet output. $portalEvidence"
     }
     if ($reportContent -contains 'OriginalContent') {
         throw "Fail closed: rule '$ruleName' includes OriginalContent in its incident report, which copies detected NPI into notification email. Remove it, or record the approved exception as documented evidence."
     }
+    if ($reportContent -contains 'All') {
+        throw "Fail closed: rule '$ruleName' sets IncidentReportContent=All. Microsoft documents All as usable only by itself, and it does not exclude OriginalContent, so it cannot be relied on to keep detected NPI out of notification email. Expected exactly [$($expectedIncidentReportContent -join ', ')]. $portalEvidence"
+    }
+    if ($reportContent -contains 'Default') {
+        throw "Fail closed: rule '$ruleName' sets IncidentReportContent=Default. Microsoft documents Default as DocumentAuthor, MatchedItem, RulesMatched, Service, and Title, and documents that any additional values used with it are ignored — so the report would carry neither Severity nor DetectionDetails. Expected exactly [$($expectedIncidentReportContent -join ', ')]. $portalEvidence"
+    }
+    Assert-DlpExactSet -Actual $reportContent -Expected $expectedIncidentReportContent -Subject $ruleName -Name 'IncidentReportContent'
 
     $severity = [string](Get-RequiredDlpMember -InputObject $rule -Name 'ReportSeverityLevel' -Subject $ruleName)
     if ($severity -ne $expected.Severity) {
@@ -473,18 +653,22 @@ if ($unexpectedRules.Count -gt 0) {
     Write-Warning "'$policyName' also contains rule(s) [$($unexpectedRules -join ', ')] that are outside this control's approved design. They are not validated here; review them separately."
 }
 
-Write-Host "Verified: '$policyName' resolved to exactly one policy, is Mode=Enable, is scoped tenant-wide (Type=Tenant / Identity=All, no exclusions) on Copilot location $copilotLocationGuid with EnforcementPlanes=CopilotExperiences, and rules $($validatedRules -join ', ') are enabled with their expected sensitive information type conditions, restriction actions, incident reports, severity, and alert recipients ($($privacyAlertRecipients -join ', ')). Any warnings above cover configuration outside this control's design and are not validated." -ForegroundColor Green
+Write-Host "Verified: '$policyName' resolved to exactly one policy, is Mode=Enable, is scoped tenant-wide (Type=Tenant / Identity=All, no exclusions) on Copilot location $copilotLocationGuid with EnforcementPlanes=CopilotExperiences, and rules $($validatedRules -join ', ') are enabled with a single 'Or' sensitive information type condition group, their expected volume thresholds, restriction actions, notification target and channel, incident report fields ($($expectedIncidentReportContent -join ', ')), severity, and alert recipients ($($privacyAlertRecipients -join ', ')). Any warnings above cover configuration outside this control's design and are not validated." -ForegroundColor Green
 ```
 
 > **Manual verification fallback:** If any check stops the script — including the "does not
-> expose" messages — do not treat the control as validated. Open **Microsoft Purview portal >
-> Solutions > Data loss prevention > Policies > FSI-RegSP-Copilot-Privacy-Protection**, confirm
-> the policy status is on (not simulation), that its location is **Microsoft 365 Copilot and
-> Copilot Chat** scoped to all users with no exclusions, that the low-volume rule notifies
-> without any **Prevent Copilot from processing content** action, that the high-volume rule
-> carries both **Processing prompts** and **Performing Web Searches** restrictions, and that each
-> rule's **Incident reports** section shows the severity level, the admin-alert toggle, and the
-> recipients above. Record the screenshots as the evidence instead of the script output.
+> expose" and "cannot be read" messages — do not treat the control as validated. Open
+> **Microsoft Purview portal > Solutions > Data loss prevention > Policies >
+> FSI-RegSP-Copilot-Privacy-Protection**, confirm the policy status is on (not simulation),
+> that its location is **Microsoft 365 Copilot and Copilot Chat** scoped to all users with no
+> exclusions, that each rule's **Content contains** condition is grouped with **Any of these**
+> (the portal wording for the `Or` group operator — **All of these** would require every NPI
+> type in one prompt), that the low-volume rule notifies the user without any **Prevent Copilot
+> from processing content** action, that the high-volume rule carries both **Processing
+> prompts** and **Performing Web Searches** restrictions, and that each rule's **Incident
+> reports** section shows the severity level, the admin-alert toggle, the recipients above, and
+> the exact included fields (Title, Service, RulesMatched, Severity, DetectionDetails). Record
+> the screenshots as the evidence instead of the script output.
 
 > **Documented Copilot DLP limitations (read before relying on this control):** In the **Microsoft 365 Copilot and Copilot Chat** location, sensitive information type (SIT) enforcement evaluates **the text a user types into the prompt**. The two documented SIT actions are **Prevent Copilot from processing content > Processing prompts** and **> Performing Web Searches**. Microsoft does not document a DLP action that inspects or blocks the text of a **generated Copilot response**; sensitive data in responses can be *observed* after the fact (DSPM / Activity explorer **AI activities**, Audit, eDiscovery) but is not blocked by this control. DLP also can't scan the contents of files uploaded directly into a prompt — only typed prompt text is checked. SIT-based prompt blocking is in preview and rolling out. The sensitivity label condition covers emails sent on or after January 1, 2025; calendar invites and Admin units are not supported. Policy updates can take up to four hours to take effect in the Copilot experience.
 
@@ -496,13 +680,27 @@ matches are not carried on Copilot interaction records, so such a query returns 
 
 Microsoft documents that `Search-UnifiedAuditLog` returns a maximum of 100 results by default,
 that `-SessionCommand ReturnLargeSet` with a **stable** `-SessionId` pages through a maximum of
-50,000 results per session (5,000 records per page, unsorted, and repeated across pages), and
-that larger result sets have to be split into narrower searches. A single call is therefore a
-sample, not a 30-day population. The collector below pages each one-day segment to exhaustion
-with one SessionId per segment, deduplicates on `AuditData.Id`, and throws — instead of printing
-a count — whenever a page errors, paging stops making progress, a record cannot be deduplicated,
-or a segment reaches the documented 50,000-result ceiling. A partial collection is never
-reported as a complete count.
+50,000 results per session (5,000 records per page, unsorted), and that larger result sets have
+to be split into narrower searches. A single call is therefore a sample, not a 30-day
+population.
+
+Paging to exhaustion is not by itself completeness. Microsoft documents `ReturnLargeSet` as
+"optimized for search latency" and documents the `-HighCompleteness` switch (currently in
+preview and not available in all organizations) as the option that "specifies completeness
+instead performance in the results" — stating explicitly that **"If you don't use this switch,
+the query runs faster but might have missing search results."** The collector below therefore
+refuses to run at all unless the installed `Search-UnifiedAuditLog` exposes `-HighCompleteness`,
+and passes it on every page. Microsoft does not document how `-HighCompleteness` interacts with
+`-SessionCommand ReturnLargeSet`; if the combination is rejected by the service, the page call
+throws and no count is printed.
+
+The collector pages each one-day segment with one SessionId per segment, deduplicates on
+`AuditData.Id`, and throws — instead of printing a count — whenever a page errors, a page of
+records arrives without any of the documented progress signals (`ResultIndex`, `ResultCount`,
+`AuditSearchRequestMetadata.moreRecordsAvailable`), paging stops making progress, a segment ends
+while the service still reports more records available, a record cannot be deduplicated, or a
+segment reaches the documented 50,000-result ceiling. A partial collection is never reported as
+a complete count.
 
 ```powershell
 $ErrorActionPreference = 'Stop'
@@ -510,9 +708,10 @@ $ErrorActionPreference = 'Stop'
 # Collects every CopilotInteraction record in the window. Microsoft documents that
 # Search-UnifiedAuditLog returns up to 100 records by default, that SessionCommand
 # ReturnLargeSet with a stable SessionId pages through up to 50,000 results per session
-# (max 5,000 records per page), and that larger result sets must be split across
-# narrower searches. Anything this function cannot page to exhaustion is thrown, never
-# returned as a partial evidence set.
+# (max 5,000 records per page), that larger result sets must be split across narrower
+# searches, and that without -HighCompleteness a query "runs faster but might have missing
+# search results". Anything this function cannot page to exhaustion on a
+# completeness-capable path is thrown, never returned as a partial evidence set.
 function Get-PagedCopilotInteractionRecord {
     [CmdletBinding()]
     param(
@@ -530,6 +729,14 @@ function Get-PagedCopilotInteractionRecord {
     }
     if ($SegmentDuration -le [timespan]::Zero) {
         throw "SegmentDuration must be greater than zero."
+    }
+
+    # Completeness-capable path check. Microsoft documents that without -HighCompleteness the
+    # query "runs faster but might have missing search results", so a build that cannot offer
+    # the switch cannot produce an exhaustive population and must not pretend otherwise.
+    $auditCommand = Get-Command -Name Search-UnifiedAuditLog -ErrorAction Stop
+    if (-not $auditCommand.Parameters.ContainsKey('HighCompleteness')) {
+        throw "Fail closed: the installed Search-UnifiedAuditLog does not expose -HighCompleteness, so results are returned on the performance-optimized path that Microsoft documents as possibly having missing search results. This collector cannot represent its output as a complete population. Update the ExchangeOnlineManagement module to a build that supports -HighCompleteness, or collect the evidence from Microsoft Purview portal > Solutions > Audit and record the search parameters and export as the evidence instead."
     }
 
     $records = [System.Collections.Generic.List[object]]::new()
@@ -550,6 +757,7 @@ function Get-PagedCopilotInteractionRecord {
         $previousResultIndex = -1L
         $segmentResultCount = 0
         $segmentExhausted = $false
+        $moreRecordsExpected = $false
 
         do {
             $pageNumber++
@@ -566,6 +774,7 @@ function Get-PagedCopilotInteractionRecord {
                         -Operations "CopilotInteraction" `
                         -SessionId $sessionId `
                         -SessionCommand ReturnLargeSet `
+                        -HighCompleteness `
                         -ResultSize 5000 `
                         -ErrorAction Stop
                 )
@@ -580,6 +789,9 @@ function Get-PagedCopilotInteractionRecord {
             }
 
             if ($page.Count -eq 0) {
+                if ($moreRecordsExpected) {
+                    throw "Audit paging for $segmentStart to $segmentEnd (SessionId $sessionId) returned zero records on page $pageNumber after the service reported more records were available; the segment was truncated and this run is not complete."
+                }
                 $segmentExhausted = $true
                 break
             }
@@ -632,12 +844,22 @@ function Get-PagedCopilotInteractionRecord {
             if ($null -ne $metadataProperty -and $null -ne $metadataProperty.Value) {
                 $moreRecordsProperty = $metadataProperty.Value.PSObject.Properties['moreRecordsAvailable']
             }
+
+            # Microsoft names ResultIndex, ResultCount, and
+            # AuditSearchRequestMetadata.moreRecordsAvailable as the data to gauge progress
+            # with. A page of records carrying none of them cannot be reasoned about, so the
+            # run is failed rather than paged blindly until an empty page looks like the end.
+            if ($null -eq $moreRecordsProperty -and -not ($hasResultIndex -and $hasResultCount)) {
+                throw "Audit page $pageNumber for $segmentStart to $segmentEnd (SessionId $sessionId) returned records without any documented progress signal (AuditSearchRequestMetadata.moreRecordsAvailable, or both ResultIndex and ResultCount), so exhaustion cannot be established and this run is not complete."
+            }
+
             if ($null -ne $moreRecordsProperty) {
                 $segmentExhausted = -not [System.Convert]::ToBoolean($moreRecordsProperty.Value)
             }
             elseif ($hasResultIndex -and $hasResultCount) {
                 $segmentExhausted = ([long]$resultIndexProperty.Value -eq [long]$resultCountProperty.Value)
             }
+            $moreRecordsExpected = -not $segmentExhausted
 
             if (
                 $segmentResultCount -ge 50000 -or
@@ -686,7 +908,7 @@ $report = @(
 )
 
 Write-Host "Copilot interactions audited from $($startDate.ToString('u')) to $($endDate.ToString('u')): $($report.Count)."
-Write-Host "This count is exhaustive for the window — every segment was paged to exhaustion, and the collector throws instead of returning a partial set."
+Write-Host "Every segment was collected with -HighCompleteness — the option Microsoft documents as prioritizing completeness over performance — and paged until the service's own documented signals reported exhaustion. The collector throws instead of returning a partial set, so this count is the population the audit service reported for the window, not a sample."
 $report | Export-Csv "RegSP_CopilotInteractions_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
@@ -712,8 +934,11 @@ The script below deserializes every page and writes **one** JSON array of record
 companion `.pages.json` file holding the per-page metadata (page number, record count,
 watermark, last-page flag) so paging remains auditable. It throws instead of writing a file when
 a page is missing a documented property, returns unreadable JSON or `LastPage`, or repeats a
-watermark. `ConvertTo-Json -AsArray` requires PowerShell 6 or later — use the PowerShell 7.x
-version named in the prerequisites.
+watermark. Note that `-AsArray` is deliberately **not** used: `ConvertTo-Json -InputObject`
+does not enumerate its argument, so an array passed to `-InputObject` is already serialized as a
+JSON array and `-AsArray` would wrap it a second time, producing a nested `[[...]]` document
+that no consumer of this evidence expects. Without `-AsArray`, zero records serialize to `[]`,
+one record to `[{...}]`, and many records to a flat array.
 
 ```powershell
 $ErrorActionPreference = 'Stop'
@@ -814,8 +1039,12 @@ do {
 while (-not $lastPage)
 
 $recordArray = $records.ToArray()
-ConvertTo-Json -InputObject $recordArray -Depth 20 -AsArray | Set-Content -Path $outFile -Encoding utf8
-ConvertTo-Json -InputObject $pageMetadata.ToArray() -Depth 5 -AsArray | Set-Content -Path $pageFile -Encoding utf8
+
+# No -AsArray here: ConvertTo-Json -InputObject does not enumerate its argument, so these
+# arrays already serialize as JSON arrays ([] when empty, [{...}] for a single record).
+# Adding -AsArray would wrap them again and emit a nested [[...]] document.
+ConvertTo-Json -InputObject $recordArray -Depth 20 | Set-Content -Path $outFile -Encoding utf8
+ConvertTo-Json -InputObject $pageMetadata.ToArray() -Depth 5 | Set-Content -Path $pageFile -Encoding utf8
 
 Write-Host "Copilot DLP rule-match activity exported to $outFile — one JSON array holding $($recordArray.Count) record(s) aggregated from $pageNumber page(s) of the 30-day Activity Explorer window."
 Write-Host "Per-page metadata (page number, record count, watermark, last-page flag) is in $pageFile."
