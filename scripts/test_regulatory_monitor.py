@@ -51,6 +51,38 @@ def _finra_notice_page(body: str, *, node_type: str = "notice") -> str:
     )
 
 
+def _with_finra_canonical(content, url):
+    """Stamp a notice detail page with the ``rel=canonical`` live FINRA emits.
+
+    Verified against production: ``https://www.finra.org/rules-guidance/
+    notices/26-12`` returns ``<link rel="canonical" href="https://www.finra.org
+    /rules-guidance/notices/26-12" />``. Detail identity now fails closed when
+    a page declares nothing about itself, so a fixture that omits the canonical
+    is not a "simpler" notice page -- it is an *unidentified* one, which is the
+    exact condition the monitor must refuse. Stubs stamp it the way the source
+    does rather than each test restating it.
+
+    Only notice detail URLs are stamped, only when the fixture does not already
+    declare an identity (so mismatch/redirect fixtures keep their own), and
+    only for ``str`` content.
+    """
+    if not isinstance(content, str):
+        return content
+    canonical = regulatory_monitor._canonical_finra_notice_url(url)
+    if canonical is None:
+        return content
+    if re.search(r"rel=[\"']canonical[\"']|og:url", content, re.IGNORECASE):
+        return content
+    tag = f'<link rel="canonical" href="{canonical}" />'
+    if re.search(r"<head[^>]*>", content, re.IGNORECASE):
+        return re.sub(r"(<head[^>]*>)", r"\1" + tag, content, count=1,
+                      flags=re.IGNORECASE)
+    if re.search(r"<html[^>]*>", content, re.IGNORECASE):
+        return re.sub(r"(<html[^>]*>)", r"\1<head>" + tag + "</head>", content,
+                      count=1, flags=re.IGNORECASE)
+    return f"<head>{tag}</head>{content}"
+
+
 @pytest.fixture(autouse=True)
 def _offline_network_guard(monkeypatch):
     """Default every test to an offline, no-op network layer.
@@ -1490,7 +1522,13 @@ def test_finra_listing_empty_result_fails_closed_without_state_advance(
         fetch_result={
             "url": regulatory_monitor.FINRA_NOTICES_URL,
             "status_code": 200,
-            "content": "<html><body><p>No notices rendered.</p></body></html>",
+            "content": (
+                "<html><head>"
+                '<link rel="canonical" href="https://www.finra.org/rules-guidance/notices" />'
+                "</head><body><main><table class='notices-table'><tbody>"
+                "</tbody></table><p>No notices rendered.</p>"
+                "</main></body></html>"
+            ),
             "final_url": regulatory_monitor.FINRA_NOTICES_URL,
             "was_redirected": False,
             "error": None,
@@ -1571,11 +1609,9 @@ def test_federal_register_failure_maps_to_failure_exit_without_state_advance(
 
 def test_finra_notice_body_fallback_promotes_genai_notice_to_high(monkeypatch):
     config = _load_config()
-    listing_html = """
-    <html><body>
-      <a href="/rules-guidance/notices/26-14">Regulatory Notice 26-14: Request for Comment</a>
-    </body></html>
-    """
+    listing_html = _finra_listing_html(
+        [("/rules-guidance/notices/26-14", "Regulatory Notice 26-14: Request for Comment")]
+    )
     detail_html = _finra_notice_page(
         "GenAI communication tools may be included in a reasonably designed "
         "supervisory system when firms vet, test, and continuously monitor for "
@@ -1595,7 +1631,7 @@ def test_finra_notice_body_fallback_promotes_genai_notice_to_high(monkeypatch):
         return {
             "url": url,
             "status_code": 200,
-            "content": detail_html,
+            "content": _with_finra_canonical(detail_html, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -1625,11 +1661,9 @@ def test_finra_long_notice_late_mandatory_ai_requirement_elevates(monkeypatch):
     requirement silently vanished.
     """
     config = _load_config()
-    listing_html = """
-    <html><body>
-      <a href="/rules-guidance/notices/26-14">Regulatory Notice 26-14: Request for Comment</a>
-    </body></html>
-    """
+    listing_html = _finra_listing_html(
+        [("/rules-guidance/notices/26-14", "Regulatory Notice 26-14: Request for Comment")]
+    )
     # Neutral filler with no AI/recordkeeping vocabulary, long enough to push
     # the operative requirement well beyond the legacy 4000-char truncation.
     filler = (
@@ -1663,7 +1697,7 @@ def test_finra_long_notice_late_mandatory_ai_requirement_elevates(monkeypatch):
         return {
             "url": url,
             "status_code": 200,
-            "content": detail_html,
+            "content": _with_finra_canonical(detail_html, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -1743,7 +1777,7 @@ def test_finra_listing_enumerates_and_deduplicates_table_and_list_notice_links(
         return {
             "url": url,
             "status_code": 200,
-            "content": content,
+            "content": _with_finra_canonical(content, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -1791,7 +1825,12 @@ def test_finra_information_notice_body_evidence_is_classified(monkeypatch):
         return {
             "url": url,
             "status_code": 200,
-            "content": listing_html if url == regulatory_monitor.FINRA_NOTICES_URL else detail_html,
+            "content": _with_finra_canonical(
+                listing_html
+                if url == regulatory_monitor.FINRA_NOTICES_URL
+                else detail_html,
+                url,
+            ),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -1858,7 +1897,7 @@ def test_finra_fetches_more_than_twenty_generic_titles_and_reads_late_ai_body(
         return {
             "url": url,
             "status_code": 200,
-            "content": content,
+            "content": _with_finra_canonical(content, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -2050,7 +2089,7 @@ def test_finra_publication_date_uses_authoritative_listing_metadata(monkeypatch)
             else {
                 "url": url,
                 "status_code": 200,
-                "content": detail_html,
+                "content": _with_finra_canonical(detail_html, url),
                 "final_url": url,
                 "was_redirected": False,
                 "error": None,
@@ -2193,11 +2232,9 @@ def test_finra_legacy_daily_hash_migrates_without_false_finding():
 
 def test_finra_notice_body_fetch_failure_fails_closed(monkeypatch):
     config = _load_config()
-    listing_html = """
-    <html><body>
-      <a href="/rules-guidance/notices/26-14">Regulatory Notice 26-14: Request for Comment</a>
-    </body></html>
-    """
+    listing_html = _finra_listing_html(
+        [("/rules-guidance/notices/26-14", "Regulatory Notice 26-14: Request for Comment")]
+    )
 
     def fake_fetch_page(url, session, max_retries=3):
         if url == regulatory_monitor.FINRA_NOTICES_URL:
@@ -2234,12 +2271,15 @@ def test_finra_notice_body_fetch_failure_fails_closed(monkeypatch):
 
 def test_finra_notice_body_fetch_uses_cache(monkeypatch):
     config = _load_config()
-    listing_html = """
-    <html><body>
-      <a href="/rules-guidance/notices/26-14">Regulatory Notice 26-14: Request for Comment</a>
-      <a href="/rules-guidance/notices/26-14">Regulatory Notice 26-14: Request for Comment (duplicate)</a>
-    </body></html>
-    """
+    listing_html = _finra_listing_html(
+        [
+            ("/rules-guidance/notices/26-14", "Regulatory Notice 26-14: Request for Comment"),
+            (
+                "/rules-guidance/notices/26-14",
+                "Regulatory Notice 26-14: Request for Comment (duplicate)",
+            ),
+        ]
+    )
     detail_html = _finra_notice_page("GenAI monitoring language for notice 26-14.")
     detail_calls = {"count": 0}
 
@@ -2257,7 +2297,7 @@ def test_finra_notice_body_fetch_uses_cache(monkeypatch):
         return {
             "url": url,
             "status_code": 200,
-            "content": detail_html,
+            "content": _with_finra_canonical(detail_html, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -3055,10 +3095,8 @@ def test_finra_two_hundred_status_error_pages_fail_closed(fixture_name, monkeypa
     them.
     """
     config = _load_config()
-    listing_html = (
-        "<html><body>"
-        "<a href='/rules-guidance/notices/26-14'>Regulatory Notice 26-14: "
-        "Request for Comment</a></body></html>"
+    listing_html = _finra_listing_html(
+        [("/rules-guidance/notices/26-14", "Regulatory Notice 26-14: Request for Comment")]
     )
     detail_html = FINRA_NON_NOTICE_FIXTURES[fixture_name]
 
@@ -3069,7 +3107,7 @@ def test_finra_two_hundred_status_error_pages_fail_closed(fixture_name, monkeypa
         return {
             "url": url,
             "status_code": 200,
-            "content": content,
+            "content": _with_finra_canonical(content, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -3093,10 +3131,8 @@ def test_finra_two_hundred_status_error_pages_fail_closed(fixture_name, monkeypa
 def test_finra_live_shaped_valid_notice_still_succeeds(monkeypatch):
     """The gate must not be a blanket rejection: a real notice still lands."""
     config = _load_config()
-    listing_html = (
-        "<html><body>"
-        "<a href='/rules-guidance/notices/26-14'>Regulatory Notice 26-14: "
-        "Request for Comment</a></body></html>"
+    listing_html = _finra_listing_html(
+        [("/rules-guidance/notices/26-14", "Regulatory Notice 26-14: Request for Comment")]
     )
     body = (
         "Summary: Member firms must supervise the use of artificial intelligence "
@@ -3111,7 +3147,7 @@ def test_finra_live_shaped_valid_notice_still_succeeds(monkeypatch):
         return {
             "url": url,
             "status_code": 200,
-            "content": content,
+            "content": _with_finra_canonical(content, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -3222,10 +3258,8 @@ def test_operative_ai_duty_survives_intervening_clause():
 
 def _finra_pipeline(body: str, monkeypatch, *, link_text: str):
     config = _load_config()
-    listing_html = (
-        "<html><body>"
-        f"<a href='/rules-guidance/notices/26-14'>{link_text}</a>"
-        "</body></html>"
+    listing_html = _finra_listing_html(
+        [("/rules-guidance/notices/26-14", link_text)]
     )
     detail_html = _finra_notice_page(body)
 
@@ -3236,7 +3270,7 @@ def _finra_pipeline(body: str, monkeypatch, *, link_text: str):
         return {
             "url": url,
             "status_code": 200,
-            "content": content,
+            "content": _with_finra_canonical(content, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -3723,10 +3757,8 @@ def test_finra_error_detail_page_maps_to_failure_exit_without_state_advance(
     }
     loaded_state = deepcopy(initial_state)
     save_calls: list = []
-    listing_html = (
-        "<html><body>"
-        "<a href='/rules-guidance/notices/26-14'>Regulatory Notice 26-14: "
-        "Request for Comment</a></body></html>"
+    listing_html = _finra_listing_html(
+        [("/rules-guidance/notices/26-14", "Regulatory Notice 26-14: Request for Comment")]
     )
     detail_html = FINRA_NON_NOTICE_FIXTURES[fixture_name]
 
@@ -3741,7 +3773,7 @@ def test_finra_error_detail_page_maps_to_failure_exit_without_state_advance(
         return {
             "url": url,
             "status_code": 200,
-            "content": content,
+            "content": _with_finra_canonical(content, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -3890,7 +3922,7 @@ def _finra_multipage_fetch(
         return {
             "url": url,
             "status_code": 200,
-            "content": detail_html,
+            "content": _with_finra_canonical(detail_html, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -4043,7 +4075,9 @@ def test_finra_pagination_missing_declared_page_fails_closed(monkeypatch):
             ["/rules-guidance/notices/26-100"], last_page=1
         ),
         1: (
-            "<html><body><main><table class='notices-table'>"
+            "<html><head>"
+            '<link rel="canonical" href="https://www.finra.org/rules-guidance/notices" />'
+            "</head><body><main><table class='notices-table'>"
             "<tbody></tbody></table></main></body></html>"
         ),
     }
@@ -4381,9 +4415,26 @@ FINRA_TOMBSTONE_BODIES = {
 
 
 def _finra_listing_html(entries: list[tuple[str, str]]) -> str:
-    """Build a FINRA listing page from ``(href, link text)`` pairs."""
-    links = "".join(f"<a href='{href}'>{label}</a>" for href, label in entries)
-    return f"<html><body>{links}</body></html>"
+    """Build a FINRA listing page from ``(href, link text)`` pairs.
+
+    Rows are rendered as real listing rows. The extractor no longer has an
+    all-anchor fallback, because that fallback is what let a same-origin
+    article that merely links to notices be read as a complete listing, so a
+    fixture of bare floating anchors is no longer a "simple listing" -- it is a
+    page with no listing rows at all, which the monitor must now reject.
+    """
+    rows = "".join(
+        f"<tr><td class='views-field views-field-title'>"
+        f"<a href='{href}'>{label}</a></td></tr>"
+        for href, label in entries
+    )
+    return (
+        "<html><head>"
+        '<link rel="canonical" href="https://www.finra.org/rules-guidance/notices" />'
+        "</head><body><main>"
+        f"<table class='notices-table'><tbody>{rows}</tbody></table>"
+        "</main></body></html>"
+    )
 
 
 def _finra_routing_fetch(listing_html: str, detail_by_url: dict[str, str]):
@@ -4393,11 +4444,11 @@ def _finra_routing_fetch(listing_html: str, detail_by_url: dict[str, str]):
         if url == regulatory_monitor.FINRA_NOTICES_URL:
             content = listing_html
         else:
-            content = detail_by_url[url]
+            content = _with_finra_canonical(detail_by_url[url], url)
         return {
             "url": url,
             "status_code": 200,
-            "content": content,
+            "content": _with_finra_canonical(content, url),
             "final_url": url,
             "was_redirected": False,
             "error": None,
@@ -4787,7 +4838,14 @@ def test_federal_register_untrusted_final_origin_fails_closed(
 
 
 def test_federal_register_same_origin_redirect_is_accepted(monkeypatch):
-    """The origin gate must not reject ordinary same-host path redirects."""
+    """The origin gate must not reject ordinary same-host path redirects.
+
+    The redirect target deliberately preserves the document identity
+    (``2026-16471``) while changing the path *shape*: finding 5 binds the
+    authoritative-text URL to the requested document, so a redirect may move
+    between accepted endpoint shapes but may not change which document is
+    being read.
+    """
     config = _load_config()
     session = _PagedFederalRegisterSession({1: _federal_register_source_text_page()})
     monkeypatch.setattr(
@@ -4796,8 +4854,8 @@ def test_federal_register_same_origin_redirect_is_accepted(monkeypatch):
         _federal_register_text_fetch(
             "Members must retain electronic communications records.",
             final_url=(
-                "https://www.federalregister.gov/documents/full_text/text/"
-                "2026/08/13/2026-16471-1.txt"
+                "https://www.federalregister.gov/documents/2026/08/13/"
+                "2026-16471.txt"
             ),
         ),
     )
@@ -5868,19 +5926,86 @@ def test_finra_detail_identity_declaring_a_foreign_url_fails_closed():
     )
 
 
-def test_finra_detail_without_declared_identity_is_not_a_mismatch():
-    """Most live notices never declare a canonical URL; they must still work."""
+def test_finra_detail_without_declared_identity_fails_closed():
+    """Superseded contract, deliberately inverted.
+
+    This test previously asserted that a page declaring nothing about itself
+    "is not a mismatch", on the belief that live notices often omit
+    ``rel=canonical``. That belief is wrong -- production
+    ``https://www.finra.org/rules-guidance/notices/26-12`` serves
+    ``<link rel="canonical" href="https://www.finra.org/rules-guidance/
+    notices/26-12" />`` -- and the belief was load-bearing for a real defect:
+    an unidentified body was stored, hashed, and baselined under the requested
+    notice's key. Absence of identity is now a refusal.
+    """
     body = "Member firms must retain records electronically. " * 40
     html = _finra_notice_page(body)
 
+    reason = regulatory_monitor._finra_detail_identity_mismatch(
+        html, "https://www.finra.org/rules-guidance/notices/26-12"
+    )
+    assert reason and "no canonical/og identity" in reason
+    assert (
+        regulatory_monitor._extract_finra_notice_required_text(
+            html, expected_url="https://www.finra.org/rules-guidance/notices/26-12"
+        )
+        == ""
+    )
+
+
+def test_finra_detail_heading_identity_is_the_only_accepted_fallback():
+    """The documented strong fallback: exactly one designation, and it matches.
+
+    A page that declares no URL identity may still have named itself
+    unambiguously. Exactly one distinct notice designation in title/og:title/h1
+    that *is* the requested slug is accepted; a different one is a mismatch;
+    more than one is ambiguous and fails closed.
+    """
+    body = "Member firms must retain records electronically. " * 40
+
+    def page(heading):
+        return (
+            "<html><body><main><article class='node node--type-notice'>"
+            f"<h1>{heading}</h1>"
+            f"<div class='field field--name-body'>{body}</div>"
+            "</article></main></body></html>"
+        )
+
+    requested = "https://www.finra.org/rules-guidance/notices/26-12"
+
     assert (
         regulatory_monitor._finra_detail_identity_mismatch(
-            html, "https://www.finra.org/rules-guidance/notices/26-12"
+            page("Regulatory Notice 26-12"), requested
         )
         is None
     )
     assert regulatory_monitor._extract_finra_notice_required_text(
-        html, expected_url="https://www.finra.org/rules-guidance/notices/26-12"
+        page("Regulatory Notice 26-12"), expected_url=requested
+    )
+
+    wrong = regulatory_monitor._finra_detail_identity_mismatch(
+        page("Regulatory Notice 26-99"), requested
+    )
+    assert wrong and "26-99" in wrong
+
+    ambiguous = regulatory_monitor._finra_detail_identity_mismatch(
+        page("Regulatory Notice 26-12 supersedes Regulatory Notice 26-04"),
+        requested,
+    )
+    assert ambiguous and "unambiguous notice designations" in ambiguous
+
+    # The numbered-variant slug is comparable through the same rule.
+    assert (
+        regulatory_monitor._finra_detail_identity_mismatch(
+            page("Notice to Members 88-81a"),
+            "https://www.finra.org/rules-guidance/notices/88-81a",
+        )
+        is None
+    )
+    # 88-81 and 88-81a are different notices and must not satisfy each other.
+    assert regulatory_monitor._finra_detail_identity_mismatch(
+        page("Notice to Members 88-81"),
+        "https://www.finra.org/rules-guidance/notices/88-81a",
     )
 
 
@@ -5928,6 +6053,44 @@ FEDERAL_REGISTER_REJECTED_TEXT_URLS = {
     "challenge_path": "https://www.federalregister.gov/cdn-cgi/challenge",
     "login_path": "https://www.federalregister.gov/login",
     "unrelated_path": "https://www.federalregister.gov/search",
+    # Finding 5. The API documents endpoint is the *metadata* record, not the
+    # document's authoritative text: the live endpoint answers
+    # ``application/json`` describing the document, and its ``.txt`` sibling
+    # answers HTTP 500 with a JSON error body. Classifying or hashing either
+    # would baseline a summary as the source of record, so both shapes are off
+    # the allow-list entirely and cost no request.
+    "api_metadata_json": (
+        "https://www.federalregister.gov/api/v1/documents/2026-17183.json"
+    ),
+    "api_metadata_txt": (
+        "https://www.federalregister.gov/api/v1/documents/2026-17183.txt"
+    ),
+    "api_metadata_bare": (
+        "https://www.federalregister.gov/api/v1/documents/2026-17183"
+    ),
+    # Finding 5. PDF is a binary rendering. ``Response.text`` decodes it into
+    # mojibake that still passes the substantial-text screens and would be
+    # hashed as if it were the document.
+    "gpo_pdf": "https://www.gpo.gov/fdsys/pkg/FR-2026-01-14/pdf/2026-17183.pdf",
+    "govinfo_pdf": (
+        "https://www.govinfo.gov/content/pkg/FR-2026-01-14/pdf/2026-17183.pdf"
+    ),
+    "full_text_pdf_branch": (
+        "https://www.federalregister.gov/documents/full_text/pdf/2026/01/14/"
+        "2026-17183.pdf"
+    ),
+    # A permitted path shape that still names a binary/metadata payload.
+    "text_branch_pdf_extension": (
+        "https://www.federalregister.gov/documents/full_text/text/2026/01/14/"
+        "2026-17183.pdf"
+    ),
+    "text_branch_json_extension": (
+        "https://www.federalregister.gov/documents/full_text/text/2026/01/14/"
+        "2026-17183.json"
+    ),
+    "gpo_mods_metadata": (
+        "https://www.govinfo.gov/content/pkg/FR-2026-01-14/mods/2026-17183.xml"
+    ),
     "empty": "",
     "whitespace_padded": (
         " https://www.federalregister.gov/documents/full_text/text/a.txt"
@@ -5939,10 +6102,12 @@ FEDERAL_REGISTER_ACCEPTED_TEXT_URLS = (
     "https://www.federalregister.gov/documents/full_text/text/2026-17183.txt",
     "https://federalregister.gov/documents/full_text/xml/2026-17183.xml",
     "https://www.federalregister.gov/documents/full_text/text/2026/01/14/a.txt",
+    "https://www.federalregister.gov/documents/full_text/html/2026/01/14/"
+    "2026-17183.htm",
     "https://www.federalregister.gov/documents/2026/01/14/2026-17183.txt",
-    "https://www.federalregister.gov/api/v1/documents/2026-17183.txt",
     "https://www.govinfo.gov/content/pkg/FR-2026-01-14/html/2026-17183.htm",
-    "https://www.gpo.gov/fdsys/pkg/FR-2026-01-14/pdf/2026-17183.pdf",
+    "https://www.gpo.gov/fdsys/pkg/FR-2026-01-14/xml/2026-17183.xml",
+    "https://www.gpo.gov/fdsys/pkg/FR-2026-01-14/text/2026-17183",
 )
 
 
@@ -6517,3 +6682,877 @@ def test_finra_notice_body_mentioning_interstitial_words_survives():
     assert reason is None
     assert rejected is False
     assert "Member firms must supervise every automated tool" in text
+
+
+# --- Release review 9: adversarial regression suite --------------------------
+#
+# One block per finding. Every case here is shaped from what the live sources
+# actually serve, verified during this revision:
+#
+#   * The FINRA notices listing is 92 pages and publishes 3,575 distinct notice
+#     slugs. Exactly one of them carries a letter suffix (``88-81a``), and the
+#     longest digit run after ``NN-`` is 3.
+#   * Every listing page -- including ``?page=7`` -- serves
+#     ``<link rel="canonical" href="https://www.finra.org/rules-guidance/notices" />``
+#     with no ``page`` component, and does *not* redirect.
+#   * ``https://www.finra.org/rules-guidance/notices/26-12`` serves
+#     ``<link rel="canonical" href=".../notices/26-12" />``.
+#   * ``https://www.federalregister.gov/api/v1/documents/<n>.json`` answers 200
+#     ``application/json`` with a metadata record, and the ``.txt`` shape of
+#     that same API answers **HTTP 500** with a JSON error body -- it is not an
+#     authoritative text endpoint at all.
+
+
+# --- Finding 1: bounded numbered-variant slugs ------------------------------
+
+
+FINRA_NUMBERED_VARIANT_ACCEPTED = (
+    # The only letter-suffixed slug in the entire live listing.
+    "88-81a",
+    # Companion notice, plus the plain shapes that dominate the listing.
+    "88-81",
+    "26-12",
+    "97-1",
+    "11-123",
+)
+
+FINRA_NUMBERED_VARIANT_REJECTED = (
+    # Two letters exceeds the bound proven by the listing scan.
+    "88-81ab",
+    # Digit run longer than any live slug.
+    "88-81234",
+    # Lookalike suffixes: a real notice never publishes these.
+    "88-81a-comments",
+    "88-81a1",
+    "88-81-a",
+    "88-a",
+    "888-81a",
+    "8-81a",
+    # Traversal and encoded traversal, with and without the suffix.
+    "..",
+    "%2e%2e",
+    "88-81a%2f..",
+    "88-81a/..",
+    "../88-81a",
+    "88-81a.",
+)
+
+
+@pytest.mark.parametrize("slug", FINRA_NUMBERED_VARIANT_ACCEPTED)
+def test_finra_numbered_variant_slugs_accepted(slug):
+    assert regulatory_monitor._is_safe_finra_notice_slug(slug), slug
+    assert (
+        regulatory_monitor._canonical_finra_notice_url(
+            f"https://www.finra.org/rules-guidance/notices/{slug}"
+        )
+        == f"https://www.finra.org/rules-guidance/notices/{slug}"
+    )
+
+
+@pytest.mark.parametrize("slug", FINRA_NUMBERED_VARIANT_REJECTED)
+def test_finra_numbered_variant_lookalikes_rejected(slug):
+    assert not regulatory_monitor._is_safe_finra_notice_slug(slug), slug
+    assert (
+        regulatory_monitor._canonical_finra_notice_url(
+            f"https://www.finra.org/rules-guidance/notices/{slug}"
+        )
+        is None
+    ), slug
+
+
+def test_finra_numbered_variant_suffix_bound_is_one_letter():
+    """The bound is a fact about the source, not a taste.
+
+    A 92-page crawl of the live listing enumerated 3,575 notice slugs; exactly
+    one (``88-81a``) carries a letter suffix and it is a single letter. Widening
+    the bound would admit lookalikes with no live counterpart, so the constant
+    is asserted rather than left as a comment.
+    """
+    assert regulatory_monitor.FINRA_NOTICE_NUMBERED_SUFFIX_MAX_LETTERS == 1
+
+
+def test_finra_numbered_variant_yields_its_own_document_id():
+    """``88-81a`` must key on itself, not collapse onto ``88-81``.
+
+    The id is the change-detection key. If the variant fell back to a
+    URL-derived id, or worse resolved to ``FINRA 88-81``, the two notices --
+    both of which are live -- would share or swap baselines.
+    """
+
+    def document_id(url):
+        match = regulatory_monitor.FINRA_NOTICE_ID_PATTERN.search(url)
+        return f"FINRA {match.group(1)}-{match.group(2)}" if match else url
+
+    variant = document_id("https://www.finra.org/rules-guidance/notices/88-81a")
+    base = document_id("https://www.finra.org/rules-guidance/notices/88-81")
+    assert variant == "FINRA 88-81a"
+    assert base == "FINRA 88-81"
+    assert variant != base
+
+
+def test_finra_slug_case_and_whitespace_are_normalised_not_slug_gate_bypasses():
+    """Two layers, deliberately different, and both must be understood.
+
+    ``_is_safe_finra_notice_slug`` is strict: it accepts only the exact
+    lowercase published token, so uppercase and trailing whitespace fail it.
+    ``_canonical_finra_notice_url`` normalises a *URL* first -- unquoting and
+    case-folding the path -- and then applies that same strict gate to the
+    normalised slug. The result is a fixed canonical string, so a variant-cased
+    href cannot produce a second key for the same notice; what it cannot do is
+    smuggle a shape the slug gate rejects.
+    """
+    assert not regulatory_monitor._is_safe_finra_notice_slug("88-81A")
+    assert not regulatory_monitor._is_safe_finra_notice_slug("88-81a ")
+    canonical = "https://www.finra.org/rules-guidance/notices/88-81a"
+    for variant in ("88-81A", "88-81a ", "88-81a"):
+        assert (
+            regulatory_monitor._canonical_finra_notice_url(
+                f"https://www.finra.org/rules-guidance/notices/{variant}"
+            )
+            == canonical
+        ), variant
+    # Normalisation is not permission: a rejected shape stays rejected.
+    for variant in ("88-81AB", "88-81A-COMMENTS"):
+        assert (
+            regulatory_monitor._canonical_finra_notice_url(
+                f"https://www.finra.org/rules-guidance/notices/{variant}"
+            )
+            is None
+        ), variant
+
+
+# --- Finding 2: listing pagination and page identity ------------------------
+
+
+FINRA_MARKET_NEWS_ARTICLE = """
+<html><head>
+  <link rel="canonical" href="https://www.finra.org/media-center/newsreleases/ai-supervision"/>
+</head><body><main>
+  <article class="node node--type-news">
+    <h1>FINRA highlights supervisory expectations</h1>
+    <p>The release discusses
+      <a href="/rules-guidance/notices/26-12">Regulatory Notice 26-12</a> and
+      <a href="/rules-guidance/notices/26-13">Regulatory Notice 26-13</a>.</p>
+  </article>
+</main></body></html>
+"""
+
+
+def test_finra_market_news_article_is_never_a_listing():
+    """The exact shape the removed all-anchor fallback promoted to a crawl.
+
+    This page is same-origin, HTTP 200, carries no denial vocabulary, and links
+    to two *real* notices from ordinary prose. Under the fallback it produced a
+    complete two-notice "listing", and the run looked clean while 3,573 notices
+    silently ceased to exist. Both gates must now reject it.
+    """
+    assert regulatory_monitor._extract_finra_notice_links(
+        FINRA_MARKET_NEWS_ARTICLE
+    ) == []
+    reason = regulatory_monitor._finra_listing_identity_rejection_reason(
+        FINRA_MARKET_NEWS_ARTICLE, 0
+    )
+    assert reason and "not the FINRA notices listing" in reason
+
+
+def test_finra_listing_without_identity_or_rows_fails_closed():
+    """Neither self-declared identity nor a recognised row: refuse."""
+    page = "<html><body><a href='/rules-guidance/notices/26-12'>26-12</a></body></html>"
+    assert regulatory_monitor._extract_finra_notice_links(page) == []
+    reason = regulatory_monitor._finra_listing_identity_rejection_reason(page, 0)
+    assert reason and "no recognised notice rows" in reason
+
+
+def test_finra_listing_rows_without_identity_are_accepted():
+    """Recognised containers are the documented alternative to declared identity."""
+    page = (
+        "<html><body><main><table class='notices-table'><tbody><tr>"
+        "<td><a href='/rules-guidance/notices/26-12'>Regulatory Notice 26-12</a></td>"
+        "</tr></tbody></table></main></body></html>"
+    )
+    assert regulatory_monitor._finra_listing_identity_rejection_reason(page, 0) is None
+    assert len(regulatory_monitor._extract_finra_notice_links(page)) == 1
+
+
+@pytest.mark.parametrize(
+    "requested_page,final_url,should_reject",
+    [
+        # The live source: page 7 answers as page 7 and does not redirect.
+        (7, "https://www.finra.org/rules-guidance/notices?page=7", False),
+        # The finding's case: page 7 reported as page 1.
+        (7, "https://www.finra.org/rules-guidance/notices?page=1", True),
+        # Page 7 clamped to the bare listing (page 0).
+        (7, "https://www.finra.org/rules-guidance/notices", True),
+        (7, "https://www.finra.org/rules-guidance/notices?page=0", True),
+        # Page 0 is the bare listing; an explicit page=0 is the same page.
+        (0, "https://www.finra.org/rules-guidance/notices", False),
+        (0, "https://www.finra.org/rules-guidance/notices?page=0", False),
+        # ...but page 0 must not be satisfied by any other page.
+        (0, "https://www.finra.org/rules-guidance/notices?page=1", True),
+        # A non-numeric page declaration is not the requested page.
+        (7, "https://www.finra.org/rules-guidance/notices?page=seven", True),
+        # Off-path and off-origin remain rejected.
+        (7, "https://www.finra.org/rules-guidance/rules?page=7", True),
+        (7, "https://finra.org.attacker.test/rules-guidance/notices?page=7", True),
+    ],
+)
+def test_finra_listing_page_identity_is_exact(requested_page, final_url, should_reject):
+    reason = regulatory_monitor._finra_listing_url_rejection_reason(
+        final_url, "listing response", expected_page=requested_page
+    )
+    assert bool(reason) is should_reject, (requested_page, final_url, reason)
+
+
+def test_finra_listing_page_seven_reported_as_page_one_fails_the_crawl(monkeypatch):
+    """End to end: a clamped page must not be recorded as fetched.
+
+    Page 0's pager declares a last page of 7. The stub answers the page-7
+    request from page 1 -- a real edge-clamp behaviour. Before, the path check
+    passed, page 1's notices were re-collected, and the crawl was baselined as
+    covering all eight pages.
+    """
+    pages = {
+        index: _finra_listing_page_html(
+            [f"/rules-guidance/notices/26-{index:02d}"],
+            last_page=7,
+        )
+        for index in range(8)
+    }
+    prefix = f"{regulatory_monitor.FINRA_NOTICES_URL}?page="
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        if url.startswith(prefix) and url[len(prefix):] == "7":
+            # The clamp: page 7 is answered from page 1.
+            return {
+                "url": url,
+                "status_code": 200,
+                "content": pages[1],
+                "final_url": f"{prefix}1",
+                "was_redirected": True,
+                "error": None,
+            }
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            content, final = pages[0], url
+        elif url.startswith(prefix):
+            content, final = pages[int(url[len(prefix):])], url
+        else:
+            content, final = _finra_notice_page("Neutral supervisory guidance."), url
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": _with_finra_canonical(content, url),
+            "final_url": final,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.FinraListingError, match="page 7"):
+        items = regulatory_monitor.fetch_finra_notices(
+            session=object(), config=_load_config()
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FINRA, items, state
+        )
+    assert state == {}
+
+
+def test_finra_listing_declaring_a_different_page_fails_closed():
+    """A body that names itself as another page is rejected even on a good URL."""
+    page = (
+        "<html><head>"
+        '<link rel="canonical" href="https://www.finra.org/rules-guidance/notices?page=1"/>'
+        "</head><body><main><table class='notices-table'><tbody><tr>"
+        "<td><a href='/rules-guidance/notices/26-12'>Regulatory Notice 26-12</a></td>"
+        "</tr></tbody></table></main></body></html>"
+    )
+    reason = regulatory_monitor._finra_listing_identity_rejection_reason(page, 7)
+    assert reason and "declares itself as page 1" in reason
+    # The live shape -- a page-less canonical -- stays acceptable on every page.
+    live = page.replace("/rules-guidance/notices?page=1", "/rules-guidance/notices")
+    assert regulatory_monitor._finra_listing_identity_rejection_reason(live, 7) is None
+
+
+# --- Finding 3: detail identity ---------------------------------------------
+
+
+def test_finra_detail_redirect_to_another_notice_fails_closed(monkeypatch):
+    """26-12 must never be baselined from 26-99's body.
+
+    The redirect target is a perfectly valid notice URL, which is exactly why
+    the old "is it *a* notice URL" check passed it. Two independent gates now
+    catch it: the final URL is not the requested notice, and the served page
+    declares itself as 26-99.
+    """
+    requested = "https://www.finra.org/rules-guidance/notices/26-12"
+    other = "https://www.finra.org/rules-guidance/notices/26-99"
+
+    assert regulatory_monitor._finra_detail_url_rejection_reason(other) is None, (
+        "precondition: the redirect target is a valid notice URL, so only an "
+        "identity-bound check can reject it"
+    )
+    reason = regulatory_monitor._finra_detail_url_rejection_reason(
+        other, expected_url=requested
+    )
+    assert reason and "26-99" in reason and "26-12" in reason
+
+    listing = _finra_listing_html([("/rules-guidance/notices/26-12", "Notice 26-12")])
+    foreign_body = (
+        "<html><head>"
+        f'<link rel="canonical" href="{other}"/>'
+        "</head><body><main><article class='node node--type-notice'>"
+        "<div class='field field--name-body'>"
+        + ("Members must supervise artificial intelligence tools. " * 40)
+        + "</div></article></main></body></html>"
+    )
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            return {
+                "url": url,
+                "status_code": 200,
+                "content": listing,
+                "final_url": url,
+                "was_redirected": False,
+                "error": None,
+            }
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": foreign_body,
+            "final_url": other,
+            "was_redirected": True,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_finra_notices(
+            session=object(), config=_load_config(), limit=1
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FINRA, items, state
+        )
+
+    assert state == {}, "another notice's body must never be stored under 26-12"
+
+
+def test_finra_detail_body_of_another_notice_is_never_stored_under_the_key():
+    """Same host, same URL, no redirect -- only the declared identity differs.
+
+    This is the cache-poisoning shape: the transport is blameless, the body is
+    a genuine notice, and it is simply the wrong one.
+    """
+    body = "Members must supervise artificial intelligence tools. " * 40
+    html = (
+        "<html><head>"
+        '<link rel="canonical" href="https://www.finra.org/rules-guidance/notices/26-99"/>'
+        "</head><body><main><article class='node node--type-notice'>"
+        f"<div class='field field--name-body'>{body}</div>"
+        "</article></main></body></html>"
+    )
+    assert (
+        regulatory_monitor._extract_finra_notice_required_text(
+            html, expected_url="https://www.finra.org/rules-guidance/notices/26-12"
+        )
+        == ""
+    )
+    assert regulatory_monitor._extract_finra_notice_required_text(
+        html, expected_url="https://www.finra.org/rules-guidance/notices/26-99"
+    )
+
+
+# --- Finding 4: branded/interstitial denial cannot be padded away -----------
+
+
+REVIEW9_PADDED_DENIAL_BODIES = {
+    # Each body leads with an unmistakable denial and is then padded with
+    # authoritative-looking vocabulary far past any structural threshold.
+    "access_denied": "Access Denied. You do not have permission to access this page. ",
+    "cloudflare_ray": (
+        "Attention Required! Cloudflare Ray ID: 8f21ab99c0e1. Please enable "
+        "JavaScript and cookies to continue. "
+    ),
+    "just_a_moment": "Just a moment... Checking your browser before accessing. ",
+    "verify_human": "Please verify you are a human to continue. ",
+    "request_blocked": "Request blocked. Your request has been blocked by our security service. ",
+    "captcha": "Complete the CAPTCHA to continue to the requested page. ",
+}
+
+REVIEW9_FINRA_PADDING = (
+    "Suggested Routing Compliance Legal Operations Senior Management. "
+    "Key Topics Artificial Intelligence Supervision Recordkeeping. "
+    "Notice Type Guidance. Referenced Rules FINRA Rule 3110, FINRA Rule 4511. "
+    "SUMMARY Member firms must supervise the use of artificial intelligence. "
+) * 40
+
+REVIEW9_FR_PADDING = (
+    "[Federal Register Volume 91, Number 155] AGENCY: Securities and Exchange "
+    "Commission. ACTION: Final rule. SUMMARY: The Commission is adopting rules "
+    "under FINRA Rule 3110 governing recordkeeping. DATES: Effective October 1. "
+) * 40
+
+
+@pytest.mark.parametrize("fixture_name", sorted(REVIEW9_PADDED_DENIAL_BODIES))
+def test_padded_denial_is_rejected_by_both_screens(fixture_name):
+    """Padding a denial with authoritative tokens must not launder it.
+
+    The exception for genuinely incidental wording is *ordered*: an
+    authoritative document publishes its citation block before it ever
+    discusses denials. A challenge page can only append boilerplate after its
+    denial, so the prefix stays empty and no amount of padding helps.
+    """
+    denial = REVIEW9_PADDED_DENIAL_BODIES[fixture_name]
+    for padding in (REVIEW9_FINRA_PADDING, REVIEW9_FR_PADDING):
+        body = denial + padding
+        assert regulatory_monitor._is_finra_non_notice_page_text(body), (
+            fixture_name,
+            "finra",
+        )
+        assert regulatory_monitor._is_federal_register_non_document_text(body), (
+            fixture_name,
+            "fr",
+        )
+
+
+@pytest.mark.parametrize("fixture_name", sorted(REVIEW9_PADDED_DENIAL_BODIES))
+def test_padded_denial_fails_the_finra_pipeline_without_state_advance(
+    fixture_name, monkeypatch
+):
+    body = REVIEW9_PADDED_DENIAL_BODIES[fixture_name] + REVIEW9_FINRA_PADDING
+    listing = _finra_listing_html([("/rules-guidance/notices/26-12", "Notice 26-12")])
+    detail = (
+        "<html><head>"
+        '<link rel="canonical" href="https://www.finra.org/rules-guidance/notices/26-12"/>'
+        "</head><body><main><article class='node node--type-notice'>"
+        f"<div class='field field--name-body'>{body}</div>"
+        "</article></main></body></html>"
+    )
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": listing if url == regulatory_monitor.FINRA_NOTICES_URL else detail,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_finra_notices(
+            session=object(), config=_load_config(), limit=1
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FINRA, items, state
+        )
+    assert state == {}, fixture_name
+
+
+@pytest.mark.parametrize("fixture_name", sorted(REVIEW9_PADDED_DENIAL_BODIES))
+def test_padded_denial_fails_the_federal_register_pipeline_without_state_advance(
+    fixture_name, monkeypatch
+):
+    body = REVIEW9_PADDED_DENIAL_BODIES[fixture_name] + REVIEW9_FR_PADDING
+    session = _PagedFederalRegisterSession({1: _federal_register_source_text_page()})
+    monkeypatch.setattr(
+        regulatory_monitor, "fetch_page", _federal_register_text_fetch(body)
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_federal_register_documents(
+            session=session, since_date="2026-08-13", config=_load_config()
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, items, state
+        )
+    assert state == {}, fixture_name
+
+
+def test_incidental_denial_wording_after_self_identification_still_survives():
+    """The structural exception is narrow, not absent.
+
+    A real rulemaking that *regulates* access-denial events names them in its
+    SUMMARY -- but only after publishing its citation block. That ordering is
+    the discriminator, and it must keep working or the cost guard is lost.
+    """
+    body = (
+        "[Federal Register Volume 91, Number 155] AGENCY: Securities and "
+        "Exchange Commission. ACTION: Final rule. SUMMARY: The Commission is "
+        "adopting rules addressing access denied events, captcha deployment, "
+        "and verify you are a human challenges on member portals. "
+    ) + ("Supplementary information continues at length. " * 200)
+    assert not regulatory_monitor._is_federal_register_non_document_text(body)
+
+
+# --- Finding 5: Federal Register authoritative-text allowlist ---------------
+
+
+def test_federal_register_api_json_is_rejected_without_any_fetch(monkeypatch):
+    """The live metadata endpoint must be refused before the network is touched.
+
+    ``/api/v1/documents/<n>.json`` answers 200 ``application/json`` with an
+    abstract-and-links record. Decoded, it reads like prose and would have been
+    classified and hashed as the source of record. It is rejected on the URL
+    alone, so no request is issued and no state advances.
+    """
+    fetches: list = []
+
+    def recording_fetch(url, _session, max_retries=3):
+        fetches.append(url)
+        raise AssertionError(f"no fetch may be issued for {url}")
+
+    document = _federal_register_source_text_page()
+    document["results"][0]["raw_text_url"] = (
+        "https://www.federalregister.gov/api/v1/documents/2026-16471.json"
+    )
+    session = _PagedFederalRegisterSession({1: document})
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", recording_fetch)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_federal_register_documents(
+            session=session, since_date="2026-08-13", config=_load_config()
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, items, state
+        )
+
+    assert fetches == [], "a disallowed source-text URL must never be requested"
+    assert state == {}
+
+
+@pytest.mark.parametrize(
+    "raw_text_url",
+    [
+        # Live API shapes -- metadata, not authoritative text.
+        "https://www.federalregister.gov/api/v1/documents/2026-16471.json",
+        "https://www.federalregister.gov/api/v1/documents/2026-16471.txt",
+        "https://www.federalregister.gov/api/v1/documents/2026-16471",
+        # PDF renderings -- not parseable authoritative text.
+        "https://www.federalregister.gov/documents/full_text/pdf/2026/08/13/2026-16471.pdf",
+        "https://www.govinfo.gov/content/pkg/FR-2026-08-13/pdf/2026-16471.pdf",
+        "https://www.federalregister.gov/documents/full_text/text/2026/08/13/2026-16471.pdf",
+        # GPO metadata rendering.
+        "https://www.govinfo.gov/content/pkg/FR-2026-08-13/mods/2026-16471.xml",
+    ],
+)
+def test_federal_register_disallowed_text_urls_are_rejected(raw_text_url):
+    assert regulatory_monitor._federal_register_text_url_rejection_reason(
+        raw_text_url, "2026-16471"
+    ), raw_text_url
+
+
+@pytest.mark.parametrize(
+    "raw_text_url",
+    [
+        "https://www.federalregister.gov/documents/full_text/text/2026/08/13/2026-16471.txt",
+        "https://www.federalregister.gov/documents/full_text/html/2026/08/13/2026-16471.html",
+        "https://www.federalregister.gov/documents/full_text/xml/2026/08/13/2026-16471.xml",
+        "https://www.govinfo.gov/content/pkg/FR-2026-08-13/html/2026-16471.htm",
+    ],
+)
+def test_federal_register_allowed_text_urls_are_accepted(raw_text_url):
+    assert (
+        regulatory_monitor._federal_register_text_url_rejection_reason(
+            raw_text_url, "2026-16471"
+        )
+        is None
+    ), raw_text_url
+
+
+def test_federal_register_text_url_for_another_document_is_rejected():
+    """Identity is the terminal filename stem, not "appears somewhere"."""
+    assert regulatory_monitor._federal_register_text_url_rejection_reason(
+        "https://www.federalregister.gov/documents/full_text/text/2026/08/13/2026-99999.txt",
+        "2026-16471",
+    )
+    # A directory/package segment must not stand in for the document itself.
+    assert regulatory_monitor._federal_register_text_url_rejection_reason(
+        "https://www.federalregister.gov/documents/full_text/text/2026-16471/2026-99999.txt",
+        "2026-16471",
+    )
+
+
+@pytest.mark.parametrize(
+    "content_type,should_reject",
+    [
+        ("text/plain; charset=utf-8", False),
+        ("text/html; charset=utf-8", False),
+        ("application/xml", False),
+        ("text/xml", False),
+        (None, False),  # "where available" -- absence cannot fail the run
+        ("application/json", True),
+        ("application/pdf", True),
+        ("image/png", True),
+    ],
+)
+def test_federal_register_content_type_validation(content_type, should_reject):
+    reason = regulatory_monitor._federal_register_content_type_rejection_reason(
+        content_type,
+        "https://www.federalregister.gov/documents/full_text/text/2026/08/13/2026-16471.txt",
+    )
+    assert bool(reason) is should_reject, (content_type, reason)
+
+
+def test_federal_register_json_content_type_fails_closed_mid_flight(monkeypatch):
+    """An allowed URL that answers JSON is still refused.
+
+    URL shape is a promise, not proof: an edge rewrite can answer the ``.txt``
+    path with the metadata record. The transport's own declaration is checked
+    before anything is parsed or hashed.
+    """
+    session = _PagedFederalRegisterSession({1: _federal_register_source_text_page()})
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": '{"abstract": "Members must supervise artificial intelligence."}',
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+            "content_type": "application/json",
+        }
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_federal_register_documents(
+            session=session, since_date="2026-08-13", config=_load_config()
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, items, state
+        )
+    assert state == {}
+
+
+def test_federal_register_redirect_to_another_document_fails_closed(monkeypatch):
+    """A same-host redirect that changes the document is not a benign redirect."""
+    session = _PagedFederalRegisterSession({1: _federal_register_source_text_page()})
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _federal_register_text_fetch(
+            "AGENCY: Securities and Exchange Commission. SUMMARY: Members must "
+            "supervise artificial intelligence. " * 20,
+            final_url=(
+                "https://www.federalregister.gov/documents/full_text/text/"
+                "2026/08/13/2026-99999.txt"
+            ),
+        ),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_federal_register_documents(
+            session=session, since_date="2026-08-13", config=_load_config()
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, items, state
+        )
+    assert state == {}
+
+
+# --- Finding 6: multiword and organizational citation authors ---------------
+
+
+REVIEW9_CITATION_ONLY_CLAUSES = (
+    "(van der Waals, 2026)",
+    "(de la Cruz and Jones, 2026)",
+    "(von Neumann et al., 2026)",
+    "(Government Accountability Office, 2026)",
+    "(Federal Reserve Bank of New York, 2026)",
+    "(Office of Thrift Supervision, 2026)",
+    "(Board of Governors of the Federal Reserve System, 2026)",
+    "according to van der Waals (2026)",
+    "according to the Government Accountability Office (2026)",
+    "as reported by the Federal Reserve Bank of New York (2026)",
+    "as described in van der Waals (2026)",
+    # Prior single-token behaviour must be untouched.
+    "(Jones, 2026)",
+    "(Smith and Jones, 2026)",
+    "(Smith, Jones, and Lee, 2026)",
+    "(Jones et al., 2026)",
+)
+
+REVIEW9_NOT_CITATIONS = (
+    "(as amended by commission, 2026)",
+    "(effective January 1, 2026)",
+    "(September 2026)",
+    "(as amended, 2026)",
+    "(revised 2026)",
+    "(see 17 CFR 240.17a-4)",
+)
+
+
+@pytest.mark.parametrize("clause", REVIEW9_CITATION_ONLY_CLAUSES)
+def test_multiword_and_organizational_authors_are_recognised(clause):
+    assert regulatory_monitor.REFERENCE_ONLY_PATTERN.search(clause.lower()), clause
+
+
+@pytest.mark.parametrize("clause", REVIEW9_NOT_CITATIONS)
+def test_non_author_parentheticals_are_not_citations(clause):
+    assert not regulatory_monitor.REFERENCE_ONLY_PATTERN.search(clause.lower()), clause
+
+
+@pytest.mark.parametrize("author", [
+    "van der Waals",
+    "the Government Accountability Office",
+    "the Federal Reserve Bank of New York",
+])
+def test_operative_language_outranks_organizational_citation(author, monkeypatch):
+    """Precedence is unchanged: a duty is a duty even beside a citation.
+
+    ``_is_reference_only_occurrence`` consults ``has_operative`` first and
+    short-circuits, so widening the author grammar cannot suppress a real
+    obligation. That ordering is what bounds the blast radius of this change.
+    """
+    config = _load_config()
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulatory Notice 26-10",
+        f"Members must supervise artificial intelligence tools ({author}, 2026).",
+        config,
+        exclude_reference_only=True,
+    )
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert "artificial intelligence" in reason.lower()
+
+
+def test_organizational_author_grammar_does_not_backtrack():
+    """Atomic grouping, not a nested quantifier.
+
+    The name unit became a bounded multiword run, which is the classic shape
+    for catastrophic backtracking. Growth must stay linear; an exponential
+    regex here would be a denial of service against the monitor itself.
+    """
+    import time as _time
+
+    timings = []
+    for width in (40, 80, 160, 320):
+        hostile = "(" + " ".join(["accountability"] * width) + " 2026"
+        start = _time.perf_counter()
+        regulatory_monitor.REFERENCE_ONLY_PATTERN.search(hostile)
+        timings.append(_time.perf_counter() - start)
+    assert max(timings) < 0.5, timings
+    # Doubling the input must not more than quadruple the time.
+    assert timings[-1] < max(timings[0], 1e-4) * 40, timings
+
+
+# --- Finding 7: recordkeeping semantic binding ------------------------------
+
+
+REVIEW9_RECORDKEEPING_HIGH = (
+    # (a) "permitted" modifies the repository, not the obligation.
+    "Records must be stored electronically in a permitted repository.",
+    "Books and records must be stored electronically in a permitted repository.",
+    "Records must be stored electronically in a permissible format.",
+    "Records must be preserved electronically on an approved platform.",
+    # (b) conjunction-led subject change with no punctuation at all.
+    "Books and records must be stored electronically while employee handbooks "
+    "may be printed on paper",
+    "Books and records must be stored electronically whereas marketing "
+    "brochures may be printed on paper",
+    # The punctuated form must keep working too.
+    "Books and records must be stored electronically, while employee handbooks "
+    "may be printed on paper",
+    # Prior positives.
+    "Books and records must be preserved electronically.",
+    "Records must be maintained electronically rather than in paper form.",
+    "Records that may contain customer information must be retained electronically.",
+)
+
+REVIEW9_RECORDKEEPING_NON_HIGH = (
+    # (c) a conditional paper fallback is not an electronic-only mandate.
+    "Records must be retained electronically or, if not feasible, in paper form",
+    "Records must be retained electronically or, where not practicable, in paper form",
+    # The concessive form still names paper as the alternative subject.
+    "Records must be stored electronically although paper copies may also be retained",
+    # Prior negatives.
+    "Records may be retained electronically.",
+    "Firms are not required to store records electronically.",
+    "Records must be stored electronically unless retained in paper form",
+    "Records may be stored electronically where permitted.",
+    "Records must be stored electronically if permitted by the firm.",
+    "Although the storage method is optional, records must be stored electronically",
+    "Records must be stored electronically, although the storage method is optional",
+)
+
+
+@pytest.mark.parametrize("text", REVIEW9_RECORDKEEPING_HIGH)
+def test_recordkeeping_obligation_survives_qualifiers(text):
+    assert regulatory_monitor._has_electronic_recordkeeping_obligation(text), text
+
+
+@pytest.mark.parametrize("text", REVIEW9_RECORDKEEPING_NON_HIGH)
+def test_recordkeeping_alternatives_are_not_obligations(text):
+    assert not regulatory_monitor._has_electronic_recordkeeping_obligation(text), text
+
+
+def test_attributive_permission_is_masked_but_predicative_is_not():
+    """The distinction is grammatical position, not vocabulary.
+
+    "a permitted repository" describes where the duty must be discharged;
+    "is permitted" describes whether there is a duty at all. Masking the word
+    everywhere would erase real permissions; masking it nowhere demoted a real
+    mandate.
+    """
+    attributive = "Records must be stored electronically in a permitted repository."
+    assert "permitted" not in regulatory_monitor._mask_attributive_permissions(
+        attributive
+    )
+    for predicative in (
+        "Electronic storage is permitted where feasible.",
+        "Records may be stored electronically if permitted.",
+        "Paper retention is not permitted.",
+    ):
+        assert "permitted" in regulatory_monitor._mask_attributive_permissions(
+            predicative
+        ), predicative
+
+
+def test_conjunction_split_requires_a_new_statement():
+    """"and" must not fragment a compound subject.
+
+    "Books and records" is one subject. If the segmenter split on every
+    conjunction, the duty would lose its subject and the sentence would stop
+    being a recordkeeping obligation at all.
+    """
+    clause = "books and records must be stored electronically"
+    assert len(regulatory_monitor._storage_clause_segments(clause)) == 1
+    split = (
+        "books and records must be stored electronically while handbooks may "
+        "be printed on paper"
+    )
+    assert len(regulatory_monitor._storage_clause_segments(split)) == 2
+
+
+def test_comma_delimited_conditional_does_not_read_as_paper_replacement():
+    """The 'not' in ", if not feasible," qualifies feasibility, nothing else."""
+    assert regulatory_monitor._clause_permits_paper_alternative(
+        "records must be retained electronically or, if not feasible, in paper form"
+    )
+    # An undelimited exception keeps its connector and is still an alternative.
+    assert regulatory_monitor._clause_permits_paper_alternative(
+        "records must be stored electronically unless retained in paper form"
+    )
+    # A genuine replacement is still a replacement.
+    assert not regulatory_monitor._clause_permits_paper_alternative(
+        "records must be maintained electronically rather than in paper form"
+    )

@@ -140,10 +140,25 @@ FINRA_NOTICE_SLUG_MAX_CHARS = 64
 # Special, Trade Reporting, and Election notices (and any future sibling that
 # follows the same published convention) without widening the path, the origin,
 # or the segment count.
+#
+# The numbered family additionally admits ONE trailing lowercase letter
+# (``88-81a``). That suffix is not a guess: the complete published listing was
+# enumerated row by row (92 pages, 3,575 distinct notice slugs) and
+# ``88-81a`` is the *only* letter-suffixed numbered notice FINRA publishes --
+# a companion to ``88-81``, which is also listed. Before this bound the crawl
+# silently dropped it, so the run reported "complete" while one authoritative
+# notice had never been read.
+#
+# The suffix is deliberately kept to a single optional letter
+# (:data:`FINRA_NOTICE_NUMBERED_SUFFIX_MAX_LETTERS` = 1), because widening it
+# is what turns a notice rule into a lookalike sink: ``88-81abc``,
+# ``88-81a1``, and ``26-12-comments`` are all rejected, and the digit run stays
+# bounded at four (the longest live notice number is three digits).
+FINRA_NOTICE_NUMBERED_SUFFIX_MAX_LETTERS = 1
 FINRA_NOTICE_SLUG_PATTERN = re.compile(
     r'(?:'
-    r'\d{2}-\d{1,4}'
-    r'|[a-z]+(?:-[a-z]+)*-notice-(?:\d{8}|\d{6})'
+    r'\d{2}-\d{1,4}[a-z]{0,%d}' % FINRA_NOTICE_NUMBERED_SUFFIX_MAX_LETTERS
+    + r'|[a-z]+(?:-[a-z]+)*-notice-(?:\d{8}|\d{6})'
     r')'
 )
 # Hard bound on how many listing pages the crawler will follow. The live
@@ -159,12 +174,20 @@ FINRA_MAX_LISTING_PAGES = 200
 # rejected by the path patterns.
 FINRA_INDEX_PHP_PREFIX_PATTERN = re.compile(r'(?i)^/index\.php(?=/)')
 FINRA_NOTICE_ID_PATTERN = re.compile(
-    r'/rules-guidance/notices/(\d{2})-(\d+)(?:[/?#]|$)',
+    r'/rules-guidance/notices/(\d{2})-(\d+[a-z]{0,%d})(?:[/?#]|$)'
+    % FINRA_NOTICE_NUMBERED_SUFFIX_MAX_LETTERS,
     re.IGNORECASE,
 )
 FINRA_INFORMATION_NOTICE_DATE_PATTERN = re.compile(
     r'/rules-guidance/notices/information-notice-(\d{4})(\d{2})(\d{2})(?:[/?#]|$)',
     re.IGNORECASE,
+)
+# How a numbered notice designation is written in a heading. Kept in lockstep
+# with the numeric branch of FINRA_NOTICE_SLUG_PATTERN so the heading fallback
+# in _finra_detail_identity_mismatch cannot accept a shape the URL rules
+# reject.
+FINRA_NOTICE_NUMBER_TOKEN = (
+    r'\d{2}-\d{1,4}[a-z]{0,%d}' % FINRA_NOTICE_NUMBERED_SUFFIX_MAX_LETTERS
 )
 
 # A 200 response is not proof that a notice body was served. FINRA (and the
@@ -207,6 +230,18 @@ FINRA_NOTICE_STRUCTURE_PATTERN = re.compile(
     r"|\bquestions?\s+(?:concerning|regarding|about)\s+this\s+notice\b"
     r"|\b(?:regulatory|information)\s+notice\s+\d{2}-\d+\b"
     r"|\bmember\s+firms?\b|\bbroker[-\s]?dealers?\b|\bfinra\s+rule\s*\d)",
+    re.IGNORECASE,
+)
+# The subset a notice cannot be *padded* into. "member firms", "broker-dealers"
+# and "FINRA Rule 3110" are one-line quotations that any denial body can carry,
+# so they are excluded here; what remains is the masthead a published notice
+# actually opens with. Used only for the ordered denial exception.
+FINRA_NOTICE_STRUCTURE_STRONG_PATTERN = re.compile(
+    r"(?:\bsuggested\s+routing\b|\bkey\s+topics?\b|\bnotice\s+type\b"
+    r"|\breferenced\s+rules?\b|\baction\s+requested\b"
+    r"|\bquestions?\s+(?:concerning|regarding|about)\s+this\s+notice\b"
+    r"|\b(?:regulatory|information|special|election)\s+notice\s+\d{2}-\d+\b"
+    r"|\bexecutive\s+summary\b|\bdiscussion\b\s*:?)",
     re.IGNORECASE,
 )
 
@@ -277,17 +312,139 @@ def _interstitial_signature(text: str, lead_chars: int) -> Optional[str]:
     return None
 
 
+# --- Finding 4: unambiguous challenge signals are not negotiable -------------
+#
+# The error/challenge screens carry a structural "safety valve": a long,
+# structurally recognisable document that merely *quotes* a rejection phrase is
+# still treated as a document. That valve is correct for genuinely ambiguous
+# incidental wording ("the service is temporarily unavailable", "session
+# expired", "under maintenance") -- a rule about outages legitimately contains
+# those words.
+#
+# It is *not* correct for branded or unmistakable interstitial wording. A
+# denial body that says "Access Denied" and carries a "Cloudflare Ray ID" is a
+# denial no matter how long it is, and an attacker (or simply an over-eager
+# CDN template) can trivially pad one with boilerplate that satisfies the
+# structure test -- repeating "FINRA Rule 3110" or a Federal Register
+# "SUMMARY:/AGENCY:/ACTION:" header is enough. Padding then *promotes* a
+# blocked response into authoritative source text, which is baselined and
+# hashed as if the notice had been read.
+#
+# So the signals are split by ambiguity, not by source: anything matched here
+# overrides the structural valve, and only the residual, genuinely ambiguous
+# vocabulary keeps it.
+UNAMBIGUOUS_DENIAL_PATTERN = re.compile(
+    r"(?:"
+    r"access\s+(?:to\s+[\w\s]{0,40}\s+)?(?:is\s+|has\s+been\s+)?deni(?:ed|al)"
+    r"|access\s+restricted|restricted\s+access"
+    r"|(?:your\s+)?request\s+(?:was\s+|has\s+been\s+|is\s+)?(?:blocked|denied|rejected)"
+    r"|you\s+(?:do\s+not|don't)\s+have\s+(?:permission|access)"
+    r"|you\s+are\s+not\s+authoriz(?:ed|ation)"
+    r"|\b403\s*forbidden\b"
+    r"|(?:verify|confirm)\s+(?:that\s+)?you\s+are\s+(?:a\s+)?human"
+    r"|\bcaptcha\b|are\s+you\s+a\s+robot"
+    r"|checking\s+your\s+browser|unusual\s+traffic|automated\s+traffic"
+    r")",
+    re.IGNORECASE,
+)
+
+
+def _unambiguous_challenge_signature(text: str, lead_chars: int) -> Optional[str]:
+    """Return an unambiguous denial/challenge phrase, or ``None``.
+
+    Two classes qualify:
+
+    * Branded/interstitial wording (:func:`_interstitial_signature`) -- the
+      ``ANYWHERE`` half is branded ("Cloudflare Ray ID", "Pardon Our
+      Interruption") and the ``LEAD`` half ("Just a moment", "Verifying you are
+      human") is only consulted in the leading region, where an authoritative
+      document carries its citation line instead. Neither may ever be
+      overridden.
+    * Explicit denial vocabulary (:data:`UNAMBIGUOUS_DENIAL_PATTERN`) in the
+      leading region -- "Access Denied", "your request was blocked", "verify
+      you are human", "captcha".
+    """
+    if not text:
+        return None
+    signature = _interstitial_signature(text, lead_chars)
+    if signature:
+        return signature
+    match = UNAMBIGUOUS_DENIAL_PATTERN.search(text[:lead_chars])
+    if match:
+        return match.group(0)
+    return None
+
+
+# How many *distinct* structural markers a body must publish before a denial
+# phrase for that phrase to be treated as incidental subject matter. One is not
+# enough: a single appended token is exactly the padding this guard exists to
+# defeat.
+CHALLENGE_STRUCTURE_EXCEPTION_MIN_MARKERS = 2
+
+
+def _document_self_identifies_before(
+    text: str,
+    signature_start: int,
+    structure_pattern: re.Pattern,
+    substantial_chars: int,
+) -> bool:
+    """Return True when the body identified itself *before* a denial phrase.
+
+    This is the only exception a genuinely ambiguous denial phrase gets, and it
+    is deliberately ordered rather than merely present-anywhere.
+
+    A challenge page leads with its denial: "Access Denied" is the first thing
+    it says, and any document-shaped tokens are appended afterwards. An
+    authoritative document leads with its own citation block -- a Federal
+    Register document opens ``[Federal Register Vol...] AGENCY: ... ACTION: ...
+    SUMMARY: ...``, a FINRA notice opens with ``Suggested Routing`` /
+    ``Key Topics`` / ``Notice Type`` -- and only then discusses access denials,
+    captchas, or login walls as its *subject matter*.
+
+    Requiring several distinct markers strictly *before* the phrase therefore
+    separates the two without needing to read intent, and it cannot be
+    satisfied by padding a denial body: appended boilerplate is by construction
+    after the denial, and the prefix stays empty.
+    """
+    if len(text) < substantial_chars:
+        return False
+    prefix = text[:signature_start]
+    if not prefix.strip():
+        return False
+    markers = {
+        match.group(0).lower() for match in structure_pattern.finditer(prefix)
+    }
+    return len(markers) >= CHALLENGE_STRUCTURE_EXCEPTION_MIN_MARKERS
+
+
 def _is_finra_non_notice_page_text(text: str) -> bool:
     """Return True when candidate text is error/challenge/login chrome."""
     if not text:
         return True
-    if not (
-        FINRA_NON_NOTICE_PAGE_PATTERN.search(text[:FINRA_NON_NOTICE_LEAD_CHARS])
-        or _interstitial_signature(text, FINRA_NON_NOTICE_LEAD_CHARS)
+    # Branded interstitial wording is decisive wherever it appears: no amount
+    # of padding, boilerplate, or quoted rule text converts a bot-management
+    # response into a notice.
+    if _interstitial_signature(text, FINRA_NON_NOTICE_LEAD_CHARS):
+        return True
+    # Explicit denial wording in the leading region is decisive too, unless the
+    # body published a notice masthead *before* it -- a real notice that
+    # discusses access denials reaches the topic after identifying itself,
+    # while a denial page leads with the denial and can only append.
+    unambiguous = UNAMBIGUOUS_DENIAL_PATTERN.search(
+        text[:FINRA_NON_NOTICE_LEAD_CHARS]
+    )
+    if unambiguous and not _document_self_identifies_before(
+        text,
+        unambiguous.start(),
+        FINRA_NOTICE_STRUCTURE_STRONG_PATTERN,
+        FINRA_NOTICE_SUBSTANTIAL_CHARS,
     ):
+        return True
+    if not FINRA_NON_NOTICE_PAGE_PATTERN.search(text[:FINRA_NON_NOTICE_LEAD_CHARS]):
         return False
     # A substantial, structurally recognisable notice that merely mentions one
-    # of these phrases is still a notice.
+    # of the *ambiguous* phrases (an outage, a session timeout, a missing page)
+    # is still a notice.
     return not (
         len(text) >= FINRA_NOTICE_SUBSTANTIAL_CHARS
         and FINRA_NOTICE_STRUCTURE_PATTERN.search(text)
@@ -435,7 +592,89 @@ _CITATION_DETERMINER = (
 # deliberately *requires* the comma, because "(September 2026)" and
 # "(effective 2027)" are dates, not citations.
 _CITATION_NAME_TOKEN = r"[a-z][\w'\u2019-]*"
-_CITATION_NAME_LIST = _citation_name_series(_CITATION_NAME_TOKEN)
+# --- Finding 6: multiword surnames and organizational authors ----------------
+#
+# A one-word-per-author rule cannot see two extremely common real attribution
+# forms, and both were therefore read as the document's *own* assertion:
+#
+#   * particle surnames -- "van der Waals (2026)", "de la Cruz, 2025";
+#   * organizational authors -- "(Government Accountability Office, 2026)",
+#     "according to the Federal Reserve Bank of New York (2026)".
+#
+# Both are bounded on purpose. The particle form is a short, closed list of
+# nobiliary/patronymic prefixes followed by exactly one surname word. The
+# organizational form is a bounded run of name words that must *end* in an
+# institutional head noun, with an optional bounded "of ..." tail; its first
+# word may not be a function word or a participle, so ordinary regulatory prose
+# ("as amended by ... commission") cannot be absorbed as an author name.
+#
+# Each unit is wrapped in an atomic group. The series that consumes these units
+# repeats them up to seven times, and without atomicity a non-matching input
+# could force the engine to re-try every word-count split at every series
+# position -- a textbook catastrophic-backtracking shape. Atomicity fixes each
+# unit once it matches, which keeps the series linear in the input. The
+# alternation *inside* the group is still tried in order, so a name that merely
+# begins with a particle ("Della, 2026") still falls through to the plain
+# single-token branch.
+_CITATION_SURNAME_PARTICLE = (
+    r"(?:van|von|de|del|della|der|den|di|da|do|dos|du|la|le|el|al|bin|ibn|"
+    r"ter|ten|op|st\.?|mac|mc|o')"
+)
+_CITATION_PARTICLE_SURNAME = (
+    _CITATION_SURNAME_PARTICLE
+    + r"(?:\s+" + _CITATION_SURNAME_PARTICLE + r"){0,2}"
+    + r"\s+[a-z][\w'\u2019-]*"
+)
+_CITATION_ORG_HEAD_NOUN = (
+    r"(?:office|bureau|board|commission|committee|department|agency|authority|"
+    r"association|institute|institution|university|college|school|bank|"
+    r"corporation|company|council|cent(?:er|re)|foundation|society|"
+    r"organi[sz]ation|administration|secretariat|ministry|academy|consortium|"
+    r"federation|union|alliance|forum|observatory|laborator(?:y|ies)|"
+    r"reserve|treasury|congress|court|tribunal|division|panel|network|group|"
+    r"fund|trust|service|systems?|programme?|project|initiative|"
+    r"partnership|press|review|journal)"
+)
+# Words that can never open an organization name. Without this, a clause such
+# as "(as amended by commission, 2026)" would be absorbed as an author.
+_CITATION_ORG_STOPWORD = (
+    r"(?:as|by|in|on|at|to|from|with|per|of|the|and|for|is|are|was|were|be|"
+    r"been|being|has|have|had|not|no|any|all|each|such|this|that|these|those|"
+    r"it|its|which|who|whom|whose|amended|revised|adopted|issued|published|"
+    r"dated|effective|pursuant|approved|proposed|required|noted|described|"
+    r"see|cf|supra|infra|id|ibid)"
+)
+_CITATION_ORG_NAME_WORD = r"(?!of\b|the\b|and\b|for\b)[a-z][\w'\u2019-]*"
+_CITATION_ORG_TAIL = (
+    r"(?:\s+of\s+(?:the\s+)?" + _CITATION_ORG_NAME_WORD
+    + r"(?:\s+" + _CITATION_ORG_NAME_WORD + r"){0,3})"
+)
+# Two prepositional tails at most: "Board of Governors of the Federal Reserve
+# System" is a real authority, "Office of the Comptroller of the Currency"
+# likewise. The bound is what keeps this from being an open-ended run that
+# could swallow the rest of a sentence; the whole unit is inside an atomic
+# group, so the repetition cannot be re-entered on failure.
+_CITATION_ORG_TAILS = _CITATION_ORG_TAIL + r"{1,2}"
+_CITATION_ORGANIZATION = (
+    r"(?:"
+    # "Government Accountability Office", "Federal Reserve Bank of New York".
+    + r"(?!" + _CITATION_ORG_STOPWORD + r"\b)" + _CITATION_ORG_NAME_WORD
+    + r"(?:\s+" + _CITATION_ORG_NAME_WORD + r"){0,4}"
+    + r"\s+" + _CITATION_ORG_HEAD_NOUN + _CITATION_ORG_TAIL + r"{0,2}"
+    + r"|"
+    # "Office of Thrift Supervision", "Board of Governors of the Federal
+    # Reserve System".
+    + _CITATION_ORG_HEAD_NOUN + _CITATION_ORG_TAILS
+    + r")"
+)
+_CITATION_NAME_UNIT = (
+    r"(?>"
+    + _CITATION_PARTICLE_SURNAME
+    + r"|" + _CITATION_ORGANIZATION
+    + r"|" + _CITATION_NAME_TOKEN
+    + r")"
+)
+_CITATION_NAME_LIST = _citation_name_series(_CITATION_NAME_UNIT)
 _CITATION_ATTRIBUTION_VERB = (
     r"(?:reported|noted|observed|described|documented|discussed|shown|argued|"
     r"explained|summari[sz]ed|estimated|surveyed|reviewed|cited|quoted)"
@@ -447,8 +686,10 @@ _CITATION_ATTRIBUTION_LEAD = (
 _CITATION_ATTRIBUTION_SUBJECT = (
     r"(?:"
     # "according to Jones (2026)", "as reported by Smith and Lee (2025)",
-    # "per Jones et al. (2026)".
-    + r"(?:" + _CITATION_ATTRIBUTION_LEAD + r"|per)\s+"
+    # "per Jones et al. (2026)", "according to the Government Accountability
+    # Office (2026)". The optional determiner sits outside the name list
+    # because an organizational author is normally introduced by "the".
+    + r"(?:" + _CITATION_ATTRIBUTION_LEAD + r"|per)\s+(?:the\s+)?"
     + _CITATION_NAME_LIST + r"\s*" + _CITATION_YEAR_PAREN
     + r"|"
     # "according to a recent study", "as documented in the literature".
@@ -457,9 +698,10 @@ _CITATION_ATTRIBUTION_SUBJECT = (
     + r")"
 )
 # Trailing parenthetical author-date: "(Jones, 2026)", "(Jones and Lee, 2026)",
-# "(Smith, Jones, and Lee, 2026)", "(Jones et al., 2026)", "(Jones, 2026, p. 14)".
+# "(Smith, Jones, and Lee, 2026)", "(Jones et al., 2026)", "(Jones, 2026, p. 14)",
+# "(van der Waals, 2026)", "(the Government Accountability Office, 2026)".
 _CITATION_PARENTHETICAL = (
-    r"\(\s*" + _CITATION_NAME_LIST
+    r"\(\s*(?:the\s+)?" + _CITATION_NAME_LIST
     + r"\s*,\s*(?:19|20)\d{2}[a-z]?"
     + r"(?:\s*[,;:]\s*(?:pp?\.\s*)?\d[\d\u2013-]*)?\s*\)"
 )
@@ -759,6 +1001,15 @@ PAPER_REPLACEMENT_CONNECTOR = re.compile(
     r"prohibit\w*|no\s+longer|not|never|cannot|nor)\b",
     re.IGNORECASE,
 )
+# A conditional aside set off by commas on *both* sides ("..., if not feasible,
+# ...", "..., where practicable, ..."). Its internal words qualify the
+# condition, not the storage terms on either side of it, so it is removed
+# before the connector between an electronic and a paper mention is judged.
+PARENTHETICAL_CONDITION_PATTERN = re.compile(
+    r",\s*(?:if|when|where|unless|except|provided|assuming|absent|subject\s+to)"
+    r"\b[^,]{0,80},",
+    re.IGNORECASE,
+)
 
 
 def _clause_permits_paper_alternative(clause: str) -> bool:
@@ -770,6 +1021,15 @@ def _clause_permits_paper_alternative(clause: str) -> bool:
     electronic duty ("maintained electronically rather than in paper form",
     "must be maintained electronically and not in paper form") is a genuine
     electronic-only mandate and is preserved.
+
+    The connector is read with its comma-parenthetical asides removed. In
+    "retained electronically or, if not feasible, in paper form" the aside
+    carries a "not" that does not negate anything about paper -- it qualifies
+    *feasibility* -- and reading it as a replacement connector turned a
+    conditional paper fallback into a false electronic-only mandate. Only
+    asides that are delimited by commas on both sides are removed, so an
+    undelimited exception ("maintained electronically unless retained in paper
+    form") keeps its connector and is still recognised as permitting paper.
     """
     electronic_spans = [match.span() for match in ELECTRONIC_STORAGE_MENTION.finditer(clause)]
     if not electronic_spans:
@@ -785,6 +1045,7 @@ def _clause_permits_paper_alternative(clause: str) -> bool:
             else:
                 continue
 
+            connector = PARENTHETICAL_CONDITION_PATTERN.sub(" , ", connector)
             if PAPER_REPLACEMENT_CONNECTOR.search(connector):
                 continue
             if PAPER_ALTERNATIVE_CONNECTOR.search(connector):
@@ -851,6 +1112,16 @@ def _mask_paper_prohibition(clause: str) -> str:
 # subject, which biases toward preserving HIGH -- missing a duty is the more
 # expensive error.
 _STORAGE_SEGMENT_DELIMITER = re.compile(r"[,:()\[\]]|--+|\u2014|\u2013")
+# Conjunctions that can introduce a new statement without any punctuation.
+# "and"/"or" are deliberately absent: they coordinate noun phrases far more
+# often than they open a new clause ("books and records", "paper or
+# electronic"), and splitting on them would fragment the very subject the
+# duty governs.
+_STORAGE_SEGMENT_CONJUNCTION = re.compile(
+    r"\b(?:while|whereas|although|though|but|however|except\s+that|"
+    r"provided\s+that|whilst)\b",
+    re.IGNORECASE,
+)
 
 _STORAGE_SUBJECT_NOUN = re.compile(
     r"\b(?:records?|recordkeeping|record[-\s]?keeping|books?|"
@@ -901,12 +1172,44 @@ def _segment_opens_different_subject(segment: str) -> bool:
 
 
 def _storage_clause_segments(clause: str) -> list[tuple[int, int]]:
-    """Split a clause into non-empty punctuation-delimited segment spans."""
+    """Split a clause into non-empty segment spans.
+
+    Punctuation is the primary delimiter, but it is not the only one. English
+    routinely changes subject with a bare conjunction and no comma at all --
+    "Books and records must be stored electronically **while** employee
+    handbooks may be printed on paper" is one sentence, one comma-free clause,
+    and two entirely different statements. Treating it as a single segment
+    handed the handbook permission to the records duty and silently demoted a
+    real electronic recordkeeping mandate.
+
+    A conjunction therefore also opens a segment, but only when what follows it
+    actually reads as a new statement (a subject plus a finite verb, per
+    :data:`_SEGMENT_SUBJECT_PATTERN`). That guard is what keeps ordinary
+    coordination intact: "Books **and** records must be stored electronically"
+    has no subject+verb after "and", so it is not split, and "records must be
+    stored electronically **although** paper copies may also be retained" is
+    split -- but its new subject still names paper, so the extension in
+    :func:`_local_storage_clause` keeps it and the paper alternative is still
+    seen.
+    """
+    split_points: list[tuple[int, int]] = [
+        (delimiter.start(), delimiter.end())
+        for delimiter in _STORAGE_SEGMENT_DELIMITER.finditer(clause)
+    ]
+    for conjunction in _STORAGE_SEGMENT_CONJUNCTION.finditer(clause):
+        if _SEGMENT_SUBJECT_PATTERN.match(clause[conjunction.start():].strip()):
+            # Split *before* the conjunction so the new segment starts with it
+            # and the subject test can read the conjunction as a lead-in.
+            split_points.append((conjunction.start(), conjunction.start()))
+    split_points.sort()
+
     spans: list[tuple[int, int]] = []
     position = 0
-    for delimiter in _STORAGE_SEGMENT_DELIMITER.finditer(clause):
-        spans.append((position, delimiter.start()))
-        position = delimiter.end()
+    for start, end in split_points:
+        if start < position:
+            continue
+        spans.append((position, start))
+        position = end
     spans.append((position, len(clause)))
     return [span for span in spans if clause[span[0]:span[1]].strip()]
 
@@ -974,6 +1277,55 @@ def _mask_unbound_negations(clause: str) -> str:
     masked = clause
     for match in NEGATED_OBLIGATION_PATTERN.finditer(clause):
         if STORAGE_PREDICATE_AFTER_NEGATION.match(clause, match.end()):
+            continue
+        masked = (
+            masked[: match.start()]
+            + " " * (match.end() - match.start())
+            + masked[match.end():]
+        )
+    return masked
+
+
+# "permitted" is a permission only when it is *predicated* of something --
+# "paper copies are permitted", "firms are permitted to store records on
+# paper", "electronic storage is permitted where feasible". Used attributively
+# it is an adjective describing which instance of a thing may be used, and it
+# says nothing at all about whether the duty is optional: "records must be
+# stored electronically in **a permitted repository**" is a mandate that also
+# constrains the destination. Reading that adjective as a permission demoted a
+# genuine HIGH obligation to noise.
+_PERMISSION_VENUE_NOUN = (
+    r"(?:repositor(?:y|ies)|system|systems|platform|platforms|service|services|"
+    r"provider|providers|vendor|vendors|database|databases|archive|archives|"
+    r"storage|environment|environments|location|locations|facility|facilities|"
+    r"medium|media|format|formats|form|forms|method|methods|technolog(?:y|ies)|"
+    r"solution|solutions|application|applications|cloud|server|servers|"
+    r"device|devices)"
+)
+# Predicative uses, which stay disqualifying.
+_PERMISSION_PREDICATIVE_LEAD = re.compile(
+    r"(?:\b(?:is|are|was|were|be|been|being|as|if|when|where|unless|only|also|"
+    r"otherwise|expressly|explicitly|not|never|already|still)\s+)$",
+    re.IGNORECASE,
+)
+ATTRIBUTIVE_PERMISSION_PATTERN = re.compile(
+    r"\b(?:permitted|permissible|approved|authorized|authorised|acceptable)\b"
+    r"(?=\s+(?:\w+ly\s+)?(?:\w+\s+){0,1}?" + _PERMISSION_VENUE_NOUN + r"\b)",
+    re.IGNORECASE,
+)
+
+
+def _mask_attributive_permissions(clause: str) -> str:
+    """Blank permission adjectives that merely qualify a storage venue.
+
+    Only the attributive use is removed. A preceding copula or conditional
+    marker ("is permitted", "if permitted", "not permitted") makes the word
+    predicative -- it then really is a statement about what is allowed -- so it
+    is left in place for :data:`OPTIONAL_OR_NEGATED_RECORDKEEPING` to find.
+    """
+    masked = clause
+    for match in ATTRIBUTIVE_PERMISSION_PATTERN.finditer(clause):
+        if _PERMISSION_PREDICATIVE_LEAD.search(clause[: match.start()]):
             continue
         masked = (
             masked[: match.start()]
@@ -1514,7 +1866,9 @@ def _has_electronic_recordkeeping_obligation(text: str) -> bool:
             # bind the storage predicate, so unbound ones are masked too.
             matched_text = _mask_unbound_negations(
                 _mask_unbound_permissive_modals(
-                    _mask_paper_prohibition(local_clause)
+                    _mask_attributive_permissions(
+                        _mask_paper_prohibition(local_clause)
+                    )
                 )
             )
             if OPTIONAL_OR_NEGATED_RECORDKEEPING.search(matched_text):
@@ -1866,17 +2220,32 @@ def _is_federal_register_non_document_text(text: str) -> bool:
     about access controls, authentication, or captchas are routine) is kept
     when it is substantial and structurally recognisable as a Federal Register
     document.
+
+    That asymmetry stops at unambiguous wording. A body whose *opening* region
+    says "Access Denied", "verify you are human", or carries a branded
+    interstitial signature is a challenge page, and padding it with
+    ``SUMMARY:``/``AGENCY:``/``ACTION:`` boilerplate until it satisfies the
+    structure test must not promote it into authoritative text.
     """
     if not text:
+        return True
+    if _interstitial_signature(text, FEDERAL_REGISTER_NON_DOCUMENT_LEAD_CHARS):
+        return True
+    unambiguous = UNAMBIGUOUS_DENIAL_PATTERN.search(
+        text[:FEDERAL_REGISTER_NON_DOCUMENT_LEAD_CHARS]
+    )
+    if unambiguous and not _document_self_identifies_before(
+        text,
+        unambiguous.start(),
+        FEDERAL_REGISTER_DOCUMENT_STRUCTURE_PATTERN,
+        FEDERAL_REGISTER_DOCUMENT_SUBSTANTIAL_CHARS,
+    ):
         return True
     if (
         FEDERAL_REGISTER_NON_DOCUMENT_PATTERN.search(
             text[:FEDERAL_REGISTER_NON_DOCUMENT_LEAD_CHARS]
         )
         or FEDERAL_REGISTER_CHALLENGE_PATTERN.search(text)
-        or _interstitial_signature(
-            text, FEDERAL_REGISTER_NON_DOCUMENT_LEAD_CHARS
-        )
     ):
         return not (
             len(text) >= FEDERAL_REGISTER_DOCUMENT_SUBSTANTIAL_CHARS
@@ -1950,6 +2319,50 @@ FINRA_DETAIL_IDENTITY_SELECTORS = (
     ("meta[name='canonical']", "content"),
 )
 
+# Headings/titles a notice page uses to name itself. Used only as a *strong*
+# fallback when the page declares no canonical/og identity at all.
+FINRA_DETAIL_TITLE_SELECTORS = (
+    ("title", None),
+    ("meta[property='og:title']", "content"),
+    ("h1", None),
+)
+# A notice designation as it appears in a heading: "Regulatory Notice 26-12",
+# "Notice to Members 88-81a", "Information Notice 12/24/24".
+FINRA_DETAIL_DESIGNATION_PATTERN = re.compile(
+    r"\b(?:regulatory\s+notice|notice\s+to\s+members|information\s+notice|"
+    r"special\s+notice|election\s+notice|trade\s+reporting\s+notice|notice)\s+"
+    rf"({FINRA_NOTICE_NUMBER_TOKEN})",
+    re.IGNORECASE,
+)
+
+
+def _finra_detail_declared_identities(soup) -> list[str]:
+    """Return every non-empty identity value the page declares."""
+    declared: list[str] = []
+    for selector, attribute in FINRA_DETAIL_IDENTITY_SELECTORS:
+        for node in soup.select(selector):
+            value = (node.get(attribute) or "").strip()
+            if value:
+                declared.append(value)
+    return declared
+
+
+def _finra_detail_designations(soup) -> set[str]:
+    """Return the distinct notice designations the page's headings publish."""
+    designations: set[str] = set()
+    for selector, attribute in FINRA_DETAIL_TITLE_SELECTORS:
+        for node in soup.select(selector):
+            if attribute is None:
+                value = node.get_text(" ", strip=True)
+            else:
+                value = node.get(attribute) or ""
+            value = re.sub(r"\s+", " ", value).strip()
+            if not value:
+                continue
+            for match in FINRA_DETAIL_DESIGNATION_PATTERN.finditer(value):
+                designations.add(match.group(1).strip().lower())
+    return designations
+
 
 def _finra_detail_identity_mismatch(
     html: str, expected_url: Optional[str]
@@ -1959,21 +2372,34 @@ def _finra_detail_identity_mismatch(
     A 200 that renders *a* notice is not proof it rendered *this* notice: a
     CDN or a stale edge cache can answer one notice URL with another notice's
     document, and hashing that would fingerprint the wrong body under this
-    URL. Only explicit, self-declared identity is used -- ``rel=canonical`` and
-    ``og:url`` -- because inferring identity from prose would reject
-    legitimate pages that simply do not repeat their own number.
+    URL.
 
-    A declared identity that is not a supported notice URL at all is also a
-    mismatch: it means the served document is not the requested notice.
+    Identity is taken from what the page declares about itself --
+    ``rel=canonical`` / ``og:url`` -- and every declared value must resolve to
+    the requested notice. A declared identity that is not a supported notice
+    URL at all is a mismatch: the served document is not the requested notice.
+
+    **Absence now fails closed.** Treating "the page said nothing" as "the page
+    is what we asked for" is precisely the hole a cache-poisoned or
+    silently-substituted response walks through, and no amount of downstream
+    hashing can recover from storing the wrong body under this key. Live
+    FINRA notice pages publish ``rel=canonical`` unconditionally, so the
+    closed default costs nothing against the real source.
+
+    One strong fallback is honoured, because it is unambiguous rather than
+    inferred: a page that declares *no* URL identity but whose title/heading
+    publishes exactly one distinct notice designation, and that designation is
+    the requested notice's own number, has named itself as this notice. More
+    than one distinct designation is ambiguous (a notice that discusses other
+    notices) and fails closed; a different single designation is a mismatch.
     """
     if not expected_url:
         return None
     soup = BeautifulSoup(html or "", "html.parser")
-    for selector, attribute in FINRA_DETAIL_IDENTITY_SELECTORS:
-        for node in soup.select(selector):
-            declared = (node.get(attribute) or "").strip()
-            if not declared:
-                continue
+
+    declared_values = _finra_detail_declared_identities(soup)
+    if declared_values:
+        for declared in declared_values:
             canonical = _canonical_finra_notice_url(declared)
             if canonical is None:
                 return (
@@ -1985,7 +2411,24 @@ def _finra_detail_identity_mismatch(
                     f"page declares notice {canonical} but {expected_url} was "
                     "requested"
                 )
-    return None
+        return None
+
+    expected_slug = _finra_notice_slug_from_url(expected_url)
+    designations = _finra_detail_designations(soup)
+    if len(designations) == 1 and expected_slug is not None:
+        (designation,) = tuple(designations)
+        if _finra_designation_matches_slug(designation, expected_slug):
+            return None
+        return (
+            f"page declares no canonical identity and names notice "
+            f"{designation!r}, but {expected_url} was requested"
+        )
+
+    return (
+        f"page declares no canonical/og identity for {expected_url} and "
+        f"publishes {len(designations)} unambiguous notice designations; "
+        "refusing to store an unidentified document under this notice"
+    )
 
 
 def _finra_notice_unavailable_reason_from_html(html: str) -> Optional[str]:
@@ -2251,14 +2694,49 @@ FEDERAL_REGISTER_TEXT_ALLOWED_HOSTS = frozenset(
 # Paths that serve document text on those hosts. An allow-list, not a
 # deny-list: a host match alone would still permit ``/login``, ``/search``, or
 # any other endpoint that answers 200 with something that is not the document.
+#
+# Two endpoint classes were removed here because neither is authoritative
+# *text*:
+#
+# * ``/api/v1/documents/<number>.json`` is the API's **metadata** record. It
+#   answers 200 with ``application/json`` describing the document (title,
+#   agencies, abstract, links) -- not its operative text. Classifying and
+#   hashing that payload baselines a summary as the source of record, so a
+#   later change to the actual rule text is invisible. It is now rejected
+#   *before any request is issued*, so a metadata URL costs no fetch and
+#   advances no state.
+# * ``.../pdf/...`` (and the ``mods`` metadata sibling) is a binary rendering.
+#   ``requests.Response.text`` decodes PDF bytes into mojibake, which then
+#   passes the "substantial text" screens and is hashed as if it were the
+#   document. Only endpoint shapes that serve parseable text/HTML/XML remain.
 FEDERAL_REGISTER_TEXT_PATH_PATTERN = re.compile(
     r"(?:"
-    r"/documents/full_text/(?:text|html|xml|mods|pdf)/[A-Za-z0-9._/-]+"
-    r"|/api/v[0-9]+/documents/[A-Za-z0-9._-]+"
+    r"/documents/full_text/(?:text|html|xml)/[A-Za-z0-9._/-]+"
     r"|/documents/[0-9]{4}/[0-9]{2}/[0-9]{2}/[A-Za-z0-9._/-]+"
-    r"|/(?:fdsys|content)/pkg/[A-Za-z0-9._-]+/(?:html|pdf|xml|text|mods)"
+    r"|/(?:fdsys|content)/pkg/[A-Za-z0-9._-]+/(?:html|xml|text)"
     r"/[A-Za-z0-9._-]+"
     r")",
+)
+# A permitted path shape is not enough on its own: ``/documents/full_text/
+# text/2026/01/02/2026-12345.pdf`` matches the text branch while still naming a
+# binary. The terminal extension is therefore allow-listed too -- absent, or
+# one of the parseable text/HTML/XML forms.
+FEDERAL_REGISTER_TEXT_ALLOWED_EXTENSIONS = frozenset(
+    {"", ".txt", ".text", ".htm", ".html", ".xhtml", ".xml"}
+)
+# Response content types that can carry parseable authoritative text. Checked
+# only when the transport actually reported one ("where available"), so a
+# fixture or a server that omits the header is not failed for the omission --
+# but a reported ``application/json`` or ``application/pdf`` is decisive.
+FEDERAL_REGISTER_TEXT_ALLOWED_CONTENT_TYPES = frozenset(
+    {
+        "text/plain",
+        "text/html",
+        "text/xml",
+        "application/xml",
+        "application/xhtml+xml",
+        "text/xhtml",
+    }
 )
 
 
@@ -2271,7 +2749,9 @@ def _is_ip_literal(host: str) -> bool:
     return True
 
 
-def _federal_register_text_url_rejection_reason(raw_url) -> Optional[str]:
+def _federal_register_text_url_rejection_reason(
+    raw_url, document_number: Optional[str] = None
+) -> Optional[str]:
     """Return why an authoritative-text URL is untrustworthy, else ``None``.
 
     Rejects, in order: a missing/non-string URL, any scheme other than https
@@ -2279,8 +2759,17 @@ def _federal_register_text_url_rejection_reason(raw_url) -> Optional[str]:
     non-default port, an IP literal or loopback/link-local name, a host outside
     the Federal Register / GPO allow-list (including lookalikes such as
     ``federalregister.gov.attacker.example``), a fragment, traversal or
-    percent-encoded escapes in the path, a known interstitial path, and finally
-    any path that is not a recognised document-text endpoint.
+    percent-encoded escapes in the path, a known interstitial path, any path
+    that is not a recognised document-text endpoint, any terminal extension
+    that is not a parseable text/HTML/XML form (``.pdf``, ``.json``, ``.zip``),
+    and finally -- when ``document_number`` is supplied -- any URL that does
+    not name that document.
+
+    The identity bind is the difference between "this is *an* authoritative
+    endpoint" and "this is *this document's* authoritative endpoint". Without
+    it a payload could point item A at document B's text, and the monitor would
+    classify and fingerprint B's body under A's key, so a later real change to
+    A would never be observed.
     """
     if not raw_url or not isinstance(raw_url, str):
         return "authoritative text URL was missing"
@@ -2328,7 +2817,70 @@ def _federal_register_text_url_rejection_reason(raw_url) -> Optional[str]:
             f"path {path!r} is not an accepted Federal Register document text "
             f"path: {url}"
         )
+    filename = path.rsplit("/", 1)[-1]
+    extension = ""
+    if "." in filename:
+        extension = filename[filename.rindex("."):].lower()
+    if extension not in FEDERAL_REGISTER_TEXT_ALLOWED_EXTENSIONS:
+        return (
+            f"path {path!r} serves {extension!r}, which is not a parseable "
+            f"authoritative text/HTML/XML form: {url}"
+        )
+    identity_rejection = _federal_register_text_identity_rejection_reason(
+        path, document_number, url
+    )
+    if identity_rejection:
+        return identity_rejection
     return None
+
+
+def _federal_register_text_identity_rejection_reason(
+    path: str, document_number: Optional[str], url: str
+) -> Optional[str]:
+    """Return why a text path does not name ``document_number``, else ``None``.
+
+    Federal Register and GPO both encode the document number in the terminal
+    filename (``.../full_text/text/2026/01/02/2026-12345.txt``,
+    ``/content/pkg/FR-2026-01-02/html/2026-12345.htm``). Matching on the
+    filename stem rather than anywhere in the URL keeps a directory or package
+    name from standing in for the document itself.
+    """
+    expected = str(document_number or "").strip()
+    if not expected:
+        return None
+    filename = path.rsplit("/", 1)[-1]
+    stem = filename.rsplit(".", 1)[0] if "." in filename else filename
+    if stem.lower() == expected.lower():
+        return None
+    return (
+        f"authoritative text URL names document {stem!r} but "
+        f"{expected!r} was requested: {url}"
+    )
+
+
+def _federal_register_content_type_rejection_reason(
+    content_type: Optional[str], url: str
+) -> Optional[str]:
+    """Return why a response content type cannot carry authoritative text.
+
+    ``None`` when no content type was reported: the check is "where
+    available", and a fixture or a server that omits the header must not fail
+    a run for the omission. A *reported* ``application/json`` (the API
+    metadata record) or ``application/pdf`` (a binary rendering) is decisive --
+    both decode into something that is not the document's text but would still
+    pass every downstream text screen and be hashed as the source of record.
+    """
+    if not content_type or not isinstance(content_type, str):
+        return None
+    media_type = content_type.split(";", 1)[0].strip().lower()
+    if not media_type:
+        return None
+    if media_type in FEDERAL_REGISTER_TEXT_ALLOWED_CONTENT_TYPES:
+        return None
+    return (
+        f"response content type {media_type!r} is not a parseable "
+        f"authoritative text/HTML/XML type: {url}"
+    )
 
 
 # --- FINRA listing trust -----------------------------------------------------
@@ -2336,23 +2888,145 @@ def _federal_register_text_url_rejection_reason(raw_url) -> Optional[str]:
 FINRA_LISTING_LEAD_CHARS = 600
 
 
-def _finra_listing_url_rejection_reason(url: str, label: str) -> Optional[str]:
-    """Return why a listing URL is not the trusted FINRA notices listing."""
+def _finra_listing_url_rejection_reason(
+    url: str, label: str, expected_page: Optional[int] = None
+) -> Optional[str]:
+    """Return why a listing URL is not the trusted FINRA notices listing.
+
+    When ``expected_page`` is supplied the URL must also *be* that page. The
+    path alone is not the listing's identity -- ``?page=7`` and ``?page=1`` are
+    the same path and completely different content. A response that answers a
+    page-7 request from page 1 (a redirect, an edge rewrite, or a pager that
+    silently clamps an out-of-range page) previously satisfied the path check,
+    and the crawler recorded page 7 as fetched. That is how a crawl that
+    covered a fraction of the listing was baselined as complete, with the
+    unfetched notices looking like they simply do not exist.
+
+    Page 0 is the bare listing, so both an absent ``page`` parameter and an
+    explicit ``page=0`` are accepted for it; every other page must declare its
+    own number.
+    """
     target = _finra_request_target(url)
     if target is None:
         return (
             f"{label} is not a trusted https www.finra.org URL: {url!r}"
         )
-    path, _query = target
+    path, query = target
     if path.rstrip("/") != FINRA_NOTICES_PATH:
         return f"{label} is not the FINRA notices listing path: {url!r}"
+
+    if expected_page is not None:
+        values = parse_qs(query).get("page")
+        if not values:
+            actual_page: Optional[int] = 0
+        else:
+            try:
+                actual_page = int(values[0])
+            except (TypeError, ValueError):
+                actual_page = None
+        if actual_page != expected_page:
+            return (
+                f"{label} is listing page {actual_page if actual_page is not None else values[0]!r} "
+                f"but page {expected_page} was requested: {url!r}"
+            )
     return None
 
 
-def _finra_detail_url_rejection_reason(url: str) -> Optional[str]:
-    """Return why a URL is not a supported FINRA notice detail URL, else None."""
-    if _canonical_finra_notice_url(url) is None:
+# Containers a real notices listing publishes its rows in. Shared by link
+# extraction and the listing identity check so the two can never disagree
+# about what "a listing row" is.
+FINRA_LISTING_CONTAINER_SELECTOR = (
+    "table tr, .views-row, [class*='views-row'], "
+    "ul.notices-list li, ol.notices-list li, "
+    "ul[class*='notice'] li, ol[class*='notice'] li, "
+    "li[class*='notice'], [class*='notice-item'], [class*='notice-card'], "
+    "article[class*='notice'], .node--type-finra-notice, "
+    ".node--type-regulatory-notice, .node--type-notice"
+)
+FINRA_LISTING_IDENTITY_SELECTORS = FINRA_DETAIL_IDENTITY_SELECTORS
+
+
+def _finra_listing_identity_rejection_reason(
+    content: str | bytes, page_index: int
+) -> Optional[str]:
+    """Return why a response is not the authoritative notices listing.
+
+    Two independent ways to prove it, because the live source only offers the
+    first one:
+
+    1. *Declared identity.* Every ``rel=canonical``/``og:url`` the page
+       publishes must resolve to the notices listing path. Live FINRA emits
+       ``rel=canonical`` pointing at the bare listing on **every** page --
+       verified against pages 0 and 7 of the production listing, which both
+       declare ``https://www.finra.org/rules-guidance/notices`` with no
+       ``page`` component -- so the page number is only compared when the
+       declared identity actually carries one. Requiring the page number here
+       would reject every real page but the first; the *URL* check
+       (:func:`_finra_listing_url_rejection_reason`) is what pins the page,
+       and it reads the final URL, which live FINRA does preserve.
+    2. *Recognised containers.* A page that declares no URL identity at all
+       must at least publish notice links inside real listing rows.
+
+    A same-origin page that is neither -- a Market News article, a search
+    result, a topic hub -- is rejected here, before a single anchor is read.
+    """
+    soup = BeautifulSoup(content or "", "html.parser")
+
+    declared_values: list[str] = []
+    for selector, attribute in FINRA_LISTING_IDENTITY_SELECTORS:
+        for node in soup.select(selector):
+            value = (node.get(attribute) or "").strip()
+            if value:
+                declared_values.append(value)
+
+    if declared_values:
+        for declared in declared_values:
+            target = _finra_request_target(declared)
+            if target is None or target[0].rstrip("/") != FINRA_NOTICES_PATH:
+                return (
+                    f"listing page {page_index} declares identity {declared!r}, "
+                    "which is not the FINRA notices listing"
+                )
+            declared_page = _finra_listing_page_number(declared)
+            if declared_page is not None and declared_page != page_index:
+                return (
+                    f"listing page {page_index} declares itself as page "
+                    f"{declared_page}"
+                )
+        return None
+
+    if _finra_listing_container_links(soup):
+        return None
+
+    return (
+        f"listing page {page_index} declares no notices-listing identity and "
+        "publishes no recognised notice rows; refusing to treat it as a listing"
+    )
+
+
+def _finra_detail_url_rejection_reason(
+    url: str, expected_url: Optional[str] = None
+) -> Optional[str]:
+    """Return why a URL is not the requested FINRA notice detail URL, else None.
+
+    Without ``expected_url`` this only proves the response landed on *some*
+    supported notice. That is not enough: a redirect from ``26-12`` to
+    ``26-99`` lands on a perfectly valid notice URL, and the body fetched from
+    it was then stored, hashed, and baselined under the ``26-12`` key. The
+    monitor would report 26-12 as changed whenever 26-99 changed, and would
+    never see 26-12 at all. When the caller knows which notice it asked for it
+    passes it here, and the final URL must canonicalise to exactly that.
+    """
+    canonical = _canonical_finra_notice_url(url)
+    if canonical is None:
         return f"not a supported FINRA notice URL: {url!r}"
+    if expected_url is not None:
+        expected_canonical = _canonical_finra_notice_url(expected_url)
+        if expected_canonical is None or canonical != expected_canonical:
+            return (
+                f"response resolved to notice {canonical} but {expected_url} "
+                "was requested"
+            )
     return None
 
 
@@ -2394,6 +3068,7 @@ def _fetch_cached_fallback_text(
     required: bool = False,
     source_label: str = "detail",
     final_url_validator=None,
+    content_type_validator=None,
 ) -> tuple[str, bool]:
     """Fetch fallback text once per URL and return (text, fetched_new)."""
     if not url:
@@ -2435,6 +3110,14 @@ def _fetch_cached_fallback_text(
         final_rejection = final_url_validator(result.get("final_url") or url)
         if final_rejection:
             origin_rejection = f"final URL was rejected: {final_rejection}"
+    if origin_rejection is None and content_type_validator is not None:
+        # What the transport says it sent, checked before anything is parsed:
+        # a JSON metadata record or a PDF rendering decodes into text that
+        # would otherwise pass every downstream screen and be hashed as the
+        # source of record.
+        content_type_rejection = content_type_validator(result.get("content_type"))
+        if content_type_rejection:
+            origin_rejection = content_type_rejection
     if origin_rejection:
         message = f"{source_label} fetch for {url} {origin_rejection}"
         if required:
@@ -2602,6 +3285,25 @@ def _canonical_finra_notice_url(raw_url: str) -> Optional[str]:
     return f"https://www.finra.org{FINRA_NOTICES_PATH}/{slug}"
 
 
+def _finra_notice_slug_from_url(raw_url: str) -> Optional[str]:
+    """Return the notice slug for a supported notice URL, else ``None``."""
+    canonical = _canonical_finra_notice_url(raw_url)
+    if canonical is None:
+        return None
+    return canonical.rsplit("/", 1)[-1]
+
+
+def _finra_designation_matches_slug(designation: str, slug: str) -> bool:
+    """Return whether a heading designation names the notice ``slug``.
+
+    Only the numbered families are comparable this way: "Regulatory Notice
+    26-12" names ``26-12``. Date-based families ("Information Notice
+    12/24/24") are deliberately *not* matched, so they fall through to the
+    closed default rather than being accepted on a loose date reading.
+    """
+    return designation.strip().lower() == slug.strip().lower()
+
+
 def _finra_listing_page_number(raw_url: str) -> Optional[int]:
     """Return the 0-indexed page for a same-origin notices *listing* link.
 
@@ -2658,56 +3360,60 @@ def _finra_link_quality(link) -> tuple[int, int]:
     return has_row_date, len(title)
 
 
+def _finra_listing_navigation_ancestors() -> frozenset:
+    return frozenset({"nav", "header", "footer", "aside"})
+
+
+def _finra_in_navigation(node) -> bool:
+    """Return whether ``node`` sits inside site navigation chrome."""
+    navigation_ancestors = _finra_listing_navigation_ancestors()
+    return any(
+        parent.name in navigation_ancestors
+        for parent in node.parents
+        if parent is not None and parent.name
+    )
+
+
+def _finra_listing_container_links(soup) -> list:
+    """Return eligible notice anchors found inside recognised listing rows."""
+    scoped_links = []
+    for container in soup.select(FINRA_LISTING_CONTAINER_SELECTOR):
+        if _finra_in_navigation(container):
+            continue
+        scoped_links.extend(container.find_all("a", href=True))
+    return [
+        link
+        for link in scoped_links
+        if _canonical_finra_notice_url(link.get("href", "")) is not None
+    ]
+
+
 def _extract_finra_notice_links(content: str | bytes) -> list:
     """Enumerate and deduplicate eligible links from a *verified* FINRA listing.
 
     Discovery is scoped to listing rows/containers -- table rows, view rows,
     list items, and notice cards -- because those are the only places the
     listing publishes notices. The caller is responsible for having proved the
-    page is a real notices listing first (trusted requested *and* final URL, no
-    denial/challenge/error signature); this function must never be the thing
-    that decides a hostile page was a listing.
+    page is a real notices listing first (trusted requested *and* final URL at
+    the requested page, an authoritative listing identity, no denial/challenge/
+    error signature); this function must never be the thing that decides a
+    hostile page was a listing.
 
-    A narrow fallback remains for older/simple markup that exposes no
-    recognisable row: anchors that are **not** inside site navigation chrome
-    (``nav``/``header``/``footer``/``aside``). Navigation on a denial page
-    still links to real notice URLs, so promoting nav links to "the crawl" is
-    exactly how a blocked response would be baselined as a complete run.
+    **There is no all-anchor fallback.** It used to exist for "older/simple
+    markup", and it is exactly what let a same-origin FINRA Market News
+    article -- which merely *links to* two notices in its prose -- be read as a
+    complete two-notice listing. Every anchor outside navigation counted, so
+    any same-origin page reachable by redirect or misconfiguration could
+    define the crawl, and the result was indistinguishable from a genuine run
+    because the links themselves were real notice URLs. Scoping now fails
+    closed: a page with no recognisable rows yields no notices, and the caller
+    treats a declared page that yields nothing as a failure rather than as an
+    empty truth.
     """
     soup = BeautifulSoup(content, "html.parser")
     links_by_url: dict[str, object] = {}
 
-    navigation_ancestors = {"nav", "header", "footer", "aside"}
-
-    def in_navigation(link) -> bool:
-        return any(
-            parent.name in navigation_ancestors
-            for parent in link.parents
-            if parent is not None and parent.name
-        )
-
-    scoped_links = []
-    for container in soup.select(
-        "table tr, .views-row, [class*='views-row'], "
-        "ul.notices-list li, ol.notices-list li, "
-        "ul[class*='notice'] li, ol[class*='notice'] li, "
-        "li[class*='notice'], [class*='notice-item'], [class*='notice-card'], "
-        "article[class*='notice'], .node--type-finra-notice, "
-        ".node--type-regulatory-notice, .node--type-notice"
-    ):
-        if in_navigation(container):
-            continue
-        scoped_links.extend(container.find_all("a", href=True))
-
-    eligible_scoped_links = [
-        link
-        for link in scoped_links
-        if _canonical_finra_notice_url(link.get("href", "")) is not None
-    ]
-    candidate_links = eligible_scoped_links or [
-        link for link in soup.find_all("a", href=True) if not in_navigation(link)
-    ]
-    for link in candidate_links:
+    for link in _finra_listing_container_links(soup):
         canonical_url = _canonical_finra_notice_url(link.get("href", ""))
         if canonical_url is None:
             continue
@@ -3015,13 +3721,17 @@ def fetch_federal_register_documents(
             abstract_tier
         )
         raw_text_url = doc.get('raw_text_url', '')
+        expected_document_number = str(doc.get('document_number') or '').strip()
         # SSRF/trust gate. The URL is API-supplied data, so it is validated
         # BEFORE any request is issued: an invalid or off-allow-list URL must
         # never be contacted at all, not merely rejected after the response
-        # arrives. Authoritative text is mandatory for every item, so a
-        # rejected URL fails the run closed rather than baselining an item
-        # whose source of record was never read.
-        url_rejection = _federal_register_text_url_rejection_reason(raw_text_url)
+        # arrives. The document number is bound in here too, so a payload
+        # cannot point this item at another document's text. Authoritative text
+        # is mandatory for every item, so a rejected URL fails the run closed
+        # rather than baselining an item whose source of record was never read.
+        url_rejection = _federal_register_text_url_rejection_reason(
+            raw_text_url, expected_document_number
+        )
         if should_fetch_detail and url_rejection:
             message = (
                 "Federal Register authoritative text URL rejected for "
@@ -3054,7 +3764,20 @@ def fetch_federal_register_documents(
                 extractor=_extract_federal_register_source_text,
                 required=authoritative_required,
                 source_label="Federal Register authoritative text",
-                final_url_validator=_federal_register_text_url_rejection_reason,
+                final_url_validator=(
+                    lambda final_url, _expected=expected_document_number: (
+                        _federal_register_text_url_rejection_reason(
+                            final_url, _expected
+                        )
+                    )
+                ),
+                content_type_validator=(
+                    lambda content_type, _url=raw_text_url: (
+                        _federal_register_content_type_rejection_reason(
+                            content_type, _url
+                        )
+                    )
+                ),
             )
             if fetched_new:
                 detail_fetches += 1
@@ -3153,7 +3876,9 @@ def fetch_finra_notices(
             else f"{FINRA_NOTICES_URL}?page={page_index}"
         )
         requested_rejection = _finra_listing_url_rejection_reason(
-            page_url, f"FINRA notices listing request for page {page_index}"
+            page_url,
+            f"FINRA notices listing request for page {page_index}",
+            expected_page=page_index,
         )
         if requested_rejection:
             raise FinraListingError(requested_rejection)
@@ -3186,6 +3911,7 @@ def fetch_finra_notices(
         final_rejection = _finra_listing_url_rejection_reason(
             result.get('final_url') or page_url,
             f"FINRA notices listing response for page {page_index}",
+            expected_page=page_index,
         )
         if final_rejection:
             raise FinraListingError(final_rejection)
@@ -3213,6 +3939,21 @@ def fetch_finra_notices(
                 f"FINRA notices page {page_index} returned a denial/challenge "
                 f"page ({denial_reason!r}); refusing to parse it as a listing"
             )
+
+        # Prove the body is the notices listing itself, not merely a
+        # same-origin page that happens to mention notices.
+        try:
+            identity_rejection = _finra_listing_identity_rejection_reason(
+                content, page_index
+            )
+        except FinraListingError:
+            raise
+        except Exception as exc:
+            raise FinraListingError(
+                f"FINRA notices page parsing failed for page {page_index}"
+            ) from exc
+        if identity_rejection:
+            raise FinraListingError(identity_rejection)
         return content
 
     # Crawl every declared listing page. ``declared_last`` is the running
@@ -3382,7 +4123,13 @@ def fetch_finra_notices(
                     ),
                     required=True,
                     source_label="FINRA authoritative notice body",
-                    final_url_validator=_finra_detail_url_rejection_reason,
+                    final_url_validator=(
+                        lambda final_url, _expected=url: (
+                            _finra_detail_url_rejection_reason(
+                                final_url, expected_url=_expected
+                            )
+                        )
+                    ),
                 )
             except FinraNoticeUnavailableError as exc:
                 # The source answered, and its answer is "there is no notice
