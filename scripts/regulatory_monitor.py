@@ -33,8 +33,10 @@ import os
 import re
 import sys
 import time
+from bisect import bisect_left, bisect_right
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
+from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 from urllib.parse import urljoin, urlparse, parse_qs
@@ -199,6 +201,53 @@ def _is_finra_non_notice_page_text(text: str) -> bool:
         and FINRA_NOTICE_STRUCTURE_PATTERN.search(text)
     )
 
+
+# Some genuinely published FINRA notices carry no retrievable text. The live
+# 1983 notices are the standing example: /rules-guidance/notices/83-16 renders
+# a normal notice page whose body is the tombstone "NOT AVAILABLE AT THIS
+# TIME" followed by page furniture ("Notice Comments"). That is not an error,
+# a challenge, or a denial -- the source answers successfully and declares that
+# the text does not exist online -- but it is equally not authoritative notice
+# content, and hashing it would baseline a placeholder as if the notice had
+# been read.
+FINRA_NOTICE_UNAVAILABLE_PATTERN = re.compile(
+    r"(?:"
+    r"\bnot\s+available\s+(?:at\s+this\s+time|online|electronically|"
+    r"in\s+(?:an?\s+)?(?:electronic|digital)\s+form(?:at)?|"
+    r"(?:from|through|on)\s+(?:this\s+)?(?:site|website|page))"
+    r"|\bunavailable\s+at\s+this\s+time\b"
+    r"|\bnot\s+(?:currently|presently)\s+available\b"
+    r"|\bno\s+longer\s+available\s+(?:online|electronically|on\s+this\s+site)\b"
+    r"|\b(?:text|content|document|notice|version)\s+(?:of\s+this\s+notice\s+)?"
+    r"(?:is\s+|are\s+)?(?:not\s+available|unavailable)\b"
+    r")",
+    re.IGNORECASE,
+)
+
+
+def _finra_notice_unavailable_reason(text: str) -> Optional[str]:
+    """Return the tombstone phrase when a candidate body declares no content.
+
+    Uses the same two-gate shape as the error/challenge screen: the
+    declaration has to appear in the leading region, and a substantial,
+    structurally recognisable notice that merely *mentions* unavailability
+    (for example "the data are not available at this time") is still a notice.
+    """
+    if not text:
+        return None
+    match = FINRA_NOTICE_UNAVAILABLE_PATTERN.search(
+        text[:FINRA_NON_NOTICE_LEAD_CHARS]
+    )
+    if not match:
+        return None
+    if (
+        len(text) >= FINRA_NOTICE_SUBSTANTIAL_CHARS
+        and FINRA_NOTICE_STRUCTURE_PATTERN.search(text)
+    ):
+        return None
+    return match.group(0)
+
+
 # Federal Register source documents interleave operative rule text with
 # footnote blocks, bibliographies, and literature reviews, and a document can
 # run to hundreds of thousands of characters. Position is not evidence of
@@ -253,12 +302,65 @@ _CITATION_RESEARCH_NOUN = (
     r"(?:" + _RESEARCHER_SUBJECT_NOUN + r"|analysts?|authors?|"
     r"stud(?:y|ies)|papers?|articles?|surveys?|literature|working\s+papers?)"
 )
+_CITATION_DETERMINER = (
+    r"(?:the\s+|a\s+|an\s+|one\s+|another\s+|several\s+|recent\s+|prior\s+|"
+    r"earlier\s+|many\s+|some\s+|numerous\s+|academic\s+|empirical\s+|"
+    r"various\s+|two\s+|three\s+|four\s+)*"
+)
+
+# Proper-name attribution. A citation can name its source *before* the claim
+# ("According to Jones (2026), artificial intelligence affects capital
+# markets.") or trail it in parentheses ("... capital markets (Jones, 2026).").
+# Neither shape has a reporting verb after the author-date token, so the
+# author-date branch above cannot see them and the mention was read as the
+# document's own assertion.
+#
+# Casing is unavailable (classification text is lowercased), so a proper name
+# is recognised structurally: an attribution lead plus a parenthetical year, or
+# a parenthetical "<name>, <year>" pair. The trailing parenthetical form
+# deliberately *requires* the comma, because "(September 2026)" and
+# "(effective 2027)" are dates, not citations.
+_CITATION_NAME_TOKEN = r"[a-z][\w'\u2019-]*"
+_CITATION_NAME_LIST = (
+    _CITATION_NAME_TOKEN
+    + r"(?:\s+(?:and|&)\s+" + _CITATION_NAME_TOKEN + r")?"
+    + r"(?:\s*,?\s*et\s+al\.?)?"
+)
+_CITATION_ATTRIBUTION_VERB = (
+    r"(?:reported|noted|observed|described|documented|discussed|shown|argued|"
+    r"explained|summari[sz]ed|estimated|surveyed|reviewed|cited|quoted)"
+)
+_CITATION_ATTRIBUTION_LEAD = (
+    r"(?:according\s+to|(?:as\s+)?" + _CITATION_ATTRIBUTION_VERB + r"\s+(?:in|by)"
+    r"|as\s+cited\s+in|citing)"
+)
+_CITATION_ATTRIBUTION_SUBJECT = (
+    r"(?:"
+    # "according to Jones (2026)", "as reported by Smith and Lee (2025)",
+    # "per Jones et al. (2026)".
+    + r"(?:" + _CITATION_ATTRIBUTION_LEAD + r"|per)\s+"
+    + _CITATION_NAME_LIST + r"\s*" + _CITATION_YEAR_PAREN
+    + r"|"
+    # "according to a recent study", "as documented in the literature".
+    + _CITATION_ATTRIBUTION_LEAD + r"\s+" + _CITATION_DETERMINER
+    + _CITATION_RESEARCH_NOUN
+    + r")"
+)
+# Trailing parenthetical author-date: "(Jones, 2026)", "(Jones and Lee, 2026)",
+# "(Jones et al., 2026)", "(Jones, 2026, p. 14)".
+_CITATION_PARENTHETICAL = (
+    r"\(\s*" + _CITATION_NAME_TOKEN
+    + r"(?:\s+(?:and|&)\s+" + _CITATION_NAME_TOKEN + r")?"
+    + r"(?:\s*,?\s*et\s+al\.?)?"
+    + r"\s*,\s*(?:19|20)\d{2}[a-z]?"
+    + r"(?:\s*[,;:]\s*(?:pp?\.\s*)?\d[\d\u2013-]*)?\s*\)"
+)
 
 REFERENCE_ONLY_PATTERN = re.compile(
     r"(?:\bsee\s+(?:also|generally|supra|infra)\b|\bsee,\s*e\.g\.|\bsupra\b|\bid\.\s|\bibid\b"
     r"|\bcf\.\s|\bet\s+al\.|\bavailable\s+at\b|https?://|\bwww\.|\bcit(?:ed|ing|ation)\b"
     r"|\b(?:an|another|one|a|the|this|these|those|recent|prior|earlier|academic|empirical|several)\s+"
-    r"[a-z ,'-]{0,26}?(?:study|studies|paper|papers|article|articles|survey|working\s+paper)\b"
+    r"[a-z0-9 ,'-]{0,26}?(?:study|studies|paper|papers|article|articles|survey|working\s+paper)\b"
     r"|\bstudies\s+(?:have\s+)?(?:found|find|show|shown|suggest|document)"
     r"|\b" + _RESEARCHER_SUBJECT_NOUN + r"\b|\bthe\s+literature\b|\bjournal\b|\bworking\s+paper\b"
     # A researcher/study subject followed by a reporting verb is a citing
@@ -271,8 +373,17 @@ REFERENCE_ONLY_PATTERN = re.compile(
     # verb ("(2026) surveys ..."). Kept in sync with the citation-subject
     # clause boundary so a clause it splits off is recognised here too.
     + r"|" + _CITATION_YEAR_PAREN + r"\s+(?:have\s+|has\s+|also\s+)?"
-    + _CITATION_REPORTING_VERB + r")",
+    + _CITATION_REPORTING_VERB
+    # Proper-name attribution, leading and trailing forms.
+    + r"|\b" + _CITATION_ATTRIBUTION_SUBJECT
+    + r"|" + _CITATION_PARENTHETICAL + r")",
     re.IGNORECASE,
+)
+
+# Anchored form used to re-attach a trailing author-date parenthetical to the
+# clause it annotates after clause punctuation would have split it off.
+TRAILING_PARENTHETICAL_CITATION_PATTERN = re.compile(
+    r"\s*" + _CITATION_PARENTHETICAL, re.IGNORECASE
 )
 
 # Federal Register raw text separates footnote blocks from body text with a run
@@ -334,13 +445,12 @@ _CITATION_CONJUNCTION = (
     r"(?:and|but|while|whereas|although|though|because|since|as|when|where)"
 )
 CITATION_SUBJECT_BOUNDARY_PATTERN = re.compile(
+    r"(?:"
     r"\b" + _CITATION_CONJUNCTION + r"\s+"
     r"(?="
     r"(?:[\w.'-]+(?:\s+[\w.'-]+){0,3}?\s+et\s+al\.)"
     r"|"
-    r"(?:(?:the\s+|a\s+|an\s+|one\s+|another\s+|several\s+|recent\s+|prior\s+|"
-    r"earlier\s+|many\s+|some\s+|numerous\s+|academic\s+|empirical\s+|"
-    r"various\s+|two\s+|three\s+|four\s+)*"
+    r"(?:" + _CITATION_DETERMINER
     + _CITATION_RESEARCH_NOUN + r"\s+(?:et\s+al\.\s+)?(?:have\s+|has\s+|also\s+)?"
     + _CITATION_REPORTING_VERB + r")"
     r"|"
@@ -349,6 +459,15 @@ CITATION_SUBJECT_BOUNDARY_PATTERN = re.compile(
     # plus a reporting verb identifies the citing subject.
     r"(?:" + _CITATION_AUTHOR_YEAR_SUBJECT
     + r"\s+(?:have\s+|has\s+|also\s+)?" + _CITATION_REPORTING_VERB + r")"
+    r")"
+    r"|"
+    # A proper-name attribution ("..., according to Jones (2026), artificial
+    # intelligence ...") also opens a citing clause. It is introduced by a
+    # conjunction or by clause punctuation, and the comma that closes the
+    # attribution must not trim the attribution off the claim it governs, so
+    # the boundary is placed at the attribution itself.
+    r"(?:(?<=[,;:(])\s*|\b" + _CITATION_CONJUNCTION + r"\s*,?\s+)"
+    r"(?=" + _CITATION_ATTRIBUTION_SUBJECT + r")"
     r")",
     re.IGNORECASE,
 )
@@ -438,6 +557,26 @@ ELECTRONIC_RECORDKEEPING_PATTERNS = (
         rf"\b(?:{RECORDKEEPING_ACTION}|implement(?:ed|s|ing)?)\b",
         re.IGNORECASE,
     ),
+    # The electronic term can modify the storage verb instead of following it:
+    # "Records must be electronically stored", "Firms must digitally archive
+    # records". Every other pattern requires the electronic language *after*
+    # the action, so this mandatory form was read as no obligation at all.
+    re.compile(
+        rf"\b{RECORDKEEPING_NOUN}\b"
+        rf"(?:(?![.!?;]).){{0,100}}?\b{RECORDKEEPING_OBLIGATION}\b"
+        rf"(?:(?![.!?;]).){{0,50}}?"
+        rf"(?:to\s+)?(?:be\s+)?\b{ELECTRONIC_STORAGE_LANGUAGE}\b"
+        rf"\s+(?:\w+\s+){{0,2}}?\b{RECORDKEEPING_ACTION}\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        rf"\b{RECORDKEEPING_OBLIGATION}\b"
+        rf"(?:(?![.!?;]).){{0,45}}?"
+        rf"(?:to\s+)?(?:be\s+)?\b{ELECTRONIC_STORAGE_LANGUAGE}\b"
+        rf"\s+(?:\w+\s+){{0,2}}?\b{RECORDKEEPING_ACTION}\b"
+        rf"(?:(?![.!?;]).){{0,35}}?\b{RECORDKEEPING_NOUN}\b",
+        re.IGNORECASE,
+    ),
 )
 OPTIONAL_OR_NEGATED_RECORDKEEPING = re.compile(
     r"\b(?:optional|optionally|permitted|may|can|could|might|"
@@ -445,6 +584,34 @@ OPTIONAL_OR_NEGATED_RECORDKEEPING = re.compile(
     r"must\s+not|shall\s+not)\b",
     re.IGNORECASE,
 )
+
+# A permissive modal only defeats a storage mandate when it governs the
+# *storage predicate*. "Records that may contain customer information must be
+# retained electronically" is a mandate: "may" governs "contain", not the
+# retention duty, and reading it as permissive turned a real electronic
+# recordkeeping requirement into NOISE. "Records may be retained
+# electronically" is genuinely permissive and must stay rejected.
+PERMISSIVE_MODAL_PATTERN = re.compile(r"\b(?:may|can|could|might)\b", re.IGNORECASE)
+STORAGE_PREDICATE_AFTER_MODAL = re.compile(
+    rf"\s*(?:not\s+)?(?:also\s+)?(?:be\s+|been\s+|being\s+)?"
+    rf"(?:\w+ly\s+)?(?:to\s+)?(?:be\s+)?"
+    rf"(?:{RECORDKEEPING_ACTION}|{ELECTRONIC_STORAGE_LANGUAGE})\b",
+    re.IGNORECASE,
+)
+
+
+def _mask_unbound_permissive_modals(clause: str) -> str:
+    """Blank permissive modals that do not govern a storage predicate."""
+    masked = clause
+    for match in PERMISSIVE_MODAL_PATTERN.finditer(clause):
+        if STORAGE_PREDICATE_AFTER_MODAL.match(clause, match.end()):
+            continue
+        masked = (
+            masked[: match.start()]
+            + " " * (match.end() - match.start())
+            + masked[match.end():]
+        )
+    return masked
 
 # Defect: a mandatory-sounding match can end exactly at the electronic term and
 # hide the alternative that follows it ("Records must be retained either
@@ -585,6 +752,19 @@ class FinraListingError(RuntimeError):
     """Raised when the FINRA notice listing cannot be fetched or verified."""
 
 
+class FinraNoticeUnavailableError(RuntimeError):
+    """Raised when FINRA answers successfully but declares no notice text.
+
+    Deliberately *not* a :class:`RequiredSourceTextError`. A denial, challenge,
+    or error page means the notice exists and we failed to read it, which is an
+    integrity failure and fails the run closed. A tombstone means the source
+    itself states there is no text to read (the live 1983 notices), which is a
+    permanent, correct answer: failing the run closed on it would take FINRA
+    monitoring down forever, so the notice is excluded from the baseline and
+    reported separately while the source run completes.
+    """
+
+
 def _prepare_classification_text(text: str) -> str:
     """Normalize escaped line breaks in source text used for classification.
 
@@ -604,16 +784,22 @@ def _is_citation_abbreviation_boundary(text: str, index: int) -> bool:
     boundaries. The dot is treated as part of a token (not a sentence
     terminator) when the text ending at it closes a known citation/Latin
     abbreviation that stands as its own token (e.g. the period in "et al.").
+
+    Only the few characters immediately before the dot are inspected. The
+    previous implementation lowercased ``text[:index]`` on every call, which is
+    O(document) per boundary and made boundary indexing quadratic on a
+    several-hundred-kilobyte Federal Register document.
     """
     if index < 0 or index >= len(text) or text[index] != ".":
         return False
-    preceding = text[:index]
-    lowered = preceding.lower()
     for abbr in _CITATION_ABBREVIATION_TAILS:
-        if lowered.endswith(abbr):
-            token_start = len(preceding) - len(abbr)
-            if token_start == 0 or not text[token_start - 1].isalnum():
-                return True
+        token_start = index - len(abbr)
+        if token_start < 0:
+            continue
+        if text[token_start:index].lower() != abbr:
+            continue
+        if token_start == 0 or not text[token_start - 1].isalnum():
+            return True
     return False
 
 
@@ -625,40 +811,215 @@ def _real_sentence_boundaries(text: str, lo: int, hi: int):
         yield boundary
 
 
+# Number of distinct classification texts whose boundary offsets are kept
+# resident. A document is scanned by ~35 classification patterns and ~24
+# control keywords, and every match of every one of them needs the same
+# boundaries, so the index has to survive across those calls. Four slots cover
+# a title plus a body in both ``classify_regulatory_relevance`` and
+# ``find_affected_controls_by_keywords`` without pinning many large documents
+# in memory.
+_BOUNDARY_INDEX_CACHE_SIZE = 8
+
+# Diagnostic counter: how many times a boundary index was actually built. The
+# performance regression asserts on this instead of on wall-clock alone, so the
+# "index once, look up per match" property is machine-independent.
+_BOUNDARY_INDEX_BUILDS = 0
+
+
+class _TextBoundaryIndex:
+    """Pre-computed footnote/sentence/clause boundary offsets for one text.
+
+    Evidence scoping used to rescan the document for every candidate match:
+    each occurrence walked every preceding footnote delimiter and every
+    preceding sentence terminator from the start of the document. That is
+    O(document x matches) and cost ~60s for a 790k-character body carrying 100
+    bibliographic AI mentions.
+
+    The boundaries are a property of the *text*, not of the match, so they are
+    collected in one linear pass per pattern and each occurrence then resolves
+    its own span with binary search (O(log n)). Semantics are unchanged: the
+    same boundary positions are produced, only found differently.
+    """
+
+    __slots__ = (
+        "length",
+        "footnote_starts",
+        "footnote_ends",
+        "sentence_positions",
+        "clause_starts",
+        "clause_ends",
+        "citation_starts",
+        "citation_ends",
+    )
+
+    def __init__(self, text: str) -> None:
+        global _BOUNDARY_INDEX_BUILDS
+        _BOUNDARY_INDEX_BUILDS += 1
+
+        self.length = len(text)
+        self.footnote_starts: list[int] = []
+        self.footnote_ends: list[int] = []
+        for match in FOOTNOTE_BLOCK_DELIMITER_PATTERN.finditer(text):
+            self.footnote_starts.append(match.start())
+            self.footnote_ends.append(match.end())
+
+        self.sentence_positions: list[int] = [
+            boundary.start()
+            for boundary in _real_sentence_boundaries(text, 0, len(text))
+        ]
+
+        self.clause_starts: list[int] = []
+        self.clause_ends: list[int] = []
+        for match in CLAUSE_BOUNDARY_PATTERN.finditer(text):
+            self.clause_starts.append(match.start())
+            self.clause_ends.append(match.end())
+
+        self.citation_starts: list[int] = []
+        self.citation_ends: list[int] = []
+        for match in CITATION_SUBJECT_BOUNDARY_PATTERN.finditer(text):
+            self.citation_starts.append(match.start())
+            self.citation_ends.append(match.end())
+
+    # -- span helpers -----------------------------------------------------
+    def _footnote_segment(self, start: int, end: int) -> tuple[int, int]:
+        """Return the footnote-delimited segment containing ``[start, end)``."""
+        index = bisect_right(self.footnote_ends, start) - 1
+        segment_start = self.footnote_ends[index] if index >= 0 else 0
+        index = bisect_left(self.footnote_starts, end)
+        segment_end = (
+            self.footnote_starts[index]
+            if index < len(self.footnote_starts)
+            else self.length
+        )
+        return segment_start, segment_end
+
+    def sentence_span(self, text: str, start: int, end: int) -> tuple[int, int]:
+        segment_start, segment_end = self._footnote_segment(start, end)
+
+        positions = self.sentence_positions
+        index = bisect_left(positions, start) - 1
+        if index >= 0 and positions[index] >= segment_start:
+            segment_start = positions[index] + 1
+        # A terminator sitting immediately before the match (no separating
+        # whitespace) is a boundary for this occurrence even though the
+        # document-wide scan does not treat it as one.
+        if (
+            start - 1 >= segment_start
+            and start - 1 >= 0
+            and text[start - 1] in ".;!?"
+            and not _is_citation_abbreviation_boundary(text, start - 1)
+        ):
+            segment_start = start
+
+        following = None
+        index = bisect_left(positions, end)
+        if index < len(positions) and positions[index] < segment_end:
+            following = positions[index]
+        tail = segment_end - 1
+        if (
+            tail >= end
+            and tail < self.length
+            and text[tail] in ".;!?"
+            and not _is_citation_abbreviation_boundary(text, tail)
+        ):
+            following = tail if following is None else min(following, tail)
+        if following is not None:
+            segment_end = following
+
+        return segment_start, segment_end
+
+    def _last_boundary_end(
+        self,
+        starts: list[int],
+        ends: list[int],
+        lower: int,
+        upper: int,
+    ) -> Optional[int]:
+        """End of the last match starting at/after ``lower`` and ending by ``upper``."""
+        index = bisect_right(ends, upper) - 1
+        if index < 0 or starts[index] < lower:
+            return None
+        return ends[index]
+
+    def _first_boundary_start(
+        self,
+        starts: list[int],
+        ends: list[int],
+        lower: int,
+        upper: int,
+    ) -> Optional[int]:
+        """Start of the first match beginning at/after ``lower``, ending by ``upper``."""
+        index = bisect_left(starts, lower)
+        if index >= len(starts) or ends[index] > upper:
+            return None
+        return starts[index]
+
+    def clause_span(
+        self,
+        start: int,
+        end: int,
+        sentence_start: int,
+        sentence_end: int,
+    ) -> tuple[int, int]:
+        clause_start, clause_end = sentence_start, sentence_end
+
+        citation_start = self._last_boundary_end(
+            self.citation_starts, self.citation_ends, sentence_start, start
+        )
+        if citation_start is not None:
+            # A citation subject is a single clause. Punctuation inside it (a
+            # parenthetical year "(2026)", an internal comma) must not trim its
+            # markers ("et al.") off, so only clause boundaries at or before
+            # the nearest citation subject apply.
+            preceding_clause = self._last_boundary_end(
+                self.clause_starts, self.clause_ends, sentence_start, citation_start
+            )
+            clause_start = max(
+                sentence_start,
+                citation_start,
+                preceding_clause if preceding_clause is not None else sentence_start,
+            )
+        else:
+            preceding_clause = self._last_boundary_end(
+                self.clause_starts, self.clause_ends, sentence_start, start
+            )
+            if preceding_clause is not None:
+                clause_start = preceding_clause
+
+        following_clause = self._first_boundary_start(
+            self.clause_starts, self.clause_ends, end, sentence_end
+        )
+        if following_clause is not None:
+            clause_end = following_clause
+        following_citation = self._first_boundary_start(
+            self.citation_starts, self.citation_ends, end, sentence_end
+        )
+        if following_citation is not None:
+            clause_end = min(clause_end, following_citation)
+
+        return clause_start, clause_end
+
+
+@lru_cache(maxsize=_BOUNDARY_INDEX_CACHE_SIZE)
+def _boundary_index(text: str) -> _TextBoundaryIndex:
+    """Return the (cached) boundary index for a classification text."""
+    return _TextBoundaryIndex(text)
+
+
 def _occurrence_sentence_span(text: str, start: int, end: int) -> tuple[int, int]:
     """Return the span of the sentence/clause that contains a match.
 
-    Unlike the old fixed-size context window, this scans to the actual
+    Unlike the old fixed-size context window, this resolves the actual
     sentence/clause boundaries.  That matters for long sentences such as the
     2026-17183 citation sentence, where the literature marker can be more than
     200 characters before the artificial-intelligence occurrence. Citation
     abbreviation dots (``et al.``) are not treated as sentence terminators, so
     an author-list citation stays attached to the mention it annotates.
+
+    Boundaries come from a per-text index (built once, binary-searched per
+    occurrence) instead of a fresh document scan per match.
     """
-    preceding_delimiters = list(
-        FOOTNOTE_BLOCK_DELIMITER_PATTERN.finditer(text, 0, start)
-    )
-    segment_start = (
-        preceding_delimiters[-1].end() if preceding_delimiters else 0
-    )
-    following_delimiter = FOOTNOTE_BLOCK_DELIMITER_PATTERN.search(text, end)
-    segment_end = (
-        following_delimiter.start() if following_delimiter else len(text)
-    )
-
-    preceding_boundaries = list(
-        _real_sentence_boundaries(text, segment_start, start)
-    )
-    if preceding_boundaries:
-        segment_start = preceding_boundaries[-1].end()
-
-    following_boundary = next(
-        _real_sentence_boundaries(text, end, segment_end), None
-    )
-    if following_boundary:
-        segment_end = following_boundary.start()
-
-    return segment_start, segment_end
+    return _boundary_index(text).sentence_span(text, start, end)
 
 
 def _occurrence_context(text: str, start: int, end: int) -> str:
@@ -684,42 +1045,17 @@ def _occurrence_clause(text: str, start: int, end: int) -> str:
     joined so genuine operative duties are preserved.
     """
     sentence_start, sentence_end = _occurrence_sentence_span(text, start, end)
-    clause_start, clause_end = sentence_start, sentence_end
-
-    clause_boundaries = [
-        boundary.end()
-        for boundary in CLAUSE_BOUNDARY_PATTERN.finditer(text, sentence_start, start)
-    ]
-    citation_starts = [
-        boundary.end()
-        for boundary in CITATION_SUBJECT_BOUNDARY_PATTERN.finditer(
-            text, sentence_start, start
-        )
-    ]
-    if citation_starts:
-        # A citation subject is a single clause. Punctuation inside it (a
-        # parenthetical year "(2026)", an internal comma) must not trim its
-        # markers ("et al.") off, so only clause boundaries at or before the
-        # nearest citation subject apply.
-        citation_start = max(citation_starts)
-        clause_start = max(
-            [sentence_start, citation_start]
-            + [cb for cb in clause_boundaries if cb <= citation_start]
-        )
-    elif clause_boundaries:
-        clause_start = max(clause_boundaries)
-
-    following_clause_boundary = CLAUSE_BOUNDARY_PATTERN.search(
-        text, end, sentence_end
+    clause_start, clause_end = _boundary_index(text).clause_span(
+        start, end, sentence_start, sentence_end
     )
-    if following_clause_boundary:
-        clause_end = following_clause_boundary.start()
-    following_citation_subject = CITATION_SUBJECT_BOUNDARY_PATTERN.search(
-        text, end, sentence_end
-    )
-    if following_citation_subject:
-        clause_end = min(clause_end, following_citation_subject.start())
-
+    # A trailing author-date parenthetical annotates the clause it directly
+    # follows ("... adoption is uneven (Jones, 2026)."). Clause punctuation
+    # would otherwise split the citation away from the only clause it can
+    # possibly refer to, leaving the mention to be rescued by an unrelated duty
+    # elsewhere in the sentence.
+    trailing_citation = TRAILING_PARENTHETICAL_CITATION_PATTERN.match(text, clause_end)
+    if trailing_citation:
+        clause_end = trailing_citation.end()
     return text[clause_start:clause_end]
 
 
@@ -764,6 +1100,45 @@ def _search_operative_match(pattern: str, text: str, exclude_reference_only: boo
     return None
 
 
+def _search_operative_match_in_segments(
+    pattern: str,
+    segments: tuple[str, ...],
+    exclude_reference_only: bool,
+):
+    """Search each evidence field independently and return the first match.
+
+    A pattern may never span two fields: the title and the authoritative body
+    are separate pieces of evidence, and a match assembled from both is
+    evidence of nothing.
+    """
+    for segment in segments:
+        match = _search_operative_match(pattern, segment, exclude_reference_only)
+        if match is not None:
+            return match
+    return None
+
+
+def _classification_segments(*fields: str) -> tuple[str, ...]:
+    """Return the independently analysed, lowercased evidence fields.
+
+    Title and body used to be joined into one string
+    (``f"{title.lower()} {body.lower()}"``) before any pattern ran. That single
+    space is not a semantic boundary: it welded the end of the title to the
+    start of the body, so an operative duty in a reporting *title* landed in
+    the same sentence -- and therefore the same evidence window -- as a purely
+    bibliographic AI mention at the head of the *body*, promoting it. Bounded
+    patterns such as ``supervision.{0,80}(?:electronic|automated)`` could also
+    take one term from each field and report a requirement that neither field
+    states.
+
+    Fields are therefore analysed separately and unconditionally. Every field
+    is still analysed in full -- nothing is dropped, so operative language in
+    *either* field is still detected -- but no match, context window, clause,
+    or keyword hit can ever cross the boundary between them.
+    """
+    return tuple(field for field in fields if field)
+
+
 def _has_electronic_recordkeeping_obligation(text: str) -> bool:
     """Return whether text contains a direct electronic recordkeeping duty.
 
@@ -777,7 +1152,10 @@ def _has_electronic_recordkeeping_obligation(text: str) -> bool:
     alternative (including exception forms such as "unless"/"except") so
     wording that continues past the matched span cannot smuggle a permitted
     paper option through.  A clause that *prohibits* paper ("cannot be retained
-    on paper and must be maintained electronically") remains a mandate.
+    on paper and must be maintained electronically") remains a mandate, and a
+    permissive modal that governs something other than storage ("records that
+    may contain customer information must be retained electronically") does not
+    defeat the mandate it sits beside.
     """
     normalized = _prepare_classification_text(text)
     for clause in re.split(r"[.!?;]+", normalized):
@@ -795,8 +1173,12 @@ def _has_electronic_recordkeeping_obligation(text: str) -> bool:
 
             # A paper prohibition ("cannot/may not/must not ... on paper")
             # reinforces the electronic duty; mask it so its paper-bound
-            # negation is not misread as a negated electronic obligation.
-            matched_text = _mask_paper_prohibition(match.group(0))
+            # negation is not misread as a negated electronic obligation. A
+            # permissive modal is only permissive when it binds the storage
+            # predicate, so unbound modals are masked too.
+            matched_text = _mask_unbound_permissive_modals(
+                _mask_paper_prohibition(match.group(0))
+            )
             if OPTIONAL_OR_NEGATED_RECORDKEEPING.search(matched_text):
                 continue
 
@@ -951,7 +1333,12 @@ def classify_regulatory_relevance(
     # those as whitespace. The whole document is classified regardless of
     # length; relevance is judged per occurrence by context, never by position.
     classification_text = _prepare_classification_text(abstract)
-    combined = f"{title.lower()} {classification_text.lower()}"
+    # Title and body are separate evidence and are analysed separately: no
+    # pattern, evidence window, or clause may span the two (see
+    # ``_classification_segments``).
+    segments = _classification_segments(
+        title.lower(), classification_text.lower()
+    )
 
     # Get regulatory patterns from config
     regulatory_config = config.get('regulatory', {})
@@ -962,7 +1349,9 @@ def classify_regulatory_relevance(
         for p in regulatory_config.get('critical_patterns', [])
     ]
     for pattern, reason in critical_patterns:
-        if _search_operative_match(pattern, combined, exclude_reference_only):
+        if _search_operative_match_in_segments(
+            pattern, segments, exclude_reference_only
+        ):
             return (CLASSIFICATION_CRITICAL, reason)
 
     # HIGH: AI, ML, automation terms + FSI-specific requirements
@@ -971,10 +1360,12 @@ def classify_regulatory_relevance(
         for p in regulatory_config.get('high_patterns', [])
     ]
     for pattern, reason in high_patterns:
-        if _search_operative_match(pattern, combined, exclude_reference_only):
+        if _search_operative_match_in_segments(
+            pattern, segments, exclude_reference_only
+        ):
             return (CLASSIFICATION_HIGH, reason)
 
-    if _has_electronic_recordkeeping_obligation(combined):
+    if any(_has_electronic_recordkeeping_obligation(segment) for segment in segments):
         return (CLASSIFICATION_HIGH, "Electronic recordkeeping")
 
     # MEDIUM: General FSI regulations that may indirectly affect AI agents
@@ -983,7 +1374,9 @@ def classify_regulatory_relevance(
         for p in regulatory_config.get('medium_patterns', [])
     ]
     for pattern, reason in medium_patterns:
-        if _search_operative_match(pattern, combined, exclude_reference_only):
+        if _search_operative_match_in_segments(
+            pattern, segments, exclude_reference_only
+        ):
             return (CLASSIFICATION_MEDIUM, reason)
 
     # NOISE: Everything else (general regulatory items with no FSI/AI relevance)
@@ -1013,7 +1406,10 @@ def find_affected_controls_by_keywords(
     # Handle None values
     title = title or ""
     abstract = abstract or ""
-    combined = f"{title.lower()} {abstract.lower()}"
+    # Control mapping reads the same separated evidence fields as
+    # classification: a keyword hit assembled across the title/body seam would
+    # map a document onto controls that neither field supports.
+    segments = _classification_segments(title.lower(), abstract.lower())
     affected = set()
 
     # Build keyword map from config
@@ -1025,7 +1421,9 @@ def find_affected_controls_by_keywords(
     for keyword, controls in keyword_map.items():
         # Use word boundary matching to avoid partial matches
         pattern = rf'\b{re.escape(keyword.lower())}\b'
-        if _search_operative_match(pattern, combined, exclude_reference_only):
+        if _search_operative_match_in_segments(
+            pattern, segments, exclude_reference_only
+        ):
             affected.update(controls)
 
     return sorted(list(affected))
@@ -1064,8 +1462,93 @@ def _extract_notice_body_text(html: str, selectors: list[str]) -> str:
     return re.sub(r"\s+", " ", body.get_text(" ", strip=True)).strip()
 
 
+FEDERAL_REGISTER_NON_DOCUMENT_LEAD_CHARS = 600
+FEDERAL_REGISTER_DOCUMENT_SUBSTANTIAL_CHARS = 2000
+# A 200 response with a body is not proof that the authoritative document was
+# served. Edge networks and portals answer denials, bot challenges, captchas,
+# login walls, and not-found pages with HTTP 200 and a fully rendered body, and
+# the previous extractor accepted any of them: the placeholder became the
+# classification input *and* the change-detection fingerprint, so an
+# uninspected document was baselined and the real body's later arrival looked
+# like an ordinary edit.
+FEDERAL_REGISTER_NON_DOCUMENT_PATTERN = re.compile(
+    r"(?:"
+    r"access\s+(?:to\s+[\w\s]{0,40}\s+)?(?:is\s+|has\s+been\s+)?deni(?:ed|al)"
+    r"|access\s+restricted|restricted\s+access"
+    r"|(?:your\s+)?request\s+(?:was\s+|has\s+been\s+|is\s+)?(?:blocked|denied|rejected)"
+    r"|you\s+(?:do\s+not|don't)\s+have\s+(?:permission|access)"
+    r"|you\s+are\s+not\s+authoriz(?:ed|ation)"
+    r"|(?:page|file|content|document)\s+(?:you\s+requested\s+)?"
+    r"(?:could\s+not\s+be\s+found|was\s+not\s+found|not\s+found|is\s+unavailable)"
+    r"|\b40[0-9]\b\s*(?:[-:|\u2013\u2014]|\berror\b|\bforbidden\b|\bnot\s+found\b)"
+    r"|\berror\s*[-:|]?\s*40[0-9]\b|\bhttp\s+40[0-9]\b|\b403\s*forbidden\b"
+    r"|(?:log|sign)\s*in\s+to\s+(?:continue|view|access|proceed|read)"
+    r"|(?:login|log\s*in|sign[-\s]?in|authentication)\s+(?:is\s+)?required"
+    r"|session\s+(?:has\s+)?(?:expired|timed\s+out)"
+    r"|(?:service|site|page)\s+(?:is\s+)?(?:temporarily\s+)?unavailable"
+    r"|rate\s+limit(?:ed|\s+exceeded)?"
+    r"|maintenance\s+mode|under\s+maintenance"
+    r")",
+    re.IGNORECASE,
+)
+# Signatures that never occur in a genuine Federal Register raw-text document
+# and are therefore rejected wherever they appear, not just in the lead.
+FEDERAL_REGISTER_CHALLENGE_PATTERN = re.compile(
+    r"(?:"
+    r"(?:verify|confirm)\s+(?:that\s+)?you\s+are\s+(?:a\s+)?human"
+    r"|\bcaptcha\b|are\s+you\s+a\s+robot|checking\s+your\s+browser"
+    r"|unusual\s+traffic|automated\s+traffic|bot\s+detection"
+    r"|enable\s+(?:javascript|cookies)|cloudflare\s+ray\s+id"
+    r"|ddos\s+protection|security\s+check\s+to\s+(?:continue|access)"
+    r")",
+    re.IGNORECASE,
+)
+# Structure an authoritative Federal Register document carries. Used only as a
+# safety valve so a long, genuinely structured document that quotes one of the
+# phrases above is not mistaken for an error page.
+FEDERAL_REGISTER_DOCUMENT_STRUCTURE_PATTERN = re.compile(
+    r"(?:\[federal\s+register|federal\s+register\s*/\s*vol|\[fr\s+doc"
+    r"|\bbilling\s+code\b|\bsupplementary\s+information\b"
+    r"|\bfor\s+further\s+information\s+contact\b"
+    r"|\bagency:|\baction:|\bsummary:|\bdates:|\baddresses:"
+    r"|\brelease\s+no\.|\bfile\s+no\.\s*s?r"
+    r"|\b\d{1,3}\s+cfr\s+(?:part|chapter|\u00a7)"
+    r"|\bcode\s+of\s+federal\s+regulations\b"
+    r"|\bnotice\s+of\s+proposed\s+rulemaking\b"
+    r"|\bself[-\s]regulatory\s+organizations?\b)",
+    re.IGNORECASE,
+)
+
+
+def _is_federal_register_non_document_text(text: str) -> bool:
+    """Return True when candidate raw text is error/challenge/login chrome.
+
+    Deliberately asymmetric, because over-rejection is also a failure mode: a
+    valid document that merely *mentions* one of these phrases (rulemakings
+    about access controls, authentication, or captchas are routine) is kept
+    when it is substantial and structurally recognisable as a Federal Register
+    document.
+    """
+    if not text:
+        return True
+    if FEDERAL_REGISTER_NON_DOCUMENT_PATTERN.search(
+        text[:FEDERAL_REGISTER_NON_DOCUMENT_LEAD_CHARS]
+    ) or FEDERAL_REGISTER_CHALLENGE_PATTERN.search(text):
+        return not (
+            len(text) >= FEDERAL_REGISTER_DOCUMENT_SUBSTANTIAL_CHARS
+            and FEDERAL_REGISTER_DOCUMENT_STRUCTURE_PATTERN.search(text)
+        )
+    return False
+
+
 def _extract_federal_register_source_text(text: str) -> str:
-    """Normalize the authoritative Federal Register raw-text document."""
+    """Normalize and validate the authoritative Federal Register raw text.
+
+    Returns an empty string for a body that is an access denial, bot
+    challenge, captcha, login wall, error, or not-found page, so the caller
+    fails closed with ``RequiredSourceTextError`` before anything is
+    classified, hashed, or baselined.
+    """
     soup = BeautifulSoup(text or "", "html.parser")
     preformatted_text = soup.find("pre")
     source_text = (
@@ -1073,13 +1556,20 @@ def _extract_federal_register_source_text(text: str) -> str:
         if preformatted_text
         else soup.get_text(" ", strip=True)
     )
-    return re.sub(r"\s+", " ", source_text).strip()
+    normalized = re.sub(r"\s+", " ", source_text).strip()
+    if _is_federal_register_non_document_text(normalized):
+        logger.warning(
+            "Federal Register raw text was rejected as non-document content "
+            "(access denial, challenge, login, or error page)"
+        )
+        return ""
+    return normalized
 
 
 def _extract_finra_notice_fallback_text(html: str) -> str:
     """Extract the complete normalized text of the FINRA notice body.
 
-    Two independent gates must both pass before text is treated as
+    Three independent gates must all pass before text is treated as
     authoritative notice content:
 
     1. *Structure.* The text must come from a notice article/body container
@@ -1091,13 +1581,57 @@ def _extract_finra_notice_fallback_text(html: str) -> str:
     2. *Content.* The candidate must not carry an access-denied, blocked,
        challenge/captcha, login, error, or not-found signature in its leading
        region (:func:`_is_finra_non_notice_page_text`).
+    3. *Substance.* The candidate must not be a tombstone that declares no
+       text exists ("NOT AVAILABLE AT THIS TIME"), which is a successful
+       source answer but not notice content
+       (:func:`_finra_notice_unavailable_reason`).
 
-    A page with no surviving candidate returns an empty string so the caller
-    fails closed with ``RequiredSourceTextError`` before any state advance.
+    A page with no surviving candidate returns an empty string. The caller
+    then distinguishes the two empty cases with
+    :func:`_finra_notice_unavailable_reason_from_html`: an error/challenge page
+    fails the run closed, a tombstone is excluded from the baseline while the
+    source run completes.
     """
+    return _scan_finra_notice_body(html)[0]
+
+
+def _finra_notice_unavailable_reason_from_html(html: str) -> Optional[str]:
+    """Return the tombstone phrase when a notice page declares no content.
+
+    Returns ``None`` when the page yields a real body, when nothing
+    notice-shaped was found at all, or when any candidate looked like error /
+    challenge / login chrome -- an integrity failure always outranks a
+    tombstone, so those still fail the run closed.
+    """
+    text, reason, rejected_non_notice = _scan_finra_notice_body(html)
+    if text or rejected_non_notice:
+        return None
+    return reason
+
+
+def _extract_finra_notice_required_text(html: str) -> str:
+    """Extractor for required FINRA bodies; raises on tombstone pages.
+
+    Returning ``""`` here would make the caller raise
+    :class:`RequiredSourceTextError` and fail the whole FINRA run closed. That
+    is right for chrome (we could not read a notice that exists) and wrong for
+    a tombstone (there is nothing to read, permanently), so the two empty
+    cases are separated at the point where the HTML is still in hand.
+    """
+    text, reason, rejected_non_notice = _scan_finra_notice_body(html)
+    if text:
+        return text
+    if reason and not rejected_non_notice:
+        raise FinraNoticeUnavailableError(reason)
+    return ""
+
+
+def _scan_finra_notice_body(html: str) -> tuple[str, Optional[str], bool]:
+    """Return ``(body_text, unavailable_reason, rejected_non_notice)``."""
     soup = BeautifulSoup(html or "", "html.parser")
     candidates: list[tuple[int, int, str]] = []
     rejected_non_notice = False
+    unavailable_reason: Optional[str] = None
     excluded_parent_names = {
         "aside",
         "footer",
@@ -1121,7 +1655,7 @@ def _extract_finra_notice_fallback_text(html: str) -> str:
         return re.sub(r"\s+", " ", " ".join(text_parts)).strip()
 
     def add_candidate(node, score: int) -> None:
-        nonlocal rejected_non_notice
+        nonlocal rejected_non_notice, unavailable_reason
         text = normalized_node_text(node)
         if not text:
             return
@@ -1129,6 +1663,14 @@ def _extract_finra_notice_fallback_text(html: str) -> str:
         # authoritative notice content, whatever container they render in.
         if _is_finra_non_notice_page_text(text):
             rejected_non_notice = True
+            return
+        # A tombstone body ("NOT AVAILABLE AT THIS TIME") is a successful
+        # answer that declares there is no notice text; it is never treated as
+        # authoritative content.
+        reason = _finra_notice_unavailable_reason(text)
+        if reason:
+            if unavailable_reason is None:
+                unavailable_reason = reason
             return
         candidates.append((score, len(text), text))
 
@@ -1189,9 +1731,55 @@ def _extract_finra_notice_fallback_text(html: str) -> str:
                 "FINRA detail page carried no notice body: every candidate was "
                 "an error, challenge, login, or not-found page"
             )
-        return ""
+        elif unavailable_reason:
+            logger.warning(
+                "FINRA detail page declared no available notice text (%r)",
+                unavailable_reason,
+            )
+        return "", unavailable_reason, rejected_non_notice
     _, _, text = max(candidates, key=lambda candidate: (candidate[0], candidate[1]))
-    return text
+    return text, unavailable_reason, rejected_non_notice
+
+
+# Interstitial paths an edge network or portal redirects to when it refuses to
+# serve the document. A 200 at one of these is never the authoritative source.
+SOURCE_CHALLENGE_PATH_PATTERN = re.compile(
+    r"(?:/cdn-cgi/|/__cf|/challenge|/captcha|/distil|/incapsula|/_incapsula"
+    r"|/waf|/blocked|/denied|/access[-_]denied|/errors?(?:/|$)"
+    r"|/login(?:/|$)|/signin(?:/|$)|/sign[-_]in(?:/|$)|/auth(?:/|$)"
+    r"|/sessionexpired|/maintenance(?:/|$)|/404(?:/|$)|/403(?:/|$))",
+    re.IGNORECASE,
+)
+
+
+def _source_origin_rejection_reason(
+    requested_url: str, final_url: Optional[str]
+) -> Optional[str]:
+    """Return why a response's final origin is untrustworthy, else ``None``.
+
+    Guards the case a status code cannot: a 200 that was actually served by a
+    different host (or a challenge/login path) after redirects. Absence of
+    ``final_url`` is treated as "no redirect happened", because no-information
+    is not evidence of one.
+    """
+    if not final_url or final_url == requested_url:
+        return None
+    requested = urlparse(requested_url)
+    final = urlparse(final_url)
+    if final.scheme not in {"http", "https"}:
+        return (
+            f"final URL scheme {final.scheme or '(none)'!r} is not http(s): {final_url}"
+        )
+    if requested.scheme == "https" and final.scheme != "https":
+        return f"redirect downgraded https to {final.scheme}: {final_url}"
+    if (final.hostname or "").lower() != (requested.hostname or "").lower():
+        return (
+            f"redirected off-origin from {requested.hostname!r} to "
+            f"{final.hostname!r}: {final_url}"
+        )
+    if SOURCE_CHALLENGE_PATH_PATTERN.search(final.path or ""):
+        return f"redirected to a challenge/error path: {final_url}"
+    return None
 
 
 def _fetch_cached_fallback_text(
@@ -1230,6 +1818,15 @@ def _fetch_cached_fallback_text(
             f"{source_label} fetch failed for {url} "
             f"(status={result['status_code']}, error={result.get('error')})"
         )
+        if required:
+            raise RequiredSourceTextError(message)
+        logger.warning(message)
+        cache[url] = ""
+        return "", True
+
+    origin_rejection = _source_origin_rejection_reason(url, result.get("final_url"))
+    if origin_rejection:
+        message = f"{source_label} fetch for {url} {origin_rejection}"
         if required:
             raise RequiredSourceTextError(message)
         logger.warning(message)
@@ -1822,6 +2419,7 @@ def fetch_finra_notices(
     config: dict,
     limit: Optional[int] = None,
     detail_fetch_limit: Optional[int] = FINRA_DETAIL_FETCH_LIMIT,
+    unavailable_notices: Optional[list[dict]] = None,
 ) -> list[RegulatoryItem]:
     """
     Scrape FINRA regulatory notices page.
@@ -1832,11 +2430,17 @@ def fetch_finra_notices(
         limit: Maximum notices to fetch (for testing)
         detail_fetch_limit: Optional safety limit for tests.  Production uses
             ``None`` and fetches every eligible notice body.
+        unavailable_notices: Optional ledger. Notices whose page declares no
+            available text ("NOT AVAILABLE AT THIS TIME") are appended here and
+            omitted from the returned items, so they are never classified,
+            hashed, or baselined while the source run still completes.
 
     Returns:
         list[RegulatoryItem]: FINRA notices
     """
     items = []
+    if unavailable_notices is None:
+        unavailable_notices = []
     _, max_retries, request_delay = _get_operational_settings(config)
 
     logger.info(f"Fetching FINRA notices from {FINRA_NOTICES_URL}...")
@@ -1969,6 +2573,7 @@ def fetch_finra_notices(
         logger.info(f"Limited to {limit} notices for testing")
 
     detail_cache: dict[str, str] = {}
+    unavailable_cache: dict[str, str] = {}
     detail_fetches = 0
 
     for link in notice_links:
@@ -2014,16 +2619,56 @@ def fetch_finra_notices(
                 f"classification completed for {url}"
             )
         if should_fetch_detail:
-            fallback_text, fetched_new = _fetch_cached_fallback_text(
-                url=url,
-                session=session,
-                cache=detail_cache,
-                request_delay=request_delay,
-                max_retries=max_retries,
-                extractor=_extract_finra_notice_fallback_text,
-                required=True,
-                source_label="FINRA authoritative notice body",
-            )
+            if url in unavailable_cache:
+                logger.warning(
+                    "Skipping FINRA notice %s: source declares no notice text "
+                    "(%s); excluded from classification and baseline",
+                    document_id,
+                    unavailable_cache[url],
+                )
+                unavailable_notices.append(
+                    {
+                        "document_id": document_id,
+                        "title": title,
+                        "url": url,
+                        "reason": unavailable_cache[url],
+                    }
+                )
+                continue
+            try:
+                fallback_text, fetched_new = _fetch_cached_fallback_text(
+                    url=url,
+                    session=session,
+                    cache=detail_cache,
+                    request_delay=request_delay,
+                    max_retries=max_retries,
+                    extractor=_extract_finra_notice_required_text,
+                    required=True,
+                    source_label="FINRA authoritative notice body",
+                )
+            except FinraNoticeUnavailableError as exc:
+                # The source answered, and its answer is "there is no notice
+                # text". Baselining the tombstone would fingerprint a
+                # non-document as authoritative content; failing the run closed
+                # would take FINRA monitoring down permanently for a condition
+                # that will never clear. Drop the item, record it, continue.
+                detail_fetches += 1
+                unavailable_cache[url] = str(exc)
+                unavailable_notices.append(
+                    {
+                        "document_id": document_id,
+                        "title": title,
+                        "url": url,
+                        "reason": str(exc),
+                    }
+                )
+                logger.warning(
+                    "Skipping FINRA notice %s: source declares no notice text "
+                    "(%s); excluded from classification and baseline",
+                    document_id,
+                    exc,
+                )
+                continue
             if fetched_new:
                 detail_fetches += 1
             notice_body_text = fallback_text
@@ -2664,12 +3309,26 @@ def _run_monitor() -> int:
         logger.info("\n--- FINRA Notices ---")
         finra_state = get_source_state(state, SOURCE_KEY_FINRA)
 
-        finra_items = fetch_finra_notices(session, config, limit=args.limit)
+        finra_unavailable: list[dict] = []
+        finra_items = fetch_finra_notices(
+            session, config, limit=args.limit, unavailable_notices=finra_unavailable
+        )
         new_finra_items = check_for_new_items(SOURCE_KEY_FINRA, finra_items, finra_state)
         source_counts["FINRA"] = {
             "fetched": len(finra_items),
             "new": len(new_finra_items),
+            "unavailable": len(finra_unavailable),
         }
+        if finra_unavailable:
+            logger.warning(
+                "FINRA: %s notice(s) excluded from the baseline because the "
+                "source declares no available text: %s",
+                len(finra_unavailable),
+                ", ".join(
+                    str(entry.get("document_id") or entry.get("url"))
+                    for entry in finra_unavailable
+                ),
+            )
 
         logger.info(f"FINRA: {len(new_finra_items)} new items")
         all_new_items.extend(new_finra_items)

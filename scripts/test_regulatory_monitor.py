@@ -2,7 +2,11 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import json
+import logging
+import re
 import sys
+import time
 from pathlib import Path
 
 import pytest
@@ -4350,3 +4354,1117 @@ def test_operative_coordinated_ai_duty_stays_high(case):
         exclude_reference_only=True,
     )
     assert classification == regulatory_monitor.CLASSIFICATION_HIGH, case
+
+# ---------------------------------------------------------------------------
+# Finding 1 -- FINRA tombstone notices must never be baselined
+# ---------------------------------------------------------------------------
+
+# The live example is /rules-guidance/notices/83-16, whose notice body is the
+# literal string below. It is served with HTTP 200 inside a normal notice
+# article, so neither the status code nor the container shape distinguishes it
+# from a real notice.
+FINRA_LIVE_TOMBSTONE_BODY = "NOT AVAILABLE AT THIS TIME Notice Comments"
+
+FINRA_TOMBSTONE_BODIES = {
+    "live_83_16": FINRA_LIVE_TOMBSTONE_BODY,
+    "sentence_case": "This notice is not available at this time.",
+    "no_longer_online": "The notice is no longer available online.",
+    "text_of_notice_unavailable": "The text of this notice is not available.",
+    "not_currently_available": "This notice is not currently available.",
+    "unavailable_at_this_time": "Notice text unavailable at this time.",
+    "not_available_online": "This notice is not available online.",
+    "not_available_electronically": "This notice is not available electronically.",
+}
+
+
+def _finra_listing_html(entries: list[tuple[str, str]]) -> str:
+    """Build a FINRA listing page from ``(href, link text)`` pairs."""
+    links = "".join(f"<a href='{href}'>{label}</a>" for href, label in entries)
+    return f"<html><body>{links}</body></html>"
+
+
+def _finra_routing_fetch(listing_html: str, detail_by_url: dict[str, str]):
+    """Return a ``fetch_page`` stub serving a listing and per-URL detail pages."""
+
+    def fake_fetch_page(url, session, max_retries=3):
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            content = listing_html
+        else:
+            content = detail_by_url[url]
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": content,
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    return fake_fetch_page
+
+
+@pytest.mark.parametrize("fixture_name", sorted(FINRA_TOMBSTONE_BODIES))
+def test_finra_tombstone_body_is_never_authoritative_text(fixture_name):
+    """A tombstone is a *successful* answer that declares there is no text.
+
+    The old extractor returned it as the notice body, so a placeholder became
+    both the classification input and the change-detection fingerprint.
+    """
+    html = _finra_notice_page(FINRA_TOMBSTONE_BODIES[fixture_name])
+
+    text, reason, rejected_non_notice = regulatory_monitor._scan_finra_notice_body(
+        html
+    )
+
+    assert text == "", (fixture_name, text)
+    assert reason, fixture_name
+    assert rejected_non_notice is False, (
+        "a tombstone is not error/challenge chrome and must be classified "
+        "separately from it"
+    )
+    with pytest.raises(regulatory_monitor.FinraNoticeUnavailableError):
+        regulatory_monitor._extract_finra_notice_required_text(html)
+
+
+def test_finra_tombstone_is_not_a_required_source_text_error():
+    """Deliberate type split.
+
+    ``RequiredSourceTextError`` means "the notice exists and we could not read
+    it" and fails the run closed. A tombstone means "there is nothing to read",
+    permanently, so it must not be able to take FINRA monitoring down forever.
+    """
+    assert not issubclass(
+        regulatory_monitor.FinraNoticeUnavailableError,
+        regulatory_monitor.RequiredSourceTextError,
+    )
+
+
+def test_finra_live_83_16_tombstone_excluded_while_run_completes(monkeypatch):
+    """End-to-end proof for the reviewer's exact case.
+
+    Notice 83-16's live tombstone must not be classified, hashed, or
+    baselined, the surrounding source run must still complete, and a real
+    notice in the same run must still land.
+    """
+    config = _load_config()
+    tombstone_url = "https://www.finra.org/rules-guidance/notices/83-16"
+    valid_url = "https://www.finra.org/rules-guidance/notices/26-14"
+    listing_html = _finra_listing_html(
+        [
+            ("/rules-guidance/notices/83-16", "Notice to Members 83-16"),
+            (
+                "/rules-guidance/notices/26-14",
+                "Regulatory Notice 26-14: Request for Comment",
+            ),
+        ]
+    )
+    detail_by_url = {
+        tombstone_url: _finra_notice_page(FINRA_LIVE_TOMBSTONE_BODY),
+        valid_url: _finra_notice_page(
+            "Summary: Member firms must supervise the use of artificial "
+            "intelligence in all customer communications and must retain "
+            "supervisory evidence."
+        ),
+    }
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_routing_fetch(listing_html, detail_by_url),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    unavailable: list[dict] = []
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(),
+        config=config,
+        unavailable_notices=unavailable,
+    )
+
+    assert [item.document_id for item in items] == ["FINRA 26-14"], (
+        "the tombstoned notice must be excluded from the returned items"
+    )
+    assert [entry["document_id"] for entry in unavailable] == ["FINRA 83-16"]
+    assert unavailable[0]["reason"] == "NOT AVAILABLE AT THIS TIME"
+    assert unavailable[0]["url"] == tombstone_url
+
+    state: dict = {}
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FINRA, items, state
+    )
+    entries = regulatory_monitor.get_source_state(
+        state, regulatory_monitor.SOURCE_KEY_FINRA
+    )["entries"]
+    assert set(entries) == {"FINRA 26-14"}, (
+        "a tombstone must never receive a content fingerprint"
+    )
+    assert FINRA_LIVE_TOMBSTONE_BODY not in json.dumps(state)
+
+
+def test_finra_tombstone_only_run_completes_without_baselining(monkeypatch):
+    """A run whose only notice is a tombstone completes and baselines nothing.
+
+    Fail-closed would be the wrong choice here: the 1983 tombstones are
+    permanent, so raising would disable FINRA monitoring for good.
+    """
+    config = _load_config()
+    tombstone_url = "https://www.finra.org/rules-guidance/notices/83-16"
+    listing_html = _finra_listing_html(
+        [("/rules-guidance/notices/83-16", "Notice to Members 83-16")]
+    )
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_routing_fetch(
+            listing_html,
+            {tombstone_url: _finra_notice_page(FINRA_LIVE_TOMBSTONE_BODY)},
+        ),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    unavailable: list[dict] = []
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(),
+        config=config,
+        unavailable_notices=unavailable,
+    )
+
+    assert items == []
+    assert len(unavailable) == 1
+
+    state: dict = {}
+    regulatory_monitor.update_source_state(
+        regulatory_monitor.SOURCE_KEY_FINRA, items, state
+    )
+    assert (
+        regulatory_monitor.get_source_state(
+            state, regulatory_monitor.SOURCE_KEY_FINRA
+        )["entries"]
+        == {}
+    )
+
+
+def test_finra_tombstone_is_reported_not_silently_dropped(monkeypatch, caplog):
+    """Exclusion must be visible: silence would hide a shrinking corpus."""
+    config = _load_config()
+    tombstone_url = "https://www.finra.org/rules-guidance/notices/83-16"
+    listing_html = _finra_listing_html(
+        [("/rules-guidance/notices/83-16", "Notice to Members 83-16")]
+    )
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_routing_fetch(
+            listing_html,
+            {tombstone_url: _finra_notice_page(FINRA_LIVE_TOMBSTONE_BODY)},
+        ),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    with caplog.at_level(logging.WARNING, logger=regulatory_monitor.logger.name):
+        regulatory_monitor.fetch_finra_notices(session=object(), config=config)
+
+    assert any(
+        "FINRA 83-16" in record.getMessage()
+        and "no notice text" in record.getMessage()
+        for record in caplog.records
+    ), caplog.text
+
+
+def test_finra_error_page_outranks_tombstone_and_still_fails_closed(monkeypatch):
+    """Ambiguity resolves toward integrity failure, not toward "no content".
+
+    If a page carries both denial chrome and tombstone wording we cannot tell
+    whether real text is being withheld, so the run fails closed.
+    """
+    config = _load_config()
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-14"
+    listing_html = _finra_listing_html(
+        [
+            (
+                "/rules-guidance/notices/26-14",
+                "Regulatory Notice 26-14: Request for Comment",
+            )
+        ]
+    )
+    both_html = (
+        "<html><body><main>"
+        "<article class='node node--type-page'>"
+        "<div class='field field--name-body'><h1>Access Denied</h1>"
+        "<p>You do not have permission to access this page.</p></div>"
+        "</article>"
+        "<article class='node node--type-notice'>"
+        "<div class='field field--name-body'>NOT AVAILABLE AT THIS TIME</div>"
+        "</article>"
+        "</main></body></html>"
+    )
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_routing_fetch(listing_html, {detail_url: both_html}),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_finra_notices(
+            session=object(), config=config
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FINRA, items, state
+        )
+
+    assert state == {}
+
+
+def test_finra_substantial_notice_mentioning_unavailability_survives():
+    """The tombstone screen must not eat notices that discuss availability.
+
+    Real notices legitimately say things like "the data are not available at
+    this time", so the same substantial-and-structured safety valve used for
+    the error screen applies here.
+    """
+    body = (
+        "Suggested Routing: Compliance, Legal, Operations. Certain trade "
+        "reporting statistics are not available at this time and will be "
+        "published later. "
+        + ("Member firms must retain the supervisory records described here. " * 60)
+    )
+    text, reason, rejected = regulatory_monitor._scan_finra_notice_body(
+        _finra_notice_page(body)
+    )
+
+    assert reason is None
+    assert rejected is False
+    assert "Member firms must retain the supervisory records" in text
+
+
+# ---------------------------------------------------------------------------
+# Finding 2 -- Federal Register challenge/error bodies and final origin
+# ---------------------------------------------------------------------------
+
+FEDERAL_REGISTER_NON_DOCUMENT_BODIES = {
+    "access_denied": (
+        "Access Denied. You do not have permission to access this document "
+        "on this server."
+    ),
+    "verify_human": (
+        "Please verify you are a human before continuing to "
+        "federalregister.gov."
+    ),
+    "captcha": "Security check. Complete the CAPTCHA below to continue.",
+    "request_blocked": (
+        "Your request was blocked by our security service. Ray ID 8f0a."
+    ),
+    "checking_browser": (
+        "Checking your browser before accessing the site. This process is "
+        "automatic."
+    ),
+    "login_required": (
+        "Log in to continue. Authentication required to view this document."
+    ),
+    "error_403": "Error 403 - Forbidden. The requested resource is not accessible.",
+    "not_found_404": "404 Not Found. The page you requested could not be found.",
+    "cloudflare_interstitial": (
+        "Attention Required! Cloudflare Ray ID: 7d2c1. Please enable "
+        "JavaScript and cookies to continue."
+    ),
+    "service_unavailable": (
+        "Service temporarily unavailable. Please try again later."
+    ),
+    "not_authorized": "You are not authorized to view this document.",
+    "session_expired": "Your session has expired. Sign in to continue.",
+}
+
+
+def _federal_register_text_fetch(body: str, *, final_url=None):
+    """Return a ``fetch_page`` stub serving ``body`` as the raw-text document."""
+
+    def fake_fetch_page(url, _session, max_retries=3):
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": f"<html><body><pre>{body}</pre></body></html>",
+            "final_url": url if final_url is None else final_url,
+            "was_redirected": final_url is not None and final_url != url,
+            "error": None,
+        }
+
+    return fake_fetch_page
+
+
+@pytest.mark.parametrize("fixture_name", sorted(FEDERAL_REGISTER_NON_DOCUMENT_BODIES))
+def test_federal_register_two_hundred_challenge_bodies_fail_closed(
+    fixture_name, monkeypatch
+):
+    """HTTP 200 is not proof the authoritative document was served.
+
+    Edge networks answer denials, bot challenges, captchas, login walls, and
+    not-found pages with 200 and a full body. The old extractor accepted any of
+    them, so the placeholder became the classification input *and* the
+    change-detection fingerprint.
+    """
+    config = _load_config()
+    session = _PagedFederalRegisterSession({1: _federal_register_source_text_page()})
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _federal_register_text_fetch(
+            FEDERAL_REGISTER_NON_DOCUMENT_BODIES[fixture_name]
+        ),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-08-13",
+            config=config,
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, items, state
+        )
+
+    assert state == {}, "a challenge/error body must not advance source state"
+
+
+FEDERAL_REGISTER_BAD_ORIGINS = {
+    "off_origin_host": "https://cdn.example.test/2026-16471.txt",
+    "subdomain_drift": "https://mirror.federalregister.gov/2026-16471.txt",
+    "https_downgrade": (
+        "http://www.federalregister.gov/documents/full_text/text/"
+        "2026/08/13/2026-16471.txt"
+    ),
+    "challenge_path": "https://www.federalregister.gov/cdn-cgi/challenge-platform/x",
+    "login_path": "https://www.federalregister.gov/login?next=/documents",
+    "captcha_path": "https://www.federalregister.gov/captcha",
+    "error_path": "https://www.federalregister.gov/errors/403",
+    "non_http_scheme": "ftp://www.federalregister.gov/2026-16471.txt",
+}
+
+
+@pytest.mark.parametrize("fixture_name", sorted(FEDERAL_REGISTER_BAD_ORIGINS))
+def test_federal_register_untrusted_final_origin_fails_closed(
+    fixture_name, monkeypatch
+):
+    """Validate where the bytes finally came from, not just the status code.
+
+    A 200 served after a redirect to another host, a downgraded scheme, or an
+    interstitial path is not the authoritative document, and the body alone can
+    be perfectly innocuous.
+    """
+    config = _load_config()
+    session = _PagedFederalRegisterSession({1: _federal_register_source_text_page()})
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _federal_register_text_fetch(
+            "Members must retain electronic communications records.",
+            final_url=FEDERAL_REGISTER_BAD_ORIGINS[fixture_name],
+        ),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    state: dict = {}
+    with pytest.raises(regulatory_monitor.RequiredSourceTextError):
+        items = regulatory_monitor.fetch_federal_register_documents(
+            session=session,
+            since_date="2026-08-13",
+            config=config,
+        )
+        regulatory_monitor.update_source_state(
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER, items, state
+        )
+
+    assert state == {}
+
+
+def test_federal_register_same_origin_redirect_is_accepted(monkeypatch):
+    """The origin gate must not reject ordinary same-host path redirects."""
+    config = _load_config()
+    session = _PagedFederalRegisterSession({1: _federal_register_source_text_page()})
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _federal_register_text_fetch(
+            "Members must retain electronic communications records.",
+            final_url=(
+                "https://www.federalregister.gov/documents/full_text/text/"
+                "2026/08/13/2026-16471-1.txt"
+            ),
+        ),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-08-13",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert "electronic communications records" in items[0].content_text
+
+
+def test_federal_register_long_document_survives_incidental_challenge_words(
+    monkeypatch,
+):
+    """The cost guard for finding 2.
+
+    Rulemakings about access controls, captchas, and authentication routinely
+    quote the exact phrases the screen looks for. A substantial, structurally
+    recognisable Federal Register document must survive them, otherwise the
+    fix converts an integrity hole into a run-wide outage.
+    """
+    config = _load_config()
+    body = (
+        "[Federal Register Volume 91, Number 12] SECURITIES AND EXCHANGE "
+        "COMMISSION AGENCY: Securities and Exchange Commission. ACTION: Final "
+        "rule. SUMMARY: The Commission is adopting rules addressing access "
+        "denied events, captcha deployment, verify you are a human challenges, "
+        "and login required workflows at registered broker-dealers. "
+        "SUPPLEMENTARY INFORMATION: "
+        + ("Member firms must retain the associated records electronically. " * 60)
+        + "[FR Doc. 2026-16471 Filed 8-12-26; 8:45 am] BILLING CODE 8011-01-P"
+    )
+    assert len(body) >= regulatory_monitor.FEDERAL_REGISTER_DOCUMENT_SUBSTANTIAL_CHARS
+
+    session = _PagedFederalRegisterSession({1: _federal_register_source_text_page()})
+    monkeypatch.setattr(
+        regulatory_monitor, "fetch_page", _federal_register_text_fetch(body)
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-08-13",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert "BILLING CODE" in items[0].content_text
+    assert items[0].classification in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
+def test_federal_register_short_valid_document_is_not_rejected():
+    """Short administrative notices carry no FR header and must still pass.
+
+    A hard structural requirement would fail closed on every legitimate short
+    document, so structure is only a safety valve, never an entry condition.
+    """
+    extracted = regulatory_monitor._extract_federal_register_source_text(
+        "<html><body><pre>SECURITIES AND EXCHANGE COMMISSION Release No. "
+        "34-99999; File No. SR-FINRA-2026-001 Notice of Filing of a Proposed "
+        "Rule Change.</pre></body></html>"
+    )
+
+    assert extracted.startswith("SECURITIES AND EXCHANGE COMMISSION")
+
+
+def test_source_origin_rejection_reason_matrix():
+    """Direct unit coverage of the origin rule, including its exemptions."""
+    reason_for = regulatory_monitor._source_origin_rejection_reason
+    requested = "https://www.federalregister.gov/a.txt"
+
+    assert reason_for(requested, requested) is None
+    assert reason_for(requested, None) is None, (
+        "absence of redirect information is not evidence of a redirect"
+    )
+    assert reason_for(requested, "") is None
+    assert reason_for(requested, "https://www.federalregister.gov/b.txt") is None
+    assert reason_for(requested, "https://WWW.FederalRegister.GOV/a.txt") is None
+    assert reason_for(requested, "https://evil.test/a.txt")
+    assert reason_for(requested, "http://www.federalregister.gov/a.txt")
+    assert reason_for(requested, "file:///c:/a.txt")
+    assert reason_for(requested, "https://www.federalregister.gov/cdn-cgi/x")
+
+
+# ---------------------------------------------------------------------------
+# Finding 3 -- title and body are separate evidence fields
+# ---------------------------------------------------------------------------
+
+
+def test_reviewer_case_operative_title_does_not_promote_citation_only_body():
+    """The reviewer's exact case.
+
+    Concatenating title and body with one space let "Members must report
+    suspicious activity" sit in the same sentence window as the body's opening
+    citation, so an unrelated reporting duty in the *title* promoted a purely
+    bibliographic AI mention in the *body*.
+    """
+    config = _load_config()
+    title = "Members must report suspicious activity"
+    body = (
+        "According to Jones (2026), artificial intelligence affects capital "
+        "markets."
+    )
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        title, body, config, exclude_reference_only=True
+    )
+    controls = regulatory_monitor.find_affected_controls_by_keywords(
+        title, body, config, exclude_reference_only=True
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }, (classification, reason)
+    assert "artificial intelligence" not in reason.lower()
+    assert controls == []
+
+
+@pytest.mark.parametrize(
+    ("title", "body"),
+    [
+        (
+            "Members must supervise artificial intelligence systems",
+            "Routine administrative matter.",
+        ),
+        (
+            "Quarterly administrative notice",
+            "Members must supervise artificial intelligence systems.",
+        ),
+    ],
+    ids=["operative_in_title", "operative_in_body"],
+)
+def test_operative_ai_language_detected_in_either_field(title, body):
+    """Separation must not become blindness: either field alone still counts."""
+    config = _load_config()
+
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        title, body, config, exclude_reference_only=True
+    )
+    controls = regulatory_monitor.find_affected_controls_by_keywords(
+        title, body, config, exclude_reference_only=True
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert controls
+
+
+@pytest.mark.parametrize(
+    ("title", "body"),
+    [
+        ("Notice regarding supervision", "Electronic filing deadlines change."),
+        ("Guidance from FINRA", "Retail communications standards are unchanged."),
+    ],
+    ids=["supervision_electronic", "finra_retail_communications"],
+)
+def test_windowed_patterns_cannot_span_the_title_body_boundary(title, body):
+    """``.{0,80}`` windows in the config must not straddle two fields.
+
+    ``supervision.{0,80}(?:electronic|...)`` and the FINRA/retail-communications
+    pattern each matched by taking one term from the title and one from the
+    body, which is evidence that exists in neither field.
+    """
+    config = _load_config()
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        title, body, config, exclude_reference_only=True
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }, (classification, reason)
+
+
+def test_windowed_pattern_still_matches_within_one_field():
+    """The same window must still work when both terms are in one field."""
+    config = _load_config()
+
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        "Quarterly notice",
+        "Firms must update supervision of electronic systems.",
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
+
+
+def test_classification_segments_never_concatenate_fields():
+    """Structural guard: the segments are the fields, not a joined string."""
+    segments = regulatory_monitor._classification_segments("a title", "a body")
+
+    assert list(segments) == ["a title", "a body"]
+    assert not any("a title a body" in segment for segment in segments)
+
+
+# ---------------------------------------------------------------------------
+# Finding 4 -- proper-name attribution citations
+# ---------------------------------------------------------------------------
+
+_ATTRIBUTION_NON_HIGH = {
+    "according_to_author_year": (
+        "According to Jones (2026), artificial intelligence affects capital "
+        "markets."
+    ),
+    "according_to_author_et_al": (
+        "According to Smith et al. (2025), artificial intelligence adoption is "
+        "uneven."
+    ),
+    "as_reported_by": (
+        "As reported by Chen (2024), artificial intelligence changes market "
+        "structure."
+    ),
+    "as_noted_by": (
+        "As noted by Jones (2026), artificial intelligence affects capital "
+        "markets."
+    ),
+    "as_described_in": (
+        "As described in Jones (2026), artificial intelligence affects capital "
+        "markets."
+    ),
+    "per_two_authors": (
+        "Per Smith and Lee (2026), artificial intelligence affects liquidity."
+    ),
+    "according_to_a_recent_study": (
+        "According to a recent study, artificial intelligence affects capital "
+        "markets."
+    ),
+    "according_to_researchers": (
+        "According to researchers, artificial intelligence affects capital "
+        "markets."
+    ),
+    "mid_sentence_after_semicolon": (
+        "Members must file annual reports; according to Jones (2026), "
+        "artificial intelligence affects capital markets."
+    ),
+    "mid_sentence_after_comma": (
+        "Members must file annual reports, and according to Jones (2026), "
+        "artificial intelligence affects capital markets."
+    ),
+    "trailing_parenthetical": (
+        "Members must file annual reports, and artificial intelligence "
+        "adoption is uneven (Jones, 2026)."
+    ),
+    "trailing_parenthetical_et_al": (
+        "Members must file annual reports, while artificial intelligence "
+        "adoption is uneven (Smith et al., 2025)."
+    ),
+    "trailing_parenthetical_two_authors": (
+        "Members must file annual reports, and artificial intelligence changes "
+        "liquidity (Smith and Lee, 2026)."
+    ),
+    "trailing_parenthetical_with_page": (
+        "Members must file annual reports, and artificial intelligence changes "
+        "liquidity (Jones, 2026, p. 14)."
+    ),
+    "trailing_parenthetical_own_sentence": (
+        "Members must file annual reports. Artificial intelligence adoption is "
+        "uneven (Jones, 2026)."
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(_ATTRIBUTION_NON_HIGH))
+def test_proper_name_attribution_stays_non_high(case):
+    """Casing is unavailable (the text is lowercased), so a proper name has to
+    be recognised structurally: an attribution lead plus a parenthetical year,
+    or a trailing "(Name, Year)" pair."""
+    config = _load_config()
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulatory Notice 26-10",
+        _ATTRIBUTION_NON_HIGH[case],
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }, (case, classification, reason)
+    assert "artificial intelligence" not in reason.lower()
+
+
+_ATTRIBUTION_OPERATIVE_HIGH = {
+    "operative_after_attribution": (
+        "According to Jones (2026), members must supervise artificial "
+        "intelligence systems."
+    ),
+    "operative_in_attributed_clause": (
+        "As reported by Chen (2024), firms shall retain artificial "
+        "intelligence model records."
+    ),
+    "operative_with_trailing_citation": (
+        "Members must supervise artificial intelligence systems (Jones, 2026)."
+    ),
+    "operative_after_comma_with_citation": (
+        "Firms file reports, and members must supervise artificial "
+        "intelligence systems (Jones, 2026)."
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(_ATTRIBUTION_OPERATIVE_HIGH))
+def test_operative_language_in_attributed_clause_takes_precedence(case):
+    """Attribution never outranks a duty in the AI-bearing clause."""
+    config = _load_config()
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulatory Notice 26-10",
+        _ATTRIBUTION_OPERATIVE_HIGH[case],
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH, case
+
+
+_NON_CITATION_PARENTHETICALS = {
+    "bare_date": "Members must supervise artificial intelligence systems (September 2026).",
+    "effective_year": "Firms shall govern artificial intelligence tools (effective 2027).",
+    "release_number": (
+        "Members must govern artificial intelligence tools (Release No. 34-99999)."
+    ),
+    "cfr_citation": (
+        "Members must retain artificial intelligence records (17 CFR 240.17a-4)."
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(_NON_CITATION_PARENTHETICALS))
+def test_date_and_reference_parentheticals_are_not_author_date_citations(case):
+    """The trailing form deliberately requires "<name>, <year>".
+
+    "(September 2026)" and "(effective 2027)" are dates, not citations, and
+    treating them as citations would suppress genuine operative duties.
+    """
+    config = _load_config()
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulatory Notice 26-10",
+        _NON_CITATION_PARENTHETICALS[case],
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH, case
+
+
+# ---------------------------------------------------------------------------
+# Finding 5 -- mandatory electronic recordkeeping forms
+# ---------------------------------------------------------------------------
+
+_RECORDKEEPING_MANDATORY = {
+    "electronic_modifier_before_store": (
+        "Records must be electronically stored for six years."
+    ),
+    "electronic_modifier_before_maintain": (
+        "Records must be electronically maintained by each member firm."
+    ),
+    "electronic_modifier_before_preserve": (
+        "Records shall be electronically preserved in a non-rewriteable format."
+    ),
+    "electronic_modifier_after_obligation": (
+        "Each member must electronically preserve all communications records."
+    ),
+    "permissive_word_in_subject_clause": (
+        "Records that may contain customer information must be retained "
+        "electronically."
+    ),
+    "permissive_word_in_relative_clause": (
+        "Books and records that may be requested must be preserved in "
+        "electronic format."
+    ),
+    "plain_mandatory": (
+        "Broker-dealers must retain records electronically for six years."
+    ),
+    "shall_maintain_electronic_form": (
+        "Firms shall maintain records in electronic form."
+    ),
+    "required_to_be_stored": "Records are required to be stored electronically.",
+    "paper_prohibited": (
+        "Paper records are prohibited; records must be stored electronically."
+    ),
+    "may_not_paper_must_electronic": (
+        "Records may not be maintained on paper and must be retained "
+        "electronically."
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(_RECORDKEEPING_MANDATORY))
+def test_mandatory_electronic_recordkeeping_forms_are_detected(case):
+    """Two repairs are covered here.
+
+    The electronic term can *modify* the storage verb rather than follow it
+    ("must be electronically stored"), and a permissive word inside a subject
+    or relative clause ("records that **may** contain customer information")
+    does not make the storage duty optional -- only a permissive word bound to
+    the storage predicate does.
+    """
+    assert regulatory_monitor._has_electronic_recordkeeping_obligation(
+        _RECORDKEEPING_MANDATORY[case]
+    ), case
+
+
+_RECORDKEEPING_NOT_MANDATORY = {
+    "may_be_stored": "Records may be stored electronically.",
+    "may_retain_if_they_choose": (
+        "Firms may retain records in electronic format if they choose."
+    ),
+    "electronic_or_paper": "Records may be maintained electronically or on paper.",
+    "optional": "Electronic storage of records is optional.",
+    "paper_alternative": (
+        "Records must be retained; electronic storage is permitted as an "
+        "alternative to paper."
+    ),
+    "permitted_to_store": "Firms are permitted to store records electronically.",
+    "retention_without_electronic": "Records must be retained for six years.",
+    "discussion_only": "Electronic communications are discussed in the release.",
+    "paper_form_alternative": (
+        "Records may be kept in paper form as an alternative to electronic "
+        "storage."
+    ),
+    "does_not_require": "The rule does not require electronic recordkeeping.",
+    "need_not": "Firms need not store records electronically.",
+    "at_firm_option": "Electronic storage is available at the firm's option.",
+    "nothing_requires": (
+        "Nothing in this rule requires records to be stored electronically."
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(_RECORDKEEPING_NOT_MANDATORY))
+def test_permissive_and_paper_alternative_recordkeeping_stays_negative(case):
+    """The polarity guard: binding permissive words to the storage predicate
+    must not turn optional or paper-alternative language into an obligation."""
+    assert not regulatory_monitor._has_electronic_recordkeeping_obligation(
+        _RECORDKEEPING_NOT_MANDATORY[case]
+    ), case
+
+
+def test_permissive_modal_mask_only_clears_storage_bound_modals():
+    """Unit-level proof of the masking rule.
+
+    The mask removes permissive modals that are *not* bound to a storage
+    predicate so the whole-match optional/negated scan stops firing on them,
+    and leaves the storage-bound ones in place so genuine "may be stored"
+    remains optional.
+    """
+    mask = regulatory_monitor._mask_unbound_permissive_modals
+
+    masked_subject = mask(
+        "records that may contain customer information must be retained "
+        "electronically"
+    )
+    assert "may contain" not in masked_subject
+    assert "must be retained" in masked_subject
+
+    masked_storage = mask("records may be stored electronically")
+    assert "may be stored" in masked_storage
+
+
+# ---------------------------------------------------------------------------
+# Finding 6 -- boundary indexing: same semantics, linear cost
+# ---------------------------------------------------------------------------
+
+
+def _reference_sentence_span(text: str, start: int, end: int) -> tuple[int, int]:
+    """Pre-index implementation, copied verbatim as a differential oracle.
+
+    This is the code the index replaced: it rescans every preceding footnote
+    delimiter and every preceding sentence terminator from offset 0 for *each*
+    match, which is what made classification quadratic.
+    """
+    preceding_delimiters = list(
+        regulatory_monitor.FOOTNOTE_BLOCK_DELIMITER_PATTERN.finditer(text, 0, start)
+    )
+    segment_start = preceding_delimiters[-1].end() if preceding_delimiters else 0
+    following_delimiter = regulatory_monitor.FOOTNOTE_BLOCK_DELIMITER_PATTERN.search(
+        text, end
+    )
+    segment_end = following_delimiter.start() if following_delimiter else len(text)
+
+    preceding_boundaries = list(
+        regulatory_monitor._real_sentence_boundaries(text, segment_start, start)
+    )
+    if preceding_boundaries:
+        segment_start = preceding_boundaries[-1].end()
+
+    following_boundary = next(
+        regulatory_monitor._real_sentence_boundaries(text, end, segment_end), None
+    )
+    if following_boundary:
+        segment_end = following_boundary.start()
+
+    return segment_start, segment_end
+
+
+def _reference_clause_span(text: str, start: int, end: int) -> tuple[int, int]:
+    """Pre-index clause resolution, copied verbatim as a differential oracle."""
+    sentence_start, sentence_end = _reference_sentence_span(text, start, end)
+    clause_start, clause_end = sentence_start, sentence_end
+
+    clause_boundaries = [
+        boundary.end()
+        for boundary in regulatory_monitor.CLAUSE_BOUNDARY_PATTERN.finditer(
+            text, sentence_start, start
+        )
+    ]
+    citation_starts = [
+        boundary.end()
+        for boundary in regulatory_monitor.CITATION_SUBJECT_BOUNDARY_PATTERN.finditer(
+            text, sentence_start, start
+        )
+    ]
+    if citation_starts:
+        citation_start = max(citation_starts)
+        clause_start = max(
+            [sentence_start, citation_start]
+            + [cb for cb in clause_boundaries if cb <= citation_start]
+        )
+    elif clause_boundaries:
+        clause_start = max(clause_boundaries)
+
+    following_clause_boundary = regulatory_monitor.CLAUSE_BOUNDARY_PATTERN.search(
+        text, end, sentence_end
+    )
+    if following_clause_boundary:
+        clause_end = following_clause_boundary.start()
+    following_citation_subject = (
+        regulatory_monitor.CITATION_SUBJECT_BOUNDARY_PATTERN.search(
+            text, end, sentence_end
+        )
+    )
+    if following_citation_subject:
+        clause_end = min(clause_end, following_citation_subject.start())
+
+    return clause_start, clause_end
+
+
+_BOUNDARY_ORACLE_CORPUS = [
+    "Members must file annual reports and Smith et al. discuss artificial "
+    "intelligence in capital markets.",
+    "The Commission proposes to amend deadlines, and a recent working paper on "
+    "artificial intelligence is available at https://example.test/paper.pdf.",
+    "According to Jones (2026), artificial intelligence affects capital markets.",
+    "Firms must supervise artificial intelligence tools.\\451\\ See also Smith, "
+    "supra note 3.",
+    "Text before.\n-------------------\nFootnote block cites artificial "
+    "intelligence research; see also id. Text after.",
+    "Members must monitor and govern artificial intelligence systems (September "
+    "2026); firms shall retain artificial intelligence records.",
+    "artificial intelligence",
+    "Artificial intelligence. Artificial intelligence; artificial intelligence!",
+    "A sentence ending in an abbreviation such as e.g. artificial intelligence "
+    "adoption, i.e. the deployment of models, is common.",
+    "(Artificial intelligence) -- artificial intelligence [artificial "
+    "intelligence] artificial intelligence, artificial intelligence: end.",
+    "Multiple---dashes and \u2014em dashes\u2014around artificial intelligence "
+    "mentions, because researchers document adoption.",
+    "No terminator at all and artificial intelligence sits at the very end",
+    "artificial intelligence at the very start and members must retain records.",
+]
+
+
+@pytest.mark.parametrize("corpus_index", range(len(_BOUNDARY_ORACLE_CORPUS)))
+def test_boundary_index_matches_pre_index_reference_implementation(corpus_index):
+    """Differential test: the optimisation must not change any boundary.
+
+    The performance repair is only acceptable if it is semantics-preserving, so
+    every occurrence in an adversarial corpus is resolved by both the old
+    rescan-per-match code and the indexed code and the spans are compared
+    directly.
+    """
+    text = _BOUNDARY_ORACLE_CORPUS[corpus_index].lower()
+    index = regulatory_monitor._boundary_index(text)
+
+    probes = [
+        (match.start(), match.end())
+        for match in re.finditer(r"artificial intelligence|records|reports", text)
+    ]
+    assert probes, "corpus entry must contain at least one probe occurrence"
+
+    for start, end in probes:
+        expected_sentence = _reference_sentence_span(text, start, end)
+        actual_sentence = regulatory_monitor._occurrence_sentence_span(
+            text, start, end
+        )
+        assert actual_sentence == expected_sentence, (text[start:end], start)
+
+        sentence_start, sentence_end = actual_sentence
+        assert index.clause_span(
+            start, end, sentence_start, sentence_end
+        ) == _reference_clause_span(text, start, end), (text[start:end], start)
+
+
+def _large_citation_body(mentions: int) -> str:
+    """Deterministic large body: filler sentences plus N citation sentences."""
+    filler = "The Commission proposes to amend quarterly report deadlines. " * 125
+    unit = filler + (
+        "Members must file annual reports and Smith et al. discuss artificial "
+        "intelligence in capital markets. "
+    )
+    return unit * mentions
+
+
+def test_boundary_index_is_built_once_per_text_not_once_per_match():
+    """Operation-count regression: the machine-independent half of the guard.
+
+    The old code rescanned the document from offset 0 for every candidate
+    match. Here the number of index builds must stay constant when the number
+    of matches quadruples, which is the property that removes the quadratic
+    term. Wall-clock alone would be a flaky proxy for it.
+    """
+    config = _load_config()
+    builds_by_size = {}
+
+    for mentions in (100, 400):
+        text = _large_citation_body(mentions)
+        regulatory_monitor._boundary_index.cache_clear()
+        before = regulatory_monitor._BOUNDARY_INDEX_BUILDS
+        regulatory_monitor.classify_regulatory_relevance(
+            "Regulatory Notice 26-10", text, config, exclude_reference_only=True
+        )
+        regulatory_monitor.find_affected_controls_by_keywords(
+            "Regulatory Notice 26-10", text, config, exclude_reference_only=True
+        )
+        builds_by_size[mentions] = (
+            regulatory_monitor._BOUNDARY_INDEX_BUILDS - before
+        )
+
+    assert builds_by_size[100] == builds_by_size[400], builds_by_size
+    assert builds_by_size[100] <= 4, (
+        "one index per distinct text (title and body), reused across "
+        "classification and control matching",
+        builds_by_size,
+    )
+
+
+def test_large_document_classification_completes_in_seconds():
+    """Wall-clock regression on a real-size body (~770k characters).
+
+    Measured on this corpus: ~184s before the repair (classification ~101s,
+    control mapping ~84s) and ~1.1s after. The ceiling is set an order of
+    magnitude above the observed cost so a slow CI machine cannot make it
+    flaky, while still failing loudly if the quadratic behaviour returns.
+    """
+    config = _load_config()
+    text = _large_citation_body(100)
+    assert len(text) > 750_000
+
+    regulatory_monitor._boundary_index.cache_clear()
+    started = time.perf_counter()
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        "Regulatory Notice 26-10", text, config, exclude_reference_only=True
+    )
+    controls = regulatory_monitor.find_affected_controls_by_keywords(
+        "Regulatory Notice 26-10", text, config, exclude_reference_only=True
+    )
+    elapsed = time.perf_counter() - started
+
+    assert elapsed < 20.0, f"classification took {elapsed:.1f}s on {len(text)} chars"
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }, "the large corpus is bibliographic; semantics must be unchanged"
+    assert controls == []
