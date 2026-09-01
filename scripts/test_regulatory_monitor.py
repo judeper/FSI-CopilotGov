@@ -146,6 +146,50 @@ def test_federal_register_rule_2210_title_classifies_high_with_null_abstract():
     }
 
 
+@pytest.mark.parametrize(
+    "text",
+    (
+        "The filing discusses automation of routine administrative processing.",
+        "The report describes automation across several operational functions.",
+    ),
+)
+def test_bare_automation_language_does_not_classify_high(text):
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Administrative technology update",
+        text,
+        config,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
+@pytest.mark.parametrize(
+    "text",
+    (
+        "The rule establishes controls for automated trading systems.",
+        "The proposal governs automated advice provided to investors.",
+    ),
+)
+def test_fsi_automation_language_remains_high_priority(text):
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Financial services automation requirements",
+        text,
+        config,
+    )
+
+    assert classification in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
 AI_VOCABULARY = (
     "ai agent",
     "agent ai",
