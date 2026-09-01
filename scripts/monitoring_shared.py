@@ -88,6 +88,7 @@ def fetch_page(url: str, session: requests.Session, max_retries: int = MAX_RETRI
                 'url': url,
                 'status_code': response.status_code,
                 'content': response.text if response.status_code == 200 else "",
+                'content_type': response.headers.get("Content-Type"),
                 'final_url': response.url,
                 'was_redirected': response.url != url,
                 'error': None,
@@ -99,6 +100,7 @@ def fetch_page(url: str, session: requests.Session, max_retries: int = MAX_RETRI
                     'url': url,
                     'status_code': 0,
                     'content': "",
+                    'content_type': None,
                     'final_url': url,
                     'was_redirected': False,
                     'error': str(e),
@@ -109,6 +111,7 @@ def fetch_page(url: str, session: requests.Session, max_retries: int = MAX_RETRI
         'url': url,
         'status_code': 0,
         'content': "",
+        'content_type': None,
         'final_url': url,
         'was_redirected': False,
         'error': "Max retries exceeded",
@@ -554,7 +557,7 @@ def save_state_atomic(state: dict, state_path):
     """
     Save state to JSON file atomically.
 
-    Uses temp file + rename for atomic writes with backup of previous state.
+    Uses a temporary file and rename so readers never observe a partial state.
 
     Args:
         state: State dict to save
@@ -564,14 +567,6 @@ def save_state_atomic(state: dict, state_path):
     state_path = Path(state_path) if not isinstance(state_path, Path) else state_path
 
     state_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Backup existing state if it exists
-    if state_path.exists():
-        backup_path = state_path.with_suffix('.json.backup')
-        try:
-            backup_path.write_text(state_path.read_text(encoding='utf-8'), encoding='utf-8')
-        except Exception:
-            pass  # Best effort backup
 
     # Write to temp file then rename (atomic)
     with tempfile.NamedTemporaryFile(

@@ -112,9 +112,9 @@ regulatory:
       reason: "Targeted return language"
     - pattern: '\bchatbot'
       reason: "References chatbots"
-    - pattern: '\bautomation'
+    - pattern: '\b(?:automated|automation)\s+(?:advice|decision(?:-making)?|trading|supervision|monitoring|compliance|model|system)'
       reason: "References automation in FSI context"
-    - pattern: '\bsupervision.*(?:electronic|automated|technology)'
+    - pattern: '\bsupervision.{0,80}(?:electronic|automated|technology)'
       reason: "Supervision of automated systems"
     - pattern: '\bfinra\s+3110'
       reason: "FINRA 3110 (supervision)"
@@ -122,8 +122,9 @@ regulatory:
       reason: "FINRA 4511 (recordkeeping)"
     - pattern: '\bsec\s+17a-[34]'
       reason: "SEC 17a-3 or 17a-4 (recordkeeping)"
-    - pattern: '\brecordkeeping.*(?:electronic|automated)'
-      reason: "Electronic recordkeeping"
+    # Electronic recordkeeping is evaluated by explicit semantic checks in
+    # regulatory_monitor.py so optional, negated, paper-only, and unrelated
+    # electronic-communications clauses cannot satisfy the high tier.
     - pattern: '\bmodel\s+risk\s+management'
       reason: "Model risk management"
 
