@@ -35,7 +35,19 @@ Step-by-step portal configuration for governing plugins, Graph connectors, and a
 
 1. Review allowed agent types.
 2. Review sharing controls.
-3. Review user access scope and any templates used in publication workflows.
+3. Review user access scope and policy templates used for new agents.
+
+#### Verify Apply Template Scope for Existing Agents
+
+**Path:** Agents > Settings > Agent management rules
+
+1. Open an **Apply template** rule and verify its criteria and selected preexisting or custom template.
+2. Confirm the review list contains the intended eligible agents, and verify whether all eligible agents or only a selected subset will receive the template.
+3. Confirm the evaluated agents are Registry agents with an agent identity. Agent blueprints and AI teammates are outside this action's scope.
+4. Retain evidence of the selected agents and completed run when the operation is used.
+5. Do not document this action as scheduled enforcement or as universal coverage: **Apply template** is a one-time bulk operation for eligible existing published agents.
+
+See [Agent settings in Microsoft 365 admin center](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-settings?view=o365-worldwide) for the current action workflow and limitations.
 
 ### Step 4: Configure Integrated Apps Governance (Legacy App Inventory)
 
