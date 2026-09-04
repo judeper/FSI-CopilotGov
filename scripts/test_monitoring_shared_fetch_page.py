@@ -88,6 +88,48 @@ def test_fetch_page_honors_http_date_retry_after(monkeypatch):
 
 
 @pytest.mark.parametrize(
+    ("offset_seconds", "expected_parsed", "expected_wait", "expected_reason"),
+    [
+        (0, 0, 0, "Retry-After header"),
+        (1, 1, 1, "Retry-After header"),
+        (120, 120, 120, "Retry-After header"),
+        (
+            121,
+            121,
+            monitoring_shared.RATE_LIMIT_BACKOFF_BASE_SECONDS,
+            "exceeded 120s bound",
+        ),
+    ],
+)
+def test_http_date_retry_after_rounds_up_before_bounds(
+    monkeypatch,
+    offset_seconds,
+    expected_parsed,
+    expected_wait,
+    expected_reason,
+):
+    fixed_now = datetime(2026, 9, 4, 15, 0, 0, 900000, tzinfo=timezone.utc)
+    retry_at = format_datetime(
+        fixed_now + timedelta(seconds=offset_seconds),
+        usegmt=True,
+    )
+
+    class _FrozenDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return fixed_now if tz is not None else fixed_now.replace(tzinfo=None)
+
+    monkeypatch.setattr(monitoring_shared, "datetime", _FrozenDateTime)
+
+    parsed = monitoring_shared._parse_retry_after_seconds(retry_at)
+    wait, reason = monitoring_shared._rate_limit_wait_seconds(retry_at, attempt=0)
+
+    assert parsed == expected_parsed
+    assert wait == expected_wait
+    assert expected_reason in reason
+
+
+@pytest.mark.parametrize(
     "retry_after",
     [None, "", "not-a-number", "-5", "5000"],
 )

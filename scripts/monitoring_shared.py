@@ -20,6 +20,7 @@ shared framework to provide their specific monitoring logic.
 import difflib
 import hashlib
 import json
+import math
 import re
 import sys
 import tempfile
@@ -89,7 +90,7 @@ def _parse_retry_after_seconds(header_value: Optional[str]) -> Optional[int]:
     if retry_at.tzinfo is None:
         retry_at = retry_at.replace(tzinfo=timezone.utc)
 
-    return int((retry_at - datetime.now(timezone.utc)).total_seconds())
+    return math.ceil((retry_at - datetime.now(timezone.utc)).total_seconds())
 
 
 def _bounded_rate_limit_backoff_seconds(attempt: int) -> int:
