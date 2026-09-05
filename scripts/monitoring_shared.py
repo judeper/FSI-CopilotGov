@@ -20,11 +20,13 @@ shared framework to provide their specific monitoring logic.
 import difflib
 import hashlib
 import json
+import math
 import re
 import sys
 import tempfile
 import time
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Optional
 from urllib.parse import urlparse
@@ -47,6 +49,10 @@ except ImportError as e:
 # === Configuration Constants ===
 REQUEST_TIMEOUT = 30  # seconds
 MAX_RETRIES = 3
+MAX_RETRY_AFTER_SECONDS = 120
+MAX_RATE_LIMIT_WAIT_SECONDS = 120
+RATE_LIMIT_BACKOFF_BASE_SECONDS = 5
+RATE_LIMIT_BACKOFF_MAX_SECONDS = 30
 
 # Default path to monitoring configuration file
 DEFAULT_CONFIG_PATH = Path(__file__).parent / "config" / "monitoring-config.yaml"
@@ -62,6 +68,56 @@ _URL_PATTERN = re.compile(
 )
 
 # === HTTP Fetching ===
+def _parse_retry_after_seconds(header_value: Optional[str]) -> Optional[int]:
+    """Parse Retry-After header seconds or HTTP-date to relative seconds."""
+    if header_value is None:
+        return None
+
+    value = str(header_value).strip()
+    if not value:
+        return None
+
+    try:
+        return int(value)
+    except ValueError:
+        pass
+
+    try:
+        retry_at = parsedate_to_datetime(value)
+    except (TypeError, ValueError, OverflowError, IndexError):
+        return None
+
+    if retry_at.tzinfo is None:
+        retry_at = retry_at.replace(tzinfo=timezone.utc)
+
+    return math.ceil((retry_at - datetime.now(timezone.utc)).total_seconds())
+
+
+def _bounded_rate_limit_backoff_seconds(attempt: int) -> int:
+    return min(
+        RATE_LIMIT_BACKOFF_MAX_SECONDS,
+        RATE_LIMIT_BACKOFF_BASE_SECONDS * (2 ** attempt),
+    )
+
+
+def _rate_limit_wait_seconds(retry_after_header: Optional[str], attempt: int) -> tuple[int, str]:
+    """Resolve retry wait from Retry-After header or bounded fallback backoff."""
+    retry_after_seconds = _parse_retry_after_seconds(retry_after_header)
+    fallback_seconds = _bounded_rate_limit_backoff_seconds(attempt)
+
+    if retry_after_seconds is None:
+        return fallback_seconds, "Retry-After missing or malformed"
+    if retry_after_seconds < 0:
+        return fallback_seconds, "Retry-After was negative"
+    if retry_after_seconds > MAX_RETRY_AFTER_SECONDS:
+        return fallback_seconds, (
+            f"Retry-After {retry_after_seconds}s exceeded "
+            f"{MAX_RETRY_AFTER_SECONDS}s bound"
+        )
+
+    return retry_after_seconds, "Retry-After header"
+
+
 def fetch_page(url: str, session: requests.Session, max_retries: int = MAX_RETRIES) -> dict:
     """
     Fetch a page with retry logic and redirect tracking.
@@ -74,14 +130,37 @@ def fetch_page(url: str, session: requests.Session, max_retries: int = MAX_RETRI
     Returns:
         dict with keys: url, status_code, content, final_url, was_redirected, error
     """
+    total_rate_limit_wait = 0
+    rate_limit_attempts = 0
+    last_rate_limited_response = None
+
     for attempt in range(max_retries):
         try:
             response = session.get(url, timeout=REQUEST_TIMEOUT, allow_redirects=True)
 
             if response.status_code == 429:
-                wait_time = int(response.headers.get("Retry-After", 60))
-                print(f"  Rate limited, waiting {wait_time}s...")
+                rate_limit_attempts += 1
+                last_rate_limited_response = response
+                if attempt == max_retries - 1:
+                    break
+
+                wait_time, wait_reason = _rate_limit_wait_seconds(
+                    response.headers.get("Retry-After"),
+                    attempt,
+                )
+                remaining_wait_budget = MAX_RATE_LIMIT_WAIT_SECONDS - total_rate_limit_wait
+                if remaining_wait_budget <= 0:
+                    break
+                if wait_time > remaining_wait_budget:
+                    wait_time = remaining_wait_budget
+                    wait_reason = (
+                        f"{wait_reason}; capped by "
+                        f"{MAX_RATE_LIMIT_WAIT_SECONDS}s total wait budget"
+                    )
+
+                print(f"  Rate limited (429), waiting {wait_time}s [{wait_reason}]...")
                 time.sleep(wait_time)
+                total_rate_limit_wait += wait_time
                 continue
 
             return {
@@ -106,6 +185,21 @@ def fetch_page(url: str, session: requests.Session, max_retries: int = MAX_RETRI
                     'error': str(e),
                 }
             time.sleep(2 ** attempt)
+
+    if last_rate_limited_response is not None:
+        return {
+            'url': url,
+            'status_code': 429,
+            'content': "",
+            'content_type': last_rate_limited_response.headers.get("Content-Type"),
+            'final_url': last_rate_limited_response.url,
+            'was_redirected': last_rate_limited_response.url != url,
+            'error': (
+                "HTTP 429 rate limit persisted after "
+                f"{rate_limit_attempts} attempts "
+                f"(waited {total_rate_limit_wait}s)"
+            ),
+        }
 
     return {
         'url': url,
