@@ -18,6 +18,93 @@ sys.path.insert(0, str(SCRIPTS_DIR))
 import monitoring_shared  # noqa: E402
 
 
+SHAREPOINT_READINESS_URL = (
+    "https://learn.microsoft.com/en-us/microsoft-365/copilot/"
+    "get-ready-copilot-sharepoint-advanced-management"
+)
+
+REDIRECTED_URL_IMPACTS = [
+    (
+        SHAREPOINT_READINESS_URL,
+        {"1.3", "1.13"},
+        8,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms",
+        set(),
+        0,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/whats-new",
+        {"4.15"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-models",
+        {"4.15"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-365/copilot/discovery-setting-ai-experiences",
+        {"4.15"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-365/copilot/"
+        "usage-based-billing-manage-copilot-credits",
+        {"4.15"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-scout/overview",
+        {"4.16"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-scout/get-started",
+        {"4.16"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-scout/admin-access-overview",
+        {"4.16"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-scout/admin-intune-setup",
+        {"4.16"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-scout/manage-group-policy",
+        {"4.16"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-scout/use-microsoft-scout",
+        {"4.16"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-scout/faq",
+        {"4.16"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-scout/"
+        "microsoft-scout-responsible-ai-overview",
+        {"4.16"},
+        4,
+    ),
+    (
+        "https://learn.microsoft.com/en-us/microsoft-scout/"
+        "microsoft-scout-responsible-ai-faq",
+        {"2.13", "4.16"},
+        8,
+    ),
+]
+
+
 def _write(path: Path, body: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(body, encoding="utf-8")
@@ -120,6 +207,50 @@ def test_cowork_url_variants_map_to_control_and_playbooks():
     ]
     for url_variant in variants:
         _assert_cowork_variants_map(url_variant)
+
+
+def test_sharepoint_readiness_redirect_maps_exact_impact():
+    result = monitoring_shared.find_affected_controls(
+        SHAREPOINT_READINESS_URL, REPO_ROOT / "docs"
+    )
+
+    assert {control["control_id"] for control in result["controls"]} == {
+        "1.3",
+        "1.13",
+    }
+
+    playbooks = {
+        playbook["file_path"].replace("\\", "/"): playbook["priority"]
+        for playbook in result["playbooks"]
+    }
+    assert playbooks == {
+        "playbooks/control-implementations/1.3/portal-walkthrough.md":
+            monitoring_shared.CLASSIFICATION_CRITICAL,
+        "playbooks/control-implementations/1.3/powershell-setup.md":
+            monitoring_shared.CLASSIFICATION_HIGH,
+        "playbooks/control-implementations/1.3/troubleshooting.md":
+            monitoring_shared.CLASSIFICATION_HIGH,
+        "playbooks/control-implementations/1.3/verification-testing.md":
+            monitoring_shared.CLASSIFICATION_HIGH,
+        "playbooks/control-implementations/1.13/portal-walkthrough.md":
+            monitoring_shared.CLASSIFICATION_CRITICAL,
+        "playbooks/control-implementations/1.13/powershell-setup.md":
+            monitoring_shared.CLASSIFICATION_HIGH,
+        "playbooks/control-implementations/1.13/troubleshooting.md":
+            monitoring_shared.CLASSIFICATION_HIGH,
+        "playbooks/control-implementations/1.13/verification-testing.md":
+            monitoring_shared.CLASSIFICATION_HIGH,
+    }
+
+
+def test_all_redirected_state_urls_retain_expected_impact_mapping():
+    for url, expected_controls, expected_playbook_count in REDIRECTED_URL_IMPACTS:
+        result = monitoring_shared.find_affected_controls(url, REPO_ROOT / "docs")
+
+        assert {control["control_id"] for control in result["controls"]} == (
+            expected_controls
+        ), url
+        assert len(result["playbooks"]) == expected_playbook_count, url
 
 
 def test_canonicalizer_accepts_scheme_less_learn_url():

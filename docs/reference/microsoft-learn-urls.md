@@ -95,14 +95,14 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Topic | URL |
 |-------|-----|
 | Copilot Cowork overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/) |
-| What's new in Copilot Cowork | [https://learn.microsoft.com/microsoft-365/copilot/cowork/whats-new](https://learn.microsoft.com/microsoft-365/copilot/cowork/whats-new) |
+| What's new in Copilot Cowork | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/whats-new](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/whats-new) |
 | Get started with Copilot Cowork | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/get-started) |
 | Copilot Cowork admin and governance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-admin-governance) |
-| Copilot Cowork available models | [https://learn.microsoft.com/microsoft-365/copilot/cowork/cowork-models](https://learn.microsoft.com/microsoft-365/copilot/cowork/cowork-models) |
+| Copilot Cowork available models | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-models](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-models) |
 | Manage Copilot Cowork plugins | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins) |
 | Copilot Cowork FAQ | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq) |
-| Managing AI experiences enabled by usage-based billing | [https://learn.microsoft.com/microsoft-365/copilot/discovery-setting-ai-experiences](https://learn.microsoft.com/microsoft-365/copilot/discovery-setting-ai-experiences) |
-| Manage Copilot Credits (usage-based billing) | [https://learn.microsoft.com/microsoft-365/copilot/usage-based-billing-manage-copilot-credits](https://learn.microsoft.com/microsoft-365/copilot/usage-based-billing-manage-copilot-credits) |
+| Managing AI experiences enabled by usage-based billing | [https://learn.microsoft.com/en-us/microsoft-365/copilot/discovery-setting-ai-experiences](https://learn.microsoft.com/en-us/microsoft-365/copilot/discovery-setting-ai-experiences) |
+| Manage Copilot Credits (usage-based billing) | [https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits](https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits) |
 
 ---
 
@@ -110,15 +110,15 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 
 | Topic | URL |
 |-------|-----|
-| Microsoft Scout (Frontier) overview | [https://learn.microsoft.com/microsoft-scout/overview](https://learn.microsoft.com/microsoft-scout/overview) |
-| Get started with Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/get-started](https://learn.microsoft.com/microsoft-scout/get-started) |
-| Microsoft Scout admin access overview | [https://learn.microsoft.com/microsoft-scout/admin-access-overview](https://learn.microsoft.com/microsoft-scout/admin-access-overview) |
-| Set up Microsoft Scout with Intune | [https://learn.microsoft.com/microsoft-scout/admin-intune-setup](https://learn.microsoft.com/microsoft-scout/admin-intune-setup) |
-| Manage admin controls in Intune for Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/manage-group-policy](https://learn.microsoft.com/microsoft-scout/manage-group-policy) |
-| Use Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/use-microsoft-scout](https://learn.microsoft.com/microsoft-scout/use-microsoft-scout) |
-| Microsoft Scout FAQ | [https://learn.microsoft.com/microsoft-scout/faq](https://learn.microsoft.com/microsoft-scout/faq) |
-| Responsible AI overview for Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-overview](https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-overview) |
-| Responsible AI FAQ for Microsoft Scout | [https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-faq](https://learn.microsoft.com/microsoft-scout/microsoft-scout-responsible-ai-faq) |
+| Microsoft Scout (Frontier) overview | [https://learn.microsoft.com/en-us/microsoft-scout/overview](https://learn.microsoft.com/en-us/microsoft-scout/overview) |
+| Get started with Microsoft Scout | [https://learn.microsoft.com/en-us/microsoft-scout/get-started](https://learn.microsoft.com/en-us/microsoft-scout/get-started) |
+| Microsoft Scout admin access overview | [https://learn.microsoft.com/en-us/microsoft-scout/admin-access-overview](https://learn.microsoft.com/en-us/microsoft-scout/admin-access-overview) |
+| Set up Microsoft Scout with Intune | [https://learn.microsoft.com/en-us/microsoft-scout/admin-intune-setup](https://learn.microsoft.com/en-us/microsoft-scout/admin-intune-setup) |
+| Manage admin controls in Intune for Microsoft Scout | [https://learn.microsoft.com/en-us/microsoft-scout/manage-group-policy](https://learn.microsoft.com/en-us/microsoft-scout/manage-group-policy) |
+| Use Microsoft Scout | [https://learn.microsoft.com/en-us/microsoft-scout/use-microsoft-scout](https://learn.microsoft.com/en-us/microsoft-scout/use-microsoft-scout) |
+| Microsoft Scout FAQ | [https://learn.microsoft.com/en-us/microsoft-scout/faq](https://learn.microsoft.com/en-us/microsoft-scout/faq) |
+| Responsible AI overview for Microsoft Scout | [https://learn.microsoft.com/en-us/microsoft-scout/microsoft-scout-responsible-ai-overview](https://learn.microsoft.com/en-us/microsoft-scout/microsoft-scout-responsible-ai-overview) |
+| Responsible AI FAQ for Microsoft Scout | [https://learn.microsoft.com/en-us/microsoft-scout/microsoft-scout-responsible-ai-faq](https://learn.microsoft.com/en-us/microsoft-scout/microsoft-scout-responsible-ai-faq) |
 
 ---
 
@@ -227,7 +227,7 @@ Use the current DSPM for AI overview as the primary reference; the classic AI hu
 | Agent management in Microsoft 365 admin center | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview?view=o365-worldwide) |
 | Agent registry in Microsoft 365 admin center | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry?view=o365-worldwide) |
 | Agent settings in Microsoft 365 admin center | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-settings?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-settings?view=o365-worldwide) |
-| Microsoft Agent 365 registry sync | [https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-registry](https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-registry) |
+| Microsoft Agent 365 registry sync | [https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms](https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms) |
 | Manage agents in Microsoft 365 | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide) |
 | Microsoft 365 Copilot agent governance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps) |
 | Copilot agent security and compliance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security) |
@@ -293,7 +293,7 @@ Use the current DSPM for AI overview as the primary reference; the classic AI hu
 | Manage sharing settings | [https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off](https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off) |
 | Restricted SharePoint Search | [https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search](https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search) |
 | SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/advanced-management](https://learn.microsoft.com/en-us/sharepoint/advanced-management) |
-| Get ready for Copilot with SharePoint Advanced Management | [https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management](https://learn.microsoft.com/en-us/sharepoint/get-ready-copilot-sharepoint-advanced-management) |
+| Get ready for Copilot with SharePoint Advanced Management | [https://learn.microsoft.com/en-us/microsoft-365/copilot/get-ready-copilot-sharepoint-advanced-management](https://learn.microsoft.com/en-us/microsoft-365/copilot/get-ready-copilot-sharepoint-advanced-management) |
 | Data access governance reports | [https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports](https://learn.microsoft.com/en-us/sharepoint/data-access-governance-reports) |
 | Agent insights report in SharePoint | [https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents](https://learn.microsoft.com/en-us/sharepoint/insights-on-sharepoint-agents) |
 | Copilot in SharePoint (preview) | [https://learn.microsoft.com/en-us/sharepoint/copilot-in-sharepoint-get-started](https://learn.microsoft.com/en-us/sharepoint/copilot-in-sharepoint-get-started) |
