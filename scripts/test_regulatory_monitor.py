@@ -1536,6 +1536,25 @@ def test_finra_listing_http_failure_fails_closed_without_state_advance(
     )
 
 
+def test_finra_listing_rate_limit_failure_fails_closed_without_state_advance(
+    monkeypatch,
+    caplog,
+):
+    _assert_finra_listing_failure_does_not_advance_state(
+        monkeypatch,
+        caplog,
+        fetch_result={
+            "url": regulatory_monitor.FINRA_NOTICES_URL,
+            "status_code": 429,
+            "content": "",
+            "final_url": regulatory_monitor.FINRA_NOTICES_URL,
+            "was_redirected": False,
+            "error": "HTTP 429 rate limit persisted after 3 attempts (waited 35s)",
+        },
+        expected_message="status 429",
+    )
+
+
 def test_finra_listing_parse_failure_fails_closed_without_state_advance(
     monkeypatch,
     caplog,

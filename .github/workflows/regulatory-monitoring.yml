@@ -9,6 +9,7 @@ on:
     paths:
       - 'scripts/regulatory_monitor.py'
       - 'scripts/monitoring_shared.py'
+      - 'scripts/test_monitoring_shared_fetch_page.py'
       - 'scripts/config/monitoring-config.yaml'
       - 'scripts/test_regulatory_monitor.py'
       - 'scripts/test_regulatory_monitoring_workflow.py'
@@ -47,7 +48,7 @@ jobs:
         run: pip install -r scripts/requirements.txt pytest
 
       - name: Run regulatory monitor tests (classifier + config regression)
-        run: python -m pytest scripts/test_regulatory_monitor.py scripts/test_regulatory_monitoring_workflow.py -v
+        run: python -m pytest scripts/test_regulatory_monitor.py scripts/test_regulatory_monitoring_workflow.py scripts/test_monitoring_shared_fetch_page.py -v
 
       - name: Run Regulatory Monitor (PR smoke, dry-run)
         run: python scripts/regulatory_monitor.py --dry-run
