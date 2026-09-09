@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-08-25T00:00:00Z",
+  "generatedAt": "2026-09-09T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -453,7 +453,7 @@
       "tier": "Baseline",
       "title": "Control 2.16: Federated Copilot Connector and Model Context Protocol (MCP) Governance",
       "path": "docs/controls/pillar-2-security/2.16-federated-connector-mcp-governance.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-09-09",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P",

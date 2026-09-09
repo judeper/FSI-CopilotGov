@@ -7,7 +7,7 @@ Common issues and resolution steps for federated connector inventory, scoping, a
 ### Issue 1: New Federated Connectors Appear Without Notice
 
 - **Symptoms:** Inventory pulls reveal connectors that were not previously approved.
-- **Resolution:** Treat the new connector as un-vetted; restrict it to no users until [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md) clears the vendor. Subscribe to the M365 message center for advance notice of upcoming connector rollouts.
+- **Resolution:** Review **Agents > Settings > Allowed agent types** to confirm the approved publisher-category posture, then set the new connector's allowed-user scope under **Copilot connectors > Your connections** to **No users** until [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md) clears the vendor. Connector visibility in the administrator catalog does not by itself mean users can access it. Subscribe to the M365 message center for connector rollout notices.
 
 ### Issue 2: Users Authenticate Personal Accounts to a Connector
 
@@ -29,13 +29,20 @@ Common issues and resolution steps for federated connector inventory, scoping, a
 - **Symptoms:** The third-party register shows a vendor reassessment past its scheduled date.
 - **Resolution:** Restrict the connector to no users until the reassessment completes, capture the temporary restriction in the evidence workspace, and reinstate after sign-off.
 
+### Issue 6: The Retired PowerShell Toggle Conflicts with the Portal
+
+- **Symptoms:** Historical `Set-FederatedConnectorToggle` output indicates connectors were disabled, but **Allowed agent types** or connector-specific access settings show a different posture.
+- **Resolution:** Treat the current portal settings and controlled end-user test as authoritative evidence. Microsoft retired the command-line toggle on **August 25, 2026**. If the tenant received a Message Center post directing administrators to reapply the prior choice, follow that tenant-specific window and retain the notice with the change evidence; do not infer a universal reapplication deadline.
+
 ## Diagnostic Steps
 
-1. Snapshot the current connector posture and compare to the prior baseline.
-2. Pull federated sign-in records for the review period and filter for non-corporate identities.
-3. Cross-check audit-log operations against the published Microsoft operation set.
-4. Run a controlled DLP test prompt against the connector returning a known keyword.
-5. Reconcile scoped-group membership against the access-decision record.
+1. Capture **Allowed agent types** and compare the publisher-category posture to the approved baseline, including the effect on non-connector agents and apps.
+2. Capture each connector's allowed-user scope and **Staged rollout** groups from **Copilot connectors > Your connections**.
+3. Run controlled approved-user and unapproved-user tests; do not use administrator catalog visibility or retired-toggle output as proof of effective access.
+4. Pull federated sign-in records for the review period and filter for non-corporate identities.
+5. Cross-check audit-log operations against the published Microsoft operation set.
+6. Run a controlled DLP test prompt against the connector returning a known keyword.
+7. Reconcile scoped-group membership against the access-decision record.
 
 ## Escalation
 
