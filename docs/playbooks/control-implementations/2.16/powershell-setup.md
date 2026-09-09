@@ -21,7 +21,7 @@ Before running the supplemental scripts, capture:
 1. The saved **Allowed agent types** publisher-category settings, including the reviewer's assessment of their effect on other agents and apps.
 2. Each in-scope connector's enabled state, allowed-user scope, and **Staged rollout** groups from **Copilot connectors > Your connections**.
 3. For tenants that received a Message Center reapplication notice after previously using the cmdlet, the tenant-specific notice and evidence that the choice was reapplied within that notice's window.
-4. A controlled end-user access test for approved and unapproved users. Connector inventory or administrator catalog visibility alone does not prove effective access.
+4. Controlled access tests showing that approved users can connect only within their source-system permissions and unapproved users cannot connect or invoke the connector. Connector inventory or administrator catalog visibility alone does not prove effective access.
 
 ## Script Flow
 

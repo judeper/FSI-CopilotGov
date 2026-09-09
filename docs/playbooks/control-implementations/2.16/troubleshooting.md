@@ -38,7 +38,7 @@ Common issues and resolution steps for federated connector inventory, scoping, a
 
 1. Capture **Allowed agent types** and compare the publisher-category posture to the approved baseline, including the effect on non-connector agents and apps.
 2. Capture each connector's allowed-user scope and **Staged rollout** groups from **Copilot connectors > Your connections**.
-3. Run controlled approved-user and unapproved-user tests; do not use administrator catalog visibility or retired-toggle output as proof of effective access.
+3. Run controlled approved-user, unapproved-user, and source-permission tests; do not use administrator catalog visibility or retired-toggle output as proof of effective access.
 4. Pull federated sign-in records for the review period and filter for non-corporate identities.
 5. Cross-check audit-log operations against the published Microsoft operation set.
 6. Run a controlled DLP test prompt against the connector returning a known keyword.

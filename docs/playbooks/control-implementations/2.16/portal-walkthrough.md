@@ -27,7 +27,7 @@ Open **Copilot connectors > Your connections** and capture the current list of f
 
 ### Step 2: Set the tenant-wide publisher-category posture
 
-Review **Agents > Settings > Allowed agent types**. Microsoft documents using the Microsoft-published and external-publisher category settings to govern whether federated connectors in those categories are enabled by default, including future connectors. These settings also affect agents and apps in the same publisher categories, so document the broader tenant impact before changing them.
+Review **Agents > Settings > Allowed agent types**. Microsoft documents using the Microsoft-published and external-publisher category settings to govern whether federated connectors in those categories are enabled by default, including future connectors. These settings also affect agents and apps in the same publisher categories, so document the broader tenant impact before changing them. Disabling the connector category automatically sets existing connectors' allowed-user scope to **No users**; preserve the current approved assignments before the change so any later Recommended-level exceptions can be reassigned deliberately.
 
 Tenants that previously used `Set-FederatedConnectorToggle` may receive a Message Center post with a tenant-specific window to reapply the choice in this UX. The command-line toggle retired on **August 25, 2026**; do not use its output as evidence of current effective access or assume a universal reapplication deadline.
 
