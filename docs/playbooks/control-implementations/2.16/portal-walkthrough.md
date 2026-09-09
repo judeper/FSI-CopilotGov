@@ -13,8 +13,9 @@ Step-by-step governance workflow for inventorying federated connectors, scoping 
 
 | Portal | Path | Why it matters |
 |--------|------|----------------|
-| Microsoft 365 Admin Center | Copilot > Settings > Connectors / Integrations | Tenant-level enablement and per-connector scoping for federated connectors |
-| Microsoft 365 Admin Center | Copilot > Agents and connectors inventory | Discovery of which federated connectors are available and which are user-authenticated |
+| Microsoft 365 Admin Center | Agents > Settings > Allowed agent types | Tenant-wide publisher-category policy for Microsoft-published and external-publisher agents, apps, and connectors |
+| Microsoft 365 Admin Center | Copilot connectors > Your connections | Connector-specific enabled state, allowed-user scope, and staged rollout |
+| Microsoft 365 Admin Center | Agents > Tools | Separate inventory, availability, blocking, and approval workflow for MCP servers used by agents |
 | Microsoft Entra admin center | Enterprise applications | Captures user-credential authentications to third-party services |
 | Microsoft Purview portal | Audit | Federated connector invocation events and sign-in records |
 
@@ -22,21 +23,31 @@ Step-by-step governance workflow for inventorying federated connectors, scoping 
 
 ### Step 1: Inventory the federated connector catalog
 
-Open the M365 Admin Center connector / integrations surface and capture the current list of federated (MCP) connectors available to the tenant. Connectors are commonly enabled by default — record the default state and the per-connector posture.
+Open **Copilot connectors > Your connections** and capture the current list of federated connectors available to administrators. Record each connector's publisher, enabled state, allowed-user scope, and any **Staged rollout** group assignment. Administrative catalog visibility is inventory evidence; it does not by itself prove that end users can access a connector.
 
-### Step 2: Decide enablement posture per connector
+### Step 2: Set the tenant-wide publisher-category posture
 
-For each connector, decide whether to permit, restrict to a named group, or disable. For FSI tenants, default-enabled connectors that route to consumer-grade or unvetted services should be restricted until vendor risk has cleared them under [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md).
+Review **Agents > Settings > Allowed agent types**. Microsoft documents using the Microsoft-published and external-publisher category settings to govern whether federated connectors in those categories are enabled by default, including future connectors. These settings also affect agents and apps in the same publisher categories, so document the broader tenant impact before changing them. Disabling the connector category automatically sets existing connectors' allowed-user scope to **No users**; preserve the current approved assignments before the change so any later Recommended-level exceptions can be reassigned deliberately.
 
-### Step 3: Address the user-credential authentication pattern
+Tenants that previously used `Set-FederatedConnectorToggle` may receive a Message Center post with a tenant-specific window to reapply the choice in this UX. The command-line toggle retired on **August 25, 2026**; do not use its output as evidence of current effective access or assume a universal reapplication deadline.
+
+### Step 3: Decide connector-specific access
+
+For each connector, decide whether to permit, restrict to a named group, or set the allowed-user scope to **No users**. Use **Staged rollout** where available for approved pilots. For FSI tenants, connectors that route to consumer-grade or unvetted services should remain unavailable to users until vendor risk has cleared them under [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md).
+
+### Step 4: Address the user-credential authentication pattern
 
 Document that federated connectors authenticate with end-user credentials (delegated) rather than admin-managed service principals. Update the Acceptable Use guidance to clarify whether users may authenticate personal accounts (e.g., personal Google or Notion) to a federated connector, and reflect that decision in conditional-access scope.
 
-### Step 4: Wire DLP and audit-log review into the operating model
+### Step 5: Maintain the separate MCP server workflow
+
+Use **Agents > Tools** to inventory and block MCP servers available to agents. Review registration requests, declared tools, publisher details, and requested Microsoft Entra permissions through the MCP approval process documented in the parent control. Keep this evidence separate from federated connector publisher-category and allowed-user settings.
+
+### Step 6: Wire DLP and audit-log review into the operating model
 
 Federated connector responses are evaluated by DLP at the response layer, not at ingestion. Confirm that current DLP policies cover Copilot interactions and that audit-log review includes federated connector invocation events on the governance cadence.
 
-### Step 5: Establish ongoing third-party monitoring
+### Step 7: Establish ongoing third-party monitoring
 
 Federated connector vendors are third parties under OCC Bulletin 2023-17. Re-assess each enabled connector vendor on the firm's third-party monitoring cadence and capture whether the vendor's authentication, data handling, or pricing model has changed.
 
@@ -44,7 +55,7 @@ Federated connector vendors are third parties under OCC Bulletin 2023-17. Re-ass
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Inventory all federated connectors and disable any whose vendor has not cleared third-party risk review. |
+| **Baseline** | Disable all federated connector access: review the tenant-wide publisher-category policy, inventory all federated connectors, and set every connector's allowed-user scope to **No users**. |
 | **Recommended** | Restrict federated connectors to named Entra groups, prohibit personal-account authentication on regulated workstreams, and review invocation audit logs monthly. |
 | **Regulated** | All Recommended controls plus: prohibit federated connectors that route customer NPI outside approved data residency boundaries, and require quarterly third-party attestation per enabled vendor. |
 

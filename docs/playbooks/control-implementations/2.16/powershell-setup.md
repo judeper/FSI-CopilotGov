@@ -1,6 +1,6 @@
 # Control 2.16: Federated Copilot Connector and MCP Governance - PowerShell Setup
 
-Automation workflow for inventorying federated connectors, capturing per-connector enablement state, and pulling invocation and authentication audit evidence.
+Automation workflow for collecting supplemental federated connector inventory, invocation, authentication, and group-membership evidence. Current effective-access evidence must also include the Microsoft 365 admin center settings described below.
 
 ## Prerequisites
 
@@ -12,9 +12,20 @@ Automation workflow for inventorying federated connectors, capturing per-connect
 
 > **Important:** Federated connector and MCP surface APIs continue to evolve. Validate endpoint and operation names against the current Microsoft Learn references before automating.
 
+> **Retired toggle:** Microsoft retired `Set-FederatedConnectorToggle` on **August 25, 2026**. Do not run it to configure or verify federated connector access, and do not accept historical cmdlet output as current-state evidence. Use **Agents > Settings > Allowed agent types** for the tenant-wide publisher-category posture and **Copilot connectors > Your connections** for connector-specific allowed-user scope and staged rollout.
+
+## Required Portal Evidence
+
+Before running the supplemental scripts, capture:
+
+1. The saved **Allowed agent types** publisher-category settings, including the reviewer's assessment of their effect on other agents and apps.
+2. Each in-scope connector's enabled state, allowed-user scope, and **Staged rollout** groups from **Copilot connectors > Your connections**.
+3. For tenants that received a Message Center reapplication notice after previously using the cmdlet, the tenant-specific notice and evidence that the choice was reapplied within that notice's window.
+4. Controlled access tests showing that approved users can connect only within their source-system permissions and unapproved users cannot connect or invoke the connector. Connector inventory or administrator catalog visibility alone does not prove effective access.
+
 ## Script Flow
 
-### Script 1: Inventory tenant connector posture
+### Script 1: Collect supplemental connector inventory
 
 ```powershell
 Connect-MgGraph -Scopes "Application.Read.All","Directory.Read.All","AuditLog.Read.All" -NoWelcome
@@ -26,6 +37,8 @@ $connectors.value |
   Select-Object id, displayName, type, authenticationMode, defaultEnabled, scopedGroupIds |
   Export-Csv .\artifacts\2.16\connector-posture.csv -NoTypeInformation
 ```
+
+Treat this export as a supplemental inventory only. Beta API fields can change and do not replace the portal record of **Allowed agent types**, connector-specific allowed-user scope, or controlled end-user testing.
 
 ### Script 2: Capture user-credential authentications to federated services
 
@@ -83,7 +96,8 @@ Compress-Archive -Path .\artifacts\2.16\* `
 
 | Task | Cadence | Notes |
 |------|---------|-------|
-| Connector posture snapshot | Monthly | Captures default-enabled changes Microsoft introduces |
+| Portal access-policy capture | Monthly and after policy changes | Captures **Allowed agent types**, connector allowed-user scopes, and staged groups |
+| Supplemental connector inventory | Monthly | Detects catalog changes for reconciliation; does not prove effective access |
 | Sign-in and invocation audit pull | Weekly | Detects authentication patterns to unsanctioned services |
 | Scoped-group membership reconciliation | Quarterly | Aligns scope to vendor-risk decisions |
 | Vendor reassessment | Annually or per third-party policy | Per OCC Bulletin 2023-17 lifecycle expectations |
