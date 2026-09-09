@@ -2244,8 +2244,10 @@ AUTHORED: dict[str, dict] = {
         "yesBar": (
             "Federated connectors and MCP endpoints are subject to a "
             "documented approval process, maintained in an allow-list, and "
-            "reviewed on a documented cadence. Each endpoint has a data-flow "
-            "assessment and named owner."
+            "reviewed on a documented cadence. Allowed agent types, "
+            "connector-specific allowed-user scope, staged rollout, and "
+            "controlled access tests match the approved posture. Each "
+            "endpoint has a data-flow assessment and named owner."
         ),
         "partialBar": (
             "An approval process exists but the allow-list is incomplete, "
@@ -2258,13 +2260,26 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "Microsoft 365 admin center",
-                "path": "Settings > Integrated apps",
-                "url": "https://admin.microsoft.com/AdminPortal/Home#/Settings/IntegratedApps",
+                "path": "Agents > Settings > Allowed agent types",
+                "url": "https://admin.microsoft.com",
+            },
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Copilot connectors > Your connections",
+                "url": "https://admin.microsoft.com",
+            },
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Agents > Tools",
+                "url": "https://admin.microsoft.com",
             },
         ],
         "verifyPowerShell": "",
         "evidenceExpected": [
             "Federated connector and MCP endpoint allow-list",
+            "Allowed agent types publisher-category settings",
+            "Connector allowed-user and staged-rollout settings",
+            "Controlled approved and unapproved user access test",
             "Approval workflow documentation",
             "Data-flow assessment per endpoint",
             "Review cadence and most recent review date",
@@ -2281,8 +2296,10 @@ AUTHORED: dict[str, dict] = {
                 "documented approval and review?"
             ),
             "followUp": (
-                "Request the allow-list and approval records. Verify "
-                "data-flow assessments are current."
+                "Request the allow-list, Allowed agent types settings, "
+                "connector-specific access assignments, controlled access "
+                "test, and approval records. Verify data-flow assessments "
+                "are current."
             ),
             "timeBudgetMinutes": 6,
         },

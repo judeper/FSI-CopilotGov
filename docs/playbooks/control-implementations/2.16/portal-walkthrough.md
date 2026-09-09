@@ -50,7 +50,7 @@ Federated connector vendors are third parties under OCC Bulletin 2023-17. Re-ass
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Review the tenant-wide publisher-category policy, inventory all federated connectors, and set each connector whose vendor has not cleared third-party risk review to **No users**. |
+| **Baseline** | Disable all federated connector access: review the tenant-wide publisher-category policy, inventory all federated connectors, and set every connector's allowed-user scope to **No users**. |
 | **Recommended** | Restrict federated connectors to named Entra groups, prohibit personal-account authentication on regulated workstreams, and review invocation audit logs monthly. |
 | **Regulated** | All Recommended controls plus: prohibit federated connectors that route customer NPI outside approved data residency boundaries, and require quarterly third-party attestation per enabled vendor. |
 

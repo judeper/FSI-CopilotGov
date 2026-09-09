@@ -96,6 +96,15 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "sectorYesBar",
         "facilitatorNotes",
     },
+    "2.16": {
+        # Replace the retired Integrated apps/toggle-era verification fields
+        # with the current publisher-category, connector-specific access, and
+        # controlled user-test evidence contract.
+        "yesBar",
+        "verifyIn",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
     "2.6": {
         # Force-apply the corrected web search navigation. The stale value in
         # controls.json points at a "Copilot > Settings > Web Content" node
