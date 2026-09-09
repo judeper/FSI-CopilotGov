@@ -2246,16 +2246,22 @@ AUTHORED: dict[str, dict] = {
             "documented approval process, maintained in an allow-list, and "
             "reviewed on a documented cadence. Allowed agent types, "
             "connector-specific allowed-user scope, staged rollout, and "
-            "controlled access tests match the approved posture. Each "
-            "endpoint has a data-flow assessment and named owner."
+            "controlled access tests match the approved posture. The "
+            "user-scoped authentication and source-system permission "
+            "boundary is documented and verified. Each endpoint has a "
+            "data-flow assessment and named owner."
         ),
         "partialBar": (
-            "An approval process exists but the allow-list is incomplete, "
-            "or review cadence is not documented."
+            "Governance exists, but one or more required elements are "
+            "incomplete: the allow-list, publisher-category settings, "
+            "connector-specific access scope, staged rollout, controlled "
+            "access testing, user-scoped authentication evidence, data-flow "
+            "assessment, ownership, or review cadence."
         ),
         "noBar": (
-            "No governance exists for federated connectors or MCP "
-            "endpoints."
+            "No documented governance exists for federated connectors or "
+            "MCP endpoints, or connector access is unrestricted without "
+            "approval and effective-access testing."
         ),
         "verifyIn": [
             {
@@ -2280,6 +2286,7 @@ AUTHORED: dict[str, dict] = {
             "Allowed agent types publisher-category settings",
             "Connector allowed-user and staged-rollout settings",
             "Controlled approved and unapproved user access test",
+            "User-scoped authentication and source-permission evidence",
             "Approval workflow documentation",
             "Data-flow assessment per endpoint",
             "Review cadence and most recent review date",
@@ -2298,8 +2305,9 @@ AUTHORED: dict[str, dict] = {
             "followUp": (
                 "Request the allow-list, Allowed agent types settings, "
                 "connector-specific access assignments, controlled access "
-                "test, and approval records. Verify data-flow assessments "
-                "are current."
+                "test, user-scoped authentication and source-permission "
+                "evidence, and approval records. Verify data-flow "
+                "assessments are current."
             ),
             "timeBudgetMinutes": 6,
         },

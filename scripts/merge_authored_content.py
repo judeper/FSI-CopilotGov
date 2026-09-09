@@ -101,6 +101,8 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         # with the current publisher-category, connector-specific access, and
         # controlled user-test evidence contract.
         "yesBar",
+        "partialBar",
+        "noBar",
         "verifyIn",
         "evidenceExpected",
         "facilitatorNotes",

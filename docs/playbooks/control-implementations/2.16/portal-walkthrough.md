@@ -15,6 +15,7 @@ Step-by-step governance workflow for inventorying federated connectors, scoping 
 |--------|------|----------------|
 | Microsoft 365 Admin Center | Agents > Settings > Allowed agent types | Tenant-wide publisher-category policy for Microsoft-published and external-publisher agents, apps, and connectors |
 | Microsoft 365 Admin Center | Copilot connectors > Your connections | Connector-specific enabled state, allowed-user scope, and staged rollout |
+| Microsoft 365 Admin Center | Agents > Tools | Separate inventory, availability, blocking, and approval workflow for MCP servers used by agents |
 | Microsoft Entra admin center | Enterprise applications | Captures user-credential authentications to third-party services |
 | Microsoft Purview portal | Audit | Federated connector invocation events and sign-in records |
 
@@ -38,11 +39,15 @@ For each connector, decide whether to permit, restrict to a named group, or set 
 
 Document that federated connectors authenticate with end-user credentials (delegated) rather than admin-managed service principals. Update the Acceptable Use guidance to clarify whether users may authenticate personal accounts (e.g., personal Google or Notion) to a federated connector, and reflect that decision in conditional-access scope.
 
-### Step 5: Wire DLP and audit-log review into the operating model
+### Step 5: Maintain the separate MCP server workflow
+
+Use **Agents > Tools** to inventory and block MCP servers available to agents. Review registration requests, declared tools, publisher details, and requested Microsoft Entra permissions through the MCP approval process documented in the parent control. Keep this evidence separate from federated connector publisher-category and allowed-user settings.
+
+### Step 6: Wire DLP and audit-log review into the operating model
 
 Federated connector responses are evaluated by DLP at the response layer, not at ingestion. Confirm that current DLP policies cover Copilot interactions and that audit-log review includes federated connector invocation events on the governance cadence.
 
-### Step 6: Establish ongoing third-party monitoring
+### Step 7: Establish ongoing third-party monitoring
 
 Federated connector vendors are third parties under OCC Bulletin 2023-17. Re-assess each enabled connector vendor on the firm's third-party monitoring cadence and capture whether the vendor's authentication, data handling, or pricing model has changed.
 
