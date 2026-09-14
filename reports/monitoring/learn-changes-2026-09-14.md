@@ -1,0 +1,108 @@
+# Microsoft Learn Documentation Changes
+
+**Run Date:** 2026-09-14
+**Run Time:** 2026-09-14T16:03:17.796742+00:00
+**Total URLs Checked:** 165
+
+---
+
+## Executive Summary
+
+| Category | Count |
+|----------|-------|
+| CRITICAL Changes | 1 |
+
+---
+
+## Change Summary (Quick Scan)
+
+| # | URL | Classification | Affected Controls | Action Required |
+|---|-----|----------------|-------------------|-----------------|
+| 1 | audit-log-activities | CRITICAL | 3.1, 2.2, 2.13, 1.15 | Update portal-walkthrough |
+
+---
+
+## CRITICAL: Playbook Updates Required
+
+These changes affect step-by-step procedures and must be addressed.
+
+### 1. Audit log activities
+
+**URL:** https://learn.microsoft.com/en-us/purview/audit-log-activities
+**Section:** Audit and Retention
+**Classification:** CRITICAL (Deprecation notice)
+
+**Affected Controls:**
+- Control 3.1: Control 3.1: Copilot Interaction Audit Logging (Purview Unified Audit Log)
+  - File: `controls/pillar-3-compliance/3.1-copilot-audit-logging.md`
+- Control 2.2: Control 2.2: Sensitivity Labels and Copilot Content Classification
+  - File: `controls/pillar-2-security/2.2-sensitivity-labels-classification.md`
+- Control 2.13: Control 2.13: Plugin and Graph Connector Security Governance
+  - File: `controls/pillar-2-security/2.13-plugin-connector-security.md`
+- Control 1.15: Control 1.15: SharePoint Permissions Drift Detection
+  - File: `controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md`
+
+**Affected Playbooks:**
+- ℹ️ `playbooks/control-implementations/3.1/verification-testing.md` (HIGH)
+- ℹ️ `playbooks/control-implementations/3.1/powershell-setup.md` (HIGH)
+- ℹ️ `playbooks/control-implementations/2.13/powershell-setup.md` (HIGH)
+- ⚠️ `playbooks/control-implementations/2.13/portal-walkthrough.md` (CRITICAL)
+- ℹ️ `playbooks/control-implementations/4.15/powershell-setup.md` (HIGH)
+- ℹ️ `playbooks/control-implementations/4.14/powershell-setup.md` (HIGH)
+- ⚠️ `playbooks/control-implementations/1.15/portal-walkthrough.md` (CRITICAL)
+- ℹ️ `playbooks/control-implementations/1.15/powershell-setup.md` (HIGH)
+- ℹ️ `playbooks/control-implementations/1.15/troubleshooting.md` (HIGH)
+- ℹ️ `playbooks/control-implementations/1.15/verification-testing.md` (HIGH)
+- ℹ️ `playbooks/control-implementations/2.13/troubleshooting.md` (HIGH)
+- ℹ️ `playbooks/control-implementations/2.13/verification-testing.md` (HIGH)
+- ⚠️ `playbooks/control-implementations/2.2/portal-walkthrough.md` (CRITICAL)
+- ℹ️ `playbooks/control-implementations/2.2/powershell-setup.md` (HIGH)
+- ℹ️ `playbooks/control-implementations/2.2/troubleshooting.md` (HIGH)
+- ℹ️ `playbooks/control-implementations/2.2/verification-testing.md` (HIGH)
+- ⚠️ `playbooks/control-implementations/3.1/portal-walkthrough.md` (CRITICAL)
+- ℹ️ `playbooks/control-implementations/3.1/troubleshooting.md` (HIGH)
+- ℹ️ `playbooks/incident-and-risk/agent-behavioral-incident-playbook.md` (HIGH)
+
+**What Changed:**
+```diff
+--- +++ @@ -1334,6 +1334,9 @@ Create the cross tenant auth mapping
+ CreateCrossTenantAuthMapping
+ Create a user mapping for the cross tenant auth feature.
++Created AWS Databricks Catalog
++CreatedAWSDatabricksCatalog
++Created AWS Databricks Catalog is an AWSDatabricksCatalog activity which is generated when a Fabric AWS Databricks Catalog item is created, capturing the bound AWS Databricks workspace ConnectionId and the initial MirroredScope (catalogs/schemas/tables selected for mirroring).
+ Created a Digital Operations Ontology Agent conversation
+ DigitalOperationsOntologyAgentConversationCreated
+ A user created a Digital Operations Ontology Agent conversation.
+@@ -1439,6 +1442,9 @@ Recover an artifact
+ ArtifactRecovered
+ A user recovered a previously soft-deleted artifact, such as a gateway or gateway cluster member, restoring it to active state.
++Refreshed AWS Databricks Catalog Shortcuts
++RefreshedAWSDatabricksCatalogShortcuts
++Refreshed AWS Databricks Catalog shortcuts is an AWSDatabricksCatalog activity which is generated when the refresh-catalog-metadata operation re-syncs the already-mirrored shortcuts against the underlying AWS Databricks Unity Catalog.
+ Retrieved artifact's Logical Id
+ ArtifactLogicalIdRetrieved
+ Retrieved artifact's Logical Id.
+@@ -1490,6 +1496,9 @@ Updated authorization setting in GraphQL
+ UpdatedAuthorizationSettingGraphQL
+ Updated authorization setting in GraphQL.
++Updated AWS Databricks Catalog Definition
++UpdatedAWSDatabricksCatalogDefinition
++Updated AWS Databricks Catalog definition is an AWSDatabricksCatalog activity which is generated when the item's Databricks workspace connection or mirrored scope (catalogs/schemas/tables) is updated via the update-item-definition API.
+ Updated connection role assignment by tenant admin
+ UpdatedGatewayDatasourceByAdmin
+ A tenant admin add or updates the connection role assignment.
+@@ -2579,6 +2588,46 @@ URL Click Events
+ ThreatIntelligenceUrl
+ Safe links time-of-block and block override events f
+```
+
+---
+
+## Errors
+
+No errors detected.
+
+---
+
+*Generated by `scripts/learn_monitor.py` (unified monitoring framework)*
