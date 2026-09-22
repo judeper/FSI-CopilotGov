@@ -60,7 +60,7 @@ Write-Host "Content retention policy created: 6-year retention" -ForegroundColor
 # Create Teams retention policy to cover meeting recaps and chat summaries
 New-RetentionCompliancePolicy `
     -Name "FSI-Copilot-Teams-Retention" `
-    -Comment "Retains Teams messages including Copilot meeting recaps and summaries" `
+    -Comment "Retains native Teams chat and channel messages; Copilot meeting recaps require Microsoft Copilot experiences policy" `
     -TeamsChannelLocation "All" `
     -TeamsChatLocation "All" `
     -Enabled $true

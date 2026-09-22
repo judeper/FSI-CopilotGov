@@ -36,7 +36,7 @@ The **Microsoft Copilot experiences** location is the primary retention target f
 7. Choose **Retain items for the specified period** with **Do nothing** at the end (retain only).
 8. Click **Submit**.
 
-**Note on related location categories:** You will also see **Enterprise AI Apps** and **Other AI Apps** in the location selector. Enterprise AI Apps covers Copilot Studio agents and Power Platform integrations; Other AI Apps covers third-party AI tools. For M365 Copilot deployments, configure retention policies targeting the **Microsoft Copilot experiences** location — the other categories are outside M365 Copilot scope and should be assessed separately for broader AI governance programs.
+**Note on related location categories:** You will also see **Enterprise AI Apps** and **Other AI Apps** in the location selector. Current Microsoft Learn documentation lists Copilot Studio under **Microsoft Copilot experiences**. **Enterprise AI Apps** covers Entra-registered AI apps, ChatGPT Enterprise, and Microsoft Foundry; **Other AI Apps** covers third-party AI tools detected through browser or network activity. For M365 Copilot and Copilot Studio deployments covered by this framework, configure retention policies targeting the **Microsoft Copilot experiences** location. Assess the other AI app categories separately for broader AI governance programs.
 
 ### Step 3: Create Retention Policy for Copilot-Generated Documents
 
@@ -70,21 +70,21 @@ After creating the Microsoft Copilot experiences retention policy:
 3. Mark as a regulatory record if required by your compliance framework.
 4. Publish the label to relevant SharePoint sites, OneDrive locations, and the Microsoft Copilot experiences location.
 
-### Step 6: Configure Priority Cleanup for AI-Generated Drafts (Recommended Tier)
+### Step 6: Evaluate Priority Cleanup for Documented Storage Remediation (Recommended Tier)
 
 **Portal:** Microsoft Purview portal
-**Path:** purview.microsoft.com > Data lifecycle management > Retention policies > New retention policy
+**Path:** purview.microsoft.com > Data lifecycle management > Priority cleanup
 
-Priority cleanup allows earlier disposition of Copilot-generated draft content that was never finalized. This step is appropriate only for Recommended-tier or higher configurations; Baseline-tier deployments should use standard retention.
+Priority cleanup is a separate Data Lifecycle Management feature that can override existing retention settings or eDiscovery holds for selected SharePoint and OneDrive content after simulation and approval. Microsoft documents Copilot-related use cases such as stale Teams meeting recordings/transcripts and departed-user Preservation Hold Library cleanup. It is not documented as a detector for unsent Copilot drafts or generic Copilot-generated content signatures. Baseline-tier deployments should use standard retention.
 
-1. Create a policy named `FSI-Copilot-Draft-Priority-Cleanup`.
-2. Select **OneDrive accounts** as the location — scope to personal OneDrive only (not shared drives).
-3. Configure adaptive scope (if available) to target documents created by Copilot that have not been shared or sent.
-4. Set retention period to **90 days** with **Delete items automatically** after the period.
-5. Add a keyword condition to identify Copilot-generated unsent drafts — consult your records manager to define the appropriate conditions.
-6. Document the scope decision in the firm's records management schedule with the regulatory rationale.
+1. Confirm the operator has the **Priority Cleanup Admin** role.
+2. Define the narrow business scenario, such as stale Teams meeting recordings/transcripts or departed-user Preservation Hold Library cleanup.
+3. Run the required simulation and review the item sample, affected holds, and any eDiscovery-hold dependencies.
+4. Confirm that no items marked as records or regulatory records are in scope; Priority cleanup cannot target them.
+5. Route the request through the required approval workflow, including eDiscovery Administrator approval when an eDiscovery hold applies.
+6. Document the scope decision, simulation results, approvals, and regulatory rationale in the firm's records management schedule.
 
-**Important:** Do not apply priority cleanup to documents that have been shared, sent, or saved to shared drives. The scope must be narrow enough to exclude any content that could constitute a business record.
+**Important:** Do not apply Priority cleanup to documents that have been shared, sent, saved to shared drives, declared as records, or otherwise treated as business records unless compliance/legal has approved the exception. If the firm needs shorter retention for unsent Copilot drafts, implement and document a standard retention/deletion policy rather than labeling it as a Microsoft-documented Priority cleanup scenario.
 
 ### Step 7: Verify Threaded Summary Retention Coverage
 
@@ -94,7 +94,7 @@ Priority cleanup allows earlier disposition of Copilot-generated draft content t
 Threaded Copilot summaries (meeting recaps, conversation summaries) are retained independently from their source content. Verify complete coverage:
 
 1. Confirm the **Microsoft Copilot experiences** retention policy is active — this location covers Copilot-generated meeting recaps and summaries.
-2. Confirm the **Teams** retention policy is active — this location covers Teams channel and chat messages including embedded Copilot content.
+2. Confirm the **Teams** retention policy is active — this location covers native Teams channel and chat messages. Copilot prompts, responses, recaps, and threaded summaries require the Microsoft Copilot experiences policy.
 3. Run a test: delete a Teams meeting transcript and verify that the Copilot-generated meeting recap is still present and covered by the Microsoft Copilot experiences retention policy.
 4. Document the verification outcome in the firm's retention coverage log.
 

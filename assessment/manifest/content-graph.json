@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-08-25T00:00:00Z",
+  "generatedAt": "2026-09-22T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -523,7 +523,7 @@
       "tier": "Recommended",
       "title": "Control 3.4: Communication Compliance Monitoring",
       "path": "docs/controls/pillar-3-compliance/3.4-communication-compliance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-22",
       "regulatory_references": [
         "FINRA 3110 (Supervision)",
         "FINRA 2210 (Communications with the Public)",

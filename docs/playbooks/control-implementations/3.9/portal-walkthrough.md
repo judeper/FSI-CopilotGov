@@ -41,11 +41,13 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 **Path:** Solutions > Data loss prevention > Policies > Create policy
 
 1. Create a DLP policy named "FSI-AI-Disclosure-Enforcement".
-2. Add a condition that detects outbound emails or documents that:
-   - Were created or modified using Copilot (detected via metadata or sensitivity label)
-   - Are sent to external recipients
-   - Do not contain the required AI disclosure statement
-3. Set the action to **Block with override** — requiring the sender to acknowledge AI disclosure requirements.
+2. Add conditions using supported Purview primitives, such as:
+   - The **AI-Assisted Content** sensitivity label or approved content markings
+   - Sensitive information types, trainable classifiers, or firm keyword dictionaries that identify regulated client-facing content
+   - External recipients or external sharing locations
+   - Missing required AI disclosure statement
+3. Do not assume a native "AI-generated content" DLP condition or generic Copilot-created metadata unless verified in the tenant.
+4. Set the action to **Block with override** — requiring the sender to acknowledge AI disclosure requirements.
 
 ### Step 4: Establish AI Disclosure Templates
 

@@ -5,7 +5,7 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 ## Prerequisites
 
 - **Role:** Purview Compliance Admin, Supervisory Principal
-- **License:** Microsoft 365 E5 or E5 Compliance add-on
+- **License:** Eligible Communication Compliance licensing, such as Microsoft Purview Suite (formerly Microsoft 365 E5 Compliance), Office 365 E5, or Office 365 E3 with the Advanced Compliance add-on
 - **Access:** Microsoft Purview portal, Microsoft 365 Admin Center
 
 ## Steps
