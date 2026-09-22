@@ -42,7 +42,25 @@ Using your organization's vendor risk assessment framework, complete the assessm
 - **Incident response:** What is Microsoft's AI incident response process?
 - **Contractual protections:** What SLAs, indemnification, and liability terms apply?
 
-### Step 4: Document Risk Findings and Mitigations
+### Step 4: Review AI Provider Settings and Terms
+
+**Portal:** Microsoft 365 Admin Center
+**Path:** Copilot > Settings > View all
+
+Review the provider paths separately and retain screenshots or exports showing the current setting and assigned users or groups:
+
+1. Open **AI providers operating as Microsoft subprocessors** and review Anthropic.
+   - Record whether standard Anthropic models are enabled and who can access them.
+   - Check separately for **Anthropic models with Data Retention**. These models require explicit opt-in and separate Anthropic terms because they operate outside the Microsoft subprocessor arrangement.
+2. Open **AI providers for other large language models** and review SpaceXAI.
+   - Confirm the legal terms were reviewed before enablement.
+   - Record the users or Entra security groups authorized to use the provider.
+3. For Copilot Studio use, confirm the corresponding external-model control is also enabled only in approved Power Platform environments.
+4. Reconcile each enabled provider and model category to the vendor inventory, data-flow map, and risk-acceptance record.
+
+Organizations should verify current terms and default states in Microsoft Learn before each approval because provider availability and model categories change over time.
+
+### Step 5: Document Risk Findings and Mitigations
 
 **Portal:** Internal GRC platform or risk register
 
@@ -52,7 +70,7 @@ Record all identified risks from the vendor assessment along with:
 - Additional mitigations required by the organization
 - Residual risk acceptance decisions with governance committee approval
 
-### Step 5: Establish Ongoing Monitoring
+### Step 6: Establish Ongoing Monitoring
 
 Set up ongoing vendor monitoring processes:
 - Subscribe to Microsoft 365 Message Center for service changes

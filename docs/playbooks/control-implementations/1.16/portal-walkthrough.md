@@ -37,7 +37,16 @@ Walk SharePoint sites considered for tuning input against the firm's data classi
 
 In the M365 Admin Center, enable Copilot Tuning at the tenant level only after Steps 1–3 are complete. Restrict access using a dedicated Entra security group rather than enabling for all users. Configure whether external open-source base models are permitted in line with the firm's third-party AI policy.
 
-### Step 5: Operationalize the request, approval, and supervision flow
+### Step 5: Record the Effective Base Model
+
+Before approving a tuned agent, record the effective base model, release type, and geography designation shown in the product and current Microsoft Learn documentation. As of September 22, 2026, Copilot Studio lists GPT-5.5 Chat as the standard-harness default; the default alias can change without the agent owner selecting a new named model.
+
+- Do not approve experimental or preview models for production use.
+- Route any cross-geo designation through the Control 2.7 residency review.
+- Treat a default-model upgrade or selected-model change as a revalidation trigger.
+- Apply separate provider approval when an external model is involved.
+
+### Step 6: Operationalize the request, approval, and supervision flow
 
 Define the standing review cadence (recommended weekly) for tuning requests. Each request should produce an evidence record covering business justification, data sources, intended use, approver decision, and the supervisor named for ongoing output review.
 

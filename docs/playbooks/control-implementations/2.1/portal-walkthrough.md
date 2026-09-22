@@ -26,7 +26,7 @@ These two types must be configured as separate DLP rules — they cannot be comb
 **Portal:** Microsoft Purview
 **Path:** Purview > Data Loss Prevention > Policies > Create Policy
 
-Access the DLP policy creation wizard. Two separate policies will be created for the two DLP policy types. Both use the "Microsoft 365 Copilot" location.
+Access the DLP policy creation wizard. The procedures below use the **Microsoft 365 Copilot and Copilot Chat** location. Selecting this location disables all other locations in that policy, so create separate policies for Exchange, SharePoint, OneDrive, Teams, or Devices.
 
 **Alternative access for default Copilot DLP policy:**
 **Path:** Microsoft 365 Admin Center > Copilot > Security
@@ -40,10 +40,10 @@ The MAC Security tab provides quick access to the Microsoft-deployed default Cop
 
 Configure the label-based response blocking policy:
 - **Name:** "FSI Copilot DLP — Label-Based Response Blocking"
-- **Locations:** Microsoft 365 Copilot (enable this location; optionally include Exchange, SharePoint, OneDrive for broader coverage)
+- **Locations:** Microsoft 365 Copilot and Copilot Chat
 - **Conditions:** "Content contains sensitivity label" — select Highly Confidential (all sub-labels)
-- **Actions:** Block Copilot from processing/returning the labeled content
-- **User notifications:** Enable with custom message: "This content is classified as Highly Confidential and cannot be accessed through Copilot"
+- **Actions:** Prevent Copilot from processing the labeled content
+- **User notifications:** Configure the available notification and validate its presentation in each supported surface. The labeled item can still appear as a citation even though Copilot does not use its content in the response.
 
 For the Recommended tier, extend conditions to include the Confidential — MNPI sub-label for information wall enforcement.
 
@@ -52,12 +52,14 @@ For the Recommended tier, extend conditions to include the Confidential — MNPI
 **Portal:** Microsoft Purview
 **Path:** Purview > DLP > Policies > Create > Custom Policy
 
-Configure a separate SIT-based prompt blocking policy. This policy scans what users type into Copilot, not what Copilot retrieves:
+Confirm the preview rollout has reached the tenant, then configure a separate SIT-based prompt blocking rule. This rule scans text users type directly into Copilot, not the contents of files uploaded with a prompt:
 - **Name:** "FSI Copilot DLP — SIT-Based Prompt Blocking"
-- **Locations:** Microsoft 365 Copilot interactions
+- **Locations:** Microsoft 365 Copilot and Copilot Chat
 - **Conditions:** Content contains sensitive information types (SSN, account numbers, credit card numbers, ABA routing numbers)
-- **Actions:** Block Copilot from responding to prompts matching conditions; show policy tip to user
-- **User notifications:** Enable with custom message explaining why the prompt was blocked
+- **Actions:** Prevent Copilot from processing content > Processing prompts
+- **User notifications:** Configure the available message and validate actual behavior. During preview, Word, Excel, and PowerPoint might block the interaction without clearly identifying organizational policy as the cause.
+
+Test only documented supported surfaces: Microsoft 365 Copilot, Copilot Chat, Word, Excel, and PowerPoint. Do not assume equivalent prompt-blocking behavior in Outlook, Teams, OneNote, or Loop.
 
 ### Step 4: Review and Configure the Default DLP Policy
 
@@ -93,7 +95,7 @@ Extend DLP coverage to Copilot interactions accessed through Microsoft Edge brow
 
 1. Navigate to Endpoint DLP settings
 2. Enable Microsoft Edge as a monitored browser
-3. Confirm the DLP policy includes browser-based Copilot surfaces
+3. Confirm Endpoint DLP and Copilot-location DLP responsibilities are documented separately for browser-based Copilot surfaces
 4. Verify Edge browser version meets minimum requirements for Endpoint DLP enforcement
 
 Edge DLP (GA September 2025) catches browser-based Copilot interactions not covered by the native M365 app DLP location.
@@ -134,9 +136,9 @@ For any new policy not yet in simulation mode, deploy in test mode first:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Enable the default DLP policy (simulation mode review); create Type 1 label-based policy for Highly Confidential content (audit mode); create Type 2 SIT-based policy for SSN and account numbers (audit mode) |
-| **Recommended** | Both policy types in enforcement; Edge DLP enabled; MNPI label conditions added to Type 1; custom FSI SITs (ABA routing, CUSIP) in Type 2; default policy transitioned from simulation to enforcement |
-| **Regulated** | Both types enforced with no override allowed for Highly Confidential/MNPI; custom SITs for all FSI-specific identifiers (CUSIP, ISIN, SWIFT, CRD); Edge DLP with Endpoint DLP for complete coverage; adaptive scoping for SharePoint DLP targeting Copilot grounding sources; Mac endpoint DLP verified for expanded file types; real-time alerting for policy matches; 4-hour review SLA for high-severity incidents |
+| **Baseline** | Review the default policy in simulation mode; create a Type 1 label-based rule for Highly Confidential content in audit mode; evaluate Type 2 SIT prompt blocking only after confirming tenant availability |
+| **Recommended** | Enforce validated Type 1 and available Type 2 rules; enable Edge/Endpoint DLP where required; add MNPI label conditions and custom FSI SITs; document the direct-upload inspection gap |
+| **Regulated** | Enforce validated controls with no override for Highly Confidential/MNPI; use custom SITs for FSI identifiers; maintain complementary endpoint and storage controls for direct uploads; configure real-time alerts and a 4-hour review SLA for high-severity incidents |
 
 ## Next Steps
 

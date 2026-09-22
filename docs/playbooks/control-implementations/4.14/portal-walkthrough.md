@@ -14,7 +14,10 @@ Step-by-step governance workflow for operating the five Copilot Studio agent lif
 | Portal | Path | Why it matters |
 |--------|------|----------------|
 | Microsoft Copilot Studio | Solutions > Agents | Authoring, testing, publishing, and versioning surface |
+| Microsoft Copilot Studio | Agent > Overview > Model | Primary-model selection and release-status evidence |
 | Microsoft 365 Admin Center | Copilot > Agents | Tenant view of published agents and their audience scope |
+| Microsoft 365 Admin Center | Copilot > Settings > View all | External AI provider approval |
+| Power Platform admin center | Environment > Settings > Features | Environment permission for preview/experimental and external models |
 | Microsoft Purview portal | Audit | Captures publishing, version, and lifecycle events |
 | Governance evidence repository | Workspace of record | Stores the agent register and stage-by-stage evidence |
 
@@ -28,19 +31,28 @@ Authoring begins only after the Control 1.10 intake decision is recorded. Captur
 
 Functional, prompt-injection, content-safety, and connector-boundary tests run in a non-production environment with a test plan and exit criteria. Tests passing is the entry condition for publishing — failing tests block the stage transition.
 
-### Step 3: Run the publishing approval workflow
+### Step 3: Review the Primary Model Before Publishing
+
+Open the agent's **Overview** page and record the effective primary model, release type, and cross-geo designation. As of September 22, 2026, GPT-5.5 Chat is the standard-harness default, but the **Default** alias can be upgraded over time.
+
+- Use a generally available model for production; experimental and preview models are for non-production evaluation.
+- Route any cross-geo model through the Control 2.7 residency review.
+- For external models, verify the Power Platform environment permits external models and the provider is enabled in the Microsoft 365 admin center.
+- Treat a selected-model or default-model change as a lifecycle change requiring risk review and regression testing.
+
+### Step 4: Run the publishing approval workflow
 
 A named approver validates that testing exited cleanly, that an owner of record is named, that audience scope is appropriate, and that any embedded extensibility components are governed under [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md). The approval record enters the agent register.
 
-### Step 4: Apply a versioning policy
+### Step 5: Apply a versioning policy
 
 Subsequent changes follow a documented versioning policy (recommended: semantic versioning). Each version produces a change-log entry, an approval entry, and a re-test result. Skipping the version record is a supervisory gap under FINRA Rule 3110.
 
-### Step 5: Run a deprecation playbook at end of life
+### Step 6: Run a deprecation playbook at end of life
 
 Agents reaching end of life follow a deprecation playbook covering user notice, migration guidance, impact assessment, and a final retirement record. Deprecated agents must be removed from runtime surfaces, not left dormant.
 
-### Step 6: Periodic lifecycle attestation
+### Step 7: Periodic lifecycle attestation
 
 Schedule a periodic attestation that every agent in the register has a current owner, a current lifecycle stage, and an in-period review record. Stale attestations are themselves an evidence gap.
 

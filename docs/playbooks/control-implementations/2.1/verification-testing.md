@@ -24,11 +24,11 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
   1. Upload a test document labeled "Highly Confidential" to a SharePoint site accessible to a test user
   2. As the test user, ask Copilot to summarize or reference the test document
   3. Verify Copilot does not include the document content in its response
-  4. Confirm a DLP policy tip is displayed (or block action fires in enforcement mode)
+  4. Capture the user message shown, if any; do not require a classic DLP policy tip because Copilot can instead display an organizational-policy message
   5. Confirm the match event is logged in the DLP incident report
   6. Clean up test data after verification
 - **Expected Result:** Copilot is blocked from surfacing the Highly Confidential document; event is logged
-- **Evidence:** Screenshot of Copilot response showing block/tip, and DLP incident record
+- **Evidence:** Screenshot showing the excluded-content behavior and any user message, plus the DLP incident record
 
 ### Test 3: SIT-Based Prompt Blocking (Type 2 Verification)
 
@@ -36,11 +36,21 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 - **Steps:**
   1. With the SIT-based prompt blocking policy active, type a prompt containing a test SSN pattern (000-00-0000) directly into Copilot
   2. Verify Copilot does not process the request — Copilot should be blocked from responding
-  3. Verify the user sees a policy tip explaining the prompt was blocked
+  3. Capture the user message shown. During preview, Word, Excel, and PowerPoint might not clearly identify organizational policy as the cause even when the response is blocked.
   4. Confirm the block event is recorded in DLP incident reports
   5. Verify the enforcement happens on the prompt side (before Copilot retrieves any content)
 - **Expected Result:** Copilot is blocked from responding to a prompt containing a sensitive data pattern
 - **Evidence:** Copilot response showing blocked prompt and DLP incident record
+
+### Test 3a: Direct Prompt Upload Coverage Gap
+
+- **Objective:** Confirm the control design does not incorrectly claim that Copilot DLP scans the contents of files uploaded directly with a prompt
+- **Steps:**
+  1. Review the current Microsoft Learn limitation for files uploaded in prompts
+  2. Confirm the DLP test plan distinguishes typed prompt text from uploaded file content
+  3. Verify complementary controls are documented for direct uploads, such as approved storage, sensitivity labels, endpoint controls, and user guidance
+- **Expected Result:** The organization does not rely on SIT prompt inspection to scan directly uploaded file contents
+- **Evidence:** Approved control-gap statement and complementary-control mapping
 
 ### Test 4: Default Policy Simulation Mode Review
 
@@ -60,7 +70,7 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 - **Steps:**
   1. With both DLP policies in enforcement mode, repeat the label-based test and the SIT-based test
   2. Verify Copilot does not include the sensitive data in responses (Type 1) and does not process sensitive prompts (Type 2)
-  3. Verify users receive notifications about the blocked content or prompt
+  3. Capture the user message shown for each supported client; do not require identical policy-tip wording across clients
   4. Confirm block events are recorded separately by policy type in DLP incident reports
 - **Expected Result:** Both policy types block as designed; events recorded
 - **Evidence:** Copilot responses showing blocked content and DLP incident records for each policy type
@@ -70,7 +80,7 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 - **Objective:** Verify DLP policies apply to Copilot interactions accessed through Microsoft Edge browser
 - **Steps:**
   1. Access Copilot via Microsoft Edge (browser-based access, e.g., m365copilot.com)
-  2. Type a prompt containing a test SSN pattern (000-00-0000)
+  2. Type a prompt containing a test SSN pattern (000-00-0000); do not use an attached file as the SIT test input
   3. Verify the Edge browser DLP policy triggers (audit or block)
   4. Confirm the event appears in DLP incident reports attributed to the Endpoint DLP / Edge channel
 - **Expected Result:** Edge browser DLP applies to browser-based Copilot interactions
@@ -129,6 +139,7 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 | DLP policy configuration export (both types + default) | CSV/JSON | Compliance evidence repository | 7 years |
 | Label-based response blocking test results | PDF with screenshots | Compliance evidence repository | 7 years |
 | SIT-based prompt blocking test results | PDF with screenshots | Compliance evidence repository | 7 years |
+| Direct prompt upload gap review | PDF/control mapping | Compliance evidence repository | 7 years |
 | Default policy simulation review | PDF with match data | Compliance evidence repository | 7 years |
 | Edge browser DLP test results | PDF with screenshots | Compliance evidence repository | 7 years |
 | Mac endpoint DLP expanded file type test results | PDF with screenshots | Compliance evidence repository | 7 years |
