@@ -51,10 +51,10 @@ Write-Host "Message Center export complete" -ForegroundColor Green
 
 ```powershell
 # Look up a specific MC message by ID for change assessment documentation
-# Example: MC1139493 (Teams Copilot default change, September 2025)
+# Example: replace with the MC ID for the Copilot change under assessment
 Connect-MgGraph -Scopes "ServiceMessage.Read.All"
 
-$messageId = "MC1139493"  # Replace with the MC ID to review
+$messageId = "MC000000"  # Replace with the MC ID to review
 
 $message = Get-MgServiceAnnouncementMessage -ServiceUpdateMessageId $messageId
 

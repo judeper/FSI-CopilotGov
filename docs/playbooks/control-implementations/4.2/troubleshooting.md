@@ -1,13 +1,13 @@
 # Control 4.2: Copilot in Teams Meetings Governance — Troubleshooting
 
-Common issues and resolution steps for Copilot governance in Teams meetings, including issues related to Microsoft's March 2026 EnabledWithTranscript default change.
+Common issues and resolution steps for Copilot governance in Teams meetings, including issues where a policy is not explicitly enforcing `EnabledWithTranscript`.
 
 ## Common Issues
 
-### Issue 1: Copilot Available Without Transcription (Post-March 2026 Default Change)
+### Issue 1: Copilot Available Without Saved Transcription
 
-- **Symptoms:** Users can access Copilot in meetings even when transcription is not enabled, bypassing the recordkeeping requirement. This issue is expected for any environment that has not yet applied the EnabledWithTranscript remediation after Microsoft's March 2026 default change.
-- **Root Cause:** Microsoft changed the default Teams meeting Copilot policy from `EnabledWithTranscript` to `Enabled` in March 2026. Any meeting policy that was not explicitly overridden now defaults to allowing Copilot without transcription. Additionally, new policies created after March 2026 default to `Enabled` unless explicitly set to `EnabledWithTranscript`.
+- **Symptoms:** Users can access Copilot in meetings even when a saved transcript is not required, bypassing the recordkeeping requirement.
+- **Root Cause:** The meeting policy is set to `Enabled` or `EnabledWithTranscriptDefaultOn`, or the organizer's assigned policy differs from the attendee's policy. Current Microsoft Learn documentation identifies `EnabledWithTranscript` as the default value, but regulated environments should not rely on inherited defaults.
 - **Resolution:**
   1. Run the immediate remediation:
      ```powershell
