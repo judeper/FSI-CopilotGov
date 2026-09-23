@@ -190,6 +190,68 @@ def test_fsi_automation_language_remains_high_priority(text):
     }
 
 
+@pytest.mark.parametrize(
+    "citation",
+    (
+        "FINRA Rule 3110",
+        "FINRA 3110",
+        "FINRA Rule 4511",
+        "FINRA 4511",
+    ),
+)
+def test_finra_rule_citations_classify_high(citation):
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Administrative securities notice",
+        f"The notice addresses requirements under {citation}.",
+        config,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
+
+
+@pytest.mark.parametrize(
+    "citation",
+    (
+        "FINRA Rule 31100",
+        "FINRA Rule 45110",
+        "FINRA Rule 3110a",
+        "FINRA Rule 4511a",
+    ),
+)
+def test_finra_rule_citation_lookalikes_do_not_classify_high(citation):
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Administrative securities notice",
+        f"The notice mentions {citation} in an unrelated example.",
+        config,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
+@pytest.mark.parametrize("citation", ("FINRA Rule 3110", "FINRA Rule 4511"))
+def test_finra_rule_reference_only_citation_does_not_classify_high(citation):
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Administrative securities notice",
+        f"See also {citation} for background.",
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
 AI_VOCABULARY = (
     "ai agent",
     "agent ai",
@@ -976,6 +1038,33 @@ def test_federal_register_medium_abstract_upgrades_on_authoritative_critical_bod
     # The authoritative body is adopted as the effective text and drives controls.
     assert "copilot" in items[0].abstract.lower()
     assert items[0].affected_controls
+
+
+def test_federal_register_control_mapping_unions_critical_abstract_and_body(
+    monkeypatch,
+):
+    """Control evidence is retained even when the abstract sets CRITICAL."""
+    config = _load_config()
+    document = _fr_document(
+        "2026-90212",
+        abstract=(
+            "The Commission proposes requirements for Microsoft 365 Copilot "
+            "deployments used by broker-dealers."
+        ),
+    )
+    body = (
+        "Each member firm shall comply with FINRA Rule 2210 for "
+        "communications with the public."
+    )
+    session, _ = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session, since_date="2026-08-18", config=config
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_CRITICAL
+    assert items[0].affected_controls == ["3.5", "3.6"]
 
 
 def test_federal_register_medium_abstract_fetch_failure_fails_closed(
@@ -4033,6 +4122,51 @@ def test_finra_pagination_discovers_page_two_notices(monkeypatch):
     urls = {item.url for item in items}
     assert "https://www.finra.org/rules-guidance/notices/26-100" in urls
     assert "https://www.finra.org/rules-guidance/notices/26-200" in urls
+
+
+def test_finra_listing_requests_respect_configured_delay(monkeypatch):
+    """Pace listing pages so a multi-page crawl does not trigger FINRA 429s."""
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-100"], last_page=1
+        ),
+        1: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-200"], last_page=1
+        ),
+    }
+    config = _load_config()
+    config["operational"]["request_delay"] = 0.25
+    prefix = f"{regulatory_monitor.FINRA_NOTICES_URL}?page="
+    page_one_allowed = False
+    sleeps: list[float] = []
+    base_fetch = _finra_multipage_fetch(pages)
+
+    def fake_sleep(seconds):
+        nonlocal page_one_allowed
+        sleeps.append(seconds)
+        page_one_allowed = True
+
+    def rate_limited_fetch(url, session, max_retries=3):
+        if url == f"{prefix}1" and not page_one_allowed:
+            return {
+                "url": url,
+                "status_code": 429,
+                "content": "",
+                "final_url": url,
+                "was_redirected": False,
+                "error": "HTTP 429 rate limit persisted after 3 attempts",
+            }
+        return base_fetch(url, session, max_retries=max_retries)
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", rate_limited_fetch)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", fake_sleep)
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(), config=config, detail_fetch_limit=None
+    )
+
+    assert sleeps[0] == 0.25
+    assert {item.document_id for item in items} == {"FINRA 26-100", "FINRA 26-200"}
 
 
 def test_finra_pagination_completes_full_92_page_style_crawl(monkeypatch):

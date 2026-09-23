@@ -98,10 +98,27 @@ jobs:
             echo "Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           } > drift-issue.md
 
+      - name: Find existing drift tracking issue
+        if: steps.drift.outputs.has_drift == 'true' && github.event_name != 'pull_request'
+        id: existing-issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          issue_number=$(gh issue list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --label solutions-drift \
+            --label automation \
+            --search '"Solutions lock drift detected" in:title' \
+            --json number,title \
+            --jq 'map(select(.title == "Solutions lock drift detected")) | sort_by(.number) | last | .number // ""')
+          echo "issue_number=$issue_number" >> "$GITHUB_OUTPUT"
+
       - name: Open or update drift tracking issue
         if: steps.drift.outputs.has_drift == 'true' && github.event_name != 'pull_request'
         uses: peter-evans/create-issue-from-file@v6
         with:
+          issue-number: ${{ steps.existing-issue.outputs.issue_number }}
           title: "Solutions lock drift detected"
           content-filepath: drift-issue.md
           labels: |

@@ -47,6 +47,12 @@ Document cross-border data flow scenarios specific to Copilot:
 - Third-party plugins that may route data through external services
 - Microsoft support access and data handling during support incidents
 
+Review each enabled AI provider in Microsoft 365 Admin Center > Copilot > Settings > View all:
+
+- **Anthropic standard models:** record that Anthropic operates as a Microsoft subprocessor, but the models are outside the EU Data Boundary and applicable in-country processing commitments.
+- **Anthropic models with Data Retention:** treat this as a separate independent-processor path governed by Anthropic terms; document retention, approved users/groups, and explicit risk acceptance.
+- **SpaceXAI:** treat this as an independent-provider path outside Microsoft-managed environments and Microsoft contractual residency commitments; document the xAI terms review and approved Copilot Studio environments.
+
 ### Step 5: Document Data Residency Compliance Position
 
 Create a data residency compliance document that includes:
