@@ -7,22 +7,23 @@ Common issues and resolution steps for Copilot change management processes.
 ### Issue 1: Copilot Features Rolling Out Without CAB Approval
 
 - **Symptoms:** New Copilot features appear for general users without going through the change advisory board process.
-- **Root Cause:** Organization may be on standard release (not targeted), or Microsoft pushed a change that bypassed the targeted release delay.
+- **Root Cause:** Organization may be on standard release (not targeted), production users may not be assigned to Copilot Deferred Release for eligible major updates, or Microsoft pushed a change that bypassed the available release-delay mechanisms.
 - **Resolution:**
   1. Verify the organization's release preference is set to "Targeted release for selected users".
-  2. If on standard release, switch to targeted release to enable validation time.
-  3. Monitor the Message Center proactively for "Plan for Change" announcements.
-  4. If a feature rolled out unexpectedly, conduct a retrospective impact assessment.
+  2. For Copilot major updates tagged as deferred-capable, verify **Copilot > Settings > All Settings > Copilot release preferences: General Availability** and confirm whether the validation group is Standard Release while regulated production users are Deferred Release.
+  3. Monitor the Message Center proactively for "Plan for change", "Major update", "Deferred feature", and "Status for your org" signals.
+  4. If a feature rolled out unexpectedly, conduct a retrospective impact assessment and document whether targeted release or Copilot Standard/Deferred release preferences applied.
 
-### Issue 2: Targeted Release Group Not Reflecting Correct Users
+### Issue 2: Release Preference Group Not Reflecting Correct Users
 
-- **Symptoms:** New features appear for users who are not in the targeted release group, or targeted release users do not receive features early.
-- **Root Cause:** The targeted release group membership may be outdated or the release preference may not be correctly configured.
+- **Symptoms:** New features appear for users who are not in the validation group, targeted release users do not receive features early, or Copilot Deferred Release users receive a deferred-capable major update earlier than expected.
+- **Root Cause:** The targeted release or Copilot Standard/Deferred group membership may be outdated, the release preference may not be correctly configured, or the update may not be eligible for the selected release model.
 - **Resolution:**
-  1. Review the targeted release group membership in Admin Center > Settings > Org settings > Release preferences.
-  2. Update the group to include current validation team members.
-  3. Allow up to 72 hours after adding users to the targeted release group.
-  4. Verify that per-user targeted release is assigned, not just organizational level.
+  1. Review the targeted release group membership in Admin Center > Settings > Org Setting > Organization profile > Release preferences.
+  2. Review Copilot release-preference exceptions in Copilot > Settings > All Settings > Copilot release preferences: General Availability.
+  3. Update the group to include current validation team members.
+  4. Allow the documented propagation window after adding users or groups.
+  5. Verify that per-user or group-based validation assignment is configured, not just organization-level release settings.
 
 ### Issue 3: Change Impact Assessments Incomplete or Missing
 
@@ -46,7 +47,7 @@ Common issues and resolution steps for Copilot change management processes.
 
 ## Diagnostic Steps
 
-1. **Check release preference:** Navigate to Admin Center > Settings > Org settings > Release preferences.
+1. **Check release preferences:** Navigate to Admin Center > Settings > Org Setting > Organization profile > Release preferences, and for deferred-capable Copilot major updates verify Copilot > Settings > All Settings > Copilot release preferences: General Availability.
 2. **Review Message Center:** Check for any recent Copilot change announcements.
 3. **Audit configuration changes:** Run the configuration change audit script.
 4. **Verify CAB records:** Cross-reference changes against the change management log.
