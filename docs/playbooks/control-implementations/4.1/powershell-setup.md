@@ -24,11 +24,21 @@ Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
 
 ```powershell
 # Report on Copilot license assignments across the organization
-$copilotSkuName = "Microsoft_365_Copilot"
+$copilotSkuPartNumbers = @("M365_Copilot", "Microsoft_365_Copilot", "MICROSOFT_365_COPILOT")
+$copilotSkuIds = @(Get-MgSubscribedSku |
+    Where-Object { $copilotSkuPartNumbers -contains $_.SkuPartNumber } |
+    Select-Object -ExpandProperty SkuId)
+
+if ($copilotSkuIds.Count -eq 0) {
+    Write-Warning "No Microsoft Copilot SKU found in tenant subscriptions"
+    return
+}
+
 $allUsers = Get-MgUser -All -Property UserPrincipalName, DisplayName, AssignedLicenses, Department
 
 $copilotUsers = $allUsers | Where-Object {
-    $_.AssignedLicenses.SkuId -contains (Get-MgSubscribedSku | Where-Object { $_.SkuPartNumber -eq $copilotSkuName }).SkuId
+    $assignedSkuIds = @($_.AssignedLicenses | ForEach-Object { $_.SkuId })
+    @($assignedSkuIds | Where-Object { $copilotSkuIds -contains $_ }).Count -gt 0
 }
 
 Write-Host "Copilot License Assignment Report:" -ForegroundColor Cyan
@@ -48,7 +58,15 @@ $copilotUsers | Select-Object UserPrincipalName, DisplayName, Department |
 ```powershell
 # Assign Copilot licenses to members of the approved deployment group
 $groupId = "approved-copilot-group-id"
-$copilotSku = Get-MgSubscribedSku | Where-Object { $_.SkuPartNumber -eq "Microsoft_365_Copilot" }
+$copilotSkuPartNumbers = @("M365_Copilot", "Microsoft_365_Copilot", "MICROSOFT_365_COPILOT")
+$copilotSku = Get-MgSubscribedSku |
+    Where-Object { $copilotSkuPartNumbers -contains $_.SkuPartNumber } |
+    Select-Object -First 1
+
+if (-not $copilotSku) {
+    Write-Warning "No Microsoft Copilot SKU found in tenant subscriptions"
+    return
+}
 
 $groupMembers = Get-MgGroupMember -GroupId $groupId -All
 $assignedCount = 0

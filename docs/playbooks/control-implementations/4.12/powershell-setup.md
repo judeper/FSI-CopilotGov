@@ -36,12 +36,12 @@ $messages = Get-MgServiceAnnouncementMessage -All `
 
 Write-Host "Copilot Message Center Entries (Last 90 Days): $($messages.Count)" -ForegroundColor Cyan
 
-$export = $messages | Select-Object Id, Title, LastModifiedDateTime, MessageType,
+$export = $messages | Select-Object Id, Title, LastModifiedDateTime, Category,
     Severity,
     @{N="Services";E={$_.Services -join ", "}},
-    @{N="ActionRequiredByDate";E={$_.ActionRequireByDate}}
+    @{N="ActionRequiredByDateTime";E={$_.ActionRequiredByDateTime}}
 
-$export | Format-Table Id, Title, Severity, ActionRequiredByDate -AutoSize
+$export | Format-Table Id, Title, Severity, ActionRequiredByDateTime -AutoSize
 
 $export | Export-Csv "CopilotMessageCenter_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 Write-Host "Message Center export complete" -ForegroundColor Green
@@ -51,10 +51,10 @@ Write-Host "Message Center export complete" -ForegroundColor Green
 
 ```powershell
 # Look up a specific MC message by ID for change assessment documentation
-# Example: MC1139493 (Teams Copilot default change, September 2025)
+# Example: replace with the MC ID for the Copilot change under assessment
 Connect-MgGraph -Scopes "ServiceMessage.Read.All"
 
-$messageId = "MC1139493"  # Replace with the MC ID to review
+$messageId = "MC000000"  # Replace with the MC ID to review
 
 $message = Get-MgServiceAnnouncementMessage -ServiceUpdateMessageId $messageId
 
@@ -62,7 +62,7 @@ if ($message) {
     Write-Host "MC Entry: $($message.Title)" -ForegroundColor Cyan
     Write-Host "Last Modified: $($message.LastModifiedDateTime)"
     Write-Host "Severity: $($message.Severity)"
-    Write-Host "Action Required By: $($message.ActionRequireByDate)"
+    Write-Host "Action Required By: $($message.ActionRequiredByDateTime)"
     Write-Host "Services: $($message.Services -join ', ')"
     Write-Host ""
     Write-Host "Body (plain text excerpt):" -ForegroundColor Cyan
