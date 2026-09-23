@@ -56,6 +56,12 @@
     },
     {
       "pattern": "^https://www\\.occ\\.gov/news-issuances/bulletins/2011/bulletin-2011-12\\.html"
+    },
+    {
+      "pattern": "^https://github\\.com/judeper/OceanSquad/issues/(241|242)$"
+    },
+    {
+      "pattern": "^https://leg\\.colorado\\.gov/bills/sb24-205$"
     }
   ],
   "timeout": "10s",
