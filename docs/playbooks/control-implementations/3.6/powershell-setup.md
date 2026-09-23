@@ -63,7 +63,7 @@ Write-Host "Registered Representatives: $($reps.Count)"
 Write-Host "Ratio: 1:$ratio"
 
 if ($ratio -gt 50) {
-    Write-Warning "Supervisor ratio exceeds recommended 1:50 — consider adding supervisors"
+    Write-Warning "Supervisor ratio exceeds default 1:50 threshold — add supervisors or document the firm-approved threshold"
 }
 ```
 

@@ -2,6 +2,9 @@
 
 Step-by-step portal configuration for aligning Microsoft 365 Copilot governance with the firm's approved model-risk policy, the current SR 26-2 / OCC Bulletin 2026-13 model-risk context, and OCC Bulletin 2025-26 community-bank proportionality guidance where applicable.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, model classification, and supervisory-source mapping depend on the firm's regulatory status and approved MRM policy; confirm with counsel. See judeper/OceanSquad#242.
+
 ## Prerequisites
 
 - **Role:** Purview Compliance Admin, Model Risk Management Officer
@@ -86,7 +89,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 - **OCC Bulletin 2026-13 / Federal Reserve SR 26-2** — Current revised model-risk-management context; generative and agentic AI are outside the guidance's scope
 - **OCC Bulletin 2025-26** — Community-bank proportionality clarification; use only as part of a documented firm-policy rationale
 - **Historical SR 11-7 / OCC Bulletin 2011-12 principles** — Voluntary internal-policy reference only unless legal/MRM owners approve a current supervisory-source mapping for Copilot
-- **OCC Third-Party Risk Management** — Provides a vendor-risk reference for AI services; firms should confirm applicability with counsel
+- **OCC Third-Party Risk Management** — Provides a vendor-risk reference for AI services; applicability: confirm
 
 ## Next Steps
 

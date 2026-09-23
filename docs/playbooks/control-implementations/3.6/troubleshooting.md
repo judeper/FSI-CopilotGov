@@ -9,7 +9,7 @@ Common issues and resolution steps for supervisory controls over Copilot-assiste
 - **Symptoms:** Review items are aging beyond the 24/48 hour SLA, supervisors report insufficient time for reviews.
 - **Root Cause:** Supervisor-to-representative ratio too high, policy scope too broad, or supervisors lack training on review tools.
 - **Resolution:**
-  1. Check current supervisor ratios and redistribute if any supervisor exceeds the firm's approved threshold (1:50 is a policy example to confirm with compliance/legal).
+  1. Check current supervisor ratios and redistribute if any supervisor exceeds the default 1:50 threshold, unless compliance/legal approves a firm-specific threshold.
   2. Implement automated resolution for low-risk, low-confidence policy matches.
   3. Provide refresher training on the Communication compliance review interface.
   4. Consider adding a deputy supervisor role for backup coverage.

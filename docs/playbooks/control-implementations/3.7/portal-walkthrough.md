@@ -2,6 +2,9 @@
 
 Step-by-step portal configuration for establishing regulatory reporting capabilities that incorporate Copilot-generated data and AI governance metrics for financial regulatory submissions.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, reportability, cadence, recipients, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See judeper/OceanSquad#241.
+
 ## Prerequisites
 
 - **Role:** Purview Compliance Admin or Regulatory Reporting Officer
@@ -72,7 +75,7 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 ## Regulatory Alignment
 
 - **FINRA Rule 3120** — Provides evidence for internal annual supervisory-control report review to senior management; it is not itself a regulator filing
-- **SEC Form ADV** — Potential advisory-disclosure review item for AI tool usage; firms should confirm applicability with counsel
+- **SEC Form ADV** — Potential advisory-disclosure review item for AI tool usage; applicability: confirm
 - **OCC Bulletin 2026-13 / Federal Reserve SR 26-2 revised model-risk-management guidance** — Current model-risk governance reference; note that the 2026 guidance rescinds OCC Bulletin 2011-12 / supersedes SR 11-7 and states generative AI and agentic AI models are outside its scope
 
 ## Next Steps

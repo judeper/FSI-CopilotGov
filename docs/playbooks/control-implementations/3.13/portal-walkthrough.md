@@ -2,6 +2,9 @@
 
 Step-by-step portal configuration for aligning Microsoft 365 Copilot governance with the FFIEC IT Examination Handbook requirements across audit, management, development, and operations domains.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, source identity, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See judeper/OceanSquad#241.
+
 ## Prerequisites
 
 - **Role:** Purview Compliance Admin, IT Risk Manager
@@ -74,9 +77,9 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 ## Regulatory Alignment
 
-- **FFIEC IT Examination Handbook** — Provides evidence for review across Audit, Information Security, Management, and Architecture, Infrastructure & Operations (AIO) booklets; firms should confirm applicability with counsel
-- **FFIEC Cybersecurity Assessment Tool** — Legacy maturity reference for AI-related technology governance; firms should confirm applicability with counsel
-- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Provides evidence for large institution IT governance review; firms should confirm applicability with counsel
+- **FFIEC IT Examination Handbook** — Provides evidence for review across Audit, Information Security, Management, and Architecture, Infrastructure & Operations (AIO) booklets; applicability: confirm
+- **FFIEC Cybersecurity Assessment Tool** — Legacy maturity reference for AI-related technology governance; applicability: confirm
+- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Provides evidence for large institution IT governance review; applicability: confirm
 
 ## Next Steps
 

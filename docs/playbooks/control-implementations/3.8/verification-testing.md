@@ -2,6 +2,9 @@
 
 Test cases and evidence collection procedures to validate alignment with OCC and Federal Reserve model risk management requirements for Copilot.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, model classification, and supervisory-source mapping depend on the firm's regulatory status and approved MRM policy; confirm with counsel. See judeper/OceanSquad#242.
+
 ## Test Cases
 
 ### Test 1: Model Inventory Completeness
@@ -65,11 +68,11 @@ Test cases and evidence collection procedures to validate alignment with OCC and
 
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
-| Model inventory entry | MRM system | PDF/Export | Life of model + 5 years as a firm policy example; confirm retention schedule with counsel |
-| Proportionality rationale | MRM system | PDF/Document | Life of model + 5 years as a firm policy example; confirm retention schedule with counsel |
-| Performance metrics | PowerShell | CSV | 7 years as a firm policy example; confirm retention schedule with counsel |
-| Vendor risk documentation | Service Trust Portal | PDF | 7 years as a firm policy example; confirm retention schedule with counsel |
-| Validation report | MRM system | PDF | Life of model + 5 years as a firm policy example; confirm retention schedule with counsel |
+| Model inventory entry | MRM system | PDF/Export | Life of model + 5 years; retention schedule: confirm |
+| Proportionality rationale | MRM system | PDF/Document | Life of model + 5 years; retention schedule: confirm |
+| Performance metrics | PowerShell | CSV | 7 years; retention schedule: confirm |
+| Vendor risk documentation | Service Trust Portal | PDF | 7 years; retention schedule: confirm |
+| Validation report | MRM system | PDF | Life of model + 5 years; retention schedule: confirm |
 
 ## Compliance Mapping
 
@@ -78,7 +81,7 @@ Test cases and evidence collection procedures to validate alignment with OCC and
 | OCC Bulletin 2026-13 / SR 26-2 | Current model-risk-management context; generative and agentic AI are outside the revised guidance's scope | Provides current context while legal/MRM owners decide the Copilot-specific framework |
 | OCC Bulletin 2025-26 | Community-bank proportionality context | Provides a documented firm-policy rationale for simplified MRM where applicable; firms should confirm with legal/MRM owners |
 | Historical SR 11-7 / OCC Bulletin 2011-12 principles | Voluntary internal-policy reference unless legal/MRM owners approve a current supervisory-source mapping | Can structure model inventory, validation, and monitoring artifacts without claiming current supervisory coverage for generative AI |
-| OCC Third-Party Risk | Vendor risk assessment | Provides a third-party risk management reference for AI vendors; firms should confirm applicability with counsel |
+| OCC Third-Party Risk | Vendor risk assessment | Provides a third-party risk management reference for AI vendors; applicability: confirm |
 
 ## Next Steps
 

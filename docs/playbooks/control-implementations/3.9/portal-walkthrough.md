@@ -2,6 +2,9 @@
 
 Step-by-step portal configuration for implementing AI disclosure and transparency controls that provide evidence for SEC Marketing Rule and client communication transparency review for Copilot-generated content.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, disclosure duties, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See judeper/OceanSquad#241.
+
 ## Prerequisites
 
 - **Role:** Purview Compliance Admin, Marketing Compliance Officer
@@ -66,14 +69,14 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 |---------|----------|-------------|-----------|
 | AI content labeling | Optional | Recommended | Required |
 | Marketing material review | 25% | 100% | 100% |
-| AI disclosure in client comms | Optional | Recommended | Required when approved by firm policy/legal review |
+| AI disclosure in client comms | Optional | Recommended | Required |
 | DLP enforcement for disclosures | Notify | Block with override | Block with override |
 
 ## Regulatory Alignment
 
-- **SEC Marketing Rule (206(4)-1)** — Provides evidence for advertising and marketing disclosure review; firms should confirm applicability with counsel
-- **SEC Reg BI** — Provides evidence for disclosure review when AI assists in recommendation communications; firms should confirm applicability with counsel
-- **FINRA Rule 2210** — Provides evidence for fair and balanced communication review with AI transparency; firms should confirm applicability with counsel
+- **SEC Marketing Rule (206(4)-1)** — Provides evidence for advertising and marketing disclosure review; applicability: confirm
+- **SEC Reg BI** — Provides evidence for disclosure review when AI assists in recommendation communications; applicability: confirm
+- **FINRA Rule 2210** — Provides evidence for fair and balanced communication review with AI transparency; applicability: confirm
 
 ## Next Steps
 

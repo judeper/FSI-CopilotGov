@@ -2,6 +2,9 @@
 
 Test cases and evidence collection procedures to confirm data retention policies are correctly applied to Copilot interaction data and generated content.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See judeper/OceanSquad#241.
+
 ## Test Cases
 
 ### Test 1: Retention Policy Deployment Verification
@@ -96,11 +99,11 @@ Test cases and evidence collection procedures to confirm data retention policies
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Rule 17a-4(a) | 6-year broker-dealer-record citation | Microsoft Copilot experiences retention policy can be configured for a 6-year firm policy example; firms should confirm applicability with counsel |
-| SEC Rule 17a-3(a)(17) | Communications-record citation | Conservative Regulated-tier retention of all Copilot-generated content is a firm policy example pending counsel confirmation |
-| FINRA Rule 4511 | Books-and-records retention citation | Firms should confirm which AI interaction records are in scope across Copilot surfaces with counsel |
+| SEC Rule 17a-4(a) | 6-year broker-dealer-record citation | Microsoft Copilot experiences retention policy can be configured for a 6-year firm-approved example; applicability: confirm |
+| SEC Rule 17a-3(a)(17) | Communications-record citation | Conservative Regulated-tier retention of all Copilot-generated content is a firm-approved example pending counsel confirmation |
+| FINRA Rule 4511 | Books-and-records retention citation | AI interaction records in scope across Copilot surfaces: confirm |
 | FINRA Rule 4511(c) | Preservation format and media citation | Threaded summary retention test provides evidence for counsel review of source and summary preservation |
-| GLBA | Financial-record/customer-information citation | Firms should confirm privacy and record-preservation applicability for AI-processed customer information with counsel |
+| GLBA | Financial-record/customer-information citation | Privacy and record-preservation applicability for AI-processed customer information: confirm |
 
 ## Next Steps
 

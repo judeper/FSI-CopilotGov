@@ -1,6 +1,9 @@
 # Control 3.6: Supervision and Oversight (FINRA 3110 / SEC Reg BI) — Portal Walkthrough
 
-Step-by-step portal configuration for establishing supervisory controls over Copilot-assisted activities that provide evidence for FINRA Rule 3110 (Supervision) and SEC Regulation Best Interest review; firms should confirm applicability with counsel.
+Step-by-step portal configuration for establishing supervisory controls over Copilot-assisted activities that provide evidence for FINRA Rule 3110 (Supervision) and SEC Regulation Best Interest review.
+
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See judeper/OceanSquad#241.
 
 ## Prerequisites
 
@@ -17,7 +20,7 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 
 1. Map the supervisory hierarchy through each Communication Compliance policy's scoped users and reviewers. Verify in your tenant whether a separate supervisory-review settings page exists before documenting a standalone hierarchy path.
 2. Create supervisor groups aligned with business units (wealth management, trading, advisory).
-3. Use the firm's approved supervisor-capacity threshold to assign supervised users; 50 supervised users is a firm policy example that should be confirmed with compliance/legal.
+3. Use the default supervisor-capacity threshold of 50 supervised users unless compliance/legal approves a firm-specific threshold.
 
 ### Step 2: Create Supervisory Review Policies
 
@@ -28,9 +31,9 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 2. Set supervised users to registered representatives using Copilot.
 3. Set supervised locations to include all Copilot-enabled communication channels.
 4. Under conditions, configure:
-   - **All outbound communications** — 25% sampling for routine supervision as a firm policy example
-   - **Client-facing communications with financial recommendations** — 100% review as a firm policy example
-   - **Copilot-drafted investment advice** — 100% review with pre-send hold as a firm policy example
+   - **All outbound communications** — 25% sampling for routine supervision; adjust only to the firm-approved threshold
+   - **Client-facing communications with financial recommendations** — 100% review
+   - **Copilot-drafted investment advice** — 100% review with pre-send hold required
 
 ### Step 3: Configure Reg BI Documentation Review
 
@@ -43,7 +46,7 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
    - Recommendation language (buy, sell, hold, allocate)
    - Product-specific terms (mutual fund, ETF, annuity, structured product)
    - Cost and fee disclosures
-4. Apply the firm's approved supervisory review percentage for matches; 100% review is a regulated-tier firm policy example.
+4. Apply the firm's approved supervisory review percentage for matches; use 100% review as the regulated-tier default unless compliance/legal approves a different threshold.
 
 ### Step 4: Set Up Supervision Dashboards
 
@@ -81,18 +84,18 @@ Supervisory review of M365 Copilot agent interactions (Teams channel agents, dec
 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
-| Routine communication sampling | 10% policy example | 25% policy example | 25% policy example |
-| Investment recommendation review | 25% policy example | 100% policy example | 100% policy example |
-| Pre-send hold for Copilot advice | Off | Recommended policy example | Required if approved by firm policy |
-| Supervisor-to-rep ratio | 1:100 policy example | 1:50 policy example | 1:25 policy example |
+| Routine communication sampling | 10% default; adjust to firm-approved threshold | 25% default; adjust to firm-approved threshold | 25% default; adjust to firm-approved threshold |
+| Investment recommendation review | 25% default; adjust to firm-approved threshold | 100% review | 100% review |
+| Pre-send hold for Copilot advice | Off | Recommended | Required |
+| Supervisor-to-rep ratio | 1:100 default; adjust to firm-approved threshold | 1:50 default; adjust to firm-approved threshold | 1:25 default; adjust to firm-approved threshold |
 | Agent audit event review | Agent inventory only | Periodic sampling of agent interactions | Correlated agent-to-communication review |
 
 ## Regulatory Alignment
 
-- **FINRA Rule 3110** — Provides evidence for supervisory system and written supervisory procedure review; firms should confirm applicability with counsel
-- **FINRA Rule 3110(a)** — Agent supervision: firms should confirm with counsel when supervisory systems should extend to Teams channel agents and declarative agents used by associated persons
+- **FINRA Rule 3110** — Provides evidence for supervisory system and written supervisory procedure review; applicability: confirm
+- **FINRA Rule 3110(a)** — Agent supervision: applicability to Teams channel agents and declarative agents used by associated persons: confirm
 - **FINRA Rule 3120** — Supports supervisory control system testing requirements
-- **SEC Reg BI** — Provides evidence for best-interest documentation, disclosure, and care review; firms should confirm applicability with counsel
+- **SEC Reg BI** — Provides evidence for best-interest documentation, disclosure, and care review; applicability: confirm
 
 ## Next Steps
 
