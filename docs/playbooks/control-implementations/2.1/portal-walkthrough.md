@@ -1,6 +1,6 @@
 # Control 2.1: DLP Policies for M365 Copilot Interactions — Portal Walkthrough
 
-Step-by-step portal configuration for deploying Data Loss Prevention policies that govern M365 Copilot interactions and protect sensitive data. Control 2.1 requires configuring two architecturally distinct DLP policy types — they address different enforcement points and must be configured as separate policies.
+Step-by-step portal configuration for deploying Data Loss Prevention policies that govern M365 Copilot interactions and protect sensitive data. Control 2.1 requires configuring three architecturally distinct Copilot DLP rule types — label-based response blocking, SIT-based prompt blocking, and SIT-based web-search restriction. They address different enforcement points and must be configured as separate DLP rules; separate policies may be used when operationally needed.
 
 ## Prerequisites
 
@@ -16,8 +16,9 @@ Step-by-step portal configuration for deploying Data Loss Prevention policies th
 |-------------|-----------------|-------------------|
 | **Type 1: Label-Based Response Blocking** | Prevents Copilot from surfacing labeled files/emails in responses | Copilot's grounding phase (response side) |
 | **Type 2: SIT-Based Prompt Blocking** | Prevents users from submitting sensitive data in prompts | User's prompt (before Copilot processes it) |
+| **Type 3: SIT-Based Web Search Restriction** | Prevents sensitive prompt data from being sent to external web search providers | User prompt, external web-search grounding path |
 
-These two types must be configured as separate DLP rules — they cannot be combined within a single DLP rule, but may exist as separate rules within the same policy.
+These rule types must be configured as separate DLP rules. Sensitivity-label and SIT conditions cannot be combined within a single DLP rule, but separate rules can exist within the same policy.
 
 ## Steps
 
@@ -61,6 +62,20 @@ Confirm the preview rollout has reached the tenant, then configure a separate SI
 
 Test only documented supported surfaces: Microsoft 365 Copilot, Copilot Chat, Word, Excel, and PowerPoint. Do not assume equivalent prompt-blocking behavior in Outlook, Teams, OneNote, or Loop.
 
+### Step 3a: Create the SIT-Based Web Search Restriction Rule (Type 3)
+
+**Portal:** Microsoft Purview
+**Path:** Purview > DLP > Policies > Create > Custom Policy
+
+Configure a separate SIT-based web-search restriction rule for prompts that can use external web grounding:
+- **Name:** "FSI Copilot DLP — SIT-Based Web Search Restriction"
+- **Locations:** Microsoft 365 Copilot and Copilot Chat
+- **Conditions:** Content contains sensitive information types (SSN, account numbers, credit card numbers, ABA routing numbers)
+- **Actions:** Prevent Copilot from processing content > Performing Web Searches
+- **User notifications:** Validate the message shown in supported clients and confirm DLP match logging.
+
+Verify tenant availability and preview behavior before relying on this control. This rule blocks external web search as a grounding source when prompt text contains configured SITs; it may still allow responses grounded in permitted internal Microsoft 365 data sources.
+
 ### Step 4: Review and Configure the Default DLP Policy
 
 **Portal:** Microsoft 365 Admin Center
@@ -79,7 +94,7 @@ Microsoft auto-deploys a default DLP policy for Copilot in simulation mode. This
 **Portal:** Microsoft Purview
 **Path:** Purview > Data Classification > Sensitive Info Types
 
-Review and configure sensitive information types used in both DLP policy types:
+Review and configure sensitive information types used in SIT-based Copilot DLP rules:
 - Built-in types: U.S. Social Security Number, Credit Card Number, ABA Routing Number
 - Custom types: Internal account number patterns, proprietary financial identifiers, CUSIP, ISIN
 - Exact Data Match types: Client lists, employee records
@@ -109,7 +124,7 @@ Review expanded platform-specific DLP capabilities that affect Copilot-adjacent 
 
 1. **Mac endpoint DLP:** File type coverage has expanded from approximately 40 to over 100 file types. If your organization has Mac users with Copilot access, verify Endpoint DLP policies include the expanded file types.
 2. **Adaptive scoping for SharePoint DLP:** DLP policies can now use adaptive scopes to dynamically target SharePoint sites based on site properties (e.g., sensitivity label, department). Use adaptive scoping to apply DLP policies selectively to SharePoint sites that serve as Copilot grounding sources without requiring manual site enumeration.
-3. **AI-powered policy explanations:** Security Copilot can generate natural-language explanations of DLP policy configurations. Use this capability (available in the Purview DLP console) to review complex DLP rule logic and verify both policy types are configured as intended.
+3. **AI-powered policy explanations:** Security Copilot can generate natural-language explanations of DLP policy configurations. Use this capability (available in the Purview DLP console) to review complex DLP rule logic and verify all Copilot DLP rule types are configured as intended.
 
 ### Step 7: Set Policy Priority and Override Rules
 
@@ -136,13 +151,13 @@ For any new policy not yet in simulation mode, deploy in test mode first:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Review the default policy in simulation mode; create a Type 1 label-based rule for Highly Confidential content in audit mode; evaluate Type 2 SIT prompt blocking only after confirming tenant availability |
-| **Recommended** | Enforce validated Type 1 and available Type 2 rules; enable Edge/Endpoint DLP where required; add MNPI label conditions and custom FSI SITs; document the direct-upload inspection gap |
-| **Regulated** | Enforce validated controls with no override for Highly Confidential/MNPI; use custom SITs for FSI identifiers; maintain complementary endpoint and storage controls for direct uploads; configure real-time alerts and a 4-hour review SLA for high-severity incidents |
+| **Baseline** | Review the default policy in simulation mode; create a Type 1 label-based rule for Highly Confidential content in audit mode; evaluate Type 2 SIT prompt blocking and Type 3 web-search restriction only after confirming tenant availability |
+| **Recommended** | Enforce validated Type 1 and available Type 2 rules; enable validated Type 3 rules where external web-search grounding is enabled for sensitive prompt scenarios; enable Edge/Endpoint DLP where required; add MNPI label conditions and custom FSI SITs; document the direct-upload inspection gap |
+| **Regulated** | Enforce validated controls with no override for Highly Confidential/MNPI; use custom SITs for FSI identifiers; require Type 3 web-search restriction for sensitive prompt scenarios where web grounding is allowed; maintain complementary endpoint and storage controls for direct uploads; configure real-time alerts and a 4-hour review SLA for high-severity incidents |
 
 ## Next Steps
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for DLP automation
-- See [Verification & Testing](verification-testing.md) to validate both DLP policy types
+- See [Verification & Testing](verification-testing.md) to validate all Copilot DLP rule types
 - Review Control 2.2 for Sensitivity Label integration with Type 1 label-based DLP
 - Back to [Control 2.1](../../../controls/pillar-2-security/2.1-dlp-policies-for-copilot.md)

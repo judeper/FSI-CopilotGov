@@ -1,21 +1,22 @@
 # Control 2.1: DLP Policies for M365 Copilot Interactions — Verification & Testing
 
-Test cases and evidence collection for validating DLP policy effectiveness for Copilot. This playbook covers verification for both DLP policy types (label-based response blocking and SIT-based prompt blocking) and the default Microsoft-deployed policy.
+Test cases and evidence collection for validating DLP policy effectiveness for Copilot. This playbook covers verification for label-based response blocking, SIT-based prompt blocking, SIT-based web-search restriction, and the default Microsoft-deployed policy.
 
 ## Test Cases
 
-### Test 1: DLP Policy Activation Verification (Both Policy Types)
+### Test 1: DLP Policy Activation Verification (All Copilot DLP Rule Types)
 
-- **Objective:** Confirm both Copilot DLP policy types are active and properly configured
+- **Objective:** Confirm all Copilot DLP rule types are active and properly configured
 - **Steps:**
   1. Run Script 3 to list all Copilot DLP policies
   2. Verify at least one label-based response blocking policy exists and is in the expected mode (Test or Enforce)
   3. Verify at least one SIT-based prompt blocking policy exists and is in the expected mode
-  4. Locate the Microsoft-deployed default Copilot DLP policy (simulation mode) and confirm it is present
-  5. Confirm policy locations include Microsoft 365 Copilot as the monitored location
-  6. Verify rule conditions match the approved DLP strategy for each policy type
-- **Expected Result:** Both policy types and the default policy are present; each is in the expected mode
-- **Evidence:** DLP policy configuration export showing all three policies
+  4. Verify at least one SIT-based web-search restriction policy exists and is in the expected mode
+  5. Locate the Microsoft-deployed default Copilot DLP policy (simulation mode) and confirm it is present
+  6. Confirm policy locations include Microsoft 365 Copilot as the monitored location
+  7. Verify rule conditions match the approved DLP strategy for each rule type
+- **Expected Result:** All Copilot DLP rule types and the default policy are present; each is in the expected mode
+- **Evidence:** DLP policy configuration export showing all Copilot DLP rules and the default policy
 
 ### Test 2: Label-Based Response Blocking (Type 1 Verification)
 
@@ -42,7 +43,19 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 - **Expected Result:** Copilot is blocked from responding to a prompt containing a sensitive data pattern
 - **Evidence:** Copilot response showing blocked prompt and DLP incident record
 
-### Test 3a: Direct Prompt Upload Coverage Gap
+### Test 3b: SIT-Based Web Search Restriction (Type 3 Verification)
+
+- **Objective:** Verify the SIT-based web-search restriction blocks external web search when prompt text contains configured sensitive information types
+- **Steps:**
+  1. With the SIT-based web-search restriction policy active, type a prompt containing a test SSN pattern (000-00-0000) and a request that would otherwise use external web search
+  2. Verify Copilot blocks external web search as a grounding source for that prompt
+  3. Verify Copilot may still answer using permitted internal Microsoft 365 data sources
+  4. Confirm the match event is recorded in DLP incident reports
+  5. Capture evidence that the enforcement point is the external web-search grounding path, not a complete prompt-processing block
+- **Expected Result:** External web search is blocked for a sensitive prompt, while permitted internal grounding remains available
+- **Evidence:** Copilot response or admin evidence showing web-search restriction and DLP incident record
+
+### Test 3c: Direct Prompt Upload Coverage Gap
 
 - **Objective:** Confirm the control design does not incorrectly claim that Copilot DLP scans the contents of files uploaded directly with a prompt
 - **Steps:**
@@ -66,14 +79,14 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 
 ### Test 5: Block Action Enforcement
 
-- **Objective:** Confirm DLP blocking actions prevent sensitive data from being exposed through Copilot (both policy types)
+- **Objective:** Confirm DLP blocking actions prevent sensitive data from being exposed through Copilot across all rule types
 - **Steps:**
-  1. With both DLP policies in enforcement mode, repeat the label-based test and the SIT-based test
-  2. Verify Copilot does not include the sensitive data in responses (Type 1) and does not process sensitive prompts (Type 2)
+  1. With all DLP rules in enforcement mode, repeat the label-based, SIT prompt-blocking, and SIT web-search restriction tests
+  2. Verify Copilot does not include sensitive labeled content in responses (Type 1), does not process sensitive prompts where Type 2 applies, and does not use external web search where Type 3 applies
   3. Capture the user message shown for each supported client; do not require identical policy-tip wording across clients
-  4. Confirm block events are recorded separately by policy type in DLP incident reports
-- **Expected Result:** Both policy types block as designed; events recorded
-- **Evidence:** Copilot responses showing blocked content and DLP incident records for each policy type
+  4. Confirm block events are recorded separately by rule type in DLP incident reports
+- **Expected Result:** All Copilot DLP rule types block as designed; events recorded
+- **Evidence:** Copilot responses showing blocked content or blocked web search and DLP incident records for each rule type
 
 ### Test 6: Edge Browser DLP Coverage
 
@@ -136,9 +149,10 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 
 | Evidence Item | Format | Storage Location | Retention |
 |--------------|--------|-----------------|-----------|
-| DLP policy configuration export (both types + default) | CSV/JSON | Compliance evidence repository | 7 years |
+| DLP policy configuration export (all Copilot rule types + default) | CSV/JSON | Compliance evidence repository | 7 years |
 | Label-based response blocking test results | PDF with screenshots | Compliance evidence repository | 7 years |
 | SIT-based prompt blocking test results | PDF with screenshots | Compliance evidence repository | 7 years |
+| SIT-based web-search restriction test results | PDF with screenshots | Compliance evidence repository | 7 years |
 | Direct prompt upload gap review | PDF/control mapping | Compliance evidence repository | 7 years |
 | Default policy simulation review | PDF with match data | Compliance evidence repository | 7 years |
 | Edge browser DLP test results | PDF with screenshots | Compliance evidence repository | 7 years |
@@ -152,7 +166,7 @@ Test cases and evidence collection for validating DLP policy effectiveness for C
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
 | SEC Regulation S-P (17 CFR §248, amended Dec 3, 2025) | Customer NPI safeguards covering AI interaction surfaces | SIT-based prompt blocking (Type 2) addresses the requirement that customer information safeguards extend to AI interaction surfaces |
-| FINRA Rule 3110 | Supervisory data controls | Both DLP policy types support compliance with supervisory requirements for data protection in AI interactions |
-| GLBA §501(b) | Technical safeguards | Both DLP types provide technical controls — Type 1 at the response layer, Type 2 at the prompt layer |
-| PCI DSS | Cardholder data protection | SIT-based prompt blocking prevents credit card data from entering Copilot prompts; label-based blocking prevents labeled cardholder data from being surfaced in responses |
+| FINRA Rule 3110 | Supervisory data controls | All Copilot DLP rule types support compliance with supervisory requirements for data protection in AI interactions |
+| GLBA §501(b) | Technical safeguards | Copilot DLP rule types provide technical controls — Type 1 at the response layer, Type 2 at the prompt layer, and Type 3 at the external web-search grounding path |
+| PCI DSS | Cardholder data protection | SIT-based prompt blocking prevents credit card data from entering Copilot prompts; SIT-based web-search restriction prevents configured sensitive prompt data from being sent to external web search providers; label-based blocking prevents labeled cardholder data from being surfaced in responses |
 - Back to [Control 2.1](../../../controls/pillar-2-security/2.1-dlp-policies-for-copilot.md)
