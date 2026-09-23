@@ -119,7 +119,12 @@ Connect-IPPSSession
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
 
-# Search for Copilot admin operations (policy changes, plugin management)
+# Search for Copilot admin operations (policy changes, plugin management).
+# Public Microsoft docs list the operations below and document the
+# Search-UnifiedAuditLog -RecordType / -Operations parameters. Verify in your
+# tenant that this RecordType/filter combination returns the expected Copilot
+# configuration-change events; if it does not, cross-check the Purview audit UI
+# for the tenant-specific workload, record type, and activity names.
 $adminOps = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
     -RecordType CopilotInteraction `
@@ -141,11 +146,12 @@ $adminOps | ForEach-Object {
 $adminOps | Select-Object CreationDate, UserIds, Operations |
     Export-Csv "CopilotConfigChanges_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 
-# LIMITATION: Release preference settings (Targeted vs. Standard release) must be
+# LIMITATION: Release preference settings (Targeted vs. Standard/Deferred release) must be
 # verified manually in the M365 Admin Center:
-#   Settings > Org settings > Organization profile > Release preferences
-# There is no PowerShell cmdlet to read or set release preferences.
-Write-Host "`nRelease preferences require manual verification in M365 Admin Center" -ForegroundColor Yellow
+#   Settings > Org Setting > Organization profile > Release preferences
+#   Copilot > Settings > All Settings > Copilot release preferences: General Availability
+# Verify exact paths and available controls in your tenant.
+Write-Host "`nRelease preferences require manual tenant verification in M365 Admin Center" -ForegroundColor Yellow
 ```
 
 ## Scheduled Tasks

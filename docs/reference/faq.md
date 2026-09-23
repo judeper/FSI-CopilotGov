@@ -295,7 +295,7 @@ Microsoft regularly updates Microsoft 365 Copilot with new features, changed beh
 **How to stay informed:**
 
 - Monitor the **M365 Message Center** (M365 Admin Center > Health > Message center) for Copilot-related announcements
-- Subscribe to the **Microsoft 365 Roadmap** ([https://www.microsoft.com/en-us/microsoft-365/roadmap](https://www.microsoft.com/en-us/microsoft-365/roadmap)) for upcoming features
+- Subscribe to the **Microsoft AI at Work Roadmap** (formerly Microsoft 365 Roadmap) ([https://www.microsoft.com/en-us/microsoft-365/roadmap](https://www.microsoft.com/en-us/microsoft-365/roadmap)) for upcoming features
 - Review **Microsoft Purview release notes** for changes to compliance capabilities
 - Participate in **Microsoft FSI community calls** for industry-specific guidance
 

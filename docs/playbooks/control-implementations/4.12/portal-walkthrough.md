@@ -18,20 +18,26 @@ Step-by-step portal configuration for establishing change management processes g
 1. Navigate to the Message center and configure notification preferences.
 2. Set up alerts for Copilot-related updates:
    - Filter by service: Microsoft 365 Copilot
-   - Include categories: Plan for Change, Stay Informed, Prevent or Fix Issues
+   - Include categories: Plan for change, Stay informed, Prevent or fix issues
+   - Include tags such as Major update, Retirement, and Deferred feature where relevant
 3. Add notification recipients: IT operations, compliance team, governance committee.
 4. Configure a weekly digest email summarizing upcoming Copilot changes.
+5. Verify in your tenant that Message center preferences, weekly digest settings, `Status for your org`, and Deferred feature tags are visible to the intended admin roles.
 
-### Step 2: Configure Targeted Release for Change Validation
+### Step 2: Configure Release Preferences for Change Validation
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Settings > Org settings > Organization profile > Release preferences
+**Path:** Settings > Org Setting > Organization profile > Release preferences
 
 1. Configure the release preferences:
    - **Targeted release for selected users** — recommended for FSI environments
    - Assign the pilot/validation group to receive new Copilot features first
 2. This allows the governance team to evaluate new features before organization-wide rollout.
 3. Document the validation period (minimum 2 weeks recommended before general release).
+4. For Copilot major updates that are deferred-capable, navigate to **Copilot > Settings > All Settings > Copilot release preferences: General Availability**.
+5. Choose **Standard Release** or **Deferred Release** for the default audience and configure user or security-group exceptions for the validation group.
+6. Document whether the validation group receives Copilot deferred-capable updates through Standard Release while production users remain Deferred, or through Targeted Release where modern release preferences do not apply.
+7. Verify in your tenant that these paths and controls are available for the cloud environment and roles used for evidence collection.
 
 ### Step 3: Establish Change Advisory Board Process
 
@@ -67,7 +73,7 @@ Step-by-step portal configuration for establishing change management processes g
 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
-| Release channel | Standard | Targeted release for validation group | Targeted release with CAB |
+| Release channel | Standard | Targeted release or Copilot Standard/Deferred validation group | Targeted release or Copilot Standard/Deferred with CAB |
 | Change review process | Ad hoc | Weekly CAB review | CAB review per change |
 | Validation period | None | 2 weeks | 4 weeks |
 | Impact assessment | Optional | Required for feature changes | Required for all changes |

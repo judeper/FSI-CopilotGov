@@ -495,6 +495,7 @@ Aligned documentation with Microsoft's [Secure and Govern Microsoft 365 Copilot]
 - **1.4** Semantic Index Governance — added authoritative sources management (designate up to 100 SharePoint sites via admin center)
 - **1.7** SharePoint Advanced Management — added Agent insight report (GA), Catalog management (Preview), SharePoint Admin Agent (Preview)
 - **4.1** Admin Settings — added Baseline Security Mode (BSM, 18-20 settings, simulation mode) and expanded Entra AI Administrator with dedicated homepage
+  - **Correction 2026-09-23:** Current Microsoft Learn wording describes Baseline Security Mode as covering "key Microsoft 365 services" and the Copilot administration role as **AI Administrator**.
 - **2.14** Declarative Agents Governance — added agent pinning controls (up to 3 agents per user, admin-enforced)
 - **2.1** DLP Policies — made prompt-level DLP policy location explicit (Roadmap 548671, Public Preview March 2026, GA June 2026)
 - **3.11** Record Keeping — added Cohasset Associates December 2024 compliance assessment reference (SEC 17a-4, FINRA 4511, CFTC 1.31)
