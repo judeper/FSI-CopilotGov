@@ -47,7 +47,7 @@ Using your organization's vendor risk assessment framework, complete the assessm
 **Portal:** Microsoft 365 Admin Center
 **Path:** Copilot > Settings > View all
 
-Review the provider paths separately and retain screenshots or exports showing the current setting and assigned users or groups:
+Review the provider paths separately and retain screenshots or exports showing the current setting and assigned users or groups. Use Microsoft Learn's current role names in evidence: Anthropic provider changes require **AI Administrator** or **Global Administrator**, while SpaceXAI provider changes require **Global Administrator**.
 
 1. Open **AI providers operating as Microsoft subprocessors** and review Anthropic.
    - Record whether standard Anthropic models are enabled and who can access them.

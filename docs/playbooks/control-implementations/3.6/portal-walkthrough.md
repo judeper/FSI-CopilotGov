@@ -5,7 +5,7 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 ## Prerequisites
 
 - **Role:** Purview Compliance Admin, Supervisory Principal
-- **License:** Microsoft 365 E5 or E5 Compliance add-on
+- **License:** Eligible Communication Compliance licensing, such as Microsoft Purview Suite (formerly Microsoft 365 E5 Compliance), Office 365 E5, or Office 365 E3 with the Advanced Compliance add-on
 - **Access:** Microsoft Purview portal, Microsoft 365 Admin Center
 
 ## Steps
@@ -13,9 +13,9 @@ Step-by-step portal configuration for establishing supervisory controls over Cop
 ### Step 1: Define Supervisory Hierarchy in Purview
 
 **Portal:** Microsoft Purview portal
-**Path:** Solutions > Communication compliance > Supervisory review settings
+**Path:** Solutions > Communication compliance > Policies (verify tenant navigation; if a separate supervisory-review settings page exists in your tenant, capture the exact label)
 
-1. Map the supervisory hierarchy by assigning supervising principals to groups of registered representatives.
+1. Map the supervisory hierarchy through each Communication Compliance policy's scoped users and reviewers. Verify in your tenant whether a separate supervisory-review settings page exists before documenting a standalone hierarchy path.
 2. Create supervisor groups aligned with business units (wealth management, trading, advisory).
 3. Each supervisor should be assigned no more than 50 supervised users to maintain effective review capacity.
 

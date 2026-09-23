@@ -11,8 +11,8 @@ Test cases and evidence collection procedures to validate communication complian
   1. Navigate to Communication compliance > Policies in the Purview portal.
   2. Verify the FSI Copilot policy shows status "Active".
   3. Confirm the supervised user scope includes all Copilot-licensed users.
-  4. Verify all required locations (Exchange, Teams, Copilot interactions) are enabled.
-- **Expected Result:** Policy is active, correctly scoped to Copilot users, and covers all communication channels.
+  4. Verify all required locations (Exchange, Teams, Microsoft Copilot experiences, and any approved Enterprise AI apps / Other AI apps categories) are enabled.
+- **Expected Result:** Policy is active, correctly scoped to Copilot users, and covers all approved communication and generative AI locations.
 - **Evidence:** Screenshot of policy configuration showing status, scope, and locations.
 
 ### Test 2: Copilot-Assisted Communication Detection
@@ -41,7 +41,7 @@ Test cases and evidence collection procedures to validate communication complian
 
 - **Objective:** Confirm that CC policy matches generate IRM risk indicators for the affected user
 - **Steps:**
-  1. Confirm IRM integration is enabled: navigate to **Communication compliance > Settings > Insider Risk Management integration** and verify the toggle is On.
+  1. Confirm Communication Compliance indicators are enabled in IRM: navigate to **Insider Risk Management > Settings > Policy indicators** and verify the relevant Communication Compliance indicators or custom CC policies are selected.
   2. Trigger a CC policy match using a test account (send a Copilot-drafted message with promissory language as in Test 2).
   3. Wait 24 hours after the CC match is logged in the review queue.
   4. Navigate to the IRM dashboard (Control 2.10) and search for risk events associated with the test account.

@@ -17,11 +17,11 @@ Common issues and resolution steps for AI disclosure and transparency controls.
 ### Issue 2: DLP Policy Not Detecting Copilot-Assisted Content
 
 - **Symptoms:** External emails drafted with Copilot assistance are sent without AI disclosure and are not blocked by DLP.
-- **Root Cause:** The DLP rule conditions may not correctly identify Copilot-assisted content, or the sensitivity label is not being automatically applied.
+- **Root Cause:** The DLP rule conditions may not correctly identify the supported disclosure signal, or the sensitivity label is not being automatically applied. Do not assume a generic Copilot-created metadata condition exists unless verified in the tenant.
 - **Resolution:**
   1. Verify the DLP policy is enabled and distributed.
-  2. Check that the DLP rule conditions correctly reference the AI-Assisted Content label or Copilot metadata.
-  3. Consider implementing auto-labeling to apply the AI-Assisted Content label to Copilot-generated content automatically.
+  2. Check that the DLP rule conditions correctly reference supported signals such as the AI-Assisted Content sensitivity label, disclosure text/content markings, sensitive information types, trainable classifiers, Communication Compliance policy matches, or Purview audit evidence.
+  3. Consider implementing auto-labeling or workflow controls to apply the AI-Assisted Content label where the firm has a verified signal for AI-assisted content.
   4. As an interim measure, rely on user training and communication compliance review for detection.
 
 ### Issue 3: Users Bypassing AI Disclosure Requirements
@@ -47,7 +47,7 @@ Common issues and resolution steps for AI disclosure and transparency controls.
 ## Diagnostic Steps
 
 1. **Check label deployment:** `Get-LabelPolicy | Select Name, Enabled, DistributionStatus`
-2. **Review DLP incidents:** `Get-DlpDetectionsReport -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date)` <!-- Get-DlpDetailReport deprecated; use Get-DlpDetectionsReport in current Exchange Online PowerShell -->
+2. **Review DLP incidents:** Use `Export-ActivityExplorerData` for Activity Explorer DLP events, for example `Export-ActivityExplorerData -StartTime (Get-Date).AddDays(-7) -EndTime (Get-Date) -OutputFormat Json -Filter1 @("Activity","DLPRuleMatch","DLPInfo")`; `Get-DlpDetectionsReport` is retiring.
 3. **Verify content markings:** Open a labeled document and check for header/footer visibility.
 4. **Test DLP enforcement:** Send a test email to an external address without disclosure language.
 

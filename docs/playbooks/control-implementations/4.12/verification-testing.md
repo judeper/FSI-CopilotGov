@@ -15,16 +15,16 @@ Test cases and evidence collection procedures for Copilot change management proc
 - **Expected Result:** All Copilot Message Center announcements are captured and delivered to stakeholders.
 - **Evidence:** Script output compared with Admin Center list and notification email samples.
 
-### Test 2: Targeted Release Validation Process
+### Test 2: Release Preference Validation Process
 
-- **Objective:** Confirm that new Copilot features are validated in the targeted release group before general rollout
+- **Objective:** Confirm that new Copilot features are validated in a targeted release group or Copilot Standard/Deferred release audience before broad rollout
 - **Steps:**
-  1. Identify a recent Copilot feature that was released via targeted release.
-  2. Verify the feature was available to the validation group before general users.
+  1. Identify a recent Copilot feature that was released via targeted release or a Copilot major update tagged as deferred-capable in Message Center.
+  2. Verify the feature was available to the validation group before broad production users, or that Deferred Release delayed the feature for the intended production audience.
   3. Confirm a validation assessment was completed and documented.
   4. Verify the CAB approved the general rollout after validation.
-- **Expected Result:** Feature was validated in the targeted group with documented assessment and CAB approval.
-- **Evidence:** Validation assessment document and CAB approval record.
+- **Expected Result:** Feature was validated in the release-preference group with documented assessment and CAB approval.
+- **Evidence:** Validation assessment document, CAB approval record, Message Center post, and screenshot or export of the tenant release-preference configuration.
 
 ### Test 3: Change Advisory Board Process Compliance
 

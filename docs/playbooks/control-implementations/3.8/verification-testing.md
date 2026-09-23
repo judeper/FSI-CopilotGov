@@ -75,9 +75,9 @@ Test cases and evidence collection procedures to validate alignment with OCC and
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| OCC Bulletin 2011-12 | Model inventory and validation | Supports compliance with model risk management framework |
-| OCC Bulletin 2025-26 | Proportionality for community banks | Provides documented rationale for simplified MRM approach |
-| SR 11-7 | Ongoing monitoring and outcome analysis | Helps meet supervisory expectations for model performance tracking |
+| OCC Bulletin 2026-13 / SR 26-2 | Current model-risk-management context; generative and agentic AI are outside the revised guidance's scope | Provides current context while legal/MRM owners decide the Copilot-specific framework |
+| OCC Bulletin 2025-26 | Community-bank proportionality context | Supports a documented firm-policy rationale for simplified MRM where applicable |
+| Historical SR 11-7 / OCC Bulletin 2011-12 principles | Voluntary internal-policy reference unless legal/MRM owners approve a current supervisory-source mapping | Helps structure model inventory, validation, and monitoring artifacts without claiming current supervisory coverage for generative AI |
 | OCC Third-Party Risk | Vendor risk assessment | Supports third-party risk management requirements for AI vendors |
 
 ## Next Steps

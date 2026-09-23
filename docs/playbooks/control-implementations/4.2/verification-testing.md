@@ -1,12 +1,12 @@
 # Control 4.2: Copilot in Teams Meetings Governance — Verification & Testing
 
-Test cases and evidence collection procedures to validate Copilot governance in Teams meetings, including the critical test for EnabledWithTranscript enforcement following Microsoft's March 2026 default change.
+Test cases and evidence collection procedures to validate Copilot governance in Teams meetings, including the critical test for explicit `EnabledWithTranscript` enforcement.
 
 ## Test Cases
 
 ### Test 1: EnabledWithTranscript Enforcement (Critical)
 
-- **Objective:** Verify that Copilot cannot activate in meetings without transcription — confirming the March 2026 default change has been remediated
+- **Objective:** Verify that Copilot cannot activate in regulated meetings without saved transcription, and that the policy explicitly enforces `EnabledWithTranscript`
 - **Steps:**
   1. Run the PowerShell audit script: `Get-CsTeamsMeetingPolicy -Identity "FSI-Regulated-Policy" | Select-Object Copilot`
   2. Confirm the output shows `EnabledWithTranscript`.

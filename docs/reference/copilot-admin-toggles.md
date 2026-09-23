@@ -89,7 +89,7 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 
 | Control | Portal Path | Default | B | R | Reg | Impact |
 |--------|------------|---------|---|---|-----|--------|
-| Baseline Security Mode | Settings > Org Settings > Security & Privacy > Baseline Security Mode | Off (opt-in) | On (simulation first) | On | On | Enforces minimum security baseline across 18-20 settings for Office, Exchange, Teams, SharePoint, Entra |
+| Baseline Security Mode | Settings > Org Settings > Security & Privacy > Baseline Security Mode | Off (opt-in) | On (simulation first) | On | On | Enforces a Microsoft-documented security baseline across key Microsoft 365 services, including Microsoft 365 apps, SharePoint and OneDrive, Teams, Exchange Online, and the Microsoft Entra identity platform |
 
 ---
 
