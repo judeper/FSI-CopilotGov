@@ -17,20 +17,41 @@ Connect-IPPSSession -UserPrincipalName admin@contoso.com
 
 ## Scripts
 
-### Script 1: Record Microsoft Copilot Experiences Retention Policy (Portal-Managed)
+### Script 1: Create or Record Microsoft Copilot Experiences Retention Policy
 
-Create the Microsoft Copilot experiences retention policies in the Purview portal because current retention policy PowerShell syntax does not expose a Copilot-specific location switch for this retention location. Use **Data lifecycle management** > **Microsoft 365** > **Retention policies** and retain portal evidence with the records management schedule.
+Microsoft documents `*-AppRetentionCompliance*` cmdlets for newer retention locations, including Microsoft Copilot experiences. Verify the cmdlets and preview application values in the tenant before relying on automation. If the cmdlets or application values are unavailable, create the Microsoft Copilot experiences retention policies in the Purview portal and retain portal evidence with the records management schedule.
 
 ```powershell
-# Export evidence for portal-created Microsoft Copilot experiences policies by name.
-# Create FSI-Copilot-Experiences-Retention-3Year in the Purview portal for baseline deployments.
-# For regulated deployments, create FSI-Copilot-Experiences-Retention-6Year in the portal.
+# Create a Microsoft Copilot experiences policy where AppRetention cmdlets are available.
+$copilotApplications = "User:M365Copilot,CopilotForSecurity,CopilotinFabricPowerBI,CopilotStudio,CopilotinBusinessApplicationplatformsSales,SQLCopilot"
+
+if (Get-Command New-AppRetentionCompliancePolicy -ErrorAction SilentlyContinue) {
+    New-AppRetentionCompliancePolicy `
+        -Name "FSI-Copilot-Experiences-Retention-3Year" `
+        -Applications $copilotApplications `
+        -Comment "Retains Microsoft Copilot experiences content per FSI policy" `
+        -Enabled $true
+
+    New-AppRetentionComplianceRule `
+        -Name "FSI-Copilot-Experiences-3yr" `
+        -Policy "FSI-Copilot-Experiences-Retention-3Year" `
+        -RetentionDuration 1095 `
+        -RetentionComplianceAction Keep
+} else {
+    Write-Warning "AppRetention cmdlets unavailable. Create the policy in the Purview portal and retain portal evidence."
+}
+
+# Export evidence for Microsoft Copilot experiences policies by approved name.
 $copilotExperiencePolicyNames = @(
     "FSI-Copilot-Experiences-Retention-3Year",
     "FSI-Copilot-Experiences-Retention-6Year"
 )
 
 foreach ($policyName in $copilotExperiencePolicyNames) {
+    if (Get-Command Get-AppRetentionCompliancePolicy -ErrorAction SilentlyContinue) {
+        Get-AppRetentionCompliancePolicy -Identity $policyName -ErrorAction SilentlyContinue |
+            Select-Object Name, Enabled, DistributionStatus
+    }
     Get-RetentionCompliancePolicy -Identity $policyName -ErrorAction SilentlyContinue |
         Select-Object Name, Enabled, DistributionStatus
 }

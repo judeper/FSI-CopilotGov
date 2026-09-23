@@ -148,12 +148,10 @@ Write-Host "FFIEC governance report generated with live tenant data" -Foreground
 
 ```powershell
 # Generate FFIEC examination readiness scorecard with tenant verification
-# Booklet versions per FFIEC: InfoSec (2016), AIO (2021), Audit (2024), Management (2015)
-# NEEDS_HUMAN_REVIEW: Verify publication years against https://ithandbook.ffiec.gov/
-# particularly "Audit (2024)" which may not yet be published.
+# Booklet versions per FFIEC public sources: InfoSec (2016), AIO (2021), Audit (2003), Management (2015)
 
 $booklets = @(
-    @{Booklet="Audit (2024)"; Controls="3.1, 3.12"; VerifyCmdlet="Get-AdminAuditLogConfig"},
+    @{Booklet="Audit (2003)"; Controls="3.1, 3.12"; VerifyCmdlet="Get-AdminAuditLogConfig"},
     @{Booklet="Information Security (2016)"; Controls="2.1-2.15"; VerifyCmdlet="Get-DlpCompliancePolicy"},
     @{Booklet="Management (2015)"; Controls="3.6, 3.8"; VerifyCmdlet="Get-RetentionCompliancePolicy"},
     @{Booklet="Architecture, Infrastructure & Operations (AIO) (2021)"; Controls="4.1-4.13"; VerifyCmdlet="Get-Label"},

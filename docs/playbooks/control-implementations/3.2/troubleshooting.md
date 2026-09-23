@@ -49,7 +49,7 @@ Common issues and resolution steps for Copilot data retention policy configurati
 - **Symptoms:** Auto-apply retention labels are not being applied to documents created with Copilot assistance.
 - **Root Cause:** Auto-apply label policies may not detect Copilot-generated content characteristics, or the policy indexing is incomplete.
 - **Resolution:**
-  1. Verify the label policy is published to the correct locations, including the Microsoft Copilot experiences location for Copilot Chat content.
+  1. Verify the label policy is published to supported file and email locations. For Copilot Chat prompts and responses, verify the retention policy covering Microsoft Copilot experiences instead of expecting a retention label policy to target that location.
   2. Confirm the auto-apply condition matches the content correctly (keyword, trainable classifier, or sensitive info type).
   3. Allow up to 7 days for auto-apply policies to fully index and apply.
   4. Consider using manual labeling or default labels as an interim approach.

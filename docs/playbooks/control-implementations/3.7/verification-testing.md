@@ -61,9 +61,9 @@ Test cases and evidence collection procedures to validate regulatory reporting c
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| FINRA 3120 | Annual supervisory control report | Supports compliance with data-driven supervisory reporting |
+| FINRA 3120 | Internal annual supervisory-control report to senior management, not a regulator filing | Supports data-driven supervisory-control reporting |
 | SEC Form ADV | Disclosure of AI tool usage | Helps meet advisory disclosure obligations |
-| OCC 2011-12 | Model risk management reporting | Supports risk reporting requirements for AI systems |
+| OCC 2026-13 / SR 26-2 | Current model-risk-management context; generative and agentic AI are outside the revised guidance's scope | Supports risk reporting context for AI governance without treating Copilot as covered by the revised MRM guidance |
 | FFIEC | IT examination data requests | Helps meet examiner data production requirements |
 
 ## Next Steps
