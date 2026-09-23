@@ -495,7 +495,7 @@
       "tier": "Baseline",
       "title": "Control 3.2: Data Retention Policies for Copilot Interactions",
       "path": "docs/controls/pillar-3-compliance/3.2-data-retention-policies.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-23",
       "regulatory_references": [
         "FINRA 4511 (Books and Records)",
         "SEC 17a-4 (Preservation of Records)",
@@ -554,7 +554,7 @@
       "tier": "Regulated",
       "title": "Control 3.6: Supervision and Oversight (FINRA Rule 3110 / SEC Reg BI)",
       "path": "docs/controls/pillar-3-compliance/3.6-supervision-oversight.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-23",
       "regulatory_references": [
         "FINRA 3110 (Supervision)",
         "FINRA 3120 (Supervisory Control System)",
@@ -568,7 +568,7 @@
       "tier": "Recommended",
       "title": "Control 3.7: Regulatory Reporting (FINRA, SEC, SOX, GLBA, CFPB UDAAP)",
       "path": "docs/controls/pillar-3-compliance/3.7-regulatory-reporting.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-23",
       "regulatory_references": [
         "FINRA 4530 (Reporting Requirements)",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR) (Internal Controls)",
@@ -582,7 +582,7 @@
       "tier": "Regulated",
       "title": "Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI)",
       "path": "docs/controls/pillar-3-compliance/3.8-model-risk-management.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-23",
       "regulatory_references": [
         "SR 26-2 / OCC Bulletin 2026-13 (Revised Guidance on Model Risk Management, April 2026 — supersedes SR 11-7 / OCC Bulletin 2011-12 but explicitly excludes generative and agentic AI; Copilot governance therefore continues to apply SR 11-7 / OCC Bulletin 2011-12 principles as the most recent applicable guidance)",
         "OCC Bulletin 2025-26 (Model Risk Management — Community Bank Proportionality)",
@@ -596,7 +596,7 @@
       "tier": "Regulated",
       "title": "Control 3.9: AI Disclosure, Transparency, and SEC Marketing Rule",
       "path": "docs/controls/pillar-3-compliance/3.9-ai-disclosure-transparency.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-23",
       "regulatory_references": [
         "SEC Marketing Rule (Rule 206(4)-1)",
         "SEC Regulation Best Interest (Reg BI)",
@@ -636,7 +636,7 @@
       "tier": "Recommended",
       "title": "Control 3.12: Evidence Collection and Audit Attestation",
       "path": "docs/controls/pillar-3-compliance/3.12-evidence-collection.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-23",
       "regulatory_references": [
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
         "PCAOB Auditing Standards (AS 2201)",
@@ -649,7 +649,7 @@
       "tier": "Recommended",
       "title": "Control 3.13: FFIEC IT Examination Handbook Alignment",
       "path": "docs/controls/pillar-3-compliance/3.13-ffiec-alignment.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-23",
       "regulatory_references": [
         "FFIEC IT Examination Handbook (Information Security, Audit, Management, Operations Booklets)",
         "FFIEC Cybersecurity Assessment Tool (CAT)"

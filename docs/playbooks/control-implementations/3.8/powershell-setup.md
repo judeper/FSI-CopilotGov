@@ -1,6 +1,6 @@
 # Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI) — PowerShell Setup
 
-Automation scripts for collecting AI inventory data, verifying the Copilot control environment, and exporting usage metrics that feed MRM ongoing monitoring per OCC 2011-12 and SR 11-7.
+Automation scripts for collecting AI inventory data, verifying the Copilot control environment, and exporting usage metrics that feed the firm's approved MRM ongoing-monitoring process. Treat SR 26-2 / OCC Bulletin 2026-13 as current model-risk context and the historical 2011 guidance as an internal-policy reference unless legal/MRM owners approve a current supervisory-source mapping for Copilot.
 
 ## Prerequisites
 

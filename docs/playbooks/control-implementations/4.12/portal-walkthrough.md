@@ -4,7 +4,7 @@ Step-by-step portal configuration for establishing change management processes g
 
 ## Prerequisites
 
-- **Role:** Entra Global Admin, Microsoft 365 Service Administrator
+- **Role:** Global Administrator for legacy Targeted release; Office Apps Admin, Security Admin, or AI Admin for Copilot Standard/Deferred release preferences; Message center reader or another eligible Microsoft 365 admin role for Message Center monitoring. Verify role availability and tenant UI access in the target tenant.
 - **License:** Microsoft 365 E5 with Copilot add-on
 - **Access:** Microsoft 365 Admin Center, Microsoft 365 Message Center
 

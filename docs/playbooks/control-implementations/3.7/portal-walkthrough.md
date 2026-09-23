@@ -5,7 +5,7 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 ## Prerequisites
 
 - **Role:** Purview Compliance Admin or Regulatory Reporting Officer
-- **License:** Microsoft 365 E5 or E5 Compliance add-on
+- **License:** Eligible Microsoft Purview/Communication Compliance licensing, such as Microsoft Purview Suite (formerly Microsoft 365 E5 Compliance), Office 365 E5, or Office 365 E3 with the Advanced Compliance add-on
 - **Access:** Microsoft Purview portal, Microsoft 365 Admin Center
 
 ## Steps
@@ -51,10 +51,10 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 ### Step 4: Establish Reporting Calendar
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Settings > Org settings > Compliance reporting
+**Path:** Verify the current reporting-calendar location in the Microsoft 365 admin center or the firm's GRC tool; public Microsoft docs do not confirm a stable **Settings > Org settings > Compliance reporting** breadcrumb
 
 1. Document the regulatory reporting calendar with deadlines:
-   - FINRA annual reports (FINRA Rule 3120) — annual
+   - FINRA internal supervisory-control report (FINRA Rule 3120; not a regulator filing) — annual
    - SEC Form ADV amendments (if applicable) — annual/material changes
    - OCC supervisory reports — as required by examination
 2. Set calendar reminders and assign report owners.
@@ -71,9 +71,9 @@ Step-by-step portal configuration for establishing regulatory reporting capabili
 
 ## Regulatory Alignment
 
-- **FINRA Rule 3120** — Supports compliance with annual supervisory control report requirements
+- **FINRA Rule 3120** — Supports internal annual supervisory-control report requirements to senior management; it is not itself a regulator filing
 - **SEC Form ADV** — Helps meet disclosure obligations for AI tool usage in advisory practices
-- **OCC Bulletin 2011-12** — Supports model risk management reporting requirements
+- **OCC Bulletin 2026-13 / Federal Reserve SR 26-2 revised model-risk-management guidance** — Current model-risk governance reference; note that the 2026 guidance rescinds OCC Bulletin 2011-12 / supersedes SR 11-7 and states generative AI and agentic AI models are outside its scope
 
 ## Next Steps
 
