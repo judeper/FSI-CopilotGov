@@ -68,7 +68,7 @@ After creating the Microsoft Copilot experiences retention policy:
 1. Create a retention label named `FSI-Copilot-Regulatory-Record-6yr`.
 2. Set the retention period to 6 years from creation date.
 3. Mark as a regulatory record if required by your compliance framework.
-4. Publish the label to relevant SharePoint sites, OneDrive locations, and the Microsoft Copilot experiences location.
+4. Publish the label to supported file and email locations such as SharePoint sites, OneDrive locations, Exchange email, and Microsoft 365 Groups as applicable. Use retention policies, not retention labels, for Copilot prompts and responses in the Microsoft Copilot experiences location; use auto-apply retention labels for cloud attachments referenced in Copilot when the goal is to retain file versions.
 
 ### Step 6: Evaluate Priority Cleanup for Documented Storage Remediation (Recommended Tier)
 

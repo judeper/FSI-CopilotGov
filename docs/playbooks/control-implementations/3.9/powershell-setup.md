@@ -137,10 +137,18 @@ $startDate = (Get-Date).AddDays(-90)
 $endDate = Get-Date
 
 # Supervision policy match and review action events
-$supervisionEvents = Search-UnifiedAuditLog `
+$policyMatches = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -Operations "SupervisionPolicyMatch","SupervisionReviewAction" `
+    -Operations SupervisionRuleMatch `
     -ResultSize 5000
+
+$reviewActions = Search-UnifiedAuditLog `
+    -StartDate $startDate -EndDate $endDate `
+    -RecordType AeD `
+    -Operations SupervisoryReviewTag `
+    -ResultSize 5000
+
+$supervisionEvents = @($policyMatches) + @($reviewActions)
 
 # Parse structured audit data for each event
 $parsed = $supervisionEvents | ForEach-Object {

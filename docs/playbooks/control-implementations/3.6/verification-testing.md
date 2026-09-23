@@ -53,7 +53,7 @@ Test cases and evidence collection procedures for validating supervisory control
 - **Steps:**
   1. Deploy a test Teams channel agent or use an existing declarative agent in a non-production channel.
   2. Have a test registered representative interact with the agent (e.g., ask it to summarize account information or draft a communication).
-  3. Wait 15–30 minutes for audit events to propagate to the Purview audit log.
+  3. Wait for audit events to propagate to the Purview audit log using the tenant's documented audit-ingestion expectation; allow up to 24 hours before treating delayed events as missing.
   4. Run Script 5 (Agent Interaction Audit) from the PowerShell setup guide to retrieve agent-specific CopilotInteraction events.
   5. Verify the returned records contain: `AgentId`, `AgentName`, the interacting user's identity, and the interaction timestamp.
   6. Confirm the `AccessedResources.XPIADetected` flag is absent or `false` for normal interactions (no cross-prompt injection attempt detected on referenced resources).

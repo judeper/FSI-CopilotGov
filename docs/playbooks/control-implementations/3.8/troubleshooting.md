@@ -40,7 +40,7 @@ Common issues and resolution steps for model risk management compliance related 
 - **Root Cause:** AI-generated content tools do not fit neatly into traditional model tiering frameworks designed for quantitative financial models. Use cases may span multiple risk levels.
 - **Resolution:**
   1. Apply the higher tier when use cases span multiple risk levels — if any approved use case involves client-facing activities or lending workflows, do not classify as Tier 3.
-  2. Reference OCC Bulletin 2011-12 and SR 11-7 on the materiality of model outputs for tier determination. The key question: could Copilot outputs in the approved use cases directly influence decisions affecting clients or regulated activities?
+  2. Reference the firm's approved model-risk policy and the current SR 26-2 / OCC Bulletin 2026-13 context, noting that the revised guidance excludes generative and agentic AI. The key question remains: could Copilot outputs in the approved use cases directly influence decisions affecting clients or regulated activities?
   3. Document the full approved use-case register before tier assignment — tier follows use cases, not general capability.
   4. Seek guidance from the firm's model risk management committee and document the outcome.
   5. If Copilot usage evolves to include higher-risk activities, update the tier and associated governance promptly.
@@ -48,11 +48,11 @@ Common issues and resolution steps for model risk management compliance related 
 ### Issue 5: Proportionality Determination for Mid-Size Institutions
 
 - **Symptoms:** A mid-size institution (not a community bank, but not a large complex organization) is uncertain whether OCC Bulletin 2025-26 proportionality applies and what MRM tier to select.
-- **Root Cause:** OCC Bulletin 2025-26 was written with community banks in mind, but the proportionality principle applies more broadly. Mid-size institutions may have legitimate grounds for a simplified MRM approach depending on Copilot usage scope.
+- **Root Cause:** OCC Bulletin 2025-26 was written with community banks in mind. Mid-size institutions may still choose a simplified MRM approach as firm policy depending on Copilot usage scope, but should not present that choice as a direct regulator-prescribed Copilot tier without legal/MRM approval.
 - **Resolution:**
   1. Assess the actual risk profile: what use cases are approved, what is the volume and materiality of Copilot-assisted decisions, and what is the institution's overall complexity? Proportionality should reflect actual risk, not just asset size.
   2. Document the proportionality analysis in writing — even if the institution is not a community bank, a documented and reasoned proportionality determination is defensible in an examination.
-  3. If Copilot is used only for internal productivity (meeting summaries, document drafting, research support) with no direct client impact, a simplified MRM approach aligned with OCC Bulletin 2025-26 proportionality is supportable. Cite the bulletin and the usage scope limitation in the model inventory.
+  3. If Copilot is used only for internal productivity (meeting summaries, document drafting, research support) with no direct client impact, document any simplified MRM approach as firm policy. Cite OCC Bulletin 2025-26 only for community-bank proportionality context and record the usage scope limitation in the model inventory.
   4. If examiners challenge the proportionality determination, present the documented rationale — the quality of the documentation matters as much as the tier selected.
   5. For institutions uncertain about the correct approach: consult with outside counsel or regulatory advisory specialists familiar with OCC model risk management examination practice.
 
@@ -89,6 +89,8 @@ Common issues and resolution steps for model risk management compliance related 
 
 - [Control 3.7: Regulatory Reporting](../3.7/portal-walkthrough.md)
 - [Control 3.9: AI Disclosure and Transparency](../3.9/portal-walkthrough.md)
-- [OCC Bulletin 2011-12](https://www.occ.gov/news-issuances/bulletins/2011/bulletin-2011-12.html)
+- [OCC Bulletin 2026-13](https://www.occ.gov/news-issuances/bulletins/2026/bulletin-2026-13.html)
+- [Federal Reserve SR 26-2](https://www.federalreserve.gov/supervisionreg/srletters/SR2602.htm)
+- [OCC rescinded bulletins index](https://www.occ.gov/news-events/news-and-events-archive/rescinded-issuances/rescinded-occ-bulletins.html)
 - [OCC Bulletin 2025-26 (Community Bank MRM Proportionality)](https://www.occ.gov/news-issuances/bulletins/2025/bulletin-2025-26.html)
 - Back to [Control 3.8](../../../controls/pillar-3-compliance/3.8-model-risk-management.md)
