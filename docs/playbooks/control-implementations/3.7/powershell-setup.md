@@ -27,14 +27,15 @@ Connect-MgGraph -Scopes "Reports.Read.All", "Directory.Read.All"
 # They return HTTP 405 if accessed directly in a browser without authentication.
 $period = "D30"
 
-# Org-level usage summary
+# Org-level usage summary. Current Microsoft Graph endpoint returns CSV for v1.0;
+# request JSON format when your SDK/session supports it.
 $summary = Invoke-MgGraphRequest -Method GET `
-    -Uri "https://graph.microsoft.com/v1.0/reports/microsoft365CopilotUsageSummary(period='$period')"
+    -Uri "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUserCountSummary(period='$period')?`$format=application/json"
 $summary | ConvertTo-Json -Depth 5 | Out-File "CopilotUsageSummary_$period.json"
 
 # Per-user detail report (returns CSV download)
 Invoke-MgGraphRequest -Method GET `
-    -Uri "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUserDetailReport(period='$period')" `
+    -Uri "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='$period')" `
     -OutputFilePath "CopilotUserDetail_$period.csv"
 
 Write-Host "Copilot usage reports exported for period $period" -ForegroundColor Green
@@ -76,18 +77,23 @@ Write-Host "Exported $($results.Count) Copilot audit records" -ForegroundColor G
 
 ```powershell
 # Report Copilot license assignments by department using real SKU lookup
-# Resolves MICROSOFT_365_COPILOT SKU ID from tenant subscriptions
-$sku = (Get-MgSubscribedSku |
-    Where-Object SkuPartNumber -eq "MICROSOFT_365_COPILOT").SkuId
+# Resolves current and legacy Microsoft Copilot SKU IDs from tenant subscriptions
+$copilotSkuPartNumbers = @("M365_Copilot", "Microsoft_365_Copilot", "MICROSOFT_365_COPILOT")
+$skuIds = @(Get-MgSubscribedSku |
+    Where-Object { $copilotSkuPartNumbers -contains $_.SkuPartNumber } |
+    Select-Object -ExpandProperty SkuId)
 
-if (-not $sku) {
-    Write-Warning "MICROSOFT_365_COPILOT SKU not found in tenant subscriptions"
+if ($skuIds.Count -eq 0) {
+    Write-Warning "No Microsoft Copilot SKU found in tenant subscriptions"
     return
 }
 
 $copilotUsers = Get-MgUser -All `
     -Property "DisplayName,Department,UserPrincipalName,AssignedLicenses" |
-    Where-Object { $_.AssignedLicenses.SkuId -contains $sku }
+    Where-Object {
+        $assignedSkuIds = @($_.AssignedLicenses | ForEach-Object { $_.SkuId })
+        @($assignedSkuIds | Where-Object { $skuIds -contains $_ }).Count -gt 0
+    }
 
 # Per-user export
 $copilotUsers |
@@ -156,11 +162,11 @@ Write-Host "Scorecard reflects live policy configuration" -ForegroundColor Green
 
 ## Limitations
 
-- Graph usage reports (`microsoft365CopilotUsageSummary`) require `Reports.Read.All` and may take up to 48 hours to reflect recent activity
-- `getMicrosoft365CopilotUserDetailReport` returns a CSV file download, not a JSON object — use `-OutputFilePath` to save
+- Graph usage reports under `/v1.0/copilot/reports/` require `Reports.Read.All` and may take up to 48 hours to reflect recent activity
+- `getMicrosoft365CopilotUsageUserDetail` returns a CSV file download in v1.0, not a JSON object — use `-OutputFilePath` to save
 - UAL search results are capped at 5,000 records per query; use date-range batching or the Graph API audit query endpoint for larger environments
 - DSPM for AI provides prompt/response content detail beyond UAL metadata, but has no PowerShell API — portal-only configuration
-- `Get-SupervisoryReviewPolicyV2` requires E5 Compliance or Communication Compliance add-on license
+- `Get-SupervisoryReviewPolicyV2` requires eligible Communication Compliance licensing, such as Microsoft Purview Suite, Office 365 E5, or Office 365 E3 with the Advanced Compliance add-on
 
 ## Next Steps
 

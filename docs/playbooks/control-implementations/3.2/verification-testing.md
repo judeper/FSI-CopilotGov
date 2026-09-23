@@ -69,16 +69,17 @@ Test cases and evidence collection procedures to confirm data retention policies
 - **Expected Result:** The three Purview retention location categories are visible. All FSI M365 Copilot retention policies target the Microsoft Copilot experiences location.
 - **Evidence:** Screenshot of retention policy location selector showing the three categories; screenshot of existing policies confirming Microsoft Copilot experiences is selected.
 
-### Test 7: Priority Cleanup Scope Verification (Recommended Tier — if configured)
+### Test 7: Priority Cleanup Approval Verification (Recommended Tier — if configured)
 
-- **Objective:** Confirm that priority cleanup applies only to the intended narrow scope of unsent Copilot drafts
+- **Objective:** Confirm that Priority cleanup is used only for a documented Microsoft-supported storage-remediation scenario and follows the required simulation and approval workflow
 - **Steps:**
-  1. Review the `FSI-Copilot-Draft-Priority-Cleanup` policy configuration.
-  2. Verify the policy is scoped to personal OneDrive accounts only (not shared sites or SharePoint).
-  3. Confirm that shared or sent documents in OneDrive are not subject to the cleanup policy (test by placing a shared document in the same OneDrive location and verifying it is not captured by the cleanup scope).
-  4. Verify the retention period is documented in the firm's records management schedule with regulatory rationale.
-- **Expected Result:** Priority cleanup policy is narrow in scope. No shared or sent documents are captured. Scope decision is documented.
-- **Evidence:** PowerShell output of policy configuration; records management schedule entry showing regulatory rationale.
+  1. Review the Priority cleanup request and confirm the scenario is documented (for example, stale Teams meeting recordings/transcripts or departed-user Preservation Hold Library cleanup).
+  2. Verify the mandatory simulation completed and the reviewed item sample matches the approved scenario.
+  3. Confirm that records and regulatory records are excluded from scope.
+  4. Confirm required approvals are recorded, including eDiscovery Administrator approval if any eDiscovery hold applies.
+  5. Verify the cleanup rationale is documented in the firm's records management schedule.
+- **Expected Result:** Priority cleanup is narrow in scope, simulation-backed, approved by the required roles, and does not target records or regulatory records.
+- **Evidence:** Priority cleanup simulation report, approval record, exclusion evidence for records/regulatory records, and records management schedule entry showing regulatory rationale.
 
 ## Evidence Collection
 
