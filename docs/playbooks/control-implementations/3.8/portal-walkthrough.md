@@ -29,8 +29,8 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
    - Assign risk tier and document rationale for tier selection
    - Include output monitoring schedule and vendor due diligence review cadence
 
-   **Path C — Regulated institutions with client-facing or lending Copilot use (Tier 1 / High):**
-   - Create a full model inventory entry with all required OCC 2011-12 fields
+   **Path C — Regulated institutions with client-facing or lending Copilot use (Tier 1 / High, if approved by legal/MRM owners):**
+   - Create a full model inventory entry with the firm's approved MRM fields (historical OCC 2011-12 fields may be used as an internal-policy reference where approved)
    - Include validation plan, output monitoring metrics, fair lending testing protocol, and governance chain
    - Schedule quarterly output review and annual comprehensive MRM assessment
 
@@ -76,7 +76,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
 | Model inventory entry | Required (all sizes; Tier 3 for community banks only if approved by firm policy and usage scope) | Required with tier classification and output monitoring schedule | Required with full firm-approved MRM fields and validation report |
-| Model validation frequency | Annual (vendor attestation review) | Semi-annual output quality assessment | Quarterly output review + annual comprehensive assessment |
+| Model validation frequency | Annual (vendor attestation review) policy example | Semi-annual output quality assessment policy example | Quarterly output review + annual comprehensive assessment policy example |
 | Performance monitoring | Manual supervisory review | Automated alerts | Continuous monitoring with defined thresholds |
 | Vendor risk assessment | Annual | Semi-annual | Annual + event-driven |
 | Proportionality documentation | Required for community banks (cite OCC Bulletin 2025-26) | Document tier rationale | N/A (full framework applies) |
@@ -86,7 +86,7 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 - **OCC Bulletin 2026-13 / Federal Reserve SR 26-2** — Current revised model-risk-management context; generative and agentic AI are outside the guidance's scope
 - **OCC Bulletin 2025-26** — Community-bank proportionality clarification; use only as part of a documented firm-policy rationale
 - **Historical SR 11-7 / OCC Bulletin 2011-12 principles** — Voluntary internal-policy reference only unless legal/MRM owners approve a current supervisory-source mapping for Copilot
-- **OCC Third-Party Risk Management** — Supports vendor risk management for AI services
+- **OCC Third-Party Risk Management** — Provides a vendor-risk reference for AI services; firms should confirm applicability with counsel
 
 ## Next Steps
 

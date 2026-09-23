@@ -31,8 +31,8 @@ The **Microsoft Copilot experiences** location is the primary retention target f
 3. Under **Choose the type of retention policy**, select **Static**.
 4. Select the locations to include:
    - **Microsoft Copilot experiences** — toggle to On
-5. Set retention period to **3 years** for communications baseline (SEC/FINRA minimum).
-6. For regulated deployments, create a separate 6-year policy for this location.
+5. Set retention period to **3 years** for the communications baseline if approved in the firm's records schedule (commonly cited for SEC/FINRA business-communication records; confirm applicability with counsel).
+6. For regulated deployments, create a separate 6-year policy for this location if approved in the firm's records schedule (commonly cited for broker-dealer/financial records; confirm applicability with counsel).
 7. Choose **Retain items for the specified period** with **Do nothing** at the end (retain only).
 8. Click **Submit**.
 
@@ -45,7 +45,7 @@ The **Microsoft Copilot experiences** location is the primary retention target f
 
 1. Create a policy named `FSI-Copilot-Generated-Content-Retention`.
 2. Select locations: **SharePoint sites**, **OneDrive accounts**, **Exchange email**.
-3. Set retention to **6 years** for financial records coverage per SEC Rule 17a-4(a).
+3. Set retention to **6 years** for financial records coverage if approved in the firm's records schedule; firms should confirm SEC Rule 17a-4(a) applicability with counsel.
 4. This policy covers documents, emails, and presentations created or modified with Copilot assistance.
 
 ### Step 4: Verify Microsoft Copilot Experiences Policy Distribution
@@ -66,7 +66,7 @@ After creating the Microsoft Copilot experiences retention policy:
 **Path:** purview.microsoft.com > Records management > File plan > Create a label
 
 1. Create a retention label named `FSI-Copilot-Regulatory-Record-6yr`.
-2. Set the retention period to 6 years from creation date.
+2. Set the retention period to 6 years from creation date if approved in the firm's records schedule.
 3. Mark as a regulatory record if required by your compliance framework.
 4. Publish the label to supported file and email locations such as SharePoint sites, OneDrive locations, Exchange email, and Microsoft 365 Groups as applicable. Use retention policies, not retention labels, for Copilot prompts and responses in the Microsoft Copilot experiences location; use auto-apply retention labels for cloud attachments referenced in Copilot when the goal is to retain file versions.
 
@@ -102,7 +102,7 @@ Threaded Copilot summaries (meeting recaps, conversation summaries) are retained
 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
-| Microsoft Copilot experiences retention | Required | Required | Required (6 years) |
+| Microsoft Copilot experiences retention | Required | Required | Required (6 years as a firm policy example; confirm applicability with counsel) |
 | Exchange retention (email + legacy Copilot Chat) | Required | Required | Required |
 | SharePoint/OneDrive retention | Required | Required | Required |
 | Teams retention | Required | Required | Required |
@@ -112,11 +112,11 @@ Threaded Copilot summaries (meeting recaps, conversation summaries) are retained
 
 ## Regulatory Alignment
 
-- **SEC Rule 17a-4(a)** — Six-year retention for broker-dealer records; Microsoft Copilot experiences location must be included
-- **SEC Rule 17a-3(a)(17)** — All communications relating to the member's business; conservative interpretation supports retaining all Copilot-generated content
-- **FINRA Rule 4511** — Books-and-records retention obligations; Copilot Chat history and meeting recaps are covered records
-- **FINRA Rule 4511(c)** — Preservation format requirements; threaded summaries must be retained in accessible, regulation-compliant format
-- **SOX Section 802** — Criminal penalties for record destruction; retention policies must prevent inadvertent deletion of Copilot-generated financial content
+- **SEC Rule 17a-4(a)** — Six-year retention citation for broker-dealer records; firms should confirm whether Microsoft Copilot experiences content is in scope with counsel
+- **SEC Rule 17a-3(a)(17)** — Communications-record citation; conservative retention of Copilot-generated content is a firm policy example pending counsel confirmation
+- **FINRA Rule 4511** — Books-and-records retention citation; firms should confirm with counsel whether Copilot Chat history and meeting recaps are in scope
+- **FINRA Rule 4511(c)** — Preservation format citation; firms should confirm threaded-summary treatment and accessible-format requirements with counsel
+- **SOX Section 802** — Record-destruction citation; firms should confirm which Copilot-generated financial content is in scope with counsel
 
 ## Next Steps
 

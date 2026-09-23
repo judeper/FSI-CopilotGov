@@ -62,8 +62,8 @@ Test cases and evidence collection procedures to validate alignment with FFIEC I
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FFIEC IT Examination Handbook | Cross-booklet IT governance | Supports comprehensive alignment with FFIEC examination expectations |
-| FFIEC CAT | Cybersecurity maturity assessment | Helps meet maturity level requirements for AI technology governance |
-| 12 CFR part 30, appendix D (OCC Heightened Standards) | Large institution governance | Supports compliance with enhanced governance requirements |
+| FFIEC CAT | Cybersecurity maturity assessment | Legacy maturity reference for AI technology governance; firms should confirm applicability with counsel |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Large institution governance | Provides evidence for enhanced governance review; firms should confirm applicability with counsel |
 
 ## Next Steps
 

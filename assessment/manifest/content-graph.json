@@ -584,7 +584,7 @@
       "path": "docs/controls/pillar-3-compliance/3.8-model-risk-management.md",
       "last_verified": "2026-09-23",
       "regulatory_references": [
-        "SR 26-2 / OCC Bulletin 2026-13 (Revised Guidance on Model Risk Management, April 2026 — supersedes SR 11-7 / OCC Bulletin 2011-12 but explicitly excludes generative and agentic AI; Copilot governance therefore continues to apply SR 11-7 / OCC Bulletin 2011-12 principles as the most recent applicable guidance)",
+        "SR 26-2 / OCC Bulletin 2026-13 (Revised Guidance on Model Risk Management, April 2026 — supersedes SR 11-7 / OCC Bulletin 2011-12 but explicitly excludes generative and agentic AI; firms using historical SR 11-7 / OCC Bulletin 2011-12 principles for Copilot should treat them as an internal-policy reference unless counsel approves a current supervisory-source mapping)",
         "OCC Bulletin 2025-26 (Model Risk Management — Community Bank Proportionality)",
         "ECOA (Equal Credit Opportunity Act)",
         "Fair Housing Act"

@@ -61,10 +61,10 @@ Common issues and resolution steps for model risk management compliance related 
 - **Symptoms:** An examiner or internal legal team questions whether M365 Copilot meets the SR 11-7 definition of a "model," creating uncertainty about whether any MRM framework is required.
 - **Root Cause:** SR 11-7 defines models as quantitative methods applying "statistical, economic, financial, or mathematical theories, techniques, and assumptions." Copilot is an LLM — not a traditional quantitative model — and there is genuine ambiguity about how the definition applies.
 - **Resolution:**
-  1. The consensus regulatory and industry view is to treat Copilot as a model subject to MRM (at some tier), rather than arguing it falls outside the definition. This is the safer compliance posture.
-  2. Document the model status determination in the inventory: "M365 Copilot is classified as a vendor-provided general-purpose LLM. It straddles the SR 11-7 model definition. The institution has elected to include it in the model inventory at [Tier X] as a prudent governance approach, consistent with the 2023 Interagency Guidance on AI."
-  3. Reference the 2023 Interagency AI Guidance, which confirms that existing risk management frameworks (including MRM) apply to AI technologies.
-  4. Avoid the position that Copilot requires no governance — this is the posture most likely to draw examiner scrutiny.
+  1. Treating Copilot as a model subject to MRM (at some tier) is a conservative firm policy option; confirm the approved posture with legal/MRM owners.
+  2. Document the model status determination in the inventory: "M365 Copilot is classified as a vendor-provided general-purpose LLM. It straddles the SR 11-7 model definition. The institution has elected to include it in the model inventory at [Tier X] as a prudent governance approach, pending legal/MRM owner confirmation."
+  3. Retain the 2023 Interagency AI Guidance citation only as "source identity pending confirmation" until legal/MRM owners identify the specific primary source.
+  4. Avoid the position that Copilot requires no governance unless legal/MRM owners approve that conclusion.
 
 ## Diagnostic Steps
 

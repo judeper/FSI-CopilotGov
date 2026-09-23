@@ -74,9 +74,9 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 ## Regulatory Alignment
 
-- **FFIEC IT Examination Handbook** — Supports compliance across Audit, Information Security, Management, and Architecture, Infrastructure & Operations (AIO) booklets
-- **FFIEC Cybersecurity Assessment Tool** — Helps meet maturity levels for AI-related technology governance
-- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Supports compliance with large institution IT governance requirements
+- **FFIEC IT Examination Handbook** — Provides evidence for review across Audit, Information Security, Management, and Architecture, Infrastructure & Operations (AIO) booklets; firms should confirm applicability with counsel
+- **FFIEC Cybersecurity Assessment Tool** — Legacy maturity reference for AI-related technology governance; firms should confirm applicability with counsel
+- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Provides evidence for large institution IT governance review; firms should confirm applicability with counsel
 
 ## Next Steps
 

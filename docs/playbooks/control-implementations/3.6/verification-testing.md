@@ -31,7 +31,7 @@ Test cases and evidence collection procedures for validating supervisory control
 - **Objective:** Verify that supervisory ratios are within acceptable limits for effective oversight
 - **Steps:**
   1. Run the supervisor-to-representative ratio script.
-  2. Verify no supervisor oversees more than 50 Copilot-enabled representatives.
+  2. Verify no supervisor exceeds the firm's approved capacity threshold; 50 Copilot-enabled representatives is a firm policy example.
   3. Review each supervisor's review queue backlog.
   4. Confirm all supervisors are completing reviews within the defined SLA.
 - **Expected Result:** All supervisory ratios are within policy limits and review SLAs are being met.
@@ -75,20 +75,20 @@ Test cases and evidence collection procedures for validating supervisory control
 
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
-| Supervisory review logs | Purview audit log | CSV export | 7 years |
-| Pre-send hold records | Message trace | CSV | 7 years |
+| Supervisory review logs | Purview audit log | CSV export | 7 years as a firm policy example; confirm retention schedule with counsel |
+| Pre-send hold records | Message trace | CSV | 7 years as a firm policy example; confirm retention schedule with counsel |
 | Supervisor ratio report | PowerShell | Text export | With control documentation |
-| Reg BI documentation samples | Review records | Redacted copies | 7 years |
-| Agent interaction audit records | Script 5 output | CSV export | 7 years |
+| Reg BI documentation samples | Review records | Redacted copies | 7 years as a firm policy example; confirm retention schedule with counsel |
+| Agent interaction audit records | Script 5 output | CSV export | 7 years as a firm policy example; confirm retention schedule with counsel |
 | WSP agent coverage gap report | Test 6 results | Document | With control documentation |
 
 ## Compliance Mapping
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| FINRA 3110 | Supervisory system and WSP requirements | Supports compliance with supervisory review obligations for AI-assisted activities |
-| FINRA 3110(a) | Supervisory system must cover all tools used by associated persons, including agents | Agent audit trail capture and WSP coverage verification confirm agent supervision |
-| SEC Reg BI | Care, disclosure, and conflict obligations | Helps meet best-interest documentation requirements for recommendations |
+| FINRA 3110 | Supervisory system and WSP citation | Provides evidence for supervisory review of AI-assisted activities; firms should confirm applicability with counsel |
+| FINRA 3110(a) | Supervisory system citation for tools used by associated persons | Agent audit trail capture and WSP coverage verification provide evidence for counsel/compliance review of agent supervision |
+| SEC Reg BI | Care, disclosure, and conflict citation | Provides evidence for best-interest documentation review; firms should confirm applicability with counsel |
 | FINRA 3120 | Supervisory control system testing | Supports annual testing of supervisory effectiveness including agent supervision |
 
 ## Next Steps

@@ -1,6 +1,6 @@
 # Control 3.9: AI Disclosure, Transparency, and SEC Marketing Rule — Portal Walkthrough
 
-Step-by-step portal configuration for implementing AI disclosure and transparency controls that support compliance with the SEC Marketing Rule and client communication transparency requirements for Copilot-generated content.
+Step-by-step portal configuration for implementing AI disclosure and transparency controls that provide evidence for SEC Marketing Rule and client communication transparency review for Copilot-generated content.
 
 ## Prerequisites
 
@@ -66,14 +66,14 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 |---------|----------|-------------|-----------|
 | AI content labeling | Optional | Recommended | Required |
 | Marketing material review | 25% | 100% | 100% |
-| AI disclosure in client comms | Optional | Recommended | Required |
+| AI disclosure in client comms | Optional | Recommended | Required when approved by firm policy/legal review |
 | DLP enforcement for disclosures | Notify | Block with override | Block with override |
 
 ## Regulatory Alignment
 
-- **SEC Marketing Rule (206(4)-1)** — Supports compliance with advertising and marketing disclosure requirements
-- **SEC Reg BI** — Helps meet disclosure obligations when AI assists in recommendation communications
-- **FINRA Rule 2210** — Supports fair and balanced communication requirements with AI transparency
+- **SEC Marketing Rule (206(4)-1)** — Provides evidence for advertising and marketing disclosure review; firms should confirm applicability with counsel
+- **SEC Reg BI** — Provides evidence for disclosure review when AI assists in recommendation communications; firms should confirm applicability with counsel
+- **FINRA Rule 2210** — Provides evidence for fair and balanced communication review with AI transparency; firms should confirm applicability with counsel
 
 ## Next Steps
 

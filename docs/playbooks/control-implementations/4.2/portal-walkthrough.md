@@ -92,14 +92,14 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 | Auto-transcription | On | On (mandatory for compliance) | On (mandatory) |
 | Auto-recording | Optional | On for scheduled meetings with clients | On for all regulated activities |
 | MNPI meeting Copilot | Disabled | Disabled | Disabled |
-| Meeting summary retention | Default | 3 years (FINRA/SEC) | 7 years (FINRA/SEC extended) |
+| Meeting summary retention | Default | 3 years (commonly cited FINRA/SEC business-communication example; confirm with counsel) | 7 years (firm policy example; confirm authority with counsel) |
 
 ## Regulatory Alignment
 
-- **SEC Rule 17a-4(b)(4)** — EnabledWithTranscript supports verbatim transcript preservation alongside AI-generated summaries, helping meet the 3-year readily accessible retention requirement
-- **FINRA Rule 3110** — Supports compliance with supervisory requirements for meeting documentation
-- **FINRA Rule 4511** — Preserves the underlying record (transcript) that validates the AI-generated meeting artifacts
-- **MiFID II** — Supports meeting documentation requirements for firms with EU operations
+- **SEC Rule 17a-4(b)(4)** — EnabledWithTranscript supports verbatim transcript preservation alongside AI-generated summaries; firms should confirm the 3-year business-communication mapping with counsel
+- **FINRA Rule 3110** — Provides evidence for supervisory review of meeting documentation; firms should confirm applicability with counsel
+- **FINRA Rule 4511** — Preserves the underlying record (transcript) that validates the AI-generated meeting artifacts; firms should confirm record classification with counsel
+- **MiFID II** — Provides evidence for meeting documentation review for firms with EU operations; firms should confirm applicability with counsel
 
 ## Next Steps
 
