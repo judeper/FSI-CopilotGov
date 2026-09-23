@@ -3,7 +3,7 @@
 Step-by-step portal configuration for aligning Microsoft 365 Copilot governance with the firm's approved model-risk policy, the current SR 26-2 / OCC Bulletin 2026-13 model-risk context, and OCC Bulletin 2025-26 community-bank proportionality guidance where applicable.
 
 !!! note "Regulatory applicability"
-    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, model classification, and supervisory-source mapping depend on the firm's regulatory status and approved MRM policy; confirm with counsel. See judeper/OceanSquad#242.
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, model classification, and supervisory-source mapping depend on the firm's regulatory status and approved MRM policy; confirm with counsel. See [judeper/OceanSquad#242](https://github.com/judeper/OceanSquad/issues/242).
 
 ## Prerequisites
 

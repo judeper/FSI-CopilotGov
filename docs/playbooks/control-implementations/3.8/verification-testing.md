@@ -3,7 +3,7 @@
 Test cases and evidence collection procedures to validate alignment with OCC and Federal Reserve model risk management requirements for Copilot.
 
 !!! note "Regulatory applicability"
-    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, model classification, and supervisory-source mapping depend on the firm's regulatory status and approved MRM policy; confirm with counsel. See judeper/OceanSquad#242.
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, model classification, and supervisory-source mapping depend on the firm's regulatory status and approved MRM policy; confirm with counsel. See [judeper/OceanSquad#242](https://github.com/judeper/OceanSquad/issues/242).
 
 ## Test Cases
 

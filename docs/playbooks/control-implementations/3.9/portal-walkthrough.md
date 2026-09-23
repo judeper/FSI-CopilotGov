@@ -3,7 +3,7 @@
 Step-by-step portal configuration for implementing AI disclosure and transparency controls that provide evidence for SEC Marketing Rule and client communication transparency review for Copilot-generated content.
 
 !!! note "Regulatory applicability"
-    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, disclosure duties, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See judeper/OceanSquad#241.
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, disclosure duties, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See [judeper/OceanSquad#241](https://github.com/judeper/OceanSquad/issues/241).
 
 ## Prerequisites
 

@@ -3709,7 +3709,6 @@ def fetch_federal_register_documents(
         abstract_tier = tier
         effective_text = abstract
         authoritative_body = ""
-        used_source_text = False
 
         should_fetch_detail = _should_fetch_federal_register_detail(
             title=title,
@@ -3804,19 +3803,26 @@ def fetch_federal_register_documents(
                 ):
                     tier, reason = source_tier, source_reason
                     effective_text = fallback_text
-                    used_source_text = True
 
-        classification_text = _prepare_classification_text(effective_text)
-        affected_controls = (
-            find_affected_controls_by_keywords(
+        if tier in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}:
+            abstract_controls = find_affected_controls_by_keywords(
                 title,
-                classification_text,
+                abstract,
                 config,
-                exclude_reference_only=used_source_text,
             )
-            if tier in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}
-            else []
-        )
+            body_controls = (
+                find_affected_controls_by_keywords(
+                    title,
+                    authoritative_body,
+                    config,
+                    exclude_reference_only=True,
+                )
+                if authoritative_body
+                else []
+            )
+            affected_controls = sorted(set(abstract_controls) | set(body_controls))
+        else:
+            affected_controls = []
 
         item = RegulatoryItem(
             source='Federal Register',
@@ -3882,6 +3888,9 @@ def fetch_finra_notices(
         )
         if requested_rejection:
             raise FinraListingError(requested_rejection)
+
+        if page_index > 0 and request_delay > 0:
+            time.sleep(request_delay)
 
         try:
             result = fetch_page(page_url, session, max_retries=max_retries)

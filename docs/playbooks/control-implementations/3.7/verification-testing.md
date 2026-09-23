@@ -3,7 +3,7 @@
 Test cases and evidence collection procedures to validate regulatory reporting capabilities for Copilot governance data.
 
 !!! note "Regulatory applicability"
-    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, reportability, cadence, recipients, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See judeper/OceanSquad#241.
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, reportability, cadence, recipients, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See [judeper/OceanSquad#241](https://github.com/judeper/OceanSquad/issues/241).
 
 ## Test Cases
 
