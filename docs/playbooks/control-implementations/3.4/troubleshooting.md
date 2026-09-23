@@ -17,9 +17,9 @@ Common issues and resolution steps for communication compliance monitoring of Co
 ### Issue 2: Copilot Communications Not Being Captured
 
 - **Symptoms:** Known Copilot-assisted communications do not appear in the monitoring scope or review queue.
-- **Root Cause:** The Copilot interaction location may not be included in the policy, or the user is not in the supervised scope.
+- **Root Cause:** The Microsoft Copilot experiences location may not be included in the policy, or the user is not in the supervised scope.
 - **Resolution:**
-  1. Edit the policy and verify "Copilot interactions" is enabled as a supervised location.
+  1. Edit the policy and verify **Microsoft Copilot experiences** is enabled as a generative AI location. If Enterprise AI apps or Other AI apps are in scope, confirm those locations and billing prerequisites separately.
   2. Confirm the user is a member of the supervised user group.
   3. Check that the user has an active Copilot license.
   4. Wait 24 hours after policy changes for full propagation.
@@ -27,12 +27,12 @@ Common issues and resolution steps for communication compliance monitoring of Co
 ### Issue 3: IRM Integration Not Showing CC Indicators
 
 - **Symptoms:** CC policy matches are occurring, but no corresponding risk indicators appear in the IRM dashboard for affected users.
-- **Root Cause:** Common causes include: IRM integration not enabled in CC Settings, propagation delay (up to 24 hours), licensing gap, or no active IRM policy targeting the affected users.
+- **Root Cause:** Common causes include: Communication Compliance indicators not selected in IRM policy indicators, propagation delay, licensing gap, or no active IRM policy targeting the affected users.
 - **Resolution:**
-  1. Verify IRM integration is enabled: navigate to **Communication compliance > Settings > Insider Risk Management integration** and confirm the toggle is On.
+  1. Verify Communication Compliance indicators are enabled: navigate to **Insider Risk Management > Settings > Policy indicators** and confirm the relevant CC indicators or custom CC policies are selected.
   2. Wait at least 24 hours after a CC match before expecting the IRM indicator to appear -- there is a propagation delay.
   3. Confirm the affected users are within the scope of at least one active IRM policy in Control 2.10.
-  4. Verify that both CC and IRM require E5 or equivalent licensing -- confirm licenses are assigned to affected users.
+  4. Verify that both CC and IRM require eligible Microsoft Purview licensing -- confirm licenses are assigned to affected users.
   5. Run Script 4 from the PowerShell Setup playbook to check the audit log for CC-sourced IRM events.
   6. If indicators still do not appear after 48 hours, open a support ticket with Microsoft referencing the IRM-CC integration toggle.
 
@@ -42,8 +42,8 @@ Common issues and resolution steps for communication compliance monitoring of Co
 - **Root Cause:** This framework's configuration guidance covers Microsoft 365 Copilot and Copilot Chat only. Security Copilot, Fabric Copilot, and Copilot Studio are mentioned in this control for awareness -- their CC monitoring configuration is outside this framework's scope.
 - **Resolution:**
   1. Confirm the surface in question is within scope for this framework (Microsoft 365 Copilot or Microsoft 365 Copilot Chat).
-  2. For out-of-scope surfaces (Security Copilot, Fabric Copilot, Copilot Studio), consult Microsoft documentation specific to those products for CC monitoring configuration.
-  3. For in-scope surfaces that are not being captured, verify "Copilot interactions" is enabled as a supervised location in the policy (see Issue 2).
+  2. For out-of-scope surfaces (Security Copilot, Fabric Copilot, Copilot Studio), consult Microsoft documentation specific to those products for CC monitoring configuration and billing prerequisites.
+  3. For in-scope surfaces that are not being captured, verify **Microsoft Copilot experiences** is enabled as a generative AI location in the policy (see Issue 2).
 
 ### Issue 5: Review Queue Backlog Growing
 
@@ -70,7 +70,7 @@ Common issues and resolution steps for communication compliance monitoring of Co
 
 1. **Check policy status:** Navigate to Communication compliance > Policies and verify status is "Active".
 2. **Review recent matches:** Check the policy dashboard for match volume trends over the past 30 days.
-3. **Verify IRM integration:** Navigate to Communication compliance > Settings > Insider Risk Management integration and confirm toggle is On.
+3. **Verify IRM integration:** Navigate to Insider Risk Management > Settings > Policy indicators and confirm Communication Compliance indicators are selected.
 4. **Run IRM audit check:** Use Script 4 from the PowerShell Setup playbook to check for CC-sourced IRM events.
 5. **Verify reviewer access:** Confirm all assigned reviewers have the Communication Compliance Analyst or Investigator role.
 6. **Test with known content:** Send a test message containing content that should trigger a match.
