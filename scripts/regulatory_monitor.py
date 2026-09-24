@@ -17,6 +17,7 @@ Usage:
 Exit Codes:
     0 - No new regulatory items detected
     3 - New regulatory items detected (triggers PR in CI)
+    4 - Partial/degraded run; at least one source was unavailable
     2 - Source or execution failure
 
 Exit code 1 is deliberately not used for findings because Python uses it for
@@ -83,6 +84,7 @@ STATE_FILE = DATA_DIR / 'monitor-state.json'
 EXIT_CLEAN = 0
 EXIT_FAILURE = 2
 EXIT_FINDINGS = 3
+EXIT_DEGRADED = 4
 
 # Source keys for unified state file
 SOURCE_KEY_FEDERAL_REGISTER = "regulatory-federal-register"
@@ -1381,6 +1383,20 @@ class FinraNoticeUnavailableError(RuntimeError):
     monitoring down forever, so the notice is excluded from the baseline and
     reported separately while the source run completes.
     """
+
+
+def _source_failure_reason(exc: Exception) -> str:
+    """Return a compact source-failure reason safe for logs and reports."""
+    reason = str(exc).strip()
+    return reason or exc.__class__.__name__
+
+
+def _source_display_name(source: str) -> str:
+    """Human-facing source label for report status sections."""
+    return {
+        "FINRA": "FINRA notices",
+        "Federal Register": "Federal Register",
+    }.get(source, source)
 
 
 def _prepare_classification_text(text: str) -> str:
@@ -3843,12 +3859,61 @@ def fetch_federal_register_documents(
     return items
 
 
+def _finra_document_id_from_url(url: str) -> str:
+    match = FINRA_NOTICE_ID_PATTERN.search(url)
+    if match:
+        return f"FINRA {match.group(1)}-{match.group(2)}"
+    return url
+
+
+def _finra_entry_key_for_link(link) -> Optional[str]:
+    url = link.get("data-monitor-canonical-url") or _canonical_finra_notice_url(
+        link.get("href", "")
+    )
+    if url is None:
+        return None
+    return _finra_document_id_from_url(url)
+
+
+def _finra_page_can_stop_at_known_lookback_boundary(
+    page_links,
+    known_entry_keys: Optional[set[str]],
+    listing_lookback_days: Optional[int],
+) -> bool:
+    """Return whether a page is a conservative known/old pagination boundary."""
+    if not known_entry_keys or listing_lookback_days is None:
+        return False
+    if listing_lookback_days < 0:
+        return False
+
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=listing_lookback_days)).date()
+    observed_dates = []
+    for link in page_links:
+        entry_key = _finra_entry_key_for_link(link)
+        if not entry_key or entry_key not in known_entry_keys:
+            return False
+        publication_date, synthetic = _derive_finra_publication_date(
+            link,
+            link.get("data-monitor-canonical-url") or link.get("href", ""),
+        )
+        if synthetic or not publication_date:
+            return False
+        try:
+            observed_dates.append(datetime.fromisoformat(publication_date).date())
+        except ValueError:
+            return False
+
+    return bool(observed_dates) and max(observed_dates) < cutoff
+
+
 def fetch_finra_notices(
     session: requests.Session,
     config: dict,
     limit: Optional[int] = None,
     detail_fetch_limit: Optional[int] = FINRA_DETAIL_FETCH_LIMIT,
     unavailable_notices: Optional[list[dict]] = None,
+    known_entry_keys: Optional[set[str]] = None,
+    listing_lookback_days: Optional[int] = None,
 ) -> list[RegulatoryItem]:
     """
     Scrape FINRA regulatory notices page.
@@ -3871,6 +3936,10 @@ def fetch_finra_notices(
     if unavailable_notices is None:
         unavailable_notices = []
     _, max_retries, request_delay = _get_operational_settings(config)
+    if listing_lookback_days is None and known_entry_keys:
+        listing_lookback_days = int(
+            config.get("operational", {}).get("finra_listing_lookback_days", 45)
+        )
 
     logger.info(f"Fetching FINRA notices from {FINRA_NOTICES_URL}...")
 
@@ -4031,6 +4100,21 @@ def fetch_finra_notices(
             elif _finra_link_quality(link) > _finra_link_quality(existing):
                 collected[canonical_url] = link
 
+        if (
+            page_index > 0
+            and _finra_page_can_stop_at_known_lookback_boundary(
+                page_links,
+                known_entry_keys,
+                listing_lookback_days,
+            )
+        ):
+            logger.info(
+                "Stopping FINRA pagination at page %s: all notices on the page "
+                "are already tracked and outside the %s-day lookback window",
+                page_index,
+                listing_lookback_days,
+            )
+            break
         if limit and len(collected) >= limit:
             break
         if page_index >= declared_last:
@@ -4069,13 +4153,7 @@ def fetch_finra_notices(
                 "FINRA notices page parsing failed: unsupported notice URL"
             )
 
-        match = FINRA_NOTICE_ID_PATTERN.search(url)
-        if match:
-            year_short = match.group(1)
-            notice_num = match.group(2)
-            document_id = f"FINRA {year_short}-{notice_num}"
-        else:
-            document_id = url
+        document_id = _finra_document_id_from_url(url)
 
         publication_date, publication_date_is_synthetic = (
             _derive_finra_publication_date(link, url)
@@ -4501,6 +4579,7 @@ def _validate_report_counts(
             raise ValueError(f"Report counts for {source!r} must be an object")
         fetched = counts.get("fetched")
         new = counts.get("new")
+        degraded = bool(counts.get("degraded", False))
         if (
             isinstance(fetched, bool)
             or isinstance(new, bool)
@@ -4511,6 +4590,10 @@ def _validate_report_counts(
             or new > fetched
         ):
             raise ValueError(f"Invalid fetched/new report counts for {source!r}")
+        if degraded and (fetched != 0 or new != 0):
+            raise ValueError(
+                f"Degraded report counts for {source!r} must not claim fetched/new records"
+            )
         expected_new = new_by_source.get(source, 0)
         if new != expected_new:
             raise ValueError(
@@ -4571,9 +4654,18 @@ def generate_regulatory_report(
     }
     if report_counts is not None:
         metadata["Fetched Items"] = report_counts["fetched"]
+        degraded_sources = [
+            _source_display_name(source)
+            for source, counts in source_counts.items()
+            if counts.get("degraded")
+        ]
+        if degraded_sources:
+            metadata["Degraded Sources"] = ", ".join(sorted(degraded_sources))
         for source in sorted(source_counts):
             metadata[f"{source} Fetched"] = source_counts[source]["fetched"]
             metadata[f"{source} New"] = source_counts[source]["new"]
+            if source_counts[source].get("degraded"):
+                metadata[f"{source} Status"] = "unavailable this run"
 
     lines.append(generate_report_header(
         title="Regulatory Monitor Report",
@@ -4588,6 +4680,26 @@ def generate_regulatory_report(
         'MEDIUM': len(medium_items),
         'NOISE': len(noise_items),
     }))
+
+    if source_counts:
+        degraded_sources = {
+            source: counts
+            for source, counts in source_counts.items()
+            if counts.get("degraded")
+        }
+        if degraded_sources:
+            lines.append("## Source availability\n")
+            lines.append(
+                "The monitor could not fetch every source. These sources were "
+                "**unavailable this run** and were not treated as \"no changes\".\n\n"
+            )
+            for source in sorted(degraded_sources):
+                reason = degraded_sources[source].get("reason", "source fetch failed")
+                lines.append(
+                    f"- **{_source_display_name(source)}:** unavailable this run "
+                    f"— {reason}\n"
+                )
+            lines.append("\n")
 
     # Summary table (for CRITICAL + HIGH only, for quick scanning)
     priority_items = critical_items + high_items
@@ -4765,75 +4877,120 @@ def _run_monitor() -> int:
     })
 
     all_new_items = []
-    source_counts: dict[str, dict[str, int]] = {}
+    source_counts: dict[str, dict[str, object]] = {}
+    requested_sources: list[str] = []
+    failed_sources: dict[str, str] = {}
 
     # Fetch from Federal Register
     if args.source in ['federal-register', 'all']:
+        requested_sources.append("Federal Register")
         logger.info("\n--- Federal Register ---")
         fed_state = get_source_state(state, SOURCE_KEY_FEDERAL_REGISTER)
 
-        # Determine since_date (last check or 30 days ago)
-        since_date = fed_state.get('last_checked')
-        if not since_date:
-            since_date = (datetime.now(timezone.utc) - timedelta(days=30)).strftime('%Y-%m-%d')
-            logger.info(f"No prior state, fetching documents from last 30 days")
-        else:
-            logger.info(f"Fetching documents since {since_date}")
+        try:
+            # Determine since_date (last check or 30 days ago)
+            since_date = fed_state.get('last_checked')
+            if not since_date:
+                since_date = (datetime.now(timezone.utc) - timedelta(days=30)).strftime('%Y-%m-%d')
+                logger.info(f"No prior state, fetching documents from last 30 days")
+            else:
+                logger.info(f"Fetching documents since {since_date}")
 
-        fed_items = fetch_federal_register_documents(session, since_date, config, limit=args.limit)
-        new_fed_items = check_for_new_items(SOURCE_KEY_FEDERAL_REGISTER, fed_items, fed_state)
-        source_counts["Federal Register"] = {
-            "fetched": len(fed_items),
-            "new": len(new_fed_items),
-        }
+            fed_items = fetch_federal_register_documents(session, since_date, config, limit=args.limit)
+            new_fed_items = check_for_new_items(SOURCE_KEY_FEDERAL_REGISTER, fed_items, fed_state)
+            source_counts["Federal Register"] = {
+                "fetched": len(fed_items),
+                "new": len(new_fed_items),
+            }
 
-        logger.info(f"Federal Register: {len(new_fed_items)} new items")
-        all_new_items.extend(new_fed_items)
+            logger.info(f"Federal Register: {len(new_fed_items)} new items")
+            all_new_items.extend(new_fed_items)
 
-        # Update state
-        if state_mutation_allowed:
-            update_source_state(SOURCE_KEY_FEDERAL_REGISTER, fed_items, state)
-            # Update last_checked to today
-            fed_state = get_source_state(state, SOURCE_KEY_FEDERAL_REGISTER)
-            fed_state['last_checked'] = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-            set_source_state(state, SOURCE_KEY_FEDERAL_REGISTER, fed_state)
+            # Update state
+            if state_mutation_allowed:
+                update_source_state(SOURCE_KEY_FEDERAL_REGISTER, fed_items, state)
+                # Update last_checked to today
+                fed_state = get_source_state(state, SOURCE_KEY_FEDERAL_REGISTER)
+                fed_state['last_checked'] = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+                set_source_state(state, SOURCE_KEY_FEDERAL_REGISTER, fed_state)
+        except Exception as exc:
+            reason = _source_failure_reason(exc)
+            logger.error("Federal Register unavailable this run: %s", reason)
+            failed_sources["Federal Register"] = reason
+            source_counts["Federal Register"] = {
+                "fetched": 0,
+                "new": 0,
+                "degraded": 1,
+                "reason": reason,
+            }
 
     # Fetch from FINRA
     if args.source in ['finra', 'all']:
+        requested_sources.append("FINRA")
         logger.info("\n--- FINRA Notices ---")
         finra_state = get_source_state(state, SOURCE_KEY_FINRA)
 
-        finra_unavailable: list[dict] = []
-        finra_items = fetch_finra_notices(
-            session, config, limit=args.limit, unavailable_notices=finra_unavailable
-        )
-        new_finra_items = check_for_new_items(SOURCE_KEY_FINRA, finra_items, finra_state)
-        source_counts["FINRA"] = {
-            "fetched": len(finra_items),
-            "new": len(new_finra_items),
-            "unavailable": len(finra_unavailable),
-        }
-        if finra_unavailable:
-            logger.warning(
-                "FINRA: %s notice(s) excluded from the baseline because the "
-                "source declares no available text: %s",
-                len(finra_unavailable),
-                ", ".join(
-                    str(entry.get("document_id") or entry.get("url"))
-                    for entry in finra_unavailable
-                ),
+        try:
+            finra_unavailable: list[dict] = []
+            finra_items = fetch_finra_notices(
+                session,
+                config,
+                limit=args.limit,
+                unavailable_notices=finra_unavailable,
+                known_entry_keys=set(finra_state.get("entries", {})),
             )
+            new_finra_items = check_for_new_items(SOURCE_KEY_FINRA, finra_items, finra_state)
+            source_counts["FINRA"] = {
+                "fetched": len(finra_items),
+                "new": len(new_finra_items),
+                "unavailable": len(finra_unavailable),
+            }
+            if finra_unavailable:
+                logger.warning(
+                    "FINRA: %s notice(s) excluded from the baseline because the "
+                    "source declares no available text: %s",
+                    len(finra_unavailable),
+                    ", ".join(
+                        str(entry.get("document_id") or entry.get("url"))
+                        for entry in finra_unavailable
+                    ),
+                )
 
-        logger.info(f"FINRA: {len(new_finra_items)} new items")
-        all_new_items.extend(new_finra_items)
+            logger.info(f"FINRA: {len(new_finra_items)} new items")
+            all_new_items.extend(new_finra_items)
 
-        # Update state
-        if state_mutation_allowed:
-            update_source_state(SOURCE_KEY_FINRA, finra_items, state)
+            # Update state
+            if state_mutation_allowed:
+                update_source_state(SOURCE_KEY_FINRA, finra_items, state)
+        except Exception as exc:
+            reason = _source_failure_reason(exc)
+            logger.error("FINRA notices unavailable this run: %s", reason)
+            failed_sources["FINRA"] = reason
+            source_counts["FINRA"] = {
+                "fetched": 0,
+                "new": 0,
+                "degraded": 1,
+                "reason": reason,
+            }
 
-    # Generate report if new items found
-    if all_new_items:
-        logger.info(f"\n=== {len(all_new_items)} total new regulatory items detected ===")
+    if requested_sources and len(failed_sources) == len(requested_sources):
+        logger.error(
+            "All requested regulatory sources failed: %s",
+            ", ".join(_source_display_name(source) for source in failed_sources),
+        )
+        return EXIT_FAILURE
+
+    # Generate report if new items or degraded sources were found. A degraded
+    # source is never equivalent to "no changes"; it must remain visible in
+    # the run output even when every available source is clean.
+    if all_new_items or failed_sources:
+        if all_new_items:
+            logger.info(f"\n=== {len(all_new_items)} total new regulatory items detected ===")
+        if failed_sources:
+            logger.warning(
+                "\n=== Degraded regulatory monitor run: %s unavailable ===",
+                ", ".join(_source_display_name(source) for source in failed_sources),
+            )
 
         report_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
         report_path = REPORTS_DIR / f"regulatory-changes-{report_date}.md"
@@ -4851,7 +5008,7 @@ def _run_monitor() -> int:
         else:
             logger.info("State not updated (dry-run or limited run)")
 
-        return EXIT_FINDINGS
+        return EXIT_DEGRADED if failed_sources else EXIT_FINDINGS
 
     else:
         logger.info("\n=== No new regulatory items detected ===")

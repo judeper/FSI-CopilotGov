@@ -356,7 +356,7 @@ federal_register:
 operational:
   # HTTP request settings
   request_timeout: 30          # Timeout in seconds for HTTP requests
-  max_retries: 3               # Number of retry attempts for failed requests
+  max_retries: 5               # Number of retry attempts for failed requests
   request_delay: 1.0           # Seconds between requests (rate limiting)
 
   # Diff output settings

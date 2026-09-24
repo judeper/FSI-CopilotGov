@@ -40,6 +40,7 @@ MONITOR_JOB = "monitor"
 CLEAN_EXIT_CODE = str(regulatory_monitor.EXIT_CLEAN)
 FAILURE_EXIT_CODE = str(regulatory_monitor.EXIT_FAILURE)
 FINDINGS_EXIT_CODE = str(regulatory_monitor.EXIT_FINDINGS)
+DEGRADED_EXIT_CODE = str(regulatory_monitor.EXIT_DEGRADED)
 
 # Changes to any of these must (re)trigger the Regulatory Monitor PR validation
 # so config-only and test-only edits cannot bypass CI. Kept to the exact files
@@ -155,7 +156,7 @@ def test_offline_dry_run_smoke_is_preserved() -> None:
     assert _job(VALIDATION_JOB)["if"] == "github.event_name == 'pull_request'"
 
 
-def test_monitor_step_enforces_three_way_exit_contract() -> None:
+def test_monitor_step_enforces_exit_contract() -> None:
     monitor_step = _step(
         MONITOR_JOB,
         "Run Regulatory Monitor (scheduled / manual)",
@@ -173,6 +174,10 @@ def test_monitor_step_enforces_three_way_exit_contract() -> None:
         rf"(?ms)^\s*{re.escape(FINDINGS_EXIT_CODE)}\)\s*(.*?)^\s*;;",
         run,
     )
+    degraded_branch = re.search(
+        rf"(?ms)^\s*{re.escape(DEGRADED_EXIT_CODE)}\)\s*(.*?)^\s*;;",
+        run,
+    )
     failure_branch = re.search(
         rf"(?ms)^\s*{re.escape(FAILURE_EXIT_CODE)}\)\s*(.*?)^\s*;;",
         run,
@@ -181,13 +186,17 @@ def test_monitor_step_enforces_three_way_exit_contract() -> None:
     assert clean_branch and "exit 0" in clean_branch.group(1)
     assert findings_branch and "report_file=" in findings_branch.group(1)
     assert "exit 0" in findings_branch.group(1)
+    assert degraded_branch and "report_file=" in degraded_branch.group(1)
+    assert "::warning::Regulatory Monitor completed with degraded source availability" in degraded_branch.group(1)
+    assert "exit 0" in degraded_branch.group(1)
     assert failure_branch and 'exit "$EXIT_CODE"' in failure_branch.group(1)
     assert 'exit "$EXIT_CODE"' in run.split("*)", maxsplit=1)[1]
 
 
 def test_pr_write_path_is_gated_on_findings_exit() -> None:
     findings_condition = (
-        f"steps.monitor.outputs.exit_code == '{FINDINGS_EXIT_CODE}'"
+        f"steps.monitor.outputs.exit_code == '{FINDINGS_EXIT_CODE}' || "
+        f"steps.monitor.outputs.exit_code == '{DEGRADED_EXIT_CODE}'"
     )
 
     assert _step(MONITOR_JOB, "Detect state changes")["if"] == findings_condition
@@ -197,7 +206,8 @@ def test_pr_write_path_is_gated_on_findings_exit() -> None:
         "Open / update PR with regulatory findings",
         "Close prior superseded Regulatory Monitor PRs",
     ):
-        assert findings_condition in _step(MONITOR_JOB, step_name)["if"]
+        assert f"steps.monitor.outputs.exit_code == '{FINDINGS_EXIT_CODE}'" in _step(MONITOR_JOB, step_name)["if"]
+        assert f"steps.monitor.outputs.exit_code == '{DEGRADED_EXIT_CODE}'" in _step(MONITOR_JOB, step_name)["if"]
 
 
 def test_pr_title_identifies_run_number_not_item_count() -> None:
@@ -208,5 +218,5 @@ def test_pr_title_identifies_run_number_not_item_count() -> None:
     ]
     assert create_pr_steps, "the workflow must define its PR creation step"
     assert create_pr_steps[0]["with"]["title"] == (
-        "Regulatory Monitor: new findings (run ${{ github.run_number }})"
+        "Regulatory Monitor: findings or degraded source (run ${{ github.run_number }})"
     )
