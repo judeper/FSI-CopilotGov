@@ -373,16 +373,9 @@ Model risk management applicability to M365 Copilot depends on how Copilot outpu
 
 ---
 
-### Interagency AI Guidance (2023)
+### AI Governance Source Monitoring
 
-**Overview:** Joint guidance from OCC, Federal Reserve, FDIC, CFPB, and NCUA on AI risk management for financial institutions. Emphasizes that existing risk management frameworks apply to AI technologies.
-
-**Key Requirements for M365 Copilot:**
-
-- Existing risk management practices apply to AI tool deployment
-- Vendor risk management must assess AI capabilities and limitations
-- Governance structures must address AI-specific risks
-- Ongoing monitoring of AI tool performance is expected
+Firms should identify the current primary sources, internal policies, and supervisory expectations they apply to AI governance before mapping Copilot controls to regulatory obligations. The framework monitors for future agency AI guidance and keeps AI-specific governance claims source-neutral unless a primary source is identified.
 
 **Applicable Controls:**
 
@@ -510,7 +503,6 @@ The following state regulations may apply but require separate analysis beyond t
 | GLBA §501(b) | Basic safeguards | Comprehensive DLP | Full security program |
 | OCC 2011-12 / SR 11-7 | N/A | Awareness docs | Formal MRM alignment |
 | FFIEC IT Handbook | Basic controls | IT risk assessment | Full FFIEC alignment |
-| Interagency AI Guidance | Awareness | Vendor assessment | Comprehensive AI governance |
 
 ---
 
@@ -562,7 +554,6 @@ The following state regulations may apply but require separate analysis beyond t
 | OCC 2011-12 / SR 11-7 | 4 controls | Model risk management |
 | CFPB UDAAP | 4 controls | Consumer protection |
 | FFIEC IT Handbook | 4 controls | IT governance, vendor management |
-| Interagency AI Guidance | 4 controls | AI risk management |
 
 **Total:** {{ counts.controls }} controls across {{ counts.pillars }} pillars providing mapped coverage to primary US financial regulations.
 

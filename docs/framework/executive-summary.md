@@ -62,7 +62,6 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 | **OCC 2011-12 / SR 11-7** | OCC/Fed | Model risk management considerations for AI-assisted decisions | Control 3.8 |
 | **CFPB UDAAP** | CFPB | Unfair/deceptive practices in Copilot-assisted customer interactions | Control 3.7 |
 | **FFIEC IT Handbook** | FFIEC | IT examination alignment for AI tools | Control 3.13 |
-| **Interagency AI Guidance (2023)** | OCC/Fed/FDIC | Vendor risk management for AI services | Control 1.10 |
 
 ### Regulatory Heatmap by Governance Level
 

@@ -180,22 +180,6 @@ Interagency guidance for IT examination of financial institutions.
 
 ---
 
-## Interagency AI Guidance (2023) — OCC, Fed, FDIC
-
-Joint guidance on managing risks associated with AI in financial services, including third-party AI models.
-
-| Topic | Requirement | Applicable Controls | Level |
-|-------|-------------|-------------------|-------|
-| Risk Management | Incorporate AI risk into enterprise risk framework | Control 3.8 (Model Risk Management), Control 1.12 (Training and Awareness) | Reg |
-| Governance | Board and management oversight of AI adoption | Control 1.12 (Training and Awareness), Control 4.13 (Extensibility and Agent Operations), Control 4.12 (Change Management) | Reg |
-| Third-Party Risk | Assess and monitor third-party AI providers | Control 1.10 (Vendor Risk Management) | Reg |
-| Data Management | Controls over data used in AI systems | Control 1.1 (Copilot Readiness Assessment), Control 1.11 (Organizational Change Management), Control 2.1 (DLP) | R |
-| Consumer Protection | Protect consumers from AI-related harm | Control 3.7 (Regulatory Reporting), Control 3.5 (FINRA 2210) | Reg |
-| Fair Lending | Address potential bias in AI outputs | Control 3.7 (Regulatory Reporting), Control 3.8 (Model Risk Management) | Reg |
-| Cybersecurity | Secure AI systems and data flows | Control 2.3 (Conditional Access), Control 2.15 (Network Security) | R / Reg |
-
----
-
 ## Cross-Regulation Control Frequency
 
 Controls that appear across the most regulations should be prioritized for implementation.

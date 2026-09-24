@@ -189,7 +189,7 @@ A security model based on the principle of "never trust, always verify." Every a
 Federal agency responsible for consumer protection in the financial sector. Issues guidance on unfair, deceptive, or abusive acts or practices (UDAAP) that may apply to AI-generated consumer communications.
 
 ### FDIC (Federal Deposit Insurance Corporation)
-Federal agency that provides deposit insurance and examines state-chartered banks. Co-issuer of the 2023 Interagency AI Guidance.
+Federal agency that provides deposit insurance and examines state-chartered banks.
 
 ### FFIEC (Federal Financial Institutions Examination Council)
 Interagency body that prescribes uniform principles, standards, and examination procedures for federal financial institution regulators. The FFIEC IT Examination Handbook provides examination guidance that applies to AI governance.
@@ -208,9 +208,6 @@ Requires broker-dealers to make and preserve books and records as prescribed. Co
 
 ### GLBA (Gramm-Leach-Bliley Act)
 Federal law requiring financial institutions to explain their information-sharing practices and safeguard sensitive data. Section 501(b) requires institutions to develop a comprehensive information security program.
-
-### Interagency AI Guidance (2023)
-Joint guidance issued by OCC, Federal Reserve, and FDIC in 2023 on managing risks associated with AI in financial services. Addresses governance, risk management, third-party risk, data management, and consumer protection.
 
 ### OCC (Office of the Comptroller of the Currency)
 Federal agency that charters, regulates, and supervises national banks and federal savings associations. Issues guidance including OCC Bulletin 2011-12 on model risk management.
