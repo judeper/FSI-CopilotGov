@@ -127,7 +127,7 @@ Segment 4: Compliance
 |-----------|--------|
 | **Institution type** | National bank or state-chartered bank |
 | **Primary regulators** | OCC (national) or state regulator + Fed/FDIC |
-| **Key regulations** | OCC 2011-12 / SR 11-7, GLBA §501(b), FFIEC, Sarbanes-Oxley §§302/404, Interagency AI Guidance 2023 |
+| **Key regulations** | OCC 2011-12 / SR 11-7, GLBA §501(b), FFIEC, Sarbanes-Oxley §§302/404 |
 | **Governance level** | Recommended to Regulated (depending on asset size) |
 | **Risk factors** | Model risk management, consumer data protection, IT examination readiness, third-party AI risk |
 | **Typical user groups** | Loan officers, branch operations, commercial banking, treasury, risk management, internal audit |

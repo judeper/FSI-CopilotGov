@@ -84,7 +84,6 @@ Each control provides tiered implementation guidance:
 | **OCC 2011-12 / SR 11-7** | OCC/Fed | Model risk management (3.8) |
 | **CFPB UDAAP** | CFPB | Unfair/deceptive practices (3.7) |
 | **FFIEC IT Handbook** | FFIEC | IT examination alignment (3.13) |
-| **Interagency AI Guidance (2023)** | OCC/Fed/FDIC | Vendor risk management (1.10) |
 
 ---
 

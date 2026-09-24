@@ -4,6 +4,12 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## Correction - 2026-09-24
+
+- The historical v1.3.3 regulatory-correction note below used an old title for an unsupported 2023 interagency AI citation. Current framework coverage no longer lists that citation, and related control text treats future agency AI guidance as a monitoring/applicability question rather than an issued regulatory source.
+
+---
+
 ## [1.8.0] - 2026-07-11
 
 Cowork GA + Scout governance release, with full canonical asset regeneration for

@@ -919,7 +919,6 @@
     ],
     "regulatory": [
       "OCC-Heightened-Standards",
-      "Interagency-AI-2023",
       "FFIEC-IT-Handbook"
     ],
     "priority": "medium",
@@ -992,7 +991,6 @@
       "M365 Global Admin"
     ],
     "regulatory": [
-      "Interagency-AI-2023",
       "FFIEC-IT-Handbook",
       "GLBA-501b",
       "FINRA-3110"
@@ -1068,7 +1066,6 @@
     ],
     "regulatory": [
       "OCC-2023-17",
-      "Interagency-AI-2023",
       "FFIEC-IT-Handbook",
       "GLBA-501b"
     ],

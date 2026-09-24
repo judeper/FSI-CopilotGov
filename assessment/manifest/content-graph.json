@@ -186,7 +186,6 @@
       "last_verified": "2026-07-26",
       "regulatory_references": [
         "FFIEC IT Handbook (Management)",
-        "Interagency AI Guidance (2023)",
         "12 CFR part 30",
         "appendix D (OCC Heightened Standards)"
       ]
@@ -201,7 +200,6 @@
       "regulatory_references": [
         "FINRA Rule 3110",
         "FFIEC IT Handbook (Information Security Booklet)",
-        "Interagency AI Guidance (2023)",
         "GLBA §501(b)"
       ]
     },
@@ -215,8 +213,7 @@
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
-        "OCC Bulletin 2023-17 (Third-Party Relationships)",
-        "Interagency AI Guidance (2023)"
+        "OCC Bulletin 2023-17 (Third-Party Relationships)"
       ]
     },
     {

@@ -77,7 +77,6 @@ REG_TOKENS: list[tuple[str, str]] = [
     # Interagency guidance (distinct from the OCC/Fed bulletins above)
     ("Interagency Guidance on Third-Party Relationships", "Interagency-TPRM-2023"),
     ("Interagency RFI on AI", "Interagency-AI-RFI-2023"),
-    ("Interagency AI Guidance", "Interagency-AI-2023"),
     # FFIEC (longest first to avoid double-matching with bare "FFIEC")
     ("FFIEC IT Examination Handbook", "FFIEC-IT-Handbook"),
     ("FFIEC IT Handbook", "FFIEC-IT-Handbook"),

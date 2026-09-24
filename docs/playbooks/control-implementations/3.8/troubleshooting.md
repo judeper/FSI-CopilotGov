@@ -63,7 +63,7 @@ Common issues and resolution steps for model risk management compliance related 
 - **Resolution:**
   1. Treating Copilot as a model subject to MRM (at some tier) is a conservative firm policy option; confirm the approved posture with legal/MRM owners.
   2. Document the model status determination in the inventory: "M365 Copilot is classified as a vendor-provided general-purpose LLM. It straddles the SR 11-7 model definition. The institution has elected to include it in the model inventory at [Tier X] as a prudent governance approach, pending legal/MRM owner confirmation."
-  3. Retain the 2023 Interagency AI Guidance citation only as "source identity pending confirmation" until legal/MRM owners identify the specific primary source.
+  3. Monitor for future agency AI guidance through the framework regulatory-monitoring process; do not cite a 2023 interagency AI guidance source unless legal/MRM owners identify a specific primary source.
   4. Avoid the position that Copilot requires no governance unless legal/MRM owners approve that conclusion.
 
 ## Diagnostic Steps
