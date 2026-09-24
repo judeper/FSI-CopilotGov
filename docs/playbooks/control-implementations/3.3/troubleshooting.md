@@ -6,7 +6,7 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
 
 ### Issue 1: Copilot Interactions Not Appearing in Search Results
 
-- **Symptoms:** Compliance search with `Type > Copilot activity` returns zero results despite confirmed Copilot usage.
+- **Symptoms:** eDiscovery search using the Copilot activity condition or Copilot item-class query returns zero results despite confirmed Copilot usage.
 - **Root Cause:** Content indexing may not be complete (can take up to 24 hours), or the Copilot interaction location is not indexed for eDiscovery.
 - **Resolution:**
   1. Verify that the user has an E5 or eDiscovery (Premium) license assigned.
@@ -14,25 +14,25 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
   3. Try broadening the search to include all Exchange content for the user to verify search functionality.
   4. Check if the Copilot interaction data source is available in your tenant region.
 
-### Issue 2: Pre-Migration Cases Missing Copilot Content Locations
+### Issue 2: Existing Cases Missing Copilot Sources or Conditions
 
-- **Symptoms:** An eDiscovery case created before May 2025 does not return Copilot content in searches, even though the custodian has Copilot interaction history.
-- **Root Cause:** Cases created before the unified eDiscovery experience (May 2025 GA) may not automatically include the "Copilot activity" content location. Pre-migration cases retain their original data source configuration.
+- **Symptoms:** An existing eDiscovery case does not return Copilot content in searches, even though the custodian has Copilot interaction history.
+- **Root Cause:** The case's selected data sources or search conditions may not cover Copilot activity, custodian mailboxes, or in-scope SharePoint, OneDrive, Teams, or SharePoint Embedded container locations.
 - **Resolution:**
   1. Open the case in **Microsoft Purview > eDiscovery > Cases**.
-  2. Navigate to **Data sources** and check whether "Copilot activity" appears as an available location.
-  3. If missing, add the Copilot content location to the case data sources.
-  4. If the case has active holds, verify that the hold policy is updated to include the new Copilot content location.
+  2. Navigate to **Data sources** and search conditions; check whether Copilot activity, custodian mailboxes, and in-scope container locations are covered.
+  3. If missing, add the documented Copilot source, item-class condition, or container location to the case.
+  4. If the case has active holds, verify that the hold policy is updated to include the corrected Copilot scope.
   5. Re-run any affected searches after updating the data sources.
 
-### Issue 3: Copilot Surface Filter Not Available
+### Issue 3: Copilot Item-Class Filtering Not Returning Expected Surface Scope
 
-- **Symptoms:** The Copilot surface filter (filter by surface, agent name, or interaction type) is not visible in the unified search builder.
-- **Root Cause:** The Copilot surface filter requires the Premium capability tier (E5 or E5 eDiscovery add-on license). It is not available for Standard-tier searches.
+- **Symptoms:** A Copilot search returns broader or narrower results than expected for a specific surface (for example, BizChat, Teams, Outlook, or Word).
+- **Root Cause:** The search condition may be using a broad Copilot activity selection without a documented item-class qualifier, or the tenant's current eDiscovery experience may expose different filtering fields than the playbook example.
 - **Resolution:**
-  1. Verify that the case is configured for Premium eDiscovery capabilities.
-  2. Confirm that E5 or E5 eDiscovery add-on licenses are assigned to the performing user.
-  3. If operating at Standard tier, use KQL surface qualifiers (e.g., `Type > Copilot activity AND itemclass:IPM.SkypeTeams.Message.Copilot.*`) as an alternative.
+  1. Verify the current eDiscovery condition-builder fields available in the tenant.
+  2. Compare the target surface against Microsoft Learn's current Copilot item-class table.
+  3. If operating at Standard tier, use documented item-class KQL after tenant validation, such as `itemclass:IPM.SkypeTeams.Message.Copilot.*` or `itemclass:IPM.SkypeTeams.Message.Copilot.BizChat`, combined with supported custodian/date filters.
 
 ### Issue 4: Hold Not Preserving Copilot Content
 
@@ -41,7 +41,7 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
 - **Resolution:**
   1. Review the hold policy scope: `Get-CaseHoldPolicy -Identity "hold-name" | Format-List`
   2. Verify the hold includes Exchange and SharePoint locations for the custodian.
-  3. Check if the hold rule query syntax correctly targets Copilot content (`Type > Copilot activity`).
+  3. Check whether the hold scope correctly targets Copilot content using the condition-builder Copilot activity selection or documented item-class KQL such as `(itemclass:IPM.SkypeTeams.Message.Copilot.* OR itemclass:IPM.Contact)`.
   4. Consider using a broad hold (no query filter) for critical custodians to preserve all content.
 
 ### Issue 5: Large Collection Processing Timeout
@@ -54,15 +54,15 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
   3. Use the `SessionCommand` paging approach for PowerShell-based searches.
   4. Contact Microsoft Support if collection failures persist for Premium eDiscovery cases.
 
-### Issue 6: Deprecated eDiscovery Export PowerShell Cmdlets
+### Issue 6: Cloud Export Attempted with On-Premises-Only eDiscovery Export Cmdlet Pattern
 
 - **Symptoms:** PowerShell scripts using `New-ComplianceSearchAction -Export` or related export cmdlets fail with errors or return unsupported-operation messages.
-- **Root Cause:** eDiscovery export PowerShell cmdlets were retired as part of the unified eDiscovery portal transition (May 2025). The cmdlets are no longer functional.
+- **Root Cause:** Microsoft Learn documents `New-ComplianceSearchAction -Export` examples and several export parameters as functional only in on-premises Exchange; cloud tenants should use Microsoft-documented portal or API export workflows validated for the tenant.
 - **Resolution:**
   1. Replace PowerShell export workflows with the Purview portal export experience (eDiscovery > Cases > [case] > Review sets > Export).
   2. For programmatic export needs, migrate to the **Microsoft Graph eDiscovery APIs** (`POST /security/cases/ediscoveryCases/{id}/reviewSets/{id}/export`).
   3. Update any scheduled automation that relies on deprecated cmdlets.
-  4. Case-management cmdlets (`New-ComplianceCase`, `New-ComplianceSearch`, `New-CaseHoldPolicy`) remain supported — only export cmdlets are affected.
+  4. Case-management cmdlets (`New-ComplianceCase`, `New-ComplianceSearch`, `New-CaseHoldPolicy`) remain supported for appropriate workflows; validate export through current Microsoft documentation before use.
 
 ### Issue 7: Missing Metadata in Exported Copilot Content
 
@@ -80,7 +80,7 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
 1. **Verify case status:** `Get-ComplianceCase | Select Name, Status, CaseType`
 2. **Check search status:** `Get-ComplianceSearch -Identity "search-name" | Select Status, Items, Errors`
 3. **Review hold status:** `Get-CaseHoldPolicy | Select Name, Enabled, DistributionStatus`
-4. **Identify pre-migration cases:** `Get-ComplianceCase | Where-Object { $_.CreatedDateTime -lt [DateTime]"2025-05-01" } | Select Name, CreatedDateTime`
+4. **List active cases for source verification:** `Get-ComplianceCase | Where-Object { $_.Status -ne "Closed" } | Select Name, CreatedDateTime, CaseType`
 5. **Test basic search:** Run a simple search on a known custodian to confirm eDiscovery functionality.
 
 ## Escalation
@@ -89,7 +89,7 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
 |----------|-----------|-----------------|
 | Critical | Unable to meet court-ordered discovery deadline | Legal team + Microsoft Premier Support — Severity A |
 | High | Hold failures risking data loss | Compliance team + Microsoft Support |
-| High | Pre-migration cases missing Copilot locations affecting active holds | Compliance team -- immediate data source remediation |
+| High | Existing cases missing Copilot sources or conditions affecting active holds | Compliance team -- immediate data source remediation |
 | Medium | Search performance issues | Internal IT -- optimize queries and scope |
 | Low | Metadata gaps in exports | Document gaps and supplement from other sources |
 

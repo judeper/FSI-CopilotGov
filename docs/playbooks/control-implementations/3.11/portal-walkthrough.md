@@ -52,11 +52,11 @@ Step-by-step portal configuration for implementing record keeping controls that 
 **Portal:** Microsoft Purview portal
 **Path:** Solutions > Records management > Retention policies
 
-SEC Rule 17a-4(f) requires WORM storage or an audit-trail alternative under Rule 17a-4(f)(2). Configure one of the following paths:
+SEC Rule 17a-4(f) requires WORM storage or an audit-trail alternative under Rule 17a-4(f)(2). Configure one of the following paths only under the firm's approved records-management and counsel-reviewed posture:
 
 **Option A: Audit-Trail Alternative (Rule 17a-4(f)(2))**
 
-The audit-trail alternative allows records to be stored in non-WORM format if the firm maintains an audit trail of modifications, deletions, and related recordkeeping events throughout the retention period. Microsoft Purview regulatory records combined with Preservation Lock may support this compliance position:
+The audit-trail alternative allows records to be stored in non-WORM format if the firm maintains the required audit trail throughout the retention period. Microsoft Purview regulatory records combined with Preservation Lock and Purview audit evidence may support the firm's assessment, subject to firm/counsel approval:
 
 1. Verify that regulatory record labels are configured (Step 2 above): when applied, labels block modifications and deletions and log all attempts in the Purview audit log.
 2. Enable **Preservation Lock** on the retention policy governing regulatory records:
@@ -133,7 +133,7 @@ Mobile Copilot access through unmanaged devices creates an off-channel recordkee
 |---------|----------|-------------|-----------|
 | Record classification | Manual | Auto-apply labels | Auto-apply with manual override |
 | Regulatory record status | Optional | Key categories | All client-facing content |
-| 17a-4(f) compliance path | Document selection | Option A (audit-trail alt.) or Option B (WORM) documented | Option A with counsel review OR Option B with vendor attestation |
+| 17a-4(f) compliance path | Document selection | Firm/counsel-approved Option A (Purview-supported audit-trail assessment), Option B (WORM), or both documented | Option A with counsel review OR Option B with vendor attestation |
 | Preservation Lock | Not applied | Applied to critical records | Required (Option A or B) |
 | Disposition review | Automatic | Review before disposition | Committee review |
 | Mobile Copilot access | Managed apps only | Conditional Access policy | MDM + MAM + periodic mobile audit |
@@ -141,7 +141,7 @@ Mobile Copilot access through unmanaged devices creates an off-channel recordkee
 
 ## Regulatory Alignment
 
-- **SEC Rule 17a-4(f)(2)** (audit-trail alternative added by SEC Release No. 34-96034, 87 FR 66412 (Nov. 3, 2022)) — Audit-trail alternative to WORM storage; potentially supported by Purview regulatory record labels + Preservation Lock + audit evidence, subject to firm/counsel approval
+- **SEC Rule 17a-4(f)(2)** (audit-trail alternative added by SEC Release No. 34-96034, 87 FR 66412 (Nov. 3, 2022)) — Audit-trail alternative to WORM storage; Purview regulatory record labels + Preservation Lock + audit evidence may support the firm's assessment, subject to firm/counsel approval
 - **SEC Rule 17a-4** — Provides evidence for electronic record retention and WORM storage requirements
 - **FINRA Rule 4511** — Provides evidence for books-and-records retention obligations
 - **SEC Rule 17a-3** — Supports record-making requirements for broker-dealer operations

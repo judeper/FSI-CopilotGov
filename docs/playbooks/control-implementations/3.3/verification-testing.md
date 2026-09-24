@@ -10,17 +10,17 @@ Test cases and evidence collection procedures to validate eDiscovery capabilitie
 - **Steps:**
   1. Have a test user perform several Copilot interactions in different applications (Word, Teams, Outlook).
   2. Wait 24 hours for content indexing.
-  3. In the unified eDiscovery experience, create a search with the query `Type > Copilot activity AND participants:[test-user@firm.com]`.
-  4. Use the Copilot surface filter to confirm results are filterable by surface type (e.g., Teams Copilot, Outlook Copilot).
+  3. In eDiscovery, create a search using **Add condition > Item class / Type > Contains any of > Copilot activity**, then add the test user through the supported custodian/participant condition.
+  4. As a KQL fallback after tenant validation, test a documented item-class query such as `itemclass:IPM.SkypeTeams.Message.Copilot.*` scoped to the test user's mailbox.
   5. Review search results for completeness.
-- **Expected Result:** All Copilot interactions from the test user are returned in search results with full metadata. Surface filter is available for Premium-tier searches.
+- **Expected Result:** Copilot interactions from the test user are returned in search results with available metadata, using either the condition-builder Copilot activity selection or the documented item-class fallback.
 - **Evidence:** Search results export showing Copilot interaction records with timestamps and content.
 
 ### Test 2: Custodian Hold Preservation
 
 - **Objective:** Verify that eDiscovery holds preserve Copilot content from deletion
 - **Steps:**
-  1. Place a test custodian on hold with a Copilot content query (`Type > Copilot activity`).
+  1. Place a test custodian on hold using the Copilot activity condition-builder selection or a documented item-class hold query such as `(itemclass:IPM.SkypeTeams.Message.Copilot.* OR itemclass:IPM.Contact)`.
   2. Have the custodian delete a Copilot-generated document.
   3. Search for the deleted document using eDiscovery.
   4. Confirm the document is still discoverable in the Recoverable Items folder.
@@ -38,16 +38,16 @@ Test cases and evidence collection procedures to validate eDiscovery capabilitie
 - **Expected Result:** Copilot content from all targeted workloads appears in the review set.
 - **Evidence:** Search statistics showing items per workload and review set contents.
 
-### Test 4: Pre-Migration Case Verification
+### Test 4: Existing Case Source Verification
 
-- **Objective:** Confirm that cases created before May 2025 include the Copilot content location
+- **Objective:** Confirm that existing cases include the documented Copilot activity and container sources needed for the matter
 - **Steps:**
-  1. Open each eDiscovery case created before May 2025.
+  1. Open each active eDiscovery case that may need Copilot content.
   2. Navigate to **Data sources** within the case.
-  3. Verify that "Copilot activity" appears as a data source or custodian location option.
-  4. If missing, add the Copilot content location and confirm inclusion in any active holds.
-- **Expected Result:** All active cases, including pre-migration cases, cover the Copilot content location.
-- **Evidence:** Screenshot of Data sources panel for each reviewed case, showing the Copilot content location.
+  3. Verify that custodian mailboxes, Copilot activity search conditions, and any in-scope SharePoint, OneDrive, Teams, or SharePoint Embedded container locations are included.
+  4. If missing, add the documented source or condition and confirm inclusion in any active searches or holds.
+- **Expected Result:** All active cases that require Copilot evidence cover the documented Copilot activity and container sources for the matter.
+- **Evidence:** Screenshot of Data sources/search conditions panel for each reviewed case, showing the Copilot activity and container coverage.
 
 ### Test 5: Export and Production Readiness
 
@@ -67,7 +67,7 @@ Test cases and evidence collection procedures to validate eDiscovery capabilitie
 |--------------|--------|--------|-----------|
 | Search results summary | Purview eDiscovery | CSV | Case duration |
 | Hold confirmation | PowerShell | Text export | Case duration |
-| Pre-migration case audit | Purview portal | Screenshot | Ongoing |
+| Existing case source audit | Purview portal | Screenshot | Ongoing |
 | Search statistics | Purview eDiscovery | Screenshot | Case duration |
 | Export manifest | Export tool | CSV | Case duration |
 

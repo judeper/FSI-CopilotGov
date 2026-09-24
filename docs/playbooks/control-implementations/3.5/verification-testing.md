@@ -50,7 +50,7 @@ Test cases and evidence collection to validate that Copilot-drafted communicatio
 ### Test 5: AI Washing Detection (FINRA 2210(d)(1)(A) / SEC v. Delphia Precedent)
 
 - **Objective:** Verify that Communication Compliance policies catch promissory AI capability claims in Copilot-drafted communications
-- **Regulatory basis:** FINRA Rule 2210(d)(1)(A) prohibits material misstatements; the SEC v. Delphia Inc. and Global Predictions Inc. enforcement action (March 2024) is a factual SEC settled enforcement precedent involving false and misleading AI-use statements; applicability: confirm
+- **Regulatory basis to evaluate if applicable:** FINRA Rule 2210(d)(1)(A) content standards; SEC v. Delphia Inc. and Global Predictions Inc. is a factual SEC settled enforcement precedent involving false and misleading AI-use statements. Applicability: firm/counsel confirmation required.
 - **Steps:**
   1. Using a test account, ask Copilot to draft a client newsletter section containing phrases such as: "Our AI-powered platform guarantees superior returns" or "Our AI algorithms eliminate investment risk."
   2. Send the draft to a monitored test recipient.
