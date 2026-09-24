@@ -1364,6 +1364,10 @@ class FederalRegisterPaginationError(RuntimeError):
     """Raised when a paginated Federal Register response cannot be completed."""
 
 
+class SourceUnavailableError(RuntimeError):
+    """Raised only when a source is genuinely unavailable for this run."""
+
+
 class RequiredSourceTextError(RuntimeError):
     """Raised when authoritative text required for classification is unavailable."""
 
@@ -1385,10 +1389,78 @@ class FinraNoticeUnavailableError(RuntimeError):
     """
 
 
+class FederalRegisterUnavailableError(
+    SourceUnavailableError,
+    FederalRegisterPaginationError,
+):
+    """Raised when the Federal Register source is temporarily unavailable."""
+
+
+class RequiredSourceUnavailableError(
+    SourceUnavailableError,
+    RequiredSourceTextError,
+):
+    """Raised when required source text is unavailable due to availability."""
+
+
+class FinraListingUnavailableError(
+    SourceUnavailableError,
+    FinraListingError,
+):
+    """Raised when the FINRA listing is temporarily unavailable."""
+
+
 def _source_failure_reason(exc: Exception) -> str:
     """Return a compact source-failure reason safe for logs and reports."""
     reason = str(exc).strip()
     return reason or exc.__class__.__name__
+
+
+AVAILABILITY_STATUS_CODES = frozenset({0, 429})
+FINRA_DEGRADED_COUNTER_KEY = "consecutive_finra_degraded_runs"
+FINRA_DEGRADED_FAILURE_THRESHOLD = 3
+
+
+def _http_status_is_source_unavailable(status_code) -> bool:
+    """Return whether an HTTP status represents transient source availability."""
+    try:
+        code = int(status_code)
+    except (TypeError, ValueError):
+        return False
+    return code in AVAILABILITY_STATUS_CODES or 500 <= code <= 599
+
+
+def _request_exception_is_source_unavailable(exc: requests.RequestException) -> bool:
+    """Return whether a requests failure is availability, not data integrity."""
+    response = getattr(exc, "response", None)
+    if response is None:
+        return isinstance(exc, (requests.ConnectionError, requests.Timeout))
+    return _http_status_is_source_unavailable(
+        getattr(response, "status_code", None)
+    )
+
+
+def _exception_represents_source_unavailability(exc: Exception) -> bool:
+    """Classify exceptions that may honestly degrade a source run."""
+    if isinstance(exc, SourceUnavailableError):
+        return True
+    if isinstance(exc, requests.RequestException):
+        return _request_exception_is_source_unavailable(exc)
+    # Test seams and legacy callers sometimes raise the source-specific error
+    # with the transport status only in the message. Keep that compatibility
+    # narrow: parser/layout errors do not carry one of these availability codes.
+    message = str(exc)
+    status_match = re.search(r"\b(?:status(?:=|\s+)|HTTP\s+)(\d{3})\b", message)
+    if status_match:
+        return _http_status_is_source_unavailable(status_match.group(1))
+    return False
+
+
+def _challenge_page_unavailable_signature(text: str, lead_chars: int) -> Optional[str]:
+    """Return a challenge/block signature that counts as source unavailable."""
+    if not text:
+        return None
+    return _unambiguous_challenge_signature(text, lead_chars)
 
 
 def _source_display_name(source: str) -> str:
@@ -2291,6 +2363,15 @@ def _extract_federal_register_source_text(text: str) -> str:
             "Federal Register raw text was rejected as non-document content "
             "(access denial, challenge, login, or error page)"
         )
+        signature = _challenge_page_unavailable_signature(
+            normalized,
+            FEDERAL_REGISTER_NON_DOCUMENT_LEAD_CHARS,
+        )
+        if signature:
+            raise RequiredSourceUnavailableError(
+                "Federal Register raw text returned an access denial or "
+                f"challenge page ({signature!r})"
+            )
         return ""
     return normalized
 
@@ -2491,6 +2572,11 @@ def _extract_finra_notice_required_text(
     if text:
         return text
     if rejected_non_notice:
+        if expected_url is not None:
+            raise RequiredSourceUnavailableError(
+                "FINRA authoritative notice body returned an access denial, "
+                "challenge, login, or error page"
+            )
         return ""
     if reason:
         raise FinraNoticeUnavailableError(reason)
@@ -3105,13 +3191,23 @@ def _fetch_cached_fallback_text(
     if request_delay > 0:
         time.sleep(request_delay)
 
-    result = fetch_page(url, session, max_retries=max_retries)
+    try:
+        result = fetch_page(url, session, max_retries=max_retries)
+    except requests.RequestException as exc:
+        if required and _request_exception_is_source_unavailable(exc):
+            raise RequiredSourceUnavailableError(
+                f"{source_label} request failed for {url}"
+            ) from exc
+        raise
+
     if result["status_code"] != 200:
         message = (
             f"{source_label} fetch failed for {url} "
             f"(status={result['status_code']}, error={result.get('error')})"
         )
         if required:
+            if _http_status_is_source_unavailable(result["status_code"]):
+                raise RequiredSourceUnavailableError(message)
             raise RequiredSourceTextError(message)
         logger.warning(message)
         cache[url] = ""
@@ -3531,9 +3627,12 @@ def fetch_federal_register_documents(
             except requests.RequestException as e:
                 if attempt == max_retries - 1:
                     logger.error(f"Federal Register API error: {e}")
-                    raise FederalRegisterPaginationError(
+                    message = (
                         f"Federal Register API request failed on page {page}"
-                    ) from e
+                    )
+                    if _request_exception_is_source_unavailable(e):
+                        raise FederalRegisterUnavailableError(message) from e
+                    raise FederalRegisterPaginationError(message) from e
                 sleep_seconds = request_delay if request_delay > 0 else (2 ** attempt)
                 logger.warning(
                     "Federal Register API request failed (attempt %s/%s): %s; retrying in %.1fs",
@@ -3906,6 +4005,23 @@ def _finra_page_can_stop_at_known_lookback_boundary(
     return bool(observed_dates) and max(observed_dates) < cutoff
 
 
+def _finra_publication_dates_for_links(page_links) -> list:
+    """Return parseable publication dates from a FINRA listing page."""
+    dates = []
+    for link in page_links:
+        publication_date, synthetic = _derive_finra_publication_date(
+            link,
+            link.get("data-monitor-canonical-url") or link.get("href", ""),
+        )
+        if synthetic or not publication_date:
+            continue
+        try:
+            dates.append(datetime.fromisoformat(publication_date).date())
+        except ValueError:
+            continue
+    return dates
+
+
 def fetch_finra_notices(
     session: requests.Session,
     config: dict,
@@ -3914,6 +4030,7 @@ def fetch_finra_notices(
     unavailable_notices: Optional[list[dict]] = None,
     known_entry_keys: Optional[set[str]] = None,
     listing_lookback_days: Optional[int] = None,
+    allow_listing_early_stop: bool = True,
 ) -> list[RegulatoryItem]:
     """
     Scrape FINRA regulatory notices page.
@@ -3936,7 +4053,7 @@ def fetch_finra_notices(
     if unavailable_notices is None:
         unavailable_notices = []
     _, max_retries, request_delay = _get_operational_settings(config)
-    if listing_lookback_days is None and known_entry_keys:
+    if allow_listing_early_stop and listing_lookback_days is None and known_entry_keys:
         listing_lookback_days = int(
             config.get("operational", {}).get("finra_listing_lookback_days", 45)
         )
@@ -3963,6 +4080,14 @@ def fetch_finra_notices(
 
         try:
             result = fetch_page(page_url, session, max_retries=max_retries)
+        except requests.RequestException as exc:
+            if _request_exception_is_source_unavailable(exc):
+                raise FinraListingUnavailableError(
+                    f"FINRA notices page request failed for page {page_index}"
+                ) from exc
+            raise FinraListingError(
+                f"FINRA notices page request failed for page {page_index}"
+            ) from exc
         except Exception as exc:
             raise FinraListingError(
                 f"FINRA notices page request failed for page {page_index}"
@@ -3981,10 +4106,13 @@ def fetch_finra_notices(
             )
             if error_detail:
                 logger.error("FINRA notices fetch error: %s", error_detail)
-            raise FinraListingError(
+            message = (
                 f"FINRA notices page request failed with status {status_code} "
                 f"for page {page_index}"
             )
+            if _http_status_is_source_unavailable(status_code):
+                raise FinraListingUnavailableError(message)
+            raise FinraListingError(message)
 
         final_rejection = _finra_listing_url_rejection_reason(
             result.get('final_url') or page_url,
@@ -4013,7 +4141,7 @@ def fetch_finra_notices(
                 f"FINRA notices page parsing failed for page {page_index}"
             ) from exc
         if denial_reason:
-            raise FinraListingError(
+            raise FinraListingUnavailableError(
                 f"FINRA notices page {page_index} returned a denial/challenge "
                 f"page ({denial_reason!r}); refusing to parse it as a listing"
             )
@@ -4046,6 +4174,8 @@ def fetch_finra_notices(
     declared_last = 0
     page_index = 0
     pages_fetched = 0
+    listing_dates_are_monotonic = True
+    previous_listing_date = None
 
     while True:
         content = _fetch_listing_page(page_index)
@@ -4081,6 +4211,24 @@ def fetch_finra_notices(
                 "but returned no notice links"
             )
 
+        if listing_dates_are_monotonic:
+            for publication_date in _finra_publication_dates_for_links(page_links):
+                if (
+                    previous_listing_date is not None
+                    and publication_date > previous_listing_date
+                ):
+                    listing_dates_are_monotonic = False
+                    logger.warning(
+                        "FINRA listing dates are not monotonic newest-first at "
+                        "page %s (%s after %s); disabling early pagination stop "
+                        "for this run",
+                        page_index,
+                        publication_date,
+                        previous_listing_date,
+                    )
+                    break
+                previous_listing_date = publication_date
+
         fingerprint = frozenset(
             link.get("data-monitor-canonical-url") for link in page_links
         )
@@ -4102,6 +4250,8 @@ def fetch_finra_notices(
 
         if (
             page_index > 0
+            and allow_listing_early_stop
+            and listing_dates_are_monotonic
             and _finra_page_can_stop_at_known_lookback_boundary(
                 page_links,
                 known_entry_keys,
@@ -4881,6 +5031,29 @@ def _run_monitor() -> int:
     requested_sources: list[str] = []
     failed_sources: dict[str, str] = {}
 
+    def mark_source_unavailable(source: str, exc: Exception) -> None:
+        reason = _source_failure_reason(exc)
+        logger.error("%s unavailable this run: %s", source, reason)
+        failed_sources[source] = reason
+        source_counts[source] = {
+            "fetched": 0,
+            "new": 0,
+            "degraded": 1,
+            "reason": reason,
+        }
+
+    def update_finra_degraded_counter() -> int:
+        monitor_state = state.setdefault("regulatory_monitor", {})
+        current = int(monitor_state.get(FINRA_DEGRADED_COUNTER_KEY, 0) or 0)
+        if "FINRA" not in requested_sources:
+            return current
+        if "FINRA" in failed_sources:
+            current += 1
+        else:
+            current = 0
+        monitor_state[FINRA_DEGRADED_COUNTER_KEY] = current
+        return current
+
     # Fetch from Federal Register
     if args.source in ['federal-register', 'all']:
         requested_sources.append("Federal Register")
@@ -4914,15 +5087,10 @@ def _run_monitor() -> int:
                 fed_state['last_checked'] = datetime.now(timezone.utc).strftime('%Y-%m-%d')
                 set_source_state(state, SOURCE_KEY_FEDERAL_REGISTER, fed_state)
         except Exception as exc:
-            reason = _source_failure_reason(exc)
-            logger.error("Federal Register unavailable this run: %s", reason)
-            failed_sources["Federal Register"] = reason
-            source_counts["Federal Register"] = {
-                "fetched": 0,
-                "new": 0,
-                "degraded": 1,
-                "reason": reason,
-            }
+            if not _exception_represents_source_unavailability(exc):
+                logger.error("Federal Register source failure: %s", exc)
+                return EXIT_FAILURE
+            mark_source_unavailable("Federal Register", exc)
 
     # Fetch from FINRA
     if args.source in ['finra', 'all']:
@@ -4932,12 +5100,18 @@ def _run_monitor() -> int:
 
         try:
             finra_unavailable: list[dict] = []
+            weekly_full_crawl = datetime.now(timezone.utc).weekday() == 6
+            if weekly_full_crawl:
+                logger.info(
+                    "FINRA weekly full crawl: early pagination stop disabled"
+                )
             finra_items = fetch_finra_notices(
                 session,
                 config,
                 limit=args.limit,
                 unavailable_notices=finra_unavailable,
                 known_entry_keys=set(finra_state.get("entries", {})),
+                allow_listing_early_stop=not weekly_full_crawl,
             )
             new_finra_items = check_for_new_items(SOURCE_KEY_FINRA, finra_items, finra_state)
             source_counts["FINRA"] = {
@@ -4963,15 +5137,10 @@ def _run_monitor() -> int:
             if state_mutation_allowed:
                 update_source_state(SOURCE_KEY_FINRA, finra_items, state)
         except Exception as exc:
-            reason = _source_failure_reason(exc)
-            logger.error("FINRA notices unavailable this run: %s", reason)
-            failed_sources["FINRA"] = reason
-            source_counts["FINRA"] = {
-                "fetched": 0,
-                "new": 0,
-                "degraded": 1,
-                "reason": reason,
-            }
+            if not _exception_represents_source_unavailability(exc):
+                logger.error("FINRA notices source failure: %s", exc)
+                return EXIT_FAILURE
+            mark_source_unavailable("FINRA", exc)
 
     if requested_sources and len(failed_sources) == len(requested_sources):
         logger.error(
@@ -4979,6 +5148,10 @@ def _run_monitor() -> int:
             ", ".join(_source_display_name(source) for source in failed_sources),
         )
         return EXIT_FAILURE
+
+    finra_degraded_count = 0
+    if state_mutation_allowed:
+        finra_degraded_count = update_finra_degraded_counter()
 
     # Generate report if new items or degraded sources were found. A degraded
     # source is never equivalent to "no changes"; it must remain visible in
@@ -5007,6 +5180,17 @@ def _run_monitor() -> int:
             logger.info(f"State updated: {STATE_FILE}")
         else:
             logger.info("State not updated (dry-run or limited run)")
+
+        if (
+            "FINRA" in failed_sources
+            and finra_degraded_count >= FINRA_DEGRADED_FAILURE_THRESHOLD
+        ):
+            logger.error(
+                "FINRA unavailable for %s consecutive regulatory monitor runs; "
+                "failing the workflow to restore the scheduled failure signal",
+                finra_degraded_count,
+            )
+            return EXIT_FAILURE
 
         return EXIT_DEGRADED if failed_sources else EXIT_FINDINGS
 

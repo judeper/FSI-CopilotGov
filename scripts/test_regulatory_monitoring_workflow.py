@@ -107,6 +107,10 @@ def test_pr_validation_is_read_only_and_write_job_is_event_isolated() -> None:
     }
 
 
+def test_monitor_job_has_explicit_runtime_bound() -> None:
+    assert _job(MONITOR_JOB)["timeout-minutes"] == "90"
+
+
 def test_checkouts_do_not_persist_credentials() -> None:
     for job_name in (VALIDATION_JOB, MONITOR_JOB):
         checkout_steps = [
@@ -210,13 +214,43 @@ def test_pr_write_path_is_gated_on_findings_exit() -> None:
         assert f"steps.monitor.outputs.exit_code == '{DEGRADED_EXIT_CODE}'" in _step(MONITOR_JOB, step_name)["if"]
 
 
-def test_pr_title_identifies_run_number_not_item_count() -> None:
+def test_pr_title_marks_degraded_finra_runs() -> None:
     create_pr_steps = [
         step
         for step in _steps(MONITOR_JOB)
         if "create-pull-request" in step.get("uses", "")
     ]
     assert create_pr_steps, "the workflow must define its PR creation step"
-    assert create_pr_steps[0]["with"]["title"] == (
-        "Regulatory Monitor: findings or degraded source (run ${{ github.run_number }})"
+    assert create_pr_steps[0]["with"]["title"] == "${{ steps.pr-meta.outputs.title }}"
+
+    meta_run = _step(MONITOR_JOB, "Prepare Regulatory Monitor PR metadata")["run"]
+    assert "DEGRADED (FINRA unavailable)" in meta_run
+    assert "Sources unavailable this run" in meta_run
+
+
+def test_degraded_runs_add_and_create_monitor_degraded_label() -> None:
+    create_label_run = _step(MONITOR_JOB, "Ensure degraded monitor label exists")[
+        "run"
+    ]
+    assert "gh label create monitor-degraded" in create_label_run
+    assert (
+        _step(MONITOR_JOB, "Ensure degraded monitor label exists")["if"]
+        == f"steps.monitor.outputs.exit_code == '{DEGRADED_EXIT_CODE}'"
     )
+
+    labels = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
+        "with"
+    ]["labels"]
+    assert "steps.pr-meta.outputs.extra_labels" in labels
+
+
+def test_degraded_runs_only_supersede_prior_degraded_monitor_prs() -> None:
+    cleanup_run = _step(MONITOR_JOB, "Close prior superseded Regulatory Monitor PRs")[
+        "run"
+    ]
+    assert 'app/fsi-monitor-bot' in cleanup_run
+    assert 'monitor-degraded' in cleanup_run
+    assert (
+        "steps.monitor.outputs.exit_code == '4'"
+        in cleanup_run
+    ), "cleanup script must branch degraded handling by exit code"

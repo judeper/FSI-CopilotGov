@@ -148,6 +148,23 @@ def test_partial_source_failure_returns_degraded_and_reports_unavailable_source(
         "fetch_federal_register_documents",
         lambda *args, **kwargs: [],
     )
+    initial_finra_state = {
+        "entries": {"FINRA 26-01": "v2:existing"},
+        "last_checked": "2026-08-01",
+    }
+    state_path = tmp_path / "data" / "monitor-state.json"
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    state_path.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "sources": {
+                    regulatory_monitor.SOURCE_KEY_FINRA: deepcopy(initial_finra_state)
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
 
     def finra_429(*_args, **_kwargs):
         raise regulatory_monitor.FinraListingError(
@@ -165,6 +182,166 @@ def test_partial_source_failure_returns_degraded_and_reports_unavailable_source(
     assert "FINRA notices" in report
     assert "unavailable this run" in report
     assert "No new regulatory items detected" not in report
+    saved_state = json.loads(state_path.read_text(encoding="utf-8"))
+    assert (
+        saved_state["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+        == initial_finra_state
+    )
+    assert (
+        saved_state["sources"][regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER][
+            "last_checked"
+        ]
+        != "2026-08-01"
+    )
+
+
+def test_programming_error_in_one_source_is_fatal_not_degraded(
+    monkeypatch,
+    tmp_path,
+):
+    """A source adapter bug must stay red even when the other source succeeds."""
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "STATE_FILE",
+        tmp_path / "data" / "monitor-state.json",
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_finra_notices",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            TypeError("'NoneType' object is not subscriptable")
+        ),
+    )
+
+    exit_code = regulatory_monitor.main()
+
+    assert exit_code == regulatory_monitor.EXIT_FAILURE
+    assert not list((tmp_path / "reports").glob("regulatory-changes-*.md"))
+
+
+def test_finra_degraded_counter_escalates_on_third_consecutive_run(
+    monkeypatch,
+):
+    """Persistent FINRA unavailability must restore the scheduled red signal."""
+    config = _load_config()
+    initial_state = {
+        "version": 1,
+        "regulatory_monitor": {"consecutive_finra_degraded_runs": 2},
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-08-01",
+                "entries": {},
+            },
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-01": "v2:existing"},
+            },
+        },
+    }
+    loaded_state = deepcopy(initial_state)
+    saved_states: list[dict] = []
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", Path("/unused/data"))
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", Path("/unused/reports"))
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "generate_regulatory_report",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_finra_notices",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            regulatory_monitor.FinraListingError(
+                "FINRA notices page request failed with status 429 for page 0"
+            )
+        ),
+    )
+
+    exit_code = regulatory_monitor._run_monitor()
+
+    assert exit_code == regulatory_monitor.EXIT_FAILURE
+    assert saved_states[-1]["regulatory_monitor"][
+        "consecutive_finra_degraded_runs"
+    ] == 3
+    assert (
+        saved_states[-1]["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+        == initial_state["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+    )
+
+
+def test_finra_degraded_counter_resets_after_finra_success(monkeypatch):
+    config = _load_config()
+    loaded_state = {
+        "version": 1,
+        "regulatory_monitor": {"consecutive_finra_degraded_runs": 2},
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-08-01",
+                "entries": {},
+            },
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-01": "v2:existing"},
+            },
+        },
+    }
+    saved_states: list[dict] = []
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", Path("/unused/data"))
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", Path("/unused/reports"))
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_finra_notices",
+        lambda *args, **kwargs: [],
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_CLEAN
+    assert saved_states[-1]["regulatory_monitor"][
+        "consecutive_finra_degraded_runs"
+    ] == 0
 
 
 def test_all_requested_sources_failing_is_fatal(monkeypatch, tmp_path):
@@ -7264,6 +7441,141 @@ def test_finra_listing_stops_after_known_page_outside_lookback(monkeypatch):
 
     assert [item.document_id for item in items] == ["FINRA 26-01", "FINRA 26-02"]
     assert f"{regulatory_monitor.FINRA_NOTICES_URL}?page=2" not in requested
+
+
+def test_finra_listing_disables_early_stop_when_listing_order_regresses(
+    monkeypatch,
+    caplog,
+):
+    """A non-newest-first listing must not hide older pages behind the lookback."""
+    config = _load_config()
+    requested: list[str] = []
+    fixed_now = regulatory_monitor.datetime(
+        2026, 9, 24, tzinfo=regulatory_monitor.timezone.utc
+    )
+
+    class _FrozenDateTime(regulatory_monitor.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return fixed_now if tz is not None else fixed_now.replace(tzinfo=None)
+
+    monkeypatch.setattr(regulatory_monitor, "datetime", _FrozenDateTime)
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-01"],
+            last_page=2,
+            publication_date="2026-06-01",
+        ),
+        1: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-02"],
+            last_page=2,
+            publication_date="2026-07-01",
+        ),
+        2: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-03"],
+            last_page=2,
+            publication_date="2026-05-01",
+        ),
+    }
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_multipage_fetch(pages, record=requested),
+    )
+
+    with caplog.at_level(logging.WARNING):
+        items = regulatory_monitor.fetch_finra_notices(
+            session=object(),
+            config=config,
+            known_entry_keys={"FINRA 26-02"},
+            listing_lookback_days=30,
+        )
+
+    assert f"{regulatory_monitor.FINRA_NOTICES_URL}?page=2" in requested
+    assert {item.document_id for item in items} == {
+        "FINRA 26-01",
+        "FINRA 26-02",
+        "FINRA 26-03",
+    }
+    assert "not monotonic" in caplog.text
+
+
+def test_sunday_finra_run_forces_full_crawl_even_with_known_lookback(
+    monkeypatch,
+):
+    config = _load_config()
+    requested: list[str] = []
+    # 2026-09-27 is a Sunday.
+    fixed_now = regulatory_monitor.datetime(
+        2026, 9, 27, tzinfo=regulatory_monitor.timezone.utc
+    )
+
+    class _FrozenDateTime(regulatory_monitor.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return fixed_now if tz is not None else fixed_now.replace(tzinfo=None)
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-01"],
+            last_page=2,
+            publication_date="2026-09-20",
+        ),
+        1: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-02"],
+            last_page=2,
+            publication_date="2026-07-01",
+        ),
+        2: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-03"],
+            last_page=2,
+            publication_date="2026-05-01",
+        ),
+    }
+    loaded_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-09-26",
+                "entries": {},
+            },
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-02": "v2:existing"},
+            },
+        },
+    }
+    saved_states: list[dict] = []
+
+    monkeypatch.setattr(regulatory_monitor, "datetime", _FrozenDateTime)
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", Path("/unused/data"))
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", Path("/unused/reports"))
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_multipage_fetch(pages, record=requested),
+    )
+
+    regulatory_monitor._run_monitor()
+
+    assert f"{regulatory_monitor.FINRA_NOTICES_URL}?page=2" in requested
 
 
 def test_finra_listing_declaring_a_different_page_fails_closed():
