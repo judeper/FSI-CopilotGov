@@ -7,12 +7,13 @@ Common issues and resolution steps for declarative, SharePoint-backed, and Regis
 ### Issue 1: Users Creating Agents Without Governance Approval
 
 - **Symptoms:** Declarative agents discovered in the tenant without governance approval or documentation
-- **Root Cause:** Agent creation restrictions may not be properly configured, or users may have found alternative creation paths.
+- **Root Cause:** Agent access, sharing, publication, or the specific authoring surface may not be properly governed. **User access** limits consumption and installation; it does not by itself prove that every creation path is blocked.
 - **Resolution:**
-  1. Review agent settings in Admin Center > Agents > Settings
-  2. Restrict creation to approved security groups
-  3. Audit existing agents and require retroactive governance approval
-  4. Set up monitoring (Script 3) to detect new agent creation
+  1. Review agent settings in Admin Center > Agents > Settings, including **Allowed agent types**, **Sharing**, **User access**, and management rules.
+  2. Review the specific authoring surface used (Agent Builder, SharePoint agent creation, Copilot Studio, or pro-code package upload) and apply the control that surface supports.
+  3. Restrict broad access, installation, sharing, and publication to approved security groups where the tenant exposes controls.
+  4. Audit existing agents and require retroactive governance approval.
+  5. Set up monitoring (Script 3) to detect new agent creation or publication.
 
 ### Issue 2: Agent Accessing Overshared Source Content
 
@@ -44,23 +45,24 @@ Common issues and resolution steps for declarative, SharePoint-backed, and Regis
   3. Pre-approve common agent patterns with standardized templates
   4. Define clear SLAs for governance review
 
-### Issue 5: Third-Party Model Provider Enabled Without Governance Approval
+### Issue 5: Third-Party Model Provider Enabled or Unverified
 
-- **Symptoms:** Agents are using non-Microsoft AI model providers to process organizational data without the compliance team's knowledge.
-- **Root Cause:** The third-party model provider setting in the M365 Admin Center was enabled without governance review. By default this setting is disabled, but it may have been enabled during initial configuration.
+- **Symptoms:** Agents are using non-Microsoft AI model providers to process organizational data without the compliance team's knowledge, or the tenant's third-party model-provider posture has not been verified.
+- **Root Cause:** A tenant-exposed third-party model provider setting or equivalent control was enabled without governance review, or the tenant does not expose a clear setting and the posture was assumed rather than evidenced.
 - **Resolution:**
-  1. Review the third-party model provider setting in M365 Admin Center > Copilot > Settings.
+  1. Review the current M365 Admin Center / Copilot / Agent settings surfaces for any third-party model-provider setting or equivalent control.
   2. If enabled without governance approval, disable it immediately and notify the compliance team.
-  3. Audit whether any agents used third-party model providers while the setting was enabled — review audit logs for non-Microsoft model invocations.
-  4. Complete a vendor risk assessment for any third-party model provider before re-enabling.
-  5. Document the approved third-party model provider policy and communicate to agent creators.
+  3. If no setting is present, record "not available in tenant" with date and reviewer; do not treat absence as a disabled default.
+  4. Audit whether any agents used third-party model providers while the setting was enabled — review audit logs for non-Microsoft model invocations where available.
+  5. Complete a vendor risk assessment for any third-party model provider before re-enabling.
+  6. Document the approved third-party model provider policy and communicate to agent creators.
 
 ## Diagnostic Steps
 
 1. **Check agent inventory:** Review Admin Center > Agents > All agents / Registry (or Agent 365 dashboard)
 2. **Verify source security:** Run Script 2 on agent data sources
-3. **Review creation policies:** Verify agent creation restrictions in admin settings
-4. **Check third-party model providers:** Verify the setting is disabled in M365 Admin Center > Copilot > Settings
+3. **Review creation / publishing policies:** Verify the specific controls for each authoring surface rather than inferring creation restrictions from User access
+4. **Check third-party model providers:** Verify whether a setting exists, and if present whether it is disabled or restricted to approved providers
 5. **Monitor activity:** Run Script 3 for recent agent events
 6. **Test agent scope:** Query the agent to verify content boundaries
 

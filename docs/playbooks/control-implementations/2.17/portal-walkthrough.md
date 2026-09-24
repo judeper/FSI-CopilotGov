@@ -1,6 +1,6 @@
 # Control 2.17: Cross-Tenant Agent Federation - Portal Walkthrough
 
-Step-by-step governance workflow for governing the three cross-tenant agent invocation patterns: Entra Agent ID trust, MCP federated server attestation, and Copilot Studio multi-tenant publishing.
+Step-by-step governance workflow for governing cross-tenant agent invocation patterns: Entra Agent ID-backed access, MCP / BYO MCP server attestation, Copilot Studio A2A endpoints, and externally published agents.
 
 ## Prerequisites
 
@@ -13,21 +13,21 @@ Step-by-step governance workflow for governing the three cross-tenant agent invo
 
 | Portal | Path | Why it matters |
 |--------|------|----------------|
-| Microsoft Entra admin center | External Identities > Cross-tenant access settings | Governs Entra Agent ID trust and inbound/outbound configuration |
+| Microsoft Entra admin center | External Identities > Cross-tenant access settings | Governs configured inbound/outbound cross-tenant access; verify whether the selected agent pattern is actually controlled by CTAP in the tenant |
 | Microsoft Entra admin center | Identity > Workload identities | Inventories Agent ID identities and their trust relationships |
-| Microsoft 365 Admin Center | Copilot > Connectors / Integrations | Surfaces federated MCP server registrations |
-| Copilot Studio | Solutions > Agents > Publish | Manages multi-tenant publishing and the receiving-tenant approval flow |
+| Microsoft 365 Admin Center | Agents > Tools; Copilot connectors > Your connections | Surfaces MCP servers, BYO MCP requests, and federated connector access decisions |
+| Copilot Studio | Agents > Add agent > A2A agent; Solutions > Agents > Publish | Manages A2A endpoint connections, multi-tenant publishing, and the receiving-tenant approval flow |
 | Microsoft Purview portal | Audit | Cross-tenant invocation, attestation, and trust-grant events |
 
 ## Steps
 
-### Step 1: Inventory the three cross-tenant patterns
+### Step 1: Inventory the cross-tenant patterns
 
-Capture the present state for each of the three patterns: which external tenants have inbound Agent ID trust, which MCP federated servers are registered, and which Copilot Studio agents are published from or to the firm. Without this baseline, downstream attestation work has no anchor.
+Capture the present state for each pattern: which external tenants have configured trust or partner access, which MCP/BYO MCP servers are registered or requested, which A2A endpoints are connected, and which Copilot Studio agents are published from or to the firm. Without this baseline, downstream attestation work has no anchor.
 
 ### Step 2: Apply cross-tenant access settings before granting trust
 
-Configure Entra cross-tenant access settings to default-deny inbound Agent ID and require explicit per-tenant inclusion. Document the named external tenants approved under [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md) and the Microsoft Cloud instances they operate in.
+Configure Entra cross-tenant access settings to the firm's approved default posture and require explicit per-tenant inclusion where CTAP governs the pattern. Document the named external tenants approved under [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md), the Microsoft Cloud instances they operate in, and the evidence proving whether CTAP applies to the specific agent path. Do not assume CTAP blocks every A2A, MCP, or published-agent path without tenant evidence.
 
 ### Step 3: Require signed attestation for MCP federated servers
 
@@ -35,7 +35,7 @@ For each MCP federated server registered to the firm, require a signed attestati
 
 ### Step 4: Govern Copilot Studio multi-tenant publishing
 
-For published agents authored in the firm, maintain a publishing-target list with the receiving tenants approved to install and use the agent. For published agents the firm consumes from external authors, require the receiving-tenant admin approval workflow and capture the approval record.
+For published agents authored in the firm, maintain a publishing-target list with the receiving tenants approved to install and use the agent. For published agents the firm consumes from external authors, require the receiving-tenant admin approval workflow and capture the approval record. For A2A endpoint connections, Microsoft Learn states supported authentication options are **None**, **API key**, and **OAuth 2.0**, and typical A2A metadata includes full chat history, not just the latest user utterance; capture endpoint authentication, hosting jurisdiction, full-chat-history handling, and data-residency approval before enabling an external A2A endpoint.
 
 ### Step 5: Establish supervisory observability
 
@@ -49,9 +49,9 @@ When a cross-tenant relationship ends, residual grants persist by default. Docum
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Inventory all three patterns and default-deny inbound Agent ID trust. |
-| **Recommended** | Require signed MCP attestation, maintain a per-pattern third-party register, and review cross-tenant invocation audit logs monthly. |
-| **Regulated** | All Recommended controls plus: data-residency attestation per external tenant, quarterly supervisory reconstruction drill, and tested termination playbook for each external tenant. |
+| **Baseline** | Inventory each cross-tenant pattern and configure CTAP / Copilot / tool controls to deny or withhold unapproved external access where the tenant exposes an applicable control. |
+| **Recommended** | Require signed MCP / A2A attestation, maintain a per-pattern third-party register, and review cross-tenant invocation audit logs monthly. |
+| **Regulated** | All Recommended controls plus: data-residency attestation per external tenant or endpoint, quarterly supervisory reconstruction drill, and tested termination playbook for each external tenant or endpoint. |
 
 ## Next Steps
 

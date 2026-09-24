@@ -1,6 +1,6 @@
 # Control 2.17: Cross-Tenant Agent Federation - PowerShell Setup
 
-Automation workflow for inventorying cross-tenant Agent ID trust, MCP federated server registrations, Copilot Studio multi-tenant publishing, and the corresponding audit evidence.
+Automation workflow for inventorying cross-tenant access settings, agent identities, MCP/BYO MCP server registrations, Copilot Studio A2A / multi-tenant publishing, and the corresponding audit evidence.
 
 ## Prerequisites
 
@@ -52,6 +52,8 @@ $mcp.value |
   Export-Csv .\artifacts\2.17\mcp-federated-servers.csv -NoTypeInformation
 ```
 
+Validate this beta endpoint and any replacement Agents > Tools export mechanism against current Microsoft Learn and tenant behavior before relying on the output.
+
 ### Script 4: Pull cross-tenant invocation and trust-grant audit events
 
 ```powershell
@@ -60,7 +62,10 @@ Connect-ExchangeOnline -ShowBanner:$false
 $start = (Get-Date).AddDays(-30)
 $end   = Get-Date
 
-<!-- NEEDS_HUMAN_REVIEW: The operations CrossTenantAgentInvoked, CrossTenantTrustGranted, CrossTenantTrustRevoked, MCPFederatedServerRegistered, MCPFederatedServerRevoked, CopilotStudioAgentInstalled, and CopilotStudioAgentUninstalled are not documented in Microsoft Learn audit-log-activities as of 2026-06-08. Verify these operation names against current tenant behavior before relying on them in production. -->
+# NEEDS_TENANT_VERIFICATION: The operation names below were not verified as
+# Microsoft-published universal operation names on 2026-09-24. First run a
+# broader audit search for the tenant's observed A2A, MCP, and external-agent
+# events, then replace this list with the confirmed tenant operation names.
 Search-UnifiedAuditLog -StartDate $start -EndDate $end `
   -Operations 'CrossTenantAgentInvoked','CrossTenantTrustGranted','CrossTenantTrustRevoked','MCPFederatedServerRegistered','MCPFederatedServerRevoked','CopilotStudioAgentInstalled','CopilotStudioAgentUninstalled' `
   -ResultSize 5000 |
@@ -79,8 +84,8 @@ Compress-Archive -Path .\artifacts\2.17\* `
 
 | Task | Cadence | Notes |
 |------|---------|-------|
-| CTAP and partner snapshot | Monthly | Detects drift in cross-tenant trust scope |
-| Agent identity and MCP inventory | Monthly | Aligns with the third-party register |
+| CTAP and partner snapshot | Monthly | Detects drift in configured cross-tenant access scope; verify whether CTAP applies to each agent path |
+| Agent identity, A2A, and MCP inventory | Monthly | Aligns with the third-party register |
 | Audit pull | Weekly | Supports supervisory observability |
 | Termination playbook drill | Annually | Validates clean-up procedures |
 

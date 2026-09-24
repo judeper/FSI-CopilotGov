@@ -427,7 +427,7 @@
       "tier": "Recommended",
       "title": "Control 2.14: Declarative and SharePoint Agents Governance",
       "path": "docs/controls/pillar-2-security/2.14-declarative-agents-governance.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)"
       ]
@@ -450,7 +450,7 @@
       "tier": "Baseline",
       "title": "Control 2.16: Federated Copilot Connector and Model Context Protocol (MCP) Governance",
       "path": "docs/controls/pillar-2-security/2.16-federated-connector-mcp-governance.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P",
@@ -464,7 +464,7 @@
       "tier": "Recommended",
       "title": "Control 2.17: Cross-Tenant Agent Federation (MCP and Entra Agent ID)",
       "path": "docs/controls/pillar-2-security/2.17-cross-tenant-agent-federation.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P (248.30)",
@@ -854,7 +854,7 @@
       "tier": "Recommended",
       "title": "Control 4.13: Copilot Extensibility and Agent Operations Governance",
       "path": "docs/controls/pillar-4-operations/4.13-extensibility-governance.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Examination Handbook",

@@ -56,13 +56,35 @@ Common issues and resolution steps for Copilot extensibility governance and agen
   4. Update the Plugin Risk Assessment template to include a permissions review step.
   5. Implement a quarterly permissions review cycle.
 
+### Issue 6: BYO MCP Server Approved Without Complete Consent or Review
+
+- **Symptoms:** An MCP server appears available in a supported client, but the governance record lacks declared-tool review, approval rationale, or Microsoft Entra permission consent evidence.
+- **Root Cause:** The Agents > Tools request was approved outside the standard Plugin / Tool Risk Assessment workflow, or consent state was not captured after approval.
+- **Resolution:**
+  1. Open Microsoft 365 admin center > Agents > Tools and review the server details, declared tools, status, and request history.
+  2. If approval or consent evidence is missing, block the server pending review.
+  3. Complete security, compliance, and business-owner review for declared tools and requested permissions.
+  4. Restore availability only after Entra consent and approval evidence are complete.
+
+### Issue 7: Work IQ Write Operations Enabled Without Approval
+
+- **Symptoms:** Work IQ tools can create, update, or send content even though the governance record assumes read-only behavior.
+- **Root Cause:** Microsoft 365 Work IQ is read-only unless an administrator explicitly turns on write operations; write capability may have been enabled without a formal risk decision.
+- **Resolution:**
+  1. Verify Work IQ write-operation state in the Microsoft 365 admin center.
+  2. If enabled without approval, disable write operations and preserve the current-state screenshot.
+  3. Review billing/spending policy, regional allow/block controls, data classes, and confirmation-flow evidence before re-enabling.
+  4. Notify the agent owner and compliance lead if any write-capable operation executed before approval.
+
 ## Diagnostic Steps
 
 1. **Check user consent settings:** Microsoft Entra admin center > Enterprise applications > Consent and permissions.
 2. **Review plugin catalog:** Microsoft 365 admin center > Settings > Integrated apps.
 3. **Review agent inventory:** Microsoft 365 admin center > Agents > All agents / Registry.
-4. **Audit app permissions:** Run the permission audit script (Script 3 from PowerShell Setup).
-5. **Test user experience:** Log in as a standard user and verify plugin and agent access restrictions.
+4. **Review tools and MCP requests:** Microsoft 365 admin center > Agents > Tools > Registry / Requests.
+5. **Audit app permissions:** Run the permission audit script (Script 3 from PowerShell Setup).
+6. **Verify Work IQ posture:** Confirm usage-based billing, spending policy, allow/block availability, and write-operation state where Work IQ is enabled.
+7. **Test user experience:** Log in as a standard user and verify plugin, tool, MCP, and agent access restrictions.
 
 ## Escalation
 
@@ -70,6 +92,7 @@ Common issues and resolution steps for Copilot extensibility governance and agen
 |----------|-----------|-----------------|
 | Critical | Unauthorized plugin exposing sensitive data | IT Security + Compliance — immediate remediation |
 | High | Graph connector data exposure | IT Admin — disable connector + data classification |
+| High | BYO MCP server or Work IQ write capability enabled without approval | IT Security + M365 Admin — block/disable pending review |
 | Medium | Plugin approval workflow delays | IT Management — process optimization |
 | Low | Minor permission excess | Schedule for next quarterly review |
 
