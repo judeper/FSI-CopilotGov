@@ -50,7 +50,7 @@ Test cases and evidence collection to validate that Copilot-drafted communicatio
 ### Test 5: AI Washing Detection (FINRA 2210(d)(1)(A) / SEC v. Delphia Precedent)
 
 - **Objective:** Verify that Communication Compliance policies catch promissory AI capability claims in Copilot-drafted communications
-- **Regulatory basis:** FINRA Rule 2210(d)(1)(A) prohibits material misstatements; the SEC v. Delphia Inc. and Global Predictions Inc. enforcement action (March 2024) established that overstating AI capabilities violates the Investment Advisers Act Section 206 antifraud provisions
+- **Regulatory basis:** FINRA Rule 2210(d)(1)(A) prohibits material misstatements; the SEC v. Delphia Inc. and Global Predictions Inc. enforcement action (March 2024) is a factual SEC settled enforcement precedent involving false and misleading AI-use statements; applicability: confirm
 - **Steps:**
   1. Using a test account, ask Copilot to draft a client newsletter section containing phrases such as: "Our AI-powered platform guarantees superior returns" or "Our AI algorithms eliminate investment risk."
   2. Send the draft to a monitored test recipient.
@@ -75,7 +75,7 @@ Test cases and evidence collection to validate that Copilot-drafted communicatio
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FINRA 2210(b) | Content standards for fair and balanced communications | Supports detection of misleading or promissory language in AI-drafted content |
-| FINRA 2210(c) | Supervisory review and filing requirements | Helps meet pre-use approval requirements for retail communications |
+| FINRA 2210(c) | Supervisory review and filing requirements | Provides evidence for pre-use approval requirements for retail communications |
 | FINRA 2210(d) | Institutional communication standards | Supports categorization and appropriate review levels |
 | FINRA 2210(d)(1)(A) | Prohibition on misleading statements, including about AI capabilities | AI washing keyword detection catches unsubstantiated capability claims |
 | Investment Advisers Act Section 206 | Antifraud provisions — no false or misleading statements about AI | Detection policies aligned to SEC v. Delphia enforcement precedent |

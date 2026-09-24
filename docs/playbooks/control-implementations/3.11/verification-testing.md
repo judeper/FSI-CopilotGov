@@ -103,8 +103,8 @@ Test cases and evidence collection procedures to validate records management con
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | SEC Rule 17a-4(f)(2) (SEC Release No. 34-96034, 87 FR 66412 (Nov. 3, 2022)) | Audit-trail alternative to WORM storage | Tests 3 and 4 verify Preservation Lock and audit trail coverage for the alternative compliance path |
-| SEC 17a-4 | Electronic record preservation in WORM format | Supports compliance with immutable record storage requirements (WORM or audit-trail alternative) |
-| FINRA 4511 | Books-and-records retention | Helps meet retention obligations for AI-generated business records |
+| SEC 17a-4 | Electronic record preservation in WORM format | Provides evidence for immutable record storage requirements (WORM or audit-trail alternative) |
+| FINRA 4511 | Books-and-records retention | Provides evidence for retention obligations for AI-generated business records |
 | SEC 17a-3 | Record-making requirements | Supports creation and classification of required records |
 | Off-channel enforcement | All business communications must be captured | Tests 5 and 6 verify mobile Copilot recordkeeping coverage and access controls |
 

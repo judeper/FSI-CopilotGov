@@ -17,6 +17,38 @@ This appendix captures open applicability questions that each firm should resolv
 4. When a Copilot-generated meeting recap or threaded summary summarizes a regulated business discussion, should the framework classify that summary as an independent books-and-records item, and should the control state that FINRA Rule 4511(c) requirements are met only after tenant evidence proves preservation/export format?
 5. Should Copilot memory entries, inferred memories, saved memories, and custom instructions be treated as records when they contain client, investment, supervisory, or financial-analysis context; if yes, must high-risk users disable memory until retention/versioning support is tenant-verified?
 
+
+## Control 3.3 — eDiscovery for Copilot-Generated Content
+
+1. Which Copilot and AI-application artifacts are in scope for each matter type: mailbox-stored prompts/responses, Copilot memory (`IPM.Contact`), Copilot Pages, Copilot Notebooks, Loop components, native files, audit events, or external/generated web-search query logs?
+2. Which production formats are approved for Copilot interaction records: PST, individual messages, review-set export package, Microsoft Graph/API output, JSON, native files, redacted PDF, or requester-specific formats?
+3. When must legal hold include only the custodian mailbox, and when must it also include SharePoint, OneDrive, Loop, or SharePoint Embedded container URLs?
+
+## Control 3.5 — FINRA 2210 Compliance
+
+1. For each Copilot-assisted communication workflow, which FINRA communication category applies (retail communication, correspondence, institutional communication, public appearance, internal communication, or out of scope), and which principal pre-approval, post-use review, filing, and recordkeeping procedures apply?
+2. How should the firm treat SEC AI-washing enforcement precedents in broker-dealer, adviser, and issuer communications about Microsoft 365 Copilot capabilities?
+3. Which proposed or pending FINRA/SEC Rule 2210 amendments are being monitored, and which controls must remain under current Rule 2210 until final approval and effective dates are verified?
+
+## Control 3.10 — SEC Reg S-P Privacy
+
+1. Which entity types and customer-information populations are subject to amended SEC Regulation S-P for this deployment, and which compliance date applies to each entity?
+2. What contractual evidence confirms the Microsoft service-provider notification process required by Rule 248.30(a)(3), and what internal event starts the firm's 72-hour tracking clock?
+3. Which Copilot NPI events require customer notification under the amended Reg S-P standard, and which are internal control incidents only?
+
+## Control 3.11 — Record Keeping
+
+1. For each Copilot artifact category, does the firm approve the audit-trail alternative, third-party WORM archival, or both for SEC Rule 17a-4(f), and what evidence must be preserved for the full retention period?
+2. Which Purview audit events are sufficient for the firm's audit-trail alternative position, and where must access-event evidence be preserved separately from modification/deletion audit trail evidence?
+3. Which Copilot mobile and browser access channels are approved, blocked, or treated as off-channel risk pending coverage testing?
+
+## Control 3.14 — Copilot Pages and Notebooks Retention and Provenance
+
+1. Which Copilot Pages, Copilot Notebooks, and Loop components are record material under the firm's records schedule, and what retention period applies to each artifact type?
+2. Is **All SharePoint Sites** sufficient for the firm's SharePoint Embedded retention scope, or must specific Copilot Pages/Notebooks container URLs be added to policies and holds?
+3. What tenant-visible audit evidence is sufficient to reconstruct Page/Notebook lineage and Loop host references, given Microsoft's documented Loop application identity and file-extension-based audit filters?
+4. If information barriers are required for a workflow, should Copilot Pages and Copilot Notebooks be disabled because Microsoft documents information barriers as unsupported for SharePoint Embedded content?
+
 ## Control 3.6 — Supervision & Oversight
 
 1. Are the specific numeric thresholds (50 supervised users/supervisor, 5%/25%/100% sampling tiers, Series 24/26 designation, 7-year retention, and the FINRA-3110(a)-to-agent-supervision extension) firm-approved compliance policy, or do they need Legal/Compliance sign-off before being presented as a control requirement?
@@ -49,6 +81,30 @@ This appendix captures open applicability questions that each firm should resolv
 
 1. Which specific primary-source document, if any, should this control cite for interagency AI guidance? If no FFIEC/member-agency guidance document exists under that title, should the control be framed as monitoring for future FFIEC/member-agency AI guidance rather than asserting that joint AI guidance has been issued?
 
+## Control 2.14 — Declarative and SharePoint Agents Governance
+
+1. For declarative, SharePoint-backed, Agent Builder, and externally published agents, which regulatory citations in Control 2.14 are actually applicable to the firm's entity type and agent use cases, and should the control retain GLBA-only metadata or include FFIEC/OCC references only as internal governance considerations?
+2. Which agent events, if any, become firm books-and-records or supervisory-review artifacts: creation requests, sharing approvals, pinned-agent decisions, Agent Registry exports, Agent Map reviews, or agent usage telemetry?
+3. Which tenant-specific creation controls are legally/policy required for declarative and SharePoint agents, distinct from Microsoft 365 admin center **User access** controls that govern consumption and installation?
+
+## Control 2.16 — Federated Connector and MCP Governance
+
+1. For each enabled federated connector or MCP server, should the firm classify the vendor or publisher as a third-party service provider under the firm's GLBA, SEC Reg S-P, FFIEC, OCC Bulletin 2023-17, or other third-party-risk framework?
+2. If federated connector write/update/delete actions become available in the tenant, do those actions create additional approval, supervision, recordkeeping, DLP, or customer-notification requirements beyond read-only retrieval?
+3. Which connector invocation, authentication, and DLP events must be preserved as examination evidence, and what retention period and export format does the firm's records schedule require?
+
+## Control 2.17 — Cross-Tenant Agent Federation
+
+1. Which cross-tenant agent patterns are approved for the firm: externally published Copilot Studio agents, A2A-connected external agents, external MCP servers, Entra Agent ID-backed external agents, or none?
+2. For each approved external tenant or counterparty, which regulatory framework drives the required review: GLBA safeguards, SEC Reg S-P, FFIEC information-security expectations, OCC Bulletin 2023-17 third-party risk, FINRA Rule 3110 supervision, or firm-only policy?
+3. Which cross-tenant invocation artifacts must be retained or supervised, including A2A payload metadata, full chat-history transfer to external A2A endpoints, external tenant approvals, MCP attestations, and termination evidence?
+
 ## Control 4.2 — Teams Meetings Governance
 
 1. For Copilot-generated Teams meeting summaries/transcripts and Teams Phone call summaries, should the authoritative retention mapping be (1) SEC 17a-4(b)(4) business communications at 3 years; (2) a 6-year broker-dealer/account-record category under FINRA 4511 or SEC 17a-4(a)/(c)/(e), with the exact subpart named; (3) a 7-year firm/regulator-specific policy, with the actual authority named because `FINRA/SEC extended` was not found in FINRA 4511 or SEC 17a-4; or (4) different durations for meeting transcripts, meeting summaries, call summaries, and DLP evidence?
+
+## Control 4.13 — Copilot Extensibility and Agent Operations Governance
+
+1. Which extensibility artifacts are regulatory records or examination evidence for the firm: Integrated apps inventory, Agent Registry exports, Agent 365 operational metrics, plugin/tool approvals, MCP requests, Graph connector reviews, Agent Map dependency reviews, A2A endpoint approvals, and decommission records?
+2. Where an agent-to-agent chain sends full chat history or structured metadata to an external A2A endpoint, which supervision, vendor-risk, data-residency, DLP, privacy, and recordkeeping reviews are required before enablement?
+3. Does the firm apply model-risk management standards to multi-agent orchestration chains, and if yes, which current primary source or internal policy establishes the applicable validation, lineage, and auditability requirements?

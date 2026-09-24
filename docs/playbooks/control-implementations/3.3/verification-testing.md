@@ -10,7 +10,7 @@ Test cases and evidence collection procedures to validate eDiscovery capabilitie
 - **Steps:**
   1. Have a test user perform several Copilot interactions in different applications (Word, Teams, Outlook).
   2. Wait 24 hours for content indexing.
-  3. In the unified eDiscovery experience, create a search with the query `kind:microsearch AND participants:[test-user@firm.com]`.
+  3. In the unified eDiscovery experience, create a search with the query `Type > Copilot activity AND participants:[test-user@firm.com]`.
   4. Use the Copilot surface filter to confirm results are filterable by surface type (e.g., Teams Copilot, Outlook Copilot).
   5. Review search results for completeness.
 - **Expected Result:** All Copilot interactions from the test user are returned in search results with full metadata. Surface filter is available for Premium-tier searches.
@@ -20,7 +20,7 @@ Test cases and evidence collection procedures to validate eDiscovery capabilitie
 
 - **Objective:** Verify that eDiscovery holds preserve Copilot content from deletion
 - **Steps:**
-  1. Place a test custodian on hold with a Copilot content query (`kind:microsearch`).
+  1. Place a test custodian on hold with a Copilot content query (`Type > Copilot activity`).
   2. Have the custodian delete a Copilot-generated document.
   3. Search for the deleted document using eDiscovery.
   4. Confirm the document is still discoverable in the Recoverable Items folder.
@@ -44,7 +44,7 @@ Test cases and evidence collection procedures to validate eDiscovery capabilitie
 - **Steps:**
   1. Open each eDiscovery case created before May 2025.
   2. Navigate to **Data sources** within the case.
-  3. Verify that "Microsoft Copilot experiences" appears as a data source or custodian location option.
+  3. Verify that "Copilot activity" appears as a data source or custodian location option.
   4. If missing, add the Copilot content location and confirm inclusion in any active holds.
 - **Expected Result:** All active cases, including pre-migration cases, cover the Copilot content location.
 - **Evidence:** Screenshot of Data sources panel for each reviewed case, showing the Copilot content location.

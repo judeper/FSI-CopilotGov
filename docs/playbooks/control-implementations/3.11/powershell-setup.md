@@ -142,7 +142,7 @@ Write-Host "Lock status report exported" -ForegroundColor Green
 
 ```powershell
 # Verify that the audit trail captures required events for the Rule 17a-4(f)(2) audit-trail alternative
-# The audit trail must log all modifications, deletions, and access events for regulatory records
+# The audit trail must log modifications, deletions, and related recordkeeping events for regulatory records
 param(
     [int]$DaysBack = 7
 )

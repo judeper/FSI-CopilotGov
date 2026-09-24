@@ -6,7 +6,7 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
 
 ### Issue 1: Copilot Interactions Not Appearing in Search Results
 
-- **Symptoms:** Compliance search with `kind:microsearch` returns zero results despite confirmed Copilot usage.
+- **Symptoms:** Compliance search with `Type > Copilot activity` returns zero results despite confirmed Copilot usage.
 - **Root Cause:** Content indexing may not be complete (can take up to 24 hours), or the Copilot interaction location is not indexed for eDiscovery.
 - **Resolution:**
   1. Verify that the user has an E5 or eDiscovery (Premium) license assigned.
@@ -17,10 +17,10 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
 ### Issue 2: Pre-Migration Cases Missing Copilot Content Locations
 
 - **Symptoms:** An eDiscovery case created before May 2025 does not return Copilot content in searches, even though the custodian has Copilot interaction history.
-- **Root Cause:** Cases created before the unified eDiscovery experience (May 2025 GA) may not automatically include the "Microsoft Copilot experiences" content location. Pre-migration cases retain their original data source configuration.
+- **Root Cause:** Cases created before the unified eDiscovery experience (May 2025 GA) may not automatically include the "Copilot activity" content location. Pre-migration cases retain their original data source configuration.
 - **Resolution:**
   1. Open the case in **Microsoft Purview > eDiscovery > Cases**.
-  2. Navigate to **Data sources** and check whether "Microsoft Copilot experiences" appears as an available location.
+  2. Navigate to **Data sources** and check whether "Copilot activity" appears as an available location.
   3. If missing, add the Copilot content location to the case data sources.
   4. If the case has active holds, verify that the hold policy is updated to include the new Copilot content location.
   5. Re-run any affected searches after updating the data sources.
@@ -32,7 +32,7 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
 - **Resolution:**
   1. Verify that the case is configured for Premium eDiscovery capabilities.
   2. Confirm that E5 or E5 eDiscovery add-on licenses are assigned to the performing user.
-  3. If operating at Standard tier, use KQL surface qualifiers (e.g., `kind:microsearch AND CopilotSurface:"Microsoft365Copilot"`) as an alternative.
+  3. If operating at Standard tier, use KQL surface qualifiers (e.g., `Type > Copilot activity AND itemclass:IPM.SkypeTeams.Message.Copilot.*`) as an alternative.
 
 ### Issue 4: Hold Not Preserving Copilot Content
 
@@ -41,7 +41,7 @@ Common issues and resolution steps for eDiscovery operations involving Copilot-g
 - **Resolution:**
   1. Review the hold policy scope: `Get-CaseHoldPolicy -Identity "hold-name" | Format-List`
   2. Verify the hold includes Exchange and SharePoint locations for the custodian.
-  3. Check if the hold rule query syntax correctly targets Copilot content (`kind:microsearch`).
+  3. Check if the hold rule query syntax correctly targets Copilot content (`Type > Copilot activity`).
   4. Consider using a broad hold (no query filter) for critical custodians to preserve all content.
 
 ### Issue 5: Large Collection Processing Timeout

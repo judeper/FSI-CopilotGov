@@ -1,6 +1,6 @@
 # Control 3.14: Copilot Pages and Notebooks Retention and Provenance - Portal Walkthrough
 
-Step-by-step governance workflow for inventorying Copilot Pages, OneNote Notebooks, and Loop component storage; scoping retention policies; and capturing branch, embed, and lineage evidence.
+Step-by-step governance workflow for inventorying Copilot Pages, Copilot Notebooks, and Loop component storage; scoping retention policies; and capturing branch, embed, and lineage evidence.
 
 ## Prerequisites
 
@@ -30,7 +30,7 @@ Confirm the tenant retention policy covers Loop workspaces, Notebook storage loc
 
 ### Step 3: Enable lifecycle audit operations
 
-Verify unified audit logging captures Pages branch events (create, branch, edit, delete), Notebook edits, and Loop component lifecycle events (create, embed, edit, delete). These events feed the lineage trail described in [Control 3.14](../../../controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md).
+Verify unified audit logging captures available file/container events by searching for `page`, `loop`, `loot`, `fluid`, `.pod`, or the Loop application IDs, then filtering exports by `SourceFileExtension` (`page`, `loop`, `pod`, `fluid`). These events feed the lineage trail described in [Control 3.14](../../../controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md).
 
 ### Step 4: Establish branch-aware and embed-aware lineage capture
 
