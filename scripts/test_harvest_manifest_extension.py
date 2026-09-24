@@ -77,9 +77,24 @@ def test_parse_regulatory_prefers_specific_sox_and_glba_sections() -> None:
 def test_regulatory_and_collector_field_are_rederived() -> None:
     """Derived fields must refresh, not stay frozen at their first value."""
     assert set(harvest_manifest_extension.REDERIVED_FIELDS) == {
+        "roles",
         "regulatory",
         "collectorField",
     }
+
+
+def test_harvest_one_rederives_roles_from_assessment_data() -> None:
+    control = {
+        "id": "9.9",
+        "title": "Control 9.9: Example",
+        "source_file": "",
+        "roles": ["TODO: assign per ROLE_CONTROLS"],
+    }
+    adata = {"assignedRoles": ["M365 Global Admin", "AI Governance Lead"]}
+
+    ext = harvest_manifest_extension.harvest_one(control, adata, {})
+
+    assert ext["roles"] == ["M365 Global Admin", "AI Governance Lead"]
 
 
 def test_harvest_one_derives_collector_field_from_contract() -> None:
