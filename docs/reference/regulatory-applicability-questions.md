@@ -52,3 +52,33 @@ This appendix captures open applicability questions that each firm should resolv
 ## Control 4.2 — Teams Meetings Governance
 
 1. For Copilot-generated Teams meeting summaries/transcripts and Teams Phone call summaries, should the authoritative retention mapping be (1) SEC 17a-4(b)(4) business communications at 3 years; (2) a 6-year broker-dealer/account-record category under FINRA 4511 or SEC 17a-4(a)/(c)/(e), with the exact subpart named; (3) a 7-year firm/regulator-specific policy, with the actual authority named because `FINRA/SEC extended` was not found in FINRA 4511 or SEC 17a-4; or (4) different durations for meeting transcripts, meeting summaries, call summaries, and DLP evidence?
+
+## Control 4.3 — Teams Phone and Queues Governance
+
+1. For Teams Phone calls, call transfers, Teams Phone Agent conversations, and Copilot Studio voice-agent handoffs, which artifacts are records under the firm's approved records schedule: recordings, transcripts, Copilot recaps, transfer summaries, prompts/responses, queue reports, and voice-agent transcripts?
+2. Which consent notices, caller disclosures, and jurisdiction-specific call recording/transcription requirements apply before enabling `EnabledWithTranscript`, cloud recording, Teams Phone Agent, or Copilot Studio voice-agent workflows for client-facing populations?
+3. May any AI-generated call summary supplement the authoritative call record, and if so what human review, sampling, and retention evidence are required before using it in supervisory workflows?
+
+## Control 4.4 — Viva Suite Governance
+
+1. Which employee-analytics, labor, privacy, works-council, or employment-law reviews are required before enabling Copilot Analytics, Viva Engage Copilot, Learning Agent, Viva Pulse, or Viva Glint Copilot features for regulated, HR, legal, compliance, or internal-audit populations?
+2. Are Copilot Analytics, Viva Pulse, or Viva Glint sentiment outputs approved for management action, or only for aggregate governance reporting after human review?
+3. Which historical Viva Goals records, if any, must be retained after the December 31, 2025 retirement, and which successor system is authoritative for OKR or compliance milestone evidence?
+
+## Control 4.5 — Usage Analytics and Adoption Reporting
+
+1. Which Copilot usage and adoption reports may be used as official governance evidence, and which are directional operational reports only?
+2. May identifiable Copilot usage exports be used for supervisory, compliance, HR, or performance-management purposes, and which approvals and access controls are required?
+3. Which populations are intentionally excluded from Graph Copilot usage-detail APIs, admin-center reports, Copilot Chat reports, Agent Dashboard, or Consumption Dashboard, and how should those exclusions be disclosed in committee reporting?
+
+## Control 4.6 — Viva Insights Measurement
+
+1. Which Copilot impact, sentiment, benchmark, intelligent-summary, and business-impact metrics are approved for board or committee reporting, and which require caveats that they are directional rather than proof of ROI or control effectiveness?
+2. What minimum group size, attribute filtering, role access, and export controls are required before analysts can view group-level Copilot impact data?
+3. Which uploaded business outcome data may be combined with Copilot Analytics, and who approves the methodology before any causal or financial-benefit claim is made?
+
+## Control 4.7 — Feedback and Telemetry Data Governance
+
+1. Should regulated populations be allowed to submit verbatim Microsoft feedback, screenshots, attachments, logs, content samples, or follow-up contact information, and what redaction/monitoring controls apply?
+2. Which diagnostic data level and connected-experience settings are approved for Copilot users, and how should exceptions be documented?
+3. Are Copilot feedback, diagnostic, usage-reporting, and telemetry exports part of the firm's privacy impact assessment, vendor inventory, or employee monitoring notice obligations?

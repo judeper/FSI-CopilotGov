@@ -13,19 +13,20 @@ Step-by-step portal configuration for governing the collection, storage, and use
 ### Step 1: Configure Copilot Feedback Settings
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Settings > Copilot > Feedback
+**Path:** Cloud Policy service / Group Policy feedback and survey policies; M365 Admin Center feedback surfaces where present
 
-1. Navigate to Copilot feedback settings.
+1. Navigate to Cloud Policy service for Microsoft 365 or the equivalent Group Policy settings.
 2. Configure feedback collection options:
    - **User feedback (thumbs up/down)** — Enable or disable per organizational policy
-   - **Optional diagnostic data** — Configure the level of telemetry shared with Microsoft
-   - **Connected experiences** — Control data sharing for service improvement
+   - **Screenshots, attachments, logs, and content samples** — Disable for regulated populations unless approved
+   - **Microsoft follow-up contact** — Disable unless approved
+   - **In-product surveys** — Configure per organizational policy
 3. For FSI environments, limit feedback data to the minimum necessary.
 
 ### Step 2: Configure Diagnostic Data Levels
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Settings > Org settings > Services > Microsoft 365 Apps
+**Path:** Cloud Policy service or Group Policy > Microsoft Office 2016 > Privacy > Trust Center
 
 1. Navigate to the Microsoft 365 Apps settings.
 2. Set diagnostic data level:
@@ -57,15 +58,15 @@ Step-by-step portal configuration for governing the collection, storage, and use
 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
-| User feedback collection | Enabled | Enabled (internal use) | Enabled with controls |
-| Diagnostic data level | Optional | Required only | Required only |
-| Connected experiences | Enabled | Selective | Minimum necessary |
+| User feedback collection | Firm-defined | Firm-defined with metadata limits | Firm-defined with screenshots/logs/content samples disabled unless approved |
+| Diagnostic data level | Required unless justified | Required unless justified | Required unless justified |
+| Connected experiences | Selective | Minimum necessary | Minimum necessary |
 | Telemetry retention | Default | Defined policy | Defined with data minimization |
 
 ## Regulatory Alignment
 
 - **GLBA** — Supports compliance with data handling requirements for financial information
-- **CCPA/CPRA** — Helps meet consumer data privacy requirements (where applicable)
+- **CCPA/CPRA** — Can support firm-defined controls for consumer data privacy requirements (where applicable)
 - **GDPR** — Supports data minimization and processing transparency requirements (for global operations)
 
 ## Next Steps

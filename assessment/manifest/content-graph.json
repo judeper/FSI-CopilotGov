@@ -714,7 +714,7 @@
       "tier": "Recommended",
       "title": "Control 4.3: Copilot in Teams Phone and Queues Governance",
       "path": "docs/controls/pillar-4-operations/4.3-teams-phone-queues.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "FINRA Rule 3110 (Supervision)",
         "FINRA Rule 4511 (Books and Records)",
@@ -728,7 +728,7 @@
       "tier": "Recommended",
       "title": "Control 4.4: Copilot in Viva Suite Governance",
       "path": "docs/controls/pillar-4-operations/4.4-viva-suite-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "Labor Regulations (FLSA, State Privacy Laws)",
@@ -742,7 +742,7 @@
       "tier": "Baseline",
       "title": "Control 4.5: Copilot Usage Analytics and Adoption Reporting",
       "path": "docs/controls/pillar-4-operations/4.5-usage-analytics.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
         "FFIEC IT Examination Handbook",
@@ -755,7 +755,7 @@
       "tier": "Recommended",
       "title": "Control 4.6: Microsoft Viva Insights and Copilot Analytics Impact Measurement",
       "path": "docs/controls/pillar-4-operations/4.6-viva-insights-measurement.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "Internal Governance",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
@@ -768,7 +768,7 @@
       "tier": "Recommended",
       "title": "Control 4.7: Copilot Feedback and Telemetry Data Governance",
       "path": "docs/controls/pillar-4-operations/4.7-feedback-telemetry.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P",

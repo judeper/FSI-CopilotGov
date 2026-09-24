@@ -28,7 +28,7 @@ Copilot in Teams Phone requires call transcription to generate real-time assista
 
 ```powershell
 # Configure calling policy with transcription and recording for Copilot support
-# Copilot in calls depends on AllowTranscriptionForCalling and AllowCloudRecordingForCalls
+# Copilot after-call access depends on the Copilot policy plus call transcription or recording.
 # Requires: MicrosoftTeams module
 
 $policyName = "FSI-Copilot-Calling-Policy"
@@ -39,9 +39,10 @@ if (-not $existingPolicy) {
 }
 
 Set-CsTeamsCallingPolicy -Identity $policyName `
+    -Copilot "EnabledWithTranscript" `
     -AllowCloudRecordingForCalls $true `
     -AllowTranscriptionForCalling $true `
-    -LiveCaptionsEnabledType "DisabledUserOverride" `
+    -LiveCaptionsEnabledTypeForCalling "DisabledUserOverride" `
     -AllowPrivateCalling $true `
     -AllowVoicemail "UserOverride" `
     -AllowCallGroups $true `
@@ -55,7 +56,7 @@ Write-Host "Calling policy configured: $policyName" -ForegroundColor Green
 Write-Host "`nVerification — Copilot-relevant calling policy settings:" -ForegroundColor Cyan
 Get-CsTeamsCallingPolicy -Identity $policyName |
     Select-Object Identity, AllowCloudRecordingForCalls, AllowTranscriptionForCalling,
-        LiveCaptionsEnabledType, AllowPrivateCalling, AllowVoicemail |
+        LiveCaptionsEnabledTypeForCalling, AllowPrivateCalling, AllowVoicemail |
     Format-List
 ```
 
@@ -75,7 +76,7 @@ Set-CsTeamsMeetingPolicy -Identity $meetingPolicyName `
     -Copilot "EnabledWithTranscript" `
     -AllowTranscription $true `
     -AllowCloudRecording $true `
-    -LiveCaptionsEnabledType "DisabledUserOverride" `
+    -LiveCaptionsEnabledTypeForCalling "DisabledUserOverride" `
     -AllowMeetingCoach $true
 
 Write-Host "Meeting policy configured: $meetingPolicyName" -ForegroundColor Green
@@ -100,13 +101,13 @@ foreach ($user in $phoneUsers) {
 Write-Host "`nCalling + meeting policies assigned to $assignedCount Teams Phone users" -ForegroundColor Green
 ```
 
-### Script 3: Call Queue and Compliance Recording Audit
+### Script 3: Call Queue, Teams Phone Agent, and Compliance Recording Audit
 
-Call queue Copilot access is governed by each agent's calling policy and license assignment — `Set-CsCallQueue` does not have direct Copilot-specific parameters. This script audits call queue configuration and verifies compliance recording policies.
+Ordinary call queue Copilot access is governed by each agent's calling policy and license assignment — `Set-CsCallQueue` does not have a direct Copilot-specific parameter in current Learn syntax. Teams Phone Agent / Copilot Studio voice-agent integration is separate and preview/gated. This script audits call queue configuration and verifies compliance recording policies.
 
 ```powershell
 # Audit call queue configurations
-# Note: Set-CsCallQueue has no direct Copilot parameters as of April 2026
+# Note: Set-CsCallQueue has no direct Copilot parameter in current Learn syntax as of 2026-09-24
 # Copilot availability for queue agents depends on agent-level calling policy + license
 # Requires: MicrosoftTeams module
 
