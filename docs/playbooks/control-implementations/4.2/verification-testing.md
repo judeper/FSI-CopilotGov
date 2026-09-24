@@ -2,6 +2,9 @@
 
 Test cases and evidence collection procedures to validate Copilot governance in Teams meetings, including the critical test for explicit `EnabledWithTranscript` enforcement.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See [judeper/OceanSquad#241](https://github.com/judeper/OceanSquad/issues/241).
+
 ## Test Cases
 
 ### Test 1: EnabledWithTranscript Enforcement (Critical)
@@ -91,10 +94,10 @@ Test cases and evidence collection procedures to validate Copilot governance in 
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Rule 17a-4(b)(4) | 3-year preservation of business communications | EnabledWithTranscript supports verbatim transcript paired with AI summaries; both retained per policy |
-| FINRA 3110(b)(4) | Supervisory review of communications | AI-generated meeting summaries reviewable through Communication Compliance |
-| FINRA 4511 | Books and records preservation | Meeting transcripts and Copilot artifacts retained under Exchange and OneDrive retention policies |
-| FFIEC | IT governance of AI features | Supports governance of AI-enabled collaboration tools |
+| SEC Rule 17a-4(b)(4) | 3-year preservation citation for business communications | EnabledWithTranscript supports verbatim transcript paired with AI summaries; record category and duration: confirm |
+| FINRA 3110(b)(4) | Supervisory review citation for communications | AI-generated meeting summaries are reviewable through Communication Compliance; applicability: confirm |
+| FINRA 4511 | Books-and-records preservation citation | Meeting transcripts and Copilot artifacts can be retained under Exchange and OneDrive retention policies; classification: confirm |
+| FFIEC | IT governance of AI features | Provides evidence for AI-enabled collaboration-tool governance review; applicability: confirm |
 
 ## Next Steps
 

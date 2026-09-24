@@ -2,6 +2,9 @@
 
 Test cases and evidence collection procedures to validate regulatory reporting capabilities for Copilot governance data.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, reportability, cadence, recipients, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See [judeper/OceanSquad#241](https://github.com/judeper/OceanSquad/issues/241).
+
 ## Test Cases
 
 ### Test 1: Report Data Accuracy
@@ -52,7 +55,7 @@ Test cases and evidence collection procedures to validate regulatory reporting c
 
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
-| Generated regulatory reports | Automation scripts | CSV/Excel | 7 years |
+| Generated regulatory reports | Automation scripts | CSV/Excel | 7 years; retention schedule: confirm |
 | Data accuracy validation | Comparison analysis | Spreadsheet | With report |
 | Report generation timestamps | System logs | Text | With report |
 | Pre-submission review sign-off | Workflow system | PDF/Email | 7 years |
@@ -61,10 +64,10 @@ Test cases and evidence collection procedures to validate regulatory reporting c
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| FINRA 3120 | Internal annual supervisory-control report to senior management, not a regulator filing | Supports data-driven supervisory-control reporting |
-| SEC Form ADV | Disclosure of AI tool usage | Helps meet advisory disclosure obligations |
-| OCC 2026-13 / SR 26-2 | Current model-risk-management context; generative and agentic AI are outside the revised guidance's scope | Supports risk reporting context for AI governance without treating Copilot as covered by the revised MRM guidance |
-| FFIEC | IT examination data requests | Helps meet examiner data production requirements |
+| FINRA 3120 | Internal annual supervisory-control report to senior management, not a regulator filing | Provides evidence for data-driven supervisory-control reporting review |
+| SEC Form ADV | Potential disclosure review for AI tool usage | Advisory disclosure applicability: confirm |
+| OCC 2026-13 / SR 26-2 | Current model-risk-management context; generative and agentic AI are outside the revised guidance's scope | Provides risk reporting context for AI governance without treating Copilot as covered by the revised MRM guidance |
+| FFIEC | IT examination data requests | Provides evidence for examiner data-production review; applicability: confirm |
 
 ## Next Steps
 

@@ -2,6 +2,9 @@
 
 Test cases and evidence collection procedures to confirm data retention policies are correctly applied to Copilot interaction data and generated content.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See [judeper/OceanSquad#241](https://github.com/judeper/OceanSquad/issues/241).
+
 ## Test Cases
 
 ### Test 1: Retention Policy Deployment Verification
@@ -55,7 +58,7 @@ Test cases and evidence collection procedures to confirm data retention policies
   3. Delete the Teams meeting transcript (or a specific Teams message) and wait 24 hours.
   4. Confirm that the Copilot-generated meeting recap (threaded summary) remains accessible — it should be retained independently by the Microsoft Copilot experiences retention policy.
   5. Use Content Search in Purview to verify the summary is still discoverable after source content deletion.
-- **Expected Result:** The Copilot-generated meeting recap remains retained and discoverable after the source Teams meeting content is deleted. FINRA Rule 4511(c) preservation requirements are met for both source and summary content.
+- **Expected Result:** The Copilot-generated meeting recap remains retained and discoverable after the source Teams meeting content is deleted. Firms should ask counsel to review whether the evidence is appropriate for FINRA Rule 4511(c) preservation expectations for source and summary content.
 - **Evidence:** Content search results showing the Copilot summary is retained independently of the deleted source content; screenshots comparing content before and after source deletion.
 
 ### Test 6: New Retention Location Categories Validation
@@ -96,11 +99,11 @@ Test cases and evidence collection procedures to confirm data retention policies
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Rule 17a-4(a) | 6-year retention for broker-dealer records | Microsoft Copilot experiences retention policy covers Copilot Chat history and meeting recaps for 6-year regulated tier |
-| SEC Rule 17a-3(a)(17) | All communications relating to the member's business | Conservative Regulated-tier approach retains all Copilot-generated content regardless of draft status |
-| FINRA Rule 4511 | Books-and-records retention | Helps meet retention obligations for AI interaction records across all Copilot surfaces |
-| FINRA Rule 4511(c) | Preservation format and media requirements | Threaded summary retention test verifies both source and summary content are preserved in accessible format |
-| GLBA | Financial record preservation | Supports privacy and record preservation requirements for AI-processed customer information |
+| SEC Rule 17a-4(a) | 6-year broker-dealer-record citation | Microsoft Copilot experiences retention policy can be configured for a 6-year firm-approved example; applicability: confirm |
+| SEC Rule 17a-3(a)(17) | Communications-record citation | Conservative Regulated-tier retention of all Copilot-generated content is a firm-approved example pending counsel confirmation |
+| FINRA Rule 4511 | Books-and-records retention citation | AI interaction records in scope across Copilot surfaces: confirm |
+| FINRA Rule 4511(c) | Preservation format and media citation | Threaded summary retention test provides evidence for counsel review of source and summary preservation |
+| GLBA | Financial-record/customer-information citation | Privacy and record-preservation applicability for AI-processed customer information: confirm |
 
 ## Next Steps
 

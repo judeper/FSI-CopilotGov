@@ -2,6 +2,9 @@
 
 Step-by-step portal configuration for governing Copilot capabilities in Microsoft Teams meetings, including transcription enforcement, summarization governance, and action item management in financial services environments.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See [judeper/OceanSquad#241](https://github.com/judeper/OceanSquad/issues/241).
+
 ## Prerequisites
 
 - **Role:** Teams Admin, Purview Compliance Admin
@@ -92,14 +95,14 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 | Auto-transcription | On | On (mandatory for compliance) | On (mandatory) |
 | Auto-recording | Optional | On for scheduled meetings with clients | On for all regulated activities |
 | MNPI meeting Copilot | Disabled | Disabled | Disabled |
-| Meeting summary retention | Default | 3 years (FINRA/SEC) | 7 years (FINRA/SEC extended) |
+| Meeting summary retention | Default | 3 years (commonly cited FINRA/SEC business-communication example; schedule: confirm) | 7 years (FINRA/SEC extended-retention example; authority: confirm) |
 
 ## Regulatory Alignment
 
-- **SEC Rule 17a-4(b)(4)** — EnabledWithTranscript supports verbatim transcript preservation alongside AI-generated summaries, helping meet the 3-year readily accessible retention requirement
-- **FINRA Rule 3110** — Supports compliance with supervisory requirements for meeting documentation
-- **FINRA Rule 4511** — Preserves the underlying record (transcript) that validates the AI-generated meeting artifacts
-- **MiFID II** — Supports meeting documentation requirements for firms with EU operations
+- **SEC Rule 17a-4(b)(4)** — EnabledWithTranscript supports verbatim transcript preservation alongside AI-generated summaries; 3-year business-communication mapping: confirm
+- **FINRA Rule 3110** — Provides evidence for supervisory review of meeting documentation; applicability: confirm
+- **FINRA Rule 4511** — Preserves the underlying record (transcript) that validates the AI-generated meeting artifacts; record classification: confirm
+- **MiFID II** — Provides evidence for meeting documentation review for firms with EU operations; applicability: confirm
 
 ## Next Steps
 

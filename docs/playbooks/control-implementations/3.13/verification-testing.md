@@ -2,6 +2,9 @@
 
 Test cases and evidence collection procedures to validate alignment with FFIEC IT Examination Handbook requirements.
 
+!!! note "Regulatory applicability"
+    Regulatory citations in this playbook identify commonly referenced requirements. Applicability, source identity, record classification, and retention periods depend on the firm's regulatory status; confirm with counsel. See [judeper/OceanSquad#241](https://github.com/judeper/OceanSquad/issues/241).
+
 ## Test Cases
 
 ### Test 1: Control-to-Booklet Mapping Completeness
@@ -62,8 +65,8 @@ Test cases and evidence collection procedures to validate alignment with FFIEC I
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FFIEC IT Examination Handbook | Cross-booklet IT governance | Supports comprehensive alignment with FFIEC examination expectations |
-| FFIEC CAT | Cybersecurity maturity assessment | Helps meet maturity level requirements for AI technology governance |
-| 12 CFR part 30, appendix D (OCC Heightened Standards) | Large institution governance | Supports compliance with enhanced governance requirements |
+| FFIEC CAT | Cybersecurity maturity assessment | Legacy maturity reference for AI technology governance; applicability: confirm |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Large institution governance | Provides evidence for enhanced governance review; applicability: confirm |
 
 ## Next Steps
 
