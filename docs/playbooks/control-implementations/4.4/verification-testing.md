@@ -50,19 +50,15 @@ Test cases and evidence collection procedures for Copilot governance across the 
 - **Expected Result:** Mandatory compliance training integrity is maintained alongside Copilot recommendations.
 - **Evidence:** Training completion reports showing mandatory courses are tracked independently.
 
-### Test 5: Viva Goals Data Boundary Enforcement
+### Test 5: Viva Goals Retirement Evidence
 
-!!! warning "Retired"
-    Viva Goals was retired December 31, 2025. This test case is no longer applicable.
-
-- **Objective:** Validate that Copilot in Viva Goals respects organizational data boundaries
+- **Objective:** Validate that former Viva Goals governance artifacts were exported or migrated before retirement.
 - **Steps:**
-  1. Create test goals in Viva Goals at different organizational levels.
-  2. Use Copilot to request goal suggestions and progress analysis.
-  3. Verify that Copilot only references data the user is authorized to access.
-  4. Confirm that confidential executive goals are not surfaced to unauthorized users.
-- **Expected Result:** Copilot respects organizational hierarchies and access controls in Viva Goals.
-- **Evidence:** Test results showing data boundary enforcement.
+  1. Identify any historical Viva Goals use for compliance, risk, or OKR tracking.
+  2. Verify export/migration evidence exists for records that the firm retained.
+  3. Confirm no current control relies on live Viva Goals Copilot capabilities.
+- **Expected Result:** Viva Goals is treated as retired; retained records are available through the firm's approved archive or successor system.
+- **Evidence:** Export/migration record and successor-system owner.
 
 ### Test 6: Viva Connections Content Sensitivity
 
@@ -83,7 +79,7 @@ Test cases and evidence collection procedures for Copilot governance across the 
 | Engage-to-Teams retention coverage | Purview eDiscovery + Script 4 | Screenshot + Script output | With control documentation |
 | Engage compliance test | Communication compliance | Screenshot | With control documentation |
 | Learning compliance report | Viva Learning | CSV | With control documentation |
-| Goals access test results | Viva Goals | Screenshot | With control documentation |
+| Goals retirement export evidence | Archive or successor system | Export/migration record | With control documentation |
 | Connections sensitivity test | Viva Connections | Screenshot | With control documentation |
 
 ## Compliance Mapping

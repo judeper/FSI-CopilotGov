@@ -20,8 +20,8 @@ Step-by-step portal configuration for establishing usage analytics and adoption 
 3. Review the dashboard metrics:
    - Enabled users vs. active users
    - Usage by application (Word, Excel, PowerPoint, Outlook, Teams)
-   - Feature adoption trends over 7, 30, and 180 days
-   - Active user percentage by department
+   - Feature adoption trends over the documented 7, 28, 90, and 180-day views
+   - Active user percentage and workload adoption where exposed by the report/export
 
 ### Step 2: Configure Report Privacy Settings
 
@@ -54,8 +54,8 @@ Step-by-step portal configuration for establishing usage analytics and adoption 
 
 1. Review the Microsoft Adoption Score for Copilot-related categories.
 2. Define target adoption KPIs:
-   - Active Copilot users as a percentage of licensed users (target: 80%+)
-   - Average interactions per user per week
+   - Active Copilot users as a percentage of licensed users (firm-defined target)
+   - Prompt and active-day trends from the official report surface
    - Feature breadth (number of apps with active Copilot usage per user)
 3. Set up a recurring adoption review cadence (monthly for leadership, weekly for deployment team).
 4. Create Power BI dashboards for detailed adoption analytics if needed.
@@ -66,13 +66,13 @@ Step-by-step portal configuration for establishing usage analytics and adoption 
 |---------|----------|-------------|-----------|
 | Usage report access | Admin only | Admin + compliance team | Restricted role-based access |
 | User identification | Anonymized | Identifiable for compliance | Identifiable with audit trail |
-| Reporting frequency | Monthly | Weekly | Weekly with daily alerts |
-| Adoption target (active/licensed) | 50% | 70% | 80% |
+| Reporting frequency | Monthly | Weekly | Firm-defined, with documented escalation triggers |
+| Adoption target (active/licensed) | Firm-defined | Firm-defined | Firm-defined |
 
 ## Regulatory Alignment
 
 - **FFIEC Management Booklet** — Supports compliance with IT investment governance and monitoring
-- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Helps meet technology utilization and governance expectations
+- **12 CFR part 30, appendix D (OCC Heightened Standards)** — Can support firm-defined controls for technology utilization and governance expectations
 - **SOX Section 404** — Supports internal controls over IT asset management
 
 ## Next Steps

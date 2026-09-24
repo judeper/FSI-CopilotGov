@@ -1,20 +1,20 @@
 # Control 4.7: Copilot Feedback and Telemetry Data Governance — PowerShell Setup
 
-Automation scripts for configuring and auditing Copilot feedback and telemetry controls. Feedback policy settings are configurable via Microsoft Graph Beta cmdlets. Diagnostic data levels and connected experiences require Cloud Policy or Group Policy. Some settings remain portal-only — those are documented with their portal paths.
+Automation references for configuring and auditing Copilot feedback and telemetry controls. Microsoft Learn documents feedback/survey controls through Cloud Policy service or Group Policy, while diagnostic data levels and connected experiences also require Cloud Policy or Group Policy. Tenant-specific Graph surfaces can change, so treat any Graph feedback-policy automation as tenant-verified rather than authoritative.
 
 ## Prerequisites
 
-- **Modules:** `Microsoft.Graph.Beta.Reports`, `ExchangeOnlineManagement`
-- **Permissions:** Entra Global Admin or M365 Global Admin (for feedback policy), Purview Compliance Admin (for audit log)
+- **Modules:** `Microsoft.Graph.Authentication`, `ExchangeOnlineManagement` (for organization context and audit-log review only)
+- **Permissions:** Entra Global Admin or M365 Global Admin (for policy evidence), Purview Compliance Admin (for audit log)
 - **Licenses:** Microsoft 365 E5 or E5 Compliance (for audit log search)
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
 
 ```powershell
-# Graph API for feedback policy management (beta cmdlets)
-Import-Module Microsoft.Graph.Beta.Reports
-Connect-MgGraph -Scopes "OrgSettings-Microsoft365.ReadWrite.All"
+# Graph is used here only for organization context; feedback/survey policies are verified through Cloud Policy or Group Policy evidence.
+Import-Module Microsoft.Graph.Authentication
+Connect-MgGraph -Scopes "Organization.Read.All"
 
 # Security & Compliance for audit log search (Script 3)
 Import-Module ExchangeOnlineManagement
@@ -27,52 +27,32 @@ Not all feedback and telemetry settings are PowerShell-configurable. The table b
 
 | Setting | Management Method | PowerShell Available | FSI Recommendation |
 |---------|------------------|---------------------|-------------------|
-| User feedback (thumbs up/down) | Graph Beta API | Yes — `Update-MgBetaAdminMicrosoft365AppsFeedbackPolicy` | Disabled |
-| In-product surveys | Graph Beta API | Yes — `isReceiveSurveyEnabled` | Disabled |
-| Email collection in feedback | Graph Beta API | Yes — `isEmailCollectionEnabled` | Disabled |
-| Product research opt-in | Graph Beta API | Yes — `isProductResearchEnabled` | Disabled |
-| Screenshot in feedback | Graph Beta API | Yes — `isScreenshotEnabled` | Disabled |
-| Diagnostic data level | Cloud Policy / Group Policy | No — configure via M365 Apps Admin Center or GPO | Required (minimum) |
-| Optional connected experiences | Cloud Policy / Group Policy | No — configure via M365 Apps Admin Center or GPO | Disabled |
+| User feedback (thumbs up/down) | Cloud Policy / Group Policy | Tenant-verified only | Firm-defined |
+| In-product surveys | Cloud Policy / Group Policy | Tenant-verified only | Firm-defined |
+| Follow-up contact / email collection | Cloud Policy / Group Policy | Tenant-verified only | Disabled for regulated populations unless approved |
+| Feedback portal / product research participation | Cloud Policy where available | Tenant-verified only | Disabled unless approved |
+| Screenshots, attachments, logs, content samples | Cloud Policy / Group Policy | Tenant-verified only | Disabled for regulated populations unless approved |
+| Diagnostic data level | Cloud Policy / Group Policy | No — configure via Cloud Policy or GPO | Required unless justified |
+| Optional connected experiences | Cloud Policy / Group Policy | No — configure via Cloud Policy or GPO | Disabled unless justified |
 | Copilot prompt history | Portal-only | No | Per organizational policy |
-| Copilot model improvement opt-out | DPA contractual | No — not a tenant setting | Opt out via Microsoft DPA |
+| Copilot model improvement opt-out | DPA contractual | No — not a tenant setting | Verify through Microsoft DPA / account team |
 
 ## Scripts
 
-### Script 1: Audit and Configure Feedback Policy
+### Script 1: Feedback Policy Manual Evidence Checklist
 
-Microsoft Graph Beta cmdlets control the tenant-wide feedback policy for Microsoft 365 apps including Copilot. For FSI environments, disabling all user-facing feedback channels helps limit data leaving the compliance boundary.
+Use Cloud Policy service or Group Policy to manage feedback and survey controls for Microsoft 365 apps and Copilot. This script records the required evidence checklist; it does not claim to configure feedback settings through Graph.
 
 ```powershell
-# Audit and configure M365 feedback policy via Graph Beta API
-# Note: These cmdlets are beta as of March 2026 — subject to change
-# Requires: Microsoft.Graph.Beta.Reports module
-
-# Retrieve current feedback policy settings
-Write-Host "=== Current Feedback Policy Settings ===" -ForegroundColor Cyan
-$currentPolicy = Get-MgBetaAdminMicrosoft365AppsFeedbackPolicy
-$currentPolicy | Select-Object IsFeedbackEnabled, IsReceiveSurveyEnabled,
-    IsEmailCollectionEnabled, IsProductResearchEnabled, IsScreenshotEnabled |
-    Format-List
-
-# Disable all user-facing feedback for FSI compliance
-$params = @{
-    isFeedbackEnabled        = $false
-    isReceiveSurveyEnabled   = $false
-    isEmailCollectionEnabled = $false
-    isProductResearchEnabled = $false
-    isScreenshotEnabled      = $false
-}
-Update-MgBetaAdminMicrosoft365AppsFeedbackPolicy -BodyParameter $params
-
-Write-Host "Feedback policy updated — all user-facing feedback disabled" -ForegroundColor Green
-
-# Verify the change
-Write-Host "`n=== Updated Feedback Policy Settings ===" -ForegroundColor Cyan
-Get-MgBetaAdminMicrosoft365AppsFeedbackPolicy |
-    Select-Object IsFeedbackEnabled, IsReceiveSurveyEnabled,
-        IsEmailCollectionEnabled, IsProductResearchEnabled, IsScreenshotEnabled |
-    Format-List
+$checks = @(
+    [PSCustomObject]@{ Setting = 'Allow users to submit feedback to Microsoft'; Expected = 'Firm-defined'; Evidence = 'Cloud Policy/GPO screenshot or export' }
+    [PSCustomObject]@{ Setting = 'Allow users to receive and respond to in-product surveys'; Expected = 'Firm-defined'; Evidence = 'Cloud Policy/GPO screenshot or export' }
+    [PSCustomObject]@{ Setting = 'Allow users to include screenshots and attachments'; Expected = 'Disabled unless approved'; Evidence = 'Cloud Policy/GPO screenshot or export' }
+    [PSCustomObject]@{ Setting = 'Allow users to include log files and relevant content samples'; Expected = 'Disabled unless approved'; Evidence = 'Cloud Policy/GPO screenshot or export' }
+    [PSCustomObject]@{ Setting = 'Allow Microsoft to follow up on feedback submitted by users'; Expected = 'Disabled unless approved'; Evidence = 'Cloud Policy/GPO screenshot or export' }
+)
+$checks | Format-Table -AutoSize
+$checks | Export-Csv "FeedbackPolicyManualChecks_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
 ### Script 2: Diagnostic Data and Connected Experiences Reference
@@ -164,75 +144,27 @@ if ($copilotEvents.Count -gt 0) {
 }
 ```
 
-### Script 4: Feedback Policy Verification Report
+### Script 4: Feedback and Telemetry Verification Report
 
-Generates a compliance-ready report combining the PowerShell-configurable feedback settings with documentation of portal-only and contractual controls. Organizations should verify the portal-only settings through manual review.
+Generates a compliance-ready manual verification report combining Cloud Policy/GPO evidence requirements with portal-only and contractual controls.
 
 ```powershell
-# Generate feedback and telemetry governance verification report
-# Combines automated checks (Graph API) with documented manual verification items
-
-# Automated: Feedback policy via Graph Beta
-$feedbackPolicy = Get-MgBetaAdminMicrosoft365AppsFeedbackPolicy
-
-$automatedChecks = [PSCustomObject]@{
-    Setting_IsFeedbackEnabled        = $feedbackPolicy.IsFeedbackEnabled
-    Setting_IsReceiveSurveyEnabled   = $feedbackPolicy.IsReceiveSurveyEnabled
-    Setting_IsEmailCollectionEnabled = $feedbackPolicy.IsEmailCollectionEnabled
-    Setting_IsProductResearchEnabled = $feedbackPolicy.IsProductResearchEnabled
-    Setting_IsScreenshotEnabled      = $feedbackPolicy.IsScreenshotEnabled
-    CheckDate                        = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
-}
-
-Write-Host "=== Automated Feedback Policy Checks ===" -ForegroundColor Cyan
-$automatedChecks | Format-List
-
-# Flag non-compliant settings
-$nonCompliant = @()
-if ($feedbackPolicy.IsFeedbackEnabled) { $nonCompliant += "IsFeedbackEnabled is True" }
-if ($feedbackPolicy.IsReceiveSurveyEnabled) { $nonCompliant += "IsReceiveSurveyEnabled is True" }
-if ($feedbackPolicy.IsEmailCollectionEnabled) { $nonCompliant += "IsEmailCollectionEnabled is True" }
-if ($feedbackPolicy.IsProductResearchEnabled) { $nonCompliant += "IsProductResearchEnabled is True" }
-if ($feedbackPolicy.IsScreenshotEnabled) { $nonCompliant += "IsScreenshotEnabled is True" }
-
-if ($nonCompliant.Count -gt 0) {
-    Write-Warning "Non-compliant settings detected:"
-    $nonCompliant | ForEach-Object { Write-Warning "  - $_" }
-    Write-Host "Run Script 1 to remediate." -ForegroundColor Yellow
-} else {
-    Write-Host "All PowerShell-configurable feedback settings are disabled." -ForegroundColor Green
-}
-
-# Document portal-only items requiring manual verification
-Write-Host "`n=== Manual Verification Required ===" -ForegroundColor Yellow
-Write-Host @"
-The following items are not verifiable via PowerShell:
-
-1. Diagnostic data level (Cloud Policy / GPO)
-   Verify at: config.office.com > Policy Management
-   Expected: Required (minimum)
-
-2. Optional connected experiences (Cloud Policy / GPO)
-   Verify at: config.office.com > Policy Management
-   Expected: Disabled
-
-3. Copilot prompt history
-   Verify at: M365 Admin Center > Copilot > Settings
-   Expected: Per organizational policy
-
-4. Copilot model improvement opt-out (DPA contractual)
-   Verify with: Microsoft account team or DPA documentation
-   Expected: Opted out for regulated workloads
-"@
-
-$automatedChecks | Export-Csv "FeedbackPolicyVerification_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+$manualChecks = @(
+    [PSCustomObject]@{ Control = 'Feedback policies'; Expected = 'Cloud Policy/GPO evidence attached'; Status = 'Manual verification required' }
+    [PSCustomObject]@{ Control = 'Diagnostic data level'; Expected = 'Required unless firm-approved exception'; Status = 'Manual verification required' }
+    [PSCustomObject]@{ Control = 'Optional connected experiences'; Expected = 'Disabled unless firm-approved exception'; Status = 'Manual verification required' }
+    [PSCustomObject]@{ Control = 'Copilot prompt history'; Expected = 'Per organizational policy'; Status = 'Manual verification required' }
+    [PSCustomObject]@{ Control = 'DPA/model-improvement posture'; Expected = 'Reviewed with legal/privacy or Microsoft account team'; Status = 'Manual verification required' }
+)
+$manualChecks | Format-Table -AutoSize
+$manualChecks | Export-Csv "FeedbackTelemetryManualChecks_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
 ## Scheduled Tasks
 
 | Task | Frequency | Script |
 |------|-----------|--------|
-| Feedback policy verification | Monthly | Script 1 (verify section) |
+| Feedback policy evidence review | Monthly | Script 1 |
 | Copilot interaction audit | Monthly | Script 3 |
 | Full governance verification report | Quarterly | Script 4 |
 | Cloud Policy / GPO manual review | Semi-annually | Script 2 (manual steps) |
@@ -241,7 +173,6 @@ $automatedChecks | Export-Csv "FeedbackPolicyVerification_$(Get-Date -Format 'yy
 
 | Area | Detail |
 |------|--------|
-| Feedback cmdlets (beta) | `Update-MgBetaAdminMicrosoft365AppsFeedbackPolicy` is beta as of March 2026 — subject to breaking changes |
 | Diagnostic data level | Not configurable via PowerShell — requires Cloud Policy (config.office.com) or Group Policy |
 | Connected experiences | Not configurable via PowerShell — requires Cloud Policy or Group Policy |
 | Copilot prompt history | Portal-only setting in M365 Admin Center > Copilot > Settings |
