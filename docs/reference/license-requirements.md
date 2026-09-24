@@ -22,8 +22,8 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | **Microsoft 365 Copilot (PAYG)** | Pay-as-you-go billing for approved Copilot services | Usage-based Azure billing tied to a billing policy; commonly used for Copilot Chat without assigning full seats |
 | **Microsoft 365 F1/F3** | Frontline worker licenses | Copilot availability extended to Frontline SKUs; check current Microsoft documentation for feature parity with E3/E5 |
 
-!!! warning "Tenant-Verified Copilot Licensing Change"
-    Public Microsoft Learn documentation confirms the Basic and Premium Copilot experiences, but the April 15, 2026 effective date, more-than-2,000-user threshold, and exact affected-app scope are tenant Message Center details. Verify MC1253858 and MC1253863 in **Microsoft 365 admin center > Health > Message center** before using those figures as evidence. Tenant reports reviewed for this framework state that organizations with more than 2,000 Microsoft 365 users lose unlicensed in-app Copilot access in Word, Excel, PowerPoint, and OneNote, while Copilot Chat remains available in Outlook and via the web for eligible users and smaller organizations retain throttled in-app access.
+!!! warning "Tenant Message Center Verification Required"
+    Public Microsoft Learn documentation confirms the Basic and Premium Copilot experiences, but the April 15, 2026 effective date, more-than-2,000-user threshold, and exact affected-app scope are tenant Message Center details. Verify MC1253858 and MC1253863 in **Microsoft 365 admin center > Health > Message center** before using those figures as evidence. If those posts in your tenant state an effective date, threshold, affected-app scope, throttling language, or unchanged Copilot Chat surfaces, retain the Message Center screenshot or Graph `serviceAnnouncement/messages` export before using those values as evidence.
 
 ---
 

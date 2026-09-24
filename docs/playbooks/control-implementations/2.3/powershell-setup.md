@@ -20,7 +20,11 @@ Import-Module Microsoft.Graph.Identity.SignIns
 Import-Module Microsoft.Graph.Applications
 Connect-MgGraph -Scopes "Policy.Read.All","Application.Read.All"
 
-$copilotServicePrincipal = Get-MgServicePrincipal -Filter "displayName eq 'Enterprise Copilot Platform'" |
+$copilotServicePrincipal = Get-MgServicePrincipal -All |
+    Where-Object {
+        $_.DisplayName -eq 'Enterprise Copilot Platform' -and
+        $_.AppOwnerOrganizationId -eq 'f8cdef31-a31e-4b4a-93e4-5f571e91255a'
+    } |
     Select-Object -First 1
 if (-not $copilotServicePrincipal) {
     throw "Enterprise Copilot Platform service principal was not found. Check Entra admin center > Enterprise applications with Application type = Microsoft Applications, or review sign-in logs for the Copilot application before hard-coding any App ID."
