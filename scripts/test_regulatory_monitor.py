@@ -229,6 +229,7 @@ def test_programming_error_in_one_source_is_fatal_not_degraded(
 
 def test_finra_degraded_counter_escalates_on_third_consecutive_run(
     monkeypatch,
+    tmp_path,
 ):
     """Persistent FINRA unavailability must restore the scheduled red signal."""
     config = _load_config()
@@ -253,8 +254,8 @@ def test_finra_degraded_counter_escalates_on_third_consecutive_run(
             self.headers = {}
 
     monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
-    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", Path("/unused/data"))
-    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", Path("/unused/reports"))
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
     monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
     monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
     monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
@@ -295,7 +296,7 @@ def test_finra_degraded_counter_escalates_on_third_consecutive_run(
     )
 
 
-def test_finra_degraded_counter_resets_after_finra_success(monkeypatch):
+def test_finra_degraded_counter_resets_after_finra_success(monkeypatch, tmp_path):
     config = _load_config()
     loaded_state = {
         "version": 1,
@@ -317,8 +318,8 @@ def test_finra_degraded_counter_resets_after_finra_success(monkeypatch):
             self.headers = {}
 
     monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
-    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", Path("/unused/data"))
-    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", Path("/unused/reports"))
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
     monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
     monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
     monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
@@ -7502,6 +7503,7 @@ def test_finra_listing_disables_early_stop_when_listing_order_regresses(
 
 def test_sunday_finra_run_forces_full_crawl_even_with_known_lookback(
     monkeypatch,
+    tmp_path,
 ):
     config = _load_config()
     requested: list[str] = []
@@ -7552,8 +7554,8 @@ def test_sunday_finra_run_forces_full_crawl_even_with_known_lookback(
 
     monkeypatch.setattr(regulatory_monitor, "datetime", _FrozenDateTime)
     monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
-    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", Path("/unused/data"))
-    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", Path("/unused/reports"))
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
     monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
     monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
     monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
