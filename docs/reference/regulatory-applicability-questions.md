@@ -30,6 +30,14 @@ This appendix captures open applicability questions that each firm should resolv
 3. Is the ≥80% metadata population target an approved firm standard for key libraries, an illustrative benchmark, or a threshold that should vary by content class and business line?
 4. Which legacy, stale, duplicated, migrated, or ad-hoc SharePoint/Teams content repositories must be remediated, archived, or excluded before Copilot is enabled for regulated populations?
 
+## Control 2.4 — Information Barriers for Copilot
+
+1. Which specific business populations and workflows require ethical-wall / Chinese Wall controls for Copilot under firm policy and counsel-approved interpretations of SEC Rule 10b-5, FINRA Rules 5280/2241/2242, SEC Regulation AC, or other applicable obligations?
+2. For each approved Copilot surface, what tenant evidence is sufficient to prove that SharePoint, OneDrive, Teams, and other workload boundaries prevent barrier-separated content from grounding Copilot responses?
+3. Because Microsoft documents that Information Barriers are not supported for Channel Agent in Teams, what firm-approved deployment rule applies: disable Channel Agent for IB-sensitive populations, allow only homogeneous-segment channels after membership audit, or another counsel-approved control?
+4. Because Microsoft documents that Information Barriers are not supported for SharePoint Embedded content used by Copilot Pages and Copilot Notebooks, should those surfaces be disabled or restricted for IB-sensitive populations?
+5. Because Microsoft documents that Information Barriers do not restrict Exchange Online email communication, what approved email control (for example, Exchange mail flow rules or supervisory procedure) covers Copilot-assisted email scenarios where the firm's wall design requires email separation?
+
 ## Control 3.2 — Data Retention Policies
 
 1. For this framework, which Copilot artifacts are records under FINRA 4511, SEC Rules 17a-3/17a-4, and SOX 802: Microsoft 365 Copilot Chat history, Teams meeting recaps, Teams chat Copilot interactions, Copilot Pages/Notebooks, unsent Copilot-assisted drafts, sent Copilot-assisted emails, Copilot-assisted financial analyses, and Copilot audit events; and what retention period applies to each category (3 years, 6 years, 7 years/internal standard, or other)?
@@ -38,13 +46,36 @@ This appendix captures open applicability questions that each firm should resolv
 4. When a Copilot-generated meeting recap or threaded summary summarizes a regulated business discussion, should the framework classify that summary as an independent books-and-records item, and should the control state that FINRA Rule 4511(c) requirements are met only after tenant evidence proves preservation/export format?
 5. Should Copilot memory entries, inferred memories, saved memories, and custom instructions be treated as records when they contain client, investment, supervisory, or financial-analysis context; if yes, must high-risk users disable memory until retention/versioning support is tenant-verified?
 
-## Control 2.4 — Information Barriers for Copilot
+## Control 3.3 — eDiscovery for Copilot-Generated Content
 
-1. Which specific business populations and workflows require ethical-wall / Chinese Wall controls for Copilot under firm policy and counsel-approved interpretations of SEC Rule 10b-5, FINRA Rules 5280/2241/2242, SEC Regulation AC, or other applicable obligations?
-2. For each approved Copilot surface, what tenant evidence is sufficient to prove that SharePoint, OneDrive, Teams, and other workload boundaries prevent barrier-separated content from grounding Copilot responses?
-3. Because Microsoft documents that Information Barriers are not supported for Channel Agent in Teams, what firm-approved deployment rule applies: disable Channel Agent for IB-sensitive populations, allow only homogeneous-segment channels after membership audit, or another counsel-approved control?
-4. Because Microsoft documents that Information Barriers are not supported for SharePoint Embedded content used by Copilot Pages and Copilot Notebooks, should those surfaces be disabled or restricted for IB-sensitive populations?
-5. Because Microsoft documents that Information Barriers do not restrict Exchange Online email communication, what approved email control (for example, Exchange mail flow rules or supervisory procedure) covers Copilot-assisted email scenarios where the firm's wall design requires email separation?
+1. Which Copilot and AI-application artifacts are in scope for each matter type: mailbox-stored prompts/responses, Copilot memory (`IPM.Contact`), Copilot Pages, Copilot Notebooks, Loop components, native files, audit events, or external/generated web-search query logs?
+2. Which production formats are approved for Copilot interaction records: PST, individual messages, review-set export package, Microsoft Graph/API output, JSON, native files, redacted PDF, or requester-specific formats?
+3. When must legal hold include only the custodian mailbox, and when must it also include SharePoint, OneDrive, Loop, or SharePoint Embedded container URLs?
+
+## Control 3.5 — FINRA 2210 Compliance
+
+1. For each Copilot-assisted communication workflow, which FINRA communication category applies (retail communication, correspondence, institutional communication, public appearance, internal communication, or out of scope), and which principal pre-approval, post-use review, filing, and recordkeeping procedures apply?
+2. How should the firm treat SEC AI-washing enforcement precedents in broker-dealer, adviser, and issuer communications about Microsoft 365 Copilot capabilities?
+3. Which proposed or pending FINRA/SEC Rule 2210 amendments are being monitored, and which controls must remain under current Rule 2210 until final approval and effective dates are verified?
+
+## Control 3.10 — SEC Reg S-P Privacy
+
+1. Which entity types and customer-information populations are subject to amended SEC Regulation S-P for this deployment, and which compliance date applies to each entity?
+2. What contractual evidence confirms the Microsoft service-provider notification process required by Rule 248.30(a)(3), and what internal event starts the firm's 72-hour tracking clock?
+3. Which Copilot NPI events require customer notification under the amended Reg S-P standard, and which are internal control incidents only?
+
+## Control 3.11 — Record Keeping
+
+1. For each Copilot artifact category, does the firm approve the audit-trail alternative, third-party WORM archival, or both for SEC Rule 17a-4(f), and what evidence must be preserved for the full retention period?
+2. Which Purview audit events are sufficient for the firm's audit-trail alternative position, and where must access-event evidence be preserved separately from modification/deletion audit trail evidence?
+3. Which Copilot mobile and browser access channels are approved, blocked, or treated as off-channel risk pending coverage testing?
+
+## Control 3.14 — Copilot Pages and Notebooks Retention and Provenance
+
+1. Which Copilot Pages, Copilot Notebooks, and Loop components are record material under the firm's records schedule, and what retention period applies to each artifact type?
+2. Is **All SharePoint Sites** sufficient for the firm's SharePoint Embedded retention scope, or must specific Copilot Pages/Notebooks container URLs be added to policies and holds?
+3. What tenant-visible audit evidence is sufficient to reconstruct Page/Notebook lineage and Loop host references, given Microsoft's documented Loop application identity and file-extension-based audit filters?
+4. If information barriers are required for a workflow, should Copilot Pages and Copilot Notebooks be disabled because Microsoft documents information barriers as unsupported for SharePoint Embedded content?
 
 ## Control 3.6 — Supervision & Oversight
 
