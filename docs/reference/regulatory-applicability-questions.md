@@ -9,6 +9,35 @@ This appendix captures open applicability questions that each firm should resolv
 
 ---
 
+## Control 1.6 — Permission Model Audit
+
+1. Which Microsoft 365 workloads and user populations require Copilot-specific permission-audit evidence under the firm's counsel-approved interpretations of GLBA §501(b), Sarbanes-Oxley §§302/404 where applicable to ICFR, the FFIEC IT Examination Handbook (Access Control), SEC Regulation S-P, FINRA Rule 3110, or internal least-privilege policy?
+2. For current Microsoft Purview DSPM and AI-specific roles, should the firm treat Data Security Viewer, Purview Data Security AI Viewer, Purview Data Security AI Content Viewer, Content Explorer Content Viewer, Data Security AI Admins, and AI Administrator assignments as regulatory evidence, internal governance evidence, or both?
+3. What firm-approved exception process, if any, permits the same person to hold Data Security AI Admins membership and AI Content Viewer / Content Explorer Content Viewer access?
+4. What access-revocation deadline and evidence standard apply to terminated employees, contractors, vendors, regulators, examiners, and other guest users whose stale permissions Copilot would inherit?
+
+## Control 1.7 — SharePoint Advanced Management Readiness for Copilot
+
+1. Which SAM outputs should be retained as evidence for customer-information safeguards, technology-risk governance, privacy controls, or ICFR access certification under the firm's counsel-approved interpretations of GLBA §501(b), the FFIEC IT Examination Handbook (Information Security), Sarbanes-Oxley §§302/404, SEC Regulation S-P, or internal policy?
+2. For sites containing material non-public information (MNPI), non-public personal information (NPI), regulatory examination materials, enforcement actions, consent orders, or examination responses, should Restricted Content Discovery, Restricted Access Control, or both be mandatory before the site is included in Copilot grounding scope?
+3. Where records owners determine FINRA 4511, SEC 17a-4, or an institution-specific retention schedule applies, what approval is required before SAM site lifecycle management archives, deletes, or remediates a site?
+4. What cadence and recipient list should apply to DAG reports, Content Management Assessment results, AI insights, SharePoint Admin Agent prompts, RAC/RCD configuration evidence, and site access review completion evidence?
+
+## Control 1.8 — Information Architecture Review
+
+1. Which customer, financial-reporting, supervisory, books-and-records, or consumer-financial-information content classes require information-architecture evidence before they are included in Copilot grounding scope under the firm's counsel-approved interpretations of GLBA §501(b), the FFIEC IT Handbook (Information Security), Sarbanes-Oxley §§302/404, SEC Regulation S-P, FINRA Rule 4511, or internal policy?
+2. What approval standard should apply before Copilot in SharePoint-generated sites, libraries, public views, or autofill metadata columns are treated as authoritative governance metadata?
+3. Is the ≥80% metadata population target an approved firm standard for key libraries, an illustrative benchmark, or a threshold that should vary by content class and business line?
+4. Which legacy, stale, duplicated, migrated, or ad-hoc SharePoint/Teams content repositories must be remediated, archived, or excluded before Copilot is enabled for regulated populations?
+
+## Control 2.4 — Information Barriers for Copilot
+
+1. Which specific business populations and workflows require ethical-wall / Chinese Wall controls for Copilot under firm policy and counsel-approved interpretations of SEC Rule 10b-5, FINRA Rules 5280/2241/2242, SEC Regulation AC, or other applicable obligations?
+2. For each approved Copilot surface, what tenant evidence is sufficient to prove that SharePoint, OneDrive, Teams, and other workload boundaries prevent barrier-separated content from grounding Copilot responses?
+3. Because Microsoft documents that Information Barriers are not supported for Channel Agent in Teams, what firm-approved deployment rule applies: disable Channel Agent for IB-sensitive populations, allow only homogeneous-segment channels after membership audit, or another counsel-approved control?
+4. Because Microsoft documents that Information Barriers are not supported for SharePoint Embedded content used by Copilot Pages and Copilot Notebooks, should those surfaces be disabled or restricted for IB-sensitive populations?
+5. Because Microsoft documents that Information Barriers do not restrict Exchange Online email communication, what approved email control (for example, Exchange mail flow rules or supervisory procedure) covers Copilot-assisted email scenarios where the firm's wall design requires email separation?
+
 ## Control 3.2 — Data Retention Policies
 
 1. For this framework, which Copilot artifacts are records under FINRA 4511, SEC Rules 17a-3/17a-4, and SOX 802: Microsoft 365 Copilot Chat history, Teams meeting recaps, Teams chat Copilot interactions, Copilot Pages/Notebooks, unsent Copilot-assisted drafts, sent Copilot-assisted emails, Copilot-assisted financial analyses, and Copilot audit events; and what retention period applies to each category (3 years, 6 years, 7 years/internal standard, or other)?
@@ -16,6 +45,37 @@ This appendix captures open applicability questions that each firm should resolv
 3. Under the firm's records schedule, may Priority cleanup ever be used for Copilot-related SharePoint/OneDrive content, and if so, which scenarios are approved: stale Teams recordings/transcripts, departed-user Preservation Hold Library cleanup, unsent Copilot drafts, or none for regulated populations?
 4. When a Copilot-generated meeting recap or threaded summary summarizes a regulated business discussion, should the framework classify that summary as an independent books-and-records item, and should the control state that FINRA Rule 4511(c) requirements are met only after tenant evidence proves preservation/export format?
 5. Should Copilot memory entries, inferred memories, saved memories, and custom instructions be treated as records when they contain client, investment, supervisory, or financial-analysis context; if yes, must high-risk users disable memory until retention/versioning support is tenant-verified?
+
+## Control 3.3 — eDiscovery for Copilot-Generated Content
+
+1. Which Copilot and AI-application artifacts are in scope for each matter type: mailbox-stored prompts/responses, Copilot memory (`IPM.Contact`), Copilot Pages, Copilot Notebooks, Loop components, native files, audit events, or external/generated web-search query logs?
+2. Which production formats are approved for Copilot interaction records: PST, individual messages, review-set export package, Microsoft Graph/API output, JSON, native files, redacted PDF, or requester-specific formats?
+3. When must legal hold include only the custodian mailbox, and when must it also include SharePoint, OneDrive, Loop, or SharePoint Embedded container URLs?
+
+## Control 3.5 — FINRA 2210 Compliance
+
+1. For each Copilot-assisted communication workflow, which FINRA communication category applies (retail communication, correspondence, institutional communication, public appearance, internal communication, or out of scope), and which principal pre-approval, post-use review, filing, and recordkeeping procedures apply?
+2. How should the firm treat SEC AI-washing enforcement precedents in broker-dealer, adviser, and issuer communications about Microsoft 365 Copilot capabilities?
+3. Which proposed or pending FINRA/SEC Rule 2210 amendments are being monitored, and which controls must remain under current Rule 2210 until final approval and effective dates are verified?
+
+## Control 3.10 — SEC Reg S-P Privacy
+
+1. Which entity types and customer-information populations are subject to amended SEC Regulation S-P for this deployment, and which compliance date applies to each entity?
+2. What contractual evidence confirms the Microsoft service-provider notification process required by Rule 248.30(a)(3), and what internal event starts the firm's 72-hour tracking clock?
+3. Which Copilot NPI events require customer notification under the amended Reg S-P standard, and which are internal control incidents only?
+
+## Control 3.11 — Record Keeping
+
+1. For each Copilot artifact category, does the firm approve the audit-trail alternative, third-party WORM archival, or both for SEC Rule 17a-4(f), and what evidence must be preserved for the full retention period?
+2. Which Purview audit events are sufficient for the firm's audit-trail alternative position, and where must access-event evidence be preserved separately from modification/deletion audit trail evidence?
+3. Which Copilot mobile and browser access channels are approved, blocked, or treated as off-channel risk pending coverage testing?
+
+## Control 3.14 — Copilot Pages and Notebooks Retention and Provenance
+
+1. Which Copilot Pages, Copilot Notebooks, and Loop components are record material under the firm's records schedule, and what retention period applies to each artifact type?
+2. Is **All SharePoint Sites** sufficient for the firm's SharePoint Embedded retention scope, or must specific Copilot Pages/Notebooks container URLs be added to policies and holds?
+3. What tenant-visible audit evidence is sufficient to reconstruct Page/Notebook lineage and Loop host references, given Microsoft's documented Loop application identity and file-extension-based audit filters?
+4. If information barriers are required for a workflow, should Copilot Pages and Copilot Notebooks be disabled because Microsoft documents information barriers as unsupported for SharePoint Embedded content?
 
 ## Control 3.6 — Supervision & Oversight
 
@@ -52,6 +112,36 @@ This appendix captures open applicability questions that each firm should resolv
 ## Control 4.2 — Teams Meetings Governance
 
 1. For Copilot-generated Teams meeting summaries/transcripts and Teams Phone call summaries, should the authoritative retention mapping be (1) SEC 17a-4(b)(4) business communications at 3 years; (2) a 6-year broker-dealer/account-record category under FINRA 4511 or SEC 17a-4(a)/(c)/(e), with the exact subpart named; (3) a 7-year firm/regulator-specific policy, with the actual authority named because `FINRA/SEC extended` was not found in FINRA 4511 or SEC 17a-4; or (4) different durations for meeting transcripts, meeting summaries, call summaries, and DLP evidence?
+
+## Control 4.3 — Teams Phone and Queues Governance
+
+1. For Teams Phone calls, call transfers, Teams Phone Agent conversations, and Copilot Studio voice-agent handoffs, which artifacts are records under the firm's approved records schedule: recordings, transcripts, Copilot recaps, transfer summaries, prompts/responses, queue reports, and voice-agent transcripts?
+2. Which consent notices, caller disclosures, and jurisdiction-specific call recording/transcription requirements apply before enabling `EnabledWithTranscript`, cloud recording, Teams Phone Agent, or Copilot Studio voice-agent workflows for client-facing populations?
+3. May any AI-generated call summary supplement the authoritative call record, and if so what human review, sampling, and retention evidence are required before using it in supervisory workflows?
+
+## Control 4.4 — Viva Suite Governance
+
+1. Which employee-analytics, labor, privacy, works-council, or employment-law reviews are required before enabling Copilot Analytics, Viva Engage Copilot, Learning Agent, Viva Pulse, or Viva Glint Copilot features for regulated, HR, legal, compliance, or internal-audit populations?
+2. Are Copilot Analytics, Viva Pulse, or Viva Glint sentiment outputs approved for management action, or only for aggregate governance reporting after human review?
+3. Which historical Viva Goals records, if any, must be retained after the December 31, 2025 retirement, and which successor system is authoritative for OKR or compliance milestone evidence?
+
+## Control 4.5 — Usage Analytics and Adoption Reporting
+
+1. Which Copilot usage and adoption reports may be used as official governance evidence, and which are directional operational reports only?
+2. May identifiable Copilot usage exports be used for supervisory, compliance, HR, or performance-management purposes, and which approvals and access controls are required?
+3. Which populations are intentionally excluded from Graph Copilot usage-detail APIs, admin-center reports, Copilot Chat reports, Agent Dashboard, or Consumption Dashboard, and how should those exclusions be disclosed in committee reporting?
+
+## Control 4.6 — Viva Insights Measurement
+
+1. Which Copilot impact, sentiment, benchmark, intelligent-summary, and business-impact metrics are approved for board or committee reporting, and which require caveats that they are directional rather than proof of ROI or control effectiveness?
+2. What minimum group size, attribute filtering, role access, and export controls are required before analysts can view group-level Copilot impact data?
+3. Which uploaded business outcome data may be combined with Copilot Analytics, and who approves the methodology before any causal or financial-benefit claim is made?
+
+## Control 4.7 — Feedback and Telemetry Data Governance
+
+1. Should regulated populations be allowed to submit verbatim Microsoft feedback, screenshots, attachments, logs, content samples, or follow-up contact information, and what redaction/monitoring controls apply?
+2. Which diagnostic data level and connected-experience settings are approved for Copilot users, and how should exceptions be documented?
+3. Are Copilot feedback, diagnostic, usage-reporting, and telemetry exports part of the firm's privacy impact assessment, vendor inventory, or employee monitoring notice obligations?
 
 ## Control 4.8 — Cost Allocation and License Optimization
 

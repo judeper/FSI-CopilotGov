@@ -117,7 +117,7 @@
       "tier": "Baseline",
       "title": "Control 1.6: Permission Model Audit (SharePoint, OneDrive, Exchange, Teams, Graph)",
       "path": "docs/controls/pillar-1-readiness/1.6-permission-model-audit.md",
-      "last_verified": "2026-06-07",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
@@ -131,7 +131,7 @@
       "tier": "Recommended",
       "title": "Control 1.7: SharePoint Advanced Management Readiness for Copilot",
       "path": "docs/controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Examination Handbook (Information Security Booklet)"
@@ -143,7 +143,7 @@
       "tier": "Recommended",
       "title": "Control 1.8: Information Architecture Review",
       "path": "docs/controls/pillar-1-readiness/1.8-information-architecture-review.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -303,7 +303,7 @@
       "tier": "Regulated",
       "title": "Control 2.4: Information Barriers for Copilot (Chinese Wall)",
       "path": "docs/controls/pillar-2-security/2.4-information-barriers.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "SEC Rule 10b-5",
         "FINRA 5280",
@@ -505,7 +505,7 @@
       "tier": "Recommended",
       "title": "Control 3.3: Purview eDiscovery for Copilot-Generated Content",
       "path": "docs/controls/pillar-3-compliance/3.3-ediscovery-copilot-content.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "SEC 17a-4 (Preservation of Records)",
         "FINRA 4511 (Books and Records)",
@@ -533,7 +533,7 @@
       "tier": "Regulated",
       "title": "Control 3.5: FINRA Rule 2210 Compliance for Copilot-Drafted Communications",
       "path": "docs/controls/pillar-3-compliance/3.5-finra-2210-compliance.md",
-      "last_verified": "2026-07-11",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "FINRA Rule 2210 (Communications with the Public)",
         "FINRA Rule 3110 — supervisory systems and WSPs",
@@ -607,7 +607,7 @@
       "tier": "Regulated",
       "title": "Control 3.10: SEC Reg S-P -- Privacy of Consumer Financial Information",
       "path": "docs/controls/pillar-3-compliance/3.10-sec-reg-sp-privacy.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "SEC Regulation S-P (17 CFR 248.30)",
         "GLBA Title V (Privacy)",
@@ -620,7 +620,7 @@
       "tier": "Baseline",
       "title": "Control 3.11: Record Keeping and Books-and-Records Compliance (SEC 17a-3/4, FINRA 4511)",
       "path": "docs/controls/pillar-3-compliance/3.11-record-keeping.md",
-      "last_verified": "2026-07-21",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "SEC Rule 17a-3 (Records to Be Made)",
         "SEC Rule 17a-4 (Records to Be Preserved)",
@@ -658,7 +658,7 @@
       "tier": "Recommended",
       "title": "Control 3.14: Copilot Pages and Notebooks Retention and Provenance",
       "path": "docs/controls/pillar-3-compliance/3.14-copilot-pages-notebooks-retention.md",
-      "last_verified": "2026-06-06",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "SEC Rule 17a-4 (where applicable to required broker-dealer records)",
         "FINRA Rule 4511(a)",
@@ -714,7 +714,7 @@
       "tier": "Recommended",
       "title": "Control 4.3: Copilot in Teams Phone and Queues Governance",
       "path": "docs/controls/pillar-4-operations/4.3-teams-phone-queues.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "FINRA Rule 3110 (Supervision)",
         "FINRA Rule 4511 (Books and Records)",
@@ -728,7 +728,7 @@
       "tier": "Recommended",
       "title": "Control 4.4: Copilot in Viva Suite Governance",
       "path": "docs/controls/pillar-4-operations/4.4-viva-suite-governance.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "Labor Regulations (FLSA, State Privacy Laws)",
@@ -742,7 +742,7 @@
       "tier": "Baseline",
       "title": "Control 4.5: Copilot Usage Analytics and Adoption Reporting",
       "path": "docs/controls/pillar-4-operations/4.5-usage-analytics.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
         "FFIEC IT Examination Handbook",
@@ -755,7 +755,7 @@
       "tier": "Recommended",
       "title": "Control 4.6: Microsoft Viva Insights and Copilot Analytics Impact Measurement",
       "path": "docs/controls/pillar-4-operations/4.6-viva-insights-measurement.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "Internal Governance",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
@@ -768,7 +768,7 @@
       "tier": "Recommended",
       "title": "Control 4.7: Copilot Feedback and Telemetry Data Governance",
       "path": "docs/controls/pillar-4-operations/4.7-feedback-telemetry.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Reg S-P",

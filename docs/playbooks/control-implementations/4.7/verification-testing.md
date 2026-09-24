@@ -55,14 +55,14 @@ Test cases and evidence collection procedures for Copilot feedback and telemetry
 | Diagnostic data settings | Admin Center | Screenshot | With control documentation |
 | Feedback audit log | Unified Audit Log | CSV | Per retention policy |
 | Connected experiences config | Admin Center + Client | Screenshots | With control documentation |
-| DPA review attestation | Legal/Privacy team | PDF | 7 years |
+| DPA review attestation | Legal/Privacy team | PDF | per firm-approved records schedule |
 
 ## Compliance Mapping
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | GLBA | Data handling and privacy | Supports compliance with customer data governance requirements |
-| CCPA/CPRA | Data minimization | Helps meet data collection minimization requirements |
+| CCPA/CPRA | Data minimization | Can support firm-defined controls for data collection minimization requirements |
 | FFIEC IT Handbook | Vendor data management | Supports governance of vendor data processing activities |
 
 ## Next Steps

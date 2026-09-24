@@ -6,7 +6,7 @@ Automation scripts for configuring and monitoring SharePoint Advanced Management
 
 - SharePoint Online Management Shell (latest version)
 - SharePoint Admin role
-- Microsoft 365 Copilot license (includes SAM) or SharePoint Advanced Management add-on license active
+- Microsoft Copilot license assigned to at least one user for Copilot-supporting SAM features, or SharePoint Advanced Management add-on license active
 
 ## Scripts
 
@@ -36,22 +36,24 @@ Write-Host "Site Creation Default: $($tenantSettings.SelfSiteCreationDisabled)"
 # Set up site lifecycle management for inactive sites
 # Requires: SharePoint Online Management Shell
 # NOTE: Site lifecycle management is configured via SharePoint admin center >
-# Policies > Site lifecycle management. No PowerShell cmdlet exists for
-# inactivity threshold or notification settings.
+# Site lifecycle management. No PowerShell cmdlet exists for all policy
+# thresholds, notifications, and enforcement settings.
 
 Import-Module Microsoft.Online.SharePoint.PowerShell
 Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 
 # Site lifecycle policy must be configured in the admin portal:
-#   SharePoint admin center > Policies > Site lifecycle management
-#   - Set inactivity threshold (e.g., 180 days for FSI)
-#   - Enable owner notifications
-#   - Configure archival rules
+#   SharePoint admin center > Site lifecycle management
+#   - Configure inactive site, ownership, or attestation policies
+#   - Use firm-approved thresholds (for example, 180 days for inactive-site review)
+#   - Enable owner/admin notifications
+#   - Configure enforcement or archival workflows where approved
 
 Write-Host "Site lifecycle policy configuration:"
-Write-Host "  Configure via: SharePoint admin center > Policies > Site lifecycle management"
-Write-Host "  Recommended inactivity threshold: 180 days"
-Write-Host "  Enable notifications: Yes"
+Write-Host "  Configure via: SharePoint admin center > Site lifecycle management"
+Write-Host "  Example inactive-site review threshold: 180 days, subject to firm policy"
+Write-Host "  Configure inactive site, ownership, or attestation policies"
+Write-Host "  Enable owner/admin notifications: Yes"
 Write-Host ""
 Write-Host "Review inactive sites in SharePoint admin center > Sites > Active sites > Inactive filter"
 ```
@@ -111,17 +113,18 @@ Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 $sensitiveSites = Import-Csv "SensitiveSites.csv"
 # CSV must include columns: Url, RestrictedGroupId (the security group ID to enforce as the access boundary)
 
-# Enable RAC at the tenant level (required before per-site RAC can be configured)
+# Enable RAC at the tenant level (required before per-site RAC can be configured).
+# Microsoft documents that this command might take up to one hour to take effect.
 Set-SPOTenant -EnableRestrictedAccessControl $true
 
 $configLog = @()
 
 foreach ($site in $sensitiveSites) {
     try {
-        # Enable Restricted Access Control with designated security group
-        Set-SPOSite -Identity $site.Url `
-            -RestrictedAccessControl $true `
-            -RestrictedAccessControlGroups $site.RestrictedGroupId
+        # Enable Restricted Access Control and set the designated security group.
+        # A site can have up to 10 Microsoft Entra security groups or Microsoft 365 groups.
+        Set-SPOSite -Identity $site.Url -RestrictedAccessControl $true
+        Set-SPOSite -Identity $site.Url -AddRestrictedAccessControlGroups $site.RestrictedGroupId
 
         $configLog += [PSCustomObject]@{
             Url    = $site.Url

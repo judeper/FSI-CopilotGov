@@ -65,10 +65,11 @@ Test cases and evidence collection for validating Information Barrier enforcemen
 - **Objective:** Verify the IB coverage matrix reflects the actual enforcement status of all Copilot surfaces
 - **Steps:**
   1. For each Copilot surface in the control's coverage matrix, perform a functional test from a user in one IB segment to access content from a barrier-separated segment
-  2. Confirm Microsoft 365 Copilot Chat, Word, Excel, PowerPoint, Outlook, and Teams Copilot (meeting summaries) all enforce barriers as documented
-  3. Confirm Channel Agent does NOT enforce barriers (expected behavior per documented limitation)
-  4. Document test results against the coverage matrix
-- **Expected Result:** All standard Copilot surfaces enforce IB; Channel Agent gap is confirmed and documented
+  2. Confirm Microsoft 365 Copilot Chat, Word, Excel, PowerPoint, and Teams Copilot scenarios respect SharePoint/OneDrive and Teams barrier test content where those workloads enforce IB
+  3. Confirm Outlook/email separation is handled by approved non-IB controls if the firm's wall design requires email restrictions
+  4. Confirm Copilot Pages, Copilot Notebooks, Channel Agent, and embedded-file agent knowledge are treated as unsupported/limited for IB rather than assumed covered
+  5. Document test results against the coverage matrix
+- **Expected Result:** Supported workload-backed Copilot scenarios pass functional testing; unsupported or limited surfaces are disabled, scoped, or separately controlled
 - **Evidence:** Functional test results for each Copilot surface
 
 ## Evidence Collection
@@ -84,8 +85,8 @@ Test cases and evidence collection for validating Information Barrier enforcemen
 
 | Regulation | Requirement | How This Control Supports It |
 |-----------|-------------|------------------------------|
-| FINRA Rule 5280 | Information barriers for trading | Barriers support compliance with trading information wall requirements |
-| SEC Regulation FD | Fair disclosure requirements | Information barriers help prevent selective disclosure through AI |
-| Securities Exchange Act Section 15(f) | Chinese Wall requirements | Barriers support compliance with broker-dealer Chinese Wall obligations |
-| MiFID II | Conflict of interest management | Information barriers support compliance with conflict management requirements |
+| FINRA Rule 5280 | Information barriers for trading | Barriers can support firm-approved trading information wall controls where Legal/Compliance determines the rule applies |
+| SEC Regulation FD | Fair disclosure requirements | Information barriers can help reduce selective-disclosure risk where Legal/Compliance determines the use case is in scope |
+| Securities Exchange Act Section 15(f) | Broker-dealer information barriers | Barriers can support firm-approved broker-dealer information wall procedures where applicable |
+| MiFID II | Conflict of interest management | Information barriers can support firm-approved conflict management controls where applicable |
 - Back to [Control 2.4](../../../controls/pillar-2-security/2.4-information-barriers.md)

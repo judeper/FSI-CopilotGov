@@ -9,8 +9,8 @@ Test cases and evidence collection procedures for Copilot impact measurement usi
 - **Objective:** Verify that the Copilot impact dashboard in Viva Insights is populated with current data
 - **Steps:**
   1. Access the Viva Insights Copilot impact dashboard.
-  2. Verify data is current (within the last 7 days).
-  3. Confirm key metrics are populated: active users, interaction counts, time savings estimates.
+  2. Verify data freshness against the documented dashboard delay (previous 28 days, with up to a six-day lag).
+  3. Confirm key metrics are populated: active users, interaction counts, directional impact estimates.
   4. Verify data covers all business units with Copilot deployments.
 - **Expected Result:** Dashboard shows current data across all deployed business units.
 - **Evidence:** Dashboard screenshot with data freshness timestamps.
@@ -39,14 +39,14 @@ Test cases and evidence collection procedures for Copilot impact measurement usi
 
 ### Test 4: ROI Calculation Validation
 
-- **Objective:** Verify that ROI estimates use reasonable assumptions and accurate data inputs
+- **Objective:** Verify that directional value estimates use reasonable assumptions and accurate data inputs
 - **Steps:**
   1. Run the ROI estimation report script.
   2. Review the assumptions (time saved, labor cost) against organizational benchmarks.
   3. Cross-reference active user counts with the usage analytics report.
   4. Validate the mathematical calculations in the ROI formula.
 - **Expected Result:** ROI calculations use accurate data and documented assumptions.
-- **Evidence:** ROI report with assumption documentation and calculation verification.
+- **Evidence:** value estimate report with assumption documentation and calculation verification.
 
 ## Evidence Collection
 
@@ -55,14 +55,14 @@ Test cases and evidence collection procedures for Copilot impact measurement usi
 | Copilot impact dashboard | Viva Insights | Screenshot | Monthly archive |
 | Privacy configuration | Viva Insights Admin | Screenshot | With control documentation |
 | Comparison analysis | PowerShell | CSV | Monthly archive |
-| ROI report | Custom calculation | Spreadsheet | Quarterly archive |
+| value estimate report | Custom calculation | Spreadsheet | Quarterly archive |
 
 ## Compliance Mapping
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
 | FFIEC Management Booklet | IT investment effectiveness | Supports compliance with technology ROI measurement |
-| 12 CFR part 30, appendix D (OCC Heightened Standards) | Technology governance | Helps meet expectations for measuring AI technology impact |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Technology governance | Can support firm-defined controls for expectations for measuring AI technology impact |
 | Sarbanes-Oxley §404 | IT asset management | Supports governance of IT investment outcomes |
 
 ## Next Steps

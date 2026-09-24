@@ -1,6 +1,6 @@
 # Control 4.4: Copilot in Viva Suite Governance — Portal Walkthrough
 
-Step-by-step portal configuration for governing Copilot capabilities within the Microsoft Viva suite, including Viva Insights (with Copilot Chat analytics), Viva Engage (with Teams integration), Viva Learning, Viva Goals, and Viva Connections.
+Step-by-step portal configuration for governing Copilot capabilities within the Microsoft Viva suite, including Viva Insights (with Copilot Chat analytics), Viva Engage (with Teams integration), Viva Learning, Viva Pulse/Glint, and legacy Viva Goals retirement handling.
 
 ## Prerequisites
 
@@ -90,13 +90,13 @@ Step-by-step portal configuration for governing Copilot capabilities within the 
 | Engage-to-Teams compliance coverage | Verify Teams retention applies | Confirm CC policies cover both locations | Quarterly review of Engage-to-Teams scope |
 | Engage AI moderation | Disabled | Enabled | Required |
 | Learning AI recommendations | Enabled | Controlled | Controlled with compliance alignment |
-| Goals AI features | Enabled | Enabled | Enabled with access controls |
+| Goals AI features | Retired | Retired | Retired |
 | Connections content controls | Default | Sensitivity-aware | Sensitivity label enforced |
 
 ## Regulatory Alignment
 
 - **FINRA Rule 3110** — Supports compliance with supervision of internal communications via Viva Engage, including content surfacing through the Engage-to-Teams integration
-- **FFIEC Management Booklet, Section II.C** — Copilot Chat analytics in Viva Insights directly support IT risk monitoring expectations for AI technology usage patterns
+- **FFIEC Management Booklet, Section II.C** — Copilot Chat analytics in Viva Insights can support internal IT risk monitoring evidence for AI technology usage patterns
 - **EEOC/Employment law** — Supports governance of AI-generated goal and performance content; Copilot Chat analytics must not be used for individual performance evaluation
 
 ## Next Steps
