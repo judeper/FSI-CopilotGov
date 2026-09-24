@@ -13,7 +13,8 @@ Quick-reference documents, lookup tables, and curated resources for the FSI Copi
 |----------|-------------|
 | [Copilot Surfaces Matrix](copilot-surfaces-matrix.md) | Feature-by-control applicability matrix showing which governance controls apply to each M365 Copilot surface (Word, Teams, Microsoft 365 Copilot Chat, etc.) |
 | [Copilot Admin Toggles](copilot-admin-toggles.md) | Inventory of the highest-value admin toggles for M365 Copilot with portal paths, defaults, and FSI-recommended values |
-| [Regulatory Mappings](regulatory-mappings.md) | Regulation-to-control mapping table covering FINRA, SEC, SOX, GLBA, OCC, CFPB, FFIEC, and Interagency AI Guidance |
+| [Regulatory Mappings](regulatory-mappings.md) | Regulation-to-control mapping table covering FINRA, SEC, SOX, GLBA, OCC, CFPB, and FFIEC references |
+| [Regulatory Applicability Questions](regulatory-applicability-questions.md) | Counsel/compliance questions each firm should resolve before treating regulatory references as applicable |
 | [NIST AI RMF Crosswalk](nist-ai-rmf-crosswalk.md) | Crosswalk mapping framework controls to the NIST AI Risk Management Framework (Govern, Map, Measure, Manage) |
 | [License Requirements](license-requirements.md) | License requirements for each governance capability — E3 vs. E5, Copilot, Purview add-ons, Defender, and Sentinel |
 | [Portal Paths Quick Reference](portal-paths-quick-reference.md) | Admin portal navigation paths for M365 Admin Center, Purview, Entra, Defender, Teams Admin, and SharePoint Admin |
