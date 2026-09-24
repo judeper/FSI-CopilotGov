@@ -8,7 +8,7 @@ Test cases and evidence collection for validating SharePoint Advanced Management
 
 - **Objective:** Confirm SAM is available and all required features are accessible
 - **Steps:**
-  1. For organizations with Microsoft 365 Copilot licenses: verify Copilot license count in Admin Center > Billing > Licenses (SAM is included)
+  1. For organizations with Microsoft Copilot licenses: verify at least one assigned Copilot license in Admin Center > Billing > Licenses and confirm the SAM features listed by Microsoft for Copilot deployment support are visible
   2. For organizations using the standalone add-on: verify SharePoint Advanced Management license in Admin Center > Billing > Licenses
   3. Navigate to SharePoint admin center and confirm SAM-specific features are visible (Data access governance, Site lifecycle management, Restricted Content Discovery in site settings)
   4. Run PowerShell Script 1 to enumerate available features
@@ -21,7 +21,7 @@ Test cases and evidence collection for validating SharePoint Advanced Management
 - **Objective:** Verify data access governance reports generate accurate data including the site permissions snapshot
 - **Steps:**
   1. Navigate to SharePoint admin center > Reports > Data access governance
-  2. Verify each report type loads and contains data (sharing links, sensitivity labels, EEEU, oversharing baseline)
+  2. Verify each report type loads and contains data (snapshot reports such as site permissions and sensitivity labels; activity reports such as sharing links and EEEU)
   3. Run the site permissions snapshot report and verify it captures a complete point-in-time view of site permissions
   4. Cross-reference the sharing links report with a manual check of known shared sites
   5. Confirm report data freshness (within 7 days)
@@ -32,10 +32,10 @@ Test cases and evidence collection for validating SharePoint Advanced Management
 
 - **Objective:** Verify inactive site detection and notification is functioning
 - **Steps:**
-  1. Confirm the inactivity threshold is set to 180 days via PowerShell
-  2. Identify at least one site that exceeds the inactivity threshold
+  1. Confirm the inactive site policy configuration in SharePoint admin center > Site lifecycle management
+  2. Identify at least one site that exceeds the inactivity threshold, such as a 180-day threshold if that is the firm's approved FSI baseline
   3. Verify the site owner received an inactivity notification
-  4. Confirm the site appears in the "Inactive sites" filter in the Admin Center
+  4. Confirm the site appears in the applicable inactive sites policy/report view in the Admin Center
 - **Expected Result:** Inactive sites are detected and owners are notified
 - **Evidence:** Inactivity notification email and admin center inactive sites list
 
@@ -55,12 +55,12 @@ Test cases and evidence collection for validating SharePoint Advanced Management
 
 - **Objective:** Confirm RAC-enabled sites restrict access to designated security group members only
 - **Steps:**
-  1. Identify a site with Restricted Access Control enabled and a designated security group
-  2. As a user who has a sharing link to the site but is NOT in the designated security group, attempt to access the site
+  1. Identify a site with Restricted Access Control enabled and one or more designated Microsoft Entra security groups or Microsoft 365 groups
+  2. As a user who has a sharing link to the site but is NOT in a designated group, attempt to access the site
   3. Verify access is denied despite holding a sharing link
   4. As a user who IS in the designated security group, verify access is granted
   5. Confirm Copilot does not surface content from the RAC-enabled site to the user outside the security group
-- **Expected Result:** RAC enforces the security group boundary; sharing links do not bypass RAC; Copilot cannot expose content to users without group membership
+- **Expected Result:** RAC enforces the control-group boundary; sharing links do not bypass RAC; Copilot cannot expose content to users outside the configured group boundary
 - **Evidence:** Access denial screenshot for non-group user, access confirmation for group member, Copilot query results
 
 ### Test 6: Site-Level Access Review Functionality
