@@ -9,6 +9,27 @@ This appendix captures open applicability questions that each firm should resolv
 
 ---
 
+## Control 1.6 — Permission Model Audit
+
+1. Which Microsoft 365 workloads and user populations require Copilot-specific permission-audit evidence under the firm's counsel-approved interpretations of GLBA §501(b), Sarbanes-Oxley §§302/404 where applicable to ICFR, the FFIEC IT Examination Handbook (Access Control), SEC Regulation S-P, FINRA Rule 3110, or internal least-privilege policy?
+2. For current Microsoft Purview DSPM and AI-specific roles, should the firm treat Data Security Viewer, Purview Data Security AI Viewer, Purview Data Security AI Content Viewer, Content Explorer Content Viewer, Data Security AI Admins, and AI Administrator assignments as regulatory evidence, internal governance evidence, or both?
+3. What firm-approved exception process, if any, permits the same person to hold Data Security AI Admins membership and AI Content Viewer / Content Explorer Content Viewer access?
+4. What access-revocation deadline and evidence standard apply to terminated employees, contractors, vendors, regulators, examiners, and other guest users whose stale permissions Copilot would inherit?
+
+## Control 1.7 — SharePoint Advanced Management Readiness for Copilot
+
+1. Which SAM outputs should be retained as evidence for customer-information safeguards, technology-risk governance, privacy controls, or ICFR access certification under the firm's counsel-approved interpretations of GLBA §501(b), the FFIEC IT Examination Handbook (Information Security), Sarbanes-Oxley §§302/404, SEC Regulation S-P, or internal policy?
+2. For sites containing material non-public information (MNPI), non-public personal information (NPI), regulatory examination materials, enforcement actions, consent orders, or examination responses, should Restricted Content Discovery, Restricted Access Control, or both be mandatory before the site is included in Copilot grounding scope?
+3. Where records owners determine FINRA 4511, SEC 17a-4, or an institution-specific retention schedule applies, what approval is required before SAM site lifecycle management archives, deletes, or remediates a site?
+4. What cadence and recipient list should apply to DAG reports, Content Management Assessment results, AI insights, SharePoint Admin Agent prompts, RAC/RCD configuration evidence, and site access review completion evidence?
+
+## Control 1.8 — Information Architecture Review
+
+1. Which customer, financial-reporting, supervisory, books-and-records, or consumer-financial-information content classes require information-architecture evidence before they are included in Copilot grounding scope under the firm's counsel-approved interpretations of GLBA §501(b), the FFIEC IT Handbook (Information Security), Sarbanes-Oxley §§302/404, SEC Regulation S-P, FINRA Rule 4511, or internal policy?
+2. What approval standard should apply before Copilot in SharePoint-generated sites, libraries, public views, or autofill metadata columns are treated as authoritative governance metadata?
+3. Is the ≥80% metadata population target an approved firm standard for key libraries, an illustrative benchmark, or a threshold that should vary by content class and business line?
+4. Which legacy, stale, duplicated, migrated, or ad-hoc SharePoint/Teams content repositories must be remediated, archived, or excluded before Copilot is enabled for regulated populations?
+
 ## Control 3.2 — Data Retention Policies
 
 1. For this framework, which Copilot artifacts are records under FINRA 4511, SEC Rules 17a-3/17a-4, and SOX 802: Microsoft 365 Copilot Chat history, Teams meeting recaps, Teams chat Copilot interactions, Copilot Pages/Notebooks, unsent Copilot-assisted drafts, sent Copilot-assisted emails, Copilot-assisted financial analyses, and Copilot audit events; and what retention period applies to each category (3 years, 6 years, 7 years/internal standard, or other)?

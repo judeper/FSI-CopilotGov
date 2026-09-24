@@ -67,7 +67,7 @@ Common issues and resolution steps for SharePoint Advanced Management configurat
   1. Verify tenant-level site access restriction is enabled under SharePoint admin center > Policies > Access control; Microsoft documents that enabling this setting by PowerShell can take up to one hour
   2. Verify RAC is enabled on the site: navigate to SharePoint admin center > Active Sites > [site] > Settings and confirm Restricted site access shows the correct control group
   3. Check that the designated security group contains the correct members and no broader groups that would inadvertently include the user
-  4. Allow time for RAC changes to propagate; search and Copilot reflection time depends on site size and indexing latency
+  4. Allow time for RAC changes to propagate; use the current Microsoft one-hour tenant-level enablement guidance rather than assuming older 30-minute expectations are sufficient, and account for search and Copilot reflection time based on site size and indexing latency
   5. If the issue persists, re-apply the RAC configuration: `Set-SPOSite -Identity <siteUrl> -RestrictedAccessControl $true`, then `Set-SPOSite -Identity <siteUrl> -AddRestrictedAccessControlGroups <groupId>`
   6. Test access again after propagation delay
 

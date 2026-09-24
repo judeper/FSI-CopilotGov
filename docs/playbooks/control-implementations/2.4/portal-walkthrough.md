@@ -24,6 +24,8 @@ Create segments based on organizational units that require information separatio
 - Corporate Treasury
 - Compliance / Legal
 
+Legal/Compliance should determine whether SEC Rule 10b-5, FINRA Rule 5280, FINRA Rule 2241, FINRA Rule 2242, or firm policy require these or other segments before the playbook is treated as a control requirement.
+
 Define each segment using Entra ID user attributes (department, custom attribute, or group membership).
 
 ### Step 2: Create Information Barrier Policies

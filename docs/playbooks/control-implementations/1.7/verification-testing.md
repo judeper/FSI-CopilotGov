@@ -33,7 +33,7 @@ Test cases and evidence collection for validating SharePoint Advanced Management
 - **Objective:** Verify inactive site detection and notification is functioning
 - **Steps:**
   1. Confirm the inactive site policy configuration in SharePoint admin center > Site lifecycle management
-  2. Identify at least one site that exceeds the inactivity threshold
+  2. Identify at least one site that exceeds the inactivity threshold, such as a 180-day threshold if that is the firm's approved FSI baseline
   3. Verify the site owner received an inactivity notification
   4. Confirm the site appears in the applicable inactive sites policy/report view in the Admin Center
 - **Expected Result:** Inactive sites are detected and owners are notified

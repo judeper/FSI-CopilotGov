@@ -68,6 +68,8 @@ Common issues and resolution steps for Information Barriers.
   5. **Document this incident** in the firm's supervisory procedures and escalate to Compliance/Legal under the firm's approved ethical-wall incident process if cross-barrier content was accessed
   6. Do not rely on sensitivity-label DLP to prevent Channel Agent from summarizing labeled files; Microsoft Learn documents that this is not supported. Configure tenant telemetry monitoring where available and restrict or remove Channel Agent from mixed-segment channels
 
+Legal/Compliance should determine whether a Channel Agent incident implicates SEC Rule 10b-5, FINRA Rule 5280, FINRA Rule 2241, FINRA Rule 2242, Microsoft 365 supervisory procedures, or firm ethical-wall policy before classifying the event as regulatory or internal-only.
+
 ### Issue 7: Uncertainty About Which Copilot Surfaces Enforce IB
 
 - **Symptoms:** Compliance team is uncertain whether a specific Copilot surface (e.g., SharePoint Copilot, Loop Copilot) enforces Information Barriers, and functional testing results are ambiguous

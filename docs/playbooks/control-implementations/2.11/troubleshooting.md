@@ -60,7 +60,7 @@ Common issues and resolution steps for Copilot Pages security.
 - **Symptoms:** Users subject to Information Barriers can share or access Copilot Pages content that should be segmented by IB policy.
 - **Root Cause:** Information Barriers are not supported for SharePoint Embedded content, including Copilot Pages and Notebooks. IB policies do not apply to this storage type.
 - **Resolution:**
-  1. Disable or scope Copilot Pages and Notebooks creation for user populations subject to firm-approved Information Barrier requirements, unless Legal/Compliance approves a documented compensating control.
+  1. Disable Copilot Pages and Notebooks creation for user populations subject to firm-approved Information Barrier requirements or implement Legal/Compliance-approved compensating controls.
   2. Communicate this limitation to compliance and legal teams.
   3. Monitor for any attempts by IB-segmented users to create or access Pages content.
   4. Document this limitation in the firm's IB policy implementation records.

@@ -75,6 +75,7 @@ Prioritize RAC for: sites containing NPI, MNPI, customer financial records, audi
 
 Set up site lifecycle policies to manage inactive sites that may contain stale data accessible to Copilot:
 - Configure inactive site, ownership, or attestation policies
+- Use a firm-approved inactivity threshold, such as 180 days for FSI baseline review where that remains the approved standard
 - Set notification cadence for site owners or admins
 - Define enforcement or follow-up actions for unresponsive owners, including archive or remediation workflows where approved
 

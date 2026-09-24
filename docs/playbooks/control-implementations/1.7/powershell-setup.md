@@ -45,11 +45,13 @@ Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
 # Site lifecycle policy must be configured in the admin portal:
 #   SharePoint admin center > Site lifecycle management
 #   - Configure inactive site, ownership, or attestation policies
+#   - Use firm-approved thresholds (for example, 180 days for inactive-site review)
 #   - Enable owner/admin notifications
 #   - Configure enforcement or archival workflows where approved
 
 Write-Host "Site lifecycle policy configuration:"
 Write-Host "  Configure via: SharePoint admin center > Site lifecycle management"
+Write-Host "  Example inactive-site review threshold: 180 days, subject to firm policy"
 Write-Host "  Configure inactive site, ownership, or attestation policies"
 Write-Host "  Enable owner/admin notifications: Yes"
 Write-Host ""
