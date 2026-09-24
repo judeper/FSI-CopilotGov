@@ -24,7 +24,9 @@ from __future__ import annotations
 import json
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
@@ -41,6 +43,8 @@ OUT_DIR = REPO_ROOT / "assessment" / "templates"
 DOCS_MIRROR = REPO_ROOT / "docs" / "assessment" / "templates"
 
 FRAMEWORK_VERSION = "FSI Copilot Governance Framework v1.8.0"
+DETERMINISTIC_DOC_TIMESTAMP = datetime(1980, 1, 1, tzinfo=timezone.utc)
+DETERMINISTIC_ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 
 # ── Role → checklist file mapping ─────────────────────────────────────────────
 # Each entry: (output filename, display role label, manifest role key or None).
@@ -300,6 +304,45 @@ def _write_data_row(ws, row: int, values: list, alt: bool) -> None:
     ws.row_dimensions[row].height = 42
 
 
+def _normalize_xlsx_package(path: Path) -> None:
+    """Rewrite the OOXML ZIP container with stable member order and timestamps."""
+    with ZipFile(path, "r") as zin:
+        members = []
+        for info in zin.infolist():
+            if info.is_dir():
+                continue
+            data = zin.read(info.filename)
+            if info.filename == "docProps/core.xml":
+                data = re.sub(
+                    rb"(<dcterms:created\b[^>]*>)[^<]*(</dcterms:created>)",
+                    rb"\g<1>1980-01-01T00:00:00Z\g<2>",
+                    data,
+                )
+                data = re.sub(
+                    rb"(<dcterms:modified\b[^>]*>)[^<]*(</dcterms:modified>)",
+                    rb"\g<1>1980-01-01T00:00:00Z\g<2>",
+                    data,
+                )
+            members.append((info.filename, data))
+        members.sort()
+
+    tmp = path.with_name(f"{path.name}.tmp")
+    with ZipFile(tmp, "w", compression=ZIP_DEFLATED, compresslevel=9) as zout:
+        for filename, data in members:
+            info = ZipInfo(filename, DETERMINISTIC_ZIP_TIMESTAMP)
+            info.compress_type = ZIP_DEFLATED
+            info.external_attr = 0o600 << 16
+            zout.writestr(info, data)
+    tmp.replace(path)
+
+
+def _save_workbook_deterministic(wb: Workbook, out_path: Path) -> None:
+    wb.properties.created = DETERMINISTIC_DOC_TIMESTAMP
+    wb.properties.modified = DETERMINISTIC_DOC_TIMESTAMP
+    wb.save(out_path)
+    _normalize_xlsx_package(out_path)
+
+
 def build_checklist(out_path: Path, role_label: str, controls: list[dict],
                     spa: dict[str, dict]) -> int:
     wb = Workbook()
@@ -351,7 +394,7 @@ def build_checklist(out_path: Path, role_label: str, controls: list[dict],
     ws.auto_filter.ref = (
         f"A{header_row}:{get_column_letter(len(CHECKLIST_HEADERS))}{data_end}")
 
-    wb.save(out_path)
+    _save_workbook_deterministic(wb, out_path)
     return len(controls)
 
 
@@ -408,7 +451,7 @@ def build_dashboard(out_path: Path, manifest: list[dict],
     ws.auto_filter.ref = (
         f"A{header_row}:{get_column_letter(len(DASHBOARD_HEADERS))}{data_end}")
 
-    wb.save(out_path)
+    _save_workbook_deterministic(wb, out_path)
     return len(controls)
 
 

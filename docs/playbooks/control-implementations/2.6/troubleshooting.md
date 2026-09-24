@@ -53,7 +53,8 @@ Common issues and resolution steps for web search and grounding controls.
 2. **Test with user:** Ask Copilot a web-specific question and check for citations
 3. **Review audit logs:** Run Script 3 for web search usage, and corroborate with Purview DSPM for AI activity explorer
 4. **Check plugins:** Run Script 2 for web-accessing plugin inventory
-5. **Verify propagation:** Restart the Office app; allow up to 24 hours for users not covered by an assigned policy configuration
+5. **Check Graph beta evidence:** If using Script 1, compare the raw `microsoft.copilot.allowwebsearch` value and `policyId` to the Cloud Policy UI; treat the raw value mapping as tenant-observed because Microsoft does not publish a setting-specific value map
+6. **Verify propagation:** Restart the Office app; allow up to 24 hours for users not covered by an assigned policy configuration
 
 ## Escalation
 

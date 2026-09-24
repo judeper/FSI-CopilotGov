@@ -54,8 +54,8 @@ See [Relationship to AgentGov](relationship-to-agentgov.md) for detailed scope b
 | **Microsoft Purview** | Compliance and data governance capabilities |
 | **Foundational IT controls** | Network security, endpoint protection, backup/recovery assumed in place |
 
-!!! info "Copilot Chat Basic vs. Premium Licensing"
-    Effective April 15, 2026, Microsoft offers Copilot Chat in two tiers: **Basic** (included with Microsoft 365 licenses, web grounding and user-provided organizational data) and **Premium** (per-user license, full Microsoft 365 data access via Microsoft Graph). Organizations must govern both populations -- Basic users can generate AI-assisted content that enters regulated workflows despite lacking full tenant Graph grounding, while Premium users carry the full discovery amplification risk profile. Governance controls, training requirements, and supervisory procedures should account for this licensing distinction.
+!!! info "Copilot Basic vs. Premium Licensing"
+    Microsoft Learn distinguishes **Copilot Chat (Basic)**, **Microsoft 365 Copilot (Basic)**, and **Microsoft 365 Copilot (Premium)** experiences. Tenant Message Center posts MC1253858/MC1253863 should be checked for any April 15, 2026 in-app access change, seat threshold, and affected-app scope. Organizations must govern both Basic and Premium populations -- Basic users can generate AI-assisted content that enters regulated workflows despite lacking full tenant Graph grounding, while Premium users carry the full discovery amplification risk profile. Governance controls, training requirements, and supervisory procedures should account for this licensing distinction.
 
 ---
 

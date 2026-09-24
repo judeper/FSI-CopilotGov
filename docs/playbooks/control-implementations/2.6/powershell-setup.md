@@ -13,11 +13,10 @@ Automation scripts for managing Copilot web search and grounding controls.
 ### Script 1: Check Web Search Configuration
 
 ```powershell
-# Verify Copilot web search configuration
+# Verify Copilot web search configuration with the Graph beta tenant-level setting
 # Requires: Microsoft Graph SDK
 
-Import-Module Microsoft.Graph.Beta.Identity.DirectoryManagement
-Connect-MgGraph -Scopes "Policy.Read.All","Organization.Read.All"
+Connect-MgGraph -Scopes "CopilotPolicySettings.Read","Organization.Read.All"
 
 # Check tenant Copilot settings
 $org = Get-MgOrganization
@@ -27,6 +26,20 @@ Write-Host ""
 Write-Host "NOTE: Web search is managed by the 'Allow web search in Copilot' Cloud Policy."
 Write-Host "Configure at: https://config.office.com > Customization > Policy Management"
 Write-Host "Shortcut: Admin Center > Copilot > Settings > Data Access > Web search"
+Write-Host ""
+try {
+    $setting = Invoke-MgGraphRequest -Method GET `
+        -Uri "https://graph.microsoft.com/beta/copilot/admin/policySettings/microsoft.copilot.allowwebsearch"
+
+    Write-Host "Graph beta setting ID: $($setting.id)"
+    Write-Host "Tenant-level raw value: $($setting.value)"
+    Write-Host "Tenant-level policy ID: $($setting.policyId)"
+    Write-Host "NOTE: Microsoft Learn documents this as a beta, tenant-level-only endpoint. Public docs do not publish a value map for the three Cloud Policy UI options; reconcile the raw value to the UI in this tenant."
+}
+catch {
+    Write-Warning "Unable to read microsoft.copilot.allowwebsearch through Graph beta: $($_.Exception.Message)"
+    Write-Warning "Use the Cloud Policy UI as the authoritative admin configuration record."
+}
 Write-Host ""
 Write-Host "Recommended FSI setting: DISABLED for all users"
 ```
@@ -106,7 +119,7 @@ if ($webGrounded.Count -gt 0) {
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
-| Web Search Config Check | Weekly | Verify web search remains disabled |
+| Web Search Config Check | Weekly | Verify web search remains disabled; if using Graph beta, reconcile the raw tenant-level value to the Cloud Policy UI |
 | Web Plugin Audit | Monthly | Detect new web-accessing plugins |
 | Web Search Usage Monitor | Weekly | Alert on any web search activity |
 

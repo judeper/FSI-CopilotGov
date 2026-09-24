@@ -35,11 +35,23 @@ Test cases and evidence collection for validating web search and grounding contr
 - **Expected Result:** Zero web search events after policy enforcement date
 - **Evidence:** Audit log report showing no web search activity
 
+### Test 4: Graph Beta Tenant-Level Setting Evidence
+
+- **Objective:** Corroborate the Cloud Policy state with the public Graph beta `microsoft.copilot.allowwebsearch` setting without assuming an undocumented value map
+- **Steps:**
+  1. Run Script 1 to query `GET https://graph.microsoft.com/beta/copilot/admin/policySettings/microsoft.copilot.allowwebsearch`
+  2. Record the returned raw `value` and `policyId`
+  3. Compare the raw value to the visible **Allow web search in Copilot** Cloud Policy option in `https://config.office.com`
+  4. Document the tenant-observed mapping as evidence; do not reuse it as a public 0/1/2 mapping unless Microsoft publishes one
+- **Expected Result:** The Graph beta tenant-level setting corroborates the Cloud Policy UI, or the discrepancy is documented and escalated
+- **Evidence:** Graph response JSON plus Cloud Policy screenshot
+
 ## Evidence Collection
 
 | Evidence Item | Format | Storage Location | Retention |
 |--------------|--------|-----------------|-----------|
 | Web search Cloud Policy configuration screenshot | PNG | Compliance evidence repository | 7 years |
+| Graph beta `microsoft.copilot.allowwebsearch` response | JSON | Compliance evidence repository | 7 years |
 | Web search test results | PDF | Compliance evidence repository | 7 years |
 | Web search audit log report | CSV | Compliance evidence repository | 7 years |
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-23T00:00:00Z",
+  "generatedAt": "2026-09-24T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -156,7 +156,7 @@
       "tier": "Baseline",
       "title": "Control 1.9: License Planning and Copilot Assignment Strategy",
       "path": "docs/controls/pillar-1-readiness/1.9-license-planning.md",
-      "last_verified": "2026-07-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (IT Operations)",
@@ -290,7 +290,7 @@
       "tier": "Baseline",
       "title": "Control 2.3: Conditional Access Policies for Copilot Workloads",
       "path": "docs/controls/pillar-2-security/2.3-conditional-access-policies.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "NYDFS Part 500",
@@ -328,7 +328,7 @@
       "tier": "Baseline",
       "title": "Control 2.6: Copilot Web Search and Web Grounding Controls",
       "path": "docs/controls/pillar-2-security/2.6-web-search-controls.md",
-      "last_verified": "2026-08-16",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "Data Residency Considerations"

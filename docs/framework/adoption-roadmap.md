@@ -364,11 +364,11 @@ These controls must be implemented first as they enable other governance capabil
 
 **How to avoid:** Establish steady-state governance operations (monthly committee, quarterly review, change management) in Phase 2.
 
-### Pitfall 9: Not Planning for the April 2026 Licensing Change
+### Pitfall 9: Not Planning for Tenant-Confirmed Copilot Licensing Changes
 
-**Risk:** The April 15, 2026 Copilot Chat Basic/Premium licensing split introduces unlicensed Copilot Chat Basic users (web-only grounding) alongside licensed Premium users (full M365 data access). Without planning, organizations may have ungoverned Basic users generating AI-assisted content that enters regulated workflows.
+**Risk:** Microsoft Learn documents Basic and Premium Copilot experiences, and tenant Message Center posts MC1253858/MC1253863 may describe an April 15, 2026 in-app access change for unlicensed users. Without planning from the tenant-confirmed Message Center text, organizations may have ungoverned Basic users generating AI-assisted content that enters regulated workflows or may under-budget for users who require Premium in-app access.
 
-**How to avoid:** Inventory Copilot user populations before the licensing change takes effect. Extend governance training and acceptable use policies to cover Basic users. Ensure supervisory procedures account for AI-assisted content from both tiers.
+**How to avoid:** Inventory Copilot user populations, capture the tenant's current MC1253858/MC1253863 text, and map users who need Premium in-app access. Extend governance training and acceptable use policies to cover Basic users. Ensure supervisory procedures account for AI-assisted content from both tiers.
 
 ### Pitfall 7: Not Training Users on FSI-Specific Restrictions
 
@@ -426,7 +426,7 @@ These controls must be implemented first as they enable other governance capabil
 1. **Assess current state** -- Review existing M365 governance maturity (permissions, labels, DLP, audit)
 2. **Assign accountability** -- Identify the AI Governance Lead and secure executive sponsorship
 3. **Secure budget** -- Obtain licensing (Copilot, SharePoint Advanced Management) and staffing commitments
-4. **Plan for licensing changes** -- Prepare for the April 15, 2026 Copilot Chat Basic/Premium split by inventorying user populations and extending governance controls to both tiers
+4. **Plan for licensing changes** -- Verify tenant Message Center guidance for Copilot Basic/Premium changes, inventory user populations, and extend governance controls to both tiers
 5. **Customize timeline** -- Adapt phases based on organizational priorities and regulatory obligations
 6. **Plan agent governance** -- Develop a phased approach to Agent 365 adoption, including Entra Agent ID enrollment, agent lifecycle policies, and integration with existing audit frameworks
 7. **Begin Phase 0** -- Start with oversharing assessment and governance committee formation

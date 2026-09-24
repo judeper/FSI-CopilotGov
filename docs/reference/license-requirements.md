@@ -14,7 +14,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | **Microsoft 365 E3** | Productivity, security basics, compliance basics | Baseline governance — requires add-ons for most regulated controls |
 | **Microsoft 365 E5** | Full productivity, advanced security, advanced compliance | Recommended for FSI — includes Purview, Defender, and advanced compliance |
 | **Microsoft 365 Copilot (Premium)** | Per-user add-on enabling full AI assistance across M365 apps (also referred to as "Microsoft 365 Copilot" in most admin documentation) | Required for full Copilot functionality across all M365 apps |
-| **Microsoft 365 Copilot Chat (Basic)** | Free tier available to all M365 users via web (copilot.microsoft.com) and inside Outlook; in-app access in Word, Excel, and PowerPoint is limited for organizations with more than 2,000 users after April 15, 2026 | Provides basic Copilot Chat access without per-user license cost; governance controls still apply |
+| **Microsoft 365 Copilot (Basic) / Copilot Chat (Basic)** | Included experience for users without a Microsoft 365 Copilot Premium add-on. Public Microsoft Learn documentation describes standalone Copilot Chat and standard in-app Copilot access; verify tenant-visible Message Center posts MC1253858/MC1253863 for any April 15, 2026 change to unlicensed in-app access | Provides basic Copilot access without per-user Premium license cost; governance controls still apply |
 | **Third-party model providers** | Admins can enable Anthropic Claude and xAI models for specific users or groups through Copilot settings | Introduces additional data handling, model risk, and data residency considerations for FSI environments |
 | **Microsoft Purview Suite (formerly E5 Compliance)** | Add-on for E3 providing E5-level compliance capabilities | Alternative to full E5 for compliance-focused deployments |
 | **Microsoft 365 E5 Security** | Add-on for E3 providing E5-level security capabilities | Alternative to full E5 for security-focused deployments |
@@ -22,8 +22,8 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | **Microsoft 365 Copilot (PAYG)** | Pay-as-you-go billing for approved Copilot services | Usage-based Azure billing tied to a billing policy; commonly used for Copilot Chat without assigning full seats |
 | **Microsoft 365 F1/F3** | Frontline worker licenses | Copilot availability extended to Frontline SKUs; check current Microsoft documentation for feature parity with E3/E5 |
 
-!!! warning "Copilot Chat Licensing Change — April 15, 2026"
-    Starting April 15, 2026, organizations with more than 2,000 Microsoft 365 users will lose embedded Copilot Chat access in Word, Excel, PowerPoint, and OneNote for users without a paid Microsoft 365 Copilot license. Copilot Chat remains available in Outlook and via the web (copilot.microsoft.com) for all eligible users. Smaller organizations retain in-app access but may experience throttling during peak usage. FSI organizations should review their license allocation strategy and budget accordingly.
+!!! warning "Tenant Message Center Verification Required"
+    Public Microsoft Learn documentation confirms the Basic and Premium Copilot experiences, but the April 15, 2026 effective date, more-than-2,000-user threshold, and exact affected-app scope are tenant Message Center details. Verify MC1253858 and MC1253863 in **Microsoft 365 admin center > Health > Message center** before using those figures as evidence. If those posts in your tenant state an effective date, threshold, affected-app scope, throttling language, or unchanged Copilot Chat surfaces, retain the Message Center screenshot or Graph `serviceAnnouncement/messages` export before using those values as evidence.
 
 ---
 

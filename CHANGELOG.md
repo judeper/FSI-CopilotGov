@@ -524,7 +524,7 @@ Aligned documentation with Microsoft's [Secure and Govern Microsoft 365 Copilot]
 
 ### Critical — Copilot Licensing Changes (April 15, 2026)
 - Added Copilot Chat Basic vs Premium tier distinction across license requirements, Control 1.9, admin toggles, FAQ, glossary, and getting-started content
-- Documented April 15, 2026 deadline: organizations >2,000 users lose embedded Copilot Chat in Word, Excel, PowerPoint, OneNote for unlicensed users
+- Documented the tenant Message Center-reported April 15, 2026 licensing change for organizations above the 2,000-user threshold, now treated as tenant Message Center evidence requiring tenant read-back, not public Microsoft Learn evidence
 - Added Edit with Copilot (Agent Mode) governance — available to all M365 users regardless of license, web data only for unlicensed users
 - Added third-party model provider support (Anthropic Claude, xAI) and recommended FSI posture (disabled by default)
 
