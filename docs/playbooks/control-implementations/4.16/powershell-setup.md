@@ -247,5 +247,5 @@ Compress-Archive -Path .\artifacts\4.16\* `
 - Continue to [Verification & Testing](verification-testing.md) for gate, permission, MCP, and boundary-coverage validation.
 - Reference [Troubleshooting](troubleshooting.md) for entitlement, endpoint-policy, attestation, MCP, and boundary-related issues.
 
-*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview) · Last Verified 2026-07-10*
+*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview) · Last Verified 2026-09-24*
 - Back to [Control 4.16](../../../controls/pillar-4-operations/4.16-microsoft-scout-governance.md)

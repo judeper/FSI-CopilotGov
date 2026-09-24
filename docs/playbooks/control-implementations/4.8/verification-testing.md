@@ -9,7 +9,7 @@ Test cases and evidence collection procedures for Copilot cost allocation and li
 - **Objective:** Verify that PAYG Copilot charges are tied to the correct billing policy and reconciled to internal records
 - **Steps:**
   1. Run Script 1 from the PowerShell Setup guide to retrieve PAYG billing data from Azure Commerce for the current month.
-  2. Review the billing policy configuration in **Billing > Pay-as-you-go services** and confirm the intended users or groups are covered.
+  2. Review the billing policy configuration in **Copilot > Billing & usage > Pay-as-you-go services** and confirm the intended users or groups are covered.
   3. Download the Azure invoice or cost export and confirm the PAYG Copilot line item matches Script 1 output.
   4. Reconcile the total PAYG cost to the internal cost owner or department assigned to the billing policy.
   5. Confirm the connected service and policy coverage match the approved scope.
@@ -20,7 +20,7 @@ Test cases and evidence collection procedures for Copilot cost allocation and li
 
 - **Objective:** Confirm that PAYG billing policies have budgets and notification routing configured appropriately
 - **Steps:**
-  1. Navigate to **Billing > Pay-as-you-go services** and review the active billing policies.
+  1. Navigate to **Copilot > Billing & usage > Pay-as-you-go services** and review the active billing policies.
   2. Verify each active billing policy has a budget configured.
   3. Confirm alert recipients are set to the approved business and IT finance owners.
   4. If prior notifications exist, confirm they were received and handled appropriately.
@@ -99,9 +99,9 @@ Test cases and evidence collection procedures for Copilot cost allocation and li
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SOX Section 404 (15 U.S.C. § 7262) | IT general controls over financial reporting — material technology expenditure authorization | PAYG budget authorization controls, billing-policy review, and per-seat license tracking support IT asset management control requirements |
-| FFIEC Management Booklet, Section II.D | IT investment governance — cost-benefit analysis and ongoing cost monitoring | Per-seat versus PAYG documentation and monthly billing review help satisfy this expectation |
-| 12 CFR part 30, appendix D (OCC Heightened Standards) (12 CFR Part 30, Appendix D) | Operational risk governance framework — technology cost management | Billing-policy review, anomaly detection, and monthly PAYG reporting demonstrate responsive cost governance |
+| SOX Section 404 (15 U.S.C. § 7262) | Firm-specific assessment of IT general controls over financial reporting for material technology expenditure authorization | PAYG budget authorization controls, billing-policy review, and per-seat license tracking preserve evidence for the firm's ICFR scope decision |
+| FFIEC Management Booklet, Section II.D | Firm-specific IT investment governance assessment — cost-benefit analysis and ongoing cost monitoring | Per-seat, PAYG, and Copilot Credit documentation preserve evidence for technology-planning and examiner-response review |
+| 12 CFR part 30, appendix D (OCC Heightened Standards) | Covered-institution operational-risk governance assessment | Billing-policy review, anomaly detection, and monthly PAYG reporting preserve evidence for the firm's operational-risk governance review |
 
 ## Next Steps
 

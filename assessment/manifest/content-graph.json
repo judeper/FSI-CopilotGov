@@ -782,7 +782,7 @@
       "tier": "Recommended",
       "title": "Control 4.8: Cost Allocation and License Optimization",
       "path": "docs/controls/pillar-4-operations/4.8-cost-allocation.md",
-      "last_verified": "2026-06-07",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "Sarbanes-Oxley §§302/404 (Internal Controls over Financial Reporting)",
         "12 CFR part 30",
@@ -796,7 +796,7 @@
       "tier": "Recommended",
       "title": "Control 4.9: Incident Reporting and Root Cause Analysis",
       "path": "docs/controls/pillar-4-operations/4.9-incident-reporting.md",
-      "last_verified": "2026-05-25",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "FINRA Rule 4530 (Reporting Requirements)",
         "GLBA §501(b)",
@@ -884,7 +884,7 @@
       "tier": "Recommended",
       "title": "Control 4.15: Copilot Cowork Governance",
       "path": "docs/controls/pillar-4-operations/4.15-copilot-cowork-governance.md",
-      "last_verified": "2026-07-10",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "FFIEC IT Examination Handbook",
         "GLBA §501(b)",
@@ -899,7 +899,7 @@
       "tier": "Regulated",
       "title": "Control 4.16: Microsoft Scout Governance",
       "path": "docs/controls/pillar-4-operations/4.16-microsoft-scout-governance.md",
-      "last_verified": "2026-07-10",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "FFIEC IT Examination Handbook",
         "GLBA §501(b)",

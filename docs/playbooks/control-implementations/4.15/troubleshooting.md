@@ -1,13 +1,13 @@
 # Control 4.15: Copilot Cowork Governance - Troubleshooting
 
-Common issues and resolution steps for governing Microsoft 365 Copilot Cowork after its June 2026 general availability, including access gating (usage-based billing + discovery), model toggles, local browser use, plugin and Customize-page extensibility, and consumption limits.
+Common issues and resolution steps for governing Microsoft 365 Copilot Cowork after its June 2026 general availability, including access gating (spending policies + discovery), model controls, local browser use, plugin and Customize-page extensibility, and consumption limits.
 
 ## Common Issues
 
 ### Issue 1: Users Cannot Access Cowork
 
 - **Symptoms:** Users in the pilot cannot open or use Cowork.
-- **Resolution:** In **M365 Admin Center > Copilot > Cost management**, confirm that usage-based billing is enabled for the users or groups in scope and that a spending policy is configured. Cowork access is gated on usage-based billing setup; discovery alone does not grant access.
+- **Resolution:** In **M365 Admin Center > Copilot > Cost management > Configuration**, confirm that a spending policy selects Cowork for the users or groups in scope. Cowork access is granted by a spending policy that selects Cowork; discovery alone does not grant access, and a very low credit limit still grants access until limit enforcement applies.
 
 ### Issue 2: Cowork Is Not Visible to Any Users
 
@@ -24,10 +24,10 @@ Common issues and resolution steps for governing Microsoft 365 Copilot Cowork af
 - **Symptoms:** `cowork-out-of-scope-activity.csv` is non-empty.
 - **Resolution:** Compare the users with activity against the Cost management billing-scope export. If billing was enabled for a user outside the approved pilot, verify the approval basis or remove the user from scope. If billing scope is correct but out-of-scope users still appear, re-run the audit pull and confirm that the reconciliation input is current.
 
-### Issue 5: Claude Fable 5 (Preview) Enabled Without Retention Review
+### Issue 5: Model with Provider-Retention Implications Enabled Without Retention Review
 
-- **Symptoms:** The **Claude Fable 5 (Preview)** model is on in **M365 Admin Center > Copilot settings**, but the provider data-retention posture has not been reviewed and approved.
-- **Resolution:** Turn Fable 5 (Preview) off. Fable 5 (Preview) requires the model provider to retain prompts and responses; do not enable it until legal, privacy, and compliance have reviewed the retention terms and approved the use for the intended data classes. Cowork displays a banner while Fable 5 is selected — treat that banner as an in-product reminder, not a substitute for governance.
+- **Symptoms:** An Anthropic or other model with provider-retention implications is enabled in **M365 Admin Center > Copilot settings**, but the provider data-retention posture has not been reviewed and approved for the intended data classes.
+- **Resolution:** Disable the model for regulated data until legal, privacy, and compliance have reviewed the current Microsoft Learn model name, provider, retention terms, and tenant toggle behavior. Treat any in-product banner as a reminder, not a substitute for governance approval.
 
 ### Issue 6: Anthropic Model Family Was Disabled Without Coordination
 
@@ -37,7 +37,7 @@ Common issues and resolution steps for governing Microsoft 365 Copilot Cowork af
 ### Issue 7: Cowork Browsing Is Enabled Without a Documented Review
 
 - **Symptoms:** The **Cowork Browsing** toggle is on but no browser-use review record exists.
-- **Resolution:** Turn the toggle off, complete a documented review that references the tenant's Conditional Access, Microsoft Purview DLP, browser management policy, and any site allow/block/view-only rules that should apply, then re-enable if approved. Local browser use is a preview feature at the time of last verification.
+- **Resolution:** Turn the toggle off, complete a documented review that references the tenant's Conditional Access, Microsoft Purview DLP where applicable, browser management policy, Edge policy, and any site allow/block/view-only rules that should apply, then re-enable if approved. Microsoft Learn states browser use is GA, but regulated use still requires tenant evidence.
 
 ### Issue 8: Browser Task Fails or Is Blocked
 
@@ -51,7 +51,7 @@ Common issues and resolution steps for governing Microsoft 365 Copilot Cowork af
 
 ### Issue 10: Consumption Trending Over Budget
 
-- **Symptoms:** Consumption reporting in **Copilot > Cost management** shows spend on track to exceed the approved budget.
+- **Symptoms:** Consumption reporting in **Copilot > Cost management > Configuration** shows spend on track to exceed the approved budget.
 - **Resolution:** Review per-user or per-group consumption limits, tighten them where appropriate, and identify the activity classes driving spend (model responses, tools/skills, image generation, browser tasks). Communicate limit changes to the pilot and record the decision.
 
 ### Issue 11: Cowork Activity Missing from Audit
@@ -61,8 +61,8 @@ Common issues and resolution steps for governing Microsoft 365 Copilot Cowork af
 
 ## Diagnostic Steps
 
-1. Confirm the intended access posture (billing scope, discovery on/off) against **Copilot > Cost management** and **Copilot > Settings > AI experiences enabled by usage-based billing**.
-2. Confirm model toggle state under **Copilot settings** (Anthropic family, Fable 5 (Preview)).
+1. Confirm the intended access posture (billing scope, discovery on/off) against **Copilot > Cost management > Configuration** and **Copilot > Settings > AI experiences enabled by usage-based billing**.
+2. Confirm model toggle state under **Copilot settings** (Anthropic family and any model with provider-retention implications).
 3. Confirm the **Cowork Browsing** toggle state under **Copilot > Settings > View All > Cowork settings**.
 4. Reconcile Cowork users against the approved pilot group.
 5. Re-run the audit pull and review out-of-scope activity.
@@ -75,7 +75,7 @@ Common issues and resolution steps for governing Microsoft 365 Copilot Cowork af
 | Severity | Condition | Escalation Path |
 |----------|-----------|-----------------|
 | Low | Documentation gap, single out-of-scope activity, or single access-request delay | Governance analyst |
-| Medium | Access-posture drift, model-toggle drift (including unreviewed Fable 5 (Preview) enablement), browser-toggle drift, or unapproved plugin/package/skill available | Governance lead and M365 admin |
+| Medium | Access-posture drift, model-toggle drift (including unreviewed provider-retention model enablement), browser-toggle drift, or unapproved plugin/package/skill available | Governance lead and M365 admin |
 | High | Cowork enabled for a regulated population without supervisory review, or consumption significantly exceeding the approved budget | Compliance lead and M365 admin |
 | Critical | Agentic Cowork action (including browser use) against regulated data outside approved governance, or model with provider data retention used on regulated data without approval | CISO, compliance officer, incident-response lead |
 

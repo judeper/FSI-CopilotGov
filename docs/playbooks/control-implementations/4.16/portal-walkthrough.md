@@ -93,5 +93,5 @@ Confirm which Scout activity is visible to existing Purview audit and supervisio
 - Use [Verification & Testing](verification-testing.md) to validate the three gates, permission posture, MCP inventory, and audit-coverage assessment.
 - Keep [Troubleshooting](troubleshooting.md) available for entitlement, endpoint-policy, attestation, MCP, and boundary-related issues.
 
-*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview) · Last Verified 2026-07-10*
+*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview) · Last Verified 2026-09-24*
 - Back to [Control 4.16](../../../controls/pillar-4-operations/4.16-microsoft-scout-governance.md)
