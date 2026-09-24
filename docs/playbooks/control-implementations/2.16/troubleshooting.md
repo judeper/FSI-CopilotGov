@@ -32,7 +32,7 @@ Common issues and resolution steps for federated connector inventory, scoping, a
 ### Issue 6: The Retired PowerShell Toggle Conflicts with the Portal
 
 - **Symptoms:** Historical `Set-FederatedConnectorToggle` output indicates connectors were disabled, but **Allowed agent types** or connector-specific access settings show a different posture.
-- **Resolution:** Treat the current portal settings and controlled end-user test as authoritative evidence. Microsoft Learn states the command-line toggle is being deprecated / retired by **August 25, 2026** so connector and agent settings are honored from the same global tenant settings. If the tenant received a Message Center post directing administrators to reapply the prior choice, follow that tenant-specific window and retain the notice with the change evidence; do not infer a universal reapplication deadline.
+- **Resolution:** Treat the current portal settings and controlled end-user test as authoritative evidence. Microsoft Learn states the command-line toggle is being retired by **August 25, 2026** so connector and agent settings are honored from the same global tenant settings. The FAQ states that if an admin previously disabled federated Copilot connectors with `Set-FederatedConnectorToggle`, the setting is honored until **October 20, 2026**, and admins must update **Allowed agent types** by then to continue that behavior after October 20, 2026.
 
 ### Issue 7: Write-Capable Federated Connector Tool Appears
 
