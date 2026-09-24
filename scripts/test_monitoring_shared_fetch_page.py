@@ -16,6 +16,11 @@ sys.path.insert(0, str(SCRIPTS_DIR))
 import monitoring_shared  # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def _deterministic_rate_limit_jitter(monkeypatch):
+    monkeypatch.setattr(monitoring_shared.random, "randint", lambda *_args: 0)
+
+
 @dataclass
 class _FakeResponse:
     status_code: int

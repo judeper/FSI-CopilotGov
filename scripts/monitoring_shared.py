@@ -21,6 +21,7 @@ import difflib
 import hashlib
 import json
 import math
+import random
 import re
 import sys
 import tempfile
@@ -48,11 +49,12 @@ except ImportError as e:
 
 # === Configuration Constants ===
 REQUEST_TIMEOUT = 30  # seconds
-MAX_RETRIES = 3
+MAX_RETRIES = 5
 MAX_RETRY_AFTER_SECONDS = 120
 MAX_RATE_LIMIT_WAIT_SECONDS = 120
 RATE_LIMIT_BACKOFF_BASE_SECONDS = 5
 RATE_LIMIT_BACKOFF_MAX_SECONDS = 30
+RATE_LIMIT_JITTER_MAX_SECONDS = 3
 
 # Default path to monitoring configuration file
 DEFAULT_CONFIG_PATH = Path(__file__).parent / "config" / "monitoring-config.yaml"
@@ -97,7 +99,7 @@ def _bounded_rate_limit_backoff_seconds(attempt: int) -> int:
     return min(
         RATE_LIMIT_BACKOFF_MAX_SECONDS,
         RATE_LIMIT_BACKOFF_BASE_SECONDS * (2 ** attempt),
-    )
+    ) + random.randint(0, RATE_LIMIT_JITTER_MAX_SECONDS)
 
 
 def _rate_limit_wait_seconds(retry_after_header: Optional[str], attempt: int) -> tuple[int, str]:
