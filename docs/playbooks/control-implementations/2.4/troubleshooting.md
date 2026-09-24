@@ -65,8 +65,8 @@ Common issues and resolution steps for Information Barriers.
   2. **Immediately review the channel's membership** to determine whether IB-separated users are present in the channel where Channel Agent is deployed
   3. If IB-separated users are present in the channel: **remove the Channel Agent from that channel** — it cannot be safely deployed in channels with mixed IB-segment membership
   4. Redeploy Channel Agent only in channels with homogeneous IB-segment membership after auditing member segments
-  5. **Document this incident** in the firm's supervisory procedures and escalate to Compliance per SEC Rule 10b-5 and FINRA Rules 5280, 2241, 2242 requirements if cross-barrier content was accessed
-  6. As a compensating control: apply sensitivity labels to content in the channel to prevent Channel Agent from processing labeled materials; configure DSPM for AI monitoring to detect future cross-segment surfacing
+  5. **Document this incident** in the firm's supervisory procedures and escalate to Compliance/Legal under the firm's approved ethical-wall incident process if cross-barrier content was accessed
+  6. Do not rely on sensitivity-label DLP to prevent Channel Agent from summarizing labeled files; Microsoft Learn documents that this is not supported. Configure tenant telemetry monitoring where available and restrict or remove Channel Agent from mixed-segment channels
 
 ### Issue 7: Uncertainty About Which Copilot Surfaces Enforce IB
 
@@ -75,9 +75,10 @@ Common issues and resolution steps for Information Barriers.
 - **Resolution:**
   1. Use test content that is exclusively accessible within one segment (e.g., a file stored in a segment-specific SharePoint library with no sharing outside the segment)
   2. Test as a user from the barrier-separated segment and verify whether the content appears in Copilot responses
-  3. Consult the Microsoft Learn page "Information Barriers and Microsoft 365 Copilot" for the current authoritative surface coverage matrix
-  4. For Channel Agent specifically: IB enforcement is confirmed NOT supported — do not test hoping for enforcement; instead apply compensating controls as documented
-  5. If testing reveals a surface that should enforce IB is not doing so (and the surface is not Channel Agent): verify barrier policies are in Active/Applied state, allow 48 hours for propagation, then open a Microsoft support case referencing IB and the specific Copilot surface
+  3. Consult current Microsoft Learn pages for Information Barriers, SharePoint/OneDrive/Teams IB behavior, Channel Agent security and compliance considerations, and Copilot Pages/Notebooks compliance summary
+  4. For Channel Agent specifically: IB enforcement is confirmed NOT supported — do not test hoping for enforcement; instead restrict, disable, or remove it from IB-sensitive channels
+  5. For Copilot Pages, Copilot Notebooks, and embedded-file agent knowledge: IB is not supported for SharePoint Embedded content; use Cloud Policy, app controls, or approved surface restrictions for IB-sensitive populations
+  6. If testing reveals a surface that should enforce an underlying workload boundary is not doing so: verify barrier policies are in Active/Applied state, allow documented propagation time, then open a Microsoft support case referencing IB and the specific Copilot surface
 
 ## Diagnostic Steps
 

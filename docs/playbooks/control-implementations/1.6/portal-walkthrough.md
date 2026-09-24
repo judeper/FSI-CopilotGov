@@ -59,17 +59,17 @@ Review tenant-level sharing settings and site-level overrides. For FSI environme
 
 Microsoft Purview introduces dedicated roles for AI governance oversight. Assign these as part of the permission model configuration to maintain least-privilege access to AI governance data.
 
-**Purview Data Security AI Viewer and AI Content Viewer:**
+**Data Security AI Viewer and AI Content Viewer:**
 
 **Portal:** Microsoft Purview portal
 **Path:** Purview portal > Settings > Roles and scopes > Role groups
 
-1. Search for "Purview Data Security AI Viewer" in the role groups list
+1. Search for **Data Security AI Viewers** / **Purview Data Security AI Viewer** in the role groups list
 2. Select the role group and click **Edit**
 3. Add compliance team members who need read-only access to DSPM for AI dashboards and AI observability metrics
 4. Click **Save**
 
-Repeat for "Purview Data Security AI Content Viewer" — add only investigation team members authorized to view prompt and response content. This role grants access to actual prompt/response data; restrict to personnel with documented authorization.
+Repeat for **Data Security AI Content Viewers** / **Purview Data Security AI Content Viewer** — add only investigation team members authorized to view prompt and response content. In current DSPM, viewing prompts and responses within **AI Interaction** events also requires **Content Explorer Content Viewer**; verify both assignments before treating the reviewer as authorized.
 
 **AI Administrator (Microsoft Entra role):**
 
@@ -97,7 +97,7 @@ Compile a permission audit report including:
 | Tier | Recommendation |
 |------|---------------|
 | **Baseline** | Audit permissions on all sites containing sensitive data; remove "Everyone" access; assign Purview Data Security AI Viewer to compliance team |
-| **Recommended** | Implement quarterly access reviews for all sensitive content groups; restrict tenant sharing to organization-only; assign AI Content Viewer to investigation team and AI Administrator to Copilot governance lead |
+| **Recommended** | Implement quarterly access reviews for all sensitive content groups; restrict tenant sharing to organization-only; assign AI Content Viewer plus Content Explorer Content Viewer to the investigation team where prompt/response review is required, and AI Administrator to Copilot governance lead |
 | **Regulated** | Monthly access reviews with auto-remediation; zero "Everyone" or anonymous access on any site; formal sign-off on all permission exceptions; quarterly access review of all AI-prefixed role assignments; formal documentation of AI Content Viewer authorization |
 
 ## Next Steps

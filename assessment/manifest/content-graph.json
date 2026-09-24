@@ -117,7 +117,7 @@
       "tier": "Baseline",
       "title": "Control 1.6: Permission Model Audit (SharePoint, OneDrive, Exchange, Teams, Graph)",
       "path": "docs/controls/pillar-1-readiness/1.6-permission-model-audit.md",
-      "last_verified": "2026-06-07",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "Sarbanes-Oxley §§302/404 (where applicable to ICFR)",
@@ -131,7 +131,7 @@
       "tier": "Recommended",
       "title": "Control 1.7: SharePoint Advanced Management Readiness for Copilot",
       "path": "docs/controls/pillar-1-readiness/1.7-sharepoint-advanced-management.md",
-      "last_verified": "2026-06-12",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Examination Handbook (Information Security Booklet)"
@@ -143,7 +143,7 @@
       "tier": "Recommended",
       "title": "Control 1.8: Information Architecture Review",
       "path": "docs/controls/pillar-1-readiness/1.8-information-architecture-review.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -303,7 +303,7 @@
       "tier": "Regulated",
       "title": "Control 2.4: Information Barriers for Copilot (Chinese Wall)",
       "path": "docs/controls/pillar-2-security/2.4-information-barriers.md",
-      "last_verified": "2026-06-05",
+      "last_verified": "2026-09-24",
       "regulatory_references": [
         "SEC Rule 10b-5",
         "FINRA 5280",

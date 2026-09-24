@@ -54,6 +54,17 @@ Common issues and resolution steps for information architecture review.
   3. Review sites in waves aligned with Copilot deployment phases
   4. Accept that a complete review may span multiple quarters and document the phased approach
 
+### Issue 6: AI-Generated Metadata Is Inaccurate
+
+- **Symptoms:** Autofill columns or AI-created document libraries classify documents incorrectly, miss important fields, or create metadata that conflicts with approved taxonomy
+- **Root Cause:** Copilot in SharePoint suggestions depend on available sample files, supported file and column types, extraction prompts, and tenant feature availability. Encrypted files and unsupported file structures may not be analyzed.
+- **Resolution:**
+  1. Review the column prompt and test it on representative files before saving
+  2. Limit production reliance to reviewed columns and supported file types
+  3. Manually classify files that are encrypted, folder-only, unsupported, or outside processing limits
+  4. Compare AI-generated metadata with the approved term store and content type policy
+  5. Document the correction and update the extraction prompt or library schema before adding more files
+
 ## Diagnostic Steps
 
 1. **Generate quick stats:** Run Script 1 for a high-level architecture overview
@@ -61,6 +72,7 @@ Common issues and resolution steps for information architecture review.
 3. **Map relationships:** Generate the hub site map to visualize the architecture
 4. **Spot anomalies:** Look for sites with unusual configurations or missing associations
 5. **Validate with users:** Confirm architecture findings with content owners and business stakeholders
+6. **Validate AI-generated metadata:** Review Copilot in SharePoint-created site plans, document libraries, autofill columns, and Anthropic model settings where applicable
 
 ## Escalation
 
@@ -69,6 +81,7 @@ Common issues and resolution steps for information architecture review.
 | **Low** | Minor architecture inconsistencies | SharePoint team for remediation |
 | **Medium** | Significant orphaned sites with sensitive content | Governance committee for prioritization |
 | **High** | Architecture gaps causing Copilot to surface incorrect content | Copilot governance team and content owners |
+| **High** | AI-generated metadata being used for governance before owner review | Copilot governance team, site owner, and information architect |
 | **Critical** | Architecture review blocked by technical limitations | Microsoft TAM and SharePoint team |
 
 ## Related Resources

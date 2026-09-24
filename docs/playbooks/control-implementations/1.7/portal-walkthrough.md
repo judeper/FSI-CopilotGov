@@ -5,7 +5,7 @@ Step-by-step portal configuration for enabling and validating SharePoint Advance
 ## Prerequisites
 
 - SharePoint Admin or Entra Global Admin role
-- Microsoft 365 Copilot license (includes SAM) or SharePoint Advanced Management add-on license
+- Microsoft Copilot license assigned to at least one user in the tenant for Copilot-supporting SAM features, or SharePoint Advanced Management add-on license
 - Microsoft 365 E3 or E5 base license
 - Understanding of current SharePoint governance requirements
 
@@ -18,7 +18,7 @@ Step-by-step portal configuration for enabling and validating SharePoint Advance
 
 Confirm that SAM capabilities are available for your tenant:
 
-- **If your organization has Microsoft 365 Copilot licenses:** SAM is included at no additional cost. Verify the Copilot license count and confirm SAM features are accessible in the SharePoint Admin Center.
+- **If your organization has Microsoft Copilot licenses:** Verify at least one assigned Copilot license and confirm the SAM features listed by Microsoft for Copilot deployment support are accessible in the SharePoint admin center.
 - **If your organization does not have Copilot licenses:** Confirm that the SharePoint Advanced Management add-on is assigned to SharePoint Admins. Navigate to Admin Center > Billing > Licenses > SharePoint Advanced Management to verify assignment.
 
 SAM enables critical governance features including Restricted Content Discovery, Restricted Access Control, site access reviews, data access governance reports, and site lifecycle management.
@@ -31,11 +31,9 @@ SAM enables critical governance features including Restricted Content Discovery,
 Enable the data access governance reports that provide visibility into sharing patterns, permission grants, and content access across your SharePoint environment. These reports are foundational for Copilot governance.
 
 Review available reports:
-- **Sharing links report** — tracks all active sharing links by type (anonymous, company-wide, specific people)
-- **Sites shared with "Everyone except external users"** — identifies broad access patterns
-- **Sensitivity label report** — shows label coverage across sites
-- **Oversharing baseline** — identifies sites with content access risk
-- **Site permissions snapshot** — generates a point-in-time view of all site permissions across the tenant (run this before Copilot go-live as a pre-deployment baseline)
+- **Snapshot reports:** site permissions across your organization, site permissions for users, sensitivity labels applied to files, and detailed Everyone/EEEU item reports where available
+- **Activity reports:** sharing links and content shared with "Everyone except external users" over the last 28 days
+- **Content Management Assessment:** use this SAM hub for oversharing, inactive/ownerless sites, broken inheritance, and governance recommendations
 
 Schedule reports to run monthly at minimum. For Regulated institutions, configure continuous reporting and integrate into compliance dashboards.
 
@@ -48,7 +46,7 @@ For sites that should be excluded from Copilot content discovery entirely:
 
 1. Select the target site from the Active Sites list
 2. Click **Settings**
-3. Enable **Restricted Content Discovery**
+3. Turn **Restrict content from Microsoft Copilot** on
 4. Click **Save**
 5. Verify the setting by testing Copilot queries from a licensed user — content from the site should no longer appear in Copilot responses
 
@@ -57,28 +55,28 @@ Prioritize RCD for: sites containing HR data, legal holds, M&A deal data rooms, 
 ### Step 4: Configure Restricted Access Control
 
 **Portal:** SharePoint Admin Center
-**Path:** SharePoint Admin > Sites > Active Sites > [Select site] > Settings > Restricted Access Control
+**Path:** SharePoint Admin > Policies > Access control > Site-level access restriction, then SharePoint Admin > Sites > Active sites > [Select site] > Settings > Restricted site access
 
-Restricted Access Control (RAC) enforces a hard access boundary, restricting site access to members of a designated security group regardless of existing sharing links.
+Restricted Access Control (RAC) enforces a hard access boundary, restricting SharePoint or OneDrive site access to users who both have site/content permission and belong to a designated Microsoft Entra security group or Microsoft 365 group.
 
-1. Select the target site from the Active Sites list
-2. Click **Settings**
-3. Scroll to **Restricted Access Control** and enable it
-4. Specify the security group whose members are authorized to access the site
+1. Enable site-level access restriction for the organization under **Policies > Access control**
+2. Select the target site from the Active Sites list
+3. Click **Settings**
+4. In **Restricted site access**, add up to 10 approved Microsoft Entra security groups or Microsoft 365 groups
 5. Click **Save**
-6. Verify by testing with a user who has a sharing link but is not in the security group — access should be denied
+6. Verify by testing with a user who has a sharing link but is not in a configured group — access should be denied
 
-Prioritize RAC for: sites containing NPI, MNPI, customer financial records, audit materials, and M&A deal rooms. RAC is complementary to RCD: use RCD to exclude a site from Copilot discovery and RAC to enforce who can access the site at all.
+Prioritize RAC for: sites containing NPI, MNPI, customer financial records, audit materials, and M&A deal rooms. RAC is complementary to RCD: use RCD to limit discovery in Copilot and organization-wide search, and RAC to enforce who can access the site at all. Configure shared and private channel sites separately.
 
 ### Step 5: Configure Site Lifecycle Policies
 
 **Portal:** SharePoint Admin Center
-**Path:** SharePoint Admin > Policies > Site lifecycle management
+**Path:** SharePoint Admin > Site lifecycle management
 
 Set up site lifecycle policies to manage inactive sites that may contain stale data accessible to Copilot:
-- Configure inactivity threshold (recommended: 180 days for FSI)
-- Set notification cadence for site owners
-- Define actions for unresponsive owners (archive, restrict, delete)
+- Configure inactive site, ownership, or attestation policies
+- Set notification cadence for site owners or admins
+- Define enforcement or follow-up actions for unresponsive owners, including archive or remediation workflows where approved
 
 ### Step 6: Set Up Site Access Reviews
 
@@ -105,7 +103,7 @@ These policies affect how users interact with content that Copilot may surface.
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Verify SAM availability (included with Copilot licenses). Enable data access governance reports. Run site permissions snapshot as pre-deployment baseline. |
+| **Baseline** | Verify SAM availability through tenant Copilot licensing or add-on assignment. Enable data access governance reports. Run site permissions snapshot as pre-deployment baseline. |
 | **Recommended** | Configure site lifecycle policies and enable access reviews for sensitive sites. Enable RCD for sites with highly sensitive data. Deploy RAC on top 10 most sensitive sites (NPI, MNPI, regulatory examination materials). |
 | **Regulated** | Full SAM deployment with automated lifecycle management, mandatory quarterly access reviews for all regulated data sites, RCD for all uncertified sites, RAC on all NPI/MNPI sites with quarterly security group membership review, and integration with compliance dashboards. |
 

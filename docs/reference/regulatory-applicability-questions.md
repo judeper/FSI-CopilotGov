@@ -17,6 +17,14 @@ This appendix captures open applicability questions that each firm should resolv
 4. When a Copilot-generated meeting recap or threaded summary summarizes a regulated business discussion, should the framework classify that summary as an independent books-and-records item, and should the control state that FINRA Rule 4511(c) requirements are met only after tenant evidence proves preservation/export format?
 5. Should Copilot memory entries, inferred memories, saved memories, and custom instructions be treated as records when they contain client, investment, supervisory, or financial-analysis context; if yes, must high-risk users disable memory until retention/versioning support is tenant-verified?
 
+## Control 2.4 — Information Barriers for Copilot
+
+1. Which specific business populations and workflows require ethical-wall / Chinese Wall controls for Copilot under firm policy and counsel-approved interpretations of SEC Rule 10b-5, FINRA Rules 5280/2241/2242, SEC Regulation AC, or other applicable obligations?
+2. For each approved Copilot surface, what tenant evidence is sufficient to prove that SharePoint, OneDrive, Teams, and other workload boundaries prevent barrier-separated content from grounding Copilot responses?
+3. Because Microsoft documents that Information Barriers are not supported for Channel Agent in Teams, what firm-approved deployment rule applies: disable Channel Agent for IB-sensitive populations, allow only homogeneous-segment channels after membership audit, or another counsel-approved control?
+4. Because Microsoft documents that Information Barriers are not supported for SharePoint Embedded content used by Copilot Pages and Copilot Notebooks, should those surfaces be disabled or restricted for IB-sensitive populations?
+5. Because Microsoft documents that Information Barriers do not restrict Exchange Online email communication, what approved email control (for example, Exchange mail flow rules or supervisory procedure) covers Copilot-assisted email scenarios where the firm's wall design requires email separation?
+
 ## Control 3.6 — Supervision & Oversight
 
 1. Are the specific numeric thresholds (50 supervised users/supervisor, 5%/25%/100% sampling tiers, Series 24/26 designation, 7-year retention, and the FINRA-3110(a)-to-agent-supervision extension) firm-approved compliance policy, or do they need Legal/Compliance sign-off before being presented as a control requirement?

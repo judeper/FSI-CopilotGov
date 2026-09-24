@@ -18,8 +18,8 @@ A third-party foundation model provider available through Microsoft 365 Copilot 
 ### Agent Mode
 See *Edit with Copilot*.
 
-### AI in SharePoint
-Formerly known as Knowledge Agent. An AI-powered feature set in SharePoint that automates metadata extraction, content enrichment, and site optimization for Copilot and custom agents. Requires enabling Anthropic as an AI Sub-Processor at the tenant level. Public Preview.
+### Copilot in SharePoint
+Previously referred to in some Microsoft Learn articles as AI in SharePoint. A SharePoint feature set that includes AI-assisted site creation, document library creation, autofill metadata columns, and related organization actions. Availability, preview/GA state, model-provider settings, and user/group scope are tenant-specific and should be verified in the SharePoint admin center and Microsoft 365 admin center before relying on generated metadata or structures for governance.
 
 ### Azure Information Protection (AIP)
 Microsoft's cloud-based solution for classifying and protecting documents and emails by applying labels. Sensitivity labels in Microsoft Purview are the successor to AIP labels; the underlying encryption and rights management capabilities remain.

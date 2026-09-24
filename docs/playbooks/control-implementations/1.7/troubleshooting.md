@@ -9,7 +9,7 @@ Common issues and resolution steps for SharePoint Advanced Management configurat
 - **Symptoms:** SAM governance features like Restricted Content Discovery, Restricted Access Control, or data access governance reports are not visible in the SharePoint admin center
 - **Root Cause:** SAM feature provisioning can take 24-72 hours after license assignment or Copilot license activation. The Admin Center may require a full page refresh or cache clear to display new features.
 - **Resolution:**
-  1. **For Microsoft 365 Copilot license holders:** Verify the Copilot license is fully provisioned in Admin Center > Billing > Licenses. SAM is included with Copilot licenses — no additional purchase is required.
+  1. **For Microsoft Copilot license holders:** Verify at least one Copilot license is assigned in Admin Center > Billing > Licenses and confirm the desired SAM feature is included in Microsoft's Copilot-license SAM feature list.
   2. **For standalone SAM add-on users:** Verify the license is assigned at the tenant level in Admin Center > Billing
   3. Wait 72 hours for full feature provisioning
   4. Clear browser cache and sign out/in to the SharePoint admin center
@@ -64,11 +64,12 @@ Common issues and resolution steps for SharePoint Advanced Management configurat
 - **Symptoms:** A user who holds a sharing link to a RAC-enabled site can still access the site content, despite not being in the designated security group
 - **Root Cause:** RAC may not have been fully applied, or the security group configuration was incorrect during RAC setup. There may also be a propagation delay after RAC is enabled.
 - **Resolution:**
-  1. Verify RAC is enabled on the site: navigate to SharePoint admin center > Active Sites > [site] > Settings and confirm Restricted Access Control shows the correct security group
-  2. Check that the designated security group contains the correct members and no broader groups that would inadvertently include the user
-  3. Allow up to 30 minutes for RAC changes to propagate across SharePoint infrastructure
-  4. If the issue persists, re-apply the RAC configuration: `Set-SPOSite -Identity <siteUrl> -RestrictedAccessControl $true -RestrictedAccessControlGroups <groupId>`
-  5. Test access again after propagation delay
+  1. Verify tenant-level site access restriction is enabled under SharePoint admin center > Policies > Access control; Microsoft documents that enabling this setting by PowerShell can take up to one hour
+  2. Verify RAC is enabled on the site: navigate to SharePoint admin center > Active Sites > [site] > Settings and confirm Restricted site access shows the correct control group
+  3. Check that the designated security group contains the correct members and no broader groups that would inadvertently include the user
+  4. Allow time for RAC changes to propagate; search and Copilot reflection time depends on site size and indexing latency
+  5. If the issue persists, re-apply the RAC configuration: `Set-SPOSite -Identity <siteUrl> -RestrictedAccessControl $true`, then `Set-SPOSite -Identity <siteUrl> -AddRestrictedAccessControlGroups <groupId>`
+  6. Test access again after propagation delay
 
 ### Issue 7: RAC Breaking Legitimate Access Patterns
 
