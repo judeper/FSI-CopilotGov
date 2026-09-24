@@ -38,7 +38,7 @@ Pre-deployment data hygiene, oversharing remediation, permissions audit, sensiti
 | [ ] | 1.7 | SharePoint Advanced Management | R | | | Deploy SAM features: Data Access Governance reports, site access reviews, Restricted Content Discovery |
 | [ ] | 1.8 | Information Architecture Review | R | | | Review SharePoint site structure, Teams channels, and OneDrive folders for grounding quality |
 | [ ] | 1.9 | License Planning | B | | | Copilot license types, assignment strategies, prerequisite licenses, and governance add-ons |
-| [ ] | — | **Copilot Chat Licensing Review** | B | | | Review Copilot Chat Basic vs Premium licensing changes before the April 15, 2026 deadline — Premium features require Microsoft 365 Copilot license; Basic features are available without additional license |
+| [ ] | — | **Copilot Licensing Review** | B | | | Review Copilot Basic vs Premium licensing and verify any April 15, 2026 in-app access change against tenant Message Center posts MC1253858/MC1253863 before using date, threshold, or app-scope details |
 | [ ] | 1.10 | Vendor Risk Management | Reg | | | Third-party risk management for Microsoft as AI vendor, including subprocessor review |
 | [ ] | 1.11 | Change Management and Adoption | R | | | Organizational change management framework for Copilot rollout and adoption |
 | [ ] | 1.12 | Training and Awareness | B | | | Role-based training on responsible AI use, data sensitivity, prompt hygiene, and regulatory boundaries |

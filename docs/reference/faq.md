@@ -47,7 +47,7 @@ When a user asks Copilot a question, Copilot queries the Microsoft Graph using t
 
 **Copilot Chat (Premium)** requires a Microsoft 365 Copilot license and provides full access to organizational data via Microsoft Graph, priority access, and advanced features across all Microsoft 365 apps.
 
-As of April 15, 2026, organizations with more than 2,000 users lose embedded Copilot Chat in Word, Excel, PowerPoint, and OneNote for unlicensed users. FSI organizations should review license allocation strategies and communicate access changes to affected users.
+Public Microsoft Learn documentation distinguishes Copilot Chat (Basic), Microsoft 365 Copilot (Basic), and Microsoft 365 Copilot (Premium). Tenant Message Center posts MC1253858/MC1253863 should be checked for the tenant's current April 15, 2026 licensing-change language, including any more-than-2,000-user threshold and the affected Word, Excel, PowerPoint, and OneNote in-app experience for unlicensed users. FSI organizations should review license allocation strategies and communicate any tenant-confirmed access changes to affected users.
 
 **Relevant controls:** Control 1.9 (License Planning), Control 4.1 (Copilot Admin Settings)
 

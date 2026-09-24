@@ -7,9 +7,9 @@ Common issues and resolution steps for Conditional Access policies governing Cop
 ### Issue 1: CA Policy Not Applying to Copilot Traffic
 
 - **Symptoms:** Copilot access is not being evaluated by the expected CA policy; sign-in logs show Copilot traffic evaluated by the wrong policy or no policy
-- **Root Cause:** The CA policy may be targeting an incorrect app ID. The wrong Enterprise Copilot Platform app ID (`fb8d773d-7ef4-4c2f-a801-2a5e1e8e1098`) is a known transcription error — if this appears in your policies, CA will not enforce against Copilot.
+- **Root Cause:** The CA policy may be targeting an incorrect or stale app ID copied from documentation instead of the tenant's Enterprise Copilot Platform service principal. Microsoft Learn lists the app name in the Office 365 Conditional Access suite but directs admins to look up Application IDs in their own tenant.
 - **Resolution:**
-  1. Verify the policy targets the correct app ID: `fb8d773d-7ef8-4ec0-a117-179f88add510`
+  1. Verify the policy targets the Enterprise Copilot Platform App ID discovered in Microsoft Entra admin center > Enterprise applications (Application type: Microsoft Applications), or with `Get-MgServicePrincipal -Filter "displayName eq 'Enterprise Copilot Platform'"`
   2. Run Script 1 (App ID Audit) from the PowerShell playbook to identify all affected policies
   3. Update the target app ID in any misconfigured policies
   4. Deploy updated policies in report-only mode first, then switch to enforcement
