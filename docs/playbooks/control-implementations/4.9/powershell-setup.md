@@ -21,13 +21,14 @@ Connect-MgGraph -Scopes "AuditLog.Read.All", "SecurityEvents.Read.All"
 ### Script 1: Copilot Anomaly Detection Report
 
 ```powershell
-# Detect anomalous Copilot usage patterns that may indicate incidents
+# Detect anomalous Copilot usage patterns that may indicate incidents; calibrate thresholds to your tenant baseline
 $startDate = (Get-Date).AddDays(-7)
 $endDate = Get-Date
+$TenantDailyInteractionThreshold = 100  # Example only; set from tenant baseline and risk tolerance
 
 $copilotEvents = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -RecordType CopilotInteraction `
+    -Operations CopilotInteraction `
     -ResultSize 5000
 
 # Identify users with unusually high interaction volume
@@ -36,7 +37,7 @@ $userActivity = $copilotEvents | Group-Object UserIds | ForEach-Object {
         User           = $_.Name
         TotalEvents    = $_.Count
         AvgPerDay      = [math]::Round($_.Count / 7, 1)
-        Anomaly        = if ($_.Count / 7 -gt 100) { "HIGH VOLUME" } else { "Normal" }
+        Anomaly        = if ($_.Count / 7 -gt $TenantDailyInteractionThreshold) { "HIGH VOLUME" } else { "Normal" }
     }
 } | Sort-Object TotalEvents -Descending
 
@@ -104,7 +105,7 @@ $affectedUsers = $anomalyData.User
 $detailedEvents = foreach ($user in $affectedUsers) {
     Search-UnifiedAuditLog `
         -StartDate $startDate -EndDate $endDate `
-        -RecordType CopilotInteraction `
+        -Operations CopilotInteraction `
         -UserIds $user -ResultSize 5000
 }
 
@@ -167,7 +168,7 @@ $userSummary
 
 ### Regulatory Notification Assessment
 - **Notification Required:** [Under Review — assess accessed resources for NPI]
-- **Applicable Regulation:** [e.g., SEC Reg S-P if NPI exposure confirmed]
+- **Applicable Regulation:** [Counsel/compliance to determine; do not assert applicability in the script output]
 "@
 
 $incidentLog | Out-File "IncidentReport_$incidentId.md" -Encoding UTF8
@@ -189,7 +190,7 @@ foreach ($days in $periods) {
 
     $copilotEvents = Search-UnifiedAuditLog `
         -StartDate $start -EndDate $end `
-        -RecordType CopilotInteraction `
+        -Operations CopilotInteraction `
         -ResultSize 5000
 
     # Parse AuditData JSON for risk indicators

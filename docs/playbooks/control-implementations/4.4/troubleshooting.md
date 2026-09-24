@@ -7,7 +7,7 @@ Common issues and resolution steps for Copilot governance across the Viva suite.
 ### Issue 1: Copilot Chat Insights Not Populating in Viva Insights
 
 - **Symptoms:** The Copilot Chat analytics dashboard in Viva Insights shows no data, or all department adoption rates appear as zero despite known Copilot Chat activity.
-- **Root Cause:** Data delay (Copilot Chat usage data takes 48–72 hours to appear in Viva Insights analytics), licensing gap (Viva Insights P2 or Viva Suite license required), or analytics not enabled in the Viva Insights Admin portal.
+- **Root Cause:** Data delay (Copilot Chat usage data takes 48–72 hours to appear in Viva Insights analytics), licensing gap (feature-dependent Copilot / Viva Insights / Viva Suite licensing required), or analytics not enabled in the Viva Insights Admin portal.
 - **Resolution:**
   1. Verify the Viva Insights P2 or Viva Suite license is assigned to users whose data should appear in analytics.
   2. Confirm Copilot Chat analytics is enabled: navigate to the Viva Insights Admin portal (`insights.viva.office.com` > Admin > Advanced Insights settings) and verify the Copilot analytics toggle is **On**.
@@ -86,7 +86,7 @@ Common issues and resolution steps for Copilot governance across the Viva suite.
 | High | Communication compliance gap for Engage — including Engage-to-Teams integration | Compliance team — policy update |
 | High | Copilot Chat analytics showing individual-level data (privacy violation) | IT Admin + Privacy Officer — verify minimum group size configuration |
 | Medium | AI recommendation conflicts with compliance training | HR + Compliance + IT |
-| Low | Minor Viva Goals insight inaccuracies | Document and report to Microsoft |
+| Low | Legacy Viva Goals export evidence missing | Document migration owner and recovery steps |
 | Low | Copilot Chat insights data delay | Monitor — allow 72 hours for data population |
 
 ## Related Resources

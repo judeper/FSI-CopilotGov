@@ -30,8 +30,8 @@ Step-by-step portal configuration for establishing incident reporting and root c
 **Path:** Policies > Alert policies
 
 1. Create alert policies for Copilot-specific incidents:
-   - **Unusual Copilot activity volume** — Threshold: 500+ interactions per user per day
-   - **DLP violation in Copilot** — Trigger: DLP policy match in Copilot interaction
+   - **Unusual Copilot activity volume** — Example threshold only; calibrate to tenant baseline and approved risk tolerance
+   - **DLP policy match in Copilot/Chat** — Trigger: Microsoft Purview DLP policy match for the **Microsoft 365 Copilot and Copilot Chat** location; verify tenant rollout and do not assume identical Cowork support
    - **Copilot access from restricted location** — Trigger: Conditional access failure for Copilot
 2. Set alert severity aligned with the incident categories.
 3. Configure notification recipients: IT Security team, Compliance team.
@@ -57,10 +57,10 @@ Step-by-step portal configuration for establishing incident reporting and root c
 **Path:** Regulatory notification procedures
 
 1. Document when Copilot incidents require regulatory notification:
-   - Data breach affecting customer NPI — notify per SEC Reg S-P, state breach notification laws
-   - Supervisory system failure — assess FINRA 4530 reporting obligation
+   - Potential customer NPI exposure — counsel/privacy owner determines whether SEC Reg S-P, state breach-notification, or other notice paths apply
+   - Potential supervisory-system issue — compliance determines whether FINRA 4530 or internal supervisory escalation applies
    - Material compliance violation — assess self-reporting obligations
-2. Establish notification timelines per regulatory requirement.
+2. Establish notification timelines only after counsel/compliance confirms the applicable requirement for the entity and incident type.
 3. Assign the Chief Compliance Officer as the approval authority for regulatory notifications.
 
 ## FSI Recommendations
@@ -74,9 +74,9 @@ Step-by-step portal configuration for establishing incident reporting and root c
 
 ## Regulatory Alignment
 
-- **FINRA Rule 4530** — Supports compliance with incident reporting obligations
-- **SEC Reg S-P** — Helps meet breach notification requirements
-- **FFIEC IT Handbook** — Supports IT incident response and root cause analysis requirements
+- **FINRA Rule 4530** — Provides evidence for the firm's assessment of whether incident reporting obligations apply
+- **SEC Reg S-P** — Provides evidence for the firm's assessment of whether customer-information notification obligations apply
+- **FFIEC IT Handbook** — Supports the firm's IT incident response and root cause analysis program
 
 ## Next Steps
 

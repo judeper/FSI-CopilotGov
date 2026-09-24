@@ -9,7 +9,7 @@ Automation workflow for capturing evidence supporting Cowork governance at gener
 - `Microsoft.Graph` (`AuditLog.Read.All`, `Group.Read.All`) for group membership reconciliation
 - M365 Global Reader (or equivalent least-privilege read role); AI Administrator or M365 Global Admin is required to view Cost management and Copilot settings in the portal
 - Approved evidence-retention path
-- Portal exports (or documented screenshots) capturing: usage-based billing scope and spending policy, discovery-setting state, Anthropic-family and Fable 5 (Preview) toggles, Cowork Browsing toggle, plugin availability, uploaded plugin packages, custom skills and their sharing scope, and per-user/per-group consumption limits
+- Portal exports (or documented screenshots) capturing: spending-policy scope, selected services, discovery-setting state, Anthropic-family/current model controls, provider data-retention review, Cowork Browsing toggle, plugin availability, uploaded plugin packages, custom skills and their sharing scope, and per-user/per-group consumption limits
 - An exported or documented record of the approved pilot group
 
 > **Important:** There is no publicly documented Cowork-specific PowerShell cmdlet that returns the tenant's usage-based billing scope, discovery setting, model toggles, Cowork Browsing toggle, plugin inventory, custom skills, or consumption limits. Those governance decisions must be captured from the Microsoft 365 admin center and the Cowork Customize page as portal exports or screenshots. Do not rely on undocumented cmdlets. The scripts below capture only the evidence that has documented API/PowerShell paths: unified-audit-log activity (including Cowork browser tasks) and Microsoft Graph group membership.
@@ -61,7 +61,7 @@ Get-MgGroupMember -GroupId $approvedGroupId -All |
   Export-Csv .\artifacts\4.15\cowork-approved-members.csv -NoTypeInformation
 ```
 
-Reconcile `cowork-approved-members.csv` against the users listed in your Cost management export. Any user with usage-based billing enabled who is not in the approved group is an exception that needs a documented approval or a remediation.
+Reconcile `cowork-approved-members.csv` against the users listed in your Cost management export. Any user in a Cowork-selecting spending policy who is not in the approved group is an exception that needs a documented approval or a remediation.
 
 ### Script 3: Summarize Cowork audit activity
 
@@ -122,10 +122,10 @@ Compress-Archive -Path .\artifacts\4.15\* `
 | Task | Cadence | Notes |
 |------|---------|-------|
 | Cowork audit pull | Weekly | Feeds coverage-gap detection and supervisory review inputs |
-| Approved-group reconciliation | Monthly | Confirms the users with usage-based billing enabled remain within the approved pilot scope |
+| Approved-group reconciliation | Monthly | Confirms users in Cowork-selecting spending policies remain within the approved pilot scope |
 | Out-of-scope activity review | Monthly | Investigates Cowork activity from users outside the approved scope |
 | Access-request review | Weekly (during pilot) | Reviews and documents pending user access requests |
-| Model-toggle re-verification | Monthly and on Microsoft update | Re-confirms Anthropic-family and Fable 5 (Preview) toggle state and provider data-retention posture |
+| Model-toggle re-verification | Monthly and on Microsoft update | Re-confirms Anthropic-family/current model control state and provider data-retention posture |
 | Browser-toggle re-verification | Monthly and on Microsoft update | Re-confirms the Cowork Browsing toggle and the Edge policies it inherits |
 | Plugin, uploaded package, and custom skill inventory review | Monthly | Confirms available plugins, uploaded packages, and custom skills (with sharing scope) match the approved inventory |
 | Consumption reporting review | Weekly (during pilot), Monthly (steady state) | Confirms spending remains within budget and thresholds |

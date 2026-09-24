@@ -23,13 +23,13 @@ Step-by-step portal configuration for implementing cost allocation, chargeback, 
 ### Step 1b: Configure Pay-As-You-Go Billing Policies
 
 **Portal:** Microsoft 365 Admin Center and Microsoft Cost Management
-**Path:** Billing > Pay-as-you-go services / Cost Management
+**Path:** Copilot > Billing & usage > Pay-as-you-go services; Copilot > Cost management for Copilot Credits
 
-1. Open **Billing > Pay-as-you-go services** in the Microsoft 365 admin center.
+1. Open **Copilot > Billing & usage > Pay-as-you-go services** in the Microsoft 365 admin center for Copilot Chat or SharePoint agents, or **Copilot > Cost management** for Cowork, apps built with Cowork, and Work IQ API spending policies.
 2. Create or review the billing policy tied to the correct Azure subscription.
 3. Add the approved users or groups to the billing policy and document the responsible cost owner.
-4. Add a budget limit and notification routing to the billing policy.
-5. Connect the billing policy to the approved service, such as Microsoft 365 Copilot Chat.
+4. Add a budget limit and notification routing to the billing policy or Copilot Credit spending policy; document whether the control is notification-only, a spending limit, or an access-granting policy scope.
+5. Connect the billing policy or spending policy to the approved service, such as Microsoft Copilot Chat, SharePoint agents, or Cowork.
 6. Open **Cost Management** to review usage and charges for the connected service.
 7. Review **Settings > Org settings > Self-service trials and purchases** and document the per-product self-service state for Microsoft 365 Copilot and related products.
 
@@ -84,9 +84,9 @@ Step-by-step portal configuration for implementing cost allocation, chargeback, 
 
 ## Regulatory Alignment
 
-- **SOX Section 404** (15 U.S.C. § 7262) — PAYG budget authorization controls serve as IT general controls over financial reporting; per-seat and PAYG costs should be reconciled to vendor billing and billing-policy records
-- **FFIEC Management Booklet, Section II.D** — Cost-benefit analysis of per-seat versus PAYG model selection should be documented for examiner review; ongoing cost monitoring supports FFIEC expectations
-- **12 CFR part 30, appendix D (OCC Heightened Standards)** (12 CFR Part 30, Appendix D) — Billing-policy review, budgets, and anomaly investigation demonstrate responsible technology cost governance expected by OCC
+- **SOX Section 404** (15 U.S.C. § 7262) — Where material and in scope for the firm, PAYG budget authorization controls can serve as IT general controls over financial reporting; per-seat and usage-based costs should be reconciled to vendor billing and billing/spending-policy records
+- **FFIEC Management Booklet, Section II.D** — Cost-benefit analysis of per-seat, PAYG, and Copilot Credit model selection should be documented according to the firm's examiner-response and technology-planning standards
+- **12 CFR part 30, appendix D (OCC Heightened Standards)** — For covered institutions, billing/spending-policy review, budgets, and anomaly investigation can support the firm's operational-risk governance evidence set
 
 ## Next Steps
 

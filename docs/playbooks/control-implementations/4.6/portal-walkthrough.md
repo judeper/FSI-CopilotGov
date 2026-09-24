@@ -76,7 +76,7 @@ Step-by-step portal configuration for using Microsoft Viva Insights to measure t
 ## Regulatory Alignment
 
 - **FFIEC Management Booklet** — Supports compliance with IT investment governance and effectiveness monitoring
-- **EEOC guidance** — Helps meet requirements for fair and non-discriminatory use of workplace analytics
+- **EEOC guidance** — Can support firm-defined controls for requirements for fair and non-discriminatory use of workplace analytics
 - **GDPR/CCPA** — Supports privacy requirements for employee data analytics (where applicable)
 
 ## Next Steps

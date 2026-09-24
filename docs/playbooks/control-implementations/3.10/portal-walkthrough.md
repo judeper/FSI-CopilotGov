@@ -2,7 +2,7 @@
 
 # Control 3.10: SEC Reg S-P — Privacy of Consumer Financial Information — Portal Walkthrough
 
-Step-by-step portal configuration for implementing privacy controls that support compliance with SEC Regulation S-P, including the amendments proposed in 2023 and adopted in May 2024 (SEC Release No. 34-100155), when using Microsoft 365 Copilot with consumer financial information.
+Step-by-step portal configuration for implementing privacy controls that support firm evaluation of SEC Regulation S-P, including the amendments proposed in 2023 and adopted in May 2024 (SEC Release No. 34-100155), when using Microsoft 365 Copilot with consumer financial information.
 
 ## Prerequisites
 
@@ -119,9 +119,9 @@ The amended Reg S-P requires a written incident response program addressing unau
 - **SEC Final Rule, Release No. 34-100155 (May 2024)** — Primary SEC source for the Reg S-P amendments proposed in 2023 and adopted in 2024
 - **SEC Reg S-P Rule 248.30(a)(3)** — Requires institutions to adopt policies requiring service providers to notify the institution within 72 hours of unauthorized access to customer information
 - **SEC Reg S-P Rule 248.30(a)(4)** — Mandatory written incident response program; Copilot-specific scenarios must be included
-- **SEC Reg S-P (Rule 30)** — Supports compliance with safeguarding requirements for customer records and information
-- **GLBA Title V** — Helps meet financial privacy requirements for nonpublic personal information
-- **GLBA §501(b)** — Helps meet safeguards provisions for nonpublic personal information at banks and broker-dealers (the statutory authority for SEC Reg S-P safeguards for SEC-regulated entities; the FTC Safeguards Rule is a separate implementing regulation that applies to FTC-jurisdiction institutions, not to SEC-regulated broker-dealers)
+- **SEC Reg S-P (Rule 30)** — Provides evidence for safeguarding requirements for customer records and information
+- **GLBA Title V** — Provides evidence for financial privacy requirements for nonpublic personal information
+- **GLBA §501(b)** — Provides evidence for safeguards provisions for nonpublic personal information at banks and broker-dealers (the statutory authority for SEC Reg S-P safeguards for SEC-regulated entities; the FTC Safeguards Rule is a separate implementing regulation that applies to FTC-jurisdiction institutions, not to SEC-regulated broker-dealers)
 
 ## Next Steps
 

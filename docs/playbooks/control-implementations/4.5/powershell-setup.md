@@ -16,7 +16,7 @@ This runbook verifies **access + exportability** of usage-detail records only. I
 | Surface | Documented Endpoint / Cmdlet | Notes |
 |---|---|---|
 | Legacy Graph beta report API | `GET https://graph.microsoft.com/beta/reports/getMicrosoft365CopilotUsageUserDetail(period='D7')?$format=application/json` | Supports `$format` (`application/json` or `text/csv`), returns JSON (`200`) or CSV redirect (`302` + `Location`) |
-| Copilot report root (beta) | `GET https://graph.microsoft.com/beta/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D7',version='v1')` | Newer path segment; preview response is JSON (`200`) |
+| Copilot report root | `GET https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D7',version='v1')` | Current report-root path; beta namespace may also be used for preview behavior |
 | Documented Graph PowerShell beta cmdlet | `Get-MgBetaReportMicrosoft365CopilotUsageUserDetail -Period D7 -Format application/json -OutFile <path>` | Module: `Microsoft.Graph.Beta.Reports` |
 
 ## Prerequisites
@@ -33,10 +33,10 @@ This runbook verifies **access + exportability** of usage-detail records only. I
 ## Parameter and Behavior Notes
 
 - `period` is required for this method.
-- Supported period values on the legacy endpoint/cmdlet: `D7`, `D30`, `D90`, `D180`, `ALL`.
+- Supported period values depend on report version: legacy/v1 uses `D7`, `D30`, `D90`, `D180`, `ALL`; v2 uses `D7`, `D28`, `D90`, `D180`, `ALL`.
 - No `date` parameter is documented for this usage-detail method; treat date-filter attempts as out of scope for Control 4.5 verification.
 - Beta APIs are subject to change and are not supported for production applications.
-- Unlicensed Copilot Chat usage data is not returned by this API.
+- Unlicensed Copilot Chat usage data is not returned by the Microsoft 365 Copilot usage-detail Graph API; use the admin center Copilot Chat usage report or audit paths for that population.
 
 ## Script: Conservative Verification (Fail Closed)
 

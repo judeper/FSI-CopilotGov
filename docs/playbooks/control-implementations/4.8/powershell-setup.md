@@ -133,7 +133,7 @@ if ($prevTotal -gt 0) {
 ```powershell
 # Generate a Copilot license inventory with cost allocation
 $copilotSku = Get-MgSubscribedSku | Where-Object { $_.SkuPartNumber -like "*Copilot*" }
-$monthlyPerUserCost = 30  # Adjust per your agreement
+[decimal]$monthlyPerUserCost = 0  # Replace with your contracted monthly rate; do not use public list prices unless your agreement uses them
 
 foreach ($sku in $copilotSku) {
     $report = [PSCustomObject]@{
@@ -162,7 +162,7 @@ $copilotUsers = $allUsers | Where-Object {
     $_.AssignedLicenses.SkuId -contains $copilotSku[0].SkuId
 }
 
-$monthlyPerUserCost = 30
+[decimal]$monthlyPerUserCost = 0  # Replace with your contracted monthly rate; do not use public list prices unless your agreement uses them
 $chargeback = $copilotUsers | Group-Object Department | ForEach-Object {
     [PSCustomObject]@{
         Department   = if ($_.Name) { $_.Name } else { "Unassigned" }
@@ -181,6 +181,8 @@ $chargeback | Export-Csv "CopilotChargeback_$(Get-Date -Format 'yyyyMMdd').csv" 
 
 ```powershell
 # Identify Copilot licenses with no recent usage for reallocation
+[decimal]$monthlyPerUserCost = 0  # Replace with your contracted monthly rate before estimating savings
+
 Invoke-MgGraphRequest -Method GET `
     -Uri "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUsageUserDetail(period='D30')" `
     -OutputFilePath "CopilotUsage_Optimization.csv"
@@ -190,7 +192,7 @@ $inactive = $usageData | Where-Object { $_.'Last Activity Date' -eq '' }
 
 Write-Host "Underutilized Copilot Licenses (No activity in 30 days):" -ForegroundColor Yellow
 Write-Host "Total inactive licensed users: $($inactive.Count)"
-Write-Host "Potential monthly savings: $($inactive.Count * 30) USD"
+Write-Host "Potential monthly savings: $($inactive.Count * $monthlyPerUserCost) in contracted currency"
 
 $inactive | Select-Object 'User Principal Name', 'Display Name' |
     Export-Csv "InactiveCopilotUsers_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
