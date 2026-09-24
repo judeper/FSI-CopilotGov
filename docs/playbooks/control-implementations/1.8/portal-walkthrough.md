@@ -66,13 +66,26 @@ Document how the current information architecture supports intended Copilot use 
 - Any architectural gaps that could result in poor Copilot responses
 - Recommended architecture improvements
 
+### Step 6: Review Copilot in SharePoint Generated Architecture
+
+**Portal:** SharePoint site or library experience; Microsoft 365 admin center
+**Paths:** SharePoint site or library > Copilot in SharePoint entry points; Microsoft 365 admin center > Copilot > Settings > View all > AI providers operating as Microsoft subprocessors
+
+If Copilot in SharePoint is available in the tenant, review any AI-generated sites, document libraries, public views, autofill metadata columns, and extraction prompts before treating them as authoritative information architecture.
+
+Verify:
+- Create sites with AI output has an accountable owner, approved sensitivity label, and appropriate hub/site association
+- AI-created document libraries have reviewed metadata schema, column names, and extraction prompts
+- Autofill columns are reviewed for accuracy before their metadata is used for Copilot grounding or governance reports
+- Anthropic model availability and user/group scope match the organization's third-party AI risk posture
+
 ## FSI Recommendations
 
 | Tier | Recommendation |
 |------|---------------|
 | **Baseline** | Complete information architecture inventory and document current state |
 | **Recommended** | Optimize hub site structure and implement consistent content types for FSI data |
-| **Regulated** | Formal information architecture governance with annual review; content types and metadata standards enforced via policy |
+| **Regulated** | Formal information architecture governance with annual review; content types and metadata standards enforced via policy; AI-generated SharePoint structures and autofill metadata reviewed before production reliance |
 
 ## Next Steps
 

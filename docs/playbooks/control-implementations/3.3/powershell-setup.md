@@ -2,7 +2,7 @@
 
 Automation scripts for managing eDiscovery cases, searches, and holds that include Copilot-generated content. Case-management, search, and hold cmdlets remain useful for automation, but Copilot data source selection and cloud export steps should be completed in the Microsoft Purview portal or a validated eDiscovery API workflow.
 
-> **Deprecation Notice:** Microsoft documents `New-ComplianceSearchAction -Export` examples and export parameters as functional only in on-premises Exchange after the May 2025 eDiscovery changes. Do not use `New-ComplianceSearchAction -Export` for cloud tenants; route exports through the Purview portal export/download experience, Microsoft Graph eDiscovery APIs, or another Microsoft-documented workflow validated for the tenant.
+> **Cloud export notice:** Microsoft Learn documents `New-ComplianceSearchAction -Export` examples and several export parameters as functional only in on-premises Exchange, and links that limitation to the May 2025 changes to Microsoft Purview eDiscovery. Do not use `New-ComplianceSearchAction -Export` for cloud tenants unless current Microsoft documentation and tenant testing validate the workflow; route exports through the Purview portal export/download experience, Microsoft Graph eDiscovery APIs, or another Microsoft-documented workflow validated for the tenant.
 
 ## Prerequisites
 

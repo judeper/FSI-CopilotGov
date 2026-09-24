@@ -10,7 +10,7 @@ Automation workflow for inventorying Loop workspaces, Notebook locations, and Lo
 - M365 Global Reader and Purview Compliance Reader (or equivalent)
 - Approved evidence-retention path
 
-> **Important:** Pages branch and Loop component embed events depend on operations that Microsoft continues to publish. Validate operation names against the current Microsoft Learn references before automating.
+> **Important:** Microsoft documents Copilot Pages and Copilot Notebooks audit data under the Loop application identity and file-extension evidence, not under a separate Copilot Pages/Notebooks application filter. Do not assume fixed operation names such as `CopilotPageBranched` or `LoopComponentEmbedded` unless the names are visible in the tenant or current Microsoft documentation.
 
 ## Script Flow
 
@@ -34,43 +34,49 @@ $notebooks.value |
   Export-Csv .\artifacts\3.14\notebook-sites.csv -NoTypeInformation
 ```
 
-### Script 2: Pull Pages, Notebook, and Loop lifecycle audit events
+### Script 2: Pull Pages, Notebook, and Loop container/file audit evidence
 
 ```powershell
 Connect-ExchangeOnline -ShowBanner:$false
 
 $start = (Get-Date).AddDays(-30)
 $end   = Get-Date
+$loopApplicationIds = @(
+  'a187e399-0c36-4b98-8f04-1edc167a0996',
+  '0922ef46-e1b9-4f7e-9134-9ad00547eb41'
+)
 
-Search-UnifiedAuditLog -StartDate $start -EndDate $end `
-  -Operations 'CopilotPageCreated','CopilotPageBranched','CopilotPageEdited','CopilotPageDeleted','OneNotePageEdited','LoopComponentCreated','LoopComponentEmbedded','LoopComponentEdited','LoopComponentRemoved' `
-  -ResultSize 5000 |
-  Export-Csv .\artifacts\3.14\artifact-lifecycle-audit.csv -NoTypeInformation
+$rawAudit = foreach ($keyword in @('page','loop','loot','fluid') + $loopApplicationIds) {
+  Search-UnifiedAuditLog -StartDate $start -EndDate $end `
+    -FreeText $keyword `
+    -ResultSize 5000
+}
+
+$rawAudit |
+  Select-Object CreationDate, UserIds, Operations, AuditData |
+  Export-Csv .\artifacts\3.14\artifact-lifecycle-audit-raw.csv -NoTypeInformation
 ```
 
-### Script 3: Build a Pages branch lineage report
+### Script 3: Build a Page/Notebook lineage reconciliation report
 
 ```powershell
-$audit = Import-Csv .\artifacts\3.14\artifact-lifecycle-audit.csv
+$audit = Import-Csv .\artifacts\3.14\artifact-lifecycle-audit-raw.csv
 
-$audit |
-  Where-Object { $_.Operations -eq 'CopilotPageBranched' } |
-  Select-Object CreationDate, UserIds,
-                @{n='ParentPageId';e={ ($_.AuditData | ConvertFrom-Json).ParentPageId }},
-                @{n='ChildPageId';e={  ($_.AuditData | ConvertFrom-Json).ChildPageId  }} |
-  Export-Csv .\artifacts\3.14\pages-branch-lineage.csv -NoTypeInformation
-```
-
-### Script 4: Build a Loop component embed map
-
-```powershell
-$audit |
-  Where-Object { $_.Operations -in @('LoopComponentEmbedded','LoopComponentRemoved') } |
-  Select-Object CreationDate, Operations, UserIds,
-                @{n='ComponentId';e={ ($_.AuditData | ConvertFrom-Json).ComponentId }},
-                @{n='HostType';e={    ($_.AuditData | ConvertFrom-Json).HostType    }},
-                @{n='HostUri';e={     ($_.AuditData | ConvertFrom-Json).HostUri     }} |
-  Export-Csv .\artifacts\3.14\loop-embed-map.csv -NoTypeInformation
+$audit | ForEach-Object {
+  $data = $_.AuditData | ConvertFrom-Json
+  if ($data.SourceFileExtension -in @('page','loop','pod','fluid')) {
+    [PSCustomObject]@{
+      CreationDate        = $_.CreationDate
+      UserIds             = $_.UserIds
+      Operation           = $_.Operations
+      SourceFileExtension = $data.SourceFileExtension
+      SourceFileName      = $data.SourceFileName
+      SiteUrl             = $data.SiteUrl
+      ObjectId            = $data.ObjectId
+      ListItemUniqueId    = $data.ListItemUniqueId
+    }
+  }
+} | Export-Csv .\artifacts\3.14\lineage-reconciliation-input.csv -NoTypeInformation
 ```
 
 ### Script 5: Package evidence

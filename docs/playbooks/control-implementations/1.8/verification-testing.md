@@ -48,6 +48,18 @@ Test cases and evidence collection for validating information architecture readi
 - **Expected Result:** Copilot responses are grounded on relevant, well-organized content
 - **Evidence:** Copilot response quality assessment with source references
 
+### Test 5: Copilot in SharePoint Metadata Review
+
+- **Objective:** Verify AI-generated SharePoint sites, libraries, and metadata are reviewed before use in governance or Copilot grounding decisions
+- **Steps:**
+  1. Identify any SharePoint sites, document libraries, views, or autofill columns created with Copilot in SharePoint
+  2. Review AI-generated site plans, library schemas, column names, and extraction prompts with the site owner or information architect
+  3. Test a sample of documents to confirm autofill metadata values are accurate for the intended governance use
+  4. Verify encrypted files, folders, unsupported column types, and files outside the documented processing limits are handled through manual metadata review
+  5. Verify the tenant's Anthropic model setting and user/group scope in Microsoft 365 admin center > Copilot > Settings > View all > AI providers operating as Microsoft subprocessors
+- **Expected Result:** AI-generated information architecture changes are owner-reviewed, corrected where needed, and documented before production reliance
+- **Evidence:** Review sign-off, sample metadata accuracy results, and tenant setting screenshot
+
 ## Evidence Collection
 
 | Evidence Item | Format | Storage Location | Retention |
@@ -56,6 +68,7 @@ Test cases and evidence collection for validating information architecture readi
 | Hub site relationship map | CSV/PDF | Compliance evidence repository | 7 years |
 | Content type analysis | CSV | Compliance evidence repository | 7 years |
 | Architecture review findings | PDF | Governance document repository | 7 years |
+| Copilot in SharePoint metadata review | PDF/CSV/screenshots | Governance document repository | 7 years |
 
 ## Compliance Mapping
 

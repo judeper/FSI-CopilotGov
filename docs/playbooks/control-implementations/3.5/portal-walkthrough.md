@@ -30,7 +30,7 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
    - Guaranteed returns, risk-free investments, assured performance
    - Promissory language: "will achieve", "certain to", "no possibility of loss"
    - Misleading comparisons or omissions of material facts
-2. Add keyword conditions for AI washing — unsubstantiated AI capability claims that may violate FINRA Rule 2210(d)(1)(A) and the Investment Advisers Act Section 206 antifraud provisions (per SEC v. Delphia Inc. and Global Predictions Inc., March 2024):
+2. Add keyword conditions for AI washing — unsubstantiated AI capability claims that firm/counsel determines should be reviewed against FINRA Rule 2210(d)(1)(A), other communications-with-the-public standards, or Investment Advisers Act Section 206 antifraud considerations (with SEC v. Delphia Inc. and Global Predictions Inc., March 2024, as a factual settled enforcement precedent):
    - "our AI guarantees", "AI-powered returns", "AI eliminates risk"
    - "our algorithms always", "AI ensures superior", "proven AI superiority"
 3. Add sensitive information types for financial data (account numbers, trade confirmations).
@@ -70,8 +70,8 @@ Step-by-step portal configuration for implementing controls that help Copilot-dr
 
 ## Regulatory Alignment
 
-- **FINRA Rule 2210** — Supports compliance with fair and balanced communication requirements
-- **FINRA Rule 2210(b)** — Helps meet content standards for accuracy and balance
+- **FINRA Rule 2210** — Provides evidence for fair and balanced communication requirements
+- **FINRA Rule 2210(b)** — Provides evidence for content standards for accuracy and balance
 - **FINRA Rule 2210(c)** — Supports filing requirements for retail communications
 - **FINRA Rule 2210(d)(1)(A)** — Supports detection of misleading statements about AI capabilities in client-facing communications
 - **Investment Advisers Act Section 206** — Antifraud provisions apply to AI capability claims in communications (see SEC v. Delphia enforcement precedent)

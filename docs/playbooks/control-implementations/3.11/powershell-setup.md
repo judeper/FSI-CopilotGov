@@ -70,7 +70,7 @@ Write-Host "Regulatory record labels published to all locations" -ForegroundColo
 
 ```powershell
 # Enable Preservation Lock for SEC 17a-4(f) WORM compliance or audit-trail alternative (Rule 17a-4(f)(2))
-# Preservation Lock makes the retention policy irreversible — required for both compliance paths
+# Preservation Lock makes the retention policy irreversible — use only after firm/counsel approval of the selected 17a-4 posture
 #
 # IMPORTANT: Preservation Lock is IRREVERSIBLE.
 # After locking:
@@ -83,7 +83,7 @@ Write-Host "Regulatory record labels published to all locations" -ForegroundColo
 $policyName = "FSI-Regulatory-Record-Labels"
 
 Write-Warning "Preservation Lock is IRREVERSIBLE. The policy cannot be shortened or disabled after locking."
-Write-Warning "This lock is required for the SEC Rule 17a-4(f)(2) audit-trail alternative compliance path."
+Write-Warning "Apply this lock only after firm/counsel approval of the SEC Rule 17a-4(f)(2) audit-trail assessment or WORM posture."
 Write-Host "Policy to lock: $policyName" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "Prerequisites before locking:"
@@ -102,7 +102,7 @@ if ($confirm -eq "CONFIRM-LOCK") {
     $lockDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC"
     Write-Host "Preservation Lock ENABLED on '$policyName' at $lockDate" -ForegroundColor Red
     Write-Host "Document this action: Policy '$policyName' locked on $lockDate" -ForegroundColor Yellow
-    Write-Host "This lock supports the SEC Rule 17a-4(f)(2) audit-trail alternative compliance path" -ForegroundColor Cyan
+    Write-Host "This lock provides evidence for the firm's counsel-approved SEC Rule 17a-4(f)(2) audit-trail assessment or WORM posture" -ForegroundColor Cyan
 } else {
     Write-Host "Preservation Lock NOT enabled — operation cancelled" -ForegroundColor Yellow
 }
@@ -132,7 +132,7 @@ Write-Host "=== Retention Policy Preservation Lock Status ==="
 $report | Format-Table PolicyName, LockStatus, Enabled, DistributionStatus -AutoSize
 Write-Host ""
 Write-Host "Policies with Preservation Lock (RestrictiveRetention = True) support the"
-Write-Host "SEC Rule 17a-4(f)(2) audit-trail alternative compliance path."
+Write-Host "firm's counsel-approved SEC Rule 17a-4(f)(2) audit-trail assessment."
 
 $report | Export-Csv "RetentionPolicy_LockStatus_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 Write-Host "Lock status report exported" -ForegroundColor Green
@@ -142,7 +142,7 @@ Write-Host "Lock status report exported" -ForegroundColor Green
 
 ```powershell
 # Verify that the audit trail captures required events for the Rule 17a-4(f)(2) audit-trail alternative
-# The audit trail must log all modifications, deletions, and access events for regulatory records
+# The audit trail must log modifications, deletions, and related recordkeeping events for regulatory records
 param(
     [int]$DaysBack = 7
 )
@@ -172,7 +172,7 @@ Write-Host ""
 
 if ($recordDeclarations.Count -gt 0) {
     Write-Host "Audit trail IS capturing regulatory record events." -ForegroundColor Green
-    Write-Host "This supports the SEC Rule 17a-4(f)(2) audit-trail alternative compliance path."
+    Write-Host "This provides evidence for the firm's counsel-approved SEC Rule 17a-4(f)(2) audit-trail assessment."
 } else {
     Write-Host "WARNING: No regulatory record events found in last $DaysBack days." -ForegroundColor Yellow
     Write-Host "Verify that regulatory record labels are being applied to Copilot content."

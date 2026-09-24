@@ -54,11 +54,12 @@ Test cases and evidence collection for validating the permission model audit and
 - **Steps:**
   1. Navigate to Microsoft Purview portal > Settings > Roles and scopes > Role groups
   2. Open the "Purview Data Security AI Viewer" role group and verify member list matches the compliance team roster
-  3. Open the "Purview Data Security AI Content Viewer" role group and verify members have documented authorization to view prompt/response content
-  4. Navigate to Microsoft Entra admin center > Roles and administrators > AI Administrator
-  5. Verify only the designated Copilot governance lead is assigned
-  6. Cross-reference all three role memberships against the approved list in the governance documentation
-- **Expected Result:** All AI-prefixed roles assigned only to authorized personnel; no unauthorized assignments
+  3. Open the "Data Security AI Content Viewers" / "Purview Data Security AI Content Viewer" role group and verify members have documented authorization to view prompt/response content
+  4. Verify those same investigators also have Content Explorer Content Viewer when current DSPM AI Interaction review requires it
+  5. Navigate to Microsoft Entra admin center > Roles and administrators > AI Administrator
+  6. Verify only the designated Copilot governance lead is assigned
+  7. Cross-reference all role memberships against the approved list in the governance documentation
+- **Expected Result:** All AI-prefixed roles and Content Explorer Content Viewer access are assigned only to authorized personnel; no unauthorized assignments
 - **Evidence:** Role membership screenshots from Purview portal and Entra admin center
 
 ## Evidence Collection
@@ -69,7 +70,7 @@ Test cases and evidence collection for validating the permission model audit and
 | Access review completion records | PDF | Compliance evidence repository | 7 years |
 | Group membership analysis | CSV | Compliance evidence repository | 7 years |
 | Sharing link remediation log | CSV | Compliance evidence repository | 7 years |
-| DSPM role assignment records | Screenshot/PDF | Compliance evidence repository | 7 years |
+| DSPM role assignment records, including Content Explorer Content Viewer where prompt/response review is approved | Screenshot/PDF | Compliance evidence repository | 7 years |
 
 ## Compliance Mapping
 
