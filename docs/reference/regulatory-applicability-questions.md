@@ -52,8 +52,3 @@ This appendix captures open applicability questions that each firm should resolv
 ## Control 4.2 — Teams Meetings Governance
 
 1. For Copilot-generated Teams meeting summaries/transcripts and Teams Phone call summaries, should the authoritative retention mapping be (1) SEC 17a-4(b)(4) business communications at 3 years; (2) a 6-year broker-dealer/account-record category under FINRA 4511 or SEC 17a-4(a)/(c)/(e), with the exact subpart named; (3) a 7-year firm/regulator-specific policy, with the actual authority named because `FINRA/SEC extended` was not found in FINRA 4511 or SEC 17a-4; or (4) different durations for meeting transcripts, meeting summaries, call summaries, and DLP evidence?
-
-## Cross-control Questions
-
-1. What legal/compliance posture should the framework take for off-channel communications penalty aggregates when describing enforcement context or business risk?
-2. Which regulatory references should be retained as current primary sources, which should be retained only as historical/internal-policy references, and which should be removed unless counsel supplies a current source?
