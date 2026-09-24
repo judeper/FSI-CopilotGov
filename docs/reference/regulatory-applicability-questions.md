@@ -142,3 +142,19 @@ This appendix captures open applicability questions that each firm should resolv
 1. Should regulated populations be allowed to submit verbatim Microsoft feedback, screenshots, attachments, logs, content samples, or follow-up contact information, and what redaction/monitoring controls apply?
 2. Which diagnostic data level and connected-experience settings are approved for Copilot users, and how should exceptions be documented?
 3. Are Copilot feedback, diagnostic, usage-reporting, and telemetry exports part of the firm's privacy impact assessment, vendor inventory, or employee monitoring notice obligations?
+
+## Control 4.8 — Cost Allocation and License Optimization
+
+1. Which Copilot cost-allocation controls are firm-internal financial controls versus regulatory requirements for this entity, and when are Microsoft 365 Copilot seats, Copilot pay-as-you-go services, and Copilot Credits spending policies material enough to include in SOX ICFR, OCC operational-risk, FFIEC technology-planning, fiduciary, or client-fee-disclosure evidence?
+
+## Control 4.9 — Incident Reporting and Root Cause Analysis
+
+1. For each Copilot incident category in Control 4.9, which notification sources actually apply to the entity and fact pattern (FINRA 4530, NYDFS 500.17, GLBA/Reg S-P/privacy breach rules, OCC/banking-regulator operational-incident processes, state breach laws, or internal-only escalation), and what recipient, timeline, and approval authority should the firm use?
+
+## Control 4.15 — Copilot Cowork Governance
+
+1. Which Cowork artifacts and actions are records or supervisory materials for this firm: conversations, scheduled prompts, event-driven task runs, browser-task audit records, generated files in OneDrive, uploaded/custom skills, plugins, app-skill outputs, images, and model-selection evidence; and what retention, supervision, and provider data-retention approvals are required before regulated use?
+
+## Control 4.16 — Microsoft Scout Governance
+
+1. Which Scout artifacts and actions are records, supervisory materials, or incident evidence for this firm: local workspace files, shell-command transcripts, browser automation, WorkIQ/Microsoft 365 retrievals, session/memory data in OneDrive, automation instructions, MCP server output, third-party inference content, and GitHub Copilot entitlement records; and which categories require endpoint capture outside Microsoft 365 eDiscovery?

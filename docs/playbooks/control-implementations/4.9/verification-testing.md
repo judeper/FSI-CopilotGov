@@ -32,9 +32,9 @@ Test cases and evidence collection procedures for Copilot incident reporting and
 - **Steps:**
   1. Create a hypothetical scenario involving customer NPI exposure via Copilot.
   2. Walk through the regulatory notification assessment criteria.
-  3. Verify the decision matrix correctly identifies applicable notification requirements.
+  3. Verify the decision matrix routes potential notification questions to the correct legal/compliance owner for applicability determination.
   4. Confirm the CCO approval workflow for notification decisions is functional.
-- **Expected Result:** Notification assessment correctly identifies regulatory obligations and approval workflow functions.
+- **Expected Result:** Notification assessment records the legal/compliance applicability determination and the approval workflow functions.
 - **Evidence:** Documented assessment walkthrough with decision rationale.
 
 ### Test 4: Anomaly Detection Effectiveness
@@ -61,9 +61,9 @@ Test cases and evidence collection procedures for Copilot incident reporting and
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| FINRA 4530 | Incident reporting to FINRA | Supports compliance with event reporting obligations |
-| SEC Reg S-P | Breach notification | Helps meet breach notification requirements for NPI exposure |
-| FFIEC IT Handbook | Incident response and RCA | Supports IT incident management and root cause analysis requirements |
+| FINRA 4530 | Firm-specific reporting assessment | Preserves facts and decision evidence for compliance/legal determination |
+| SEC Reg S-P | Firm-specific customer-information assessment | Preserves facts and decision evidence for privacy/legal determination |
+| FFIEC IT Handbook | Incident response and RCA | Supports the firm's IT incident management and root cause analysis program |
 
 ## Next Steps
 
