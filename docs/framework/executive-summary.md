@@ -62,7 +62,6 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 | **OCC 2011-12 / SR 11-7** | OCC/Fed | Model risk management considerations for AI-assisted decisions | Control 3.8 |
 | **CFPB UDAAP** | CFPB | Unfair/deceptive practices in Copilot-assisted customer interactions | Control 3.7 |
 | **FFIEC IT Handbook** | FFIEC | IT examination alignment for AI tools | Control 3.13 |
-| **Interagency AI Guidance (2023)** | OCC/Fed/FDIC | Vendor risk management for AI services | Control 1.10 |
 
 ### Regulatory Heatmap by Governance Level
 
@@ -169,8 +168,8 @@ See [Operating Model](operating-model.md) for complete RACI matrices.
 | Microsoft Sentinel | Advanced security monitoring, analytics | Optional (Regulated recommended) |
 | SharePoint Advanced Management | Restricted SharePoint Search, access governance reports | Recommended |
 
-!!! info "Copilot Chat Basic vs. Premium Licensing"
-    Effective April 15, 2026, Microsoft offers Copilot Chat in two tiers: **Basic** (included with M365 licenses, web-only grounding) and **Premium** (per-user license, full M365 data access via Microsoft Graph). Organizations should plan governance controls for both tiers -- Basic users can still generate content that enters regulated workflows, while Premium users have the full discovery amplification risk profile. See [Adoption Roadmap](adoption-roadmap.md) for licensing transition planning.
+!!! info "Copilot Basic vs. Premium Licensing"
+    Microsoft Learn distinguishes **Copilot Chat (Basic)**, **Microsoft 365 Copilot (Basic)**, and **Microsoft 365 Copilot (Premium)** experiences. Tenant Message Center posts MC1253858/MC1253863 should be checked for any April 15, 2026 in-app access change, seat threshold, and affected-app scope. Organizations should plan governance controls for both Basic and Premium populations -- Basic users can still generate content that enters regulated workflows, while Premium users have the full discovery amplification risk profile. See [Adoption Roadmap](adoption-roadmap.md) for licensing transition planning.
 
 ### Organizational Investment
 

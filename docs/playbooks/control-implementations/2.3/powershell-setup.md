@@ -13,14 +13,25 @@ Automation scripts for managing Conditional Access policies governing Copilot ac
 ### Script 1: Audit Copilot App ID in CA Policies
 
 ```powershell
-# Verify the correct Enterprise Copilot Platform app ID in CA policies
-# Correct ID: fb8d773d-7ef8-4ec0-a117-179f88add510
+# Discover the Enterprise Copilot Platform app ID in this tenant and audit CA policies
 # Requires: Microsoft Graph SDK
 
 Import-Module Microsoft.Graph.Identity.SignIns
-Connect-MgGraph -Scopes "Policy.Read.All"
+Import-Module Microsoft.Graph.Applications
+Connect-MgGraph -Scopes "Policy.Read.All","Application.Read.All"
 
-$correctAppId = "fb8d773d-7ef8-4ec0-a117-179f88add510"
+$copilotServicePrincipal = Get-MgServicePrincipal -All |
+    Where-Object {
+        $_.DisplayName -eq 'Enterprise Copilot Platform' -and
+        $_.AppOwnerOrganizationId -eq 'f8cdef31-a31e-4b4a-93e4-5f571e91255a'
+    } |
+    Select-Object -First 1
+if (-not $copilotServicePrincipal) {
+    throw "Enterprise Copilot Platform service principal was not found. Check Entra admin center > Enterprise applications with Application type = Microsoft Applications, or review sign-in logs for the Copilot application before hard-coding any App ID."
+}
+$copilotAppId = $copilotServicePrincipal.AppId
+Write-Host "Enterprise Copilot Platform App ID discovered in this tenant: $copilotAppId"
+
 $policies = Get-MgIdentityConditionalAccessPolicy -All
 
 Write-Host "=== CA Policies Referencing Copilot App ==="
@@ -28,10 +39,10 @@ foreach ($policy in $policies) {
     $includeApps = $policy.Conditions.Applications.IncludeApplications
     $excludeApps = $policy.Conditions.Applications.ExcludeApplications
 
-    if ($includeApps -contains $correctAppId) {
+    if ($includeApps -contains $copilotAppId) {
         Write-Host "[INCLUDE] $($policy.DisplayName) — State: $($policy.State)"
     }
-    if ($excludeApps -contains $correctAppId) {
+    if ($excludeApps -contains $copilotAppId) {
         Write-Host "[EXCLUDE] $($policy.DisplayName) — State: $($policy.State)"
         Write-Host "  WARNING: Copilot is EXCLUDED from this policy — review for June 2026 baseline-scopes enforcement"
     }

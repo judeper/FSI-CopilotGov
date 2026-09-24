@@ -1,6 +1,6 @@
 # Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI) — PowerShell Setup
 
-Automation scripts for collecting AI inventory data, verifying the Copilot control environment, and exporting usage metrics that feed MRM ongoing monitoring per OCC 2011-12 and SR 11-7.
+Automation scripts for collecting AI inventory data, verifying the Copilot control environment, and exporting usage metrics that feed the firm's approved MRM ongoing-monitoring process. Treat SR 26-2 / OCC Bulletin 2026-13 as current model-risk context and the historical 2011 guidance as an internal-policy reference unless legal/MRM owners approve a current supervisory-source mapping for Copilot.
 
 ## Prerequisites
 
@@ -25,17 +25,22 @@ Connect-MgGraph -Scopes "Directory.Read.All", "Reports.Read.All"
 # Feeds MRM requirement: AI tool inventory (OCC 2011-12 Section III.A)
 Connect-MgGraph -Scopes "Directory.Read.All"
 
-$copilotSkuId = (Get-MgSubscribedSku |
-    Where-Object SkuPartNumber -eq "MICROSOFT_365_COPILOT").SkuId
+$copilotSkuPartNumbers = @("M365_Copilot", "Microsoft_365_Copilot", "MICROSOFT_365_COPILOT")
+$copilotSkuIds = @(Get-MgSubscribedSku |
+    Where-Object { $copilotSkuPartNumbers -contains $_.SkuPartNumber } |
+    Select-Object -ExpandProperty SkuId)
 
-if (-not $copilotSkuId) {
-    Write-Warning "MICROSOFT_365_COPILOT SKU not found in tenant subscriptions"
+if ($copilotSkuIds.Count -eq 0) {
+    Write-Warning "No Microsoft Copilot SKU found in tenant subscriptions"
     return
 }
 
 $licensedUsers = Get-MgUser -All `
     -Property "DisplayName,Department,UserPrincipalName,AssignedLicenses,JobTitle" |
-    Where-Object { $_.AssignedLicenses.SkuId -contains $copilotSkuId } |
+    Where-Object {
+        $assignedSkuIds = @($_.AssignedLicenses | ForEach-Object { $_.SkuId })
+        @($assignedSkuIds | Where-Object { $copilotSkuIds -contains $_ }).Count -gt 0
+    } |
     Select-Object DisplayName, Department, JobTitle, UserPrincipalName
 
 Write-Host "Copilot Licensed Users: $($licensedUsers.Count)" -ForegroundColor Cyan
@@ -108,7 +113,7 @@ Connect-MgGraph -Scopes "Reports.Read.All"
 
 # Summary usage report (available periods: D7, D30, D90, D180)
 $summary = Invoke-MgGraphRequest -Method GET `
-    -Uri "https://graph.microsoft.com/v1.0/reports/microsoft365CopilotUsageSummary(period='D30')"
+    -Uri "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUserCountSummary(period='D30')?`$format=application/json"
 
 $summary | ConvertTo-Json -Depth 5 |
     Out-File "CopilotUsageSummary_$(Get-Date -Format 'yyyyMMdd').json"
@@ -116,7 +121,7 @@ Write-Host "Usage summary exported (30-day period)" -ForegroundColor Cyan
 
 # Per-user detail report (CSV download)
 Invoke-MgGraphRequest -Method GET `
-    -Uri "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUserDetailReport(period='D30')" `
+    -Uri "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D30')" `
     -OutputFilePath "CopilotUserDetail_$(Get-Date -Format 'yyyyMMdd').csv"
 Write-Host "Per-user detail exported" -ForegroundColor Cyan
 
@@ -165,8 +170,10 @@ Write-Host "  Accessed labeled content: $(($parsed | Where-Object { $_.Sensitivi
 
 $parsed | Export-Csv "CopilotAudit_MRM_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 
-# LIMITATION: DSPM for AI provides prompt/response content and oversharing alerts
-# but has no PowerShell API — review manually at: Purview portal > DSPM for AI
+# LIMITATION: Microsoft Purview Data Security Posture Management, including
+# DSPM for AI/classic capabilities, provides prompt/response content and
+# oversharing/risky-AI insights where supported, but these reviews are portal-only.
+# Review manually at: Purview portal > Solutions > DSPM
 # LIMITATION: IRM Risky AI usage alerts are portal-only — review at:
 #   Purview portal > Insider Risk Management > Alerts
 Write-Host "`nDSPM for AI and IRM alerts require manual review in the Purview portal" -ForegroundColor Yellow

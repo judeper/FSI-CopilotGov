@@ -4,16 +4,16 @@ Test cases and evidence collection for validating Conditional Access policies fo
 
 ## Test Cases
 
-### Test 1: App ID Accuracy Verification
+### Test 1: Tenant App ID Discovery Verification
 
-- **Objective:** Confirm all CA policies targeting Copilot reference the correct Enterprise Copilot Platform App ID
+- **Objective:** Confirm all CA policies targeting Copilot reference the Enterprise Copilot Platform Application ID discovered in the tenant
 - **Steps:**
   1. Run Script 1 (Copilot App ID Audit) from the PowerShell playbook
-  2. Review output for any policy referencing an incorrect Copilot app ID
-  3. Confirm no policies use the wrong app ID segment (`7ef4-4c2f` is incorrect; `7ef8-4ec0` is correct)
-  4. Verify the correct ID `fb8d773d-7ef8-4ec0-a117-179f88add510` appears in all Copilot-targeting policies
-- **Expected Result:** All Copilot CA policies reference only the correct app ID
-- **Evidence:** PowerShell output showing correct app ID across all policies
+  2. Retain the Enterprise applications or Graph output showing `DisplayName`, `AppId`, and `AppOwnerOrganizationId`
+  3. Review output for any policy referencing a stale or unverified Copilot app ID
+  4. Verify all Copilot-targeting policies reference the tenant-discovered `AppId`
+- **Expected Result:** All Copilot CA policies reference only the tenant-discovered Enterprise Copilot Platform App ID
+- **Evidence:** PowerShell output showing the discovered service principal and matching CA policy references
 
 ### Test 2: June 2026 Baseline-Scopes Enforcement Readiness Check
 

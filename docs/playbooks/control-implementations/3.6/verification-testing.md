@@ -2,6 +2,9 @@
 
 Test cases and evidence collection procedures for validating supervisory controls over Copilot-assisted activities.
 
+!!! note "Regulatory applicability"
+    Regulatory citations identify commonly referenced requirements. Applicability, record classification, and retention periods are a firm and counsel determination; this framework does not assert that any regulation applies or is satisfied. See the [Regulatory Applicability Questions](../../../reference/regulatory-applicability-questions.md) appendix.
+
 ## Test Cases
 
 ### Test 1: Supervisory Review Workflow
@@ -31,7 +34,7 @@ Test cases and evidence collection procedures for validating supervisory control
 - **Objective:** Verify that supervisory ratios are within acceptable limits for effective oversight
 - **Steps:**
   1. Run the supervisor-to-representative ratio script.
-  2. Verify no supervisor oversees more than 50 Copilot-enabled representatives.
+  2. Verify no supervisor oversees more than 50 Copilot-enabled representatives unless compliance/legal approves a firm-specific threshold.
   3. Review each supervisor's review queue backlog.
   4. Confirm all supervisors are completing reviews within the defined SLA.
 - **Expected Result:** All supervisory ratios are within policy limits and review SLAs are being met.
@@ -53,7 +56,7 @@ Test cases and evidence collection procedures for validating supervisory control
 - **Steps:**
   1. Deploy a test Teams channel agent or use an existing declarative agent in a non-production channel.
   2. Have a test registered representative interact with the agent (e.g., ask it to summarize account information or draft a communication).
-  3. Wait 15–30 minutes for audit events to propagate to the Purview audit log.
+  3. Wait for audit events to propagate to the Purview audit log using the tenant's documented audit-ingestion expectation; allow up to 24 hours before treating delayed events as missing.
   4. Run Script 5 (Agent Interaction Audit) from the PowerShell setup guide to retrieve agent-specific CopilotInteraction events.
   5. Verify the returned records contain: `AgentId`, `AgentName`, the interacting user's identity, and the interaction timestamp.
   6. Confirm the `AccessedResources.XPIADetected` flag is absent or `false` for normal interactions (no cross-prompt injection attempt detected on referenced resources).
@@ -75,20 +78,20 @@ Test cases and evidence collection procedures for validating supervisory control
 
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
-| Supervisory review logs | Purview audit log | CSV export | 7 years |
-| Pre-send hold records | Message trace | CSV | 7 years |
+| Supervisory review logs | Purview audit log | CSV export | 7 years; retention schedule: confirm |
+| Pre-send hold records | Message trace | CSV | 7 years; retention schedule: confirm |
 | Supervisor ratio report | PowerShell | Text export | With control documentation |
-| Reg BI documentation samples | Review records | Redacted copies | 7 years |
-| Agent interaction audit records | Script 5 output | CSV export | 7 years |
+| Reg BI documentation samples | Review records | Redacted copies | 7 years; retention schedule: confirm |
+| Agent interaction audit records | Script 5 output | CSV export | 7 years; retention schedule: confirm |
 | WSP agent coverage gap report | Test 6 results | Document | With control documentation |
 
 ## Compliance Mapping
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| FINRA 3110 | Supervisory system and WSP requirements | Supports compliance with supervisory review obligations for AI-assisted activities |
-| FINRA 3110(a) | Supervisory system must cover all tools used by associated persons, including agents | Agent audit trail capture and WSP coverage verification confirm agent supervision |
-| SEC Reg BI | Care, disclosure, and conflict obligations | Helps meet best-interest documentation requirements for recommendations |
+| FINRA 3110 | Supervisory system and WSP citation | Provides evidence for supervisory review of AI-assisted activities; applicability: confirm |
+| FINRA 3110(a) | Supervisory system citation for tools used by associated persons | Agent audit trail capture and WSP coverage verification provide evidence for counsel/compliance review of agent supervision |
+| SEC Reg BI | Care, disclosure, and conflict citation | Provides evidence for best-interest documentation review; applicability: confirm |
 | FINRA 3120 | Supervisory control system testing | Supports annual testing of supervisory effectiveness including agent supervision |
 
 ## Next Steps

@@ -39,7 +39,7 @@ Common issues and resolution steps for Copilot data retention policy configurati
 - **Symptoms:** After deleting a Teams meeting transcript or Teams message, the Copilot-generated summary remains visible and searchable — which may appear to be an error but is actually expected behavior.
 - **Root Cause:** This is by design. Copilot-generated meeting summaries and conversation summaries are retained as threaded objects in the Microsoft Copilot experiences location, independent of the source content's retention policy. Deleting a source Teams message does not delete the Copilot summary.
 - **Resolution:**
-  1. Confirm this is expected behavior, not a data governance gap. FINRA Rule 4511(c) requires records to be preserved in accessible format — the independent retention of summaries supports this requirement.
+  1. Confirm this is expected behavior, not a data governance gap. FINRA Rule 4511(c) is cited for accessible-format preservation; independent retention of summaries should be reviewed with counsel before treating it as satisfying the firm's preservation obligations.
   2. If the intent is to delete both source and summary simultaneously (e.g., for a user under active disposal), use eDiscovery purge operations targeting both the Teams location and the Microsoft Copilot experiences location.
   3. Document this behavior in the firm's records management procedures: "Copilot-generated summaries are retained independently of their source content — disposal procedures must explicitly target both the source content location and the Microsoft Copilot experiences location."
   4. Update eDiscovery hold configurations to include the Microsoft Copilot experiences location whenever Teams content is placed on hold — this ensures threaded summaries are captured in hold operations.
@@ -49,7 +49,7 @@ Common issues and resolution steps for Copilot data retention policy configurati
 - **Symptoms:** Auto-apply retention labels are not being applied to documents created with Copilot assistance.
 - **Root Cause:** Auto-apply label policies may not detect Copilot-generated content characteristics, or the policy indexing is incomplete.
 - **Resolution:**
-  1. Verify the label policy is published to the correct locations, including the Microsoft Copilot experiences location for Copilot Chat content.
+  1. Verify the label policy is published to supported file and email locations. For Copilot Chat prompts and responses, verify the retention policy covering Microsoft Copilot experiences instead of expecting a retention label policy to target that location.
   2. Confirm the auto-apply condition matches the content correctly (keyword, trainable classifier, or sensitive info type).
   3. Allow up to 7 days for auto-apply policies to fully index and apply.
   4. Consider using manual labeling or default labels as an interim approach.

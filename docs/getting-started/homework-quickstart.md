@@ -16,7 +16,7 @@ Completing these tasks ahead of time helps the working session stay focused on *
 Owns tenant-level Copilot feature toggles and the M365 Admin Center Copilot page (Control 4.1).
 
 - Export the current **Copilot & Agents settings** (M365 Admin Center → Copilot → Settings) as a screenshot set or JSON, including per-app toggles for Word, Excel, PowerPoint, Outlook, Teams, and Loop.
-- List all users and groups with assigned **Microsoft 365 Copilot** and **Copilot Chat Premium** licenses; note the April 15, 2026 Basic/Premium split status for your tenant.
+- List all users and groups with assigned **Microsoft 365 Copilot** and **Copilot Chat Premium** licenses; capture tenant Message Center posts MC1253858/MC1253863 if present, and note the tenant-confirmed Basic/Premium in-app access status, effective date, threshold, and affected apps.
 - Capture the current list of **pinned/blocked agents** from the Integrated Apps blade and the Copilot agent catalog.
 - Pull the last 90 days of **Copilot adoption/usage report** from M365 Admin Center for baseline telemetry.
 - Confirm which admin roles are assigned to break-glass accounts and which are time-bound via Entra PIM.

@@ -9,7 +9,7 @@ Common issues and resolution steps for supervisory controls over Copilot-assiste
 - **Symptoms:** Review items are aging beyond the 24/48 hour SLA, supervisors report insufficient time for reviews.
 - **Root Cause:** Supervisor-to-representative ratio too high, policy scope too broad, or supervisors lack training on review tools.
 - **Resolution:**
-  1. Check current supervisor ratios and redistribute if any supervisor exceeds 1:50.
+  1. Check current supervisor ratios and redistribute if any supervisor exceeds the default 1:50 threshold, unless compliance/legal approves a firm-specific threshold.
   2. Implement automated resolution for low-risk, low-confidence policy matches.
   3. Provide refresher training on the Communication compliance review interface.
   4. Consider adding a deputy supervisor role for backup coverage.
@@ -56,10 +56,10 @@ Common issues and resolution steps for supervisory controls over Copilot-assiste
 
 ### Issue 6: Agent Audit Events Delayed or Missing
 
-- **Symptoms:** CopilotInteraction audit events for agent interactions are not appearing in the Purview audit log within the expected 15–30 minute window, or some interactions appear to be missing entirely.
-- **Root Cause:** Audit log ingestion latency can be up to 24 hours in some environments. Short-lived or lightweight agent interactions (e.g., single-turn queries with no external grounding) may produce reduced audit footprints. Agent interactions within Copilot Chat sessions may be batched differently from direct agent invocations.
+- **Symptoms:** CopilotInteraction audit events for agent interactions are not appearing in the Purview audit log within the tenant's expected audit-ingestion window, or some interactions appear to be missing entirely.
+- **Root Cause:** Audit log ingestion latency varies by tenant and workload; do not rely on an uncited minutes-level SLA. Short-lived or lightweight agent interactions (e.g., single-turn queries with no external grounding) may produce reduced audit footprints. Agent interactions within Copilot Chat sessions may be batched differently from direct agent invocations.
 - **Resolution:**
-  1. Wait up to 24 hours before concluding that audit events are missing — check again with a wider search window.
+  1. Wait up to 24 hours, or the tenant's documented audit-ingestion expectation if longer, before concluding that audit events are missing — check again with a wider search window.
   2. Verify the tenant has audit logging enabled: navigate to **Microsoft Purview** > **Audit** > confirm audit retention is active and search returns results for other event types.
   3. Confirm the agent is a supported M365 Copilot agent type (Teams channel agent, declarative agent). Custom Copilot Studio agents may produce different audit record structures.
   4. Run Script 6 (Search Agent Events by Specific Agent ID) with a broader date range to confirm whether events exist at all for the agent.

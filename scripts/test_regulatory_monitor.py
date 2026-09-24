@@ -122,12 +122,252 @@ def test_exit_code_contract_is_unambiguous():
     assert regulatory_monitor.EXIT_CLEAN == 0
     assert regulatory_monitor.EXIT_FAILURE == 2
     assert regulatory_monitor.EXIT_FINDINGS == 3
+    assert regulatory_monitor.EXIT_DEGRADED == 4
     assert len({
         regulatory_monitor.EXIT_CLEAN,
         regulatory_monitor.EXIT_FAILURE,
         regulatory_monitor.EXIT_FINDINGS,
-    }) == 3
+        regulatory_monitor.EXIT_DEGRADED,
+    }) == 4
     assert regulatory_monitor.EXIT_FINDINGS != 1
+    assert regulatory_monitor.EXIT_DEGRADED != 1
+
+
+def test_partial_source_failure_returns_degraded_and_reports_unavailable_source(
+    monkeypatch,
+    tmp_path,
+):
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor, "STATE_FILE", tmp_path / "data" / "monitor-state.json"
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    initial_finra_state = {
+        "entries": {"FINRA 26-01": "v2:existing"},
+        "last_checked": "2026-08-01",
+    }
+    state_path = tmp_path / "data" / "monitor-state.json"
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    state_path.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "sources": {
+                    regulatory_monitor.SOURCE_KEY_FINRA: deepcopy(initial_finra_state)
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    def finra_429(*_args, **_kwargs):
+        raise regulatory_monitor.FinraListingError(
+            "FINRA notices page request failed with status 429 for page 11"
+        )
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_finra_notices", finra_429)
+
+    exit_code = regulatory_monitor._run_monitor()
+
+    assert exit_code == regulatory_monitor.EXIT_DEGRADED
+    reports = sorted((tmp_path / "reports").glob("regulatory-changes-*.md"))
+    assert len(reports) == 1
+    report = reports[0].read_text(encoding="utf-8")
+    assert "FINRA notices" in report
+    assert "unavailable this run" in report
+    assert "No new regulatory items detected" not in report
+    saved_state = json.loads(state_path.read_text(encoding="utf-8"))
+    assert (
+        saved_state["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+        == initial_finra_state
+    )
+    assert (
+        saved_state["sources"][regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER][
+            "last_checked"
+        ]
+        != "2026-08-01"
+    )
+
+
+def test_programming_error_in_one_source_is_fatal_not_degraded(
+    monkeypatch,
+    tmp_path,
+):
+    """A source adapter bug must stay red even when the other source succeeds."""
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "STATE_FILE",
+        tmp_path / "data" / "monitor-state.json",
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_finra_notices",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            TypeError("'NoneType' object is not subscriptable")
+        ),
+    )
+
+    exit_code = regulatory_monitor.main()
+
+    assert exit_code == regulatory_monitor.EXIT_FAILURE
+    assert not list((tmp_path / "reports").glob("regulatory-changes-*.md"))
+
+
+def test_finra_degraded_counter_escalates_on_third_consecutive_run(
+    monkeypatch,
+    tmp_path,
+):
+    """Persistent FINRA unavailability must restore the scheduled red signal."""
+    config = _load_config()
+    initial_state = {
+        "version": 1,
+        "regulatory_monitor": {"consecutive_finra_degraded_runs": 2},
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-08-01",
+                "entries": {},
+            },
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-01": "v2:existing"},
+            },
+        },
+    }
+    loaded_state = deepcopy(initial_state)
+    saved_states: list[dict] = []
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "generate_regulatory_report",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_finra_notices",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            regulatory_monitor.FinraListingError(
+                "FINRA notices page request failed with status 429 for page 0"
+            )
+        ),
+    )
+
+    exit_code = regulatory_monitor._run_monitor()
+
+    assert exit_code == regulatory_monitor.EXIT_FAILURE
+    assert saved_states[-1]["regulatory_monitor"][
+        "consecutive_finra_degraded_runs"
+    ] == 3
+    assert (
+        saved_states[-1]["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+        == initial_state["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+    )
+
+
+def test_finra_degraded_counter_resets_after_finra_success(monkeypatch, tmp_path):
+    config = _load_config()
+    loaded_state = {
+        "version": 1,
+        "regulatory_monitor": {"consecutive_finra_degraded_runs": 2},
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-08-01",
+                "entries": {},
+            },
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-01": "v2:existing"},
+            },
+        },
+    }
+    saved_states: list[dict] = []
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_finra_notices",
+        lambda *args, **kwargs: [],
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_CLEAN
+    assert saved_states[-1]["regulatory_monitor"][
+        "consecutive_finra_degraded_runs"
+    ] == 0
+
+
+def test_all_requested_sources_failing_is_fatal(monkeypatch, tmp_path):
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor, "STATE_FILE", tmp_path / "data" / "monitor-state.json"
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            regulatory_monitor.FederalRegisterPaginationError("Federal Register 500")
+        ),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_finra_notices",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            regulatory_monitor.FinraListingError("FINRA 429")
+        ),
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_FAILURE
 
 
 def test_federal_register_rule_2210_title_classifies_high_with_null_abstract():
@@ -185,6 +425,68 @@ def test_fsi_automation_language_remains_high_priority(text):
     )
 
     assert classification in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
+@pytest.mark.parametrize(
+    "citation",
+    (
+        "FINRA Rule 3110",
+        "FINRA 3110",
+        "FINRA Rule 4511",
+        "FINRA 4511",
+    ),
+)
+def test_finra_rule_citations_classify_high(citation):
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Administrative securities notice",
+        f"The notice addresses requirements under {citation}.",
+        config,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
+
+
+@pytest.mark.parametrize(
+    "citation",
+    (
+        "FINRA Rule 31100",
+        "FINRA Rule 45110",
+        "FINRA Rule 3110a",
+        "FINRA Rule 4511a",
+    ),
+)
+def test_finra_rule_citation_lookalikes_do_not_classify_high(citation):
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Administrative securities notice",
+        f"The notice mentions {citation} in an unrelated example.",
+        config,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
+@pytest.mark.parametrize("citation", ("FINRA Rule 3110", "FINRA Rule 4511"))
+def test_finra_rule_reference_only_citation_does_not_classify_high(citation):
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Administrative securities notice",
+        f"See also {citation} for background.",
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in {
         regulatory_monitor.CLASSIFICATION_HIGH,
         regulatory_monitor.CLASSIFICATION_CRITICAL,
     }
@@ -976,6 +1278,33 @@ def test_federal_register_medium_abstract_upgrades_on_authoritative_critical_bod
     # The authoritative body is adopted as the effective text and drives controls.
     assert "copilot" in items[0].abstract.lower()
     assert items[0].affected_controls
+
+
+def test_federal_register_control_mapping_unions_critical_abstract_and_body(
+    monkeypatch,
+):
+    """Control evidence is retained even when the abstract sets CRITICAL."""
+    config = _load_config()
+    document = _fr_document(
+        "2026-90212",
+        abstract=(
+            "The Commission proposes requirements for Microsoft 365 Copilot "
+            "deployments used by broker-dealers."
+        ),
+    )
+    body = (
+        "Each member firm shall comply with FINRA Rule 2210 for "
+        "communications with the public."
+    )
+    session, _ = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session, since_date="2026-08-18", config=config
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_CRITICAL
+    assert items[0].affected_controls == ["3.5", "3.6"]
 
 
 def test_federal_register_medium_abstract_fetch_failure_fails_closed(
@@ -3881,7 +4210,13 @@ _SRO_TITLE = (
 )
 
 
-def _finra_listing_page_html(notice_hrefs, *, last_page=0, window_pages=None):
+def _finra_listing_page_html(
+    notice_hrefs,
+    *,
+    last_page=0,
+    window_pages=None,
+    publication_date="2026-08-01",
+):
     """Return live-shaped FINRA notices *listing* markup.
 
     Mirrors the real Drupal listing: notices rendered as table rows (a title
@@ -3902,7 +4237,7 @@ def _finra_listing_page_html(notice_hrefs, *, last_page=0, window_pages=None):
             f"<a href=\"{href}\">Regulatory Notice "
             f"{href.rstrip('/').rsplit('/', 1)[-1]}</a></td>"
             "<td class='views-field views-field-field-date'>"
-            "<time datetime='2026-08-01'>August 1, 2026</time></td></tr>"
+            f"<time datetime='{publication_date}'>August 1, 2026</time></td></tr>"
         )
         for href in notice_hrefs
     )
@@ -4033,6 +4368,51 @@ def test_finra_pagination_discovers_page_two_notices(monkeypatch):
     urls = {item.url for item in items}
     assert "https://www.finra.org/rules-guidance/notices/26-100" in urls
     assert "https://www.finra.org/rules-guidance/notices/26-200" in urls
+
+
+def test_finra_listing_requests_respect_configured_delay(monkeypatch):
+    """Pace listing pages so a multi-page crawl does not trigger FINRA 429s."""
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-100"], last_page=1
+        ),
+        1: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-200"], last_page=1
+        ),
+    }
+    config = _load_config()
+    config["operational"]["request_delay"] = 0.25
+    prefix = f"{regulatory_monitor.FINRA_NOTICES_URL}?page="
+    page_one_allowed = False
+    sleeps: list[float] = []
+    base_fetch = _finra_multipage_fetch(pages)
+
+    def fake_sleep(seconds):
+        nonlocal page_one_allowed
+        sleeps.append(seconds)
+        page_one_allowed = True
+
+    def rate_limited_fetch(url, session, max_retries=3):
+        if url == f"{prefix}1" and not page_one_allowed:
+            return {
+                "url": url,
+                "status_code": 429,
+                "content": "",
+                "final_url": url,
+                "was_redirected": False,
+                "error": "HTTP 429 rate limit persisted after 3 attempts",
+            }
+        return base_fetch(url, session, max_retries=max_retries)
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", rate_limited_fetch)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", fake_sleep)
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(), config=config, detail_fetch_limit=None
+    )
+
+    assert sleeps[0] == 0.25
+    assert {item.document_id for item in items} == {"FINRA 26-100", "FINRA 26-200"}
 
 
 def test_finra_pagination_completes_full_92_page_style_crawl(monkeypatch):
@@ -7021,6 +7401,183 @@ def test_finra_listing_page_seven_reported_as_page_one_fails_the_crawl(monkeypat
             regulatory_monitor.SOURCE_KEY_FINRA, items, state
         )
     assert state == {}
+
+
+def test_finra_listing_stops_after_known_page_outside_lookback(monkeypatch):
+    """A stateful run need not walk every historical page before fetching details."""
+    config = _load_config()
+    requested: list[str] = []
+    fixed_now = regulatory_monitor.datetime(2026, 9, 24, tzinfo=regulatory_monitor.timezone.utc)
+
+    class _FrozenDateTime(regulatory_monitor.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return fixed_now if tz is not None else fixed_now.replace(tzinfo=None)
+
+    monkeypatch.setattr(regulatory_monitor, "datetime", _FrozenDateTime)
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-01"],
+            last_page=5,
+            publication_date="2026-09-20",
+        ),
+        1: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-02"],
+            last_page=5,
+            publication_date="2026-07-01",
+        ),
+    }
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_multipage_fetch(pages, record=requested),
+    )
+
+    items = regulatory_monitor.fetch_finra_notices(
+        session=object(),
+        config=config,
+        known_entry_keys={"FINRA 26-02"},
+        listing_lookback_days=30,
+    )
+
+    assert [item.document_id for item in items] == ["FINRA 26-01", "FINRA 26-02"]
+    assert f"{regulatory_monitor.FINRA_NOTICES_URL}?page=2" not in requested
+
+
+def test_finra_listing_disables_early_stop_when_listing_order_regresses(
+    monkeypatch,
+    caplog,
+):
+    """A non-newest-first listing must not hide older pages behind the lookback."""
+    config = _load_config()
+    requested: list[str] = []
+    fixed_now = regulatory_monitor.datetime(
+        2026, 9, 24, tzinfo=regulatory_monitor.timezone.utc
+    )
+
+    class _FrozenDateTime(regulatory_monitor.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return fixed_now if tz is not None else fixed_now.replace(tzinfo=None)
+
+    monkeypatch.setattr(regulatory_monitor, "datetime", _FrozenDateTime)
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-01"],
+            last_page=2,
+            publication_date="2026-06-01",
+        ),
+        1: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-02"],
+            last_page=2,
+            publication_date="2026-07-01",
+        ),
+        2: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-03"],
+            last_page=2,
+            publication_date="2026-05-01",
+        ),
+    }
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_multipage_fetch(pages, record=requested),
+    )
+
+    with caplog.at_level(logging.WARNING):
+        items = regulatory_monitor.fetch_finra_notices(
+            session=object(),
+            config=config,
+            known_entry_keys={"FINRA 26-02"},
+            listing_lookback_days=30,
+        )
+
+    assert f"{regulatory_monitor.FINRA_NOTICES_URL}?page=2" in requested
+    assert {item.document_id for item in items} == {
+        "FINRA 26-01",
+        "FINRA 26-02",
+        "FINRA 26-03",
+    }
+    assert "not monotonic" in caplog.text
+
+
+def test_sunday_finra_run_forces_full_crawl_even_with_known_lookback(
+    monkeypatch,
+    tmp_path,
+):
+    config = _load_config()
+    requested: list[str] = []
+    # 2026-09-27 is a Sunday.
+    fixed_now = regulatory_monitor.datetime(
+        2026, 9, 27, tzinfo=regulatory_monitor.timezone.utc
+    )
+
+    class _FrozenDateTime(regulatory_monitor.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return fixed_now if tz is not None else fixed_now.replace(tzinfo=None)
+
+    class _Session:
+        def __init__(self):
+            self.headers = {}
+
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-01"],
+            last_page=2,
+            publication_date="2026-09-20",
+        ),
+        1: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-02"],
+            last_page=2,
+            publication_date="2026-07-01",
+        ),
+        2: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-03"],
+            last_page=2,
+            publication_date="2026-05-01",
+        ),
+    }
+    loaded_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {
+                "last_checked": "2026-09-26",
+                "entries": {},
+            },
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-02": "v2:existing"},
+            },
+        },
+    }
+    saved_states: list[dict] = []
+
+    monkeypatch.setattr(regulatory_monitor, "datetime", _FrozenDateTime)
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_multipage_fetch(pages, record=requested),
+    )
+
+    regulatory_monitor._run_monitor()
+
+    assert f"{regulatory_monitor.FINRA_NOTICES_URL}?page=2" in requested
 
 
 def test_finra_listing_declaring_a_different_page_fails_closed():

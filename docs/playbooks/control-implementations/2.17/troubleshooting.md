@@ -4,10 +4,10 @@ Common issues and resolution steps for cross-tenant Agent ID trust, MCP attestat
 
 ## Common Issues
 
-### Issue 1: Inbound Agent Trust From an Unapproved Tenant
+### Issue 1: External Agent Access From an Unapproved Tenant or Endpoint
 
-- **Symptoms:** CTAP partner list shows an external tenant that has not been cleared under [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md).
-- **Resolution:** Suspend the partner, snapshot the configuration, and route through vendor-risk review before reinstating.
+- **Symptoms:** CTAP partner list, Copilot A2A connection, MCP server, or published-agent record shows an external tenant or endpoint that has not been cleared under [Control 1.10](../../../controls/pillar-1-readiness/1.10-vendor-risk-management.md).
+- **Resolution:** Suspend or block the partner/endpoint through the control surface that applies to that path, snapshot the configuration, and route through vendor-risk review before reinstating. Do not assume CTAP alone remediates A2A, MCP, or published-agent paths unless tenant evidence proves it.
 
 ### Issue 2: MCP Federated Server Lacks Signed Attestation
 
@@ -22,7 +22,12 @@ Common issues and resolution steps for cross-tenant Agent ID trust, MCP attestat
 ### Issue 4: Supervisory Reconstruction Misses Cross-Tenant Activity
 
 - **Symptoms:** Supervision review cannot reconstruct an invocation involving an external tenant.
-- **Resolution:** Validate that unified audit logging is enabled and that the cross-tenant operation set in the PowerShell setup matches the operations Microsoft has published. Add any newly published operations and rerun.
+- **Resolution:** Validate that unified audit logging is enabled and that the cross-tenant operation set in the PowerShell setup matches the operations observed in the tenant and published by Microsoft for the relevant pattern. Add any newly observed or published operations and rerun.
+
+### Issue 4A: External A2A Endpoint Receives More Context Than Approved
+
+- **Symptoms:** Endpoint logs show full chat history or metadata fields that were not covered by the approval record.
+- **Resolution:** Disable or remove the A2A connection pending review, update the payload/data-residency assessment, and require explicit approval for full-chat-history sharing before reinstating the endpoint.
 
 ### Issue 5: Residual Trust After Relationship Termination
 
@@ -36,11 +41,11 @@ Common issues and resolution steps for cross-tenant Agent ID trust, MCP attestat
 
 ## Diagnostic Steps
 
-1. Snapshot CTAP defaults and partner list; reconcile to the third-party register.
+1. Snapshot CTAP defaults and partner list; reconcile to the third-party register and identify which agent paths CTAP actually governs.
 2. Cross-check MCP attestation status against the on-file attestations.
-3. Reconcile publishing-target lists against the approved receiving-tenant list.
-4. Re-run the cross-tenant audit pull and validate operation coverage.
-5. Execute the termination playbook against a controlled test partner.
+3. Reconcile A2A endpoint and publishing-target lists against the approved receiving-tenant / endpoint list.
+4. Re-run the cross-tenant audit pull and validate operation coverage against observed tenant events.
+5. Execute the termination playbook against a controlled test partner or endpoint.
 
 ## Escalation
 

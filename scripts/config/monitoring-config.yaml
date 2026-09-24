@@ -116,9 +116,9 @@ regulatory:
       reason: "References automation in FSI context"
     - pattern: '\bsupervision.{0,80}(?:electronic|automated|technology)'
       reason: "Supervision of automated systems"
-    - pattern: '\bfinra\s+3110'
+    - pattern: '\bfinra(?:\s+rule)?\s+3110\b'
       reason: "FINRA 3110 (supervision)"
-    - pattern: '\bfinra\s+4511'
+    - pattern: '\bfinra(?:\s+rule)?\s+4511\b'
       reason: "FINRA 4511 (recordkeeping)"
     - pattern: '\bsec\s+17a-[34]'
       reason: "SEC 17a-3 or 17a-4 (recordkeeping)"
@@ -356,7 +356,7 @@ federal_register:
 operational:
   # HTTP request settings
   request_timeout: 30          # Timeout in seconds for HTTP requests
-  max_retries: 3               # Number of retry attempts for failed requests
+  max_retries: 5               # Number of retry attempts for failed requests
   request_delay: 1.0           # Seconds between requests (rate limiting)
 
   # Diff output settings

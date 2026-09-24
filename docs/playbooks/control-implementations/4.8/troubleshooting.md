@@ -11,7 +11,7 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 - **Resolution:**
   1. Allow for normal billing-report refresh if usage began recently.
   2. Verify the Azure subscription is linked to the correct Microsoft 365 tenant: in **Azure Portal > Subscriptions > [subscription] > Properties**, confirm the tenant ID matches your Microsoft 365 tenant.
-  3. Confirm the billing policy is connected to the intended service in **Microsoft 365 Admin Center > Billing > Pay-as-you-go services**.
+  3. Confirm the billing policy is connected to the intended service in **Microsoft 365 Admin Center > Copilot > Billing & usage > Pay-as-you-go services**.
   4. Verify the intended users or groups are covered by the billing policy.
   5. Run Script 1 from the PowerShell Setup guide — if the Azure Commerce API returns no data, the subscription association or billing-policy setup is the likely root cause.
   6. If the issue persists after the expected billing refresh, open a Microsoft billing support ticket referencing the Azure subscription ID and the PAYG product name.
@@ -21,7 +21,7 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 - **Symptoms:** PAYG budgets exist, but business or finance owners aren't receiving the expected notifications.
 - **Root Cause:** Notification recipients might be incorrect, the wrong billing policy might be under review, or the budget wasn't configured on the active billing policy.
 - **Resolution:**
-  1. Review the active billing policy in **Billing > Pay-as-you-go services**.
+  1. Review the active billing policy in **Copilot > Billing & usage > Pay-as-you-go services**.
   2. Confirm the budget and notification recipients are configured for that policy.
   3. Verify the finance and business-owner addresses are current.
   4. Confirm the policy is tied to the expected Azure subscription and service.
@@ -32,7 +32,7 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 - **Symptoms:** PAYG charges appear in Cost Management, but finance can't determine which department or approved population should own them.
 - **Root Cause:** Billing policy ownership was not documented clearly, or users and groups were added to the wrong billing policy.
 - **Resolution:**
-  1. Review **Microsoft 365 Admin Center > Billing > Pay-as-you-go services**.
+  1. Review **Microsoft 365 Admin Center > Copilot > Billing & usage > Pay-as-you-go services**.
   2. Confirm the billing policy owner, covered users or groups, and connected service.
   3. Compare policy coverage with the current finance cost center mapping.
   4. Move users or groups to the correct billing policy if needed and document the change.
@@ -82,7 +82,7 @@ Common issues and resolution steps for Copilot cost allocation and license optim
 ## Diagnostic Steps
 
 1. **Check license availability:** `Get-MgSubscribedSku | Where SkuPartNumber -like "*Copilot*"`
-2. **Verify PAYG enabled:** Confirm in Microsoft 365 Admin Center > Billing > Pay-as-you-go services that the billing policy is connected to the intended service.
+2. **Verify PAYG enabled:** Confirm in Microsoft 365 Admin Center > Copilot > Billing & usage > Pay-as-you-go services that the billing policy is connected to the intended service.
 3. **Check Azure subscription link:** Confirm the Azure subscription is associated with the correct Microsoft 365 tenant (Azure Portal > Subscriptions > Properties > Directory).
 4. **Review group licensing errors:** Check the group's licensing status in Entra Admin Center.
 5. **Verify department data:** `Get-MgUser -UserId "user@contoso.com" -Property Department`

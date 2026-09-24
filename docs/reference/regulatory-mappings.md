@@ -82,7 +82,7 @@ Specifies record retention periods and storage requirements for broker-dealer re
 | 17a-4(b) | Records preserved for not less than 3 years (communications) | Control 3.2 (Retention Policies), Control 3.4 (Communication Compliance) | Reg |
 | 17a-4(f) | Electronic storage media requirements — WORM compliance | Control 3.2 (Retention Policies), Control 3.11 (Record Keeping) | Reg |
 | 17a-4(j) | Third-party access and SEC examination access | Control 3.3 (eDiscovery), Control 3.12 (Evidence Collection) | Reg |
-| 17a-4(f)(2) | Audit-trail alternative to WORM (added by SEC Release No. 34-96034, 87 FR 66412 (Nov. 3, 2022)) — records need not be stored in non-rewriteable format if the broker-dealer maintains a complete audit trail of all modifications, deletions, and access events throughout the retention period; for Copilot content, satisfiable via Purview retention labels with regulatory record declaration + Preservation Lock + audit log coverage | Control 3.11 (Record Keeping), Control 3.1 (Copilot Audit Logging) | Reg |
+| 17a-4(f)(2) | Audit-trail alternative to WORM (added by SEC Release No. 34-96034, 87 FR 66412 (Nov. 3, 2022)) — records need not be stored in non-rewriteable format if the broker-dealer maintains the rule-required time-stamped audit trail for modifications/deletions and information needed to maintain authenticity and permit re-creation if modified or deleted; for Copilot content, Purview retention labels with regulatory record declaration, Preservation Lock, and audit log coverage may support the firm's counsel-approved assessment | Control 3.11 (Record Keeping), Control 3.1 (Copilot Audit Logging) | Reg |
 | Off-channel enforcement | SEC and CFTC off-channel enforcement campaign — over $2B in fines imposed on financial institutions for failing to preserve business communications on unapproved channels (personal devices, unauthorized messaging apps); recordkeeping obligations attach to business purpose, not channel; mobile Copilot access through unmanaged devices creates the same regulatory gap | Control 3.11 (Record Keeping), Control 3.4 (Communication Compliance) | Reg |
 
 ---
@@ -177,22 +177,6 @@ Interagency guidance for IT examination of financial institutions.
 | Operations | Operational resilience for AI services | Control 4.9 (Incident Reporting), Control 4.10 (Business Continuity), Control 3.13 (FFIEC Alignment) | R |
 | Development and Acquisition | Vendor management for AI services | Control 1.10 (Vendor Risk Management), Control 3.13 (FFIEC Alignment) | Reg |
 | Business Continuity | Continuity planning for AI service disruption | Control 4.10 (Business Continuity), Control 3.13 (FFIEC Alignment) | R |
-
----
-
-## Interagency AI Guidance (2023) — OCC, Fed, FDIC
-
-Joint guidance on managing risks associated with AI in financial services, including third-party AI models.
-
-| Topic | Requirement | Applicable Controls | Level |
-|-------|-------------|-------------------|-------|
-| Risk Management | Incorporate AI risk into enterprise risk framework | Control 3.8 (Model Risk Management), Control 1.12 (Training and Awareness) | Reg |
-| Governance | Board and management oversight of AI adoption | Control 1.12 (Training and Awareness), Control 4.13 (Extensibility and Agent Operations), Control 4.12 (Change Management) | Reg |
-| Third-Party Risk | Assess and monitor third-party AI providers | Control 1.10 (Vendor Risk Management) | Reg |
-| Data Management | Controls over data used in AI systems | Control 1.1 (Copilot Readiness Assessment), Control 1.11 (Organizational Change Management), Control 2.1 (DLP) | R |
-| Consumer Protection | Protect consumers from AI-related harm | Control 3.7 (Regulatory Reporting), Control 3.5 (FINRA 2210) | Reg |
-| Fair Lending | Address potential bias in AI outputs | Control 3.7 (Regulatory Reporting), Control 3.8 (Model Risk Management) | Reg |
-| Cybersecurity | Secure AI systems and data flows | Control 2.3 (Conditional Access), Control 2.15 (Network Security) | R / Reg |
 
 ---
 

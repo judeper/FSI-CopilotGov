@@ -4,6 +4,12 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## Correction - 2026-09-24
+
+- The historical v1.3.3 regulatory-correction note below used an old title for an unsupported 2023 interagency AI citation. Current framework coverage no longer lists that citation, and related control text treats future agency AI guidance as a monitoring/applicability question rather than an issued regulatory source.
+
+---
+
 ## [1.8.0] - 2026-07-11
 
 Cowork GA + Scout governance release, with full canonical asset regeneration for
@@ -495,6 +501,7 @@ Aligned documentation with Microsoft's [Secure and Govern Microsoft 365 Copilot]
 - **1.4** Semantic Index Governance — added authoritative sources management (designate up to 100 SharePoint sites via admin center)
 - **1.7** SharePoint Advanced Management — added Agent insight report (GA), Catalog management (Preview), SharePoint Admin Agent (Preview)
 - **4.1** Admin Settings — added Baseline Security Mode (BSM, 18-20 settings, simulation mode) and expanded Entra AI Administrator with dedicated homepage
+  - **Correction 2026-09-23:** Current Microsoft Learn wording describes Baseline Security Mode as covering "key Microsoft 365 services" and the Copilot administration role as **AI Administrator**.
 - **2.14** Declarative Agents Governance — added agent pinning controls (up to 3 agents per user, admin-enforced)
 - **2.1** DLP Policies — made prompt-level DLP policy location explicit (Roadmap 548671, Public Preview March 2026, GA June 2026)
 - **3.11** Record Keeping — added Cohasset Associates December 2024 compliance assessment reference (SEC 17a-4, FINRA 4511, CFTC 1.31)
@@ -517,7 +524,7 @@ Aligned documentation with Microsoft's [Secure and Govern Microsoft 365 Copilot]
 
 ### Critical — Copilot Licensing Changes (April 15, 2026)
 - Added Copilot Chat Basic vs Premium tier distinction across license requirements, Control 1.9, admin toggles, FAQ, glossary, and getting-started content
-- Documented April 15, 2026 deadline: organizations >2,000 users lose embedded Copilot Chat in Word, Excel, PowerPoint, OneNote for unlicensed users
+- Documented the tenant Message Center-reported April 15, 2026 licensing change for organizations above the 2,000-user threshold, now treated as tenant Message Center evidence requiring tenant read-back, not public Microsoft Learn evidence
 - Added Edit with Copilot (Agent Mode) governance — available to all M365 users regardless of license, web data only for unlicensed users
 - Added third-party model provider support (Anthropic Claude, xAI) and recommended FSI posture (disabled by default)
 

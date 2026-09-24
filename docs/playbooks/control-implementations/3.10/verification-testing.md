@@ -597,8 +597,8 @@ Test cases and evidence collection procedures to validate privacy controls for c
 |-----------|-------------|----------------------|
 | SEC Reg S-P Rule 248.30(a)(3) | 72-hour vendor notification for unauthorized NPI access | Test 4 and 5 verify documented procedure and achievable window |
 | SEC Reg S-P Rule 248.30(a)(4) | Written incident response program | Test 4 verifies existence and completeness of written IRP |
-| SEC Reg S-P Rule 30 | Safeguard customer records | Supports compliance with NPI safeguarding in AI interactions |
-| GLBA Title V | Financial privacy | Helps meet privacy requirements for consumer financial information |
+| SEC Reg S-P Rule 30 | Safeguard customer records | Provides evidence for NPI safeguarding in AI interactions |
+| GLBA Title V | Financial privacy | Provides evidence for privacy requirements for consumer financial information |
 | GLBA §501(b) | Safeguards provision for NPI | Supports requirements for protecting customer information at banks and broker-dealers (statutory basis for SEC Reg S-P safeguards; the FTC Safeguards Rule is a separate implementing regulation outside SEC jurisdiction) |
 
 ## Next Steps

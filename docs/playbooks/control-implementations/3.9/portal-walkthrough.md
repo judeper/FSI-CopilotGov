@@ -1,6 +1,9 @@
 # Control 3.9: AI Disclosure, Transparency, and SEC Marketing Rule — Portal Walkthrough
 
-Step-by-step portal configuration for implementing AI disclosure and transparency controls that support compliance with the SEC Marketing Rule and client communication transparency requirements for Copilot-generated content.
+Step-by-step portal configuration for implementing AI disclosure and transparency controls that provide evidence for SEC Marketing Rule and client communication transparency review for Copilot-generated content.
+
+!!! note "Regulatory applicability"
+    Regulatory citations identify commonly referenced requirements. Applicability, record classification, and retention periods are a firm and counsel determination; this framework does not assert that any regulation applies or is satisfied. See the [Regulatory Applicability Questions](../../../reference/regulatory-applicability-questions.md) appendix.
 
 ## Prerequisites
 
@@ -41,11 +44,13 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 **Path:** Solutions > Data loss prevention > Policies > Create policy
 
 1. Create a DLP policy named "FSI-AI-Disclosure-Enforcement".
-2. Add a condition that detects outbound emails or documents that:
-   - Were created or modified using Copilot (detected via metadata or sensitivity label)
-   - Are sent to external recipients
-   - Do not contain the required AI disclosure statement
-3. Set the action to **Block with override** — requiring the sender to acknowledge AI disclosure requirements.
+2. Add conditions using supported Purview primitives, such as:
+   - The **AI-Assisted Content** sensitivity label or approved content markings
+   - Sensitive information types, trainable classifiers, or firm keyword dictionaries that identify regulated client-facing content
+   - External recipients or external sharing locations
+   - Missing required AI disclosure statement
+3. Do not assume a native "AI-generated content" DLP condition or generic Copilot-created metadata unless verified in the tenant.
+4. Set the action to **Block with override** — requiring the sender to acknowledge AI disclosure requirements.
 
 ### Step 4: Establish AI Disclosure Templates
 
@@ -69,9 +74,9 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 
 ## Regulatory Alignment
 
-- **SEC Marketing Rule (206(4)-1)** — Supports compliance with advertising and marketing disclosure requirements
-- **SEC Reg BI** — Helps meet disclosure obligations when AI assists in recommendation communications
-- **FINRA Rule 2210** — Supports fair and balanced communication requirements with AI transparency
+- **SEC Marketing Rule (206(4)-1)** — Provides evidence for advertising and marketing disclosure review; applicability: confirm
+- **SEC Reg BI** — Provides evidence for disclosure review when AI assists in recommendation communications; applicability: confirm
+- **FINRA Rule 2210** — Provides evidence for fair and balanced communication review with AI transparency; applicability: confirm
 
 ## Next Steps
 

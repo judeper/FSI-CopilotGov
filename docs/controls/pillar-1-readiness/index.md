@@ -23,7 +23,7 @@ Key regulatory drivers for pre-deployment readiness:
 
 - **GLBA §501(b):** Requires financial institutions to protect customer information through administrative, technical, and physical safeguards -- which begins with knowing where that information resides and who can access it.
 - **FFIEC IT Handbook:** Expects institutions to conduct risk assessments before deploying new technology, including AI-powered tools.
-- **Interagency AI Guidance (2023):** Calls for appropriate due diligence and risk management before adopting AI services from third-party providers.
+- **AI governance source monitoring:** Firms should identify current primary sources, internal policies, and supervisory expectations before mapping AI-service due diligence to regulatory obligations.
 - **Sarbanes-Oxley §§302/404 (where applicable to ICFR):** Internal control requirements that extend to AI-assisted financial reporting and document generation workflows.
 - **FINRA Rule 3110 — supervisory systems and WSPs:** Supervisory obligations that must account for how Copilot may draft or modify regulated communications.
 

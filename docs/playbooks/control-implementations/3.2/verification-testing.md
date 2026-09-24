@@ -2,6 +2,9 @@
 
 Test cases and evidence collection procedures to confirm data retention policies are correctly applied to Copilot interaction data and generated content.
 
+!!! note "Regulatory applicability"
+    Regulatory citations identify commonly referenced requirements. Applicability, record classification, and retention periods are a firm and counsel determination; this framework does not assert that any regulation applies or is satisfied. See the [Regulatory Applicability Questions](../../../reference/regulatory-applicability-questions.md) appendix.
+
 ## Test Cases
 
 ### Test 1: Retention Policy Deployment Verification
@@ -55,7 +58,7 @@ Test cases and evidence collection procedures to confirm data retention policies
   3. Delete the Teams meeting transcript (or a specific Teams message) and wait 24 hours.
   4. Confirm that the Copilot-generated meeting recap (threaded summary) remains accessible — it should be retained independently by the Microsoft Copilot experiences retention policy.
   5. Use Content Search in Purview to verify the summary is still discoverable after source content deletion.
-- **Expected Result:** The Copilot-generated meeting recap remains retained and discoverable after the source Teams meeting content is deleted. FINRA Rule 4511(c) preservation requirements are met for both source and summary content.
+- **Expected Result:** The Copilot-generated meeting recap remains retained and discoverable after the source Teams meeting content is deleted. Firms should ask counsel to review whether the evidence is appropriate for FINRA Rule 4511(c) preservation expectations for source and summary content.
 - **Evidence:** Content search results showing the Copilot summary is retained independently of the deleted source content; screenshots comparing content before and after source deletion.
 
 ### Test 6: New Retention Location Categories Validation
@@ -69,16 +72,17 @@ Test cases and evidence collection procedures to confirm data retention policies
 - **Expected Result:** The three Purview retention location categories are visible. All FSI M365 Copilot retention policies target the Microsoft Copilot experiences location.
 - **Evidence:** Screenshot of retention policy location selector showing the three categories; screenshot of existing policies confirming Microsoft Copilot experiences is selected.
 
-### Test 7: Priority Cleanup Scope Verification (Recommended Tier — if configured)
+### Test 7: Priority Cleanup Approval Verification (Recommended Tier — if configured)
 
-- **Objective:** Confirm that priority cleanup applies only to the intended narrow scope of unsent Copilot drafts
+- **Objective:** Confirm that Priority cleanup is used only for a documented Microsoft-supported storage-remediation scenario and follows the required simulation and approval workflow
 - **Steps:**
-  1. Review the `FSI-Copilot-Draft-Priority-Cleanup` policy configuration.
-  2. Verify the policy is scoped to personal OneDrive accounts only (not shared sites or SharePoint).
-  3. Confirm that shared or sent documents in OneDrive are not subject to the cleanup policy (test by placing a shared document in the same OneDrive location and verifying it is not captured by the cleanup scope).
-  4. Verify the retention period is documented in the firm's records management schedule with regulatory rationale.
-- **Expected Result:** Priority cleanup policy is narrow in scope. No shared or sent documents are captured. Scope decision is documented.
-- **Evidence:** PowerShell output of policy configuration; records management schedule entry showing regulatory rationale.
+  1. Review the Priority cleanup request and confirm the scenario is documented (for example, stale Teams meeting recordings/transcripts or departed-user Preservation Hold Library cleanup).
+  2. Verify the mandatory simulation completed and the reviewed item sample matches the approved scenario.
+  3. Confirm that records and regulatory records are excluded from scope.
+  4. Confirm required approvals are recorded, including eDiscovery Administrator approval if any eDiscovery hold applies.
+  5. Verify the cleanup rationale is documented in the firm's records management schedule.
+- **Expected Result:** Priority cleanup is narrow in scope, simulation-backed, approved by the required roles, and does not target records or regulatory records.
+- **Evidence:** Priority cleanup simulation report, approval record, exclusion evidence for records/regulatory records, and records management schedule entry showing regulatory rationale.
 
 ## Evidence Collection
 
@@ -95,11 +99,11 @@ Test cases and evidence collection procedures to confirm data retention policies
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Rule 17a-4(a) | 6-year retention for broker-dealer records | Microsoft Copilot experiences retention policy covers Copilot Chat history and meeting recaps for 6-year regulated tier |
-| SEC Rule 17a-3(a)(17) | All communications relating to the member's business | Conservative Regulated-tier approach retains all Copilot-generated content regardless of draft status |
-| FINRA Rule 4511 | Books-and-records retention | Helps meet retention obligations for AI interaction records across all Copilot surfaces |
-| FINRA Rule 4511(c) | Preservation format and media requirements | Threaded summary retention test verifies both source and summary content are preserved in accessible format |
-| GLBA | Financial record preservation | Supports privacy and record preservation requirements for AI-processed customer information |
+| SEC Rule 17a-4(a) | 6-year broker-dealer-record citation | Microsoft Copilot experiences retention policy can be configured for a 6-year firm-approved example; applicability: confirm |
+| SEC Rule 17a-3(a)(17) | Communications-record citation | Conservative Regulated-tier retention of all Copilot-generated content is a firm-approved example pending counsel confirmation |
+| FINRA Rule 4511 | Books-and-records retention citation | AI interaction records in scope across Copilot surfaces: confirm |
+| FINRA Rule 4511(c) | Preservation format and media citation | Threaded summary retention test provides evidence for counsel review of source and summary preservation |
+| GLBA | Financial-record/customer-information citation | Privacy and record-preservation applicability for AI-processed customer information: confirm |
 
 ## Next Steps
 

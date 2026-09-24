@@ -2,6 +2,9 @@
 
 Test cases and evidence collection procedures to validate AI disclosure and transparency controls for Copilot-generated content.
 
+!!! note "Regulatory applicability"
+    Regulatory citations identify commonly referenced requirements. Applicability, record classification, and retention periods are a firm and counsel determination; this framework does not assert that any regulation applies or is satisfied. See the [Regulatory Applicability Questions](../../../reference/regulatory-applicability-questions.md) appendix.
+
 ## Test Cases
 
 ### Test 1: Sensitivity Label Application
@@ -53,18 +56,18 @@ Test cases and evidence collection procedures to validate AI disclosure and tran
 | Evidence Item | Source | Format | Retention |
 |--------------|--------|--------|-----------|
 | Label configuration | Purview portal | Screenshot | With control documentation |
-| DLP policy test results | Message trace | CSV | 7 years |
-| Marketing review records | Communication compliance | Redacted screenshots | 7 years |
+| DLP policy test results | Message trace | CSV | 7 years; retention schedule: confirm |
+| Marketing review records | Communication compliance | Redacted screenshots | 7 years; retention schedule: confirm |
 | Disclosure template samples | Email/Document | PDF copies | With control documentation |
 
 ## Compliance Mapping
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Marketing Rule | Advertising disclosure requirements | Supports compliance with AI-assisted content disclosure in marketing materials |
+| SEC Marketing Rule | Advertising disclosure citation | Provides evidence for AI-assisted content disclosure review in marketing materials; applicability: confirm |
 | SEC Press Release 2024-36 (Delphia/Global Predictions) | Enforcement actions against false or misleading AI-use statements | Reinforces review of AI capability claims before external distribution |
-| SEC Reg BI | Client communication transparency | Helps meet disclosure obligations for AI-assisted recommendations |
-| FINRA 2210 | Fair and balanced communication | Supports transparency in AI-generated public communications |
+| SEC Reg BI | Client communication transparency citation | Provides evidence for disclosure review of AI-assisted recommendations; applicability: confirm |
+| FINRA 2210 | Fair and balanced communication citation | Provides evidence for transparency review in AI-generated public communications; applicability: confirm |
 
 ## Next Steps
 

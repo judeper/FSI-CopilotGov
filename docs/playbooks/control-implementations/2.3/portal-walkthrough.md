@@ -12,16 +12,17 @@ Step-by-step portal configuration for implementing Conditional Access policies t
 
 ## Steps
 
-### Step 1: Verify Enterprise Copilot Platform App ID
+### Step 1: Discover the Enterprise Copilot Platform App ID in Your Tenant
 
 **Portal:** Microsoft Entra Admin Center
-**Path:** Microsoft Entra admin center > Protection > Conditional Access > Policies
+**Path:** Microsoft Entra admin center > Entra ID > Enterprise applications
 
-Before creating or modifying any Copilot CA policy, confirm you are using the correct Enterprise Copilot Platform App ID:
+Before creating or modifying any Copilot CA policy, confirm the tenant's Enterprise Copilot Platform service principal and Application ID. Microsoft Learn lists **Enterprise Copilot Platform** as part of the Office 365 Conditional Access app suite, but it directs administrators to look up Application IDs in their own tenant rather than using a published static GUID.
 
-- **Correct App ID:** `fb8d773d-7ef8-4ec0-a117-179f88add510`
-
-Search existing policies for any references to the Copilot app. Use the CA optimization agent to identify policies that may need updating. A misconfigured app ID causes the policy to miss Copilot traffic entirely.
+1. Set **Application type** to **Microsoft Applications**.
+2. Add the **Application ID** column.
+3. Search for **Enterprise Copilot Platform** and record the display name, Application ID, and App owner organization ID.
+4. Search existing policies for references to the tenant-discovered Copilot app. Use the CA optimization agent to identify policies that may need updating. A misconfigured app ID causes the policy to miss Copilot traffic entirely.
 
 ### Step 2: Audit for June 2026 Baseline-Scopes CA Enforcement Change
 
@@ -32,7 +33,7 @@ Beginning June 15, 2026, Entra ID is progressively rolling out enforcement of Co
 
 1. Open the Conditional Access optimization agent
 2. Review all policies scoped to "All resources" that include resource exclusions
-3. Identify any policy that excludes the Enterprise Copilot Platform (`fb8d773d-7ef8-4ec0-a117-179f88add510`)
+3. Identify any policy that excludes the tenant-discovered Enterprise Copilot Platform application
 4. Deploy remediated policies in report-only mode to assess user impact
 5. Enable enforcement early in a test tenant, or verify the tenant's rollout status via the Baseline scopes settings, before the rollout completes
 
@@ -44,7 +45,7 @@ Beginning June 15, 2026, Entra ID is progressively rolling out enforcement of Co
 Create a dedicated Conditional Access policy targeting Copilot workloads:
 - **Name:** "FSI Copilot Access — Compliant Device Required"
 - **Users:** Include Copilot deployment groups; exclude emergency access accounts
-- **Target resources:** Enterprise Copilot Platform (App ID: `fb8d773d-7ef8-4ec0-a117-179f88add510`)
+- **Target resources:** Enterprise Copilot Platform, using the Application ID discovered in your tenant
 - **Conditions:** All client apps, any platform
 - **Grant:** Require device compliance AND require MFA
 

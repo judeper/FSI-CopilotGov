@@ -23,7 +23,7 @@ Before you begin, confirm the following are in place.
 |-------------|---------|
 | **Microsoft 365 E5** (preferred) or **E3 + add-ons** | E5 includes Purview, Defender, and advanced compliance capabilities required for regulated governance. E3 deployments require additional license add-ons — see [License Requirements](../reference/license-requirements.md). |
 | **Microsoft 365 Copilot** | Per-user Copilot license assigned to target users or groups. |
-| **Copilot Chat licensing** | Review the Copilot Chat Basic vs Premium licensing split effective **April 15, 2026**. After this date, Premium features (enterprise data grounding, advanced Copilot capabilities) require a Microsoft 365 Copilot license. Basic features remain available without additional licensing. Plan license assignments and budget before the deadline. |
+| **Copilot licensing** | Review Microsoft Learn's Copilot Chat Basic, Microsoft 365 Copilot Basic, and Microsoft 365 Copilot Premium distinctions. Also check tenant Message Center posts MC1253858/MC1253863 for any April 15, 2026 in-app access change, seat threshold, and affected-app scope before planning license assignments and budget. |
 | **Purview add-ons** (if E3) | Information Protection, Data Loss Prevention, Audit (Premium), eDiscovery (Premium), Communication Compliance, and Insider Risk Management require separate licenses on E3. |
 
 ### Administrative Roles

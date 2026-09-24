@@ -214,9 +214,9 @@ $snapshot = @"
 - AI Recommendations: Verify in Viva Learning Admin
 
 ### Viva Goals
-- Access Controls: Verify organizational hierarchy restrictions
-- AI Features: Verify in Viva Goals Admin
-- Data Boundaries: Verify Copilot content access scope
+- Product status: Retired December 31, 2025
+- Evidence: Verify historical data export or migration record
+- Current scope: No live Copilot configuration
 
 ### Viva Connections
 - Dashboard Content: Verify sensitivity label compliance

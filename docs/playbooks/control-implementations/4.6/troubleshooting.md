@@ -10,7 +10,7 @@ Common issues and resolution steps for Copilot impact measurement using Viva Ins
 - **Root Cause:** Viva Insights may not be licensed or configured, data pipeline delay, or insufficient Copilot usage for analysis.
 - **Resolution:**
   1. Verify Viva Insights licenses are assigned to the analysis population.
-  2. Confirm Copilot has been active for at least 30 days (initial data requires history).
+  2. Confirm Copilot licenses and activity have been present long enough for dashboard processing (Microsoft documents data typically available within seven days after license assignment, with dashboard lag).
   3. Check that the Viva Insights data sources include Copilot interaction data.
   4. Verify the minimum group size is met for the selected population.
 
@@ -27,9 +27,9 @@ Common issues and resolution steps for Copilot impact measurement using Viva Ins
 ### Issue 3: Inaccurate Time Savings Estimates
 
 - **Symptoms:** Viva Insights reports time savings that seem unrealistically high or low compared to user feedback.
-- **Root Cause:** Time savings algorithms use heuristic models that may not accurately reflect all types of Copilot usage.
+- **Root Cause:** Impact estimates are directional and may not accurately reflect all types of Copilot usage or business outcomes.
 - **Resolution:**
-  1. Supplement Viva Insights time savings estimates with direct user surveys.
+  1. Supplement Viva Insights directional impact estimates with direct user surveys.
   2. Validate estimates against specific use cases with measurable time savings.
   3. Use the estimates as directional indicators rather than precise measurements.
   4. Document the methodology and limitations when presenting ROI data to leadership.
@@ -57,7 +57,7 @@ Common issues and resolution steps for Copilot impact measurement using Viva Ins
 |----------|-----------|-----------------|
 | High | No Viva Insights data available for governance reporting | IT Admin + Microsoft Support |
 | Medium | Privacy settings preventing required analysis | Privacy officer + Viva admin |
-| Medium | Inaccurate ROI reporting to leadership | Analytics team for methodology review |
+| Medium | Inaccurate value estimate reporting to leadership | Analytics team for methodology review |
 | Low | Minor dashboard display issues | IT support |
 
 ## Related Resources

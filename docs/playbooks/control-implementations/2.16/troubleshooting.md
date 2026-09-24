@@ -32,7 +32,12 @@ Common issues and resolution steps for federated connector inventory, scoping, a
 ### Issue 6: The Retired PowerShell Toggle Conflicts with the Portal
 
 - **Symptoms:** Historical `Set-FederatedConnectorToggle` output indicates connectors were disabled, but **Allowed agent types** or connector-specific access settings show a different posture.
-- **Resolution:** Treat the current portal settings and controlled end-user test as authoritative evidence. Microsoft retired the command-line toggle on **August 25, 2026**. If the tenant received a Message Center post directing administrators to reapply the prior choice, follow that tenant-specific window and retain the notice with the change evidence; do not infer a universal reapplication deadline.
+- **Resolution:** Treat the current portal settings and controlled end-user test as authoritative evidence. Microsoft Learn states the command-line toggle is being retired by **August 25, 2026** so connector and agent settings are honored from the same global tenant settings. The FAQ states that if an admin previously disabled federated Copilot connectors with `Set-FederatedConnectorToggle`, the setting is honored until **October 20, 2026**, and admins must update **Allowed agent types** by then to continue that behavior after October 20, 2026.
+
+### Issue 7: Write-Capable Federated Connector Tool Appears
+
+- **Symptoms:** A connector exposes create, update, or delete tools in addition to read operations.
+- **Resolution:** Treat the connector as higher risk until the governance record proves admin approval, approved user scope, vendor-risk clearance, source-system permission boundaries, and explicit user-confirmation behavior for each write action. If those conditions are not evidenced, disable the connector or set scope to **No users** pending review.
 
 ## Diagnostic Steps
 
@@ -43,6 +48,7 @@ Common issues and resolution steps for federated connector inventory, scoping, a
 5. Cross-check audit-log operations against the published Microsoft operation set.
 6. Run a controlled DLP test prompt against the connector returning a known keyword.
 7. Reconcile scoped-group membership against the access-decision record.
+8. For write-capable connector tools, run a controlled confirmation-flow test and preserve evidence that create/update/delete actions cannot execute silently.
 
 ## Escalation
 

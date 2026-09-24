@@ -1,32 +1,35 @@
 # Control 2.1: DLP Policies for M365 Copilot Interactions — Troubleshooting
 
-Common issues and resolution steps for DLP policies governing Copilot interactions. Control 2.1 uses two distinct DLP policy types — troubleshooting guidance distinguishes between label-based response blocking (Type 1) and SIT-based prompt blocking (Type 2) issues.
+Common issues and resolution steps for DLP policies governing Copilot interactions. Control 2.1 uses distinct Copilot DLP rule types — troubleshooting guidance distinguishes between label-based response blocking (Type 1), SIT-based prompt blocking (Type 2), and SIT-based web-search restriction (Type 3) issues.
 
 ## Common Issues
 
-### Issue 1: Attempting to Combine Both Policy Types in a Single Policy
+### Issue 1: Attempting to Combine Copilot DLP Rule Types in a Single Rule
 
-- **Symptoms:** Administrator creates one DLP policy intending to cover both label-based response blocking and SIT-based prompt blocking, but only one mechanism appears to work (or neither does correctly)
-- **Root Cause:** Label-based response blocking and SIT-based prompt blocking are architecturally distinct enforcement mechanisms that operate at different points in the Copilot interaction chain. They cannot be combined within a single DLP rule because they target different enforcement points: Type 1 blocks at the grounding/response phase, Type 2 blocks at the user prompt phase. However, they may exist as separate rules within the same policy.
+- **Symptoms:** Administrator creates one DLP rule intending to cover label-based response blocking, SIT-based prompt blocking, and SIT-based web-search restriction, but only one mechanism appears to work (or neither does correctly)
+- **Root Cause:** The Copilot DLP rule types are architecturally distinct enforcement mechanisms that operate at different points in the Copilot interaction chain. They cannot be combined within a single DLP rule because they target different conditions and enforcement points: Type 1 blocks at the grounding/response phase, Type 2 blocks prompt processing, and Type 3 blocks external web search as a grounding source. However, they may exist as separate rules within the same policy.
 - **Resolution:**
-  1. Create two separate DLP rules (they may exist within the same policy or as separate policies):
+  1. Create separate DLP rules (they may exist within the same policy or as separate policies):
      - Rule 1 (Type 1 — Label-Based): conditions use "Content contains sensitivity label" — blocks Copilot from including labeled content in responses
      - Rule 2 (Type 2 — SIT-Based): conditions use "Content contains sensitive information types" — blocks Copilot from processing prompts containing sensitive data
+     - Rule 3 (Type 3 — SIT-Based Web Search Restriction): conditions use "Content contains sensitive information types" — blocks external web search for prompts containing sensitive data while permitted internal Microsoft 365 grounding may still be used
   2. Each rule must be independently configured, tested in simulation mode, and transitioned to enforcement separately
-  3. Verify both policies appear in Purview > DLP > Policies as distinct entries
+  3. Verify the rules appear in Purview > DLP > Policies under their intended policy or policies
 
 ### Issue 2: DLP Policy Not Detecting Sensitive Data in Copilot
 
 - **Symptoms:** Copilot interactions involving known sensitive data do not trigger DLP policy matches or policy tips
 - **Root Cause (Type 1):** The label-based policy may not include the Copilot location, or the sensitivity label on the source document may not match the label specified in the policy condition.
 - **Root Cause (Type 2):** The SIT-based prompt blocking policy may not include the Copilot location, the SIT definition may not match the data pattern typed in the prompt, or the confidence level may be set too high.
+- **Root Cause (Type 3):** The SIT-based web-search restriction rule may not include the Copilot location, the prompt may not match the configured SITs, external web search may not be enabled for the test scenario, or the test may be checking full prompt blocking instead of web-search grounding restriction.
 - **Resolution:**
-  1. Verify both policies include Microsoft 365 Copilot as a monitored location (in Purview DLP policy scope)
+  1. Verify each policy includes Microsoft 365 Copilot as a monitored location (in Purview DLP policy scope)
   2. For Type 1: test the sensitivity label condition by opening the labeled document in Office apps and confirming the label is applied correctly
   3. For Type 2: test the SIT against the specific data pattern using Purview > Data Classification > Content Explorer
-  4. Lower the confidence level threshold (try 75 instead of 85) and re-test
-  5. Verify each policy is not in "off" mode — check both policy and rule enable status
-  6. Allow 24 hours for policy propagation after any changes
+  4. For Type 3: test a prompt containing a configured SIT with a scenario that would otherwise use external web search, then verify web search is blocked while permitted internal grounding can still occur
+  5. Lower the confidence level threshold (try 75 instead of 85) and re-test
+  6. Verify each policy is not in "off" mode — check both policy and rule enable status
+  7. Allow 24 hours for policy propagation after any changes
 
 ### Issue 3: Default Copilot DLP Policy Not Visible
 
@@ -58,7 +61,7 @@ Common issues and resolution steps for DLP policies governing Copilot interactio
 - **Resolution:**
   1. Review all DLP policies for scope overlap using `Get-DlpCompliancePolicy`
   2. Set explicit priority ordering so the most restrictive policy takes precedence
-  3. Consolidate overlapping policies where possible (but do NOT consolidate Type 1 and Type 2 — keep them as separate policies)
+  3. Consolidate overlapping policies where possible, but keep Type 1, Type 2, and Type 3 as separate rules
   4. Use policy conditions to differentiate scope (e.g., by location, content type, or label)
   5. Test the combined effect of all policies on sample content
 
@@ -96,13 +99,13 @@ Common issues and resolution steps for DLP policies governing Copilot interactio
 
 ## Diagnostic Steps
 
-1. **Verify both policy types exist:** `Get-DlpCompliancePolicy | Where-Object { $_.Name -match "Copilot" } | Select Name, Mode, Enabled`
-2. **Check rule configuration for each policy type:** `Get-DlpComplianceRule -Policy <name>`
+1. **Verify all Copilot DLP rule types exist:** `Get-DlpCompliancePolicy | Where-Object { $_.Name -match "Copilot" } | Select Name, Mode, Enabled`
+2. **Check rule configuration for each rule type:** `Get-DlpComplianceRule -Policy <name>`
 3. **Review recent incidents by policy type:** Run Script 4 for the past 7 days and filter by policy name
 4. **Locate default policy:** Check MAC > Copilot > Security for the Microsoft-deployed default policy
 5. **Test with known data:** Create a test prompt with known SIT patterns; create a test document with a known label
 6. **Check audit logs:** Search for DLP events in the unified audit log
-7. **Use Security Copilot policy explanations:** In the Purview DLP console, use AI-powered policy explanations to review complex rule logic and verify both policy types are configured as intended
+7. **Use Security Copilot policy explanations:** In the Purview DLP console, use AI-powered policy explanations to review complex rule logic and verify all Copilot DLP rule types are configured as intended
 
 ## Escalation
 
@@ -115,7 +118,7 @@ Common issues and resolution steps for DLP policies governing Copilot interactio
 
 ## Related Resources
 
-- [Portal Walkthrough](portal-walkthrough.md) — DLP policy configuration for both policy types
-- [PowerShell Setup](powershell-setup.md) — DLP automation scripts for both policy types
+- [Portal Walkthrough](portal-walkthrough.md) — DLP policy configuration for all Copilot DLP rule types
+- [PowerShell Setup](powershell-setup.md) — DLP automation scripts for all Copilot DLP rule types
 - [Verification & Testing](verification-testing.md) — DLP validation procedures
 - Back to [Control 2.1](../../../controls/pillar-2-security/2.1-dlp-policies-for-copilot.md)

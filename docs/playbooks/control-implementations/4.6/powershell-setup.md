@@ -25,7 +25,7 @@ $period = "D30"
 
 # Get Copilot usage data
 Invoke-MgGraphRequest -Method GET `
-    -Uri "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUsageUserDetail(period='$period')" `
+    -Uri "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='$period',version='v1')" `
     -OutputFilePath "CopilotUsage_Impact_$(Get-Date -Format 'yyyyMMdd').csv"
 
 # Get email activity for comparison
@@ -109,7 +109,7 @@ Write-Host "==========================================`n"
 Write-Host "--- Copilot Usage Summary (Graph API) ---" -ForegroundColor Yellow
 try {
     $usageSummary = Invoke-MgGraphRequest -Method GET `
-        -Uri "https://graph.microsoft.com/v1.0/reports/microsoft365CopilotUsageSummary(period='D30')"
+        -Uri "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D30',version='v1')"
     $usageSummary | ConvertTo-Json -Depth 5 | Out-File "VivaInsights_CopilotSummary_$(Get-Date -Format 'yyyyMMdd').json"
     Write-Host "  Copilot usage summary exported successfully" -ForegroundColor Green
 } catch {

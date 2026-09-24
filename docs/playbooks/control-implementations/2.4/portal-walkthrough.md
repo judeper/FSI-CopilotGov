@@ -1,13 +1,13 @@
 # Control 2.4: Information Barriers for Copilot (Chinese Wall) — Portal Walkthrough
 
-Step-by-step portal configuration for implementing Information Barriers that enforce Chinese Wall restrictions in Copilot interactions.
+Step-by-step portal configuration for implementing Information Barriers and validating ethical-wall restrictions for approved Copilot interactions.
 
 ## Prerequisites
 
 - Purview Compliance Admin role
 - Microsoft 365 E5 or E5 Compliance license
 - Entra ID user attributes populated (department, segment identifiers)
-- Chinese Wall policy requirements documented by compliance team
+- Ethical-wall / Chinese Wall policy requirements documented by Legal/Compliance
 
 ## Steps
 
@@ -23,6 +23,8 @@ Create segments based on organizational units that require information separatio
 - Retail Banking / Wealth Management
 - Corporate Treasury
 - Compliance / Legal
+
+Legal/Compliance should determine whether SEC Rule 10b-5, FINRA Rule 5280, FINRA Rule 2241, FINRA Rule 2242, or firm policy require these or other segments before the playbook is treated as a control requirement.
 
 Define each segment using Entra ID user attributes (department, custom attribute, or group membership).
 
@@ -53,10 +55,11 @@ After creating all policies, apply them to activate enforcement. Policy applicat
 **Portal:** Microsoft Purview
 **Path:** Purview > Information barriers > Status
 
-Verify that Copilot respects Information Barrier policies:
-- Users in the Investment Banking segment should not receive Copilot responses grounded on Research segment content
-- Copilot Chat and standard Copilot surfaces should not surface content across barrier boundaries regardless of technical access permissions
-- **Note:** Channel Agent in Teams does NOT respect Information Barriers — see Step 6 for required actions
+Verify that approved Copilot scenarios respect the underlying workload boundaries:
+- Users in the Investment Banking segment should not receive Copilot responses grounded on Research segment SharePoint/OneDrive or Teams content used for the test
+- Outlook/email scenarios require separate controls because Microsoft Learn states Information Barriers do not restrict Exchange Online email communication
+- Copilot Pages, Copilot Notebooks, and embedded-file agent knowledge require separate controls because Information Barriers are not supported for SharePoint Embedded content
+- **Note:** Channel Agent in Teams does NOT support Information Barriers — see Step 6 for required actions
 
 ### Step 5: Configure Barrier Exception Handling
 
@@ -72,18 +75,18 @@ Document and configure any approved exceptions to barrier policies:
 1. **Audit channel membership** for the target Teams channel. Navigate to Microsoft Teams Admin Center or review the Teams channel members list.
 2. **Confirm the channel is homogeneous** — all members must belong to a single IB segment, or the channel must contain only non-IB-restricted users.
 3. **Do not deploy Channel Agent** in any channel with members from IB-separated segments (e.g., a channel containing both Investment Banking and Research members).
-4. **Apply sensitivity labels** to content in channels adjacent to IB segments (Microsoft Purview portal > Data classification > Content explorer) to prevent Channel Agent from processing labeled content.
-5. **Document the Channel Agent IB limitation** in the firm's supervisory procedures and information barrier policy. This documentation is required per SEC Rule 10b-5 and FINRA Rules 5280, 2241, and 2242.
+4. **Do not rely on sensitivity-label DLP as an IB substitute.** Microsoft Learn states DLP cannot prevent Channel Agent from summarizing labeled files; use app restriction, channel membership controls, and removal from mixed-segment channels instead.
+5. **Document the Channel Agent IB limitation** in the firm's supervisory procedures and information barrier policy where Legal/Compliance determines ethical-wall controls apply.
 
-**Portal path for channel membership review:** Microsoft Teams Admin Center > Teams > [Channel name] > Members
+**Portal path for channel membership review:** Microsoft Teams Admin Center > Teams > [team] > Channels > [channel] > Members; also verify Microsoft 365 admin center > Agents / agent registry views where available in your tenant.
 
 ## FSI Recommendations
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Define segments for primary Chinese Wall divisions; implement core barrier policies; disable Channel Agent in IB-affected Teams channels |
-| **Recommended** | Full segment coverage with exception management process; verify Copilot enforcement; deploy Channel Agent only in homogeneous-segment channels with documented membership audits; apply sensitivity labels to IB-adjacent channel content |
-| **Regulated** | Comprehensive barrier policies per regulatory requirements; documented exception process with time-limited approvals; continuous monitoring of barrier effectiveness; Channel Agent IB limitation documented in supervisory procedures; Channel Agent prohibited in any channel with mixed IB-segment membership; automated monitoring via DSPM for AI |
+| **Baseline** | Define segments for primary ethical-wall divisions approved by Legal/Compliance; implement core barrier policies; disable Channel Agent in IB-affected Teams channels |
+| **Recommended** | Full approved segment coverage with exception management process; verify Copilot scenarios through tenant functional tests; deploy Channel Agent only in homogeneous-segment channels with documented membership audits; document that sensitivity-label DLP is not an IB substitute for Channel Agent |
+| **Regulated** | Comprehensive barrier policies per firm-approved requirements; documented exception process with time-limited approvals; continuous monitoring of barrier effectiveness where telemetry supports it; Channel Agent IB limitation documented in supervisory procedures; Channel Agent prohibited in any channel with mixed IB-segment membership |
 
 ## Next Steps
 

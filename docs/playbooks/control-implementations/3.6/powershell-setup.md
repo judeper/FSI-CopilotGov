@@ -27,11 +27,12 @@ $endDate = Get-Date
 
 $reviewActions = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -Operations "SupervisionReviewAction" `
+    -RecordType AeD `
+    -Operations SupervisoryReviewTag `
     -ResultSize 5000
 
 $summary = @{
-    TotalReviewed     = ($reviewActions | Where-Object { $_.Operations -eq "SupervisionReviewAction" }).Count
+    TotalReviewed     = ($reviewActions | Where-Object { $_.Operations -eq "SupervisoryReviewTag" }).Count
     Approved          = ($reviewActions | Where-Object { $_.AuditData -like "*Approve*" }).Count
     Escalated         = ($reviewActions | Where-Object { $_.AuditData -like "*Escalate*" }).Count
     FalsePositives    = ($reviewActions | Where-Object { $_.AuditData -like "*FalsePositive*" }).Count
@@ -62,7 +63,7 @@ Write-Host "Registered Representatives: $($reps.Count)"
 Write-Host "Ratio: 1:$ratio"
 
 if ($ratio -gt 50) {
-    Write-Warning "Supervisor ratio exceeds recommended 1:50 — consider adding supervisors"
+    Write-Warning "Supervisor ratio exceeds default 1:50 threshold — add supervisors or document the firm-approved threshold"
 }
 ```
 
@@ -75,12 +76,13 @@ $endDate = Get-Date
 
 $matches = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -Operations "SupervisionPolicyMatch" `
+    -Operations SupervisionRuleMatch `
     -ResultSize 5000
 
 $reviews = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -Operations "SupervisionReviewAction" `
+    -RecordType AeD `
+    -Operations SupervisoryReviewTag `
     -ResultSize 5000
 
 $totalMatches = $matches.Count
@@ -103,7 +105,7 @@ $endDate = Get-Date
 
 $regBIMatches = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -Operations "SupervisionPolicyMatch" `
+    -Operations SupervisionRuleMatch `
     -ResultSize 5000
 
 $report = $regBIMatches | ForEach-Object {

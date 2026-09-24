@@ -1,6 +1,9 @@
 # Control 3.8: Model Risk Management Alignment (SR 26-2 / OCC Bulletin 2026-13, applying SR 11-7 / OCC 2011-12 principles to generative AI) — Portal Walkthrough
 
-Step-by-step portal configuration for aligning Microsoft 365 Copilot governance with OCC Bulletin 2011-12, OCC Bulletin 2025-26 (proportionality), and Federal Reserve SR 11-7 model risk management requirements.
+Step-by-step portal configuration for aligning Microsoft 365 Copilot governance with the firm's approved model-risk policy, the current SR 26-2 / OCC Bulletin 2026-13 model-risk context, and OCC Bulletin 2025-26 community-bank proportionality guidance where applicable.
+
+!!! note "Regulatory applicability"
+    Regulatory citations identify commonly referenced requirements. Applicability, record classification, and retention periods are a firm and counsel determination; this framework does not assert that any regulation applies or is satisfied. See the [Regulatory Applicability Questions](../../../reference/regulatory-applicability-questions.md) appendix.
 
 ## Prerequisites
 
@@ -19,18 +22,18 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 2. Download the Microsoft 365 Copilot AI Impact Assessment and Model Card documentation.
 3. Determine the appropriate inventory path based on the institution's size and Copilot usage scope:
 
-   **Path A — Community banks applying OCC Bulletin 2025-26 proportionality (Tier 3 / Limited-scope):**
+   **Path A — Community banks applying OCC Bulletin 2025-26 proportionality as firm policy (Tier 3 / Limited-scope):**
    - Create a model inventory entry with: model name, vendor (Microsoft Corporation), deployment date, usage scope (internal productivity only), risk tier (Tier 3 / Limited-scope), designated model owner, and the proportionality rationale citing OCC Bulletin 2025-26
    - Document that validation approach relies on vendor attestation and periodic output review rather than full MRM lifecycle
-   - No additional validation infrastructure required at this tier
+   - Do not infer additional validation infrastructure solely from the 2026 revised guidance; approve the validation scope through the firm's model-risk governance process
 
    **Path B — Institutions with broader Copilot use (Tier 2 / Medium):**
    - Create a complete model inventory entry covering all fields in the Model Inventory Entry template in Control 3.8
    - Assign risk tier and document rationale for tier selection
    - Include output monitoring schedule and vendor due diligence review cadence
 
-   **Path C — Regulated institutions with client-facing or lending Copilot use (Tier 1 / High):**
-   - Create a full model inventory entry with all required OCC 2011-12 fields
+   **Path C — Regulated institutions with client-facing or lending Copilot use (Tier 1 / High, if approved by legal/MRM owners):**
+   - Create a full model inventory entry with the firm's approved MRM fields (historical OCC 2011-12 fields may be used as an internal-policy reference where approved)
    - Include validation plan, output monitoring metrics, fair lending testing protocol, and governance chain
    - Schedule quarterly output review and annual comprehensive MRM assessment
 
@@ -75,18 +78,18 @@ Step-by-step portal configuration for aligning Microsoft 365 Copilot governance 
 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
-| Model inventory entry | Required (all sizes; Tier 3 for community banks per OCC Bulletin 2025-26) | Required with tier classification and output monitoring schedule | Required with full OCC 2011-12 fields and annual validation report |
-| Model validation frequency | Annual (vendor attestation review) | Semi-annual output quality assessment | Quarterly output review + annual comprehensive assessment |
+| Model inventory entry | Required (all sizes; Tier 3 for community banks only if approved by firm policy and usage scope) | Required with tier classification and output monitoring schedule | Required with full firm-approved MRM fields and validation report |
+| Model validation frequency | Annual (vendor attestation review) policy example | Semi-annual output quality assessment policy example | Quarterly output review + annual comprehensive assessment policy example |
 | Performance monitoring | Manual supervisory review | Automated alerts | Continuous monitoring with defined thresholds |
 | Vendor risk assessment | Annual | Semi-annual | Annual + event-driven |
 | Proportionality documentation | Required for community banks (cite OCC Bulletin 2025-26) | Document tier rationale | N/A (full framework applies) |
 
 ## Regulatory Alignment
 
-- **OCC Bulletin 2011-12** — Supports compliance with model risk management framework requirements
-- **OCC Bulletin 2025-26** — Proportionality guidance for community banks; justification path for simplified MRM approach
-- **Federal Reserve SR 11-7** — Helps meet supervisory guidance on model risk management
-- **OCC Third-Party Risk Management** — Supports vendor risk management for AI services
+- **OCC Bulletin 2026-13 / Federal Reserve SR 26-2** — Current revised model-risk-management context; generative and agentic AI are outside the guidance's scope
+- **OCC Bulletin 2025-26** — Community-bank proportionality clarification; use only as part of a documented firm-policy rationale
+- **Historical SR 11-7 / OCC Bulletin 2011-12 principles** — Voluntary internal-policy reference only unless legal/MRM owners approve a current supervisory-source mapping for Copilot
+- **OCC Third-Party Risk Management** — Provides a vendor-risk reference for AI services; applicability: confirm
 
 ## Next Steps
 

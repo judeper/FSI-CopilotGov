@@ -12,6 +12,8 @@ on:
     branches: [main]
     paths:
       - 'docs/**/*.md'
+      - '.github/workflows/link-check.yml'
+      - '.github/workflows/mlc-config.json'
   workflow_dispatch:
   schedule:
     # Run weekly on Sundays at 2:00 AM UTC to check for stale external links
