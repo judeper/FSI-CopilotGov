@@ -12,7 +12,7 @@ Automation workflow for collecting supplemental federated connector inventory, i
 
 > **Important:** Federated connector and MCP surface APIs continue to evolve. Validate endpoint and operation names against the current Microsoft Learn references before automating.
 
-> **Retired toggle:** Microsoft retired `Set-FederatedConnectorToggle` on **August 25, 2026**. Do not run it to configure or verify federated connector access, and do not accept historical cmdlet output as current-state evidence. Use **Agents > Settings > Allowed agent types** for the tenant-wide publisher-category posture and **Copilot connectors > Your connections** for connector-specific allowed-user scope and staged rollout.
+> **CLI toggle deprecation:** Microsoft Learn states `Set-FederatedConnectorToggle` is being deprecated / retired by **August 25, 2026** so connector and agent settings are honored from the same global tenant settings. Do not run historical CLI output as current-state evidence. Use **Agents > Settings > Allowed agent types** for the tenant-wide publisher-category posture, **Copilot connectors > Your connections** for connector-specific allowed-user scope and staged rollout, and controlled user tests for effective access.
 
 ## Required Portal Evidence
 
@@ -22,6 +22,7 @@ Before running the supplemental scripts, capture:
 2. Each in-scope connector's enabled state, allowed-user scope, and **Staged rollout** groups from **Copilot connectors > Your connections**.
 3. For tenants that received a Message Center reapplication notice after previously using the cmdlet, the tenant-specific notice and evidence that the choice was reapplied within that notice's window.
 4. Controlled access tests showing that approved users can connect only within their source-system permissions and unapproved users cannot connect or invoke the connector. Connector inventory or administrator catalog visibility alone does not prove effective access.
+5. For any connector exposing create/update/delete tools, evidence that the tenant view distinguishes read from write/delete tools, that the connector is explicitly approved, and that user confirmation is required for write actions.
 
 ## Script Flow
 

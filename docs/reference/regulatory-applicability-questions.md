@@ -9,6 +9,34 @@ This appendix captures open applicability questions that each firm should resolv
 
 ---
 
+## Control 2.14 — Declarative and SharePoint Agents Governance
+
+1. Which regulatory citations, if any, should the firm treat as directly applicable to declarative agents and SharePoint-backed agents in its environment, and which should remain contextual governance considerations only?
+2. For SharePoint-backed agents that surface customer NPI, MNPI, or regulated records, what firm-approved evidence proves that source-site permissions, labels, sharing posture, and agent audience controls satisfy the firm's safeguard and supervisory requirements?
+3. Should Entra Agent ID and Conditional Access for agents be mandatory internal requirements for any broadly shared or high-risk declarative agent, or only tenant-verified optional controls where licensing and product support are available?
+4. If third-party model-provider settings or external-publisher agents are available in the tenant, what approval, data-residency, and vendor-risk evidence is required before any such provider or agent can process firm data?
+
+## Control 2.16 — Federated Connector and MCP Governance
+
+1. For federated connector data retrieved in real time through the user's identity, which regulatory obligations does the firm consider triggered: third-party risk, customer-information safeguards, books-and-records, privacy, data residency, information barriers, or none without a specific use case?
+2. What firm-approved evidence is required to show that **Allowed agent types**, connector-specific allowed-user scope, staged rollout, and controlled end-user tests prove effective connector access posture?
+3. Before enabling create, update, or delete tools for federated connectors, what approvals are required for write-capable third-party actions, explicit user confirmation, audit retention, source-system rollback, and segregation-of-duties review?
+4. For Work IQ MCP in Copilot Studio, does the firm permit preview usage, usage-based billing, and administrator-enabled write operations; if yes, what risk acceptance, spending policy, data-classification, and supervision evidence is required?
+
+## Control 2.17 — Cross-Tenant Agent Federation
+
+1. Which external-agent patterns are in scope for this control in the firm's tenant: Entra Agent ID-backed agents, BYO MCP servers, Copilot Studio A2A endpoints, externally published agents, or another pattern?
+2. For each in-scope pattern, which tenant control is legally and operationally authoritative for permit/block decisions, and what evidence proves that CTAP, Agent Registry, Agents > Tools, Copilot Studio, or another surface actually controls that pattern?
+3. When an external A2A endpoint receives full chat history or structured conversation metadata, what data-residency, privacy, confidentiality, records-retention, and vendor-risk obligations does the firm apply?
+4. What termination evidence is required to prove that an external tenant or endpoint no longer has residual access after a counterparty relationship ends?
+
+## Control 4.13 — Copilot Extensibility and Agent Operations Governance
+
+1. Which Agent 365, Agent Registry, Agents > Tools, Integrated apps, Graph connector, and Work IQ operational signals are approved examination evidence for the firm's extensibility governance program?
+2. Which agent metrics may be used for formal governance reporting before Agent 365 has accumulated a complete 30-day baseline after license activation, and how should metric incompleteness be disclosed?
+3. Which plugin, MCP server, Work IQ, or external-publisher components constitute third-party relationships under the firm's third-party risk policy, and what reassessment cadence applies to each?
+4. For Work IQ or federated/MCP tools with write capability, what operational evidence is required for approval, user confirmation, auditability, rollback, and ongoing supervision?
+
 ## Control 3.2 — Data Retention Policies
 
 1. For this framework, which Copilot artifacts are records under FINRA 4511, SEC Rules 17a-3/17a-4, and SOX 802: Microsoft 365 Copilot Chat history, Teams meeting recaps, Teams chat Copilot interactions, Copilot Pages/Notebooks, unsent Copilot-assisted drafts, sent Copilot-assisted emails, Copilot-assisted financial analyses, and Copilot audit events; and what retention period applies to each category (3 years, 6 years, 7 years/internal standard, or other)?

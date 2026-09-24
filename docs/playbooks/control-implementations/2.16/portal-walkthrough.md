@@ -29,7 +29,7 @@ Open **Copilot connectors > Your connections** and capture the current list of f
 
 Review **Agents > Settings > Allowed agent types**. Microsoft documents using the Microsoft-published and external-publisher category settings to govern whether federated connectors in those categories are enabled by default, including future connectors. These settings also affect agents and apps in the same publisher categories, so document the broader tenant impact before changing them. Disabling the connector category automatically sets existing connectors' allowed-user scope to **No users**; preserve the current approved assignments before the change so any later Recommended-level exceptions can be reassigned deliberately.
 
-Tenants that previously used `Set-FederatedConnectorToggle` may receive a Message Center post with a tenant-specific window to reapply the choice in this UX. The command-line toggle retired on **August 25, 2026**; do not use its output as evidence of current effective access or assume a universal reapplication deadline.
+Tenants that previously used `Set-FederatedConnectorToggle` may receive a Message Center post with a tenant-specific window to reapply the choice in this UX. Microsoft Learn states the command-line toggle is being deprecated / retired by **August 25, 2026** so connector and agent settings are honored from the same global tenant settings; do not use historical cmdlet output as evidence of current effective access or assume a universal reapplication deadline.
 
 ### Step 3: Decide connector-specific access
 
@@ -42,6 +42,8 @@ Document that federated connectors authenticate with end-user credentials (deleg
 ### Step 5: Maintain the separate MCP server workflow
 
 Use **Agents > Tools** to inventory and block MCP servers available to agents. Review registration requests, declared tools, publisher details, and requested Microsoft Entra permissions through the MCP approval process documented in the parent control. Keep this evidence separate from federated connector publisher-category and allowed-user settings.
+
+For read/write connector tools, track Microsoft 365 roadmap item 570964: create, update, and delete tools for MCP-type federated connectors are listed as **In development** with GA targeted for October 2026. Before enabling any connector with write/update/delete capability, verify in the tenant that admins can view the connector's read and write/delete tools, that unwanted connectors are disabled, and that each create/update/delete action requires explicit user confirmation.
 
 ### Step 6: Wire DLP and audit-log review into the operating model
 

@@ -46,6 +46,12 @@ Test cases and evidence collection for validating federated connector inventory,
 - **Expected Result:** No out-of-scope users appear in the scoped Entra group, and no in-scope user is missing.
 - **Evidence:** `connector-scope-membership.csv` reconciled to the access-decision record.
 
+### Test 8: Write-Capable Connector Tools Require Explicit Approval and Confirmation
+
+- **Objective:** Validate that any create, update, or delete federated-connector tool is explicitly approved and cannot execute silently.
+- **Expected Result:** Admin evidence shows the connector's read and write/delete tools, the connector is approved for the scoped population, and each controlled create/update/delete action requires explicit user confirmation before execution.
+- **Evidence:** Admin-center tool screenshot, approval record, controlled confirmation-flow screenshots, and audit entries for the test action.
+
 ## Evidence Collection
 
 | Evidence Item | Source | Format | Retention |
@@ -59,6 +65,7 @@ Test cases and evidence collection for validating federated connector inventory,
 | Scoped-group membership snapshot | PowerShell / Graph | CSV | Per retention policy |
 | Vendor-risk decision per connector | Governance workspace | PDF / Markdown | Per retention policy |
 | DLP test artifacts | Purview / Compliance portal | PDF / Markdown | Per retention policy |
+| Write-capable connector confirmation test | Microsoft 365 Copilot / source system | PDF / screenshot / audit extract | Per retention policy |
 
 ## Related Resources
 

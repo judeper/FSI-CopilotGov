@@ -69,7 +69,7 @@ See [Agent settings in Microsoft 365 admin center](https://learn.microsoft.com/e
 **Portal:** Microsoft 365 Admin Center
 **Path:** Agents > Tools > Requests (where licensed) and Settings > Integrated apps > User requests (legacy)
 
-1. For agent tools and MCP servers (where the **Agents > Tools** surface is available — currently Frontier tenants), use the **Requests** tab to triage MCP server registration requests; **Approve** (which prompts for the Entra permission consent the server requires) or **Reject** with documented rationale.
+1. For agent tools and MCP servers (where the **Agents > Tools** surface is available), use the **Requests** tab to triage MCP server registration requests; **Approve** (which prompts for the Entra permission consent the server requires) or **Reject** with documented rationale. Microsoft Learn states BYO MCP server registration is currently preview, supported client surfaces vary, and approved servers appear only after consent is granted.
 2. For legacy plugin and integrated-app requests, enable the user request workflow in **Settings > Integrated apps > User requests**.
 3. Configure the approval chain (applies to both surfaces):
     - First-level: IT team reviews technical requirements and security posture
@@ -77,6 +77,7 @@ See [Agent settings in Microsoft 365 admin center](https://learn.microsoft.com/e
     - Third-level: Business owner confirms business justification
 4. Set SLA for approval decisions (5 business days recommended).
 5. Create a standardized Plugin / Tool Risk Assessment template that covers requested Entra permission scopes, data flows, and vendor attestations.
+6. For Work IQ MCP, record whether the tenant has usage-based billing and a separate spending policy, whether write operations are disabled or explicitly enabled, and whether allow/block controls are available in the tenant's region.
 
 ### Step 6: Configure Copilot Plugin and Tool Access Controls
 
@@ -108,17 +109,17 @@ See [Agent settings in Microsoft 365 admin center](https://learn.microsoft.com/e
 
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
-| Agent Overview review | Monthly | Monthly with tracked follow-up | Weekly / monthly depending on risk |
+| Agent Overview review | Monthly, with license-activation date recorded for metric completeness | Monthly with tracked follow-up | Weekly / monthly depending on risk |
 | Agent ownership | Required for published agents | Required for all broad-scope agents | Required with escalation for ownerless agents |
 | User consent for plugins | Allowed | Admin-only consent | Admin-only with compliance review |
 | Third-party plugins / partner agents | Review | Pre-approved list | Pre-approved with security assessment |
 | Graph connector review | Ad hoc | Annual | Semi-annual with data classification |
 
-## Regulatory Alignment
+## Regulatory Alignment Questions
 
-- **FFIEC Development Booklet** — Supports compliance with third-party software governance requirements
-- **OCC Third-Party Risk** — Helps meet vendor risk management for plugin providers
-- **NYDFS 23 NYCRR 500** — Supports third-party service provider security assessment requirements
+- **FFIEC Development Booklet** — Potential mapping for firm/counsel review where extensibility components affect third-party software governance.
+- **OCC Third-Party Risk** — Potential mapping for firm/counsel review where plugin, agent, or MCP providers are third-party relationships.
+- **NYDFS 23 NYCRR 500** — Potential mapping for firm/counsel review where third-party service provider security assessment requirements apply.
 
 ## Next Steps
 

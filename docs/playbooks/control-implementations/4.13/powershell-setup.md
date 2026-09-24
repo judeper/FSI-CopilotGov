@@ -2,6 +2,8 @@
 
 Automation scripts for managing Copilot plugins, connectors, and related extensibility governance.
 
+> **Tenant verification required:** Microsoft 365 agent, tool, and audit APIs continue to evolve. Treat the scripts below as supplemental evidence collection; current portal evidence from **Agents > Overview**, **All agents > Registry**, **Settings**, **Tools**, and **Settings > Integrated apps** remains required.
+
 ## Prerequisites
 
 - **Modules:** `Microsoft.Graph`, `ExchangeOnlineManagement`
@@ -132,6 +134,19 @@ if ($pluginEvents.Count -gt 0) {
 }
 ```
 
+Validate the operation names against the current Microsoft-published audit operations and the tenant's observed events before relying on this query for examination evidence.
+
+### Script 5: Agent tools / MCP request evidence checklist
+
+```powershell
+Write-Host "Collect this evidence from Microsoft 365 admin center > Agents > Tools:" -ForegroundColor Cyan
+Write-Host "  - Available and Blocked tools / MCP servers"
+Write-Host "  - Requests tab with approve/reject decision and requester"
+Write-Host "  - Declared tools exposed by each BYO MCP server"
+Write-Host "  - Microsoft Entra permission consent state"
+Write-Host "  - Work IQ read/write setting, usage-based billing plan, and spending policy where Work IQ is enabled"
+```
+
 ## Scheduled Tasks
 
 | Task | Frequency | Script |
@@ -140,6 +155,7 @@ if ($pluginEvents.Count -gt 0) {
 | Graph connector review | Quarterly | Script 2 |
 | Permission audit | Monthly | Script 3 |
 | Plugin usage monitoring | Weekly | Script 4 |
+| Agent tools / MCP request review | Monthly and after approvals | Script 5 evidence checklist |
 
 ## Next Steps
 

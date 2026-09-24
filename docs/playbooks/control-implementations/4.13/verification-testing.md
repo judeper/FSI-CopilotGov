@@ -58,6 +58,29 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 - **Expected Result:** All Graph connectors have documented sensitivity assessments and appropriate controls.
 - **Evidence:** Connector inventory with sensitivity assessment completion status.
 
+### Test 6: Agent Tools and MCP Requests Are Governed
+
+- **Objective:** Validate that AI-powered tools, MCP servers, and BYO MCP requests are inventoried, approved or rejected, and consented before use.
+- **Steps:**
+  1. Open Microsoft 365 admin center > Agents > Tools.
+  2. Export or screenshot Available and Blocked tools / MCP servers.
+  3. Review the Requests tab and verify each pending or completed request has an approval/rejection rationale.
+  4. For approved BYO MCP servers, verify declared tools and Microsoft Entra permission consent state.
+  5. Confirm blocked MCP servers cannot be invoked from supported client surfaces.
+- **Expected Result:** Tools and MCP servers are inventoried; BYO MCP requests have documented decisions; approved servers have Entra consent; blocked servers cannot be invoked.
+- **Evidence:** Agents > Tools screenshots/exports, request decision records, Entra consent evidence, and blocked-invocation test.
+
+### Test 7: Work IQ Billing and Write Posture Are Verified
+
+- **Objective:** Confirm Work IQ usage-based billing, spending policy, regional allow/block controls, and write-operation state are known before production use.
+- **Steps:**
+  1. Verify whether Work IQ is enabled in the tenant and whether a usage-based billing plan and separate spending policy exist.
+  2. Confirm whether Work IQ write operations are disabled or explicitly enabled.
+  3. Confirm whether the tenant's region exposes allow/disallow tooling and MCP server controls.
+  4. If write operations are enabled, run a controlled confirmation-flow test and preserve approval evidence.
+- **Expected Result:** Work IQ is either disabled/not available or has documented billing, spending, allow/block, and read/write posture evidence.
+- **Evidence:** Admin-center screenshots, billing/spending policy record, write-operation setting, and controlled test evidence where applicable.
+
 ## Evidence Collection
 
 | Evidence Item | Source | Format | Retention |
@@ -67,14 +90,16 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 | Approval workflow records | Microsoft 365 admin center | Screenshot/Export | 7 years |
 | Permission audit | PowerShell | CSV | Monthly archive |
 | Connector sensitivity assessments | Assessment documents | PDF | 7 years |
+| Agent tools / MCP request evidence | Microsoft 365 admin center > Agents > Tools | Screenshot/Export | 7 years |
+| Work IQ billing and write posture | Microsoft 365 admin center / Copilot Studio | Screenshot/Export | 7 years |
 
 ## Compliance Mapping
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| FFIEC Development Booklet | Third-party software governance | Supports compliance with software acquisition and deployment governance |
-| OCC Bulletin 2023-17 (Third-Party Relationships) | Vendor risk management | Helps meet third-party risk management for plugin providers |
-| NYDFS 23 NYCRR 500 | Third-party security assessment | Supports security assessment of third-party service providers |
+| FFIEC Development Booklet | Third-party software governance | Potential mapping for firm/counsel review where extensibility components affect software acquisition and deployment governance |
+| OCC Bulletin 2023-17 (Third-Party Relationships) | Vendor risk management | Potential mapping for firm/counsel review where plugin, agent, or MCP providers are third-party relationships |
+| NYDFS 23 NYCRR 500 | Third-party security assessment | Potential mapping for firm/counsel review where third-party service provider security assessment requirements apply |
 
 ## Next Steps
 
