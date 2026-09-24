@@ -56,6 +56,7 @@ jobs:
   monitor:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     permissions:
       contents: write
       pull-requests: write
@@ -86,7 +87,8 @@ jobs:
           set -e
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
 
-          # Contract: 0 = clean, 3 = findings, 2 = source/execution failure.
+          # Contract: 0 = clean, 3 = findings, 4 = degraded partial run,
+          # 2 = source/execution failure.
           # Any other non-zero code is also a failure, including Python's
           # default exit code 1 for an uncaught exception.
           case "$EXIT_CODE" in
@@ -102,6 +104,18 @@ jobs:
               echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
               exit 0
               ;;
+            4)
+              REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md 2>/dev/null | head -1) || true
+              if [ -z "$REPORT_FILE" ]; then
+                echo "::error::Regulatory Monitor reported a degraded run but produced no report"
+                exit 2
+              fi
+              echo "::warning::Regulatory Monitor completed with degraded source availability"
+              echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+              DEGRADED_SOURCES=$(grep -m1 '^\*\*Degraded Sources:\*\*' "$REPORT_FILE" | sed 's/^\*\*Degraded Sources:\*\* //') || true
+              echo "degraded_sources=${DEGRADED_SOURCES:-source unavailable}" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
             2)
               echo "::error::Regulatory Monitor source/execution failure"
               exit "$EXIT_CODE"
@@ -114,7 +128,7 @@ jobs:
 
       - name: Detect state changes
         id: diff
-        if: steps.monitor.outputs.exit_code == '3'
+        if: steps.monitor.outputs.exit_code == '3' || steps.monitor.outputs.exit_code == '4'
         run: |
           if [ -n "$(git status --porcelain data/monitor-state.json reports/monitoring/ 2>/dev/null)" ]; then
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
@@ -122,9 +136,58 @@ jobs:
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Prepare Regulatory Monitor PR metadata
+        id: pr-meta
+        if: steps.monitor.outputs.exit_code == '3' || steps.monitor.outputs.exit_code == '4'
+        run: |
+          if [ "${{ steps.monitor.outputs.exit_code }}" = "4" ]; then
+            sources="${{ steps.monitor.outputs.degraded_sources }}"
+            if echo "$sources" | grep -qi "FINRA"; then
+              unavailable="FINRA notices"
+              echo "title=Regulatory Monitor: DEGRADED (FINRA unavailable) (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
+            elif echo "$sources" | grep -qi "Federal Register"; then
+              unavailable="Federal Register"
+              echo "title=Regulatory Monitor: DEGRADED (Federal Register unavailable) (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
+            else
+              unavailable="$sources"
+              echo "title=Regulatory Monitor: DEGRADED (source unavailable) (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
+            fi
+            echo "extra_labels=monitor-degraded" >> "$GITHUB_OUTPUT"
+            {
+              echo "degraded_body<<EOF"
+              echo "### Sources unavailable this run"
+              echo ""
+              echo "⚠️ Unavailable this run: ${unavailable}. This source was not checked, and its baseline was not advanced."
+              echo ""
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "title=Regulatory Monitor: findings (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
+            echo "extra_labels=" >> "$GITHUB_OUTPUT"
+            {
+              echo "degraded_body<<EOF"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Ensure degraded monitor label exists
+        if: steps.monitor.outputs.exit_code == '4'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh label create monitor-degraded \
+            --repo "$REPO" \
+            --color FBCA04 \
+            --description "Regulatory Monitor ran with an unavailable source" \
+          || gh label edit monitor-degraded \
+            --repo "$REPO" \
+            --color FBCA04 \
+            --description "Regulatory Monitor ran with an unavailable source"
+
       - name: Generate GitHub App token
         id: app-token
-        if: steps.monitor.outputs.exit_code == '3' && steps.diff.outputs.has_changes == 'true'
+        if: (steps.monitor.outputs.exit_code == '3' || steps.monitor.outputs.exit_code == '4') && steps.diff.outputs.has_changes == 'true'
         uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
@@ -132,7 +195,7 @@ jobs:
 
       - name: Open / update PR with regulatory findings
         id: cpr
-        if: steps.monitor.outputs.exit_code == '3' && steps.diff.outputs.has_changes == 'true'
+        if: (steps.monitor.outputs.exit_code == '3' || steps.monitor.outputs.exit_code == '4') && steps.diff.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -140,12 +203,13 @@ jobs:
           branch: monitoring/regulatory-${{ github.run_number }}
           delete-branch: true
           base: main
-          title: "Regulatory Monitor: new findings (run ${{ github.run_number }})"
+          title: "${{ steps.pr-meta.outputs.title }}"
           labels: |
             monitoring
             regulatory
             needs-review
             automated
+            ${{ steps.pr-meta.outputs.extra_labels }}
           body: |
             ## Regulatory Monitor Report
 
@@ -153,6 +217,8 @@ jobs:
             and FINRA notices for AI- / FSI-relevant regulatory changes.
 
             - Report: `${{ steps.monitor.outputs.report_file }}`
+
+            ${{ steps.pr-meta.outputs.degraded_body }}
 
             ### Classification tiers
             - 🔴 **CRITICAL** — Directly mentions AI agents, copilot, or automated advice
@@ -169,7 +235,7 @@ jobs:
             *Automated PR created by `.github/workflows/regulatory-monitoring.yml`.*
 
       - name: Close prior superseded Regulatory Monitor PRs
-        if: steps.monitor.outputs.exit_code == '3' && steps.cpr.outputs.pull-request-number != ''
+        if: (steps.monitor.outputs.exit_code == '3' || steps.monitor.outputs.exit_code == '4') && steps.cpr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -178,18 +244,20 @@ jobs:
           set -uo pipefail
           # Identify our own monitor PRs by multiple invariants — labels alone
           # are too broad (humans can edit them). See issue #48.
+          # steps.monitor.outputs.exit_code == '4' restricts degraded cleanup to older degraded PRs.
           mapfile -t prior < <(gh pr list \
             --repo "$REPO" \
             --state open \
             --label regulatory \
             --label automated \
             --base main \
-            --json number,headRefName,author,title \
+            --json number,headRefName,author,title,labels \
             --jq ".[] |
               select(.number < ($NEW_PR | tonumber)) |
               select(.headRefName | startswith(\"monitoring/regulatory-\")) |
-              select(.author.login == \"app/github-actions\" or .author.login == \"github-actions[bot]\") |
+              select(.author.login == \"app/fsi-monitor-bot\") |
               select(.title | startswith(\"Regulatory Monitor:\")) |
+              select(if \"${{ steps.monitor.outputs.exit_code }}\" == \"4\" then any(.labels[]?.name; . == \"monitor-degraded\") else true end) |
               .number")
 
           if [ "${#prior[@]}" -eq 0 ]; then
