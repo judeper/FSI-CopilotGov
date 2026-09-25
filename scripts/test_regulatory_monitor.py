@@ -4090,12 +4090,10 @@ def test_federal_register_legacy_entry_that_already_covered_the_body_is_silent()
 
 
 def test_committed_state_is_legacy_schema_and_is_read_as_such():
-    """The real committed baseline hash schemas must be recognised.
+    """The real committed baseline is schema 1 and must be recognised as such.
 
-    The committed file can be mixed during gradual monitor migrations: older
-    entries remain schema 1 until re-read, while newer monitor runs write the
-    current tagged schema. The test tracks disk reality and still guards
-    against treating untagged legacy values as current-schema hashes.
+    Guards against a migration that silently assumes the shipped state was
+    written under the current layout.
     """
     import json
 
@@ -4103,17 +4101,10 @@ def test_committed_state_is_legacy_schema_and_is_read_as_such():
     state = json.loads(state_path.read_text(encoding="utf-8"))
     entries = state["sources"][regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER]["entries"]
     assert entries, "committed Federal Register baseline is empty"
-    versions = [
+    assert all(
         regulatory_monitor._stored_hash_schema_version(value)
+        == regulatory_monitor.LEGACY_CONTENT_HASH_SCHEMA_VERSION
         for value in entries.values()
-    ]
-    assert set(versions) <= {
-        regulatory_monitor.LEGACY_CONTENT_HASH_SCHEMA_VERSION,
-        regulatory_monitor.CONTENT_HASH_SCHEMA_VERSION,
-    }
-    assert any(
-        version == regulatory_monitor.LEGACY_CONTENT_HASH_SCHEMA_VERSION
-        for version in versions
     )
 
 
