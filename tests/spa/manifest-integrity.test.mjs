@@ -111,10 +111,10 @@ describe("manifest + solutions-lock integrity (H2)", () => {
     }
   });
 
-  it("co-dependent controls 3.8 and 3.8a carry concrete accountable roles (no TODO placeholder)", () => {
-    // Reconciliation guard: 3.8a shipped with a ["TODO: assign per ROLE_CONTROLS"]
-    // placeholder. Both halves of the co-dependent MRM pair must name real roles.
-    for (const id of ["3.8", "3.8a"]) {
+  it("controls with reconciled ownership carry concrete accountable roles", () => {
+    // Reconciliation guard for controls that previously shipped with
+    // ["TODO: assign per ROLE_CONTROLS"] placeholders.
+    for (const id of ["2.17", "3.8", "3.8a", "3.14", "4.14"]) {
       const c = manifest.find((x) => x.id === id);
       expect(c, `control ${id} missing from manifest`).toBeTruthy();
       expect(Array.isArray(c.roles) && c.roles.length > 0, `${id} roles must be non-empty`).toBe(true);

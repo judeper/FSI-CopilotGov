@@ -92,8 +92,8 @@ ROLE_CONTROL_OVERRIDES = {
        "3.8", "3.8a", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14",
        "4.15", "4.16",
     ],
-    # TODO-role controls in manifest (3.8a, 3.14) still belong in Purview ops.
-    "purview-compliance-admin-checklist.xlsx": ["3.8a", "3.14"],
+    # Keep the model-risk control in Purview operations even if role metadata changes.
+    "purview-compliance-admin-checklist.xlsx": ["3.8a"],
     # Homework-referenced roles published under docs/assessment/templates.
     "internal-audit-checklist.xlsx": ["3.1", "3.12", "3.13"],
     "privacy-officer-checklist.xlsx": ["2.5", "3.10"],

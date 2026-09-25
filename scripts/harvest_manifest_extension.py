@@ -8,6 +8,7 @@ extension fields:
 * ``name`` — derived from title (strip "Control X.Y: " prefix)
 * ``zonesApplicable`` — derived from checks; empty -> [1,2,3]
 * ``roles`` — from ROLE_CONTROLS in ``scripts/extract_assessment_data.py``
+  (always re-derived; see ``REDERIVED_FIELDS``)
 * ``regulatory`` — parsed from ``**Regulatory Reference:**`` line
   (always re-derived; see ``REDERIVED_FIELDS``)
 * ``priority`` — TODO (author judgment)
@@ -173,11 +174,11 @@ SECTORS = (
     "other",
 )
 
-# Fields that are wholly derived from the control doc or from the evidence
-# contract and therefore refreshed on every harvest instead of being preserved
-# once written. Everything else in the manifest may carry author judgment and
-# is only filled when absent.
-REDERIVED_FIELDS = ("regulatory", "collectorField")
+# Fields that are wholly derived from source documents, assessment data, or the
+# evidence contract and therefore refreshed on every harvest instead of being
+# preserved once written. Everything else in the manifest may carry author
+# judgment and is only filled when absent.
+REDERIVED_FIELDS = ("roles", "regulatory", "collectorField")
 
 
 def slug_from_source_file(source_file: str) -> str:
@@ -301,10 +302,9 @@ def harvest_one(
     if "zonesApplicable" not in control:
         extension["zonesApplicable"] = derive_zones(control.get("checks", []))
 
-    # roles (from extract_assessment_data ROLE_CONTROLS map)
-    if "roles" not in control:
-        roles = list(adata_entry.get("assignedRoles") or [])
-        extension["roles"] = roles or ["TODO: assign per ROLE_CONTROLS"]
+    # roles — fully derived from extract_assessment_data ROLE_CONTROLS.
+    roles = list(adata_entry.get("assignedRoles") or [])
+    extension["roles"] = roles or ["TODO: assign per ROLE_CONTROLS"]
 
     # regulatory — fully derived from the control doc's
     # ``**Regulatory Reference:**`` line, so it is ALWAYS re-derived rather
