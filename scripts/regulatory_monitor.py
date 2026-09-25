@@ -28,6 +28,9 @@ Environment Variables:
 """
 
 import argparse
+from collections import Counter
+from email.utils import parsedate_to_datetime
+import xml.etree.ElementTree as ET
 import ipaddress
 import json
 import logging
@@ -95,6 +98,20 @@ FEDERAL_REGISTER_API_BASE = "https://www.federalregister.gov/api/v1"
 
 # FINRA notices page
 FINRA_NOTICES_URL = "https://www.finra.org/rules-guidance/notices"
+# FINRA publishes the official notices feed only over plaintext HTTP:
+# https://www.finra.org/media-center/follow-finra links to this exact URL, and
+# feeds.finra.org fails TLS. This is therefore the only HTTP URL the monitor may
+# fetch. The feed is treated as untrusted discovery data: every item URL is
+# revalidated as an HTTPS www.finra.org notice and every new notice is fetched
+# again over HTTPS before classification or baselining.
+FINRA_RSS_FEED_URL = "http://feeds.finra.org/FINRANotices"
+FINRA_RSS_FEED_HOST = "feeds.finra.org"
+FINRA_RSS_MAX_BYTES = 512 * 1024
+FINRA_RSS_GAP_ITEM_COUNT = 10
+FINRA_RULE_FILING_TITLE_PREFIX = (
+    "Self-Regulatory Organizations; Financial Industry Regulatory Authority, Inc."
+)
+FINRA_RULE_FILING_SOURCE = "FINRA rule filing (Federal Register)"
 
 FEDERAL_REGISTER_DETAIL_FETCH_LIMIT: Optional[int] = None
 FEDERAL_REGISTER_PAGE_SIZE = 100
@@ -1376,6 +1393,18 @@ class FinraListingError(RuntimeError):
     """Raised when the FINRA notice listing cannot be fetched or verified."""
 
 
+class FinraRssError(RuntimeError):
+    """Raised when FINRA RSS discovery cannot be trusted."""
+
+
+class FinraRssMalformedError(FinraRssError):
+    """Raised when FINRA RSS XML is malformed or unsafe."""
+
+
+class FinraRssUnavailableError(SourceUnavailableError, FinraRssError):
+    """Raised when the FINRA RSS feed is temporarily unavailable."""
+
+
 class FinraNoticeUnavailableError(RuntimeError):
     """Raised when FINRA answers successfully but declares no notice text.
 
@@ -1410,6 +1439,34 @@ class FinraListingUnavailableError(
     """Raised when the FINRA listing is temporarily unavailable."""
 
 
+@dataclass
+class FinraRssCandidate:
+    """One trusted FINRA notice discovered from the untrusted RSS feed."""
+
+    title: str
+    url: str
+    publication_date: str
+    publication_date_is_synthetic: bool
+
+
+@dataclass
+class FinraRssParseResult:
+    """Trusted FINRA RSS candidates plus rejected-item accounting."""
+
+    candidates: list[FinraRssCandidate]
+    validator_dropped: int
+
+
+@dataclass
+class FinraDiscoveryResult:
+    """FINRA discovery result and reportable path metadata."""
+
+    items: list["RegulatoryItem"]
+    discovery_path: str
+    validator_dropped: int = 0
+    new_notices_fetched: int = 0
+
+
 def _source_failure_reason(exc: Exception) -> str:
     """Return a compact source-failure reason safe for logs and reports."""
     reason = str(exc).strip()
@@ -1442,6 +1499,8 @@ def _request_exception_is_source_unavailable(exc: requests.RequestException) -> 
 
 def _exception_represents_source_unavailability(exc: Exception) -> bool:
     """Classify exceptions that may honestly degrade a source run."""
+    if isinstance(exc, RequiredSourceUnavailableError):
+        return False
     if isinstance(exc, SourceUnavailableError):
         return True
     if isinstance(exc, requests.RequestException):
@@ -1468,6 +1527,7 @@ def _source_display_name(source: str) -> str:
     return {
         "FINRA": "FINRA notices",
         "Federal Register": "Federal Register",
+        FINRA_RULE_FILING_SOURCE: FINRA_RULE_FILING_SOURCE,
     }.get(source, source)
 
 
@@ -2055,6 +2115,11 @@ def _federal_register_document_fingerprint(document: dict) -> str:
         for field in substantive_fields
     }
     return json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+
+
+def _is_finra_rule_filing_title(title: str) -> bool:
+    """Return whether a Federal Register title is a FINRA SRO rule filing."""
+    return str(title or "").startswith(FINRA_RULE_FILING_TITLE_PREFIX)
 
 
 @dataclass
@@ -3416,6 +3481,192 @@ def _finra_designation_matches_slug(designation: str, slug: str) -> bool:
     return designation.strip().lower() == slug.strip().lower()
 
 
+def _finra_rss_feed_url_rejection_reason(url: str, label: str) -> Optional[str]:
+    """Return why ``url`` is not the one permitted HTTP FINRA feed URL."""
+    if url != FINRA_RSS_FEED_URL:
+        return f"{label} is not the exact official FINRA notices RSS URL"
+    parsed = urlparse(url)
+    if parsed.scheme.lower() != "http":
+        return f"{label} scheme must be http for the documented FINRA feed"
+    if parsed.username or parsed.password:
+        return f"{label} carries embedded credentials"
+    try:
+        port = parsed.port
+    except ValueError:
+        return f"{label} declares an invalid port"
+    if port is not None and port != 80:
+        return f"{label} declares a non-default HTTP port"
+    if (parsed.hostname or "").lower().rstrip(".") != FINRA_RSS_FEED_HOST:
+        return f"{label} host is not {FINRA_RSS_FEED_HOST}"
+    if parsed.path != "/FINRANotices" or parsed.params or parsed.query or parsed.fragment:
+        return f"{label} is not the exact /FINRANotices feed path"
+    return None
+
+
+def _xml_local_name(tag: str) -> str:
+    """Return an XML tag's local name without a namespace."""
+    return tag.rsplit("}", 1)[-1].lower()
+
+
+def _rss_child_text(node, name: str) -> str:
+    """Return stripped child text for ``name`` ignoring XML namespaces."""
+    for child in list(node):
+        if _xml_local_name(child.tag) == name.lower():
+            return (child.text or "").strip()
+    return ""
+
+
+def _parse_finra_rss_publication_date(raw_value: str, url: str) -> tuple[str, bool]:
+    """Return FINRA RSS publication date, falling back to URL-derived metadata."""
+    value = (raw_value or "").strip()
+    if value:
+        for parser in (
+            lambda text: parsedate_to_datetime(text).date(),
+            lambda text: datetime.strptime(text, "%b %d, %Y").date(),
+            lambda text: datetime.strptime(text, "%B %d, %Y").date(),
+            lambda text: datetime.fromisoformat(text.replace("Z", "+00:00")).date(),
+        ):
+            try:
+                return parser(value).isoformat(), False
+            except (TypeError, ValueError, IndexError, OverflowError):
+                continue
+
+    information_notice_match = FINRA_INFORMATION_NOTICE_DATE_PATTERN.search(url)
+    if information_notice_match:
+        compact_date = "".join(information_notice_match.groups())
+        try:
+            return datetime.strptime(compact_date, "%Y%m%d").date().isoformat(), False
+        except ValueError:
+            pass
+
+    regulatory_notice_match = FINRA_NOTICE_ID_PATTERN.search(url)
+    if regulatory_notice_match:
+        return f"20{regulatory_notice_match.group(1)}-01-01", True
+
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d"), True
+
+
+def _parse_finra_rss_feed_content(content: str | bytes) -> FinraRssParseResult:
+    """Parse FINRA RSS as untrusted XML and return only validated notice URLs."""
+    if isinstance(content, bytes):
+        raw_bytes = content
+        text = content.decode("utf-8", errors="replace")
+    elif isinstance(content, str):
+        text = content
+        raw_bytes = content.encode("utf-8")
+    else:
+        raise FinraRssMalformedError("FINRA RSS feed content was not text")
+
+    if len(raw_bytes) > FINRA_RSS_MAX_BYTES:
+        raise FinraRssMalformedError(
+            f"FINRA RSS feed exceeded {FINRA_RSS_MAX_BYTES} byte safety cap"
+        )
+    if re.search(r"<!\s*(?:DOCTYPE|ENTITY)\b", text, re.IGNORECASE):
+        raise FinraRssMalformedError(
+            "FINRA RSS feed declared a DTD or entity; refusing unsafe XML"
+        )
+
+    try:
+        root = ET.fromstring(text)
+    except ET.ParseError as exc:
+        raise FinraRssMalformedError("FINRA RSS feed XML was malformed") from exc
+
+    if _xml_local_name(root.tag) != "rss":
+        raise FinraRssMalformedError("FINRA RSS feed root was not rss")
+
+    channel = None
+    for child in list(root):
+        if _xml_local_name(child.tag) == "channel":
+            channel = child
+            break
+    if channel is None:
+        raise FinraRssMalformedError("FINRA RSS feed had no channel")
+
+    candidates: list[FinraRssCandidate] = []
+    validator_dropped = 0
+    seen_urls: set[str] = set()
+    for item in [child for child in list(channel) if _xml_local_name(child.tag) == "item"]:
+        title = re.sub(r"\s+", " ", _rss_child_text(item, "title")).strip()
+        link = _rss_child_text(item, "link")
+        guid = _rss_child_text(item, "guid")
+        canonical_url = _canonical_finra_notice_url(link)
+        if canonical_url is None:
+            canonical_url = _canonical_finra_notice_url(guid)
+        if canonical_url is None:
+            validator_dropped += 1
+            continue
+        if canonical_url in seen_urls:
+            continue
+        seen_urls.add(canonical_url)
+        publication_date, synthetic = _parse_finra_rss_publication_date(
+            _rss_child_text(item, "pubDate"),
+            canonical_url,
+        )
+        if not title:
+            title = _finra_document_id_from_url(canonical_url)
+        candidates.append(
+            FinraRssCandidate(
+                title=title,
+                url=canonical_url,
+                publication_date=publication_date,
+                publication_date_is_synthetic=synthetic,
+            )
+        )
+
+    if not candidates:
+        raise FinraRssMalformedError(
+            "FINRA RSS feed contained no valid regulatory notice items"
+        )
+    return FinraRssParseResult(
+        candidates=candidates,
+        validator_dropped=validator_dropped,
+    )
+
+
+def fetch_finra_rss_candidates(
+    session: requests.Session,
+    config: dict,
+) -> FinraRssParseResult:
+    """Fetch and parse the official FINRA notices RSS feed."""
+    rejection = _finra_rss_feed_url_rejection_reason(
+        FINRA_RSS_FEED_URL,
+        "FINRA notices RSS request",
+    )
+    if rejection:
+        raise FinraRssError(rejection)
+
+    _, max_retries, _request_delay = _get_operational_settings(config)
+    try:
+        result = fetch_page(FINRA_RSS_FEED_URL, session, max_retries=max_retries)
+    except requests.RequestException as exc:
+        if _request_exception_is_source_unavailable(exc):
+            raise FinraRssUnavailableError(
+                "FINRA notices RSS request failed"
+            ) from exc
+        raise FinraRssError("FINRA notices RSS request failed") from exc
+
+    if not isinstance(result, dict):
+        raise FinraRssUnavailableError("FINRA notices RSS request returned no result")
+
+    status_code = result.get("status_code")
+    if status_code != 200:
+        message = (
+            f"FINRA notices RSS request failed with status {status_code}"
+        )
+        if _http_status_is_source_unavailable(status_code):
+            raise FinraRssUnavailableError(message)
+        raise FinraRssUnavailableError(message)
+
+    final_rejection = _finra_rss_feed_url_rejection_reason(
+        result.get("final_url") or FINRA_RSS_FEED_URL,
+        "FINRA notices RSS response",
+    )
+    if final_rejection:
+        raise FinraRssMalformedError(final_rejection)
+
+    return _parse_finra_rss_feed_content(result.get("content", ""))
+
+
 def _finra_listing_page_number(raw_url: str) -> Optional[int]:
     """Return the 0-indexed page for a same-origin notices *listing* link.
 
@@ -3819,6 +4070,12 @@ def fetch_federal_register_documents(
         abstract = doc.get('abstract', '') or ''
         doc_type = doc.get('type', '')
         url = doc.get('html_url', '')
+        source_label = (
+            FINRA_RULE_FILING_SOURCE
+            if _is_finra_rule_filing_title(title)
+            else "Federal Register"
+        )
+        item_agency = "FINRA" if source_label == FINRA_RULE_FILING_SOURCE else agency_short
 
         tier, reason = classify_regulatory_relevance(title, abstract, config)
         abstract_tier = tier
@@ -3940,8 +4197,8 @@ def fetch_federal_register_documents(
             affected_controls = []
 
         item = RegulatoryItem(
-            source='Federal Register',
-            agency=agency_short,
+            source=source_label,
+            agency=item_agency,
             title=title,
             url=url,
             publication_date=doc.get('publication_date', ''),
@@ -4020,6 +4277,135 @@ def _finra_publication_dates_for_links(page_links) -> list:
         except ValueError:
             continue
     return dates
+
+
+def _build_finra_notice_item(
+    *,
+    title: str,
+    url: str,
+    publication_date: str,
+    publication_date_is_synthetic: bool,
+    session: requests.Session,
+    config: dict,
+    detail_cache: dict[str, str],
+    unavailable_cache: dict[str, str],
+    unavailable_notices: list[dict],
+    detail_fetches: int,
+    detail_fetch_limit: Optional[int],
+    request_delay: float,
+    max_retries: int,
+) -> tuple[Optional[RegulatoryItem], int]:
+    """Fetch one FINRA notice detail page and classify the authoritative body."""
+    document_id = _finra_document_id_from_url(url)
+    tier, reason = classify_regulatory_relevance(title, "", config)
+    notice_body_text = ""
+    presentation_excerpt = ""
+
+    should_fetch_detail = _should_fetch_finra_notice_detail(title, url, tier)
+    fetch_limit_exhausted = (
+        detail_fetch_limit is not None
+        and detail_fetches >= detail_fetch_limit
+    )
+    if should_fetch_detail and fetch_limit_exhausted:
+        raise RequiredSourceTextError(
+            "FINRA authoritative notice body fetch limit reached before "
+            f"classification completed for {url}"
+        )
+    if should_fetch_detail:
+        if url in unavailable_cache:
+            logger.warning(
+                "Skipping FINRA notice %s: source declares no notice text "
+                "(%s); excluded from classification and baseline",
+                document_id,
+                unavailable_cache[url],
+            )
+            unavailable_notices.append(
+                {
+                    "document_id": document_id,
+                    "title": title,
+                    "url": url,
+                    "reason": unavailable_cache[url],
+                }
+            )
+            return None, detail_fetches
+        try:
+            fallback_text, fetched_new = _fetch_cached_fallback_text(
+                url=url,
+                session=session,
+                cache=detail_cache,
+                request_delay=request_delay,
+                max_retries=max_retries,
+                extractor=(
+                    lambda html, _expected=url: (
+                        _extract_finra_notice_required_text(
+                            html, expected_url=_expected
+                        )
+                    )
+                ),
+                required=True,
+                source_label="FINRA authoritative notice body",
+                final_url_validator=(
+                    lambda final_url, _expected=url: (
+                        _finra_detail_url_rejection_reason(
+                            final_url, expected_url=_expected
+                        )
+                    )
+                ),
+            )
+        except FinraNoticeUnavailableError as exc:
+            detail_fetches += 1
+            unavailable_cache[url] = str(exc)
+            unavailable_notices.append(
+                {
+                    "document_id": document_id,
+                    "title": title,
+                    "url": url,
+                    "reason": str(exc),
+                }
+            )
+            logger.warning(
+                "Skipping FINRA notice %s: source declares no notice text "
+                "(%s); excluded from classification and baseline",
+                document_id,
+                exc,
+            )
+            return None, detail_fetches
+        if fetched_new:
+            detail_fetches += 1
+        notice_body_text = fallback_text
+        presentation_excerpt = fallback_text[:FALLBACK_TEXT_MAX_CHARS]
+        tier, reason = classify_regulatory_relevance(
+            title,
+            notice_body_text,
+            config,
+            exclude_reference_only=True,
+        )
+
+    affected_controls = find_affected_controls_by_keywords(
+        title,
+        notice_body_text,
+        config,
+        exclude_reference_only=bool(notice_body_text),
+    )
+
+    return (
+        RegulatoryItem(
+            source='FINRA',
+            agency='FINRA',
+            title=title,
+            url=url,
+            publication_date=publication_date,
+            doc_type='NOTICE',
+            abstract=presentation_excerpt,
+            content_text=notice_body_text,
+            document_id=document_id,
+            publication_date_is_synthetic=publication_date_is_synthetic,
+            classification=tier,
+            classification_reason=reason,
+            affected_controls=affected_controls,
+        ),
+        detail_fetches,
+    )
 
 
 def fetch_finra_notices(
@@ -4303,134 +4689,192 @@ def fetch_finra_notices(
                 "FINRA notices page parsing failed: unsupported notice URL"
             )
 
-        document_id = _finra_document_id_from_url(url)
-
         publication_date, publication_date_is_synthetic = (
             _derive_finra_publication_date(link, url)
         )
 
-        tier, reason = classify_regulatory_relevance(title, "", config)
-        # Classification and control mapping run against the COMPLETE normalized
-        # notice body so a mandatory requirement that appears late in a long
-        # notice cannot be truncated away. Only a bounded excerpt is stored on
-        # the item for presentation in reports.
-        notice_body_text = ""
-        presentation_excerpt = ""
-
-        should_fetch_detail = _should_fetch_finra_notice_detail(title, url, tier)
-        fetch_limit_exhausted = (
-            detail_fetch_limit is not None
-            and detail_fetches >= detail_fetch_limit
-        )
-        if should_fetch_detail and fetch_limit_exhausted:
-            raise RequiredSourceTextError(
-                "FINRA authoritative notice body fetch limit reached before "
-                f"classification completed for {url}"
-            )
-        if should_fetch_detail:
-            if url in unavailable_cache:
-                logger.warning(
-                    "Skipping FINRA notice %s: source declares no notice text "
-                    "(%s); excluded from classification and baseline",
-                    document_id,
-                    unavailable_cache[url],
-                )
-                unavailable_notices.append(
-                    {
-                        "document_id": document_id,
-                        "title": title,
-                        "url": url,
-                        "reason": unavailable_cache[url],
-                    }
-                )
-                continue
-            try:
-                fallback_text, fetched_new = _fetch_cached_fallback_text(
-                    url=url,
-                    session=session,
-                    cache=detail_cache,
-                    request_delay=request_delay,
-                    max_retries=max_retries,
-                    extractor=(
-                        lambda html, _expected=url: (
-                            _extract_finra_notice_required_text(
-                                html, expected_url=_expected
-                            )
-                        )
-                    ),
-                    required=True,
-                    source_label="FINRA authoritative notice body",
-                    final_url_validator=(
-                        lambda final_url, _expected=url: (
-                            _finra_detail_url_rejection_reason(
-                                final_url, expected_url=_expected
-                            )
-                        )
-                    ),
-                )
-            except FinraNoticeUnavailableError as exc:
-                # The source answered, and its answer is "there is no notice
-                # text". Baselining the tombstone would fingerprint a
-                # non-document as authoritative content; failing the run closed
-                # would take FINRA monitoring down permanently for a condition
-                # that will never clear. Drop the item, record it, continue.
-                detail_fetches += 1
-                unavailable_cache[url] = str(exc)
-                unavailable_notices.append(
-                    {
-                        "document_id": document_id,
-                        "title": title,
-                        "url": url,
-                        "reason": str(exc),
-                    }
-                )
-                logger.warning(
-                    "Skipping FINRA notice %s: source declares no notice text "
-                    "(%s); excluded from classification and baseline",
-                    document_id,
-                    exc,
-                )
-                continue
-            if fetched_new:
-                detail_fetches += 1
-            notice_body_text = fallback_text
-            presentation_excerpt = fallback_text[:FALLBACK_TEXT_MAX_CHARS]
-            # A FINRA notice body is authoritative full text, exactly like the
-            # Federal Register raw document, so it gets the same reference-only
-            # filtering: a notice that only *cites* an AI paper must not be
-            # promoted, and must not be mapped onto controls it never touches.
-            tier, reason = classify_regulatory_relevance(
-                title,
-                notice_body_text,
-                config,
-                exclude_reference_only=True,
-            )
-
-        affected_controls = find_affected_controls_by_keywords(
-            title,
-            notice_body_text,
-            config,
-            exclude_reference_only=bool(notice_body_text),
-        )
-
-        item = RegulatoryItem(
-            source='FINRA',
-            agency='FINRA',
+        item, detail_fetches = _build_finra_notice_item(
             title=title,
             url=url,
             publication_date=publication_date,
-            doc_type='NOTICE',
-            abstract=presentation_excerpt,
-            content_text=notice_body_text,
-            document_id=document_id,
             publication_date_is_synthetic=publication_date_is_synthetic,
-            classification=tier,
-            classification_reason=reason,
-            affected_controls=affected_controls,
+            session=session,
+            config=config,
+            detail_cache=detail_cache,
+            unavailable_cache=unavailable_cache,
+            unavailable_notices=unavailable_notices,
+            detail_fetches=detail_fetches,
+            detail_fetch_limit=detail_fetch_limit,
+            request_delay=request_delay,
+            max_retries=max_retries,
         )
-        items.append(item)
+        if item is not None:
+            items.append(item)
 
     return items
+
+
+def _fetch_finra_notices_from_rss_candidates(
+    *,
+    candidates: list[FinraRssCandidate],
+    session: requests.Session,
+    config: dict,
+    source_state: dict,
+    limit: Optional[int],
+    detail_fetch_limit: Optional[int],
+    unavailable_notices: list[dict],
+) -> tuple[list[RegulatoryItem], int]:
+    """Fetch HTTPS detail pages for RSS candidates not already in baseline."""
+    _, max_retries, request_delay = _get_operational_settings(config)
+    known_entry_keys = set(source_state.get("entries", {}))
+    pending_candidates = [
+        candidate
+        for candidate in candidates
+        if _finra_document_id_from_url(candidate.url) not in known_entry_keys
+    ]
+    if limit:
+        pending_candidates = pending_candidates[:limit]
+
+    items: list[RegulatoryItem] = []
+    detail_cache: dict[str, str] = {}
+    unavailable_cache: dict[str, str] = {}
+    detail_fetches = 0
+    for candidate in pending_candidates:
+        item, detail_fetches = _build_finra_notice_item(
+            title=candidate.title,
+            url=candidate.url,
+            publication_date=candidate.publication_date,
+            publication_date_is_synthetic=candidate.publication_date_is_synthetic,
+            session=session,
+            config=config,
+            detail_cache=detail_cache,
+            unavailable_cache=unavailable_cache,
+            unavailable_notices=unavailable_notices,
+            detail_fetches=detail_fetches,
+            detail_fetch_limit=detail_fetch_limit,
+            request_delay=request_delay,
+            max_retries=max_retries,
+        )
+        if item is not None:
+            items.append(item)
+    return items, detail_fetches
+
+
+def _finra_rss_requires_gap_fallback(
+    candidates: list[FinraRssCandidate],
+    source_state: dict,
+) -> bool:
+    """Return whether RSS may have skipped older notices beyond its 10-item window."""
+    known_entry_keys = set(source_state.get("entries", {}))
+    if not known_entry_keys or len(candidates) < FINRA_RSS_GAP_ITEM_COUNT:
+        return False
+    candidate_keys = {
+        _finra_document_id_from_url(candidate.url)
+        for candidate in candidates[:FINRA_RSS_GAP_ITEM_COUNT]
+    }
+    return bool(candidate_keys) and candidate_keys.isdisjoint(known_entry_keys)
+
+
+def discover_finra_notices(
+    session: requests.Session,
+    config: dict,
+    source_state: dict,
+    *,
+    limit: Optional[int] = None,
+    detail_fetch_limit: Optional[int] = FINRA_DETAIL_FETCH_LIMIT,
+    unavailable_notices: Optional[list[dict]] = None,
+    weekly_full_crawl: bool = False,
+) -> FinraDiscoveryResult:
+    """Discover FINRA notices via RSS, falling back honestly to HTML when needed."""
+    if unavailable_notices is None:
+        unavailable_notices = []
+
+    known_entry_keys = set(source_state.get("entries", {}))
+    if weekly_full_crawl:
+        return FinraDiscoveryResult(
+            items=fetch_finra_notices(
+                session,
+                config,
+                limit=limit,
+                detail_fetch_limit=detail_fetch_limit,
+                unavailable_notices=unavailable_notices,
+                known_entry_keys=known_entry_keys,
+                allow_listing_early_stop=False,
+            ),
+            discovery_path="full crawl",
+        )
+
+    if not known_entry_keys:
+        # First run needs a complete baseline. RSS exposes only the newest feed
+        # window, so using it alone would be fast but dishonest: older notices
+        # would remain unchecked while the report could look clean. Preserve the
+        # established bounded HTML crawl for empty baselines.
+        return FinraDiscoveryResult(
+            items=fetch_finra_notices(
+                session,
+                config,
+                limit=limit,
+                detail_fetch_limit=detail_fetch_limit,
+                unavailable_notices=unavailable_notices,
+                known_entry_keys=known_entry_keys,
+            ),
+            discovery_path="HTML first-run baseline",
+        )
+
+    rss_result: Optional[FinraRssParseResult] = None
+    try:
+        rss_result = fetch_finra_rss_candidates(session, config)
+    except (FinraRssUnavailableError, FinraRssMalformedError) as exc:
+        logger.warning(
+            "FINRA RSS discovery failed (%s); falling back to bounded HTML listing crawl",
+            exc,
+        )
+        return FinraDiscoveryResult(
+            items=fetch_finra_notices(
+                session,
+                config,
+                limit=limit,
+                detail_fetch_limit=detail_fetch_limit,
+                unavailable_notices=unavailable_notices,
+                known_entry_keys=known_entry_keys,
+            ),
+            discovery_path="HTML fallback",
+        )
+
+    if _finra_rss_requires_gap_fallback(rss_result.candidates, source_state):
+        logger.warning(
+            "FINRA RSS newest %s items are all absent from baseline; running "
+            "bounded HTML listing crawl to close a possible RSS window gap",
+            FINRA_RSS_GAP_ITEM_COUNT,
+        )
+        return FinraDiscoveryResult(
+            items=fetch_finra_notices(
+                session,
+                config,
+                limit=limit,
+                detail_fetch_limit=detail_fetch_limit,
+                unavailable_notices=unavailable_notices,
+                known_entry_keys=known_entry_keys,
+            ),
+            discovery_path="RSS+gap-fallback",
+            validator_dropped=rss_result.validator_dropped,
+        )
+
+    items, detail_fetches = _fetch_finra_notices_from_rss_candidates(
+        candidates=rss_result.candidates,
+        session=session,
+        config=config,
+        source_state=source_state,
+        limit=limit,
+        detail_fetch_limit=detail_fetch_limit,
+        unavailable_notices=unavailable_notices,
+    )
+    return FinraDiscoveryResult(
+        items=items,
+        discovery_path="RSS",
+        validator_dropped=rss_result.validator_dropped,
+        new_notices_fetched=detail_fetches,
+    )
 
 
 def _parse_finra_publication_date(raw_value: str) -> str:
@@ -4814,6 +5258,18 @@ def generate_regulatory_report(
         for source in sorted(source_counts):
             metadata[f"{source} Fetched"] = source_counts[source]["fetched"]
             metadata[f"{source} New"] = source_counts[source]["new"]
+            if "discovery_path" in source_counts[source]:
+                metadata[f"{source} Discovery Path"] = source_counts[source][
+                    "discovery_path"
+                ]
+            if "validator_dropped" in source_counts[source]:
+                metadata[f"{source} Validator Dropped"] = source_counts[source][
+                    "validator_dropped"
+                ]
+            if "new_notices_fetched" in source_counts[source]:
+                metadata[f"{source} New Notices Fetched"] = source_counts[source][
+                    "new_notices_fetched"
+                ]
             if source_counts[source].get("degraded"):
                 metadata[f"{source} Status"] = "unavailable this run"
 
@@ -5071,10 +5527,17 @@ def _run_monitor() -> int:
 
             fed_items = fetch_federal_register_documents(session, since_date, config, limit=args.limit)
             new_fed_items = check_for_new_items(SOURCE_KEY_FEDERAL_REGISTER, fed_items, fed_state)
-            source_counts["Federal Register"] = {
-                "fetched": len(fed_items),
-                "new": len(new_fed_items),
-            }
+            fed_fetched_by_source = Counter(item.source for item in fed_items)
+            fed_new_by_source = Counter(item.source for item in new_fed_items)
+            if not fed_fetched_by_source:
+                fed_fetched_by_source["Federal Register"] = 0
+            for source_label in sorted(
+                set(fed_fetched_by_source) | set(fed_new_by_source)
+            ):
+                source_counts[source_label] = {
+                    "fetched": fed_fetched_by_source.get(source_label, 0),
+                    "new": fed_new_by_source.get(source_label, 0),
+                }
 
             logger.info(f"Federal Register: {len(new_fed_items)} new items")
             all_new_items.extend(new_fed_items)
@@ -5105,19 +5568,28 @@ def _run_monitor() -> int:
                 logger.info(
                     "FINRA weekly full crawl: early pagination stop disabled"
                 )
-            finra_items = fetch_finra_notices(
+            finra_discovery = discover_finra_notices(
                 session,
                 config,
+                finra_state,
                 limit=args.limit,
+                detail_fetch_limit=FINRA_DETAIL_FETCH_LIMIT,
                 unavailable_notices=finra_unavailable,
-                known_entry_keys=set(finra_state.get("entries", {})),
-                allow_listing_early_stop=not weekly_full_crawl,
+                weekly_full_crawl=weekly_full_crawl,
             )
+            finra_items = finra_discovery.items
             new_finra_items = check_for_new_items(SOURCE_KEY_FINRA, finra_items, finra_state)
             source_counts["FINRA"] = {
                 "fetched": len(finra_items),
                 "new": len(new_finra_items),
                 "unavailable": len(finra_unavailable),
+                "discovery_path": finra_discovery.discovery_path,
+                "validator_dropped": finra_discovery.validator_dropped,
+                "new_notices_fetched": (
+                    finra_discovery.new_notices_fetched
+                    if finra_discovery.new_notices_fetched
+                    else len(new_finra_items)
+                ),
             }
             if finra_unavailable:
                 logger.warning(
@@ -5141,13 +5613,6 @@ def _run_monitor() -> int:
                 logger.error("FINRA notices source failure: %s", exc)
                 return EXIT_FAILURE
             mark_source_unavailable("FINRA", exc)
-
-    if requested_sources and len(failed_sources) == len(requested_sources):
-        logger.error(
-            "All requested regulatory sources failed: %s",
-            ", ".join(_source_display_name(source) for source in failed_sources),
-        )
-        return EXIT_FAILURE
 
     finra_degraded_count = 0
     if state_mutation_allowed:

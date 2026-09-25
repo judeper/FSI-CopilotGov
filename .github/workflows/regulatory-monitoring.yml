@@ -102,6 +102,12 @@ jobs:
                 exit 2
               fi
               echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+              FINRA_DISCOVERY_PATH=$(grep -m1 '^\*\*FINRA Discovery Path:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Discovery Path:\*\* //') || true
+              FINRA_VALIDATOR_DROPPED=$(grep -m1 '^\*\*FINRA Validator Dropped:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Validator Dropped:\*\* //') || true
+              FINRA_NEW_FETCHED=$(grep -m1 '^\*\*FINRA New Notices Fetched:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA New Notices Fetched:\*\* //') || true
+              echo "finra_discovery_path=${FINRA_DISCOVERY_PATH:-not reported}" >> "$GITHUB_OUTPUT"
+              echo "finra_validator_dropped=${FINRA_VALIDATOR_DROPPED:-not reported}" >> "$GITHUB_OUTPUT"
+              echo "finra_new_notices_fetched=${FINRA_NEW_FETCHED:-not reported}" >> "$GITHUB_OUTPUT"
               exit 0
               ;;
             4)
@@ -114,6 +120,12 @@ jobs:
               echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
               DEGRADED_SOURCES=$(grep -m1 '^\*\*Degraded Sources:\*\*' "$REPORT_FILE" | sed 's/^\*\*Degraded Sources:\*\* //') || true
               echo "degraded_sources=${DEGRADED_SOURCES:-source unavailable}" >> "$GITHUB_OUTPUT"
+              FINRA_DISCOVERY_PATH=$(grep -m1 '^\*\*FINRA Discovery Path:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Discovery Path:\*\* //') || true
+              FINRA_VALIDATOR_DROPPED=$(grep -m1 '^\*\*FINRA Validator Dropped:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Validator Dropped:\*\* //') || true
+              FINRA_NEW_FETCHED=$(grep -m1 '^\*\*FINRA New Notices Fetched:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA New Notices Fetched:\*\* //') || true
+              echo "finra_discovery_path=${FINRA_DISCOVERY_PATH:-not reported}" >> "$GITHUB_OUTPUT"
+              echo "finra_validator_dropped=${FINRA_VALIDATOR_DROPPED:-not reported}" >> "$GITHUB_OUTPUT"
+              echo "finra_new_notices_fetched=${FINRA_NEW_FETCHED:-not reported}" >> "$GITHUB_OUTPUT"
               exit 0
               ;;
             2)
@@ -217,6 +229,9 @@ jobs:
             and FINRA notices for AI- / FSI-relevant regulatory changes.
 
             - Report: `${{ steps.monitor.outputs.report_file }}`
+            - FINRA discovery path: `${{ steps.monitor.outputs.finra_discovery_path }}`
+            - FINRA validator-dropped items: `${{ steps.monitor.outputs.finra_validator_dropped }}`
+            - FINRA new notices fetched: `${{ steps.monitor.outputs.finra_new_notices_fetched }}`
 
             ${{ steps.pr-meta.outputs.degraded_body }}
 
