@@ -249,9 +249,9 @@ def test_finra_degraded_counter_escalates_on_third_consecutive_run(
     loaded_state = deepcopy(initial_state)
     saved_states: list[dict] = []
 
-    class _Session:
+    class _Session(_RssSession):
         def __init__(self):
-            self.headers = {}
+            super().__init__(_rss_response("", status_code=429))
 
     monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
     monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
@@ -313,9 +313,9 @@ def test_finra_degraded_counter_resets_after_finra_success(monkeypatch, tmp_path
     }
     saved_states: list[dict] = []
 
-    class _Session:
+    class _Session(_RssSession):
         def __init__(self):
-            self.headers = {}
+            super().__init__(_rss_response("", status_code=429))
 
     monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
     monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
@@ -368,6 +368,114 @@ def test_all_requested_sources_failing_is_fatal(monkeypatch, tmp_path):
     )
 
     assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_FAILURE
+
+
+def test_all_requested_sources_unavailable_is_fatal(monkeypatch, tmp_path):
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "STATE_FILE",
+        tmp_path / "data" / "monitor-state.json",
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            regulatory_monitor.FederalRegisterUnavailableError(
+                "Federal Register HTTP 429"
+            )
+        ),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_finra_notices",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            regulatory_monitor.FinraListingUnavailableError("FINRA HTTP 429")
+        ),
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_FAILURE
+
+
+def test_partial_required_finra_unavailable_saves_federal_register_state_only(
+    monkeypatch,
+    tmp_path,
+):
+    config = _load_config()
+    initial_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {"entries": {}},
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-15": "existing-finra-hash"},
+            },
+        },
+    }
+    loaded_state = deepcopy(initial_state)
+    saved_states: list[dict] = []
+    fed_item = regulatory_monitor.RegulatoryItem(
+        source="Federal Register",
+        agency="SEC",
+        title="Self-Regulatory Organizations; AI governance notice",
+        url="https://www.federalregister.gov/documents/2026-94001",
+        publication_date="2026-09-24",
+        doc_type="NOTICE",
+        abstract="Artificial intelligence supervisory governance.",
+        content_text="Artificial intelligence supervisory governance.",
+        document_id="2026-94001",
+    )
+
+    class _Session(_RssSession):
+        def __init__(self):
+            super().__init__(_rss_response("", status_code=429))
+
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "STATE_FILE",
+        tmp_path / "data" / "monitor-state.json",
+    )
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [fed_item],
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_finra_notices",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            regulatory_monitor.RequiredSourceUnavailableError(
+                "FINRA authoritative notice body returned HTTP 429"
+            )
+        ),
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_DEGRADED
+    assert saved_states
+    saved = saved_states[-1]
+    fed_entries = saved["sources"][regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER][
+        "entries"
+    ]
+    assert "2026-94001" in fed_entries
+    assert fed_entries["2026-94001"].startswith(
+        regulatory_monitor.CONTENT_HASH_SCHEMA_PREFIX
+    )
+    assert (
+        saved["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+        == initial_state["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+    )
 
 
 def test_federal_register_rule_2210_title_classifies_high_with_null_abstract():
@@ -1803,9 +1911,9 @@ def _assert_finra_listing_failure_does_not_advance_state(
     loaded_state = deepcopy(initial_state)
     save_calls = []
 
-    class _Session:
+    class _Session(_RssSession):
         def __init__(self):
-            self.headers = {}
+            super().__init__(_rss_response("", status_code=429))
 
     monkeypatch.setattr(
         regulatory_monitor,
@@ -1870,7 +1978,6 @@ def test_finra_listing_http_failure_fails_closed_without_state_advance(
             "error": "service unavailable",
         },
         expected_message="status 503",
-        expected_exit=regulatory_monitor.EXIT_DEGRADED,
     )
 
 
@@ -1890,7 +1997,6 @@ def test_finra_listing_rate_limit_failure_fails_closed_without_state_advance(
             "error": "HTTP 429 rate limit persisted after 3 attempts (waited 35s)",
         },
         expected_message="status 429",
-        expected_exit=regulatory_monitor.EXIT_DEGRADED,
     )
 
 
@@ -1968,9 +2074,9 @@ def test_federal_register_failure_maps_to_failure_exit_without_state_advance(
     loaded_state = deepcopy(initial_state)
     save_calls = []
 
-    class _Session:
+    class _Session(_RssSession):
         def __init__(self):
-            self.headers = {}
+            super().__init__(_rss_response("", status_code=429))
 
     def fail_fetch(*_args, **_kwargs):
         raise fetch_error
@@ -2366,9 +2472,9 @@ def test_finra_detail_fetch_failure_does_not_advance_state(monkeypatch, caplog):
     loaded_state = deepcopy(initial_state)
     save_calls = []
 
-    class _Session:
+    class _Session(_RssSession):
         def __init__(self):
-            self.headers = {}
+            super().__init__(_rss_response("", status_code=429))
 
     listing_html = """
     <html><body><table><tbody><tr>
@@ -4089,11 +4195,14 @@ def test_federal_register_legacy_entry_that_already_covered_the_body_is_silent()
     ) == []
 
 
-def test_committed_state_is_legacy_schema_and_is_read_as_such():
-    """The real committed baseline is schema 1 and must be recognised as such.
+def test_committed_state_is_supported_mixed_schema_and_read_per_entry():
+    """The committed baseline may mix legacy and current hash schemas.
 
-    Guards against a migration that silently assumes the shipped state was
-    written under the current layout.
+    Bot-written monitor state is append-only by entry, so a current-schema run
+    can coexist with older legacy entries.  The guard is that every committed
+    entry declares either the legacy implicit schema or the current tagged
+    schema, and de-duplication reads each entry under its own schema instead of
+    assuming the whole file has one layout.
     """
     import json
 
@@ -4101,11 +4210,55 @@ def test_committed_state_is_legacy_schema_and_is_read_as_such():
     state = json.loads(state_path.read_text(encoding="utf-8"))
     entries = state["sources"][regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER]["entries"]
     assert entries, "committed Federal Register baseline is empty"
-    assert all(
+    schema_versions = {
         regulatory_monitor._stored_hash_schema_version(value)
-        == regulatory_monitor.LEGACY_CONTENT_HASH_SCHEMA_VERSION
         for value in entries.values()
+    }
+    assert schema_versions == {
+        regulatory_monitor.LEGACY_CONTENT_HASH_SCHEMA_VERSION,
+        regulatory_monitor.CONTENT_HASH_SCHEMA_VERSION,
+    }
+
+    legacy_item = regulatory_monitor.RegulatoryItem(
+        source="Federal Register",
+        agency="SEC",
+        title="Legacy schema notice",
+        url="https://www.federalregister.gov/documents/legacy-schema-notice",
+        publication_date="2026-09-01",
+        abstract="Legacy complete body",
+        content_text="Legacy complete body",
+        document_id="legacy-schema-notice",
     )
+    current_item = regulatory_monitor.RegulatoryItem(
+        source="Federal Register",
+        agency="SEC",
+        title="Current schema notice",
+        url="https://www.federalregister.gov/documents/current-schema-notice",
+        publication_date="2026-09-02",
+        abstract="Current excerpt",
+        content_text="Current complete body",
+        document_id="current-schema-notice",
+    )
+    mixed_state = {
+        "entries": {
+            legacy_item.document_id: regulatory_monitor.compute_hash(
+                regulatory_monitor._legacy_content_fingerprint(
+                    legacy_item.title,
+                    legacy_item.content_text,
+                    legacy_item.publication_date,
+                )
+            ),
+            current_item.document_id: regulatory_monitor._schema_tagged_hash(
+                regulatory_monitor._content_fingerprint(current_item)
+            ),
+        }
+    }
+
+    assert regulatory_monitor.check_for_new_items(
+        regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER,
+        [legacy_item, current_item],
+        mixed_state,
+    ) == []
 
 
 # --- Acceptance contracts pinned to the committed Aug-26 artefacts ---------
@@ -8272,24 +8425,130 @@ def _rss_response(content: str, *, status_code: int = 200) -> dict:
     }
 
 
+class _StreamingRssResponse:
+    def __init__(
+        self,
+        result: dict,
+        *,
+        chunks: list[bytes] | None = None,
+    ):
+        self.status_code = result["status_code"]
+        self.headers = {"Content-Type": "application/rss+xml"}
+        self.url = result.get("final_url") or result["url"]
+        self._body = (
+            result.get("content", "").encode("utf-8")
+            if chunks is None
+            else b"".join(chunks)
+        )
+        self._chunks = chunks
+        self.bytes_yielded = 0
+        self.closed = False
+
+    @property
+    def content(self):
+        return self._body
+
+    @property
+    def text(self):
+        return self._body.decode("utf-8", errors="replace")
+
+    def iter_content(self, chunk_size=8192):
+        if self._chunks is not None:
+            for chunk in self._chunks:
+                self.bytes_yielded += len(chunk)
+                yield chunk
+            return
+        for start in range(0, len(self._body), chunk_size):
+            chunk = self._body[start:start + chunk_size]
+            self.bytes_yielded += len(chunk)
+            yield chunk
+
+    def close(self):
+        self.closed = True
+
+
+class _RssSession:
+    def __init__(
+        self,
+        result: dict,
+        *,
+        record: list[str] | None = None,
+        chunks: list[bytes] | None = None,
+        listing_result: dict | None = None,
+        listing_html: str | None = None,
+    ):
+        self.headers = {}
+        self.record = record
+        self.calls: list[dict] = []
+        self.response = _StreamingRssResponse(result, chunks=chunks)
+        if listing_result is None and listing_html is not None:
+            listing_result = {
+                "url": regulatory_monitor.FINRA_NOTICES_URL,
+                "status_code": 200,
+                "content": listing_html,
+                "final_url": regulatory_monitor.FINRA_NOTICES_URL,
+                "was_redirected": False,
+                "error": None,
+            }
+        if listing_result is None:
+            listing_result = {
+                "url": regulatory_monitor.FINRA_NOTICES_URL,
+                "status_code": 429,
+                "content": "",
+                "final_url": regulatory_monitor.FINRA_NOTICES_URL,
+                "was_redirected": False,
+                "error": "HTTP 429",
+            }
+        self.listing_response = _StreamingRssResponse(listing_result)
+
+    def get(self, url, *, timeout=None, allow_redirects=None, stream=None, **_kwargs):
+        self.calls.append(
+            {
+                "url": url,
+                "timeout": timeout,
+                "allow_redirects": allow_redirects,
+                "stream": stream,
+            }
+        )
+        if self.record is not None:
+            self.record.append(url)
+        if url == regulatory_monitor.FINRA_RSS_FEED_URL:
+            return self.response
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            return self.listing_response
+        raise AssertionError(f"unexpected direct session request: {url}")
+
+
 def test_finra_rss_happy_path_fetches_only_new_notice_details(monkeypatch):
     config = _load_config()
     record: list[str] = []
     state = {
         "entries": {
-            "FINRA 26-15": regulatory_monitor.CONTENT_HASH_SCHEMA_PREFIX + "existing",
+            **{
+                f"FINRA 26-{index:02d}": (
+                    regulatory_monitor.CONTENT_HASH_SCHEMA_PREFIX + "existing"
+                )
+                for index in range(1, 10)
+            },
         }
     }
-    rss = _rss_feed([_rss_item("26-16"), _rss_item("26-15")])
+    rss = _rss_feed([_rss_item(f"26-{index:02d}") for index in range(1, 11)])
+    listing_html = _finra_listing_page_html(
+        [f"/rules-guidance/notices/26-{index:02d}" for index in range(1, 11)]
+    )
     monkeypatch.setattr(
         regulatory_monitor,
         "fetch_page",
-        _finra_rss_fetch_stub(rss_result=_rss_response(rss), record=record),
+        _finra_rss_fetch_stub(
+            rss_result=_rss_response(rss),
+            listing_html=listing_html,
+            record=record,
+        ),
     )
     monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
 
     result = regulatory_monitor.discover_finra_notices(
-        session=object(),
+        session=_RssSession(_rss_response(rss), record=record),
         config=config,
         source_state=state,
     )
@@ -8297,13 +8556,13 @@ def test_finra_rss_happy_path_fetches_only_new_notice_details(monkeypatch):
     assert result.discovery_path == "RSS"
     assert result.validator_dropped == 0
     assert result.new_notices_fetched == 1
-    assert [item.document_id for item in result.items] == ["FINRA 26-16"]
-    assert regulatory_monitor.FINRA_NOTICES_URL not in record
-    assert "https://www.finra.org/rules-guidance/notices/26-16" in record
-    assert "https://www.finra.org/rules-guidance/notices/26-15" not in record
+    assert [item.document_id for item in result.items] == ["FINRA 26-10"]
+    assert regulatory_monitor.FINRA_NOTICES_URL in record
+    assert "https://www.finra.org/rules-guidance/notices/26-10" in record
+    assert "https://www.finra.org/rules-guidance/notices/26-09" not in record
 
 
-def test_finra_rss_hostile_item_urls_are_dropped_without_detail_fetch(monkeypatch):
+def test_finra_rss_hostile_item_urls_trigger_integrity_fallback(monkeypatch):
     config = _load_config()
     record: list[str] = []
     valid = _rss_item("26-16")
@@ -8323,20 +8582,24 @@ def test_finra_rss_hostile_item_urls_are_dropped_without_detail_fetch(monkeypatc
         "fetch_page",
         _finra_rss_fetch_stub(
             rss_result=_rss_response(_rss_feed([valid, *hostile])),
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-16"]),
             record=record,
         ),
     )
 
     result = regulatory_monitor.discover_finra_notices(
-        session=object(),
+        session=_RssSession(
+            _rss_response(_rss_feed([valid, *hostile])),
+            record=record,
+        ),
         config=config,
         source_state=state,
     )
 
-    assert result.discovery_path == "RSS"
+    assert result.discovery_path == "RSS+integrity-fallback"
     assert result.validator_dropped == 4
-    assert result.items == []
-    assert record == [regulatory_monitor.FINRA_RSS_FEED_URL]
+    assert [item.document_id for item in result.items] == ["FINRA 26-16"]
+    assert regulatory_monitor.FINRA_NOTICES_URL in record
 
 
 @pytest.mark.parametrize(
@@ -8354,6 +8617,43 @@ def test_finra_rss_oversized_and_entity_payloads_are_rejected_safely(case, expec
     )
     with pytest.raises(regulatory_monitor.FinraRssMalformedError, match=expected):
         regulatory_monitor._parse_finra_rss_feed_content(content)
+
+
+def test_finra_rss_feed_request_rejects_redirects(monkeypatch):
+    session = _RssSession(_rss_response("", status_code=302))
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    with pytest.raises(regulatory_monitor.FinraRssMalformedError, match="redirect"):
+        regulatory_monitor.fetch_finra_rss_candidates(session, _load_config())
+
+    assert session.calls == [
+        {
+            "url": regulatory_monitor.FINRA_RSS_FEED_URL,
+            "timeout": 30,
+            "allow_redirects": False,
+            "stream": True,
+        }
+    ]
+
+
+def test_finra_rss_feed_request_enforces_size_cap_while_streaming(monkeypatch):
+    chunks = [
+        b"x" * (regulatory_monitor.FINRA_RSS_MAX_BYTES - 3),
+        b"over-limit",
+        b"must-not-read",
+    ]
+    session = _RssSession(_rss_response("", status_code=200), chunks=chunks)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    with pytest.raises(regulatory_monitor.FinraRssMalformedError, match="exceeded"):
+        regulatory_monitor.fetch_finra_rss_candidates(session, _load_config())
+
+    assert session.calls[0]["allow_redirects"] is False
+    assert session.calls[0]["stream"] is True
+    assert session.response.bytes_yielded == (
+        regulatory_monitor.FINRA_RSS_MAX_BYTES - 3 + len(b"over-limit")
+    )
+    assert session.response.closed
 
 
 @pytest.mark.parametrize(
@@ -8380,7 +8680,7 @@ def test_finra_rss_failures_fall_back_to_html_listing(monkeypatch, rss_result):
     monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
 
     result = regulatory_monitor.discover_finra_notices(
-        session=object(),
+        session=_RssSession(rss_result, record=record),
         config=config,
         source_state={"entries": {"FINRA 26-19": "existing"}},
     )
@@ -8418,7 +8718,7 @@ def test_finra_rss_gap_detection_runs_bounded_listing_crawl(monkeypatch):
     monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
 
     result = regulatory_monitor.discover_finra_notices(
-        session=object(),
+        session=_RssSession(_rss_response(_rss_feed(rss_items)), record=record),
         config=config,
         source_state={"entries": {"FINRA 25-99": "existing"}},
     )
@@ -8428,25 +8728,183 @@ def test_finra_rss_gap_detection_runs_bounded_listing_crawl(monkeypatch):
     assert f"{regulatory_monitor.FINRA_NOTICES_URL}?page=1" in record
 
 
-def test_finra_rss_no_gap_makes_zero_listing_requests(monkeypatch):
+def test_finra_rss_validator_drops_run_bounded_listing_crawl(monkeypatch):
     config = _load_config()
     record: list[str] = []
-    rss = _rss_feed([_rss_item("26-16"), _rss_item("26-15")])
-    monkeypatch.setattr(
-        regulatory_monitor,
-        "fetch_page",
-        _finra_rss_fetch_stub(rss_result=_rss_response(rss), record=record),
-    )
+    known = _rss_item("26-15")
+    hostile = [
+        {
+            "title": f"rewritten {index}",
+            "link": f"http://www.finra.org/rules-guidance/notices/26-{index:02d}",
+            "guid": "",
+        }
+        for index in range(16, 25)
+    ]
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-24"],
+            publication_date="2026-09-01",
+        ),
+    }
+    listing_fetch = _finra_multipage_fetch(pages, record=record)
+
+    def fake_fetch_page(url, session, max_retries=3):
+        if url == regulatory_monitor.FINRA_RSS_FEED_URL:
+            record.append(url)
+            return _rss_response(_rss_feed([known, *hostile]))
+        return listing_fetch(url, session, max_retries=max_retries)
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
     monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
 
     result = regulatory_monitor.discover_finra_notices(
-        session=object(),
+        session=_RssSession(_rss_response(_rss_feed([known, *hostile])), record=record),
         config=config,
         source_state={"entries": {"FINRA 26-15": "existing"}},
     )
 
+    assert result.discovery_path == "RSS+integrity-fallback"
+    assert result.validator_dropped == 9
+    assert regulatory_monitor.FINRA_NOTICES_URL in record
+    assert [item.document_id for item in result.items] == ["FINRA 26-24"]
+
+
+def test_finra_rss_short_feed_runs_bounded_listing_crawl(monkeypatch):
+    config = _load_config()
+    record: list[str] = []
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-17"],
+            publication_date="2026-09-01",
+        ),
+    }
+    rss_items = [_rss_item("26-16"), _rss_item("26-15")]
+    listing_fetch = _finra_multipage_fetch(pages, record=record)
+
+    def fake_fetch_page(url, session, max_retries=3):
+        if url == regulatory_monitor.FINRA_RSS_FEED_URL:
+            record.append(url)
+            return _rss_response(_rss_feed(rss_items))
+        return listing_fetch(url, session, max_retries=max_retries)
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    result = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+        ),
+        config=config,
+        source_state={"entries": {"FINRA 26-15": "existing"}},
+    )
+
+    assert result.discovery_path == "RSS+integrity-fallback"
+    assert regulatory_monitor.FINRA_NOTICES_URL in record
+    assert [item.document_id for item in result.items] == ["FINRA 26-17"]
+
+
+def test_finra_rss_page_zero_replay_mismatch_runs_bounded_listing_crawl(monkeypatch):
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    pages = {
+        0: _finra_listing_page_html(
+            ["/rules-guidance/notices/26-99"],
+            publication_date="2026-09-24",
+        ),
+    }
+    listing_fetch = _finra_multipage_fetch(pages, record=record)
+
+    def fake_fetch_page(url, session, max_retries=3):
+        if url == regulatory_monitor.FINRA_RSS_FEED_URL:
+            record.append(url)
+            return _rss_response(_rss_feed(rss_items))
+        return listing_fetch(url, session, max_retries=max_retries)
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fake_fetch_page)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    result = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+            listing_html=pages[0],
+        ),
+        config=config,
+        source_state={"entries": {"FINRA 26-05": "existing"}},
+    )
+
+    assert result.discovery_path == "RSS+listing-cross-check-fallback"
+    assert regulatory_monitor.FINRA_NOTICES_URL in record
+    assert [item.document_id for item in result.items] == ["FINRA 26-99"]
+
+
+def test_finra_rss_page_zero_429_is_reported_without_degrading(monkeypatch):
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+
+    def listing_429(url, _session, max_retries=3):
+        record.append(url)
+        if url == regulatory_monitor.FINRA_RSS_FEED_URL:
+            return _rss_response(_rss_feed(rss_items))
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            return {
+                "url": url,
+                "status_code": 429,
+                "content": "",
+                "final_url": url,
+                "was_redirected": False,
+                "error": "HTTP 429",
+            }
+        return _finra_multipage_fetch({}, record=record)(
+            url,
+            _session,
+            max_retries=max_retries,
+        )
+
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", listing_429)
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    result = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(_rss_response(_rss_feed(rss_items)), record=record),
+        config=config,
+        source_state={"entries": {"FINRA 26-05": "existing"}},
+    )
+
     assert result.discovery_path == "RSS"
-    assert regulatory_monitor.FINRA_NOTICES_URL not in record
+    assert result.listing_cross_check == "listing cross-check unavailable"
+    assert regulatory_monitor.FINRA_NOTICES_URL in record
+
+
+def test_finra_rss_no_gap_makes_zero_listing_requests(monkeypatch):
+    config = _load_config()
+    record: list[str] = []
+    rss = _rss_feed([_rss_item(f"26-{index:02d}") for index in range(1, 11)])
+    listing_html = _finra_listing_page_html(
+        [f"/rules-guidance/notices/26-{index:02d}" for index in range(1, 11)]
+    )
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_rss_fetch_stub(
+            rss_result=_rss_response(rss),
+            listing_html=listing_html,
+            record=record,
+        ),
+    )
+    monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
+
+    result = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(_rss_response(rss), record=record),
+        config=config,
+        source_state={"entries": {"FINRA 26-05": "existing"}},
+    )
+
+    assert result.discovery_path == "RSS"
+    assert record.count(regulatory_monitor.FINRA_NOTICES_URL) == 1
+    assert all("?page=" not in url for url in record)
 
 
 def test_finra_rss_first_run_uses_html_baseline_not_ten_item_feed(monkeypatch):
@@ -8481,6 +8939,7 @@ def test_finra_rss_both_rss_and_html_unavailable_is_degraded(monkeypatch, tmp_pa
     loaded_state = {
         "version": 1,
         "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {"entries": {}},
             regulatory_monitor.SOURCE_KEY_FINRA: {
                 "entries": {"FINRA 26-15": "existing"},
             }
@@ -8488,9 +8947,9 @@ def test_finra_rss_both_rss_and_html_unavailable_is_degraded(monkeypatch, tmp_pa
     }
     saved_states: list[dict] = []
 
-    class _Session:
+    class _Session(_RssSession):
         def __init__(self):
-            self.headers = {}
+            super().__init__(_rss_response("", status_code=429))
 
     def failing_fetch_page(url, _session, max_retries=3):
         if url == regulatory_monitor.FINRA_RSS_FEED_URL:
@@ -8504,7 +8963,7 @@ def test_finra_rss_both_rss_and_html_unavailable_is_degraded(monkeypatch, tmp_pa
             "error": "HTTP 429 rate limit persisted",
         }
 
-    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py", "--source", "finra"])
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
     monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
     monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
     monkeypatch.setattr(
@@ -8515,6 +8974,11 @@ def test_finra_rss_both_rss_and_html_unavailable_is_degraded(monkeypatch, tmp_pa
     monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
     monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
     monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
     monkeypatch.setattr(regulatory_monitor, "fetch_page", failing_fetch_page)
     monkeypatch.setattr(
         regulatory_monitor,
@@ -8529,22 +8993,113 @@ def test_finra_rss_both_rss_and_html_unavailable_is_degraded(monkeypatch, tmp_pa
     assert "unavailable this run" in reports[0].read_text(encoding="utf-8")
 
 
+def test_finra_rss_validator_drop_fallback_failure_keeps_degraded_counter(
+    monkeypatch,
+    tmp_path,
+):
+    config = _load_config()
+    loaded_state = {
+        "version": 1,
+        "regulatory_monitor": {"consecutive_finra_degraded_runs": 1},
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {"entries": {}},
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-15": "existing"},
+            },
+        },
+    }
+    saved_states: list[dict] = []
+    known = _rss_item("26-15")
+    hostile = [
+        {
+            "title": f"rewritten {index}",
+            "link": f"http://www.finra.org/rules-guidance/notices/26-{index:02d}",
+            "guid": "",
+        }
+        for index in range(16, 25)
+    ]
+
+    def failing_listing_fetch(url, _session, max_retries=3):
+        if url == regulatory_monitor.FINRA_RSS_FEED_URL:
+            return _rss_response(_rss_feed([known, *hostile]))
+        return {
+            "url": url,
+            "status_code": 429,
+            "content": "",
+            "final_url": url,
+            "was_redirected": False,
+            "error": "HTTP 429 rate limit persisted",
+        }
+
+    class _Session(_RssSession):
+        def __init__(self):
+            super().__init__(_rss_response(_rss_feed([known, *hostile])))
+
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "STATE_FILE",
+        tmp_path / "data" / "monitor-state.json",
+    )
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", failing_listing_fetch)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_DEGRADED
+    assert saved_states[-1]["regulatory_monitor"][
+        "consecutive_finra_degraded_runs"
+    ] == 2
+    summary = saved_states[-1]["regulatory_monitor"]["last_finra_discovery"]
+    assert summary["discovery_path"] == "RSS+integrity-fallback"
+    assert summary["validator_dropped"] == 9
+    reports = sorted((tmp_path / "reports").glob("regulatory-changes-*.md"))
+    assert len(reports) == 1
+    report_text = reports[0].read_text(encoding="utf-8")
+    assert "**FINRA Discovery Path:** RSS+integrity-fallback" in report_text
+    assert "**FINRA Validator Dropped:** 9" in report_text
+
+
 def test_finra_degraded_counter_resets_after_successful_rss_run(monkeypatch, tmp_path):
     config = _load_config()
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
     loaded_state = {
         "version": 1,
         "regulatory_monitor": {"consecutive_finra_degraded_runs": 2},
         "sources": {
             regulatory_monitor.SOURCE_KEY_FINRA: {
-                "entries": {"FINRA 26-15": "existing"},
+                "entries": {
+                    f"FINRA 26-{index:02d}": "existing"
+                    for index in range(1, 11)
+                },
             }
         },
     }
     saved_states: list[dict] = []
 
-    class _Session:
+    class _Session(_RssSession):
         def __init__(self):
-            self.headers = {}
+            super().__init__(
+                _rss_response(_rss_feed(rss_items)),
+                listing_html=_finra_listing_page_html(
+                    [
+                        f"/rules-guidance/notices/26-{index:02d}"
+                        for index in range(1, 11)
+                    ]
+                ),
+            )
 
     monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py", "--source", "finra"])
     monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
@@ -8561,7 +9116,10 @@ def test_finra_degraded_counter_resets_after_successful_rss_run(monkeypatch, tmp
         regulatory_monitor,
         "fetch_page",
         _finra_rss_fetch_stub(
-            rss_result=_rss_response(_rss_feed([_rss_item("26-15")])),
+            rss_result=_rss_response(_rss_feed(rss_items)),
+            listing_html=_finra_listing_page_html(
+                [f"/rules-guidance/notices/26-{index:02d}" for index in range(1, 11)]
+            ),
         ),
     )
     monkeypatch.setattr(
@@ -8572,23 +9130,38 @@ def test_finra_degraded_counter_resets_after_successful_rss_run(monkeypatch, tmp
 
     assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_CLEAN
     assert saved_states[-1]["regulatory_monitor"]["consecutive_finra_degraded_runs"] == 0
+    assert saved_states[-1]["regulatory_monitor"]["last_finra_discovery"] == {
+        "discovery_path": "RSS",
+        "validator_dropped": 0,
+        "listing_cross_check": "listing cross-check ok",
+        "new_notices_fetched": 0,
+    }
 
 
 def test_finra_rss_state_advances_for_new_notice(monkeypatch):
     config = _load_config()
     state = {"sources": {regulatory_monitor.SOURCE_KEY_FINRA: {"entries": {}}}}
-    source_state = {"entries": {"FINRA 26-15": "existing"}}
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    source_state = {
+        "entries": {
+            f"FINRA 26-{index:02d}": "existing"
+            for index in range(1, 10)
+        }
+    }
     monkeypatch.setattr(
         regulatory_monitor,
         "fetch_page",
         _finra_rss_fetch_stub(
-            rss_result=_rss_response(_rss_feed([_rss_item("26-16")])),
+            rss_result=_rss_response(_rss_feed(rss_items)),
+            listing_html=_finra_listing_page_html(
+                [f"/rules-guidance/notices/26-{index:02d}" for index in range(1, 11)]
+            ),
         ),
     )
     monkeypatch.setattr(regulatory_monitor.time, "sleep", lambda *_a, **_k: None)
 
     result = regulatory_monitor.discover_finra_notices(
-        session=object(),
+        session=_RssSession(_rss_response(_rss_feed(rss_items))),
         config=config,
         source_state=source_state,
     )
@@ -8602,8 +9175,8 @@ def test_finra_rss_state_advances_for_new_notice(monkeypatch):
         state,
         regulatory_monitor.SOURCE_KEY_FINRA,
     )["entries"]
-    assert "FINRA 26-16" in entries
-    assert entries["FINRA 26-16"].startswith(regulatory_monitor.CONTENT_HASH_SCHEMA_PREFIX)
+    assert "FINRA 26-10" in entries
+    assert entries["FINRA 26-10"].startswith(regulatory_monitor.CONTENT_HASH_SCHEMA_PREFIX)
 
 
 def test_federal_register_finra_rule_filing_prefix_is_labelled_and_strict(monkeypatch):

@@ -30,7 +30,6 @@ Environment Variables:
 import argparse
 from collections import Counter
 from email.utils import parsedate_to_datetime
-import xml.etree.ElementTree as ET
 import ipaddress
 import json
 import logging
@@ -45,6 +44,9 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 from urllib.parse import urljoin, urlparse, parse_qs
+
+from defusedxml import ElementTree as DefusedET
+from defusedxml.common import DefusedXmlException
 
 # Import shared monitoring framework
 from monitoring_shared import (
@@ -1465,6 +1467,7 @@ class FinraDiscoveryResult:
     discovery_path: str
     validator_dropped: int = 0
     new_notices_fetched: int = 0
+    listing_cross_check: str = "not run"
 
 
 def _source_failure_reason(exc: Exception) -> str:
@@ -1499,8 +1502,6 @@ def _request_exception_is_source_unavailable(exc: requests.RequestException) -> 
 
 def _exception_represents_source_unavailability(exc: Exception) -> bool:
     """Classify exceptions that may honestly degrade a source run."""
-    if isinstance(exc, RequiredSourceUnavailableError):
-        return False
     if isinstance(exc, SourceUnavailableError):
         return True
     if isinstance(exc, requests.RequestException):
@@ -3567,8 +3568,13 @@ def _parse_finra_rss_feed_content(content: str | bytes) -> FinraRssParseResult:
         )
 
     try:
-        root = ET.fromstring(text)
-    except ET.ParseError as exc:
+        root = DefusedET.fromstring(
+            text,
+            forbid_dtd=True,
+            forbid_entities=True,
+            forbid_external=True,
+        )
+    except (DefusedXmlException, DefusedET.ParseError) as exc:
         raise FinraRssMalformedError("FINRA RSS feed XML was malformed") from exc
 
     if _xml_local_name(root.tag) != "rss":
@@ -3635,9 +3641,14 @@ def fetch_finra_rss_candidates(
     if rejection:
         raise FinraRssError(rejection)
 
-    _, max_retries, _request_delay = _get_operational_settings(config)
+    request_timeout, _max_retries, _request_delay = _get_operational_settings(config)
     try:
-        result = fetch_page(FINRA_RSS_FEED_URL, session, max_retries=max_retries)
+        response = session.get(
+            FINRA_RSS_FEED_URL,
+            timeout=request_timeout,
+            allow_redirects=False,
+            stream=True,
+        )
     except requests.RequestException as exc:
         if _request_exception_is_source_unavailable(exc):
             raise FinraRssUnavailableError(
@@ -3645,26 +3656,53 @@ def fetch_finra_rss_candidates(
             ) from exc
         raise FinraRssError("FINRA notices RSS request failed") from exc
 
-    if not isinstance(result, dict):
-        raise FinraRssUnavailableError("FINRA notices RSS request returned no result")
-
-    status_code = result.get("status_code")
+    status_code = getattr(response, "status_code", None)
+    if isinstance(status_code, int) and 300 <= status_code < 400:
+        close = getattr(response, "close", None)
+        if callable(close):
+            close()
+        raise FinraRssMalformedError(
+            "FINRA notices RSS request returned a redirect; refusing redirected feed"
+        )
     if status_code != 200:
         message = (
             f"FINRA notices RSS request failed with status {status_code}"
         )
+        close = getattr(response, "close", None)
+        if callable(close):
+            close()
         if _http_status_is_source_unavailable(status_code):
             raise FinraRssUnavailableError(message)
         raise FinraRssUnavailableError(message)
 
     final_rejection = _finra_rss_feed_url_rejection_reason(
-        result.get("final_url") or FINRA_RSS_FEED_URL,
+        getattr(response, "url", None) or FINRA_RSS_FEED_URL,
         "FINRA notices RSS response",
     )
     if final_rejection:
+        close = getattr(response, "close", None)
+        if callable(close):
+            close()
         raise FinraRssMalformedError(final_rejection)
 
-    return _parse_finra_rss_feed_content(result.get("content", ""))
+    chunks: list[bytes] = []
+    total_bytes = 0
+    try:
+        for chunk in response.iter_content(chunk_size=8192):
+            if not chunk:
+                continue
+            chunks.append(chunk)
+            total_bytes += len(chunk)
+            if total_bytes > FINRA_RSS_MAX_BYTES:
+                raise FinraRssMalformedError(
+                    f"FINRA RSS feed exceeded {FINRA_RSS_MAX_BYTES} byte safety cap"
+                )
+    finally:
+        close = getattr(response, "close", None)
+        if callable(close):
+            close()
+
+    return _parse_finra_rss_feed_content(b"".join(chunks))
 
 
 def _finra_listing_page_number(raw_url: str) -> Optional[int]:
@@ -4775,6 +4813,117 @@ def _finra_rss_requires_gap_fallback(
     return bool(candidate_keys) and candidate_keys.isdisjoint(known_entry_keys)
 
 
+def _annotate_finra_discovery_exception(
+    exc: Exception,
+    *,
+    discovery_path: str,
+    validator_dropped: int,
+    listing_cross_check: str = "not run",
+) -> Exception:
+    """Attach reportable FINRA discovery metadata to a failing fallback."""
+    setattr(exc, "finra_discovery_path", discovery_path)
+    setattr(exc, "finra_validator_dropped", validator_dropped)
+    setattr(exc, "finra_listing_cross_check", listing_cross_check)
+    return exc
+
+
+def _fetch_finra_notices_with_discovery_metadata(
+    *,
+    session: requests.Session,
+    config: dict,
+    limit: Optional[int],
+    detail_fetch_limit: Optional[int],
+    unavailable_notices: list[dict],
+    known_entry_keys: set[str],
+    discovery_path: str,
+    validator_dropped: int,
+    listing_cross_check: str = "not run",
+) -> FinraDiscoveryResult:
+    """Run the HTML crawl and preserve path metadata if it fails."""
+    try:
+        items = fetch_finra_notices(
+            session,
+            config,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            known_entry_keys=known_entry_keys,
+        )
+    except Exception as exc:
+        raise _annotate_finra_discovery_exception(
+            exc,
+            discovery_path=discovery_path,
+            validator_dropped=validator_dropped,
+            listing_cross_check=listing_cross_check,
+        ) from exc
+    return FinraDiscoveryResult(
+        items=items,
+        discovery_path=discovery_path,
+        validator_dropped=validator_dropped,
+        listing_cross_check=listing_cross_check,
+    )
+
+
+def _finra_listing_cross_check(
+    session: requests.Session,
+    config: dict,
+    rss_candidates: list[FinraRssCandidate],
+    source_state: dict,
+) -> str:
+    """Check page-0 listing notice IDs against RSS plus the baseline."""
+    request_timeout, _max_retries, _request_delay = _get_operational_settings(config)
+    try:
+        response = session.get(
+            FINRA_NOTICES_URL,
+            timeout=request_timeout,
+            allow_redirects=False,
+        )
+    except requests.RequestException:
+        return "listing cross-check unavailable"
+
+    status_code = getattr(response, "status_code", None)
+    if status_code != 200:
+        return "listing cross-check unavailable"
+
+    final_rejection = _finra_listing_url_rejection_reason(
+        getattr(response, "url", None) or FINRA_NOTICES_URL,
+        "FINRA notices listing cross-check response",
+        expected_page=0,
+    )
+    content = getattr(response, "text", None)
+    if final_rejection or not isinstance(content, (str, bytes)):
+        return "listing cross-check unavailable"
+    try:
+        denial_reason = _finra_listing_denial_reason(content)
+        identity_rejection = _finra_listing_identity_rejection_reason(content, 0)
+        if denial_reason or identity_rejection:
+            return "listing cross-check unavailable"
+        page_links = _extract_finra_notice_links(content)
+    except Exception:
+        return "listing cross-check unavailable"
+
+    known_entry_keys = set(source_state.get("entries", {}))
+    rss_entry_keys = {
+        _finra_document_id_from_url(candidate.url)
+        for candidate in rss_candidates
+    }
+    missing = [
+        _finra_entry_key_for_link(link)
+        for link in page_links
+        if _finra_entry_key_for_link(link)
+        and _finra_entry_key_for_link(link) not in rss_entry_keys
+        and _finra_entry_key_for_link(link) not in known_entry_keys
+    ]
+    if missing:
+        logger.warning(
+            "FINRA listing page-0 cross-check found notice IDs absent from RSS "
+            "and baseline: %s",
+            ", ".join(missing),
+        )
+        return "listing cross-check mismatch"
+    return "listing cross-check ok"
+
+
 def discover_finra_notices(
     session: requests.Session,
     config: dict,
@@ -4847,17 +4996,55 @@ def discover_finra_notices(
             "bounded HTML listing crawl to close a possible RSS window gap",
             FINRA_RSS_GAP_ITEM_COUNT,
         )
-        return FinraDiscoveryResult(
-            items=fetch_finra_notices(
-                session,
-                config,
-                limit=limit,
-                detail_fetch_limit=detail_fetch_limit,
-                unavailable_notices=unavailable_notices,
-                known_entry_keys=known_entry_keys,
-            ),
+        return _fetch_finra_notices_with_discovery_metadata(
+            session=session,
+            config=config,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            known_entry_keys=known_entry_keys,
             discovery_path="RSS+gap-fallback",
             validator_dropped=rss_result.validator_dropped,
+        )
+
+    if (
+        len(rss_result.candidates) < FINRA_RSS_GAP_ITEM_COUNT
+        or rss_result.validator_dropped > 0
+    ):
+        logger.warning(
+            "FINRA RSS integrity check requires bounded HTML crawl "
+            "(valid_items=%s, validator_dropped=%s)",
+            len(rss_result.candidates),
+            rss_result.validator_dropped,
+        )
+        return _fetch_finra_notices_with_discovery_metadata(
+            session=session,
+            config=config,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            known_entry_keys=known_entry_keys,
+            discovery_path="RSS+integrity-fallback",
+            validator_dropped=rss_result.validator_dropped,
+        )
+
+    listing_cross_check = _finra_listing_cross_check(
+        session,
+        config,
+        rss_result.candidates,
+        source_state,
+    )
+    if listing_cross_check == "listing cross-check mismatch":
+        return _fetch_finra_notices_with_discovery_metadata(
+            session=session,
+            config=config,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            known_entry_keys=known_entry_keys,
+            discovery_path="RSS+listing-cross-check-fallback",
+            validator_dropped=rss_result.validator_dropped,
+            listing_cross_check=listing_cross_check,
         )
 
     items, detail_fetches = _fetch_finra_notices_from_rss_candidates(
@@ -4874,6 +5061,7 @@ def discover_finra_notices(
         discovery_path="RSS",
         validator_dropped=rss_result.validator_dropped,
         new_notices_fetched=detail_fetches,
+        listing_cross_check=listing_cross_check,
     )
 
 
@@ -5270,6 +5458,10 @@ def generate_regulatory_report(
                 metadata[f"{source} New Notices Fetched"] = source_counts[source][
                     "new_notices_fetched"
                 ]
+            if "listing_cross_check" in source_counts[source]:
+                metadata[f"{source} Listing Cross-Check"] = source_counts[source][
+                    "listing_cross_check"
+                ]
             if source_counts[source].get("degraded"):
                 metadata[f"{source} Status"] = "unavailable this run"
 
@@ -5497,6 +5689,18 @@ def _run_monitor() -> int:
             "degraded": 1,
             "reason": reason,
         }
+        if source == "FINRA":
+            discovery_path = getattr(exc, "finra_discovery_path", None)
+            if discovery_path:
+                source_counts[source]["discovery_path"] = discovery_path
+            if hasattr(exc, "finra_validator_dropped"):
+                source_counts[source]["validator_dropped"] = getattr(
+                    exc,
+                    "finra_validator_dropped",
+                )
+            listing_cross_check = getattr(exc, "finra_listing_cross_check", None)
+            if listing_cross_check:
+                source_counts[source]["listing_cross_check"] = listing_cross_check
 
     def update_finra_degraded_counter() -> int:
         monitor_state = state.setdefault("regulatory_monitor", {})
@@ -5509,6 +5713,20 @@ def _run_monitor() -> int:
             current = 0
         monitor_state[FINRA_DEGRADED_COUNTER_KEY] = current
         return current
+
+    def update_finra_run_summary() -> None:
+        counts = source_counts.get("FINRA")
+        if not counts:
+            return
+        monitor_state = state.setdefault("regulatory_monitor", {})
+        summary = {
+            "discovery_path": counts.get("discovery_path", "not run"),
+            "validator_dropped": int(counts.get("validator_dropped", 0) or 0),
+            "listing_cross_check": counts.get("listing_cross_check", "not run"),
+        }
+        if "new_notices_fetched" in counts:
+            summary["new_notices_fetched"] = counts["new_notices_fetched"]
+        monitor_state["last_finra_discovery"] = summary
 
     # Fetch from Federal Register
     if args.source in ['federal-register', 'all']:
@@ -5590,6 +5808,7 @@ def _run_monitor() -> int:
                     if finra_discovery.new_notices_fetched
                     else len(new_finra_items)
                 ),
+                "listing_cross_check": finra_discovery.listing_cross_check,
             }
             if finra_unavailable:
                 logger.warning(
@@ -5614,9 +5833,17 @@ def _run_monitor() -> int:
                 return EXIT_FAILURE
             mark_source_unavailable("FINRA", exc)
 
+    if requested_sources and len(failed_sources) == len(requested_sources):
+        logger.error(
+            "All requested regulatory sources failed: %s",
+            ", ".join(_source_display_name(source) for source in failed_sources),
+        )
+        return EXIT_FAILURE
+
     finra_degraded_count = 0
     if state_mutation_allowed:
         finra_degraded_count = update_finra_degraded_counter()
+        update_finra_run_summary()
 
     # Generate report if new items or degraded sources were found. A degraded
     # source is never equivalent to "no changes"; it must remain visible in
