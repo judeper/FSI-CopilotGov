@@ -189,8 +189,12 @@ def test_monitor_step_enforces_exit_contract() -> None:
 
     assert clean_branch and "exit 0" in clean_branch.group(1)
     assert findings_branch and "report_file=" in findings_branch.group(1)
+    assert "finra_listing_cross_check=" in findings_branch.group(1)
+    assert "finra_verification_state=" in findings_branch.group(1)
     assert "exit 0" in findings_branch.group(1)
     assert degraded_branch and "report_file=" in degraded_branch.group(1)
+    assert "finra_listing_cross_check=" in degraded_branch.group(1)
+    assert "finra_verification_state=" in degraded_branch.group(1)
     assert "::warning::Regulatory Monitor completed with degraded source availability" in degraded_branch.group(1)
     assert "exit 0" in degraded_branch.group(1)
     assert failure_branch and 'exit "$EXIT_CODE"' in failure_branch.group(1)
@@ -226,6 +230,16 @@ def test_pr_title_marks_degraded_finra_runs() -> None:
     meta_run = _step(MONITOR_JOB, "Prepare Regulatory Monitor PR metadata")["run"]
     assert "DEGRADED (FINRA unavailable)" in meta_run
     assert "Sources unavailable this run" in meta_run
+
+
+def test_pr_body_reports_finra_cross_check_and_verification_state() -> None:
+    pr_body = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
+        "with"
+    ]["body"]
+    assert "FINRA listing cross-check" in pr_body
+    assert "steps.monitor.outputs.finra_listing_cross_check" in pr_body
+    assert "FINRA verification state" in pr_body
+    assert "steps.monitor.outputs.finra_verification_state" in pr_body
 
 
 def test_degraded_runs_add_and_create_monitor_degraded_label() -> None:
