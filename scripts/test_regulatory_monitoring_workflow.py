@@ -201,6 +201,31 @@ def test_monitor_step_enforces_exit_contract() -> None:
     assert 'exit "$EXIT_CODE"' in run.split("*)", maxsplit=1)[1]
 
 
+def test_monitor_step_parses_metadata_from_selected_newest_report() -> None:
+    run = _step(MONITOR_JOB, "Run Regulatory Monitor (scheduled / manual)")["run"]
+    selected_report = (
+        "REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md "
+        "2>/dev/null | head -1)"
+    )
+    assert run.count(selected_report) == 2
+    for variable, header in {
+        "FINRA_DISCOVERY_PATH": "FINRA Discovery Path",
+        "FINRA_VALIDATOR_DROPPED": "FINRA Validator Dropped",
+        "FINRA_NEW_FETCHED": "FINRA New Notices Fetched",
+        "FINRA_LISTING_CROSS_CHECK": "FINRA Listing Cross-Check",
+        "FINRA_VERIFICATION_STATE": "FINRA Verification State",
+    }.items():
+        assert (
+            f"{variable}=$(grep -m1 '^\\*\\*{header}:\\*\\*' \"$REPORT_FILE\""
+            in run
+        )
+
+    pr_body = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
+        "with"
+    ]["body"]
+    assert "Report: `${{ steps.monitor.outputs.report_file }}`" in pr_body
+
+
 def test_pr_write_path_is_gated_on_findings_exit() -> None:
     findings_condition = (
         f"steps.monitor.outputs.exit_code == '{FINDINGS_EXIT_CODE}' || "
