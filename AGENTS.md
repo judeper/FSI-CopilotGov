@@ -38,9 +38,9 @@ python scripts/merge_authored_content.py                      # apply authored o
 python scripts/validate_manifest.py --strict --allow-todo     # schema + authoring gate
 
 # --- Solutions integration (sister repo: FSI-CopilotGov-Solutions) ---
-python scripts/generate_solutions_lock.py                     # refresh solutions-lock.json
+python scripts/generate_solutions_lock.py                     # refresh from remote sister main
 python scripts/validate_solutions_lock.py                     # schema + referential integrity
-python scripts/check_solutions_drift.py --mode=ci             # lock vs sister main
+python scripts/check_solutions_drift.py --mode=ci             # recorded lock vs sister main
 
 # --- Templates ---
 python scripts/build_checklist_templates.py                   # regenerate XLSX role checklists
@@ -77,7 +77,7 @@ The manifest validator is **TODO-tolerant** under `--allow-todo` — authored-co
 - **`engine/`** — `score.py` (manifest + evidence → scored results), `report.py` (emit Markdown/JSON reports). Pure Python, no browser dependency.
 - **`collectors/`** — `Collect-Graph.ps1`, `Collect-Purview.ps1`, `Collect-SharePoint.ps1`, `Collect-Sentinel.ps1`. Each emits JSON that the engine and the SPA importer both consume.
 - **`manifest/`** — `controls.json` (generated), `generate_manifest.py`, `authored_content.py` (per-control overrides for judgment fields).
-- **`data/`** — `solutions-lock.json` (locked sister-repo main solutions catalog).
+- **`data/`** — `solutions-lock.json` (sister-repo main catalog locked to a recorded commit SHA).
 - **`templates/`** — 8 role checklist XLSX + a governance-maturity dashboard, regenerated from the manifest.
 - **`tests/`** — pytest suites for the engine and solutions-lock schema.
 

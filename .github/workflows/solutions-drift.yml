@@ -76,8 +76,8 @@ jobs:
           {
             echo "## Solutions lock drift detected"
             echo ""
-            echo "The pinned \`assessment/data/solutions-lock.json\` has drifted from the"
-            echo "current state of \`judeper/FSI-CopilotGov-Solutions@main\`."
+            echo "The recorded \`assessment/data/solutions-lock.json\` commit has drifted from"
+            echo "the current state of \`judeper/FSI-CopilotGov-Solutions@main\`."
             echo ""
             if [ "${{ steps.drift.outputs.has_blocking }}" = "true" ]; then
               echo "**Blocking drift detected** (REMOVED or COVERAGE_DANGLING). cc @judeper"
