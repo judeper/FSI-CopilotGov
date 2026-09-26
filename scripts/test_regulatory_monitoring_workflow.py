@@ -219,6 +219,8 @@ def test_monitor_step_parses_metadata_from_selected_newest_report() -> None:
             f"{variable}=$(grep -m1 '^\\*\\*{header}:\\*\\*' \"$REPORT_FILE\""
             in run
         )
+    assert "finra_verification_state=${FINRA_VERIFICATION_STATE:-not reported}" in run
+    assert "finra_verification_state=${FINRA_VERIFICATION_STATE:-verified}" not in run
 
     pr_body = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
         "with"
@@ -267,14 +269,25 @@ def test_pr_body_reports_finra_cross_check_and_verification_state() -> None:
     assert "steps.monitor.outputs.finra_verification_state" in pr_body
 
 
+def test_pr_title_marks_unverified_finra_runs() -> None:
+    meta_run = _step(MONITOR_JOB, "Prepare Regulatory Monitor PR metadata")["run"]
+    assert "UNVERIFIED (FINRA listing cross-check unavailable)" in meta_run
+    assert "monitor-unverified" in meta_run
+    assert "Regulatory Monitor: findings" in meta_run
+
+
 def test_degraded_runs_add_and_create_monitor_degraded_label() -> None:
     create_label_run = _step(MONITOR_JOB, "Ensure degraded monitor label exists")[
         "run"
     ]
     assert "gh label create monitor-degraded" in create_label_run
+    assert "gh label create monitor-unverified" in create_label_run
     assert (
         _step(MONITOR_JOB, "Ensure degraded monitor label exists")["if"]
-        == f"steps.monitor.outputs.exit_code == '{DEGRADED_EXIT_CODE}'"
+        == (
+            f"steps.monitor.outputs.exit_code == '{DEGRADED_EXIT_CODE}' || "
+            "steps.monitor.outputs.finra_verification_state == 'unverified-clean'"
+        )
     )
 
     labels = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
@@ -289,7 +302,12 @@ def test_degraded_runs_only_supersede_prior_degraded_monitor_prs() -> None:
     ]
     assert 'app/fsi-monitor-bot' in cleanup_run
     assert 'monitor-degraded' in cleanup_run
+    assert 'monitor-unverified' in cleanup_run
     assert (
         "steps.monitor.outputs.exit_code == '4'"
         in cleanup_run
     ), "cleanup script must branch degraded handling by exit code"
+    assert (
+        'steps.monitor.outputs.finra_verification_state'
+        in cleanup_run
+    ), "cleanup script must keep unverified PR cleanup separate"
