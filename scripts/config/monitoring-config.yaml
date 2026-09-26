@@ -122,7 +122,11 @@ regulatory:
       reason: "References automation in FSI context"
     - pattern: '\bsupervision.{0,80}(?:electronic|automated|technology)'
       reason: "Supervision of automated systems"
-    - pattern: '\b(?:supervision|supervisory|controls?)\b.{0,80}\balgorithmic\s+trading\b|\balgorithmic\s+trading\b.{0,80}\b(?:supervision|supervisory|controls?)\b'
+    - pattern: '\bautomated\s+trading\s+systems?\b'
+      reason: "Automated trading systems"
+    - pattern: '\belectronic\s+trading\s+risk\s+principles\b'
+      reason: "Electronic trading risk principles"
+    - pattern: '\b(?:supervision|supervisory(?:\s+controls?)?|control\s+practices?)\b.{0,80}\balgorithmic\s+trading\b|\balgorithmic\s+trading\b.{0,80}\b(?:supervision|supervisory(?:\s+controls?)?|control\s+practices?)\b'
       reason: "Algorithmic trading supervision"
     - pattern: '\bfinra(?:\s+rule)?\s+3110\b'
       reason: "FINRA 3110 (supervision)"

@@ -2096,6 +2096,7 @@ def _search_operative_match_in_segments(
 
 
 AI_GOVERNANCE_QUALIFIER_PATTERN = re.compile(
+    r"(?<![A-Za-z])a\.i\.(?![A-Za-z])|"
     r"\b(?:"
     r"artificial\s+intelligence|generative\s+ai|genai|"
     r"gen\s+ai|ai|"
@@ -2141,7 +2142,14 @@ def _is_ai_product_metric_context(text: str, start: int, end: int) -> bool:
 
 SRO_FILING_TITLE_PATTERN = re.compile(r"^\W*self-regulatory\s+organizations\b")
 SRO_SUPERVISION_SUBJECT_TITLE_PATTERN = re.compile(
-    r"\b(?:3110|supervis\w*|2210|communications?\s+with\s+the\s+public)\b"
+    r"\b(?:3110|remote\s+inspections?|supervis\w*|2210|"
+    r"communications?\s+with\s+the\s+public)\b"
+)
+REMOTE_INSPECTION_SUPERVISION_EVIDENCE_PATTERN = re.compile(
+    r"\b(?:remote\w*.{0,40}inspections?|inspections?.{0,40}remotely)\b"
+    r".*\b(?:g-27|rule\s*1308|3110|supervis\w*)\b|"
+    r"\b(?:g-27|rule\s*1308|3110|supervis\w*)\b.*"
+    r"\b(?:remote\w*.{0,40}inspections?|inspections?.{0,40}remotely)\b"
 )
 
 
@@ -2159,7 +2167,6 @@ def _high_pattern_match_is_suppressed(
     hiding genuine AI/Copilot regulatory items.
     """
     lowered_reason = reason.lower()
-    matched_text = match.group(0).lower()
     title = (title or "").lower()
     evidence_text = evidence_text or segment
 
@@ -2176,6 +2183,8 @@ def _high_pattern_match_is_suppressed(
         return not _contains_ai_governance_qualifier(evidence_text)
 
     if "finra 3110" in lowered_reason:
+        if REMOTE_INSPECTION_SUPERVISION_EVIDENCE_PATTERN.search(evidence_text):
+            return False
         return not _contains_ai_governance_qualifier(evidence_text)
 
     if "communications with the public" in lowered_reason:
@@ -2191,10 +2200,7 @@ def _high_pattern_match_is_suppressed(
     if "artificial intelligence" in lowered_reason:
         return _is_ai_product_metric_context(segment, match.start(), match.end())
 
-    if "automation" in lowered_reason and re.search(
-        r"\b(?:automated\s+trading\s+systems?|automated\s+systems?)\b",
-        matched_text,
-    ):
+    if "automated trading systems" in lowered_reason:
         return True
 
     return False
