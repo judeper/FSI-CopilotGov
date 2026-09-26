@@ -112,7 +112,7 @@ regulatory:
       reason: "Targeted return language"
     - pattern: '\bchatbot'
       reason: "References chatbots"
-    - pattern: '\b(?:automated|automation)\s+(?:advice|decision(?:-making)?|trading|supervision|monitoring|compliance|model|system)'
+    - pattern: '\b(?:automated|automation)\s+(?:advice|decision(?:-making)?|supervision|monitoring|compliance|model)'
       reason: "References automation in FSI context"
     - pattern: '\bsupervision.{0,80}(?:electronic|automated|technology)'
       reason: "Supervision of automated systems"
