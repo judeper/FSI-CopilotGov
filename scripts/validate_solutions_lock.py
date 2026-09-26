@@ -9,8 +9,8 @@ Rules enforced:
 
 * top-level ``schemaVersion`` equals ``"0.2.0"``.
 * top-level ``generatedAt`` is an ISO-8601 UTC timestamp.
-* top-level ``source`` has ``repo``, ``ref``, ``commit`` (commit may
-  be empty string if sister repo git metadata was unavailable).
+* top-level ``source`` has ``repo``, ``ref``, ``commit``. ``commit`` must
+  be the exact 40-character SHA used to read the sister manifest.
 * ``solutions`` is a non-empty list.
 * every solution has required fields: ``id``, ``slug``, ``tier``
   (int in {1,2,3}), ``name``, ``version`` (bare semver),
@@ -60,6 +60,7 @@ ALLOWED_MATURITY = {"documentation-first-scaffold", "preview", "live"}
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
 ISO_UTC_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 SOLUTION_REPO_PATH = "/judeper/FSI-CopilotGov-Solutions"
 
 REQUIRED_SOLUTION_FIELDS = (
@@ -247,6 +248,8 @@ def main(argv: list[str] | None = None) -> int:
         for f in ("repo", "ref", "commit"):
             if f not in src or not isinstance(src[f], str):
                 errs.append(f"source.{f} missing or not a string")
+        if isinstance(src.get("commit"), str) and not SHA_RE.fullmatch(src["commit"]):
+            errs.append("source.commit must be a 40-character lowercase commit SHA")
 
     sols = lock.get("solutions")
     lock_ids: set[str] = set()

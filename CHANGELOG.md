@@ -4,6 +4,19 @@ All notable changes to the FSI Copilot Governance Framework are documented in th
 
 ---
 
+## Unreleased
+
+- **Solutions lock determinism:** `scripts/generate_solutions_lock.py` now
+  tracks the sister `FSI-CopilotGov-Solutions@main` branch through remote truth
+  while recording the exact 40-character commit SHA used to read
+  `solutions.json`. Refreshes refuse stale explicit sister clones, and
+  `--check` validates against the recorded SHA instead of whatever local
+  `main` happens to be. The scheduled solutions-drift workflow remains the
+  mechanism that reports when sister `main` has moved and a #514-style refresh
+  PR is needed.
+
+---
+
 ## Correction - 2026-09-24
 
 - The historical v1.3.3 regulatory-correction note below used an old title for an unsupported 2023 interagency AI citation. Current framework coverage no longer lists that citation, and related control text treats future agency AI guidance as a monitoring/applicability question rather than an issued regulatory source.

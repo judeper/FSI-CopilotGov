@@ -4416,7 +4416,7 @@ AUTHORED: dict[str, dict] = {
 # Phase C2 — per-control mappings to FSI-CopilotGov-Solutions
 # ---------------------------------------------------------------
 # Source of truth: FSI-CopilotGov-Solutions/data/control-coverage.json
-# at the pinned tag (see assessment/data/solutions-lock.json). Order
+# at the recorded solutions-lock commit. Order
 # preserved from coverage; first entry = primary, rest = supporting.
 # Tier is mirrored from solutions.json (1=Baseline, 2=Recommended,
 # 3=Regulated) as a numeric value.

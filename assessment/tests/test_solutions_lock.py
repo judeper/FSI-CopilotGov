@@ -56,6 +56,7 @@ def test_lock_schema(lock: dict) -> None:
     assert lock["schemaVersion"] == EXPECTED_SCHEMA
     assert lock["source"]["repo"] == "judeper/FSI-CopilotGov-Solutions"
     assert lock["source"]["ref"] == generate_solutions_lock.PINNED_REF
+    assert re.fullmatch(r"[0-9a-f]{40}", lock["source"]["commit"])
 
 
 def test_lock_has_all_solutions(lock: dict) -> None:

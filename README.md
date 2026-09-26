@@ -165,7 +165,7 @@ FSI-CopilotGov/
 │   ├── collectors/         # PowerShell evidence collectors (Graph, Purview, SharePoint, Sentinel)
 │   ├── manifest/           # controls.json + generate_manifest.py + authored_content.py
 │   ├── templates/          # XLSX role checklists + governance-maturity dashboard
-│   ├── data/               # solutions-lock.json (pinned to sister repo)
+│   ├── data/               # solutions-lock.json (locked to a sister main commit)
 │   └── tests/              # pytest engine + lock schema suites
 ├── tests/spa/              # vitest SPA behaviour suite
 ├── scripts/                # Manifest pipeline, solutions integration, monitoring, templates

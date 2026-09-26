@@ -2,10 +2,10 @@
 """Detect drift between ``assessment/data/solutions-lock.json`` and the
 upstream sister repo's ``solutions.json``.
 
-The lock file is intentionally pinned to a specific ref of the sister
-repo (``FSI-CopilotGov-Solutions``). This script compares the pinned
-lock against whatever the sister repo currently has on disk and flags
-differences so governance owners can decide when to re-pin.
+The lock file tracks the sister repo's ``main`` branch but records the
+exact commit SHA used for reproducible builds. This script compares the
+recorded lock against whatever the sister repo currently has on disk and
+flags differences so governance owners can decide when to refresh it.
 
 Drift categories
 ----------------
@@ -30,7 +30,7 @@ Modes
 * ``--mode=ci``: exit non-zero only on ``REMOVED`` or
   ``COVERAGE_DANGLING``. ``ADDED`` / ``VERSION_BUMP`` / ``FIELD_CHANGE``
   / ``COVERAGE_ORPHAN`` emit warnings (exit 0) because the lock is
-  deliberately pinned.
+  deliberately refreshed through an owner-reviewed PR.
 
 Sister repo location is controlled by ``FSI_SOLUTIONS_REPO`` (matches
 ``generate_solutions_lock.py``).
