@@ -1952,8 +1952,10 @@ def _search_operative_match_in_segments(
 AI_GOVERNANCE_QUALIFIER_PATTERN = re.compile(
     r"\b(?:"
     r"artificial\s+intelligence|generative\s+ai|genai|"
+    r"gen\s+ai|ai|"
     r"large\s+language\s+models?|llms?|machine\s+learning|"
-    r"copilot|chatbots?|robo-?advisors?|ai\s+(?:agents?|models?|tools?|systems?)"
+    r"copilot|chatbots?|robo-?advisors?|"
+    r"ai[-\s]+(?:agents?|models?|tools?|systems?|based|generated|enabled|powered|driven)"
     r")\b"
 )
 
@@ -1962,8 +1964,6 @@ AI_PRODUCT_METRIC_CONTEXT_PATTERN = re.compile(
     r"(?:cloud\s+and\s+)?artificial\s+intelligence\s+infrastructure\s+revenues?|"
     r"artificial\s+intelligence\s+revenues?|"
     r"revenues?\s+(?:broken\s+out\s+)?by\s+[^.]{0,160}"
-    r"artificial\s+intelligence|"
-    r"key\s+performance\s+indicators?[^.]{0,240}"
     r"artificial\s+intelligence"
     r")\b",
     re.IGNORECASE,
@@ -1985,13 +1985,26 @@ def _is_ai_product_metric_context(text: str, start: int, end: int) -> bool:
     """
     window_start = max(0, start - 320)
     window_end = min(len(text), end + 360)
-    return bool(AI_PRODUCT_METRIC_CONTEXT_PATTERN.search(text[window_start:window_end]))
+    for metric_match in AI_PRODUCT_METRIC_CONTEXT_PATTERN.finditer(
+        text, window_start, window_end
+    ):
+        if metric_match.start() <= start and metric_match.end() >= end:
+            return True
+    return False
+
+
+SRO_FILING_TITLE_PATTERN = re.compile(r"^\W*self-regulatory\s+organizations\b")
+SRO_SUPERVISION_SUBJECT_TITLE_PATTERN = re.compile(
+    r"\b(?:3110|supervis\w*|2210|communications?\s+with\s+the\s+public)\b"
+)
 
 
 def _high_pattern_match_is_suppressed(
     reason: str,
     segment: str,
     match,
+    title: str = "",
+    evidence_text: str = "",
 ) -> bool:
     """Return whether a HIGH-tier regex hit is known boilerplate/noise.
 
@@ -2001,12 +2014,23 @@ def _high_pattern_match_is_suppressed(
     """
     lowered_reason = reason.lower()
     matched_text = match.group(0).lower()
+    title = (title or "").lower()
+    evidence_text = evidence_text or segment
+
+    if not SRO_FILING_TITLE_PATTERN.search(title):
+        return False
+
+    if SRO_SUPERVISION_SUBJECT_TITLE_PATTERN.search(title) and (
+        "finra 3110" in lowered_reason
+        or "communications with the public" in lowered_reason
+    ):
+        return False
 
     if "model risk management" in lowered_reason:
-        return not _contains_ai_governance_qualifier(segment)
+        return not _contains_ai_governance_qualifier(evidence_text)
 
     if "finra 3110" in lowered_reason:
-        return not _contains_ai_governance_qualifier(segment)
+        return not _contains_ai_governance_qualifier(evidence_text)
 
     if "communications with the public" in lowered_reason:
         context_start = max(0, match.start() - 240)
@@ -2037,13 +2061,17 @@ def _search_high_pattern_match_in_segments(
     exclude_reference_only: bool,
 ):
     """Search high-tier evidence, skipping known SRO boilerplate matches."""
+    title = segments[0] if segments else ""
+    evidence_text = " ".join(segments)
     for segment in segments:
         for match in re.finditer(pattern, segment):
             if exclude_reference_only and _is_reference_only_occurrence(
                 segment, match.start(), match.end()
             ):
                 continue
-            if _high_pattern_match_is_suppressed(reason, segment, match):
+            if _high_pattern_match_is_suppressed(
+                reason, segment, match, title, evidence_text
+            ):
                 continue
             return match
     return None
@@ -2356,6 +2384,8 @@ def find_affected_controls_by_keywords(
     # classification: a keyword hit assembled across the title/body seam would
     # map a document onto controls that neither field supports.
     segments = _classification_segments(title.lower(), abstract.lower())
+    title_segment = segments[0] if segments else ""
+    evidence_text = " ".join(segments)
     affected = set()
 
     # Build keyword map from config
@@ -2373,12 +2403,14 @@ def find_affected_controls_by_keywords(
                     segment, match.start(), match.end()
                 ):
                     continue
-                if keyword == "model risk" and not _contains_ai_governance_qualifier(
-                    segment
-                ):
+                if keyword == "model risk" and SRO_FILING_TITLE_PATTERN.search(
+                    title_segment
+                ) and not _contains_ai_governance_qualifier(evidence_text):
                     continue
-                if keyword == "artificial intelligence" and _is_ai_product_metric_context(
-                    segment, match.start(), match.end()
+                if (
+                    keyword == "artificial intelligence"
+                    and SRO_FILING_TITLE_PATTERN.search(title_segment)
+                    and _is_ai_product_metric_context(segment, match.start(), match.end())
                 ):
                     continue
                 affected.update(controls)

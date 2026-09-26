@@ -547,7 +547,7 @@ def test_automated_advice_language_remains_high_priority():
 
 
 @pytest.mark.parametrize("citation", ("FINRA Rule 3110", "FINRA 3110"))
-def test_generic_finra_3110_citations_do_not_classify_high(citation):
+def test_finra_rule_3110_citations_classify_high(citation):
     config = _load_config()
 
     classification, _ = regulatory_monitor.classify_regulatory_relevance(
@@ -556,10 +556,7 @@ def test_generic_finra_3110_citations_do_not_classify_high(citation):
         config,
     )
 
-    assert classification not in {
-        regulatory_monitor.CLASSIFICATION_HIGH,
-        regulatory_monitor.CLASSIFICATION_CRITICAL,
-    }
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
 
 
 @pytest.mark.parametrize("citation", ("FINRA Rule 4511", "FINRA 4511"))
@@ -4314,6 +4311,17 @@ RUN207_TRUE_HIGH_IDS = {
     "2026-18293",  # FINRA fraud/deepfake AI rule filing
     "2026-18262",  # SEC AI disclosure agenda item
     "2026-18190",  # transfer-agent proposed rule AI watch item
+    "2022-24958",  # FINRA Rule 3110 remote inspections rulemaking
+    "FINRA-RN-24-02",  # FINRA 3110 remote inspection effective dates
+    "A7-KPI-AI-DISCLOSURE",  # KPI disclosure about AI use
+    "A8-KPI-THEN-AI-SURVEILLANCE",  # separate AI obligation after KPI mention
+    "FINRA-COMMS-PUBLIC",  # FINRA communications-with-the-public guidance
+    "AI-BASED-3110",  # bare AI form plus FINRA supervision
+    "GEN-AI-3110",  # Gen AI form plus FINRA supervision
+    "AI-GENERATED-2210",  # AI-generated communications
+    "MACHINE-LEARNING-MRM",  # machine-learning model-risk obligation
+    "PREDICTIVE-ANALYTICS-AI",  # predictive analytics with AI governance
+    "FINRA-RN-25-07",  # FINRA GenAI/predictive-analytics style notice
 }
 
 RUN207_HIGH_FIXTURES = [
@@ -4502,7 +4510,129 @@ RUN207_HIGH_FIXTURES = [
         "system. The Linkage Plan established order protection.",
         regulatory_monitor.CLASSIFICATION_NOISE,
     ),
+    (
+        "2022-24958",
+        "Self-Regulatory Organizations; FINRA; Remote Inspections Pilot Program Under FINRA Rule 3110 (Supervision)",
+        "FINRA proposes supplementary material under FINRA Rule 3110 "
+        "(Supervision) to establish a remote inspections pilot program for "
+        "member firms.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "FINRA-RN-24-02",
+        "Regulatory Notice 24-02",
+        "FINRA announced effective dates for amendments to FINRA Rule 3110.18 "
+        "and FINRA Rule 3110.19 governing remote inspections and residential "
+        "supervisory locations.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "A7-KPI-AI-DISCLOSURE",
+        "SEC broker-dealer disclosure proposal",
+        "The Commission proposes that broker-dealers disclose key performance "
+        "indicators describing their use of artificial intelligence systems.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "A8-KPI-THEN-AI-SURVEILLANCE",
+        "SEC broker-dealer disclosure proposal",
+        "The filing discusses key performance indicators for the program. "
+        "Members using artificial intelligence surveillance tools must "
+        "document their supervisory review.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "FINRA-COMMS-PUBLIC",
+        "Communications With the Public",
+        "FINRA reminds member firms that communications with the public must "
+        "be supervised and retained under the member's written procedures.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "AI-BASED-3110",
+        "Self-Regulatory Organizations; FINRA; AI tooling supervision",
+        "Members must supervise AI-based tools under FINRA Rule 3110 and "
+        "document escalation procedures.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "GEN-AI-3110",
+        "Self-Regulatory Organizations; FINRA; Gen AI tooling supervision",
+        "Members must supervise Gen AI-enabled tools under FINRA Rule 3110 "
+        "and test associated controls.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "AI-GENERATED-2210",
+        "FINRA guidance on AI-generated retail communications",
+        "Member firms using AI-generated retail communications must comply "
+        "with FINRA Rule 2210 and principal-review obligations.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "MACHINE-LEARNING-MRM",
+        "SEC proposed rule on model risk management",
+        "Covered broker-dealers using machine learning models must maintain "
+        "model risk management controls, validation evidence, and supervisory "
+        "approval records.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "PREDICTIVE-ANALYTICS-AI",
+        "Predictive analytics conflict proposal",
+        "The proposal addresses predictive analytics, artificial intelligence, "
+        "and similar technologies used by broker-dealers when interacting "
+        "with investors.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "FINRA-RN-25-07",
+        "Regulatory Notice 25-07",
+        "FINRA requests comment on member firm use of Gen AI, machine "
+        "learning, and predictive analytics in investor-facing workflows.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
 ]
+
+
+def _classify_without_sro_boilerplate_filters(
+    title: str,
+    text: str,
+    config: dict,
+    *,
+    exclude_reference_only: bool = True,
+) -> str:
+    classification_text = regulatory_monitor._prepare_classification_text(text or "")
+    segments = regulatory_monitor._classification_segments(
+        (title or "").lower(), classification_text.lower()
+    )
+    regulatory_config = config.get("regulatory", {})
+
+    for entry in regulatory_config.get("critical_patterns", []):
+        if regulatory_monitor._search_operative_match_in_segments(
+            entry["pattern"], segments, exclude_reference_only
+        ):
+            return regulatory_monitor.CLASSIFICATION_CRITICAL
+
+    for entry in regulatory_config.get("high_patterns", []):
+        if regulatory_monitor._search_operative_match_in_segments(
+            entry["pattern"], segments, exclude_reference_only
+        ):
+            return regulatory_monitor.CLASSIFICATION_HIGH
+
+    if any(
+        regulatory_monitor._has_electronic_recordkeeping_obligation(segment)
+        for segment in segments
+    ):
+        return regulatory_monitor.CLASSIFICATION_HIGH
+
+    for entry in regulatory_config.get("medium_patterns", []):
+        if regulatory_monitor._search_operative_match_in_segments(
+            entry["pattern"], segments, exclude_reference_only
+        ):
+            return regulatory_monitor.CLASSIFICATION_MEDIUM
+
+    return regulatory_monitor.CLASSIFICATION_NOISE
 
 
 def _run207_precision_recall(classifications: dict[str, str]) -> tuple[float, float]:
@@ -4549,11 +4679,16 @@ def test_run207_high_fixtures_reduce_sro_boilerplate_false_positives(
 
 
 def test_run207_fixture_precision_improves_without_recall_loss():
-    """Run 207 had 20 HIGH rows: 15 boilerplate false positives and 5 watch hits."""
+    """Run 207 precision improves while expanded true-positive recall holds."""
     config = _load_config()
     before = {
-        doc_id: regulatory_monitor.CLASSIFICATION_HIGH
-        for doc_id, *_rest in RUN207_HIGH_FIXTURES
+        doc_id: _classify_without_sro_boilerplate_filters(
+            title,
+            text,
+            config,
+            exclude_reference_only=True,
+        )
+        for doc_id, title, text, _expected in RUN207_HIGH_FIXTURES
     }
     after = {
         doc_id: regulatory_monitor.classify_regulatory_relevance(
@@ -4565,8 +4700,13 @@ def test_run207_fixture_precision_improves_without_recall_loss():
         for doc_id, title, text, _expected in RUN207_HIGH_FIXTURES
     }
 
-    assert _run207_precision_recall(before) == (0.25, 1.0)
-    assert _run207_precision_recall(after) == (1.0, 1.0)
+    before_precision, before_recall = _run207_precision_recall(before)
+    after_precision, after_recall = _run207_precision_recall(after)
+
+    assert before_recall == 1.0
+    assert after_recall == 1.0
+    assert after_precision > before_precision
+    assert after_precision == 1.0
 
 
 def test_unqualified_clearinghouse_model_risk_does_not_map_genai_controls():
@@ -4619,6 +4759,26 @@ def test_unqualified_clearinghouse_model_risk_does_not_map_genai_controls():
             "Covered firms must supervise artificial intelligence model risk "
             "management controls and retain governance evidence.",
         ),
+        (
+            "Model Risk Management Guidance",
+            "Covered firms must validate AI models and retain governance "
+            "evidence for supervisory review.",
+        ),
+        (
+            "FINRA algorithmic trading supervision",
+            "FINRA reminds members to maintain supervisory controls for "
+            "algorithmic trading strategies.",
+        ),
+        (
+            "FINRA 25-07-style Gen AI notice",
+            "FINRA requests comment on member use of Gen AI, machine "
+            "learning, and predictive analytics in investor-facing workflows.",
+        ),
+        (
+            "AI-generated communications under Rule 2210",
+            "Members using AI-generated retail communications must comply "
+            "with FINRA Rule 2210 review and recordkeeping obligations.",
+        ),
     ],
 )
 def test_genuine_ai_and_finra_rulemaking_recall_stays_high(title, text):
@@ -4632,6 +4792,35 @@ def test_genuine_ai_and_finra_rulemaking_recall_stays_high(title, text):
     )
 
     assert classification in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
+@pytest.mark.parametrize(
+    ("title", "text"),
+    [
+        (
+            "Ordinary disclosure filing",
+            "The issuer said-based controls were not part of the proposal.",
+        ),
+        (
+            "Facilities vendor update",
+            "The maid-generated checklist concerned office maintenance.",
+        ),
+    ],
+)
+def test_bare_ai_patterns_do_not_match_inside_words(title, text):
+    config = _load_config()
+
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in {
         regulatory_monitor.CLASSIFICATION_HIGH,
         regulatory_monitor.CLASSIFICATION_CRITICAL,
     }
