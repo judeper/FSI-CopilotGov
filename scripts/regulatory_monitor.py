@@ -1483,6 +1483,8 @@ def _source_failure_reason(exc: Exception) -> str:
 AVAILABILITY_STATUS_CODES = frozenset({0, 429})
 FINRA_DEGRADED_COUNTER_KEY = "consecutive_finra_degraded_runs"
 FINRA_DEGRADED_FAILURE_THRESHOLD = 3
+FINRA_UNVERIFIED_COUNTER_KEY = "consecutive_finra_unverified_runs"
+FINRA_UNVERIFIED_FAILURE_THRESHOLD = 3
 
 
 def _http_status_is_source_unavailable(status_code) -> bool:
@@ -1583,19 +1585,27 @@ def _update_finra_unavailable_state(
         entry_key = str(notice.get("document_id") or "") or _finra_document_id_from_url(url)
         if not entry_key:
             continue
-        reason = str(notice.get("reason") or "FINRA notice unavailable")
         previous = records.get(entry_key, {})
+        if notice.get("remembered"):
+            if previous:
+                records[entry_key] = previous
+            continue
+        reason = str(notice.get("reason") or "FINRA notice unavailable")
         status_code = _finra_unavailable_status_code(reason)
         previous_status_code = _finra_unavailable_status_code(previous.get("reason"))
         previous_observations = int(previous.get("observations", 0) or 0)
+        previous_reason = str(previous.get("reason") or "")
+        same_unavailable_condition = (
+            reason == previous_reason
+            and status_code == previous_status_code
+        )
         observations = (
             previous_observations + 1
-            if status_code is not None and status_code == previous_status_code
+            if same_unavailable_condition
             else 1
         )
         is_permanent = (
-            status_code is None
-            or observations >= 2
+            observations >= 2
             or previous.get("status") == "permanent"
         )
         records[entry_key] = {
@@ -1608,6 +1618,9 @@ def _update_finra_unavailable_state(
             "last_seen": now_text,
             "expires_at": expires_text,
         }
+
+    for entry_key in set(source_state.get("entries", {})):
+        records.pop(entry_key, None)
 
     ordered = dict(
         sorted(
@@ -3407,15 +3420,6 @@ def _fetch_cached_fallback_text(
         if required:
             if _http_status_is_source_unavailable(status_code):
                 raise RequiredSourceUnavailableError(message)
-            try:
-                status_int = int(status_code)
-            except (TypeError, ValueError):
-                status_int = None
-            if (
-                source_label == "FINRA authoritative notice body"
-                and status_int in FINRA_REPEATED_PERMANENT_STATUSES
-            ):
-                raise FinraNoticeUnavailableError(message)
             raise RequiredSourceTextError(message)
         logger.warning(message)
         cache[url] = ""
@@ -4495,6 +4499,7 @@ def _build_finra_notice_item(
                 "title": title,
                 "url": url,
                 "reason": persistent_unavailable[document_id],
+                "remembered": True,
             }
         )
         return None, detail_fetches
@@ -5007,6 +5012,7 @@ def _fetch_finra_notices_with_discovery_metadata(
     discovery_path: str,
     validator_dropped: int,
     listing_cross_check: str = "not run",
+    allow_listing_early_stop: bool = True,
 ) -> FinraDiscoveryResult:
     """Run the HTML crawl and preserve path metadata if it fails."""
     try:
@@ -5018,6 +5024,7 @@ def _fetch_finra_notices_with_discovery_metadata(
             unavailable_notices=unavailable_notices,
             known_entry_keys=known_entry_keys,
             persistent_unavailable=persistent_unavailable,
+            allow_listing_early_stop=allow_listing_early_stop,
         )
     except Exception as exc:
         raise _annotate_finra_discovery_exception(
@@ -5127,18 +5134,17 @@ def discover_finra_notices(
     known_entry_keys = set(source_state.get("entries", {}))
     persistent_unavailable = _finra_persistent_unavailable_reasons(source_state)
     if weekly_full_crawl:
-        return FinraDiscoveryResult(
-            items=fetch_finra_notices(
-                session,
-                config,
-                limit=limit,
-                detail_fetch_limit=detail_fetch_limit,
-                unavailable_notices=unavailable_notices,
-                known_entry_keys=known_entry_keys,
-                persistent_unavailable=persistent_unavailable,
-                allow_listing_early_stop=False,
-            ),
+        return _fetch_finra_notices_with_discovery_metadata(
+            session=session,
+            config=config,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            known_entry_keys=known_entry_keys,
+            persistent_unavailable={},
             discovery_path="full crawl",
+            validator_dropped=0,
+            allow_listing_early_stop=False,
         )
 
     if not known_entry_keys:
@@ -5146,17 +5152,16 @@ def discover_finra_notices(
         # window, so using it alone would be fast but dishonest: older notices
         # would remain unchecked while the report could look clean. Preserve the
         # established bounded HTML crawl for empty baselines.
-        return FinraDiscoveryResult(
-            items=fetch_finra_notices(
-                session,
-                config,
-                limit=limit,
-                detail_fetch_limit=detail_fetch_limit,
-                unavailable_notices=unavailable_notices,
-                known_entry_keys=known_entry_keys,
-                persistent_unavailable=persistent_unavailable,
-            ),
+        return _fetch_finra_notices_with_discovery_metadata(
+            session=session,
+            config=config,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            known_entry_keys=known_entry_keys,
+            persistent_unavailable=persistent_unavailable,
             discovery_path="HTML first-run baseline",
+            validator_dropped=0,
         )
 
     rss_result: Optional[FinraRssParseResult] = None
@@ -5248,7 +5253,7 @@ def discover_finra_notices(
             limit=limit,
             detail_fetch_limit=detail_fetch_limit,
             unavailable_notices=unavailable_notices,
-            persistent_unavailable=persistent_unavailable,
+            persistent_unavailable={},
         )
     except Exception as exc:
         raise _annotate_finra_discovery_exception(
@@ -5731,8 +5736,9 @@ def generate_regulatory_report(
                     f"- **{_source_display_name(source)}:** "
                     f"{FINRA_UNVERIFIED_CLEAN_STATE} — {reason}. The FINRA "
                     "RSS feed was checked, the HTTPS page-0 listing "
-                    "cross-check was unavailable, and the consecutive "
-                    "degraded counter was left unchanged.\n"
+                    "cross-check was unavailable, and a separate consecutive "
+                    f"unverified-clean counter escalates at "
+                    f"{FINRA_UNVERIFIED_FAILURE_THRESHOLD} runs.\n"
                 )
             lines.append("\n")
 
@@ -5974,21 +5980,41 @@ def _run_monitor() -> int:
     def update_finra_degraded_counter() -> int:
         monitor_state = state.setdefault("regulatory_monitor", {})
         current = int(monitor_state.get(FINRA_DEGRADED_COUNTER_KEY, 0) or 0)
+        unverified_current = int(
+            monitor_state.get(FINRA_UNVERIFIED_COUNTER_KEY, 0) or 0
+        )
         if "FINRA" not in requested_sources:
             return current
         if "FINRA" in failed_sources:
             current += 1
+            unverified_current = 0
         elif source_counts.get("FINRA", {}).get(
             "verification_state"
         ) == FINRA_UNVERIFIED_CLEAN_STATE:
-            logger.warning(
-                "FINRA run is %s; leaving consecutive degraded counter unchanged at %s",
-                FINRA_UNVERIFIED_CLEAN_STATE,
-                current,
-            )
+            unverified_current += 1
+            if unverified_current >= FINRA_UNVERIFIED_FAILURE_THRESHOLD:
+                reason = (
+                    "FINRA listing cross-check unavailable for "
+                    f"{unverified_current} consecutive monitor runs; "
+                    "treating the run as degraded"
+                )
+                logger.warning(reason)
+                print(f"::warning::{reason}")
+                source_counts["FINRA"]["degraded"] = 1
+                source_counts["FINRA"]["reason"] = reason
+            else:
+                logger.warning(
+                    "FINRA run is %s for %s consecutive run(s); leaving "
+                    "consecutive degraded counter unchanged at %s",
+                    FINRA_UNVERIFIED_CLEAN_STATE,
+                    unverified_current,
+                    current,
+                )
         else:
             current = 0
+            unverified_current = 0
         monitor_state[FINRA_DEGRADED_COUNTER_KEY] = current
+        monitor_state[FINRA_UNVERIFIED_COUNTER_KEY] = unverified_current
         return current
 
     def update_finra_run_summary() -> None:
@@ -6141,6 +6167,11 @@ def _run_monitor() -> int:
         for source, counts in source_counts.items()
         if counts.get("verification_state") == FINRA_UNVERIFIED_CLEAN_STATE
     }
+    degraded_sources = {
+        source: counts
+        for source, counts in source_counts.items()
+        if counts.get("degraded")
+    }
 
     # Generate report if new items or degraded sources were found. A degraded
     # source is never equivalent to "no changes"; it must remain visible in
@@ -6148,7 +6179,7 @@ def _run_monitor() -> int:
     # An unverified-clean FINRA run is also reportable: the RSS feed was
     # checked, but the HTTPS page-0 listing cross-check was unavailable, so the
     # monitor must not silently claim a fully verified no-change result.
-    if all_new_items or failed_sources or unverified_sources:
+    if all_new_items or failed_sources or unverified_sources or degraded_sources:
         if all_new_items:
             logger.info(f"\n=== {len(all_new_items)} total new regulatory items detected ===")
         if failed_sources:
@@ -6189,7 +6220,7 @@ def _run_monitor() -> int:
             )
             return EXIT_FAILURE
 
-        return EXIT_DEGRADED if failed_sources else EXIT_FINDINGS
+        return EXIT_DEGRADED if failed_sources or degraded_sources else EXIT_FINDINGS
 
     else:
         logger.info("\n=== No new regulatory items detected ===")
