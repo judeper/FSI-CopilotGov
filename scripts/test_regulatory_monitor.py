@@ -2846,7 +2846,11 @@ def test_generate_regulatory_report_has_single_h1_heading(monkeypatch):
         captured["filename"] = filename
         return report_dir / filename
 
-    monkeypatch.setattr(regulatory_monitor, "write_report", fake_write_report)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "_write_unique_regulatory_report",
+        fake_write_report,
+    )
 
     regulatory_monitor.generate_regulatory_report(
         all_new_items=[item],
@@ -2856,6 +2860,30 @@ def test_generate_regulatory_report_has_single_h1_heading(monkeypatch):
     content = captured["content"]
     assert content.count("# Regulatory Monitor Report") == 1
     assert content.startswith("# Regulatory Monitor Report\n")
+
+
+def test_generate_regulatory_report_never_overwrites_same_date_report(
+    monkeypatch,
+    tmp_path,
+):
+    report_dir = tmp_path / "reports"
+    report_dir.mkdir()
+    seed_report = report_dir / "regulatory-changes-2026-09-26.md"
+    prior_collision = report_dir / "regulatory-changes-2026-09-26-2.md"
+    seed_report.write_text("one-time FINRA seed report\n", encoding="utf-8")
+    prior_collision.write_text("prior same-day run\n", encoding="utf-8")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", report_dir)
+
+    actual_path = regulatory_monitor.generate_regulatory_report(
+        all_new_items=[],
+        report_path=Path("regulatory-changes-2026-09-26.md"),
+        source_counts={"FINRA": {"fetched": 0, "new": 0}},
+    )
+
+    assert actual_path == report_dir / "regulatory-changes-2026-09-26-3.md"
+    assert seed_report.read_text(encoding="utf-8") == "one-time FINRA seed report\n"
+    assert prior_collision.read_text(encoding="utf-8") == "prior same-day run\n"
+    assert "# Regulatory Monitor Report" in actual_path.read_text(encoding="utf-8")
 
 
 def _fed_item(abstract: str, *, document_id: str = "2026-00042") -> "regulatory_monitor.RegulatoryItem":
@@ -2900,7 +2928,11 @@ def test_report_counts_and_order_match_classified_records(monkeypatch):
         captured["content"] = report_content
         return report_dir / filename
 
-    monkeypatch.setattr(regulatory_monitor, "write_report", fake_write_report)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "_write_unique_regulatory_report",
+        fake_write_report,
+    )
 
     regulatory_monitor.generate_regulatory_report(
         items,

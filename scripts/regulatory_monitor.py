@@ -59,7 +59,6 @@ from monitoring_shared import (
     generate_report_header,
     generate_executive_summary,
     format_change_summary,
-    write_report,
     load_monitoring_config,
     validate_config,
     DEFAULT_CONFIG_PATH,
@@ -5606,7 +5605,7 @@ def generate_regulatory_report(
     all_new_items: list[RegulatoryItem],
     report_path: Path,
     source_counts: Optional[dict[str, dict[str, int]]] = None,
-) -> None:
+) -> Path:
     """
     Generate regulatory change report using shared report format helpers.
 
@@ -5820,8 +5819,40 @@ def generate_regulatory_report(
 
     # Write report
     content = "".join(lines)
-    write_report(content, REPORTS_DIR, report_path.name)
-    logger.info(f"Report written to {report_path}")
+    actual_report_path = _write_unique_regulatory_report(
+        content,
+        REPORTS_DIR,
+        report_path.name,
+    )
+    logger.info(f"Report written to {actual_report_path}")
+    return actual_report_path
+
+
+def _write_unique_regulatory_report(
+    report_content: str,
+    report_dir: Path,
+    filename: str,
+) -> Path:
+    """Write a regulatory report without overwriting an existing same-day file."""
+    report_dir.mkdir(parents=True, exist_ok=True)
+    requested_path = Path(filename)
+    suffix = requested_path.suffix or ".md"
+    stem = requested_path.stem if requested_path.suffix else requested_path.name
+
+    for index in range(1, 1000):
+        candidate_name = (
+            f"{stem}{suffix}" if index == 1 else f"{stem}-{index}{suffix}"
+        )
+        candidate = report_dir / candidate_name
+        try:
+            with candidate.open("x", encoding="utf-8") as handle:
+                handle.write(report_content)
+            return candidate
+        except FileExistsError:
+            continue
+    raise FileExistsError(
+        f"No available regulatory report filename for {report_dir / filename}"
+    )
 
 
 def _run_monitor() -> int:
