@@ -1949,6 +1949,134 @@ def _search_operative_match_in_segments(
     return None
 
 
+AI_GOVERNANCE_QUALIFIER_PATTERN = re.compile(
+    r"\b(?:"
+    r"artificial\s+intelligence|generative\s+ai|genai|"
+    r"gen\s+ai|ai|"
+    r"large\s+language\s+models?|llms?|machine\s+learning|"
+    r"copilot|chatbots?|robo-?advisors?|"
+    r"ai[-\s]+(?:agents?|models?|tools?|systems?|based|generated|enabled|powered|driven)"
+    r")\b"
+)
+
+AI_PRODUCT_METRIC_CONTEXT_PATTERN = re.compile(
+    r"\b(?:"
+    r"(?:cloud\s+and\s+)?artificial\s+intelligence\s+infrastructure\s+revenues?|"
+    r"artificial\s+intelligence\s+revenues?|"
+    r"revenues?\s+(?:broken\s+out\s+)?by\s+[^.]{0,160}"
+    r"artificial\s+intelligence"
+    r")\b",
+    re.IGNORECASE,
+)
+
+
+def _contains_ai_governance_qualifier(text: str) -> bool:
+    """Return whether text has an AI/GenAI qualifier, not generic model wording."""
+    return bool(AI_GOVERNANCE_QUALIFIER_PATTERN.search(text or ""))
+
+
+def _is_ai_product_metric_context(text: str, start: int, end: int) -> bool:
+    """Return whether an AI mention only names an underlying product metric.
+
+    SRO option-listing filings can mention "cloud and artificial intelligence
+    infrastructure revenues" solely as one KPI category for an option's
+    reference metric. That is a market-product descriptor, not an AI governance
+    or Copilot regulatory requirement.
+    """
+    window_start = max(0, start - 320)
+    window_end = min(len(text), end + 360)
+    for metric_match in AI_PRODUCT_METRIC_CONTEXT_PATTERN.finditer(
+        text, window_start, window_end
+    ):
+        if metric_match.start() <= start and metric_match.end() >= end:
+            return True
+    return False
+
+
+SRO_FILING_TITLE_PATTERN = re.compile(r"^\W*self-regulatory\s+organizations\b")
+SRO_SUPERVISION_SUBJECT_TITLE_PATTERN = re.compile(
+    r"\b(?:3110|supervis\w*|2210|communications?\s+with\s+the\s+public)\b"
+)
+
+
+def _high_pattern_match_is_suppressed(
+    reason: str,
+    segment: str,
+    match,
+    title: str = "",
+    evidence_text: str = "",
+) -> bool:
+    """Return whether a HIGH-tier regex hit is known boilerplate/noise.
+
+    The high-tier config intentionally stays readable and broad; this guard
+    handles source-specific semantics that regex alone cannot express without
+    hiding genuine AI/Copilot regulatory items.
+    """
+    lowered_reason = reason.lower()
+    matched_text = match.group(0).lower()
+    title = (title or "").lower()
+    evidence_text = evidence_text or segment
+
+    if not SRO_FILING_TITLE_PATTERN.search(title):
+        return False
+
+    if SRO_SUPERVISION_SUBJECT_TITLE_PATTERN.search(title) and (
+        "finra 3110" in lowered_reason
+        or "communications with the public" in lowered_reason
+    ):
+        return False
+
+    if "model risk management" in lowered_reason:
+        return not _contains_ai_governance_qualifier(evidence_text)
+
+    if "finra 3110" in lowered_reason:
+        return not _contains_ai_governance_qualifier(evidence_text)
+
+    if "communications with the public" in lowered_reason:
+        context_start = max(0, match.start() - 240)
+        context_end = min(len(segment), match.end() + 240)
+        context = segment[context_start:context_end]
+        return not re.search(
+            r"\b(?:finra|rule\s*2210|retail\s+communications?|"
+            r"customer\s+communications?|investor\s+communications?)\b",
+            context,
+        )
+
+    if "artificial intelligence" in lowered_reason:
+        return _is_ai_product_metric_context(segment, match.start(), match.end())
+
+    if "automation" in lowered_reason and re.search(
+        r"\b(?:automated\s+trading\s+systems?|automated\s+systems?)\b",
+        matched_text,
+    ):
+        return True
+
+    return False
+
+
+def _search_high_pattern_match_in_segments(
+    pattern: str,
+    reason: str,
+    segments: tuple[str, ...],
+    exclude_reference_only: bool,
+):
+    """Search high-tier evidence, skipping known SRO boilerplate matches."""
+    title = segments[0] if segments else ""
+    evidence_text = " ".join(segments)
+    for segment in segments:
+        for match in re.finditer(pattern, segment):
+            if exclude_reference_only and _is_reference_only_occurrence(
+                segment, match.start(), match.end()
+            ):
+                continue
+            if _high_pattern_match_is_suppressed(
+                reason, segment, match, title, evidence_text
+            ):
+                continue
+            return match
+    return None
+
+
 def _classification_segments(*fields: str) -> tuple[str, ...]:
     """Return the independently analysed, lowercased evidence fields.
 
@@ -2206,8 +2334,8 @@ def classify_regulatory_relevance(
         for p in regulatory_config.get('high_patterns', [])
     ]
     for pattern, reason in high_patterns:
-        if _search_operative_match_in_segments(
-            pattern, segments, exclude_reference_only
+        if _search_high_pattern_match_in_segments(
+            pattern, reason, segments, exclude_reference_only
         ):
             return (CLASSIFICATION_HIGH, reason)
 
@@ -2256,6 +2384,8 @@ def find_affected_controls_by_keywords(
     # classification: a keyword hit assembled across the title/body seam would
     # map a document onto controls that neither field supports.
     segments = _classification_segments(title.lower(), abstract.lower())
+    title_segment = segments[0] if segments else ""
+    evidence_text = " ".join(segments)
     affected = set()
 
     # Build keyword map from config
@@ -2267,10 +2397,24 @@ def find_affected_controls_by_keywords(
     for keyword, controls in keyword_map.items():
         # Use word boundary matching to avoid partial matches
         pattern = rf'\b{re.escape(keyword.lower())}\b'
-        if _search_operative_match_in_segments(
-            pattern, segments, exclude_reference_only
-        ):
-            affected.update(controls)
+        for segment in segments:
+            for match in re.finditer(pattern, segment):
+                if exclude_reference_only and _is_reference_only_occurrence(
+                    segment, match.start(), match.end()
+                ):
+                    continue
+                if keyword == "model risk" and SRO_FILING_TITLE_PATTERN.search(
+                    title_segment
+                ) and not _contains_ai_governance_qualifier(evidence_text):
+                    continue
+                if (
+                    keyword == "artificial intelligence"
+                    and SRO_FILING_TITLE_PATTERN.search(title_segment)
+                    and _is_ai_product_metric_context(segment, match.start(), match.end())
+                ):
+                    continue
+                affected.update(controls)
+                break
 
     return sorted(list(affected))
 

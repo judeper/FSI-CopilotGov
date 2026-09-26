@@ -89,11 +89,17 @@ regulatory:
 
   # HIGH patterns: AI/ML terms + FSI-specific requirements.
   # These reference AI, machine learning, or automation in FSI regulatory context.
+  # SRO market-structure boilerplate is filtered in regulatory_monitor.py; FINRA
+  # 3110/2210 rulemaking titles and non-SRO notices remain HIGH by default.
   high_patterns:
     - pattern: '\bartificial\s+intelligence'
       reason: "References artificial intelligence"
     - pattern: '\bgenai\b'
       reason: "References GenAI terminology"
+    - pattern: '\bgen\s+ai\b'
+      reason: "References Gen AI terminology"
+    - pattern: '\bai[-\s]+(?:based|generated|enabled|powered|driven)\b'
+      reason: "References AI terminology"
     - pattern: '\bmachine\s+learning'
       reason: "References machine learning"
     - pattern: '\bllm\b'
@@ -112,10 +118,12 @@ regulatory:
       reason: "Targeted return language"
     - pattern: '\bchatbot'
       reason: "References chatbots"
-    - pattern: '\b(?:automated|automation)\s+(?:advice|decision(?:-making)?|trading|supervision|monitoring|compliance|model|system)'
+    - pattern: '\b(?:automated|automation)\s+(?:advice|decision(?:-making)?|supervision|monitoring|compliance|model)'
       reason: "References automation in FSI context"
     - pattern: '\bsupervision.{0,80}(?:electronic|automated|technology)'
       reason: "Supervision of automated systems"
+    - pattern: '\b(?:supervision|supervisory|controls?)\b.{0,80}\balgorithmic\s+trading\b|\balgorithmic\s+trading\b.{0,80}\b(?:supervision|supervisory|controls?)\b'
+      reason: "Algorithmic trading supervision"
     - pattern: '\bfinra(?:\s+rule)?\s+3110\b'
       reason: "FINRA 3110 (supervision)"
     - pattern: '\bfinra(?:\s+rule)?\s+4511\b'
