@@ -3,9 +3,9 @@
 
 The FSI-CopilotGov framework consumes automation solutions authored in
 the companion ``FSI-CopilotGov-Solutions`` repo. This script reads that
-sister repo's canonical ``solutions.json`` manifest and produces a
-committed lock file so framework builds are reproducible even when the
-sister repo moves on.
+sister repo's canonical ``solutions.json`` manifest from the configured
+upstream ref and produces a committed lock file so framework builds are
+reproducible even when the sister repo moves on.
 
 Shape of the emitted lock:
 
@@ -16,7 +16,7 @@ Shape of the emitted lock:
       "generatedAt": "<ISO UTC>",
       "source": {
         "repo": "judeper/FSI-CopilotGov-Solutions",
-        "ref": "v0.8.0",
+        "ref": "main",
         "commit": "<sha>"
       },
       "solutions": [ /* deep-copied from source */ ]
@@ -64,9 +64,10 @@ SISTER_REPO_SLUG = "judeper/FSI-CopilotGov-Solutions"
 # when the sister repo added per-solution tier metadata (tiersSupported,
 # tierRecommended, tierMaturity, maturity) between v0.7.0 and v0.8.0.
 EXPECTED_SCHEMA = "0.2.0"
-# The pinned ref that the framework targets. Update in lock-step
-# with the sister repo release cadence.
-PINNED_REF = "v0.8.0"
+# The upstream ref that the framework targets. The scheduled drift workflow
+# checks the sister repository's main branch, so the refresh generator must
+# read the same ref to resolve reported drift without hand-editing the lock.
+PINNED_REF = "main"
 
 
 def _git(sister_repo: Path, *args: str) -> str | None:

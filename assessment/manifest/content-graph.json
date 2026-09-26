@@ -2779,12 +2779,12 @@
   "solutions": [
     {
       "id": "01-copilot-readiness-scanner",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "control_coverage": []
     },
     {
       "id": "02-oversharing-risk-assessment",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "control_coverage": []
     },
     {
@@ -2809,7 +2809,7 @@
     },
     {
       "id": "07-conditional-access-automation",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "control_coverage": []
     },
     {
@@ -2824,7 +2824,7 @@
     },
     {
       "id": "10-connector-plugin-governance",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "control_coverage": []
     },
     {

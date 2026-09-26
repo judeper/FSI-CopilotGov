@@ -25,7 +25,7 @@
         "data-hygiene-findings",
         "remediation-plan"
       ],
-      "version": "0.2.3"
+      "version": "0.2.4"
     },
     {
       "domain": "readiness-data",
@@ -51,7 +51,7 @@
         "site-owner-attestations",
         "sensitivity-label-coverage"
       ],
-      "version": "0.2.4"
+      "version": "0.2.5"
     },
     {
       "domain": "readiness-data",
@@ -176,7 +176,7 @@
         "drift-alert-summary",
         "access-exception-register"
       ],
-      "version": "0.2.4"
+      "version": "0.2.5"
     },
     {
       "domain": "operations-analytics",
@@ -251,7 +251,7 @@
         "approval-register",
         "data-flow-attestations"
       ],
-      "version": "0.2.3"
+      "version": "0.2.4"
     },
     {
       "domain": "operations-analytics",
@@ -584,9 +584,9 @@
     }
   ],
   "source": {
-    "commit": "f4c6af6079f7a645995f8b9f6d09786b8586e8dd",
+    "commit": "bb23bebfeb5a248589c9253d91795082fe998ef8",
     "kind": "sister-repo",
-    "ref": "v0.8.0",
+    "ref": "main",
     "repo": "judeper/FSI-CopilotGov-Solutions"
   }
 }
