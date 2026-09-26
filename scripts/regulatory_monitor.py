@@ -1497,6 +1497,18 @@ def _http_status_is_source_unavailable(status_code) -> bool:
     return code in AVAILABILITY_STATUS_CODES or 500 <= code <= 599
 
 
+def _sunday_boundary_passed_after(last_seen: datetime, now: datetime) -> bool:
+    """Return whether a scheduled Sunday full-crawl boundary passed since last_seen."""
+    last_date = last_seen.astimezone(timezone.utc).date()
+    now_date = now.astimezone(timezone.utc).date()
+    if now_date <= last_date:
+        return False
+    for offset in range(1, (now_date - last_date).days + 1):
+        if (last_date + timedelta(days=offset)).weekday() == 6:
+            return True
+    return False
+
+
 def _parse_state_datetime(value: object) -> Optional[datetime]:
     """Parse an ISO timestamp from state, returning None for malformed values."""
     if not isinstance(value, str) or not value.strip():
@@ -6022,14 +6034,12 @@ def _run_monitor() -> int:
         ) == FINRA_UNVERIFIED_CLEAN_STATE:
             now_utc = datetime.now(timezone.utc)
             if unverified_current > 0 and unverified_last_seen is not None:
-                days_since_unverified = (
-                    now_utc.date() - unverified_last_seen.date()
-                ).days
-                if days_since_unverified > 1:
+                if _sunday_boundary_passed_after(unverified_last_seen, now_utc):
                     logger.warning(
-                        "FINRA unverified-clean counter state is stale "
-                        "(last persisted unverified run: %s); restarting the "
-                        "committed-state streak at 1",
+                        "FINRA unverified-clean counter crossed a scheduled "
+                        "Sunday full-crawl boundary since the last persisted "
+                        "unverified run (%s); restarting the committed-state "
+                        "streak at 1",
                         unverified_last_seen.isoformat(),
                     )
                     unverified_current = 0
@@ -6076,7 +6086,10 @@ def _run_monitor() -> int:
         if "verification_state" in counts:
             summary["verification_state"] = counts["verification_state"]
         if "reason" in counts:
-            summary["failure_reason"] = counts["reason"]
+            if counts.get("unverified_escalated"):
+                summary["escalation_reason"] = counts["reason"]
+            else:
+                summary["failure_reason"] = counts["reason"]
         monitor_state["last_finra_discovery"] = summary
 
     # Fetch from Federal Register

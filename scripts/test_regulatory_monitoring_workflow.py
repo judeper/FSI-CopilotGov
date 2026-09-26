@@ -201,6 +201,7 @@ def test_monitor_step_enforces_exit_contract() -> None:
     ) in degraded_branch.group(1)
     assert "Escalated Sources" in degraded_branch.group(1)
     assert "escalated_sources=" in degraded_branch.group(1)
+    assert "degraded_sources=${DEGRADED_SOURCES:-}" in degraded_branch.group(1)
     assert "exit 0" in degraded_branch.group(1)
     assert failure_branch and 'exit "$EXIT_CODE"' in failure_branch.group(1)
     assert 'exit "$EXIT_CODE"' in run.split("*)", maxsplit=1)[1]
@@ -262,10 +263,12 @@ def test_pr_title_marks_degraded_finra_runs() -> None:
     meta_run = _step(MONITOR_JOB, "Prepare Regulatory Monitor PR metadata")["run"]
     assert "DEGRADED (FINRA unavailable)" in meta_run
     assert "DEGRADED (FINRA cross-check unavailable)" in meta_run
+    assert "DEGRADED (FINRA cross-check + Federal Register unavailable)" in meta_run
     assert "Sources unavailable this run" in meta_run
     assert "FINRA verification escalated" in meta_run
     assert "RSS discovery ran, fetched/new counts are preserved" in meta_run
     assert "This source was not checked" in meta_run
+    assert "Unavailable this run: ${sources}" in meta_run
 
 
 def test_pr_body_reports_finra_cross_check_and_verification_state() -> None:

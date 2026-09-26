@@ -124,12 +124,7 @@ jobs:
               echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
               DEGRADED_SOURCES=$(grep -m1 '^\*\*Degraded Sources:\*\*' "$REPORT_FILE" | sed 's/^\*\*Degraded Sources:\*\* //') || true
               ESCALATED_SOURCES=$(grep -m1 '^\*\*Escalated Sources:\*\*' "$REPORT_FILE" | sed 's/^\*\*Escalated Sources:\*\* //') || true
-              if [ -n "$DEGRADED_SOURCES" ]; then
-                MONITOR_ALERT_SOURCES="$DEGRADED_SOURCES"
-              else
-                MONITOR_ALERT_SOURCES="$ESCALATED_SOURCES"
-              fi
-              echo "degraded_sources=${MONITOR_ALERT_SOURCES:-source unavailable}" >> "$GITHUB_OUTPUT"
+              echo "degraded_sources=${DEGRADED_SOURCES:-}" >> "$GITHUB_OUTPUT"
               echo "escalated_sources=${ESCALATED_SOURCES:-}" >> "$GITHUB_OUTPUT"
               FINRA_DISCOVERY_PATH=$(grep -m1 '^\*\*FINRA Discovery Path:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Discovery Path:\*\* //') || true
               FINRA_VALIDATOR_DROPPED=$(grep -m1 '^\*\*FINRA Validator Dropped:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Validator Dropped:\*\* //') || true
@@ -170,7 +165,17 @@ jobs:
           if [ "${{ steps.monitor.outputs.exit_code }}" = "4" ]; then
             sources="${{ steps.monitor.outputs.degraded_sources }}"
             escalated_sources="${{ steps.monitor.outputs.escalated_sources }}"
-            if [ "${{ steps.monitor.outputs.finra_verification_state }}" = "unverified-clean" ] && echo "$escalated_sources" | grep -qi "FINRA"; then
+            finra_unverified=false
+            if [ "${{ steps.monitor.outputs.finra_verification_state }}" = "unverified-clean" ]; then
+              finra_unverified=true
+            fi
+            finra_escalated=false
+            if $finra_unverified && echo "$escalated_sources" | grep -qi "FINRA"; then
+              finra_escalated=true
+            fi
+            if $finra_escalated && echo "$sources" | grep -qi "Federal Register"; then
+              echo "title=Regulatory Monitor: DEGRADED (FINRA cross-check + Federal Register unavailable) (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
+            elif $finra_escalated; then
               unavailable="FINRA notices page-0 cross-check"
               echo "title=Regulatory Monitor: DEGRADED (FINRA cross-check unavailable) (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
             elif echo "$sources" | grep -qi "FINRA"; then
@@ -186,14 +191,20 @@ jobs:
             echo "extra_labels=monitor-degraded" >> "$GITHUB_OUTPUT"
             {
               echo "degraded_body<<EOF"
-              if [ "${{ steps.monitor.outputs.finra_verification_state }}" = "unverified-clean" ] && echo "$escalated_sources" | grep -qi "FINRA"; then
-                echo "### FINRA verification escalated"
-                echo ""
-                echo "⚠️ ${unavailable} has been unavailable for consecutive runs. FINRA RSS discovery ran, fetched/new counts are preserved, and the report remains actionable; merge this PR to persist the RSS-derived baseline and counter state."
-              else
+              if [ -n "$sources" ]; then
                 echo "### Sources unavailable this run"
                 echo ""
-                echo "⚠️ Unavailable this run: ${unavailable}. This source was not checked, and its baseline was not advanced."
+                echo "⚠️ Unavailable this run: ${sources}. This source was not checked, and its baseline was not advanced."
+                echo ""
+              fi
+              if $finra_escalated; then
+                echo "### FINRA verification escalated"
+                echo ""
+                echo "⚠️ FINRA notices page-0 cross-check has been unavailable for consecutive runs. FINRA RSS discovery ran, fetched/new counts are preserved, and the report remains actionable; merge this PR to persist the RSS-derived baseline and counter state."
+              elif $finra_unverified; then
+                echo "### FINRA verification unverified"
+                echo ""
+                echo "⚠️ FINRA RSS discovery ran, but the HTTPS page-0 listing cross-check was unavailable. Any findings in this PR are RSS-derived and should be reviewed as unverified until the page-0 cross-check recovers."
               fi
               echo ""
               echo "EOF"

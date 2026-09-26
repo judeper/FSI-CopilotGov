@@ -9497,6 +9497,8 @@ def test_finra_unverified_escalation_preserves_new_finra_and_federal_register_fi
         monitor_state["consecutive_finra_unverified_runs"]
         == regulatory_monitor.FINRA_UNVERIFIED_FAILURE_THRESHOLD
     )
+    assert "escalation_reason" in monitor_state["last_finra_discovery"]
+    assert "failure_reason" not in monitor_state["last_finra_discovery"]
     assert regulatory_monitor.FINRA_UNVERIFIED_LAST_SEEN_KEY in monitor_state
     assert (
         "FINRA 26-11"
@@ -9514,37 +9516,19 @@ def test_finra_unverified_escalation_preserves_new_finra_and_federal_register_fi
     assert "Degraded report counts" not in report_text
 
 
-def test_stale_unverified_counter_does_not_escalate_immediately(
-    monkeypatch,
-    tmp_path,
-):
+def _run_finra_unverified_clean_at(monkeypatch, tmp_path, state, now):
     config = _load_config()
     rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
-    loaded_state = {
-        "version": 1,
-        "regulatory_monitor": {
-            "consecutive_finra_degraded_runs": 0,
-            "consecutive_finra_unverified_runs": (
-                regulatory_monitor.FINRA_UNVERIFIED_FAILURE_THRESHOLD
-            ),
-            regulatory_monitor.FINRA_UNVERIFIED_LAST_SEEN_KEY: (
-                "2000-01-01T00:00:00+00:00"
-            ),
-        },
-        "sources": {
-            regulatory_monitor.SOURCE_KEY_FINRA: {
-                "entries": {
-                    f"FINRA 26-{index:02d}": "existing"
-                    for index in range(1, 11)
-                },
-            },
-        },
-    }
     saved_states: list[dict] = []
 
     class _Session(_RssSession):
         def __init__(self):
             super().__init__(_rss_response(_rss_feed(rss_items)))
+
+    class _FixedDateTime(regulatory_monitor.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return now.astimezone(tz) if tz else now.replace(tzinfo=None)
 
     def unexpected_fetch_page(*_args, **_kwargs):
         raise AssertionError("unverified-clean RSS run must not start HTML fallback")
@@ -9562,17 +9546,171 @@ def test_stale_unverified_counter_does_not_escalate_immediately(
         tmp_path / "data" / "monitor-state.json",
     )
     monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
-    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: state)
     monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
     monkeypatch.setattr(regulatory_monitor, "fetch_page", unexpected_fetch_page)
+    monkeypatch.setattr(regulatory_monitor, "datetime", _FixedDateTime)
     monkeypatch.setattr(
         regulatory_monitor,
         "save_state_atomic",
-        lambda state, _path: saved_states.append(deepcopy(state)),
+        lambda new_state, _path: saved_states.append(deepcopy(new_state)),
     )
 
-    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_FINDINGS
-    monitor_state = saved_states[-1]["regulatory_monitor"]
+    return regulatory_monitor._run_monitor(), saved_states[-1]
+
+
+@pytest.mark.parametrize(
+    ("cadence", "merge_days", "expected_escalation_day"),
+    [
+        ("daily", {0, 1, 2, 3, 4, 5}, "Wed"),
+        ("every-other-day", {0, 2, 4}, "Thu"),
+        ("mon+thu", {0, 3}, "Fri"),
+        ("skipped-runs", {0, 3}, "Fri"),
+    ],
+)
+def test_finra_unverified_counter_escalates_across_merge_cadences(
+    monkeypatch,
+    tmp_path,
+    cadence,
+    merge_days,
+    expected_escalation_day,
+):
+    start = regulatory_monitor.datetime(
+        2026,
+        9,
+        21,
+        10,
+        5,
+        tzinfo=regulatory_monitor.timezone.utc,
+    )
+    main_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {
+                    f"FINRA 26-{index:02d}": "existing"
+                    for index in range(1, 11)
+                },
+            },
+        },
+    }
+    rows: list[tuple[str, int, int]] = []
+
+    for day in range(6):
+        now = start + regulatory_monitor.timedelta(days=day)
+        code, saved_state = _run_finra_unverified_clean_at(
+            monkeypatch,
+            tmp_path / cadence / f"d{day}",
+            deepcopy(main_state),
+            now,
+        )
+        monitor_state = saved_state["regulatory_monitor"]
+        rows.append(
+            (
+                now.strftime("%a"),
+                code,
+                monitor_state["consecutive_finra_unverified_runs"],
+            )
+        )
+        if day in merge_days:
+            main_state = saved_state
+
+    escalated_days = [day for day, code, _counter in rows if code == regulatory_monitor.EXIT_DEGRADED]
+    assert expected_escalation_day in escalated_days, rows
+
+
+def test_finra_unverified_counter_survives_skipped_weekday_runs(
+    monkeypatch,
+    tmp_path,
+):
+    start = regulatory_monitor.datetime(
+        2026,
+        9,
+        21,
+        10,
+        5,
+        tzinfo=regulatory_monitor.timezone.utc,
+    )
+    main_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {
+                    f"FINRA 26-{index:02d}": "existing"
+                    for index in range(1, 11)
+                },
+            },
+        },
+    }
+    rows: list[tuple[str, int, int]] = []
+
+    for day in (0, 3, 4):
+        now = start + regulatory_monitor.timedelta(days=day)
+        code, saved_state = _run_finra_unverified_clean_at(
+            monkeypatch,
+            tmp_path / f"d{day}",
+            deepcopy(main_state),
+            now,
+        )
+        monitor_state = saved_state["regulatory_monitor"]
+        rows.append(
+            (
+                now.strftime("%a"),
+                code,
+                monitor_state["consecutive_finra_unverified_runs"],
+            )
+        )
+        main_state = saved_state
+
+    assert rows == [
+        ("Mon", regulatory_monitor.EXIT_FINDINGS, 1),
+        ("Thu", regulatory_monitor.EXIT_FINDINGS, 2),
+        ("Fri", regulatory_monitor.EXIT_DEGRADED, 3),
+    ]
+
+
+def test_finra_unverified_counter_expires_only_after_sunday_full_crawl_boundary(
+    monkeypatch,
+    tmp_path,
+):
+    monday_after_sunday = regulatory_monitor.datetime(
+        2026,
+        9,
+        28,
+        10,
+        5,
+        tzinfo=regulatory_monitor.timezone.utc,
+    )
+    loaded_state = {
+        "version": 1,
+        "regulatory_monitor": {
+            "consecutive_finra_degraded_runs": 0,
+            "consecutive_finra_unverified_runs": (
+                regulatory_monitor.FINRA_UNVERIFIED_FAILURE_THRESHOLD
+            ),
+            regulatory_monitor.FINRA_UNVERIFIED_LAST_SEEN_KEY: (
+                "2026-09-26T10:05:00+00:00"
+            ),
+        },
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {
+                    f"FINRA 26-{index:02d}": "existing"
+                    for index in range(1, 11)
+                },
+            },
+        },
+    }
+
+    code, saved_state = _run_finra_unverified_clean_at(
+        monkeypatch,
+        tmp_path,
+        loaded_state,
+        monday_after_sunday,
+    )
+
+    assert code == regulatory_monitor.EXIT_FINDINGS
+    monitor_state = saved_state["regulatory_monitor"]
     assert monitor_state["consecutive_finra_unverified_runs"] == 1
     reports = sorted((tmp_path / "reports").glob("regulatory-changes-*.md"))
     report_text = reports[0].read_text(encoding="utf-8")
