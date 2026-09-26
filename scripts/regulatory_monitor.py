@@ -17,11 +17,11 @@ Usage:
 Exit Codes:
     0 - No new regulatory items detected
     3 - New regulatory items detected (triggers PR in CI)
-    4 - Partial/degraded run; at least one source was unavailable
+    4 - Partial/degraded run; source unavailable or verification escalated
     2 - Source or execution failure
 
 Exit code 1 is deliberately not used for findings because Python uses it for
-uncaught exceptions. The workflow treats every code except 0 and 3 as failure.
+uncaught exceptions. The workflow treats 0, 3, and 4 as handled monitor results.
 
 Environment Variables:
     REGULATORY_MONITOR_DEBUG=1  - Enable debug output
@@ -1484,6 +1484,7 @@ AVAILABILITY_STATUS_CODES = frozenset({0, 429})
 FINRA_DEGRADED_COUNTER_KEY = "consecutive_finra_degraded_runs"
 FINRA_DEGRADED_FAILURE_THRESHOLD = 3
 FINRA_UNVERIFIED_COUNTER_KEY = "consecutive_finra_unverified_runs"
+FINRA_UNVERIFIED_LAST_SEEN_KEY = "last_finra_unverified_run_at"
 FINRA_UNVERIFIED_FAILURE_THRESHOLD = 3
 
 
@@ -5649,6 +5650,13 @@ def generate_regulatory_report(
         ]
         if degraded_sources:
             metadata["Degraded Sources"] = ", ".join(sorted(degraded_sources))
+        escalated_sources = [
+            _source_display_name(source)
+            for source, counts in source_counts.items()
+            if counts.get("unverified_escalated")
+        ]
+        if escalated_sources:
+            metadata["Escalated Sources"] = ", ".join(sorted(escalated_sources))
         unverified_sources = [
             _source_display_name(source)
             for source, counts in source_counts.items()
@@ -5681,6 +5689,14 @@ def generate_regulatory_report(
                 ]
             if source_counts[source].get("degraded"):
                 metadata[f"{source} Status"] = "unavailable this run"
+            if source_counts[source].get("unverified_escalated"):
+                metadata[f"{source} Status"] = (
+                    "page-0 cross-check unavailable; RSS discovery ran"
+                )
+                metadata[f"{source} Escalation"] = source_counts[source].get(
+                    "reason",
+                    "unverified-clean threshold reached",
+                )
 
     lines.append(generate_report_header(
         title="Regulatory Monitor Report",
@@ -5732,13 +5748,22 @@ def generate_regulatory_report(
                     "listing_cross_check",
                     "listing cross-check unavailable",
                 )
+                escalated = bool(unverified_sources[source].get("unverified_escalated"))
+                escalation_sentence = (
+                    " This unverified-clean streak reached the escalation "
+                    "threshold, so the workflow exits with the degraded "
+                    "monitor status while preserving fetched/new counts."
+                    if escalated
+                    else ""
+                )
                 lines.append(
                     f"- **{_source_display_name(source)}:** "
                     f"{FINRA_UNVERIFIED_CLEAN_STATE} — {reason}. The FINRA "
                     "RSS feed was checked, the HTTPS page-0 listing "
                     "cross-check was unavailable, and a separate consecutive "
                     f"unverified-clean counter escalates at "
-                    f"{FINRA_UNVERIFIED_FAILURE_THRESHOLD} runs.\n"
+                    f"{FINRA_UNVERIFIED_FAILURE_THRESHOLD} runs."
+                    f"{escalation_sentence}\n"
                 )
             lines.append("\n")
 
@@ -5983,15 +6008,33 @@ def _run_monitor() -> int:
         unverified_current = int(
             monitor_state.get(FINRA_UNVERIFIED_COUNTER_KEY, 0) or 0
         )
+        unverified_last_seen = _parse_state_datetime(
+            monitor_state.get(FINRA_UNVERIFIED_LAST_SEEN_KEY)
+        )
         if "FINRA" not in requested_sources:
             return current
         if "FINRA" in failed_sources:
             current += 1
             unverified_current = 0
+            monitor_state.pop(FINRA_UNVERIFIED_LAST_SEEN_KEY, None)
         elif source_counts.get("FINRA", {}).get(
             "verification_state"
         ) == FINRA_UNVERIFIED_CLEAN_STATE:
+            now_utc = datetime.now(timezone.utc)
+            if unverified_current > 0 and unverified_last_seen is not None:
+                days_since_unverified = (
+                    now_utc.date() - unverified_last_seen.date()
+                ).days
+                if days_since_unverified > 1:
+                    logger.warning(
+                        "FINRA unverified-clean counter state is stale "
+                        "(last persisted unverified run: %s); restarting the "
+                        "committed-state streak at 1",
+                        unverified_last_seen.isoformat(),
+                    )
+                    unverified_current = 0
             unverified_current += 1
+            monitor_state[FINRA_UNVERIFIED_LAST_SEEN_KEY] = now_utc.isoformat()
             if unverified_current >= FINRA_UNVERIFIED_FAILURE_THRESHOLD:
                 reason = (
                     "FINRA listing cross-check unavailable for "
@@ -6000,7 +6043,7 @@ def _run_monitor() -> int:
                 )
                 logger.warning(reason)
                 print(f"::warning::{reason}")
-                source_counts["FINRA"]["degraded"] = 1
+                source_counts["FINRA"]["unverified_escalated"] = True
                 source_counts["FINRA"]["reason"] = reason
             else:
                 logger.warning(
@@ -6013,6 +6056,7 @@ def _run_monitor() -> int:
         else:
             current = 0
             unverified_current = 0
+            monitor_state.pop(FINRA_UNVERIFIED_LAST_SEEN_KEY, None)
         monitor_state[FINRA_DEGRADED_COUNTER_KEY] = current
         monitor_state[FINRA_UNVERIFIED_COUNTER_KEY] = unverified_current
         return current
@@ -6172,6 +6216,11 @@ def _run_monitor() -> int:
         for source, counts in source_counts.items()
         if counts.get("degraded")
     }
+    escalated_sources = {
+        source: counts
+        for source, counts in source_counts.items()
+        if counts.get("unverified_escalated")
+    }
 
     # Generate report if new items or degraded sources were found. A degraded
     # source is never equivalent to "no changes"; it must remain visible in
@@ -6179,7 +6228,13 @@ def _run_monitor() -> int:
     # An unverified-clean FINRA run is also reportable: the RSS feed was
     # checked, but the HTTPS page-0 listing cross-check was unavailable, so the
     # monitor must not silently claim a fully verified no-change result.
-    if all_new_items or failed_sources or unverified_sources or degraded_sources:
+    if (
+        all_new_items
+        or failed_sources
+        or unverified_sources
+        or degraded_sources
+        or escalated_sources
+    ):
         if all_new_items:
             logger.info(f"\n=== {len(all_new_items)} total new regulatory items detected ===")
         if failed_sources:
@@ -6220,7 +6275,11 @@ def _run_monitor() -> int:
             )
             return EXIT_FAILURE
 
-        return EXIT_DEGRADED if failed_sources or degraded_sources else EXIT_FINDINGS
+        return (
+            EXIT_DEGRADED
+            if failed_sources or degraded_sources or escalated_sources
+            else EXIT_FINDINGS
+        )
 
     else:
         logger.info("\n=== No new regulatory items detected ===")

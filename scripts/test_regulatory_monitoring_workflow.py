@@ -195,7 +195,12 @@ def test_monitor_step_enforces_exit_contract() -> None:
     assert degraded_branch and "report_file=" in degraded_branch.group(1)
     assert "finra_listing_cross_check=" in degraded_branch.group(1)
     assert "finra_verification_state=" in degraded_branch.group(1)
-    assert "::warning::Regulatory Monitor completed with degraded source availability" in degraded_branch.group(1)
+    assert (
+        "::warning::Regulatory Monitor completed with degraded source availability "
+        "or escalated source verification"
+    ) in degraded_branch.group(1)
+    assert "Escalated Sources" in degraded_branch.group(1)
+    assert "escalated_sources=" in degraded_branch.group(1)
     assert "exit 0" in degraded_branch.group(1)
     assert failure_branch and 'exit "$EXIT_CODE"' in failure_branch.group(1)
     assert 'exit "$EXIT_CODE"' in run.split("*)", maxsplit=1)[1]
@@ -256,7 +261,11 @@ def test_pr_title_marks_degraded_finra_runs() -> None:
 
     meta_run = _step(MONITOR_JOB, "Prepare Regulatory Monitor PR metadata")["run"]
     assert "DEGRADED (FINRA unavailable)" in meta_run
+    assert "DEGRADED (FINRA cross-check unavailable)" in meta_run
     assert "Sources unavailable this run" in meta_run
+    assert "FINRA verification escalated" in meta_run
+    assert "RSS discovery ran, fetched/new counts are preserved" in meta_run
+    assert "This source was not checked" in meta_run
 
 
 def test_pr_body_reports_finra_cross_check_and_verification_state() -> None:
@@ -274,6 +283,8 @@ def test_pr_title_marks_unverified_finra_runs() -> None:
     assert "UNVERIFIED (FINRA listing cross-check unavailable)" in meta_run
     assert "monitor-unverified" in meta_run
     assert "Regulatory Monitor: findings" in meta_run
+    assert "FINRA verification unverified" in meta_run
+    assert "Any findings in this PR are RSS-derived" in meta_run
 
 
 def test_degraded_runs_add_and_create_monitor_degraded_label() -> None:

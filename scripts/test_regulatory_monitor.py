@@ -9399,8 +9399,185 @@ def test_finra_rss_repeated_unverified_clean_escalates_to_degraded(
     )
     reports = sorted((tmp_path / "reports").glob("regulatory-changes-*.md"))
     report_text = reports[0].read_text(encoding="utf-8")
-    assert "**Degraded Sources:** FINRA notices" in report_text
+    assert "**Escalated Sources:** FINRA notices" in report_text
     assert "treating the run as degraded" in report_text
+    assert "**FINRA Status:** page-0 cross-check unavailable; RSS discovery ran" in report_text
+
+
+def test_finra_unverified_escalation_preserves_new_finra_and_federal_register_findings(
+    monkeypatch,
+    tmp_path,
+    capsys,
+):
+    config = _load_config()
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 12)]
+    loaded_state = {
+        "version": 1,
+        "regulatory_monitor": {
+            "consecutive_finra_degraded_runs": 0,
+            "consecutive_finra_unverified_runs": (
+                regulatory_monitor.FINRA_UNVERIFIED_FAILURE_THRESHOLD - 1
+            ),
+        },
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {"entries": {}},
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {
+                    f"FINRA 26-{index:02d}": "existing"
+                    for index in range(1, 11)
+                },
+            },
+        },
+    }
+    saved_states: list[dict] = []
+    fed_item = regulatory_monitor.RegulatoryItem(
+        source="Federal Register",
+        agency="SEC",
+        title="AI governance notice",
+        url="https://www.federalregister.gov/documents/2026-94001",
+        publication_date="2026-09-24",
+        doc_type="NOTICE",
+        abstract="Artificial intelligence governance notice.",
+        content_text="Artificial intelligence governance notice.",
+        document_id="2026-94001",
+    )
+
+    class _Session(_RssSession):
+        def __init__(self):
+            super().__init__(_rss_response(_rss_feed(rss_items)))
+
+    def fetch_finra_detail_only(url, _session, max_retries=3):
+        assert url == "https://www.finra.org/rules-guidance/notices/26-11"
+        return {
+            "url": url,
+            "status_code": 200,
+            "content": _with_finra_canonical(
+                _finra_notice_page(
+                    "Member firms must supervise artificial intelligence tools."
+                ),
+                url,
+            ),
+            "final_url": url,
+            "was_redirected": False,
+            "error": None,
+        }
+
+    monkeypatch.setattr(regulatory_monitor.sys, "argv", ["regulatory_monitor.py"])
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "STATE_FILE",
+        tmp_path / "data" / "monitor-state.json",
+    )
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [fed_item],
+    )
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fetch_finra_detail_only)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_DEGRADED
+
+    captured = capsys.readouterr()
+    assert "::warning::FINRA listing cross-check unavailable" in captured.out
+    assert "::warning::FINRA listing cross-check unavailable for 3" in captured.out
+    assert saved_states
+    monitor_state = saved_states[-1]["regulatory_monitor"]
+    assert monitor_state["consecutive_finra_degraded_runs"] == 0
+    assert (
+        monitor_state["consecutive_finra_unverified_runs"]
+        == regulatory_monitor.FINRA_UNVERIFIED_FAILURE_THRESHOLD
+    )
+    assert regulatory_monitor.FINRA_UNVERIFIED_LAST_SEEN_KEY in monitor_state
+    assert (
+        "FINRA 26-11"
+        in saved_states[-1]["sources"][regulatory_monitor.SOURCE_KEY_FINRA]["entries"]
+    )
+    reports = sorted((tmp_path / "reports").glob("regulatory-changes-*.md"))
+    assert len(reports) == 1
+    report_text = reports[0].read_text(encoding="utf-8")
+    assert "Regulatory Notice 26-11" in report_text
+    assert "AI governance notice" in report_text
+    assert "**FINRA New:** 1" in report_text
+    assert "**Federal Register New:** 1" in report_text
+    assert "**Escalated Sources:** FINRA notices" in report_text
+    assert "**Degraded Sources:**" not in report_text
+    assert "Degraded report counts" not in report_text
+
+
+def test_stale_unverified_counter_does_not_escalate_immediately(
+    monkeypatch,
+    tmp_path,
+):
+    config = _load_config()
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    loaded_state = {
+        "version": 1,
+        "regulatory_monitor": {
+            "consecutive_finra_degraded_runs": 0,
+            "consecutive_finra_unverified_runs": (
+                regulatory_monitor.FINRA_UNVERIFIED_FAILURE_THRESHOLD
+            ),
+            regulatory_monitor.FINRA_UNVERIFIED_LAST_SEEN_KEY: (
+                "2000-01-01T00:00:00+00:00"
+            ),
+        },
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {
+                    f"FINRA 26-{index:02d}": "existing"
+                    for index in range(1, 11)
+                },
+            },
+        },
+    }
+    saved_states: list[dict] = []
+
+    class _Session(_RssSession):
+        def __init__(self):
+            super().__init__(_rss_response(_rss_feed(rss_items)))
+
+    def unexpected_fetch_page(*_args, **_kwargs):
+        raise AssertionError("unverified-clean RSS run must not start HTML fallback")
+
+    monkeypatch.setattr(
+        regulatory_monitor.sys,
+        "argv",
+        ["regulatory_monitor.py", "--source", "finra"],
+    )
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "STATE_FILE",
+        tmp_path / "data" / "monitor-state.json",
+    )
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", _Session)
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", unexpected_fetch_page)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_FINDINGS
+    monitor_state = saved_states[-1]["regulatory_monitor"]
+    assert monitor_state["consecutive_finra_unverified_runs"] == 1
+    reports = sorted((tmp_path / "reports").glob("regulatory-changes-*.md"))
+    report_text = reports[0].read_text(encoding="utf-8")
+    assert "**FINRA Verification State:** unverified-clean" in report_text
+    assert "**Escalated Sources:**" not in report_text
 
 
 def test_finra_rss_no_gap_makes_zero_listing_requests(monkeypatch):
