@@ -189,12 +189,49 @@ def test_monitor_step_enforces_exit_contract() -> None:
 
     assert clean_branch and "exit 0" in clean_branch.group(1)
     assert findings_branch and "report_file=" in findings_branch.group(1)
+    assert "finra_listing_cross_check=" in findings_branch.group(1)
+    assert "finra_verification_state=" in findings_branch.group(1)
     assert "exit 0" in findings_branch.group(1)
     assert degraded_branch and "report_file=" in degraded_branch.group(1)
-    assert "::warning::Regulatory Monitor completed with degraded source availability" in degraded_branch.group(1)
+    assert "finra_listing_cross_check=" in degraded_branch.group(1)
+    assert "finra_verification_state=" in degraded_branch.group(1)
+    assert (
+        "::warning::Regulatory Monitor completed with degraded source availability "
+        "or escalated source verification"
+    ) in degraded_branch.group(1)
+    assert "Escalated Sources" in degraded_branch.group(1)
+    assert "escalated_sources=" in degraded_branch.group(1)
+    assert "degraded_sources=${DEGRADED_SOURCES:-}" in degraded_branch.group(1)
     assert "exit 0" in degraded_branch.group(1)
     assert failure_branch and 'exit "$EXIT_CODE"' in failure_branch.group(1)
     assert 'exit "$EXIT_CODE"' in run.split("*)", maxsplit=1)[1]
+
+
+def test_monitor_step_parses_metadata_from_selected_newest_report() -> None:
+    run = _step(MONITOR_JOB, "Run Regulatory Monitor (scheduled / manual)")["run"]
+    selected_report = (
+        "REPORT_FILE=$(ls -t reports/monitoring/regulatory-changes-*.md "
+        "2>/dev/null | head -1)"
+    )
+    assert run.count(selected_report) == 2
+    for variable, header in {
+        "FINRA_DISCOVERY_PATH": "FINRA Discovery Path",
+        "FINRA_VALIDATOR_DROPPED": "FINRA Validator Dropped",
+        "FINRA_NEW_FETCHED": "FINRA New Notices Fetched",
+        "FINRA_LISTING_CROSS_CHECK": "FINRA Listing Cross-Check",
+        "FINRA_VERIFICATION_STATE": "FINRA Verification State",
+    }.items():
+        assert (
+            f"{variable}=$(grep -m1 '^\\*\\*{header}:\\*\\*' \"$REPORT_FILE\""
+            in run
+        )
+    assert "finra_verification_state=${FINRA_VERIFICATION_STATE:-not reported}" in run
+    assert "finra_verification_state=${FINRA_VERIFICATION_STATE:-verified}" not in run
+
+    pr_body = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
+        "with"
+    ]["body"]
+    assert "Report: `${{ steps.monitor.outputs.report_file }}`" in pr_body
 
 
 def test_pr_write_path_is_gated_on_findings_exit() -> None:
@@ -225,7 +262,32 @@ def test_pr_title_marks_degraded_finra_runs() -> None:
 
     meta_run = _step(MONITOR_JOB, "Prepare Regulatory Monitor PR metadata")["run"]
     assert "DEGRADED (FINRA unavailable)" in meta_run
+    assert "DEGRADED (FINRA cross-check unavailable)" in meta_run
+    assert "DEGRADED (FINRA cross-check + Federal Register unavailable)" in meta_run
     assert "Sources unavailable this run" in meta_run
+    assert "FINRA verification escalated" in meta_run
+    assert "RSS discovery ran, fetched/new counts are preserved" in meta_run
+    assert "This source was not checked" in meta_run
+    assert "Unavailable this run: ${sources}" in meta_run
+
+
+def test_pr_body_reports_finra_cross_check_and_verification_state() -> None:
+    pr_body = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
+        "with"
+    ]["body"]
+    assert "FINRA listing cross-check" in pr_body
+    assert "steps.monitor.outputs.finra_listing_cross_check" in pr_body
+    assert "FINRA verification state" in pr_body
+    assert "steps.monitor.outputs.finra_verification_state" in pr_body
+
+
+def test_pr_title_marks_unverified_finra_runs() -> None:
+    meta_run = _step(MONITOR_JOB, "Prepare Regulatory Monitor PR metadata")["run"]
+    assert "UNVERIFIED (FINRA listing cross-check unavailable)" in meta_run
+    assert "monitor-unverified" in meta_run
+    assert "Regulatory Monitor: findings" in meta_run
+    assert "FINRA verification unverified" in meta_run
+    assert "Any findings in this PR are RSS-derived" in meta_run
 
 
 def test_degraded_runs_add_and_create_monitor_degraded_label() -> None:
@@ -233,9 +295,13 @@ def test_degraded_runs_add_and_create_monitor_degraded_label() -> None:
         "run"
     ]
     assert "gh label create monitor-degraded" in create_label_run
+    assert "gh label create monitor-unverified" in create_label_run
     assert (
         _step(MONITOR_JOB, "Ensure degraded monitor label exists")["if"]
-        == f"steps.monitor.outputs.exit_code == '{DEGRADED_EXIT_CODE}'"
+        == (
+            f"steps.monitor.outputs.exit_code == '{DEGRADED_EXIT_CODE}' || "
+            "steps.monitor.outputs.finra_verification_state == 'unverified-clean'"
+        )
     )
 
     labels = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
@@ -250,7 +316,12 @@ def test_degraded_runs_only_supersede_prior_degraded_monitor_prs() -> None:
     ]
     assert 'app/fsi-monitor-bot' in cleanup_run
     assert 'monitor-degraded' in cleanup_run
+    assert 'monitor-unverified' in cleanup_run
     assert (
         "steps.monitor.outputs.exit_code == '4'"
         in cleanup_run
     ), "cleanup script must branch degraded handling by exit code"
+    assert (
+        'steps.monitor.outputs.finra_verification_state'
+        in cleanup_run
+    ), "cleanup script must keep unverified PR cleanup separate"
