@@ -1497,18 +1497,6 @@ def _http_status_is_source_unavailable(status_code) -> bool:
     return code in AVAILABILITY_STATUS_CODES or 500 <= code <= 599
 
 
-def _sunday_boundary_passed_after(last_seen: datetime, now: datetime) -> bool:
-    """Return whether a scheduled Sunday full-crawl boundary passed since last_seen."""
-    last_date = last_seen.astimezone(timezone.utc).date()
-    now_date = now.astimezone(timezone.utc).date()
-    if now_date <= last_date:
-        return False
-    for offset in range(1, (now_date - last_date).days + 1):
-        if (last_date + timedelta(days=offset)).weekday() == 6:
-            return True
-    return False
-
-
 def _parse_state_datetime(value: object) -> Optional[datetime]:
     """Parse an ISO timestamp from state, returning None for malformed values."""
     if not isinstance(value, str) or not value.strip():
@@ -6020,9 +6008,6 @@ def _run_monitor() -> int:
         unverified_current = int(
             monitor_state.get(FINRA_UNVERIFIED_COUNTER_KEY, 0) or 0
         )
-        unverified_last_seen = _parse_state_datetime(
-            monitor_state.get(FINRA_UNVERIFIED_LAST_SEEN_KEY)
-        )
         if "FINRA" not in requested_sources:
             return current
         if "FINRA" in failed_sources:
@@ -6033,16 +6018,6 @@ def _run_monitor() -> int:
             "verification_state"
         ) == FINRA_UNVERIFIED_CLEAN_STATE:
             now_utc = datetime.now(timezone.utc)
-            if unverified_current > 0 and unverified_last_seen is not None:
-                if _sunday_boundary_passed_after(unverified_last_seen, now_utc):
-                    logger.warning(
-                        "FINRA unverified-clean counter crossed a scheduled "
-                        "Sunday full-crawl boundary since the last persisted "
-                        "unverified run (%s); restarting the committed-state "
-                        "streak at 1",
-                        unverified_last_seen.isoformat(),
-                    )
-                    unverified_current = 0
             unverified_current += 1
             monitor_state[FINRA_UNVERIFIED_LAST_SEEN_KEY] = now_utc.isoformat()
             if unverified_current >= FINRA_UNVERIFIED_FAILURE_THRESHOLD:

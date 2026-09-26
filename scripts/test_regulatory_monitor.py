@@ -9560,12 +9560,12 @@ def _run_finra_unverified_clean_at(monkeypatch, tmp_path, state, now):
 
 
 @pytest.mark.parametrize(
-    ("cadence", "merge_days", "expected_escalation_day"),
+    ("cadence", "merge_days", "days", "expected_escalation_day"),
     [
-        ("daily", {0, 1, 2, 3, 4, 5}, "Wed"),
-        ("every-other-day", {0, 2, 4}, "Thu"),
-        ("mon+thu", {0, 3}, "Fri"),
-        ("skipped-runs", {0, 3}, "Fri"),
+        ("daily", {0, 1, 2, 3, 4, 5}, 6, "Wed"),
+        ("every-other-day", {0, 2, 4}, 6, "Thu"),
+        ("mon+thu", {0, 3}, 6, "Fri"),
+        ("skipped-runs", {0, 3}, 6, "Fri"),
     ],
 )
 def test_finra_unverified_counter_escalates_across_merge_cadences(
@@ -9573,6 +9573,7 @@ def test_finra_unverified_counter_escalates_across_merge_cadences(
     tmp_path,
     cadence,
     merge_days,
+    days,
     expected_escalation_day,
 ):
     start = regulatory_monitor.datetime(
@@ -9596,7 +9597,7 @@ def test_finra_unverified_counter_escalates_across_merge_cadences(
     }
     rows: list[tuple[str, int, int]] = []
 
-    for day in range(6):
+    for day in range(days):
         now = start + regulatory_monitor.timedelta(days=day)
         code, saved_state = _run_finra_unverified_clean_at(
             monkeypatch,
@@ -9617,6 +9618,56 @@ def test_finra_unverified_counter_escalates_across_merge_cadences(
 
     escalated_days = [day for day, code, _counter in rows if code == regulatory_monitor.EXIT_DEGRADED]
     assert expected_escalation_day in escalated_days, rows
+
+
+def test_finra_unverified_counter_escalates_with_weekly_merges(
+    monkeypatch,
+    tmp_path,
+):
+    start = regulatory_monitor.datetime(
+        2026,
+        9,
+        21,
+        10,
+        5,
+        tzinfo=regulatory_monitor.timezone.utc,
+    )
+    main_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {
+                    f"FINRA 26-{index:02d}": "existing"
+                    for index in range(1, 11)
+                },
+            },
+        },
+    }
+    rows: list[tuple[str, int, int]] = []
+
+    for week in range(3):
+        now = start + regulatory_monitor.timedelta(days=7 * week)
+        code, saved_state = _run_finra_unverified_clean_at(
+            monkeypatch,
+            tmp_path / f"w{week}",
+            deepcopy(main_state),
+            now,
+        )
+        monitor_state = saved_state["regulatory_monitor"]
+        rows.append(
+            (
+                now.strftime("%a"),
+                code,
+                monitor_state["consecutive_finra_unverified_runs"],
+            )
+        )
+        main_state = saved_state
+
+    assert rows == [
+        ("Mon", regulatory_monitor.EXIT_FINDINGS, 1),
+        ("Mon", regulatory_monitor.EXIT_FINDINGS, 2),
+        ("Mon", regulatory_monitor.EXIT_DEGRADED, 3),
+    ]
 
 
 def test_finra_unverified_counter_survives_skipped_weekday_runs(
@@ -9669,7 +9720,7 @@ def test_finra_unverified_counter_survives_skipped_weekday_runs(
     ]
 
 
-def test_finra_unverified_counter_expires_only_after_sunday_full_crawl_boundary(
+def test_finra_unverified_counter_never_expires_on_calendar_boundaries(
     monkeypatch,
     tmp_path,
 ):
@@ -9709,13 +9760,15 @@ def test_finra_unverified_counter_expires_only_after_sunday_full_crawl_boundary(
         monday_after_sunday,
     )
 
-    assert code == regulatory_monitor.EXIT_FINDINGS
+    assert code == regulatory_monitor.EXIT_DEGRADED
     monitor_state = saved_state["regulatory_monitor"]
-    assert monitor_state["consecutive_finra_unverified_runs"] == 1
+    assert monitor_state["consecutive_finra_unverified_runs"] == (
+        regulatory_monitor.FINRA_UNVERIFIED_FAILURE_THRESHOLD + 1
+    )
     reports = sorted((tmp_path / "reports").glob("regulatory-changes-*.md"))
     report_text = reports[0].read_text(encoding="utf-8")
     assert "**FINRA Verification State:** unverified-clean" in report_text
-    assert "**Escalated Sources:**" not in report_text
+    assert "**Escalated Sources:** FINRA notices" in report_text
 
 
 def test_finra_rss_no_gap_makes_zero_listing_requests(monkeypatch):
