@@ -59,7 +59,6 @@ from monitoring_shared import (
     generate_report_header,
     generate_executive_summary,
     format_change_summary,
-    write_report,
     load_monitoring_config,
     validate_config,
     DEFAULT_CONFIG_PATH,
@@ -110,6 +109,11 @@ FINRA_RSS_FEED_URL = "http://feeds.finra.org/FINRANotices"
 FINRA_RSS_FEED_HOST = "feeds.finra.org"
 FINRA_RSS_MAX_BYTES = 512 * 1024
 FINRA_RSS_GAP_ITEM_COUNT = 10
+FINRA_UNVERIFIED_CLEAN_STATE = "unverified-clean"
+FINRA_UNAVAILABLE_STATE_KEY = "unavailable_notices"
+FINRA_UNAVAILABLE_MAX_ENTRIES = 50
+FINRA_UNAVAILABLE_EXPIRY_DAYS = 30
+FINRA_REPEATED_PERMANENT_STATUSES = frozenset({404, 410})
 FINRA_RULE_FILING_TITLE_PREFIX = (
     "Self-Regulatory Organizations; Financial Industry Regulatory Authority, Inc."
 )
@@ -1479,6 +1483,8 @@ def _source_failure_reason(exc: Exception) -> str:
 AVAILABILITY_STATUS_CODES = frozenset({0, 429})
 FINRA_DEGRADED_COUNTER_KEY = "consecutive_finra_degraded_runs"
 FINRA_DEGRADED_FAILURE_THRESHOLD = 3
+FINRA_UNVERIFIED_COUNTER_KEY = "consecutive_finra_unverified_runs"
+FINRA_UNVERIFIED_FAILURE_THRESHOLD = 3
 
 
 def _http_status_is_source_unavailable(status_code) -> bool:
@@ -1488,6 +1494,145 @@ def _http_status_is_source_unavailable(status_code) -> bool:
     except (TypeError, ValueError):
         return False
     return code in AVAILABILITY_STATUS_CODES or 500 <= code <= 599
+
+
+def _parse_state_datetime(value: object) -> Optional[datetime]:
+    """Parse an ISO timestamp from state, returning None for malformed values."""
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _finra_unavailable_status_code(reason: object) -> Optional[int]:
+    """Return a FINRA detail status that can become permanent after repeats."""
+    if not isinstance(reason, str):
+        return None
+    match = re.search(r"\bstatus(?:=|\s+)(404|410)\b", reason)
+    if not match:
+        return None
+    return int(match.group(1))
+
+
+def _active_finra_unavailable_records(
+    source_state: dict,
+    *,
+    now: Optional[datetime] = None,
+) -> dict[str, dict]:
+    """Return non-expired FINRA unavailable-notice records from source state."""
+    now = now or datetime.now(timezone.utc)
+    raw_records = source_state.get(FINRA_UNAVAILABLE_STATE_KEY, {})
+    if not isinstance(raw_records, dict):
+        return {}
+
+    records: dict[str, dict] = {}
+    for entry_key, record in raw_records.items():
+        if not isinstance(entry_key, str) or not isinstance(record, dict):
+            continue
+        expires_at = _parse_state_datetime(record.get("expires_at"))
+        if expires_at is not None and expires_at < now:
+            continue
+        records[entry_key] = dict(record)
+    return records
+
+
+def _finra_persistent_unavailable_reasons(source_state: dict) -> dict[str, str]:
+    """Return permanently unavailable FINRA notice IDs that are still fresh.
+
+    These IDs live outside ``entries``: they may suppress a daily HTML crawl
+    caused by a known tombstone, but they are never content fingerprints and
+    therefore never count as seen notice content.
+    """
+    records = _active_finra_unavailable_records(source_state)
+    return {
+        entry_key: str(record.get("reason") or "FINRA notice unavailable")
+        for entry_key, record in records.items()
+        if record.get("status") == "permanent"
+    }
+
+
+def _finra_unavailable_entry_sort_key(item: tuple[str, dict]) -> tuple:
+    """Keep permanent, recently refreshed unavailable notices first."""
+    _entry_key, record = item
+    return (
+        record.get("status") == "permanent",
+        str(record.get("expires_at") or ""),
+        str(record.get("last_seen") or ""),
+    )
+
+
+def _update_finra_unavailable_state(
+    source_state: dict,
+    unavailable_notices: list[dict],
+    *,
+    now: Optional[datetime] = None,
+) -> None:
+    """Persist bounded FINRA tombstones and repeated 404/410 unavailable notices."""
+    now = now or datetime.now(timezone.utc)
+    now_text = now.isoformat()
+    expires_text = (now + timedelta(days=FINRA_UNAVAILABLE_EXPIRY_DAYS)).isoformat()
+    records = _active_finra_unavailable_records(source_state, now=now)
+
+    for notice in unavailable_notices:
+        if not isinstance(notice, dict):
+            continue
+        url = str(notice.get("url") or "")
+        entry_key = str(notice.get("document_id") or "") or _finra_document_id_from_url(url)
+        if not entry_key:
+            continue
+        previous = records.get(entry_key, {})
+        if notice.get("remembered"):
+            if previous:
+                records[entry_key] = previous
+            continue
+        reason = str(notice.get("reason") or "FINRA notice unavailable")
+        status_code = _finra_unavailable_status_code(reason)
+        previous_status_code = _finra_unavailable_status_code(previous.get("reason"))
+        previous_observations = int(previous.get("observations", 0) or 0)
+        previous_reason = str(previous.get("reason") or "")
+        same_unavailable_condition = (
+            reason == previous_reason
+            and status_code == previous_status_code
+        )
+        observations = (
+            previous_observations + 1
+            if same_unavailable_condition
+            else 1
+        )
+        is_permanent = (
+            observations >= 2
+            or previous.get("status") == "permanent"
+        )
+        records[entry_key] = {
+            "url": url,
+            "title": str(notice.get("title") or ""),
+            "reason": reason,
+            "status": "permanent" if is_permanent else "pending",
+            "observations": observations,
+            "first_seen": str(previous.get("first_seen") or now_text),
+            "last_seen": now_text,
+            "expires_at": expires_text,
+        }
+
+    for entry_key in set(source_state.get("entries", {})):
+        records.pop(entry_key, None)
+
+    ordered = dict(
+        sorted(
+            records.items(),
+            key=_finra_unavailable_entry_sort_key,
+            reverse=True,
+        )[:FINRA_UNAVAILABLE_MAX_ENTRIES]
+    )
+    if ordered:
+        source_state[FINRA_UNAVAILABLE_STATE_KEY] = ordered
+    else:
+        source_state.pop(FINRA_UNAVAILABLE_STATE_KEY, None)
 
 
 def _request_exception_is_source_unavailable(exc: requests.RequestException) -> bool:
@@ -3267,12 +3412,13 @@ def _fetch_cached_fallback_text(
         raise
 
     if result["status_code"] != 200:
+        status_code = result["status_code"]
         message = (
             f"{source_label} fetch failed for {url} "
-            f"(status={result['status_code']}, error={result.get('error')})"
+            f"(status={status_code}, error={result.get('error')})"
         )
         if required:
-            if _http_status_is_source_unavailable(result["status_code"]):
+            if _http_status_is_source_unavailable(status_code):
                 raise RequiredSourceUnavailableError(message)
             raise RequiredSourceTextError(message)
         logger.warning(message)
@@ -4327,6 +4473,7 @@ def _build_finra_notice_item(
     config: dict,
     detail_cache: dict[str, str],
     unavailable_cache: dict[str, str],
+    persistent_unavailable: dict[str, str],
     unavailable_notices: list[dict],
     detail_fetches: int,
     detail_fetch_limit: Optional[int],
@@ -4338,6 +4485,24 @@ def _build_finra_notice_item(
     tier, reason = classify_regulatory_relevance(title, "", config)
     notice_body_text = ""
     presentation_excerpt = ""
+
+    if document_id in persistent_unavailable:
+        logger.warning(
+            "Skipping FINRA notice %s: remembered as unavailable (%s); "
+            "excluded from classification and baseline",
+            document_id,
+            persistent_unavailable[document_id],
+        )
+        unavailable_notices.append(
+            {
+                "document_id": document_id,
+                "title": title,
+                "url": url,
+                "reason": persistent_unavailable[document_id],
+                "remembered": True,
+            }
+        )
+        return None, detail_fetches
 
     should_fetch_detail = _should_fetch_finra_notice_detail(title, url, tier)
     fetch_limit_exhausted = (
@@ -4453,6 +4618,7 @@ def fetch_finra_notices(
     detail_fetch_limit: Optional[int] = FINRA_DETAIL_FETCH_LIMIT,
     unavailable_notices: Optional[list[dict]] = None,
     known_entry_keys: Optional[set[str]] = None,
+    persistent_unavailable: Optional[dict[str, str]] = None,
     listing_lookback_days: Optional[int] = None,
     allow_listing_early_stop: bool = True,
 ) -> list[RegulatoryItem]:
@@ -4476,6 +4642,8 @@ def fetch_finra_notices(
     items = []
     if unavailable_notices is None:
         unavailable_notices = []
+    if persistent_unavailable is None:
+        persistent_unavailable = {}
     _, max_retries, request_delay = _get_operational_settings(config)
     if allow_listing_early_stop and listing_lookback_days is None and known_entry_keys:
         listing_lookback_days = int(
@@ -4740,6 +4908,7 @@ def fetch_finra_notices(
             config=config,
             detail_cache=detail_cache,
             unavailable_cache=unavailable_cache,
+            persistent_unavailable=persistent_unavailable,
             unavailable_notices=unavailable_notices,
             detail_fetches=detail_fetches,
             detail_fetch_limit=detail_fetch_limit,
@@ -4761,6 +4930,7 @@ def _fetch_finra_notices_from_rss_candidates(
     limit: Optional[int],
     detail_fetch_limit: Optional[int],
     unavailable_notices: list[dict],
+    persistent_unavailable: dict[str, str],
 ) -> tuple[list[RegulatoryItem], int]:
     """Fetch HTTPS detail pages for RSS candidates not already in baseline."""
     _, max_retries, request_delay = _get_operational_settings(config)
@@ -4787,6 +4957,7 @@ def _fetch_finra_notices_from_rss_candidates(
             config=config,
             detail_cache=detail_cache,
             unavailable_cache=unavailable_cache,
+            persistent_unavailable=persistent_unavailable,
             unavailable_notices=unavailable_notices,
             detail_fetches=detail_fetches,
             detail_fetch_limit=detail_fetch_limit,
@@ -4803,7 +4974,9 @@ def _finra_rss_requires_gap_fallback(
     source_state: dict,
 ) -> bool:
     """Return whether RSS may have skipped older notices beyond its 10-item window."""
-    known_entry_keys = set(source_state.get("entries", {}))
+    known_entry_keys = set(source_state.get("entries", {})) | set(
+        _finra_persistent_unavailable_reasons(source_state)
+    )
     if not known_entry_keys or len(candidates) < FINRA_RSS_GAP_ITEM_COUNT:
         return False
     candidate_keys = {
@@ -4835,9 +5008,11 @@ def _fetch_finra_notices_with_discovery_metadata(
     detail_fetch_limit: Optional[int],
     unavailable_notices: list[dict],
     known_entry_keys: set[str],
+    persistent_unavailable: dict[str, str],
     discovery_path: str,
     validator_dropped: int,
     listing_cross_check: str = "not run",
+    allow_listing_early_stop: bool = True,
 ) -> FinraDiscoveryResult:
     """Run the HTML crawl and preserve path metadata if it fails."""
     try:
@@ -4848,6 +5023,8 @@ def _fetch_finra_notices_with_discovery_metadata(
             detail_fetch_limit=detail_fetch_limit,
             unavailable_notices=unavailable_notices,
             known_entry_keys=known_entry_keys,
+            persistent_unavailable=persistent_unavailable,
+            allow_listing_early_stop=allow_listing_early_stop,
         )
     except Exception as exc:
         raise _annotate_finra_discovery_exception(
@@ -4871,6 +5048,15 @@ def _finra_listing_cross_check(
     source_state: dict,
 ) -> str:
     """Check page-0 listing notice IDs against RSS plus the baseline."""
+    def _unavailable(reason: str) -> str:
+        message = (
+            "FINRA listing page-0 cross-check unavailable; RSS result is "
+            f"unverified-clean ({reason})"
+        )
+        logger.warning(message)
+        print(f"::warning::{message}")
+        return "listing cross-check unavailable"
+
     request_timeout, _max_retries, _request_delay = _get_operational_settings(config)
     try:
         response = session.get(
@@ -4878,12 +5064,12 @@ def _finra_listing_cross_check(
             timeout=request_timeout,
             allow_redirects=False,
         )
-    except requests.RequestException:
-        return "listing cross-check unavailable"
+    except requests.RequestException as exc:
+        return _unavailable(_source_failure_reason(exc))
 
     status_code = getattr(response, "status_code", None)
     if status_code != 200:
-        return "listing cross-check unavailable"
+        return _unavailable(f"status {status_code}")
 
     final_rejection = _finra_listing_url_rejection_reason(
         getattr(response, "url", None) or FINRA_NOTICES_URL,
@@ -4892,27 +5078,34 @@ def _finra_listing_cross_check(
     )
     content = getattr(response, "text", None)
     if final_rejection or not isinstance(content, (str, bytes)):
-        return "listing cross-check unavailable"
+        return _unavailable(final_rejection or "invalid response content")
     try:
         denial_reason = _finra_listing_denial_reason(content)
         identity_rejection = _finra_listing_identity_rejection_reason(content, 0)
         if denial_reason or identity_rejection:
-            return "listing cross-check unavailable"
+            return _unavailable(denial_reason or identity_rejection)
         page_links = _extract_finra_notice_links(content)
-    except Exception:
-        return "listing cross-check unavailable"
+    except Exception as exc:
+        return _unavailable(_source_failure_reason(exc))
 
     known_entry_keys = set(source_state.get("entries", {}))
+    persistent_unavailable_keys = set(_finra_persistent_unavailable_reasons(source_state))
     rss_entry_keys = {
         _finra_document_id_from_url(candidate.url)
         for candidate in rss_candidates
     }
-    missing = [
-        _finra_entry_key_for_link(link)
+    page_entry_keys = [
+        key
         for link in page_links
-        if _finra_entry_key_for_link(link)
-        and _finra_entry_key_for_link(link) not in rss_entry_keys
-        and _finra_entry_key_for_link(link) not in known_entry_keys
+        for key in [_finra_entry_key_for_link(link)]
+        if key
+    ]
+    missing = [
+        key
+        for key in page_entry_keys
+        if key not in rss_entry_keys
+        and key not in known_entry_keys
+        and key not in persistent_unavailable_keys
     ]
     if missing:
         logger.warning(
@@ -4939,18 +5132,19 @@ def discover_finra_notices(
         unavailable_notices = []
 
     known_entry_keys = set(source_state.get("entries", {}))
+    persistent_unavailable = _finra_persistent_unavailable_reasons(source_state)
     if weekly_full_crawl:
-        return FinraDiscoveryResult(
-            items=fetch_finra_notices(
-                session,
-                config,
-                limit=limit,
-                detail_fetch_limit=detail_fetch_limit,
-                unavailable_notices=unavailable_notices,
-                known_entry_keys=known_entry_keys,
-                allow_listing_early_stop=False,
-            ),
+        return _fetch_finra_notices_with_discovery_metadata(
+            session=session,
+            config=config,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            known_entry_keys=known_entry_keys,
+            persistent_unavailable={},
             discovery_path="full crawl",
+            validator_dropped=0,
+            allow_listing_early_stop=False,
         )
 
     if not known_entry_keys:
@@ -4958,16 +5152,16 @@ def discover_finra_notices(
         # window, so using it alone would be fast but dishonest: older notices
         # would remain unchecked while the report could look clean. Preserve the
         # established bounded HTML crawl for empty baselines.
-        return FinraDiscoveryResult(
-            items=fetch_finra_notices(
-                session,
-                config,
-                limit=limit,
-                detail_fetch_limit=detail_fetch_limit,
-                unavailable_notices=unavailable_notices,
-                known_entry_keys=known_entry_keys,
-            ),
+        return _fetch_finra_notices_with_discovery_metadata(
+            session=session,
+            config=config,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            known_entry_keys=known_entry_keys,
+            persistent_unavailable=persistent_unavailable,
             discovery_path="HTML first-run baseline",
+            validator_dropped=0,
         )
 
     rss_result: Optional[FinraRssParseResult] = None
@@ -4978,16 +5172,16 @@ def discover_finra_notices(
             "FINRA RSS discovery failed (%s); falling back to bounded HTML listing crawl",
             exc,
         )
-        return FinraDiscoveryResult(
-            items=fetch_finra_notices(
-                session,
-                config,
-                limit=limit,
-                detail_fetch_limit=detail_fetch_limit,
-                unavailable_notices=unavailable_notices,
-                known_entry_keys=known_entry_keys,
-            ),
+        return _fetch_finra_notices_with_discovery_metadata(
+            session=session,
+            config=config,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            known_entry_keys=known_entry_keys,
+            persistent_unavailable=persistent_unavailable,
             discovery_path="HTML fallback",
+            validator_dropped=0,
         )
 
     if _finra_rss_requires_gap_fallback(rss_result.candidates, source_state):
@@ -5003,6 +5197,7 @@ def discover_finra_notices(
             detail_fetch_limit=detail_fetch_limit,
             unavailable_notices=unavailable_notices,
             known_entry_keys=known_entry_keys,
+            persistent_unavailable=persistent_unavailable,
             discovery_path="RSS+gap-fallback",
             validator_dropped=rss_result.validator_dropped,
         )
@@ -5024,6 +5219,7 @@ def discover_finra_notices(
             detail_fetch_limit=detail_fetch_limit,
             unavailable_notices=unavailable_notices,
             known_entry_keys=known_entry_keys,
+            persistent_unavailable=persistent_unavailable,
             discovery_path="RSS+integrity-fallback",
             validator_dropped=rss_result.validator_dropped,
         )
@@ -5042,20 +5238,30 @@ def discover_finra_notices(
             detail_fetch_limit=detail_fetch_limit,
             unavailable_notices=unavailable_notices,
             known_entry_keys=known_entry_keys,
+            persistent_unavailable=persistent_unavailable,
             discovery_path="RSS+listing-cross-check-fallback",
             validator_dropped=rss_result.validator_dropped,
             listing_cross_check=listing_cross_check,
         )
 
-    items, detail_fetches = _fetch_finra_notices_from_rss_candidates(
-        candidates=rss_result.candidates,
-        session=session,
-        config=config,
-        source_state=source_state,
-        limit=limit,
-        detail_fetch_limit=detail_fetch_limit,
-        unavailable_notices=unavailable_notices,
-    )
+    try:
+        items, detail_fetches = _fetch_finra_notices_from_rss_candidates(
+            candidates=rss_result.candidates,
+            session=session,
+            config=config,
+            source_state=source_state,
+            limit=limit,
+            detail_fetch_limit=detail_fetch_limit,
+            unavailable_notices=unavailable_notices,
+            persistent_unavailable={},
+        )
+    except Exception as exc:
+        raise _annotate_finra_discovery_exception(
+            exc,
+            discovery_path="RSS",
+            validator_dropped=rss_result.validator_dropped,
+            listing_cross_check=listing_cross_check,
+        ) from exc
     return FinraDiscoveryResult(
         items=items,
         discovery_path="RSS",
@@ -5404,7 +5610,7 @@ def generate_regulatory_report(
     all_new_items: list[RegulatoryItem],
     report_path: Path,
     source_counts: Optional[dict[str, dict[str, int]]] = None,
-) -> None:
+) -> Path:
     """
     Generate regulatory change report using shared report format helpers.
 
@@ -5443,9 +5649,20 @@ def generate_regulatory_report(
         ]
         if degraded_sources:
             metadata["Degraded Sources"] = ", ".join(sorted(degraded_sources))
+        unverified_sources = [
+            _source_display_name(source)
+            for source, counts in source_counts.items()
+            if counts.get("verification_state") == FINRA_UNVERIFIED_CLEAN_STATE
+        ]
+        if unverified_sources:
+            metadata["Unverified Sources"] = ", ".join(sorted(unverified_sources))
         for source in sorted(source_counts):
             metadata[f"{source} Fetched"] = source_counts[source]["fetched"]
             metadata[f"{source} New"] = source_counts[source]["new"]
+            if "verification_state" in source_counts[source]:
+                metadata[f"{source} Verification State"] = source_counts[source][
+                    "verification_state"
+                ]
             if "discovery_path" in source_counts[source]:
                 metadata[f"{source} Discovery Path"] = source_counts[source][
                     "discovery_path"
@@ -5496,6 +5713,32 @@ def generate_regulatory_report(
                 lines.append(
                     f"- **{_source_display_name(source)}:** unavailable this run "
                     f"— {reason}\n"
+                )
+            lines.append("\n")
+
+        unverified_sources = {
+            source: counts
+            for source, counts in source_counts.items()
+            if counts.get("verification_state") == FINRA_UNVERIFIED_CLEAN_STATE
+        }
+        if unverified_sources:
+            lines.append("## Source verification\n")
+            lines.append(
+                "The monitor did not treat these sources as degraded, but it "
+                "also did **not** claim a fully verified no-change run.\n\n"
+            )
+            for source in sorted(unverified_sources):
+                reason = unverified_sources[source].get(
+                    "listing_cross_check",
+                    "listing cross-check unavailable",
+                )
+                lines.append(
+                    f"- **{_source_display_name(source)}:** "
+                    f"{FINRA_UNVERIFIED_CLEAN_STATE} — {reason}. The FINRA "
+                    "RSS feed was checked, the HTTPS page-0 listing "
+                    "cross-check was unavailable, and a separate consecutive "
+                    f"unverified-clean counter escalates at "
+                    f"{FINRA_UNVERIFIED_FAILURE_THRESHOLD} runs.\n"
                 )
             lines.append("\n")
 
@@ -5582,8 +5825,40 @@ def generate_regulatory_report(
 
     # Write report
     content = "".join(lines)
-    write_report(content, REPORTS_DIR, report_path.name)
-    logger.info(f"Report written to {report_path}")
+    actual_report_path = _write_unique_regulatory_report(
+        content,
+        REPORTS_DIR,
+        report_path.name,
+    )
+    logger.info(f"Report written to {actual_report_path}")
+    return actual_report_path
+
+
+def _write_unique_regulatory_report(
+    report_content: str,
+    report_dir: Path,
+    filename: str,
+) -> Path:
+    """Write a regulatory report without overwriting an existing same-day file."""
+    report_dir.mkdir(parents=True, exist_ok=True)
+    requested_path = Path(filename)
+    suffix = requested_path.suffix or ".md"
+    stem = requested_path.stem if requested_path.suffix else requested_path.name
+
+    for index in range(1, 1000):
+        candidate_name = (
+            f"{stem}{suffix}" if index == 1 else f"{stem}-{index}{suffix}"
+        )
+        candidate = report_dir / candidate_name
+        try:
+            with candidate.open("x", encoding="utf-8") as handle:
+                handle.write(report_content)
+            return candidate
+        except FileExistsError:
+            continue
+    raise FileExistsError(
+        f"No available regulatory report filename for {report_dir / filename}"
+    )
 
 
 def _run_monitor() -> int:
@@ -5705,13 +5980,41 @@ def _run_monitor() -> int:
     def update_finra_degraded_counter() -> int:
         monitor_state = state.setdefault("regulatory_monitor", {})
         current = int(monitor_state.get(FINRA_DEGRADED_COUNTER_KEY, 0) or 0)
+        unverified_current = int(
+            monitor_state.get(FINRA_UNVERIFIED_COUNTER_KEY, 0) or 0
+        )
         if "FINRA" not in requested_sources:
             return current
         if "FINRA" in failed_sources:
             current += 1
+            unverified_current = 0
+        elif source_counts.get("FINRA", {}).get(
+            "verification_state"
+        ) == FINRA_UNVERIFIED_CLEAN_STATE:
+            unverified_current += 1
+            if unverified_current >= FINRA_UNVERIFIED_FAILURE_THRESHOLD:
+                reason = (
+                    "FINRA listing cross-check unavailable for "
+                    f"{unverified_current} consecutive monitor runs; "
+                    "treating the run as degraded"
+                )
+                logger.warning(reason)
+                print(f"::warning::{reason}")
+                source_counts["FINRA"]["degraded"] = 1
+                source_counts["FINRA"]["reason"] = reason
+            else:
+                logger.warning(
+                    "FINRA run is %s for %s consecutive run(s); leaving "
+                    "consecutive degraded counter unchanged at %s",
+                    FINRA_UNVERIFIED_CLEAN_STATE,
+                    unverified_current,
+                    current,
+                )
         else:
             current = 0
+            unverified_current = 0
         monitor_state[FINRA_DEGRADED_COUNTER_KEY] = current
+        monitor_state[FINRA_UNVERIFIED_COUNTER_KEY] = unverified_current
         return current
 
     def update_finra_run_summary() -> None:
@@ -5726,6 +6029,10 @@ def _run_monitor() -> int:
         }
         if "new_notices_fetched" in counts:
             summary["new_notices_fetched"] = counts["new_notices_fetched"]
+        if "verification_state" in counts:
+            summary["verification_state"] = counts["verification_state"]
+        if "reason" in counts:
+            summary["failure_reason"] = counts["reason"]
         monitor_state["last_finra_discovery"] = summary
 
     # Fetch from Federal Register
@@ -5810,6 +6117,13 @@ def _run_monitor() -> int:
                 ),
                 "listing_cross_check": finra_discovery.listing_cross_check,
             }
+            if (
+                finra_discovery.listing_cross_check
+                == "listing cross-check unavailable"
+            ):
+                source_counts["FINRA"]["verification_state"] = (
+                    FINRA_UNVERIFIED_CLEAN_STATE
+                )
             if finra_unavailable:
                 logger.warning(
                     "FINRA: %s notice(s) excluded from the baseline because the "
@@ -5827,6 +6141,9 @@ def _run_monitor() -> int:
             # Update state
             if state_mutation_allowed:
                 update_source_state(SOURCE_KEY_FINRA, finra_items, state)
+                finra_state = get_source_state(state, SOURCE_KEY_FINRA)
+                _update_finra_unavailable_state(finra_state, finra_unavailable)
+                set_source_state(state, SOURCE_KEY_FINRA, finra_state)
         except Exception as exc:
             if not _exception_represents_source_unavailability(exc):
                 logger.error("FINRA notices source failure: %s", exc)
@@ -5845,16 +6162,35 @@ def _run_monitor() -> int:
         finra_degraded_count = update_finra_degraded_counter()
         update_finra_run_summary()
 
+    unverified_sources = {
+        source: counts
+        for source, counts in source_counts.items()
+        if counts.get("verification_state") == FINRA_UNVERIFIED_CLEAN_STATE
+    }
+    degraded_sources = {
+        source: counts
+        for source, counts in source_counts.items()
+        if counts.get("degraded")
+    }
+
     # Generate report if new items or degraded sources were found. A degraded
     # source is never equivalent to "no changes"; it must remain visible in
     # the run output even when every available source is clean.
-    if all_new_items or failed_sources:
+    # An unverified-clean FINRA run is also reportable: the RSS feed was
+    # checked, but the HTTPS page-0 listing cross-check was unavailable, so the
+    # monitor must not silently claim a fully verified no-change result.
+    if all_new_items or failed_sources or unverified_sources or degraded_sources:
         if all_new_items:
             logger.info(f"\n=== {len(all_new_items)} total new regulatory items detected ===")
         if failed_sources:
             logger.warning(
                 "\n=== Degraded regulatory monitor run: %s unavailable ===",
                 ", ".join(_source_display_name(source) for source in failed_sources),
+            )
+        if unverified_sources:
+            logger.warning(
+                "\n=== Unverified regulatory monitor run: %s cross-check unavailable ===",
+                ", ".join(_source_display_name(source) for source in unverified_sources),
             )
 
         report_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
@@ -5884,7 +6220,7 @@ def _run_monitor() -> int:
             )
             return EXIT_FAILURE
 
-        return EXIT_DEGRADED if failed_sources else EXIT_FINDINGS
+        return EXIT_DEGRADED if failed_sources or degraded_sources else EXIT_FINDINGS
 
     else:
         logger.info("\n=== No new regulatory items detected ===")

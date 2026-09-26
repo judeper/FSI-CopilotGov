@@ -105,9 +105,13 @@ jobs:
               FINRA_DISCOVERY_PATH=$(grep -m1 '^\*\*FINRA Discovery Path:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Discovery Path:\*\* //') || true
               FINRA_VALIDATOR_DROPPED=$(grep -m1 '^\*\*FINRA Validator Dropped:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Validator Dropped:\*\* //') || true
               FINRA_NEW_FETCHED=$(grep -m1 '^\*\*FINRA New Notices Fetched:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA New Notices Fetched:\*\* //') || true
+              FINRA_LISTING_CROSS_CHECK=$(grep -m1 '^\*\*FINRA Listing Cross-Check:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Listing Cross-Check:\*\* //') || true
+              FINRA_VERIFICATION_STATE=$(grep -m1 '^\*\*FINRA Verification State:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Verification State:\*\* //') || true
               echo "finra_discovery_path=${FINRA_DISCOVERY_PATH:-not reported}" >> "$GITHUB_OUTPUT"
               echo "finra_validator_dropped=${FINRA_VALIDATOR_DROPPED:-not reported}" >> "$GITHUB_OUTPUT"
               echo "finra_new_notices_fetched=${FINRA_NEW_FETCHED:-not reported}" >> "$GITHUB_OUTPUT"
+              echo "finra_listing_cross_check=${FINRA_LISTING_CROSS_CHECK:-not reported}" >> "$GITHUB_OUTPUT"
+              echo "finra_verification_state=${FINRA_VERIFICATION_STATE:-not reported}" >> "$GITHUB_OUTPUT"
               exit 0
               ;;
             4)
@@ -123,9 +127,13 @@ jobs:
               FINRA_DISCOVERY_PATH=$(grep -m1 '^\*\*FINRA Discovery Path:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Discovery Path:\*\* //') || true
               FINRA_VALIDATOR_DROPPED=$(grep -m1 '^\*\*FINRA Validator Dropped:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Validator Dropped:\*\* //') || true
               FINRA_NEW_FETCHED=$(grep -m1 '^\*\*FINRA New Notices Fetched:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA New Notices Fetched:\*\* //') || true
+              FINRA_LISTING_CROSS_CHECK=$(grep -m1 '^\*\*FINRA Listing Cross-Check:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Listing Cross-Check:\*\* //') || true
+              FINRA_VERIFICATION_STATE=$(grep -m1 '^\*\*FINRA Verification State:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Verification State:\*\* //') || true
               echo "finra_discovery_path=${FINRA_DISCOVERY_PATH:-not reported}" >> "$GITHUB_OUTPUT"
               echo "finra_validator_dropped=${FINRA_VALIDATOR_DROPPED:-not reported}" >> "$GITHUB_OUTPUT"
               echo "finra_new_notices_fetched=${FINRA_NEW_FETCHED:-not reported}" >> "$GITHUB_OUTPUT"
+              echo "finra_listing_cross_check=${FINRA_LISTING_CROSS_CHECK:-not reported}" >> "$GITHUB_OUTPUT"
+              echo "finra_verification_state=${FINRA_VERIFICATION_STATE:-not reported}" >> "$GITHUB_OUTPUT"
               exit 0
               ;;
             2)
@@ -174,8 +182,13 @@ jobs:
               echo "EOF"
             } >> "$GITHUB_OUTPUT"
           else
-            echo "title=Regulatory Monitor: findings (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
-            echo "extra_labels=" >> "$GITHUB_OUTPUT"
+            if [ "${{ steps.monitor.outputs.finra_verification_state }}" = "unverified-clean" ]; then
+              echo "title=Regulatory Monitor: UNVERIFIED (FINRA listing cross-check unavailable) (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
+              echo "extra_labels=monitor-unverified" >> "$GITHUB_OUTPUT"
+            else
+              echo "title=Regulatory Monitor: findings (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
+              echo "extra_labels=" >> "$GITHUB_OUTPUT"
+            fi
             {
               echo "degraded_body<<EOF"
               echo "EOF"
@@ -183,7 +196,7 @@ jobs:
           fi
 
       - name: Ensure degraded monitor label exists
-        if: steps.monitor.outputs.exit_code == '4'
+        if: steps.monitor.outputs.exit_code == '4' || steps.monitor.outputs.finra_verification_state == 'unverified-clean'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -196,6 +209,14 @@ jobs:
             --repo "$REPO" \
             --color FBCA04 \
             --description "Regulatory Monitor ran with an unavailable source"
+          gh label create monitor-unverified \
+            --repo "$REPO" \
+            --color D29922 \
+            --description "Regulatory Monitor ran without FINRA listing cross-check verification" \
+          || gh label edit monitor-unverified \
+            --repo "$REPO" \
+            --color D29922 \
+            --description "Regulatory Monitor ran without FINRA listing cross-check verification"
 
       - name: Generate GitHub App token
         id: app-token
@@ -232,6 +253,8 @@ jobs:
             - FINRA discovery path: `${{ steps.monitor.outputs.finra_discovery_path }}`
             - FINRA validator-dropped items: `${{ steps.monitor.outputs.finra_validator_dropped }}`
             - FINRA new notices fetched: `${{ steps.monitor.outputs.finra_new_notices_fetched }}`
+            - FINRA listing cross-check: `${{ steps.monitor.outputs.finra_listing_cross_check }}`
+            - FINRA verification state: `${{ steps.monitor.outputs.finra_verification_state }}`
 
             ${{ steps.pr-meta.outputs.degraded_body }}
 
@@ -272,7 +295,15 @@ jobs:
               select(.headRefName | startswith(\"monitoring/regulatory-\")) |
               select(.author.login == \"app/fsi-monitor-bot\") |
               select(.title | startswith(\"Regulatory Monitor:\")) |
-              select(if \"${{ steps.monitor.outputs.exit_code }}\" == \"4\" then any(.labels[]?.name; . == \"monitor-degraded\") else true end) |
+              select(
+                if \"${{ steps.monitor.outputs.exit_code }}\" == \"4\" then
+                  any(.labels[]?.name; . == \"monitor-degraded\")
+                elif \"${{ steps.monitor.outputs.finra_verification_state }}\" == \"unverified-clean\" then
+                  any(.labels[]?.name; . == \"monitor-unverified\")
+                else
+                  (all(.labels[]?.name; . != \"monitor-degraded\") and all(.labels[]?.name; . != \"monitor-unverified\"))
+                end
+              ) |
               .number")
 
           if [ "${#prior[@]}" -eq 0 ]; then
