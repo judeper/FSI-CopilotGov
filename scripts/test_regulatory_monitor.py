@@ -4924,10 +4924,25 @@ def test_sro_model_risk_uses_cross_field_ai_qualifier():
     ("title", "text", "reason_fragment"),
     [
         (
-            "Self-Regulatory Organizations; FINRA; Remote Inspections Pilot "
-            "Program Under FINRA Rule 3110",
-            "The proposal establishes remote inspection procedures for member firms.",
+            "Self-Regulatory Organizations; FINRA; Amend Form U4 and "
+            "FINRA Rule 3110.19(d)",
+            "The proposal amends Form U4 disclosure.",
             "3110",
+        ),
+        (
+            "Self-Regulatory Organizations; Exchange; Supervisory Program Amendment",
+            "The proposal cites FINRA Rule 3110 for background.",
+            "3110",
+        ),
+        (
+            "Self-Regulatory Organizations; Exchange; Rule 2210 Amendment",
+            "The proposal updates procedures for communications with the public.",
+            "communications with the public",
+        ),
+        (
+            "Self-Regulatory Organizations; Exchange; Remote Inspection Program",
+            "The proposal updates procedures for communications with the public.",
+            "communications with the public",
         ),
         (
             "Self-Regulatory Organizations; Exchange; Communications With the "
@@ -4953,6 +4968,22 @@ def test_sro_title_subject_exemption_preserves_rulemaking(
 
     assert classification == regulatory_monitor.CLASSIFICATION_HIGH
     assert reason_fragment in reason.lower()
+
+
+def test_sro_bai_abbreviation_does_not_release_3110_suppression():
+    config = _load_config()
+
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; FINRA; background filing",
+        "The B.A.I. notes are subject to FINRA Rule 3110.",
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
 
 
 @pytest.mark.parametrize(
@@ -4985,6 +5016,38 @@ def test_remote_inspection_supervision_rule_filings_stay_high(doc_id, title, tex
     )
 
     assert classification == regulatory_monitor.CLASSIFICATION_HIGH, (doc_id, reason)
+
+
+def test_remote_inspection_supervision_evidence_is_evaluated_once(monkeypatch):
+    config = _load_config()
+    calls = 0
+    original = regulatory_monitor._has_remote_inspection_supervision_evidence
+    title = "Self-Regulatory Organizations; FINRA; long rule approval"
+    text = (
+        ("The filing discusses supervisory procedures and FINRA Rule 3110. " * 2500)
+        + "The proposal also describes remote inspection procedures."
+    )
+
+    def counting_helper(evidence_text):
+        nonlocal calls
+        calls += 1
+        return original(evidence_text)
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "_has_remote_inspection_supervision_evidence",
+        counting_helper,
+    )
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH, reason
+    assert calls == 1
 
 
 def test_cftc_electronic_trading_risk_principles_final_rule_stays_high():

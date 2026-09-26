@@ -2096,7 +2096,7 @@ def _search_operative_match_in_segments(
 
 
 AI_GOVERNANCE_QUALIFIER_PATTERN = re.compile(
-    r"(?<![A-Za-z])a\.i\.(?![A-Za-z])|"
+    r"(?<![\w.])a\.i\.(?![A-Za-z])|"
     r"\b(?:"
     r"artificial\s+intelligence|generative\s+ai|genai|"
     r"gen\s+ai|ai|"
@@ -2145,12 +2145,20 @@ SRO_SUPERVISION_SUBJECT_TITLE_PATTERN = re.compile(
     r"\b(?:3110|remote\s+inspections?|supervis\w*|2210|"
     r"communications?\s+with\s+the\s+public)\b"
 )
-REMOTE_INSPECTION_SUPERVISION_EVIDENCE_PATTERN = re.compile(
-    r"\b(?:remote\w*.{0,40}inspections?|inspections?.{0,40}remotely)\b"
-    r".*\b(?:g-27|rule\s*1308|3110|supervis\w*)\b|"
-    r"\b(?:g-27|rule\s*1308|3110|supervis\w*)\b.*"
+REMOTE_INSPECTION_EVIDENCE_PATTERN = re.compile(
     r"\b(?:remote\w*.{0,40}inspections?|inspections?.{0,40}remotely)\b"
 )
+SUPERVISION_RULE_EVIDENCE_PATTERN = re.compile(
+    r"\b(?:g-27|rule\s*1308|3110|supervis\w*)\b"
+)
+
+
+def _has_remote_inspection_supervision_evidence(evidence_text: str) -> bool:
+    """Return whether the document has both remote-inspection and supervision-rule evidence."""
+    return bool(
+        REMOTE_INSPECTION_EVIDENCE_PATTERN.search(evidence_text)
+        and SUPERVISION_RULE_EVIDENCE_PATTERN.search(evidence_text)
+    )
 
 
 def _high_pattern_match_is_suppressed(
@@ -2159,6 +2167,7 @@ def _high_pattern_match_is_suppressed(
     match,
     title: str = "",
     evidence_text: str = "",
+    has_remote_inspection_supervision: bool = False,
 ) -> bool:
     """Return whether a HIGH-tier regex hit is known boilerplate/noise.
 
@@ -2183,7 +2192,7 @@ def _high_pattern_match_is_suppressed(
         return not _contains_ai_governance_qualifier(evidence_text)
 
     if "finra 3110" in lowered_reason:
-        if REMOTE_INSPECTION_SUPERVISION_EVIDENCE_PATTERN.search(evidence_text):
+        if has_remote_inspection_supervision:
             return False
         return not _contains_ai_governance_qualifier(evidence_text)
 
@@ -2215,6 +2224,11 @@ def _search_high_pattern_match_in_segments(
     """Search high-tier evidence, skipping known SRO boilerplate matches."""
     title = segments[0] if segments else ""
     evidence_text = " ".join(segments)
+    has_remote_inspection_supervision = (
+        _has_remote_inspection_supervision_evidence(evidence_text)
+        if "finra 3110" in reason.lower()
+        else False
+    )
     for segment in segments:
         for match in re.finditer(pattern, segment):
             if exclude_reference_only and _is_reference_only_occurrence(
@@ -2222,7 +2236,12 @@ def _search_high_pattern_match_in_segments(
             ):
                 continue
             if _high_pattern_match_is_suppressed(
-                reason, segment, match, title, evidence_text
+                reason,
+                segment,
+                match,
+                title,
+                evidence_text,
+                has_remote_inspection_supervision,
             ):
                 continue
             return match
