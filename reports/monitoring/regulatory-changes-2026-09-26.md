@@ -15,6 +15,9 @@
 **Federal Register Fetched:** 26
 **Federal Register New:** 17
 
+
+> **Baseline seed note:** This report includes a one-time FINRA baseline seed from a complete local crawl. The FINRA items in this report are historical backfill classifications, not newly detected regulatory changes from the scheduled monitor run and not automatic control-edit obligations. Review them as baseline audit evidence; create follow-up control work only where a separate review finds a still-current requirement.
+
 ---
 ## Executive Summary
 
