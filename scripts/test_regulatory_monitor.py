@@ -516,19 +516,27 @@ def test_bare_automation_language_does_not_classify_high(text):
     }
 
 
-@pytest.mark.parametrize(
-    "text",
-    (
-        "The rule establishes controls for automated trading systems.",
-        "The proposal governs automated advice provided to investors.",
-    ),
-)
-def test_fsi_automation_language_remains_high_priority(text):
+def test_automated_trading_system_language_no_longer_classifies_high():
     config = _load_config()
 
     classification, _ = regulatory_monitor.classify_regulatory_relevance(
         "Financial services automation requirements",
-        text,
+        "The rule establishes controls for automated trading systems.",
+        config,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
+def test_automated_advice_language_remains_high_priority():
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Financial services automation requirements",
+        "The proposal governs automated advice provided to investors.",
         config,
     )
 
@@ -538,16 +546,24 @@ def test_fsi_automation_language_remains_high_priority(text):
     }
 
 
-@pytest.mark.parametrize(
-    "citation",
-    (
-        "FINRA Rule 3110",
-        "FINRA 3110",
-        "FINRA Rule 4511",
-        "FINRA 4511",
-    ),
-)
-def test_finra_rule_citations_classify_high(citation):
+@pytest.mark.parametrize("citation", ("FINRA Rule 3110", "FINRA 3110"))
+def test_generic_finra_3110_citations_do_not_classify_high(citation):
+    config = _load_config()
+
+    classification, _ = regulatory_monitor.classify_regulatory_relevance(
+        "Administrative securities notice",
+        f"The notice addresses requirements under {citation}.",
+        config,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+
+
+@pytest.mark.parametrize("citation", ("FINRA Rule 4511", "FINRA 4511"))
+def test_finra_recordkeeping_rule_citations_classify_high(citation):
     config = _load_config()
 
     classification, _ = regulatory_monitor.classify_regulatory_relevance(
@@ -4286,6 +4302,339 @@ def test_committed_august_26_report_preserves_acceptance_contracts():
     assert "2026-16876" not in high_section
     assert "2026-16876" not in medium_section
     assert "2026-16876" in noise_section
+
+
+# ---------------------------------------------------------------------------
+# Issue #536 -- run-207 SRO boilerplate false positives
+# ---------------------------------------------------------------------------
+
+RUN207_TRUE_HIGH_IDS = {
+    "2026-19388",  # tokenized venue AI exploit/attack risk
+    "2026-19148",  # PCAOB audit-firm AI use/watch signal
+    "2026-18293",  # FINRA fraud/deepfake AI rule filing
+    "2026-18262",  # SEC AI disclosure agenda item
+    "2026-18190",  # transfer-agent proposed rule AI watch item
+}
+
+RUN207_HIGH_FIXTURES = [
+    (
+        "2026-19388",
+        "Order Granting Temporary Conditional Exemptive Relief for Tokenized NMS Stocks",
+        "Risks: Describe any known material risks to TSV Participants or the "
+        "integrity of the TSV's market, such as artificial intelligence "
+        "exploits or attacks, loss of private keys, compromised wallets, "
+        "smart contract coding errors or bugs, access control failures, "
+        "reentrancy attacks, denial-of-service attacks, congestion, "
+        "impermanent loss, and abusive activity involving MEV.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "2026-19259",
+        "Proxy Solicitation Modernization",
+        "Intermediaries that currently rely on the full seven-business-day "
+        "response period might have to invest in operational infrastructure, "
+        "personnel, or automated systems. These costs may vary across "
+        "intermediaries depending on their size, technological capabilities, "
+        "and the complexity of their beneficial-owner records.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-19218",
+        "Self-Regulatory Organizations; Investors Exchange LLC; IEX Options",
+        "The term System means the automated trading system used by IEX Options "
+        "for the trading of options contracts, as described in Rule 22.100(a). "
+        "The term Options Member means a firm that is registered with the "
+        "Exchange for purposes of participating in options trading.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-19213",
+        "Self-Regulatory Organizations; Municipal Securities Rulemaking Board; MSRB Rule G-27",
+        "The MSRB notes that FINRA has also never defined the term structuring "
+        "of public offerings or private placements in FINRA Rule 3110. Based "
+        "on the above and as further described in the Notice, the proposed "
+        "rule change will provide clarity for municipal securities dealers.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-19148",
+        "Public Company Accounting Oversight Board; Amendments to QC 1000",
+        "One commenter stated that the PCAOB should use existing artificial "
+        "intelligence technology to aggregate metrics and related information "
+        "from firms' websites or other public sources and make that information "
+        "available in a centralized location on the PCAOB's website.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "2026-19139",
+        "Self-Regulatory Organizations; NYSE Arca; Binary KPI Options",
+        "The Exchange proposes KPIs representing revenues broken out by "
+        "reportable segment, business unit, or product category, including "
+        "cloud and artificial intelligence infrastructure revenues, streaming "
+        "and geographic subscription revenues, automotive segment revenues, "
+        "financial services segment revenues, and consumer product revenues.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-19132",
+        "Self-Regulatory Organizations; NYSE American; Binary KPI Options",
+        "The Exchange proposes KPIs representing revenues broken out by "
+        "reportable segment, business unit, or product category, including "
+        "cloud and artificial intelligence infrastructure revenues, streaming "
+        "and geographic subscription revenues, automotive segment revenues, "
+        "financial services segment revenues, and consumer product revenues.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-19126",
+        "Self-Regulatory Organizations; FINRA; FINRA Rule 3290",
+        "FINRA stated that the proposed rule change is consistent with current "
+        "requirements and, as is currently required, such activity already "
+        "would be subject to broker-dealer supervision under FINRA Rule 3110. "
+        "Proposed FINRA Rule 3290(e) would require a member to keep records.",
+        regulatory_monitor.CLASSIFICATION_MEDIUM,
+    ),
+    (
+        "2026-18929",
+        "Self-Regulatory Organizations; Texas Stock Exchange; CAT fee schedule",
+        "The public relations firms provided services related to communications "
+        "with the public regarding the CAT, including monitoring developments "
+        "related to the CAT, congressional efforts, public comments, press "
+        "coverage of the CAT, and drafting communications to the public.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-18293",
+        "Self-Regulatory Organizations; FINRA; Temporary Delays for Suspected Fraud",
+        "Criminal perpetrators employ increasingly sophisticated tactics using "
+        "technology and artificial intelligence, making it more difficult for "
+        "both member firms and investors to identify scams. These advances "
+        "have contributed to the rapid evolution of fraud schemes.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "2026-18262",
+        "Sunshine Act Meetings",
+        "The agenda for the meeting includes welcome and opening remarks; "
+        "approval of previous meeting minutes; a panel discussion regarding "
+        "disclosure and artificial intelligence; a panel discussion regarding "
+        "Regulation National Market System; and subcommittee reports.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "2026-18211",
+        "Self-Regulatory Organizations; Options Clearing Corporation; Membership Standards",
+        "FINRA and the National Futures Association both maintain provisions in "
+        "their rules requiring independent testing of their AML compliance "
+        "program. FINRA Rule 3110(c) and NFA Rule 2-9(c) Interpretation 9045 "
+        "are cited as comparable provisions.",
+        regulatory_monitor.CLASSIFICATION_MEDIUM,
+    ),
+    (
+        "2026-18206",
+        "Self-Regulatory Organizations; FINRA; Rule 4515 Allocations",
+        "Many broker-dealers use straight-through processing, which refers to "
+        "processes that allow for the automation of the entire trade lifecycle "
+        "from trade execution through settlement without manual intervention. "
+        "Improved automation in the settlement process has enabled processing.",
+        regulatory_monitor.CLASSIFICATION_MEDIUM,
+    ),
+    (
+        "2026-18190",
+        "Transfer Agent Rules",
+        "As technology and the securities markets continue to evolve, transfer "
+        "agents are increasingly operating at the frontier of rapidly "
+        "developing technologies, including tokenized securities, artificial "
+        "intelligence, and other forms of digital infrastructure.",
+        regulatory_monitor.CLASSIFICATION_HIGH,
+    ),
+    (
+        "2026-18112",
+        "Self-Regulatory Organizations; Cboe C2; order entry protocol migration",
+        "The term System means the automated trading system the Exchange uses "
+        "for the trading of option contracts. Following receipt of the credit "
+        "request, the Exchange will review the Redundant Logical Port's order "
+        "and quote usage for the period during which the port was active.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-18111",
+        "Self-Regulatory Organizations; Cboe Exchange; order entry protocol migration",
+        "The term System means the automated trading system the Exchange uses "
+        "for the trading of option contracts. Following receipt of the credit "
+        "request, the Exchange will review the Redundant Logical Port's order "
+        "and quote usage for the period during which the port was active.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-17674",
+        "DTCC ITP LLC; clearing agency exemption application",
+        "The applicant will provide access to the Commission to conduct on-site "
+        "inspections of all facilities, including automated systems and systems "
+        "environment, records, and personnel related to the client services "
+        "operations that facilitate allocation, matching, confirmation, and affirmation.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-17671",
+        "LSEG Post Trade Services Limited; clearing agency exemption application",
+        "LSEG shall respond to a request from the Commission and provide the "
+        "Commission or its designee with access to LSEG's facilities, including "
+        "automated systems and systems environment, records, and personnel "
+        "related to the equity SBS post-trade services.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-17666",
+        "Self-Regulatory Organizations; CME Securities Clearing Inc.; cross-margin arrangements",
+        "CMESC Risk Management Assessment Methodology, Liquidity Risk Management "
+        "Policy, Stress Testing and Guaranty Fund Sizing Policy, Margin Policy, "
+        "Backtesting Policy, and Model Risk Management Policy are collectively "
+        "the Policies supporting the proposed rule change.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+    (
+        "2026-17465",
+        "Self-Regulatory Organizations; MEMX LLC; securities event contracts",
+        "The Exchange represents that it will monitor the trading volume "
+        "associated with securities event contracts and the effect, if any, of "
+        "securities event contracts on the capacity of the Exchange's automated "
+        "system. The Linkage Plan established order protection.",
+        regulatory_monitor.CLASSIFICATION_NOISE,
+    ),
+]
+
+
+def _run207_precision_recall(classifications: dict[str, str]) -> tuple[float, float]:
+    predicted_high = {
+        doc_id
+        for doc_id, classification in classifications.items()
+        if classification in {
+            regulatory_monitor.CLASSIFICATION_HIGH,
+            regulatory_monitor.CLASSIFICATION_CRITICAL,
+        }
+    }
+    true_high = RUN207_TRUE_HIGH_IDS
+    true_positives = len(predicted_high & true_high)
+    precision = (
+        true_positives / len(predicted_high)
+        if predicted_high
+        else 1.0
+    )
+    recall = true_positives / len(true_high)
+    return precision, recall
+
+
+@pytest.mark.parametrize(
+    "doc_id,title,text,expected_tier",
+    RUN207_HIGH_FIXTURES,
+    ids=[fixture[0] for fixture in RUN207_HIGH_FIXTURES],
+)
+def test_run207_high_fixtures_reduce_sro_boilerplate_false_positives(
+    doc_id,
+    title,
+    text,
+    expected_tier,
+):
+    config = _load_config()
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == expected_tier, (doc_id, reason)
+
+
+def test_run207_fixture_precision_improves_without_recall_loss():
+    """Run 207 had 20 HIGH rows: 15 boilerplate false positives and 5 watch hits."""
+    config = _load_config()
+    before = {
+        doc_id: regulatory_monitor.CLASSIFICATION_HIGH
+        for doc_id, *_rest in RUN207_HIGH_FIXTURES
+    }
+    after = {
+        doc_id: regulatory_monitor.classify_regulatory_relevance(
+            title,
+            text,
+            config,
+            exclude_reference_only=True,
+        )[0]
+        for doc_id, title, text, _expected in RUN207_HIGH_FIXTURES
+    }
+
+    assert _run207_precision_recall(before) == (0.25, 1.0)
+    assert _run207_precision_recall(after) == (1.0, 1.0)
+
+
+def test_unqualified_clearinghouse_model_risk_does_not_map_genai_controls():
+    config = _load_config()
+    title = (
+        "Self-Regulatory Organizations; CME Securities Clearing Inc.; "
+        "Notice of Filing of Proposed Rule Change"
+    )
+    text = (
+        "The proposed rule change adopts the CMESC Margin Policy, Backtesting "
+        "Policy, and Model Risk Management Policy for cross-margin arrangements."
+    )
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+    controls = regulatory_monitor.find_affected_controls_by_keywords(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_NOISE
+    assert "model risk" not in reason.lower()
+    assert "3.8" not in controls
+    assert "3.8a" not in controls
+
+
+@pytest.mark.parametrize(
+    ("title", "text"),
+    [
+        (
+            "Regulatory Notice 24-09",
+            "Artificial intelligence, including large language models and "
+            "other generative AI tools, present promising opportunities for "
+            "member firms as they incorporate GenAI into products and services.",
+        ),
+        (
+            "Regulatory Notice 26-14",
+            "FINRA seeks comment on a proposal to modernize Rule 2210 "
+            "(Communications with the Public), reflecting advances in "
+            "generative artificial intelligence and social media use.",
+        ),
+        (
+            "SEC proposed rule on AI model risk",
+            "Covered firms must supervise artificial intelligence model risk "
+            "management controls and retain governance evidence.",
+        ),
+    ],
+)
+def test_genuine_ai_and_finra_rulemaking_recall_stays_high(title, text):
+    config = _load_config()
+
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
 
 
 @pytest.mark.parametrize(
