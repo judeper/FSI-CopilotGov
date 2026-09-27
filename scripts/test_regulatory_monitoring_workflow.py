@@ -327,6 +327,14 @@ def test_cleanup_matrix_is_documented_and_uses_tested_selector() -> None:
         MONITOR_JOB,
         "Prepare Regulatory Monitor PR metadata",
     )["run"]
+    assert "if ! python scripts/regulatory_monitor_cleanup.py emit-marker" in _step(
+        MONITOR_JOB,
+        "Prepare Regulatory Monitor PR metadata",
+    )["run"]
+    assert "opening the PR without a cleanup marker" in _step(
+        MONITOR_JOB,
+        "Prepare Regulatory Monitor PR metadata",
+    )["run"]
     assert "--new-result" in cleanup_run
     assert "--new-report-file" in cleanup_run
     assert "steps.pr-meta.outputs.cleanup_kind" in cleanup_run
@@ -342,6 +350,13 @@ def test_cleanup_matrix_is_documented_and_uses_tested_selector() -> None:
     assert "Monitor result: `${{ steps.pr-meta.outputs.cleanup_kind }}`" in pr_body
     assert "Monitor new items: `${{ steps.monitor.outputs.new_items }}`" in pr_body
     assert "${{ steps.pr-meta.outputs.cleanup_marker }}" in pr_body
+    assert pr_body.rstrip().endswith("${{ steps.pr-meta.outputs.cleanup_marker }}")
+    assert pr_body.index("FINRA verification state") < pr_body.index(
+        "${{ steps.pr-meta.outputs.degraded_body }}"
+    )
+    assert pr_body.index("Automated PR created by") < pr_body.index(
+        "${{ steps.pr-meta.outputs.cleanup_marker }}"
+    )
     assert 'author_login == "app/fsi-monitor-bot"' in Path(
         REPO_ROOT / CLEANUP_SCRIPT_FILE
     ).read_text(encoding="utf-8")
@@ -439,6 +454,18 @@ def test_cleanup_matrix_missing_or_truncated_item_keys_keep_findings_open() -> N
     ]
 
     assert _selected_numbers("findings", prs, new_keys=[f"k-{i}" for i in range(1001)]) == set()
+
+
+def test_cleanup_selector_requires_complete_marker_at_body_end() -> None:
+    clean_marker = _marker("unverified-clean", 0, [])
+    truncated_marker = clean_marker.rsplit("\n", maxsplit=1)[0]
+    marker_followed_by_text = f"{clean_marker}\n\n### Human-added tail"
+    prs = [
+        _monitor_pr(101, labels={"monitor-unverified"}, body=truncated_marker),
+        _monitor_pr(102, labels={"monitor-unverified"}, body=marker_followed_by_text),
+    ]
+
+    assert _selected_numbers("verified-clean", prs) == set()
 
 
 def test_cleanup_matrix_unverified_results_never_close_degraded_prs() -> None:

@@ -35,7 +35,7 @@ ITEM_KEY_CAP = 1000
 MARKER_BEGIN = "<!-- regulatory-monitor-cleanup:v1"
 MARKER_END = "-->"
 MARKER_BLOCK_RE = re.compile(
-    rf"(?ms)^{re.escape(MARKER_BEGIN)}\n(.*?)\n{re.escape(MARKER_END)}$"
+    rf"(?s)(?:^|\n){re.escape(MARKER_BEGIN)}\n(.*?)\n{re.escape(MARKER_END)}\s*\Z"
 )
 REPORT_LINK_RE = re.compile(
     r"^(?:### \d+\. \[[^\]]+\]\(([^)\s]+)\)|- \[[^\]]+\]\(([^)\s]+)\))"

@@ -246,11 +246,13 @@ jobs:
               } >> "$GITHUB_OUTPUT"
             fi
           fi
-          python scripts/regulatory_monitor_cleanup.py emit-marker \
+          if ! python scripts/regulatory_monitor_cleanup.py emit-marker \
             --report-file "${{ steps.monitor.outputs.report_file }}" \
             --result "$cleanup_kind" \
             --new-items "$new_items" \
-            >> "$GITHUB_OUTPUT"
+            >> "$GITHUB_OUTPUT"; then
+            echo "::warning::Regulatory Monitor cleanup marker generation failed; opening the PR without a cleanup marker so later cleanup fails closed."
+          fi
 
       - name: Ensure degraded monitor label exists
         if: steps.monitor.outputs.exit_code == '4' || steps.monitor.outputs.finra_verification_state == 'unverified-clean'
@@ -315,8 +317,6 @@ jobs:
             - Monitor result: `${{ steps.pr-meta.outputs.cleanup_kind }}`
             - Monitor new items: `${{ steps.monitor.outputs.new_items }}`
 
-            ${{ steps.pr-meta.outputs.cleanup_marker }}
-
             ${{ steps.pr-meta.outputs.degraded_body }}
 
             ### Superseded monitor PR cleanup matrix
@@ -343,6 +343,8 @@ jobs:
 
             ---
             *Automated PR created by `.github/workflows/regulatory-monitoring.yml`.*
+
+            ${{ steps.pr-meta.outputs.cleanup_marker }}
 
       - name: Close prior superseded Regulatory Monitor PRs
         if: steps.monitor.outputs.exit_code == '0' || ((steps.monitor.outputs.exit_code == '3' || steps.monitor.outputs.exit_code == '4') && steps.cpr.outputs.pull-request-number != '')
