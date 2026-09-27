@@ -145,10 +145,12 @@ def main(argv: list[str] | None = None) -> int:
     try:
         prs = json.load(sys.stdin)
     except json.JSONDecodeError as exc:
-        parser.error(f"failed to parse PR JSON from stdin: {exc}")
+        print(f"failed to parse PR JSON from stdin: {exc}", file=sys.stderr)
+        return 2
 
     if not isinstance(prs, list):
-        parser.error("expected gh pr list JSON array on stdin")
+        print("expected gh pr list JSON array on stdin", file=sys.stderr)
+        return 2
 
     for selection in select_prior_prs(
         prs,
