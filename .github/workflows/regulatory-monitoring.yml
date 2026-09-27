@@ -332,7 +332,7 @@ jobs:
 
             ### Classification tiers
             - 🔴 **CRITICAL** — Directly mentions AI agents, copilot, or automated advice
-            - 🟠 **HIGH** — References AI/ML/automation or FSI-specific requirements
+            - 🟠 **HIGH** — References AI/ML/automation or FSI-specific requirements; SRO rule-filing boilerplate is suppressed unless AI governance or supervision evidence is present
             - 🟡 **MEDIUM** — General FSI regulations (indirect AI impact)
             - ⚪ **NOISE** — No FSI governance relevance
 
