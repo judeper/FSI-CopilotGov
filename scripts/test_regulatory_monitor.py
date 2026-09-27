@@ -10104,11 +10104,25 @@ def test_finra_rss_page_zero_429_is_reported_without_degrading(monkeypatch):
     assert regulatory_monitor.FINRA_NOTICES_URL in record
 
 
+def _pin_non_weekly_finra_run(monkeypatch):
+    fixed_now = regulatory_monitor.datetime(
+        2026, 9, 26, tzinfo=regulatory_monitor.timezone.utc
+    )
+
+    class _FixedDateTime(regulatory_monitor.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return fixed_now.astimezone(tz) if tz else fixed_now.replace(tzinfo=None)
+
+    monkeypatch.setattr(regulatory_monitor, "datetime", _FixedDateTime)
+
+
 def test_finra_rss_page_zero_unavailable_is_unverified_clean_report(
     monkeypatch,
     tmp_path,
     capsys,
 ):
+    _pin_non_weekly_finra_run(monkeypatch)
     config = _load_config()
     rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
     loaded_state = {
@@ -10184,6 +10198,7 @@ def test_finra_rss_repeated_unverified_clean_escalates_to_degraded(
     tmp_path,
     capsys,
 ):
+    _pin_non_weekly_finra_run(monkeypatch)
     config = _load_config()
     rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
     loaded_state = {
@@ -10256,6 +10271,7 @@ def test_finra_unverified_escalation_preserves_new_finra_and_federal_register_fi
     tmp_path,
     capsys,
 ):
+    _pin_non_weekly_finra_run(monkeypatch)
     config = _load_config()
     rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 12)]
     loaded_state = {
@@ -10717,6 +10733,7 @@ def test_finra_html_baseline_failures_keep_discovery_metadata(
 
 
 def test_finra_rss_detail_failure_persists_discovery_metadata(monkeypatch, tmp_path):
+    _pin_non_weekly_finra_run(monkeypatch)
     config = _load_config()
     rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
     loaded_state = {
@@ -10794,6 +10811,7 @@ def test_finra_rss_detail_failure_persists_discovery_metadata(monkeypatch, tmp_p
 
 
 def test_finra_rss_both_rss_and_html_unavailable_is_degraded(monkeypatch, tmp_path):
+    _pin_non_weekly_finra_run(monkeypatch)
     config = _load_config()
     loaded_state = {
         "version": 1,
@@ -10864,6 +10882,7 @@ def test_finra_rss_validator_drop_fallback_failure_keeps_degraded_counter(
     monkeypatch,
     tmp_path,
 ):
+    _pin_non_weekly_finra_run(monkeypatch)
     config = _load_config()
     loaded_state = {
         "version": 1,
@@ -10940,6 +10959,7 @@ def test_finra_rss_validator_drop_fallback_failure_keeps_degraded_counter(
 
 
 def test_finra_degraded_counter_resets_after_successful_rss_run(monkeypatch, tmp_path):
+    _pin_non_weekly_finra_run(monkeypatch)
     config = _load_config()
     rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
     loaded_state = {
