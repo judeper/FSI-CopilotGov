@@ -6,7 +6,7 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
 
 ### Issue 1: Readiness Report Shows Low Update Channel Eligibility
 
-- **Symptoms:** The Microsoft 365 Copilot readiness report shows that a low percentage of users are on an eligible Microsoft 365 Apps update channel
+- **Symptoms:** The Microsoft Copilot readiness report shows that a low percentage of users are on an eligible Microsoft 365 Apps update channel
 - **Root Cause:** Endpoints are on an update channel that the readiness report does not count as eligible. Historically, Semi-Annual Enterprise Channel did not deliver Copilot features. Beginning with the Version 2606 update release in July 2026, Microsoft unified Semi-Annual Enterprise Channel with Monthly Enterprise Channel, so devices become eligible once Version 2606 or later is installed — but some management tools and reports continue to display the Semi-Annual Enterprise Channel label after the update, which can make eligible devices appear ineligible.
 - **Resolution:**
   1. Check installed builds rather than channel names. Devices with build numbers higher than 20131.20000 have installed Version 2606 and receive the Monthly Enterprise Channel experience
@@ -46,12 +46,12 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
   3. Verify the app registration has admin consent for required Graph API scopes
   4. For SPO Management Shell: Confirm the account has SharePoint Admin role
 
-### Issue 5: Label Coverage Report Shows Unexpectedly Low Numbers
+### Issue 5: Label Coverage Snapshot Shows Unexpectedly Low Numbers
 
-- **Symptoms:** Label analytics shows coverage well below expected levels despite active labeling policies
-- **Root Cause:** Label analytics may have reporting delays of up to 7 days. Additionally, labels applied via client-side labeling (manual) may not be reflected until documents are next accessed or indexed.
+- **Symptoms:** Content explorer shows coverage well below expected levels despite active labeling policies
+- **Root Cause:** Content explorer counts may have reporting delays. Additionally, labels applied via client-side labeling (manual) may not be reflected until documents are next accessed or indexed.
 - **Resolution:**
-  1. Verify reporting timeframe in Label Analytics (default may be 7-day window)
+  1. Verify reporting freshness in Content explorer. Counts can take up to seven days to update, and SharePoint files can take up to 14 days to appear. For recent label activity, use Activity explorer with the **Sensitivity labels applied, changed, or removed** filter set
   2. Check auto-labeling policy status — confirm policies are enabled and not in simulation mode
   3. Review label policy scoping — labels may not be published to all user groups
   4. Force a re-index of key SharePoint sites using PnP PowerShell (`Request-PnPReindexWeb`) or the SharePoint site settings UI under Search and Offline Availability

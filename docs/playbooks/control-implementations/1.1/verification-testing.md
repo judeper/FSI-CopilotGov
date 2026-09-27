@@ -6,10 +6,10 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 
 ### Test 1: Readiness Report Completeness
 
-- **Objective:** Verify that the Microsoft 365 Copilot readiness report and network connectivity test have been run and all infrastructure findings have been reviewed
+- **Objective:** Verify that the Microsoft Copilot readiness report and network connectivity test have been run and all infrastructure findings have been reviewed
 - **Steps:**
   1. Sign in to Microsoft 365 admin center as Entra Global Admin
-  2. Navigate to Reports > Usage > Microsoft 365 Copilot > Readiness
+  2. Navigate to Reports > Usage > Microsoft Copilot > Copilot > Readiness
   3. Confirm the readiness report shows current results (data is available within 72 hours, with up to 72 hours of latency)
   4. Verify prerequisite license eligibility and eligible update channel counts have been reviewed, and that network connectivity test results for Copilot endpoints have been captured
   5. Confirm that any "blocking" findings have been addressed or have documented remediation plans
@@ -21,7 +21,7 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 - **Objective:** Verify that the Copilot readiness dashboard is accessible and returning data
 - **Steps:**
   1. Sign in to Microsoft 365 admin center as Entra Global Admin
-  2. Navigate to Reports > Usage > Microsoft 365 Copilot > Readiness
+  2. Navigate to Reports > Usage > Microsoft Copilot > Copilot > Readiness
   3. Confirm the report loads and displays the readiness summary charts and user activity table
   4. Verify data freshness (readiness data can carry up to 72 hours of latency)
 - **Expected Result:** Report displays current readiness metrics across license eligibility, update channel eligibility, and app usage
@@ -42,12 +42,12 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 
 - **Objective:** Verify sensitivity label adoption meets the target for the organization's governance tier (>50% Baseline / >75% Recommended / >90% Regulated)
 - **Steps:**
-  1. Open Microsoft Purview > Information Protection > Label Analytics
-  2. Review the overall labeling rate for documents in SharePoint and OneDrive
+  1. Open Microsoft Purview portal > Information Protection > Explorers > Content explorer
+  2. Review the current sensitivity-label coverage snapshot for documents in SharePoint and OneDrive
   3. Check department-level breakdown for any groups below threshold
   4. Verify auto-labeling policies are active for common FSI content types
 - **Expected Result:** Organization-wide label coverage meets or exceeds the target for the selected governance tier
-- **Evidence:** Label analytics report export showing coverage percentages
+- **Evidence:** Content explorer export or screenshot showing coverage percentages
 
 ### Test 4: Permission Model Remediation Verification
 
@@ -77,7 +77,7 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 |--------------|--------|-----------------|-----------|
 | Readiness dashboard screenshot | PNG/PDF | Compliance evidence repository | 7 years |
 | Oversharing assessment export | CSV/JSON | Compliance evidence repository | 7 years |
-| Label coverage analytics | PDF | Compliance evidence repository | 7 years |
+| Label coverage snapshot | PDF/CSV | Compliance evidence repository | 7 years |
 | Permission scan results | CSV | Compliance evidence repository | 7 years |
 | Governance committee sign-off | PDF | Governance document repository | 7 years |
 
