@@ -5085,6 +5085,59 @@ def test_ai_governance_qualifier_is_evaluated_once_per_high_pattern(monkeypatch)
     assert calls == 1
 
 
+@pytest.mark.parametrize(
+    ("title", "sentence", "reason_fragment"),
+    [
+        (
+            "Self-Regulatory Organizations; Exchange; Notice of Filing",
+            "The proposal updates automated trading systems requirements. ",
+            "Automated trading systems",
+        ),
+        (
+            "Self-Regulatory Organizations; Exchange; Notice of Filing",
+            "The proposal updates procedures for communications with the public. ",
+            "communications with the public",
+        ),
+    ],
+    ids=("ats", "communications-with-public"),
+)
+def test_sro_suppressed_high_patterns_do_not_scan_ai_qualifier(
+    monkeypatch,
+    title,
+    sentence,
+    reason_fragment,
+):
+    config = _load_config()
+    text = sentence * 2000
+    calls = 0
+    original = regulatory_monitor._contains_ai_governance_qualifier
+
+    def counting_helper(evidence_text):
+        nonlocal calls
+        calls += 1
+        return original(evidence_text)
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "_contains_ai_governance_qualifier",
+        counting_helper,
+    )
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+    assert reason_fragment not in (reason or "")
+    assert calls == 0
+
+
 def test_cftc_electronic_trading_risk_principles_final_rule_stays_high():
     config = _load_config()
 

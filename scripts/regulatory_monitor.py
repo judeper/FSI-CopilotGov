@@ -2189,17 +2189,20 @@ def _high_pattern_match_is_suppressed(
     ):
         return False
 
-    if has_ai_governance_qualifier is None:
-        has_ai_governance_qualifier = _contains_ai_governance_qualifier(
-            evidence_text
-        )
-
     if "model risk management" in lowered_reason:
+        if has_ai_governance_qualifier is None:
+            has_ai_governance_qualifier = _contains_ai_governance_qualifier(
+                evidence_text
+            )
         return not has_ai_governance_qualifier
 
     if "finra 3110" in lowered_reason:
         if has_remote_inspection_supervision:
             return False
+        if has_ai_governance_qualifier is None:
+            has_ai_governance_qualifier = _contains_ai_governance_qualifier(
+                evidence_text
+            )
         return not has_ai_governance_qualifier
 
     if "communications with the public" in lowered_reason:
