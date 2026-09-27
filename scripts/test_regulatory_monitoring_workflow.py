@@ -32,9 +32,11 @@ WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "regulatory-monitoring.yml
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 import regulatory_monitor  # noqa: E402
+import regulatory_monitor_cleanup  # noqa: E402
 
 MONITOR_TEST_FILE = "scripts/test_regulatory_monitor.py"
 WORKFLOW_TEST_FILE = "scripts/test_regulatory_monitoring_workflow.py"
+CLEANUP_SCRIPT_FILE = "scripts/regulatory_monitor_cleanup.py"
 VALIDATION_JOB = "validate"
 MONITOR_JOB = "monitor"
 CLEAN_EXIT_CODE = str(regulatory_monitor.EXIT_CLEAN)
@@ -52,6 +54,7 @@ REQUIRED_TRIGGER_PATHS = {
     "scripts/config/monitoring-config.yaml",
     MONITOR_TEST_FILE,
     WORKFLOW_TEST_FILE,
+    CLEANUP_SCRIPT_FILE,
     "scripts/requirements.txt",
     ".github/workflows/regulatory-monitoring.yml",
 }
@@ -310,18 +313,119 @@ def test_degraded_runs_add_and_create_monitor_degraded_label() -> None:
     assert "steps.pr-meta.outputs.extra_labels" in labels
 
 
-def test_degraded_runs_only_supersede_prior_degraded_monitor_prs() -> None:
+def test_cleanup_matrix_is_documented_and_uses_tested_selector() -> None:
     cleanup_run = _step(MONITOR_JOB, "Close prior superseded Regulatory Monitor PRs")[
         "run"
     ]
-    assert 'app/fsi-monitor-bot' in cleanup_run
-    assert 'monitor-degraded' in cleanup_run
-    assert 'monitor-unverified' in cleanup_run
-    assert (
-        "steps.monitor.outputs.exit_code == '4'"
-        in cleanup_run
-    ), "cleanup script must branch degraded handling by exit code"
-    assert (
-        'steps.monitor.outputs.finra_verification_state'
-        in cleanup_run
-    ), "cleanup script must keep unverified PR cleanup separate"
+    pr_body = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
+        "with"
+    ]["body"]
+
+    assert "scripts/regulatory_monitor_cleanup.py" in cleanup_run
+    assert "--new-result" in cleanup_run
+    assert "steps.pr-meta.outputs.cleanup_kind" in cleanup_run
+    assert "--json number,headRefName,author,title,labels,body" in cleanup_run
+    assert "Superseded by #${NEW_PR} under the Regulatory Monitor cleanup matrix" in cleanup_run
+    assert "unverified runs must not close degraded PRs" in pr_body
+    assert "| `degraded` | Leave open for review. | Close" in pr_body
+    assert "Monitor result: `${{ steps.pr-meta.outputs.cleanup_kind }}`" in pr_body
+    assert "Monitor new items: `${{ steps.monitor.outputs.new_items }}`" in pr_body
+    assert 'author_login == "app/fsi-monitor-bot"' in Path(
+        REPO_ROOT / CLEANUP_SCRIPT_FILE
+    ).read_text(encoding="utf-8")
+
+
+def _monitor_pr(
+    number: int,
+    *,
+    labels: set[str] | None = None,
+    new_items: int | None = None,
+    head_ref: str | None = None,
+    author: str = "app/fsi-monitor-bot",
+    title: str = "Regulatory Monitor: findings (run 1)",
+) -> dict:
+    body = ""
+    if new_items is not None:
+        body = f"- Monitor new items: `{new_items}`\n"
+    return {
+        "number": number,
+        "headRefName": head_ref or f"monitoring/regulatory-{number}",
+        "author": {"login": author},
+        "title": title,
+        "labels": [{"name": label} for label in sorted(labels or set())],
+        "body": body,
+    }
+
+
+def _selected_numbers(new_result: str, prs: list[dict]) -> set[int]:
+    return {
+        selection.number
+        for selection in regulatory_monitor_cleanup.select_prior_prs(
+            prs,
+            new_pr=200,
+            new_result=new_result,
+        )
+    }
+
+
+def test_cleanup_matrix_findings_result_closes_only_proven_superseded_prs() -> None:
+    prs = [
+        _monitor_pr(101),
+        _monitor_pr(102, labels={"monitor-unverified"}, new_items=0),
+        _monitor_pr(103, labels={"monitor-unverified"}, new_items=4),
+        _monitor_pr(104, labels={"monitor-unverified"}),
+        _monitor_pr(105, labels={"monitor-degraded"}, new_items=0),
+        _monitor_pr(106, labels={"monitor-degraded"}, new_items=2),
+        _monitor_pr(107, labels={"monitor-degraded"}),
+    ]
+
+    assert _selected_numbers("findings", prs) == {101, 102, 105}
+
+
+def test_cleanup_matrix_unverified_results_never_close_degraded_prs() -> None:
+    prs = [
+        _monitor_pr(101),
+        _monitor_pr(102, labels={"monitor-unverified"}, new_items=0),
+        _monitor_pr(103, labels={"monitor-unverified"}, new_items=2),
+        _monitor_pr(104, labels={"monitor-degraded"}, new_items=0),
+        _monitor_pr(105, labels={"monitor-degraded"}, new_items=3),
+    ]
+
+    assert _selected_numbers("unverified-clean", prs) == {102}
+    assert _selected_numbers("unverified-findings", prs) == {102}
+
+
+def test_cleanup_matrix_degraded_result_closes_clean_status_prs_only() -> None:
+    prs = [
+        _monitor_pr(101),
+        _monitor_pr(102, labels={"monitor-unverified"}, new_items=0),
+        _monitor_pr(103, labels={"monitor-unverified"}, new_items=2),
+        _monitor_pr(104, labels={"monitor-degraded"}, new_items=0),
+        _monitor_pr(105, labels={"monitor-degraded"}, new_items=3),
+        _monitor_pr(106, labels={"monitor-degraded"}),
+    ]
+
+    assert _selected_numbers("degraded", prs) == {102, 104}
+
+
+def test_cleanup_selector_keeps_legacy_or_non_owned_status_prs_open() -> None:
+    prs = [
+        _monitor_pr(101, labels={"monitor-unverified"}),
+        _monitor_pr(102, labels={"monitor-degraded"}),
+        _monitor_pr(103, labels={"monitor-unverified"}, new_items=0, author="judeper"),
+        _monitor_pr(
+            104,
+            labels={"monitor-unverified"},
+            new_items=0,
+            head_ref="human/regulatory-104",
+        ),
+        _monitor_pr(
+            105,
+            labels={"monitor-unverified"},
+            new_items=0,
+            title="Manual monitor PR",
+        ),
+        _monitor_pr(250, labels={"monitor-unverified"}, new_items=0),
+    ]
+
+    assert _selected_numbers("degraded", prs) == set()

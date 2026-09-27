@@ -13,6 +13,7 @@ on:
       - 'scripts/config/monitoring-config.yaml'
       - 'scripts/test_regulatory_monitor.py'
       - 'scripts/test_regulatory_monitoring_workflow.py'
+      - 'scripts/regulatory_monitor_cleanup.py'
       - 'scripts/requirements.txt'
       - '.github/workflows/regulatory-monitoring.yml'
 
@@ -102,11 +103,13 @@ jobs:
                 exit 2
               fi
               echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+              NEW_ITEMS=$(grep -m1 '^\*\*New Items:\*\*' "$REPORT_FILE" | sed 's/^\*\*New Items:\*\* //') || true
               FINRA_DISCOVERY_PATH=$(grep -m1 '^\*\*FINRA Discovery Path:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Discovery Path:\*\* //') || true
               FINRA_VALIDATOR_DROPPED=$(grep -m1 '^\*\*FINRA Validator Dropped:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Validator Dropped:\*\* //') || true
               FINRA_NEW_FETCHED=$(grep -m1 '^\*\*FINRA New Notices Fetched:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA New Notices Fetched:\*\* //') || true
               FINRA_LISTING_CROSS_CHECK=$(grep -m1 '^\*\*FINRA Listing Cross-Check:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Listing Cross-Check:\*\* //') || true
               FINRA_VERIFICATION_STATE=$(grep -m1 '^\*\*FINRA Verification State:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Verification State:\*\* //') || true
+              echo "new_items=${NEW_ITEMS:-not reported}" >> "$GITHUB_OUTPUT"
               echo "finra_discovery_path=${FINRA_DISCOVERY_PATH:-not reported}" >> "$GITHUB_OUTPUT"
               echo "finra_validator_dropped=${FINRA_VALIDATOR_DROPPED:-not reported}" >> "$GITHUB_OUTPUT"
               echo "finra_new_notices_fetched=${FINRA_NEW_FETCHED:-not reported}" >> "$GITHUB_OUTPUT"
@@ -122,8 +125,10 @@ jobs:
               fi
               echo "::warning::Regulatory Monitor completed with degraded source availability or escalated source verification"
               echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+              NEW_ITEMS=$(grep -m1 '^\*\*New Items:\*\*' "$REPORT_FILE" | sed 's/^\*\*New Items:\*\* //') || true
               DEGRADED_SOURCES=$(grep -m1 '^\*\*Degraded Sources:\*\*' "$REPORT_FILE" | sed 's/^\*\*Degraded Sources:\*\* //') || true
               ESCALATED_SOURCES=$(grep -m1 '^\*\*Escalated Sources:\*\*' "$REPORT_FILE" | sed 's/^\*\*Escalated Sources:\*\* //') || true
+              echo "new_items=${NEW_ITEMS:-not reported}" >> "$GITHUB_OUTPUT"
               echo "degraded_sources=${DEGRADED_SOURCES:-}" >> "$GITHUB_OUTPUT"
               echo "escalated_sources=${ESCALATED_SOURCES:-}" >> "$GITHUB_OUTPUT"
               FINRA_DISCOVERY_PATH=$(grep -m1 '^\*\*FINRA Discovery Path:\*\*' "$REPORT_FILE" | sed 's/^\*\*FINRA Discovery Path:\*\* //') || true
@@ -162,7 +167,9 @@ jobs:
         id: pr-meta
         if: steps.monitor.outputs.exit_code == '3' || steps.monitor.outputs.exit_code == '4'
         run: |
+          new_items="${{ steps.monitor.outputs.new_items }}"
           if [ "${{ steps.monitor.outputs.exit_code }}" = "4" ]; then
+            echo "cleanup_kind=degraded" >> "$GITHUB_OUTPUT"
             sources="${{ steps.monitor.outputs.degraded_sources }}"
             escalated_sources="${{ steps.monitor.outputs.escalated_sources }}"
             finra_unverified=false
@@ -211,6 +218,11 @@ jobs:
             } >> "$GITHUB_OUTPUT"
           else
             if [ "${{ steps.monitor.outputs.finra_verification_state }}" = "unverified-clean" ]; then
+              if [ "$new_items" = "0" ]; then
+                echo "cleanup_kind=unverified-clean" >> "$GITHUB_OUTPUT"
+              else
+                echo "cleanup_kind=unverified-findings" >> "$GITHUB_OUTPUT"
+              fi
               echo "title=Regulatory Monitor: UNVERIFIED (FINRA listing cross-check unavailable) (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
               echo "extra_labels=monitor-unverified" >> "$GITHUB_OUTPUT"
               {
@@ -222,6 +234,7 @@ jobs:
                 echo "EOF"
               } >> "$GITHUB_OUTPUT"
             else
+              echo "cleanup_kind=findings" >> "$GITHUB_OUTPUT"
               echo "title=Regulatory Monitor: findings (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
               echo "extra_labels=" >> "$GITHUB_OUTPUT"
               {
@@ -291,8 +304,20 @@ jobs:
             - FINRA new notices fetched: `${{ steps.monitor.outputs.finra_new_notices_fetched }}`
             - FINRA listing cross-check: `${{ steps.monitor.outputs.finra_listing_cross_check }}`
             - FINRA verification state: `${{ steps.monitor.outputs.finra_verification_state }}`
+            - Monitor result: `${{ steps.pr-meta.outputs.cleanup_kind }}`
+            - Monitor new items: `${{ steps.monitor.outputs.new_items }}`
 
             ${{ steps.pr-meta.outputs.degraded_body }}
+
+            ### Superseded monitor PR cleanup matrix
+            The newest monitor PR is not assumed to contain every older open PR's branch-only report. Automated cleanup therefore fails closed unless the older PR is a rolling findings PR or its body proves it has zero new items.
+
+            | New PR result | Older findings PR | Older UNVERIFIED-clean PR (`0` new items) | Older UNVERIFIED PR with findings/unknown count | Older DEGRADED-clean PR (`0` new items) | Older DEGRADED PR with findings/unknown count |
+            |---|---|---|---|---|---|
+            | `findings` | Close: same rolling findings stream is superseded by the newer report and state. | Close: no findings are dropped. | Leave open for review. | Close: sources recovered and no findings are dropped. | Leave open for review. |
+            | `unverified-clean` | Leave open for review. | Close: no findings are dropped. | Leave open for review. | Leave open; unverified runs must not close degraded PRs. | Leave open for review. |
+            | `unverified-findings` | Leave open for review. | Close: no findings are dropped. | Leave open for review. | Leave open; unverified runs must not close degraded PRs. | Leave open for review. |
+            | `degraded` | Leave open for review. | Close: no findings are dropped. | Leave open for review. | Close: same degraded monitor stream and no findings are dropped. | Leave open for review. |
 
             ### Classification tiers
             - 🔴 **CRITICAL** — Directly mentions AI agents, copilot, or automated advice
@@ -315,32 +340,38 @@ jobs:
           REPO: ${{ github.repository }}
           NEW_PR: ${{ steps.cpr.outputs.pull-request-number }}
         run: |
-          set -uo pipefail
+          set -euo pipefail
           # Identify our own monitor PRs by multiple invariants — labels alone
           # are too broad (humans can edit them). See issue #48.
-          # steps.monitor.outputs.exit_code == '4' restricts degraded cleanup to older degraded PRs.
-          mapfile -t prior < <(gh pr list \
+          #
+          # Cleanup matrix (issue #550 N9):
+          # | New PR result | Older findings | Older UNVERIFIED-clean (0 new items) | Older UNVERIFIED with findings/unknown | Older DEGRADED-clean (0 new items) | Older DEGRADED with findings/unknown |
+          # | findings | close | close | leave open | close | leave open |
+          # | unverified-clean | leave open | close | leave open | leave open | leave open |
+          # | unverified-findings | leave open | close | leave open | leave open | leave open |
+          # | degraded | leave open | close | leave open | close | leave open |
+          #
+          # A newer branch is based on current main, not on older open PR
+          # branches, so branch-only older reports are not inherently
+          # cumulative. The selector fails closed unless the older PR body
+          # proves it had 0 new items, or the existing findings-to-findings
+          # rolling cleanup applies.
+          prior_json="$(gh pr list \
             --repo "$REPO" \
             --state open \
             --label regulatory \
             --label automated \
             --base main \
-            --json number,headRefName,author,title,labels \
-            --jq ".[] |
-              select(.number < ($NEW_PR | tonumber)) |
-              select(.headRefName | startswith(\"monitoring/regulatory-\")) |
-              select(.author.login == \"app/fsi-monitor-bot\") |
-              select(.title | startswith(\"Regulatory Monitor:\")) |
-              select(
-                if \"${{ steps.monitor.outputs.exit_code }}\" == \"4\" then
-                  any(.labels[]?.name; . == \"monitor-degraded\")
-                elif \"${{ steps.monitor.outputs.finra_verification_state }}\" == \"unverified-clean\" then
-                  any(.labels[]?.name; . == \"monitor-unverified\")
-                else
-                  (all(.labels[]?.name; . != \"monitor-degraded\") and all(.labels[]?.name; . != \"monitor-unverified\"))
-                end
-              ) |
-              .number")
+            --json number,headRefName,author,title,labels,body)"
+          selection_file="$(mktemp)"
+          trap 'rm -f "$selection_file"' EXIT
+          printf '%s' "$prior_json" | python scripts/regulatory_monitor_cleanup.py \
+            --new-pr "$NEW_PR" \
+            --new-result "${{ steps.pr-meta.outputs.cleanup_kind }}" \
+            > "$selection_file"
+          mapfile -t prior < "$selection_file"
+          rm -f "$selection_file"
+          trap - EXIT
 
           if [ "${#prior[@]}" -eq 0 ]; then
             echo "No prior Regulatory Monitor PRs to supersede."
@@ -348,9 +379,10 @@ jobs:
           fi
 
           echo "Superseding ${#prior[@]} prior Regulatory Monitor PR(s) with #${NEW_PR}..."
-          for n in "${prior[@]}"; do
+          for row in "${prior[@]}"; do
+            IFS=$'\t' read -r n reason <<< "$row"
             [ -z "$n" ] && continue
-            if ! gh pr comment "$n" --repo "$REPO" --body "Superseded by #${NEW_PR}. The dated report file remains reachable on this PR's branch until cleanup."; then
+            if ! gh pr comment "$n" --repo "$REPO" --body "Superseded by #${NEW_PR} under the Regulatory Monitor cleanup matrix (${reason}). The matrix is documented in the superseding PR body and only auto-closes older PRs that are safe to supersede without dropping unreviewed findings."; then
               echo "::warning::Failed to comment on PR #${n}"
             fi
             # Close without --delete-branch so dated reports stay reachable
