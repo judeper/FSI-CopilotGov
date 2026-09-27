@@ -2448,6 +2448,23 @@ def _is_finra_rule_filing_title(title: str) -> bool:
     return str(title or "").startswith(FINRA_RULE_FILING_TITLE_PREFIX)
 
 
+REG_AT_RULEMAKING_DOC_TYPES = frozenset(
+    {"RULE", "PRORULE", "RULES", "PROPOSED RULE"}
+)
+REG_AT_PATTERN = re.compile(
+    r"\b(?:regulation\s+automated\s+trading|reg\s+at)\b",
+    re.IGNORECASE,
+)
+
+
+def _is_regulation_automated_trading_rulemaking(doc_type: str, *fields: str) -> bool:
+    """Return whether a FR rule/proposed-rule item is Reg AT rulemaking."""
+    normalized_type = re.sub(r"[\s_-]+", " ", str(doc_type or "").strip()).upper()
+    if normalized_type not in REG_AT_RULEMAKING_DOC_TYPES:
+        return False
+    return any(REG_AT_PATTERN.search(field or "") for field in fields)
+
+
 @dataclass
 class RegulatoryItem:
     """Represents a regulatory document or notice."""
@@ -4555,6 +4572,25 @@ def fetch_federal_register_documents(
                 ):
                     tier, reason = source_tier, source_reason
                     effective_text = fallback_text
+
+        if (
+            source_label == "Federal Register"
+            and (
+                agency_short == "CFTC"
+                or "commodity-futures-trading-commission" in agency_slugs
+            )
+            and _classification_severity(tier) < _classification_severity(
+                CLASSIFICATION_HIGH
+            )
+            and _is_regulation_automated_trading_rulemaking(
+                doc_type,
+                title,
+                abstract,
+                authoritative_body,
+            )
+        ):
+            tier = CLASSIFICATION_HIGH
+            reason = "Regulation Automated Trading rulemaking"
 
         if tier in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}:
             abstract_controls = find_affected_controls_by_keywords(

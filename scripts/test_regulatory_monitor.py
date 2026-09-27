@@ -11557,3 +11557,92 @@ def test_federal_register_finra_rule_filing_prefix_is_labelled_and_strict(monkey
     assert by_id["2026-94001"].source == regulatory_monitor.FINRA_RULE_FILING_SOURCE
     assert by_id["2026-94001"].agency == "FINRA"
     assert by_id["2026-94002"].source == "Federal Register"
+
+
+@pytest.mark.parametrize(
+    ("doc_type", "document_id", "expected_reason"),
+    [
+        ("PRORULE", "2026-95001", "Regulation Automated Trading rulemaking"),
+        ("RULE", "2026-95002", "Regulation Automated Trading rulemaking"),
+    ],
+)
+def test_federal_register_reg_at_rulemaking_classifies_high(
+    monkeypatch,
+    doc_type,
+    document_id,
+    expected_reason,
+):
+    config = _load_config()
+    document = _fr_document(
+        document_id,
+        title="Regulation Automated Trading",
+        abstract="The Commodity Futures Trading Commission addresses Reg AT.",
+        doc_type=doc_type,
+        agency_slug="commodity-futures-trading-commission",
+        agency_name="Commodity Futures Trading Commission",
+    )
+    session, _requested = _fr_body_session(
+        document,
+        "The Commission adopts requirements under Regulation Automated Trading.",
+        monkeypatch,
+    )
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-09-01",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert items[0].classification_reason == expected_reason
+
+
+@pytest.mark.parametrize(
+    ("title", "body"),
+    [
+        (
+            "Sunshine Act Meetings",
+            "The agenda includes staff updates on Regulation Automated Trading.",
+        ),
+        (
+            "Regulation Automated Trading Staff Roundtable",
+            "This notice announces an agenda for procedural discussion of Reg AT.",
+        ),
+    ],
+)
+def test_federal_register_reg_at_notices_stay_noise(monkeypatch, title, body):
+    config = _load_config()
+    document = _fr_document(
+        "2026-95003",
+        title=title,
+        abstract="The Commodity Futures Trading Commission mentions Reg AT.",
+        doc_type="NOTICE",
+        agency_slug="commodity-futures-trading-commission",
+        agency_name="Commodity Futures Trading Commission",
+    )
+    session, _requested = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-09-01",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_NOISE
+
+
+def test_sro_automated_trading_systems_suppression_survives_reg_at_rulemaking_fix():
+    config = _load_config()
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        "Self-Regulatory Organizations; IEX Options automated trading update",
+        "The term System means the automated trading system used by IEX Options "
+        "for the trading of options contracts.",
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_NOISE
+    assert "automated trading systems" not in reason.lower()
