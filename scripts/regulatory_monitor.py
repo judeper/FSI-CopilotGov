@@ -2168,6 +2168,7 @@ def _high_pattern_match_is_suppressed(
     title: str = "",
     evidence_text: str = "",
     has_remote_inspection_supervision: bool = False,
+    has_ai_governance_qualifier: Optional[bool] = None,
 ) -> bool:
     """Return whether a HIGH-tier regex hit is known boilerplate/noise.
 
@@ -2189,12 +2190,20 @@ def _high_pattern_match_is_suppressed(
         return False
 
     if "model risk management" in lowered_reason:
-        return not _contains_ai_governance_qualifier(evidence_text)
+        if has_ai_governance_qualifier is None:
+            has_ai_governance_qualifier = _contains_ai_governance_qualifier(
+                evidence_text
+            )
+        return not has_ai_governance_qualifier
 
     if "finra 3110" in lowered_reason:
         if has_remote_inspection_supervision:
             return False
-        return not _contains_ai_governance_qualifier(evidence_text)
+        if has_ai_governance_qualifier is None:
+            has_ai_governance_qualifier = _contains_ai_governance_qualifier(
+                evidence_text
+            )
+        return not has_ai_governance_qualifier
 
     if "communications with the public" in lowered_reason:
         context_start = max(0, match.start() - 240)
@@ -2224,9 +2233,18 @@ def _search_high_pattern_match_in_segments(
     """Search high-tier evidence, skipping known SRO boilerplate matches."""
     title = segments[0] if segments else ""
     evidence_text = " ".join(segments)
+    lowered_reason = reason.lower()
+    needs_ai_governance_qualifier = (
+        SRO_FILING_TITLE_PATTERN.search(title)
+        and (
+            "model risk management" in lowered_reason
+            or "finra 3110" in lowered_reason
+        )
+    )
+    has_ai_governance_qualifier = None
     has_remote_inspection_supervision = (
         _has_remote_inspection_supervision_evidence(evidence_text)
-        if "finra 3110" in reason.lower()
+        if "finra 3110" in lowered_reason
         else False
     )
     for segment in segments:
@@ -2235,6 +2253,13 @@ def _search_high_pattern_match_in_segments(
                 segment, match.start(), match.end()
             ):
                 continue
+            if (
+                needs_ai_governance_qualifier
+                and has_ai_governance_qualifier is None
+            ):
+                has_ai_governance_qualifier = _contains_ai_governance_qualifier(
+                    evidence_text
+                )
             if _high_pattern_match_is_suppressed(
                 reason,
                 segment,
@@ -2242,6 +2267,7 @@ def _search_high_pattern_match_in_segments(
                 title,
                 evidence_text,
                 has_remote_inspection_supervision,
+                has_ai_governance_qualifier,
             ):
                 continue
             return match

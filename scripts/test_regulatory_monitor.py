@@ -5050,6 +5050,94 @@ def test_remote_inspection_supervision_evidence_is_evaluated_once(monkeypatch):
     assert calls == 1
 
 
+def test_ai_governance_qualifier_is_evaluated_once_per_high_pattern(monkeypatch):
+    config = _load_config()
+    calls = 0
+    original = regulatory_monitor._contains_ai_governance_qualifier
+    title = "Self-Regulatory Organizations; FINRA; long background filing"
+    text = (
+        "The proposal cites FINRA Rule 3110 for background. "
+        "Members discuss branch inspection procedures. "
+    ) * 500
+
+    def counting_helper(evidence_text):
+        nonlocal calls
+        calls += 1
+        return original(evidence_text)
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "_contains_ai_governance_qualifier",
+        counting_helper,
+    )
+
+    classification, _reason = regulatory_monitor.classify_regulatory_relevance(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+    assert calls == 1
+
+
+@pytest.mark.parametrize(
+    ("title", "sentence", "reason_fragment"),
+    [
+        (
+            "Self-Regulatory Organizations; Exchange; Notice of Filing",
+            "The proposal updates automated trading systems requirements. ",
+            "Automated trading systems",
+        ),
+        (
+            "Self-Regulatory Organizations; Exchange; Notice of Filing",
+            "The proposal updates procedures for communications with the public. ",
+            "communications with the public",
+        ),
+    ],
+    ids=("ats", "communications-with-public"),
+)
+def test_sro_suppressed_high_patterns_do_not_scan_ai_qualifier(
+    monkeypatch,
+    title,
+    sentence,
+    reason_fragment,
+):
+    config = _load_config()
+    text = sentence * 2000
+    calls = 0
+    original = regulatory_monitor._contains_ai_governance_qualifier
+
+    def counting_helper(evidence_text):
+        nonlocal calls
+        calls += 1
+        return original(evidence_text)
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "_contains_ai_governance_qualifier",
+        counting_helper,
+    )
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification not in {
+        regulatory_monitor.CLASSIFICATION_HIGH,
+        regulatory_monitor.CLASSIFICATION_CRITICAL,
+    }
+    assert reason_fragment not in (reason or "")
+    assert calls == 0
+
+
 def test_cftc_electronic_trading_risk_principles_final_rule_stays_high():
     config = _load_config()
 
@@ -6380,6 +6468,305 @@ def test_finra_weekly_full_crawl_refetches_remembered_unavailable_notice(monkeyp
     assert [item.document_id for item in result.items] == ["FINRA 26-99"]
     assert detail_url in record
     assert unavailable == []
+
+
+def test_finra_weekly_full_crawl_reports_later_available_remembered_notice(
+    monkeypatch,
+    tmp_path,
+):
+    _pin_weekly_finra_run(monkeypatch)
+    config = _load_config()
+    record: list[str] = []
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-99"
+    loaded_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-01": "existing"},
+                regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY: {
+                    "FINRA 26-99": {
+                        "url": detail_url,
+                        "reason": "NOT AVAILABLE AT THIS TIME",
+                        "status": "permanent",
+                        "expires_at": "2099-01-01T00:00:00+00:00",
+                    }
+                },
+            }
+        },
+    }
+    saved_states: list[dict] = []
+    _wire_finra_monitor_run(
+        monkeypatch,
+        tmp_path,
+        config=config,
+        loaded_state=loaded_state,
+        saved_states=saved_states,
+        argv=["regulatory_monitor.py", "--source", "finra"],
+        fetch_page=_finra_rss_fetch_stub(
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+            detail_by_url={
+                detail_url: _finra_notice_page(
+                    "Artificial intelligence supervisory obligations now apply."
+                )
+            },
+            record=record,
+        ),
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_FINDINGS
+
+    assert regulatory_monitor.FINRA_RSS_FEED_URL not in record
+    assert detail_url in record
+    finra_state = saved_states[-1]["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+    assert "FINRA 26-99" in finra_state["entries"]
+    assert regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY not in finra_state
+    assert saved_states[-1]["regulatory_monitor"]["last_finra_discovery"] == {
+        "discovery_path": "full crawl",
+        "validator_dropped": 0,
+        "listing_cross_check": "not run",
+        "new_notices_fetched": 1,
+    }
+    reports = sorted((tmp_path / "reports").glob("regulatory-changes-*.md"))
+    assert len(reports) == 1
+    report_text = reports[0].read_text(encoding="utf-8")
+    assert "Regulatory Notice 26-99" in report_text
+    assert "**FINRA Discovery Path:** full crawl" in report_text
+
+
+@pytest.mark.parametrize("status_code", [404, 410])
+def test_finra_weekly_full_crawl_detail_404_410_fails_closed(
+    monkeypatch,
+    tmp_path,
+    status_code,
+):
+    _pin_weekly_finra_run(monkeypatch)
+    config = _load_config()
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-10"
+    loaded_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {"entries": {}},
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-01": "existing"},
+            },
+        },
+    }
+    saved_states: list[dict] = []
+
+    def detail_missing(url, _session, max_retries=3):
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            return {
+                "url": url,
+                "status_code": 200,
+                "content": _finra_listing_page_html(["/rules-guidance/notices/26-10"]),
+                "final_url": url,
+                "was_redirected": False,
+                "error": None,
+            }
+        assert url == detail_url
+        return {
+            "url": url,
+            "status_code": status_code,
+            "content": "",
+            "final_url": url,
+            "was_redirected": False,
+            "error": f"HTTP {status_code}",
+        }
+
+    _wire_finra_monitor_run(
+        monkeypatch,
+        tmp_path,
+        config=config,
+        loaded_state=loaded_state,
+        saved_states=saved_states,
+        fetch_page=detail_missing,
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_FAILURE
+    assert saved_states == []
+
+
+def test_finra_weekly_full_crawl_listing_unavailable_is_degraded_with_metadata(
+    monkeypatch,
+    tmp_path,
+):
+    _pin_weekly_finra_run(monkeypatch)
+    config = _load_config()
+    loaded_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FEDERAL_REGISTER: {"entries": {}},
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-01": "existing"},
+            },
+        },
+    }
+    saved_states: list[dict] = []
+
+    def unavailable_listing(url, _session, max_retries=3):
+        assert url == regulatory_monitor.FINRA_NOTICES_URL
+        return {
+            "url": url,
+            "status_code": 429,
+            "content": "",
+            "final_url": url,
+            "was_redirected": False,
+            "error": "HTTP 429 rate limit persisted",
+        }
+
+    _wire_finra_monitor_run(
+        monkeypatch,
+        tmp_path,
+        config=config,
+        loaded_state=loaded_state,
+        saved_states=saved_states,
+        fetch_page=unavailable_listing,
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_DEGRADED
+    summary = saved_states[-1]["regulatory_monitor"]["last_finra_discovery"]
+    assert summary["discovery_path"] == "full crawl"
+    assert summary["validator_dropped"] == 0
+    assert summary["listing_cross_check"] == "not run"
+    assert "FINRA notices page request failed with status 429" in summary[
+        "failure_reason"
+    ]
+    reports = sorted((tmp_path / "reports").glob("regulatory-changes-*.md"))
+    assert len(reports) == 1
+    report_text = reports[0].read_text(encoding="utf-8")
+    assert "unavailable this run" in report_text
+    assert "**FINRA Discovery Path:** full crawl" in report_text
+
+
+def test_finra_weekly_full_crawl_does_not_emit_unverified_clean_state(
+    monkeypatch,
+    tmp_path,
+):
+    """Weekly full crawl has no RSS page-zero cross-check to be unverified.
+
+    The Sunday path deliberately skips RSS, so the unverified-clean guarantee
+    from the RSS path does not apply. A successful full crawl must instead
+    clear stale unverified counters and record explicit full-crawl metadata.
+    """
+    _pin_weekly_finra_run(monkeypatch)
+    config = _load_config()
+    loaded_state = {
+        "version": 1,
+        "regulatory_monitor": {
+            "consecutive_finra_degraded_runs": 2,
+            "consecutive_finra_unverified_runs": 2,
+        },
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {"FINRA 26-01": "existing"},
+            }
+        },
+    }
+    saved_states: list[dict] = []
+    _wire_finra_monitor_run(
+        monkeypatch,
+        tmp_path,
+        config=config,
+        loaded_state=loaded_state,
+        saved_states=saved_states,
+        argv=["regulatory_monitor.py", "--source", "finra"],
+        fetch_page=_finra_rss_fetch_stub(
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-01"]),
+        ),
+    )
+
+    assert regulatory_monitor._run_monitor() in {
+        regulatory_monitor.EXIT_CLEAN,
+        regulatory_monitor.EXIT_FINDINGS,
+    }
+
+    monitor_state = saved_states[-1]["regulatory_monitor"]
+    summary = monitor_state["last_finra_discovery"]
+    assert summary["discovery_path"] == "full crawl"
+    assert summary["listing_cross_check"] == "not run"
+    assert "verification_state" not in summary
+    assert monitor_state["consecutive_finra_degraded_runs"] == 0
+    assert monitor_state["consecutive_finra_unverified_runs"] == 0
+
+
+@pytest.mark.parametrize(
+    ("fixed_now", "expected_path", "expect_rss"),
+    [
+        (
+            regulatory_monitor.datetime(
+                2026, 9, 26, tzinfo=regulatory_monitor.timezone.utc
+            ),
+            "RSS",
+            True,
+        ),
+        (
+            regulatory_monitor.datetime(
+                2026, 9, 27, tzinfo=regulatory_monitor.timezone.utc
+            ),
+            "full crawl",
+            False,
+        ),
+    ],
+)
+def test_finra_discovery_path_uses_pinned_clock_not_wall_clock(
+    monkeypatch,
+    tmp_path,
+    fixed_now,
+    expected_path,
+    expect_rss,
+):
+    _pin_finra_run_at(monkeypatch, fixed_now)
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    loaded_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {
+                    f"FINRA 26-{index:02d}": "existing"
+                    for index in range(1, 11)
+                },
+            }
+        },
+    }
+    saved_states: list[dict] = []
+
+    class _Session(_RssSession):
+        def __init__(self):
+            super().__init__(
+                _rss_response(_rss_feed(rss_items)),
+                record=record,
+                listing_html=_finra_listing_page_html(
+                    [f"/rules-guidance/notices/26-{index:02d}" for index in range(1, 11)]
+                ),
+            )
+
+    _wire_finra_monitor_run(
+        monkeypatch,
+        tmp_path,
+        config=config,
+        loaded_state=loaded_state,
+        saved_states=saved_states,
+        argv=["regulatory_monitor.py", "--source", "finra"],
+        session_factory=_Session,
+        fetch_page=_finra_rss_fetch_stub(
+            rss_result=_rss_response(_rss_feed(rss_items)),
+            listing_html=_finra_listing_page_html(
+                [f"/rules-guidance/notices/26-{index:02d}" for index in range(1, 11)]
+            ),
+            record=record,
+        ),
+    )
+
+    assert regulatory_monitor._run_monitor() in {
+        regulatory_monitor.EXIT_CLEAN,
+        regulatory_monitor.EXIT_FINDINGS,
+    }
+
+    summary = saved_states[-1]["regulatory_monitor"]["last_finra_discovery"]
+    assert summary["discovery_path"] == expected_path
+    assert (regulatory_monitor.FINRA_RSS_FEED_URL in record) is expect_rss
 
 
 def test_finra_tombstone_is_reported_not_silently_dropped(monkeypatch, caplog):
@@ -10104,17 +10491,77 @@ def test_finra_rss_page_zero_429_is_reported_without_degrading(monkeypatch):
     assert regulatory_monitor.FINRA_NOTICES_URL in record
 
 
-def _pin_non_weekly_finra_run(monkeypatch):
-    fixed_now = regulatory_monitor.datetime(
-        2026, 9, 26, tzinfo=regulatory_monitor.timezone.utc
-    )
-
+def _pin_finra_run_at(monkeypatch, fixed_now):
     class _FixedDateTime(regulatory_monitor.datetime):
         @classmethod
         def now(cls, tz=None):
             return fixed_now.astimezone(tz) if tz else fixed_now.replace(tzinfo=None)
 
     monkeypatch.setattr(regulatory_monitor, "datetime", _FixedDateTime)
+
+
+def _pin_non_weekly_finra_run(monkeypatch):
+    _pin_finra_run_at(
+        monkeypatch,
+        regulatory_monitor.datetime(
+            2026, 9, 26, tzinfo=regulatory_monitor.timezone.utc
+        ),
+    )
+
+
+def _pin_weekly_finra_run(monkeypatch):
+    _pin_finra_run_at(
+        monkeypatch,
+        regulatory_monitor.datetime(
+            2026, 9, 27, tzinfo=regulatory_monitor.timezone.utc
+        ),
+    )
+
+
+def _wire_finra_monitor_run(
+    monkeypatch,
+    tmp_path,
+    *,
+    config,
+    loaded_state,
+    saved_states,
+    fetch_page,
+    argv=None,
+    session_factory=None,
+):
+    if session_factory is None:
+        class _Session:
+            def __init__(self):
+                self.headers = {}
+
+        session_factory = _Session
+
+    monkeypatch.setattr(
+        regulatory_monitor.sys,
+        "argv",
+        argv or ["regulatory_monitor.py"],
+    )
+    monkeypatch.setattr(regulatory_monitor, "DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(regulatory_monitor, "REPORTS_DIR", tmp_path / "reports")
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "STATE_FILE",
+        tmp_path / "data" / "monitor-state.json",
+    )
+    monkeypatch.setattr(regulatory_monitor, "load_monitoring_config", lambda _p: config)
+    monkeypatch.setattr(regulatory_monitor, "load_state", lambda _p: loaded_state)
+    monkeypatch.setattr(regulatory_monitor.requests, "Session", session_factory)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_federal_register_documents",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(regulatory_monitor, "fetch_page", fetch_page)
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "save_state_atomic",
+        lambda state, _path: saved_states.append(deepcopy(state)),
+    )
 
 
 def test_finra_rss_page_zero_unavailable_is_unverified_clean_report(
