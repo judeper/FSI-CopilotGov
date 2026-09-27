@@ -6385,6 +6385,318 @@ def test_finra_persistent_unavailable_notice_does_not_force_html_crawl(monkeypat
     assert record.count(regulatory_monitor.FINRA_NOTICES_URL) == 1
 
 
+def test_finra_wednesday_rechecks_listing_present_remembered_unavailable_notice(
+    monkeypatch,
+):
+    _pin_finra_run_at(
+        monkeypatch,
+        regulatory_monitor.datetime(
+            2026, 9, 23, tzinfo=regulatory_monitor.timezone.utc
+        ),
+    )
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-99"
+    state = {
+        "entries": {
+            f"FINRA 26-{index:02d}": "existing"
+            for index in range(1, 11)
+        },
+        regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY: {
+            "FINRA 26-99": {
+                "url": detail_url,
+                "reason": "NOT AVAILABLE AT THIS TIME",
+                "status": "permanent",
+                "expires_at": "2099-01-01T00:00:00+00:00",
+            }
+        },
+    }
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_rss_fetch_stub(
+            rss_result=_rss_response(_rss_feed(rss_items)),
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+            detail_by_url={
+                detail_url: _finra_notice_page(
+                    "Artificial intelligence supervisory obligations now apply."
+                )
+            },
+            record=record,
+        ),
+    )
+
+    unavailable: list[dict] = []
+    result = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+        ),
+        config=config,
+        source_state=state,
+        unavailable_notices=unavailable,
+    )
+
+    assert [item.document_id for item in result.items] == ["FINRA 26-99"]
+    assert detail_url in record
+    assert unavailable == []
+    assert result.new_notices_fetched == 1
+
+
+def test_finra_wednesday_remembered_unavailable_recheck_honors_cap(monkeypatch):
+    _pin_finra_run_at(
+        monkeypatch,
+        regulatory_monitor.datetime(
+            2026, 9, 23, tzinfo=regulatory_monitor.timezone.utc
+        ),
+    )
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    unavailable_slugs = [f"26-{index:02d}" for index in range(50, 62)]
+    state = {
+        "entries": {
+            f"FINRA 26-{index:02d}": "existing"
+            for index in range(1, 11)
+        },
+        regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY: {
+            f"FINRA {slug}": {
+                "url": f"https://www.finra.org/rules-guidance/notices/{slug}",
+                "reason": "NOT AVAILABLE AT THIS TIME",
+                "status": "permanent",
+                "expires_at": "2099-01-01T00:00:00+00:00",
+            }
+            for slug in unavailable_slugs
+        },
+    }
+    detail_by_url = {
+        f"https://www.finra.org/rules-guidance/notices/{slug}": _finra_notice_page(
+            "Artificial intelligence supervisory obligations now apply."
+        )
+        for slug in unavailable_slugs
+    }
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_rss_fetch_stub(
+            rss_result=_rss_response(_rss_feed(rss_items)),
+            listing_html=_finra_listing_page_html(
+                [f"/rules-guidance/notices/{slug}" for slug in unavailable_slugs]
+            ),
+            detail_by_url=detail_by_url,
+            record=record,
+        ),
+    )
+
+    result = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+            listing_html=_finra_listing_page_html(
+                [f"/rules-guidance/notices/{slug}" for slug in unavailable_slugs]
+            ),
+        ),
+        config=config,
+        source_state=state,
+    )
+
+    detail_fetches = [
+        url
+        for url in record
+        if url.startswith("https://www.finra.org/rules-guidance/notices/26-")
+    ]
+    assert len(detail_fetches) == 10
+    assert len(result.items) == 10
+
+
+def test_finra_wednesday_remembered_unavailable_failure_is_non_degrading(
+    monkeypatch,
+    tmp_path,
+):
+    _pin_finra_run_at(
+        monkeypatch,
+        regulatory_monitor.datetime(
+            2026, 9, 23, tzinfo=regulatory_monitor.timezone.utc
+        ),
+    )
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-99"
+    loaded_state = {
+        "version": 1,
+        "sources": {
+            regulatory_monitor.SOURCE_KEY_FINRA: {
+                "entries": {
+                    f"FINRA 26-{index:02d}": "existing"
+                    for index in range(1, 11)
+                },
+                regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY: {
+                    "FINRA 26-99": {
+                        "url": detail_url,
+                        "reason": "NOT AVAILABLE AT THIS TIME",
+                        "status": "permanent",
+                        "expires_at": "2099-01-01T00:00:00+00:00",
+                    }
+                },
+            }
+        },
+    }
+    saved_states: list[dict] = []
+
+    class _Session(_RssSession):
+        def __init__(self):
+            super().__init__(
+                _rss_response(_rss_feed(rss_items)),
+                record=record,
+                listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+            )
+
+    def fetch_page_stub(url, _session, max_retries=3):
+        record.append(url)
+        if url == regulatory_monitor.FINRA_RSS_FEED_URL:
+            return _rss_response(_rss_feed(rss_items))
+        if url == regulatory_monitor.FINRA_NOTICES_URL:
+            return {
+                "url": url,
+                "status_code": 200,
+                "content": _finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+                "final_url": url,
+                "was_redirected": False,
+                "error": None,
+            }
+        assert url == detail_url
+        return {
+            "url": url,
+            "status_code": 429,
+            "content": "",
+            "final_url": url,
+            "was_redirected": False,
+            "error": "HTTP 429 detail unavailable",
+        }
+
+    _wire_finra_monitor_run(
+        monkeypatch,
+        tmp_path,
+        config=config,
+        loaded_state=loaded_state,
+        saved_states=saved_states,
+        argv=["regulatory_monitor.py", "--source", "finra"],
+        fetch_page=fetch_page_stub,
+        session_factory=_Session,
+    )
+
+    assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_CLEAN
+    assert detail_url in record
+    saved_finra = saved_states[-1]["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+    assert "FINRA 26-99" in saved_finra[regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY]
+    assert saved_states[-1]["regulatory_monitor"]["last_finra_discovery"] == {
+        "discovery_path": "RSS",
+        "validator_dropped": 0,
+        "listing_cross_check": "listing cross-check ok",
+        "new_notices_fetched": 0,
+    }
+
+
+def test_finra_sunday_full_crawl_does_not_double_run_midweek_recheck(monkeypatch):
+    _pin_weekly_finra_run(monkeypatch)
+    config = _load_config()
+    record: list[str] = []
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-99"
+    state = {
+        "entries": {"FINRA 26-01": "existing"},
+        regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY: {
+            "FINRA 26-99": {
+                "url": detail_url,
+                "reason": "NOT AVAILABLE AT THIS TIME",
+                "status": "permanent",
+                "expires_at": "2099-01-01T00:00:00+00:00",
+            }
+        },
+    }
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_rss_fetch_stub(
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+            detail_by_url={
+                detail_url: _finra_notice_page(
+                    "Artificial intelligence supervisory obligations now apply."
+                )
+            },
+            record=record,
+        ),
+    )
+
+    result = regulatory_monitor.discover_finra_notices(
+        session=object(),
+        config=config,
+        source_state=state,
+        weekly_full_crawl=True,
+    )
+
+    assert [item.document_id for item in result.items] == ["FINRA 26-99"]
+    assert record.count(detail_url) == 1
+    assert regulatory_monitor.FINRA_RSS_FEED_URL not in record
+
+
+def test_finra_tuesday_does_not_recheck_listing_present_remembered_unavailable_notice(
+    monkeypatch,
+):
+    _pin_finra_run_at(
+        monkeypatch,
+        regulatory_monitor.datetime(
+            2026, 9, 22, tzinfo=regulatory_monitor.timezone.utc
+        ),
+    )
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-99"
+    state = {
+        "entries": {
+            f"FINRA 26-{index:02d}": "existing"
+            for index in range(1, 11)
+        },
+        regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY: {
+            "FINRA 26-99": {
+                "url": detail_url,
+                "reason": "NOT AVAILABLE AT THIS TIME",
+                "status": "permanent",
+                "expires_at": "2099-01-01T00:00:00+00:00",
+            }
+        },
+    }
+
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_rss_fetch_stub(
+            rss_result=_rss_response(_rss_feed(rss_items)),
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+            record=record,
+        ),
+    )
+
+    result = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+        ),
+        config=config,
+        source_state=state,
+    )
+
+    assert result.items == []
+    assert detail_url not in record
+
+
 def test_finra_rss_refetches_remembered_unavailable_notice(monkeypatch):
     config = _load_config()
     record: list[str] = []

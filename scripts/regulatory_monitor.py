@@ -113,6 +113,8 @@ FINRA_UNVERIFIED_CLEAN_STATE = "unverified-clean"
 FINRA_UNAVAILABLE_STATE_KEY = "unavailable_notices"
 FINRA_UNAVAILABLE_MAX_ENTRIES = 50
 FINRA_UNAVAILABLE_EXPIRY_DAYS = 30
+FINRA_MIDWEEK_UNAVAILABLE_RECHECK_WEEKDAY = 2  # Wednesday, UTC
+FINRA_MIDWEEK_UNAVAILABLE_RECHECK_LIMIT = 10
 FINRA_REPEATED_PERMANENT_STATUSES = frozenset({404, 410})
 FINRA_RULE_FILING_TITLE_PREFIX = (
     "Self-Regulatory Organizations; Financial Industry Regulatory Authority, Inc."
@@ -5349,6 +5351,154 @@ def _finra_listing_cross_check(
     return "listing cross-check ok"
 
 
+def _remember_finra_unavailable_recheck_failure(
+    unavailable_notices: list[dict],
+    *,
+    document_id: str,
+    title: str,
+    url: str,
+    reason: str,
+) -> None:
+    unavailable_notices.append(
+        {
+            "document_id": document_id,
+            "title": title,
+            "url": url,
+            "reason": reason,
+            "remembered": True,
+        }
+    )
+
+
+def _recheck_finra_remembered_unavailable_from_listing(
+    *,
+    session: requests.Session,
+    config: dict,
+    source_state: dict,
+    unavailable_notices: list[dict],
+    skip_entry_keys: Optional[set[str]] = None,
+) -> tuple[list[RegulatoryItem], int]:
+    """Try one Wednesday page-0 refetch for remembered unavailable notices."""
+    now = datetime.now(timezone.utc)
+    if now.weekday() != FINRA_MIDWEEK_UNAVAILABLE_RECHECK_WEEKDAY:
+        return [], 0
+
+    persistent_unavailable = _finra_persistent_unavailable_reasons(source_state)
+    if not persistent_unavailable:
+        return [], 0
+
+    _request_timeout, max_retries, request_delay = _get_operational_settings(config)
+    try:
+        result = fetch_page(FINRA_NOTICES_URL, session, max_retries=max_retries)
+        if not isinstance(result, dict) or result.get("status_code") != 200:
+            raise FinraListingUnavailableError(
+                "FINRA Wednesday unavailable re-check listing fetch failed"
+            )
+        final_rejection = _finra_listing_url_rejection_reason(
+            result.get("final_url") or FINRA_NOTICES_URL,
+            "FINRA Wednesday unavailable re-check listing response",
+            expected_page=0,
+        )
+        content = result.get("content")
+        if final_rejection or not isinstance(content, (str, bytes)):
+            raise FinraListingError(final_rejection or "invalid response content")
+        denial_reason = _finra_listing_denial_reason(content)
+        if denial_reason:
+            raise FinraListingUnavailableError(denial_reason)
+        identity_rejection = _finra_listing_identity_rejection_reason(content, 0)
+        if identity_rejection:
+            raise FinraListingError(identity_rejection)
+        page_links = _extract_finra_notice_links(content)
+    except Exception as exc:
+        logger.warning(
+            "FINRA Wednesday unavailable re-check skipped: %s",
+            _source_failure_reason(exc),
+        )
+        return [], 0
+
+    known_entry_keys = set(source_state.get("entries", {}))
+    skip_entry_keys = skip_entry_keys or set()
+    candidate_links = []
+    seen_keys: set[str] = set()
+    for link in page_links:
+        document_id = _finra_entry_key_for_link(link)
+        if (
+            not document_id
+            or document_id in known_entry_keys
+            or document_id in skip_entry_keys
+            or document_id not in persistent_unavailable
+            or document_id in seen_keys
+        ):
+            continue
+        candidate_links.append(link)
+        seen_keys.add(document_id)
+        if len(candidate_links) >= FINRA_MIDWEEK_UNAVAILABLE_RECHECK_LIMIT:
+            break
+
+    if not candidate_links:
+        return [], 0
+
+    items: list[RegulatoryItem] = []
+    detail_cache: dict[str, str] = {}
+    unavailable_cache: dict[str, str] = {}
+    detail_fetches = 0
+    for link in candidate_links:
+        title = link.get_text(strip=True)
+        url = link.get("data-monitor-canonical-url") or _canonical_finra_notice_url(
+            link.get("href", "")
+        )
+        if url is None:
+            continue
+        document_id = _finra_document_id_from_url(url)
+        publication_date, publication_date_is_synthetic = (
+            _derive_finra_publication_date(link, url)
+        )
+        local_unavailable: list[dict] = []
+        try:
+            item, detail_fetches = _build_finra_notice_item(
+                title=title,
+                url=url,
+                publication_date=publication_date,
+                publication_date_is_synthetic=publication_date_is_synthetic,
+                session=session,
+                config=config,
+                detail_cache=detail_cache,
+                unavailable_cache=unavailable_cache,
+                persistent_unavailable={},
+                unavailable_notices=local_unavailable,
+                detail_fetches=detail_fetches,
+                detail_fetch_limit=FINRA_MIDWEEK_UNAVAILABLE_RECHECK_LIMIT,
+                request_delay=request_delay,
+                max_retries=max_retries,
+            )
+        except Exception as exc:
+            logger.warning(
+                "FINRA Wednesday unavailable re-check kept %s remembered: %s",
+                document_id,
+                _source_failure_reason(exc),
+            )
+            _remember_finra_unavailable_recheck_failure(
+                unavailable_notices,
+                document_id=document_id,
+                title=title,
+                url=url,
+                reason=persistent_unavailable[document_id],
+            )
+            continue
+        if item is None:
+            _remember_finra_unavailable_recheck_failure(
+                unavailable_notices,
+                document_id=document_id,
+                title=title,
+                url=url,
+                reason=persistent_unavailable[document_id],
+            )
+            continue
+        items.append(item)
+
+    return items, detail_fetches
+
+
 def discover_finra_notices(
     session: requests.Session,
     config: dict,
@@ -5494,6 +5644,19 @@ def discover_finra_notices(
             validator_dropped=rss_result.validator_dropped,
             listing_cross_check=listing_cross_check,
         ) from exc
+    recheck_items, recheck_fetches = _recheck_finra_remembered_unavailable_from_listing(
+        session=session,
+        config=config,
+        source_state=source_state,
+        unavailable_notices=unavailable_notices,
+        skip_entry_keys={
+            _finra_document_id_from_url(candidate.url)
+            for candidate in rss_result.candidates
+        },
+    )
+    if recheck_items:
+        items.extend(recheck_items)
+        detail_fetches += recheck_fetches
     return FinraDiscoveryResult(
         items=items,
         discovery_path="RSS",
