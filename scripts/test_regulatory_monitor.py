@@ -4890,6 +4890,30 @@ def test_sro_kpi_metric_suppression_requires_ai_match_containment():
     assert "artificial intelligence" in reason.lower()
 
 
+def test_sro_kpi_metric_suppression_does_not_hide_same_sentence_ai_obligation():
+    config = _load_config()
+    title = (
+        "Self-Regulatory Organizations; NYSE Arca; Notice of Filing of "
+        "Proposed Rule Change To Amend KPI Disclosure"
+    )
+    text = (
+        "The Exchange proposes KPIs representing revenues broken out by product "
+        "category, including cloud and artificial intelligence infrastructure "
+        "revenues, and member firms using artificial intelligence surveillance "
+        "tools must document supervisory review."
+    )
+
+    classification, reason = regulatory_monitor.classify_regulatory_relevance(
+        title,
+        text,
+        config,
+        exclude_reference_only=True,
+    )
+
+    assert classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert "artificial intelligence" in reason.lower()
+
+
 def test_sro_3110_ai_qualifier_preserves_bare_ai_supervision():
     config = _load_config()
 

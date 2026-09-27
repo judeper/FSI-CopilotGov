@@ -2111,7 +2111,7 @@ AI_PRODUCT_METRIC_CONTEXT_PATTERN = re.compile(
     r"(?:cloud\s+and\s+)?artificial\s+intelligence\s+infrastructure\s+revenues?|"
     r"artificial\s+intelligence\s+revenues?|"
     r"revenues?\s+(?:broken\s+out\s+)?by\s+[^.]{0,160}"
-    r"artificial\s+intelligence"
+    r"artificial\s+intelligence(?:\s+infrastructure)?\s+revenues?"
     r")\b",
     re.IGNORECASE,
 )
