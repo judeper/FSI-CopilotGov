@@ -169,7 +169,8 @@ jobs:
         run: |
           new_items="${{ steps.monitor.outputs.new_items }}"
           if [ "${{ steps.monitor.outputs.exit_code }}" = "4" ]; then
-            echo "cleanup_kind=degraded" >> "$GITHUB_OUTPUT"
+            cleanup_kind=degraded
+            echo "cleanup_kind=${cleanup_kind}" >> "$GITHUB_OUTPUT"
             sources="${{ steps.monitor.outputs.degraded_sources }}"
             escalated_sources="${{ steps.monitor.outputs.escalated_sources }}"
             finra_unverified=false
@@ -219,10 +220,11 @@ jobs:
           else
             if [ "${{ steps.monitor.outputs.finra_verification_state }}" = "unverified-clean" ]; then
               if [ "$new_items" = "0" ]; then
-                echo "cleanup_kind=unverified-clean" >> "$GITHUB_OUTPUT"
+                cleanup_kind=unverified-clean
               else
-                echo "cleanup_kind=unverified-findings" >> "$GITHUB_OUTPUT"
+                cleanup_kind=unverified-findings
               fi
+              echo "cleanup_kind=${cleanup_kind}" >> "$GITHUB_OUTPUT"
               echo "title=Regulatory Monitor: UNVERIFIED (FINRA listing cross-check unavailable) (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
               echo "extra_labels=monitor-unverified" >> "$GITHUB_OUTPUT"
               {
@@ -234,7 +236,8 @@ jobs:
                 echo "EOF"
               } >> "$GITHUB_OUTPUT"
             else
-              echo "cleanup_kind=findings" >> "$GITHUB_OUTPUT"
+              cleanup_kind=findings
+              echo "cleanup_kind=${cleanup_kind}" >> "$GITHUB_OUTPUT"
               echo "title=Regulatory Monitor: findings (run ${{ github.run_number }})" >> "$GITHUB_OUTPUT"
               echo "extra_labels=" >> "$GITHUB_OUTPUT"
               {
@@ -243,6 +246,11 @@ jobs:
               } >> "$GITHUB_OUTPUT"
             fi
           fi
+          python scripts/regulatory_monitor_cleanup.py emit-marker \
+            --report-file "${{ steps.monitor.outputs.report_file }}" \
+            --result "$cleanup_kind" \
+            --new-items "$new_items" \
+            >> "$GITHUB_OUTPUT"
 
       - name: Ensure degraded monitor label exists
         if: steps.monitor.outputs.exit_code == '4' || steps.monitor.outputs.finra_verification_state == 'unverified-clean'
@@ -307,14 +315,17 @@ jobs:
             - Monitor result: `${{ steps.pr-meta.outputs.cleanup_kind }}`
             - Monitor new items: `${{ steps.monitor.outputs.new_items }}`
 
+            ${{ steps.pr-meta.outputs.cleanup_marker }}
+
             ${{ steps.pr-meta.outputs.degraded_body }}
 
             ### Superseded monitor PR cleanup matrix
-            The newest monitor PR is not assumed to contain every older open PR's branch-only report. Automated cleanup therefore fails closed unless the older PR is a rolling findings PR or its body proves it has zero new items.
+            The newest monitor PR is not assumed to contain every older open PR's branch-only report. Automated cleanup therefore fails closed unless a workflow-owned marker proves the older PR has zero new items, or an older findings PR's item-key set is a subset of the new findings PR's item-key set. Missing, duplicate, malformed, mismatched, or truncated markers leave the older PR open.
 
-            | New PR result | Older findings PR | Older UNVERIFIED-clean PR (`0` new items) | Older UNVERIFIED PR with findings/unknown count | Older DEGRADED-clean PR (`0` new items) | Older DEGRADED PR with findings/unknown count |
+            | New run result | Older findings PR | Older UNVERIFIED-clean PR (`0` new items) | Older UNVERIFIED PR with findings/unknown marker | Older DEGRADED-clean PR (`0` new items) | Older DEGRADED PR with findings/unknown marker |
             |---|---|---|---|---|---|
-            | `findings` | Close: same rolling findings stream is superseded by the newer report and state. | Close: no findings are dropped. | Leave open for review. | Close: sources recovered and no findings are dropped. | Leave open for review. |
+            | `verified-clean` | Leave open for review. | Close: verification recovered and no findings are dropped. | Leave open for review. | Close: verification recovered and no findings are dropped. | Leave open for review. |
+            | `findings` | Close only when older item keys are a subset of the new item keys. | Close: no findings are dropped. | Leave open for review. | Close: sources recovered and no findings are dropped. | Leave open for review. |
             | `unverified-clean` | Leave open for review. | Close: no findings are dropped. | Leave open for review. | Leave open; unverified runs must not close degraded PRs. | Leave open for review. |
             | `unverified-findings` | Leave open for review. | Close: no findings are dropped. | Leave open for review. | Leave open; unverified runs must not close degraded PRs. | Leave open for review. |
             | `degraded` | Leave open for review. | Close: no findings are dropped. | Leave open for review. | Close: same degraded monitor stream and no findings are dropped. | Leave open for review. |
@@ -334,7 +345,7 @@ jobs:
             *Automated PR created by `.github/workflows/regulatory-monitoring.yml`.*
 
       - name: Close prior superseded Regulatory Monitor PRs
-        if: (steps.monitor.outputs.exit_code == '3' || steps.monitor.outputs.exit_code == '4') && steps.cpr.outputs.pull-request-number != ''
+        if: steps.monitor.outputs.exit_code == '0' || ((steps.monitor.outputs.exit_code == '3' || steps.monitor.outputs.exit_code == '4') && steps.cpr.outputs.pull-request-number != '')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -345,8 +356,9 @@ jobs:
           # are too broad (humans can edit them). See issue #48.
           #
           # Cleanup matrix (issue #550 N9):
-          # | New PR result | Older findings | Older UNVERIFIED-clean (0 new items) | Older UNVERIFIED with findings/unknown | Older DEGRADED-clean (0 new items) | Older DEGRADED with findings/unknown |
-          # | findings | close | close | leave open | close | leave open |
+          # | New result | Older findings | Older UNVERIFIED-clean (0 new items) | Older UNVERIFIED with findings/unknown | Older DEGRADED-clean (0 new items) | Older DEGRADED with findings/unknown |
+          # | verified-clean | leave open | close | leave open | close | leave open |
+          # | findings | close only when old item keys are a subset of new item keys | close | leave open | close | leave open |
           # | unverified-clean | leave open | close | leave open | leave open | leave open |
           # | unverified-findings | leave open | close | leave open | leave open | leave open |
           # | degraded | leave open | close | leave open | close | leave open |
@@ -354,20 +366,43 @@ jobs:
           # A newer branch is based on current main, not on older open PR
           # branches, so branch-only older reports are not inherently
           # cumulative. The selector fails closed unless the older PR body
-          # proves it had 0 new items, or the existing findings-to-findings
-          # rolling cleanup applies.
+          # has a workflow-owned marker proving it had 0 new items, or an
+          # older findings PR's item-key set is a subset of this run's item
+          # keys. Missing, duplicate, malformed, mismatched, or truncated
+          # markers leave the older PR open.
+          pr_limit=200
           prior_json="$(gh pr list \
             --repo "$REPO" \
             --state open \
             --label regulatory \
             --label automated \
             --base main \
+            --limit "$pr_limit" \
             --json number,headRefName,author,title,labels,body)"
+          prior_count="$(printf '%s' "$prior_json" | python -c 'import json,sys; print(len(json.load(sys.stdin)))')"
+          if [ "$prior_count" -ge "$pr_limit" ]; then
+            echo "::warning::Regulatory Monitor cleanup saw ${prior_count} open PRs, matching the listing limit; older PRs may remain for a future run."
+          fi
+          new_result="${{ steps.pr-meta.outputs.cleanup_kind }}"
+          superseding_ref="#${NEW_PR}"
+          new_report_args=()
+          new_pr_args=()
+          if [ -n "$NEW_PR" ]; then
+            new_pr_args=(--new-pr "$NEW_PR")
+          fi
+          if [ "${{ steps.monitor.outputs.exit_code }}" = "0" ]; then
+            new_result="verified-clean"
+            superseding_ref="verified clean run ${{ github.run_number }} (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          else
+            new_report_args=(--new-report-file "${{ steps.monitor.outputs.report_file }}")
+          fi
           selection_file="$(mktemp)"
           trap 'rm -f "$selection_file"' EXIT
           printf '%s' "$prior_json" | python scripts/regulatory_monitor_cleanup.py \
-            --new-pr "$NEW_PR" \
-            --new-result "${{ steps.pr-meta.outputs.cleanup_kind }}" \
+            select \
+            "${new_pr_args[@]}" \
+            --new-result "$new_result" \
+            "${new_report_args[@]}" \
             > "$selection_file"
           mapfile -t prior < "$selection_file"
           rm -f "$selection_file"
@@ -382,7 +417,7 @@ jobs:
           for row in "${prior[@]}"; do
             IFS=$'\t' read -r n reason <<< "$row"
             [ -z "$n" ] && continue
-            if ! gh pr comment "$n" --repo "$REPO" --body "Superseded by #${NEW_PR} under the Regulatory Monitor cleanup matrix (${reason}). The matrix is documented in the superseding PR body and only auto-closes older PRs that are safe to supersede without dropping unreviewed findings."; then
+            if ! gh pr comment "$n" --repo "$REPO" --body "Superseded by ${superseding_ref} under the Regulatory Monitor cleanup matrix (${reason}). The matrix is documented in the workflow/PR body and only auto-closes older PRs that are safe to supersede without dropping unreviewed findings."; then
               echo "::warning::Failed to comment on PR #${n}"
             fi
             # Close without --delete-branch so dated reports stay reachable

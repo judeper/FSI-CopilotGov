@@ -322,31 +322,62 @@ def test_cleanup_matrix_is_documented_and_uses_tested_selector() -> None:
     ]["body"]
 
     assert "scripts/regulatory_monitor_cleanup.py" in cleanup_run
+    assert "select \\" in cleanup_run
+    assert "emit-marker" in _step(
+        MONITOR_JOB,
+        "Prepare Regulatory Monitor PR metadata",
+    )["run"]
     assert "--new-result" in cleanup_run
+    assert "--new-report-file" in cleanup_run
     assert "steps.pr-meta.outputs.cleanup_kind" in cleanup_run
     assert "--json number,headRefName,author,title,labels,body" in cleanup_run
-    assert "Superseded by #${NEW_PR} under the Regulatory Monitor cleanup matrix" in cleanup_run
+    assert '--limit "$pr_limit"' in cleanup_run
+    assert 'pr_limit=200' in cleanup_run
+    assert "verified-clean" in cleanup_run
+    assert "Superseded by ${superseding_ref} under the Regulatory Monitor cleanup matrix" in cleanup_run
     assert "unverified runs must not close degraded PRs" in pr_body
-    assert "| `degraded` | Leave open for review. | Close" in pr_body
+    assert "Close only when older item keys are a subset" in pr_body
+    assert "Missing, duplicate, malformed, mismatched, or truncated markers" in pr_body
+    assert "| `verified-clean` | Leave open for review. | Close" in pr_body
     assert "Monitor result: `${{ steps.pr-meta.outputs.cleanup_kind }}`" in pr_body
     assert "Monitor new items: `${{ steps.monitor.outputs.new_items }}`" in pr_body
+    assert "${{ steps.pr-meta.outputs.cleanup_marker }}" in pr_body
     assert 'author_login == "app/fsi-monitor-bot"' in Path(
         REPO_ROOT / CLEANUP_SCRIPT_FILE
     ).read_text(encoding="utf-8")
+    assert (
+        _step(MONITOR_JOB, "Close prior superseded Regulatory Monitor PRs")["if"]
+        == (
+            "steps.monitor.outputs.exit_code == '0' || "
+            "((steps.monitor.outputs.exit_code == '3' || "
+            "steps.monitor.outputs.exit_code == '4') && "
+            "steps.cpr.outputs.pull-request-number != '')"
+        )
+    )
+
+
+def _marker(result: str, new_items: int, keys: list[str]) -> str:
+    return regulatory_monitor_cleanup.build_cleanup_marker(
+        result=result,
+        new_items=new_items,
+        item_keys=keys,
+    )
 
 
 def _monitor_pr(
     number: int,
     *,
     labels: set[str] | None = None,
-    new_items: int | None = None,
+    result: str = "findings",
+    keys: list[str] | None = None,
+    body: str | None = None,
     head_ref: str | None = None,
     author: str = "app/fsi-monitor-bot",
     title: str = "Regulatory Monitor: findings (run 1)",
 ) -> dict:
-    body = ""
-    if new_items is not None:
-        body = f"- Monitor new items: `{new_items}`\n"
+    if body is None:
+        keys = keys or []
+        body = _marker(result, len(keys), keys)
     return {
         "number": number,
         "headRefName": head_ref or f"monitoring/regulatory-{number}",
@@ -357,38 +388,76 @@ def _monitor_pr(
     }
 
 
-def _selected_numbers(new_result: str, prs: list[dict]) -> set[int]:
+def _selected_numbers(
+    new_result: str,
+    prs: list[dict],
+    *,
+    new_keys: list[str] | None = None,
+) -> set[int]:
     return {
         selection.number
         for selection in regulatory_monitor_cleanup.select_prior_prs(
             prs,
             new_pr=200,
             new_result=new_result,
+            new_item_keys=(
+                frozenset(new_keys)
+                if new_keys is not None
+                else None
+            ),
         )
     }
 
 
-def test_cleanup_matrix_findings_result_closes_only_proven_superseded_prs() -> None:
+def test_cleanup_matrix_findings_result_requires_item_key_subset() -> None:
     prs = [
-        _monitor_pr(101),
-        _monitor_pr(102, labels={"monitor-unverified"}, new_items=0),
-        _monitor_pr(103, labels={"monitor-unverified"}, new_items=4),
-        _monitor_pr(104, labels={"monitor-unverified"}),
-        _monitor_pr(105, labels={"monitor-degraded"}, new_items=0),
-        _monitor_pr(106, labels={"monitor-degraded"}, new_items=2),
-        _monitor_pr(107, labels={"monitor-degraded"}),
+        _monitor_pr(101, keys=["fr-a"]),
+        _monitor_pr(102, keys=["sunday-only-finra", "fr-a"]),
+        _monitor_pr(103, keys=["fr-a", "fr-b", "extra-old"]),
+        _monitor_pr(104, keys=["disjoint-old"]),
+        _monitor_pr(105, body="legacy findings PR without marker"),
+        _monitor_pr(106, labels={"monitor-unverified"}, result="unverified-clean"),
+        _monitor_pr(107, labels={"monitor-degraded"}, result="degraded"),
     ]
 
-    assert _selected_numbers("findings", prs) == {101, 102, 105}
+    assert _selected_numbers("findings", prs, new_keys=["fr-a", "fr-b"]) == {
+        101,
+        106,
+        107,
+    }
+
+
+def test_cleanup_matrix_missing_or_truncated_item_keys_keep_findings_open() -> None:
+    truncated_marker = regulatory_monitor_cleanup.build_cleanup_marker(
+        result="findings",
+        new_items=1001,
+        item_keys=[f"k-{i}" for i in range(1001)],
+    )
+    prs = [
+        _monitor_pr(101, body="legacy findings PR without marker"),
+        _monitor_pr(102, body=truncated_marker),
+    ]
+
+    assert _selected_numbers("findings", prs, new_keys=[f"k-{i}" for i in range(1001)]) == set()
 
 
 def test_cleanup_matrix_unverified_results_never_close_degraded_prs() -> None:
     prs = [
-        _monitor_pr(101),
-        _monitor_pr(102, labels={"monitor-unverified"}, new_items=0),
-        _monitor_pr(103, labels={"monitor-unverified"}, new_items=2),
-        _monitor_pr(104, labels={"monitor-degraded"}, new_items=0),
-        _monitor_pr(105, labels={"monitor-degraded"}, new_items=3),
+        _monitor_pr(101, keys=["fr-a"]),
+        _monitor_pr(102, labels={"monitor-unverified"}, result="unverified-clean"),
+        _monitor_pr(
+            103,
+            labels={"monitor-unverified"},
+            result="unverified-findings",
+            keys=["rss-finding"],
+        ),
+        _monitor_pr(104, labels={"monitor-degraded"}, result="degraded"),
+        _monitor_pr(
+            105,
+            labels={"monitor-degraded"},
+            result="degraded",
+            keys=["degraded-finding"],
+        ),
     ]
 
     assert _selected_numbers("unverified-clean", prs) == {102}
@@ -397,35 +466,99 @@ def test_cleanup_matrix_unverified_results_never_close_degraded_prs() -> None:
 
 def test_cleanup_matrix_degraded_result_closes_clean_status_prs_only() -> None:
     prs = [
-        _monitor_pr(101),
-        _monitor_pr(102, labels={"monitor-unverified"}, new_items=0),
-        _monitor_pr(103, labels={"monitor-unverified"}, new_items=2),
-        _monitor_pr(104, labels={"monitor-degraded"}, new_items=0),
-        _monitor_pr(105, labels={"monitor-degraded"}, new_items=3),
-        _monitor_pr(106, labels={"monitor-degraded"}),
+        _monitor_pr(101, keys=["fr-a"]),
+        _monitor_pr(102, labels={"monitor-unverified"}, result="unverified-clean"),
+        _monitor_pr(
+            103,
+            labels={"monitor-unverified"},
+            result="unverified-findings",
+            keys=["rss-finding"],
+        ),
+        _monitor_pr(104, labels={"monitor-degraded"}, result="degraded"),
+        _monitor_pr(
+            105,
+            labels={"monitor-degraded"},
+            result="degraded",
+            keys=["degraded-finding"],
+        ),
+        _monitor_pr(106, labels={"monitor-degraded"}, body="legacy degraded"),
     ]
 
     assert _selected_numbers("degraded", prs) == {102, 104}
 
 
+def test_verified_clean_exit_closes_only_zero_item_status_prs() -> None:
+    prs = [
+        _monitor_pr(101, keys=["fr-a"]),
+        _monitor_pr(102, labels={"monitor-unverified"}, result="unverified-clean"),
+        _monitor_pr(
+            103,
+            labels={"monitor-unverified"},
+            result="unverified-findings",
+            keys=["rss-finding"],
+        ),
+        _monitor_pr(104, labels={"monitor-degraded"}, result="degraded"),
+        _monitor_pr(
+            105,
+            labels={"monitor-degraded"},
+            result="degraded",
+            keys=["degraded-finding"],
+        ),
+    ]
+
+    assert _selected_numbers("verified-clean", prs) == {102, 104}
+
+
 def test_cleanup_selector_keeps_legacy_or_non_owned_status_prs_open() -> None:
     prs = [
-        _monitor_pr(101, labels={"monitor-unverified"}),
-        _monitor_pr(102, labels={"monitor-degraded"}),
-        _monitor_pr(103, labels={"monitor-unverified"}, new_items=0, author="judeper"),
+        _monitor_pr(101, labels={"monitor-unverified"}, body="legacy unverified"),
+        _monitor_pr(102, labels={"monitor-degraded"}, body="legacy degraded"),
+        _monitor_pr(
+            103,
+            labels={"monitor-unverified"},
+            result="unverified-clean",
+            author="judeper",
+        ),
         _monitor_pr(
             104,
             labels={"monitor-unverified"},
-            new_items=0,
+            result="unverified-clean",
             head_ref="human/regulatory-104",
         ),
         _monitor_pr(
             105,
             labels={"monitor-unverified"},
-            new_items=0,
+            result="unverified-clean",
             title="Manual monitor PR",
         ),
-        _monitor_pr(250, labels={"monitor-unverified"}, new_items=0),
+        _monitor_pr(250, labels={"monitor-unverified"}, result="unverified-clean"),
     ]
 
     assert _selected_numbers("degraded", prs) == set()
+
+
+def test_cleanup_selector_rejects_label_result_mismatch() -> None:
+    prs = [
+        _monitor_pr(101, labels={"monitor-degraded"}, result="unverified-clean"),
+        _monitor_pr(102, labels={"monitor-unverified"}, result="degraded"),
+        _monitor_pr(103, result="unverified-clean"),
+        _monitor_pr(104, labels={"monitor-degraded", "monitor-unverified"}, result="degraded"),
+    ]
+
+    assert _selected_numbers("verified-clean", prs) == set()
+
+
+def test_cleanup_selector_rejects_duplicate_or_spoofed_markers() -> None:
+    valid_clean = _marker("unverified-clean", 0, [])
+    spoofed_line = "- Monitor new items: `0`\n" + _marker(
+        "unverified-findings",
+        1,
+        ["rss-finding"],
+    )
+    duplicate_marker = f"{valid_clean}\n{valid_clean}"
+    prs = [
+        _monitor_pr(101, labels={"monitor-unverified"}, body=spoofed_line),
+        _monitor_pr(102, labels={"monitor-unverified"}, body=duplicate_marker),
+    ]
+
+    assert _selected_numbers("verified-clean", prs) == set()
