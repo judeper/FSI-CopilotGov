@@ -11,12 +11,12 @@ Step-by-step portal configuration for evaluating organizational readiness and es
 
 ## Steps
 
-### Step 1: Run the Microsoft 365 Copilot Readiness Report
+### Step 1: Run the Microsoft Copilot Readiness Report
 
 **Portal:** Microsoft 365 admin center
-**Path:** Reports > Usage > Microsoft 365 Copilot > Readiness
+**Path:** Reports > Usage > Microsoft Copilot > Copilot > Readiness
 
-Open the **Readiness** tab of the Microsoft 365 Copilot report. It shows:
+Open the **Readiness** tab of the Microsoft Copilot report. It shows:
 
 - **Total prerequisite licenses:** Users who hold, or can be assigned, a Copilot-eligible base license
 - **Users on an eligible update channel:** Users enrolled in Current Channel or Monthly Enterprise Channel for Microsoft 365 Apps updates
@@ -38,9 +38,9 @@ Filter results by sensitivity level and focus on sites containing financial data
 ### Step 3: Evaluate Sensitivity Label Coverage
 
 **Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Label Analytics
+**Path:** Microsoft Purview portal > Solutions > Information Protection > Explorers > Data explorer (the classic Content explorer is at Solutions > Data Lifecycle Management > Explorers > Content explorer)
 
-Review label adoption metrics across the organization. For FSI environments, target a minimum of 85% label coverage on documents stored in SharePoint and OneDrive before enabling Copilot.
+Review the current snapshot of items with sensitivity labels across the organization. For FSI environments, target a minimum of 85% label coverage on documents stored in SharePoint and OneDrive before enabling Copilot. Use **Activity explorer** with the **Sensitivity labels applied, changed, or removed** filter set when you need label activity trends over time.
 
 Document current coverage percentages by department and content type. Identify gaps where auto-labeling policies may be needed.
 

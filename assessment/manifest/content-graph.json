@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-24T00:00:00Z",
+  "generatedAt": "2026-09-27T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -49,7 +49,7 @@
       "tier": "Baseline",
       "title": "Control 1.1: Copilot Readiness Assessment and Data Hygiene",
       "path": "docs/controls/pillar-1-readiness/1.1-copilot-readiness-assessment.md",
-      "last_verified": "2026-07-26",
+      "last_verified": "2026-09-27",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -183,7 +183,7 @@
       "tier": "Recommended",
       "title": "Control 1.11: Organizational Change Management and Adoption Planning",
       "path": "docs/controls/pillar-1-readiness/1.11-change-management-adoption.md",
-      "last_verified": "2026-07-26",
+      "last_verified": "2026-09-27",
       "regulatory_references": [
         "FFIEC IT Handbook (Management)",
         "12 CFR part 30",
@@ -196,7 +196,7 @@
       "tier": "Baseline",
       "title": "Control 1.12: Training and Awareness Program",
       "path": "docs/controls/pillar-1-readiness/1.12-training-awareness.md",
-      "last_verified": "2026-07-26",
+      "last_verified": "2026-09-27",
       "regulatory_references": [
         "FINRA Rule 3110",
         "FFIEC IT Handbook (Information Security Booklet)",
