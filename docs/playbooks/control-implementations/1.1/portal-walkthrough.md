@@ -38,7 +38,7 @@ Filter results by sensitivity level and focus on sites containing financial data
 ### Step 3: Evaluate Sensitivity Label Coverage
 
 **Portal:** Microsoft Purview
-**Path:** Microsoft Purview portal > Information Protection > Explorers > Content explorer
+**Path:** Microsoft Purview portal > Solutions > Information Protection > Explorers > Data explorer (the classic Content explorer is at Solutions > Data Lifecycle Management > Explorers > Content explorer)
 
 Review the current snapshot of items with sensitivity labels across the organization. For FSI environments, target a minimum of 85% label coverage on documents stored in SharePoint and OneDrive before enabling Copilot. Use **Activity explorer** with the **Sensitivity labels applied, changed, or removed** filter set when you need label activity trends over time.
 

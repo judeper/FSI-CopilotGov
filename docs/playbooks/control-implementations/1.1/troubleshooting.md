@@ -48,10 +48,10 @@ Common issues and resolution steps for Copilot readiness assessment and data hyg
 
 ### Issue 5: Label Coverage Snapshot Shows Unexpectedly Low Numbers
 
-- **Symptoms:** Content explorer shows coverage well below expected levels despite active labeling policies
-- **Root Cause:** Content explorer counts may have reporting delays. Additionally, labels applied via client-side labeling (manual) may not be reflected until documents are next accessed or indexed.
+- **Symptoms:** Data explorer (or the classic Content explorer) shows coverage well below expected levels despite active labeling policies
+- **Root Cause:** Data explorer and Content explorer counts may have reporting delays. Additionally, labels applied via client-side labeling (manual) may not be reflected until documents are next accessed or indexed.
 - **Resolution:**
-  1. Verify reporting freshness in Content explorer. Counts can take up to seven days to update, and SharePoint files can take up to 14 days to appear. For recent label activity, use Activity explorer with the **Sensitivity labels applied, changed, or removed** filter set
+  1. Verify reporting freshness in Data explorer or Content explorer. Counts can take up to seven days to update, and SharePoint files can take up to 14 days to appear. For recent label activity, use Activity explorer with the **Sensitivity labels applied, changed, or removed** filter set
   2. Check auto-labeling policy status — confirm policies are enabled and not in simulation mode
   3. Review label policy scoping — labels may not be published to all user groups
   4. Force a re-index of key SharePoint sites using PnP PowerShell (`Request-PnPReindexWeb`) or the SharePoint site settings UI under Search and Offline Availability

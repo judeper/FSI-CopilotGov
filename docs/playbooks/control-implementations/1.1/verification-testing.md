@@ -42,12 +42,12 @@ Test cases and evidence collection procedures for validating Copilot readiness a
 
 - **Objective:** Verify sensitivity label adoption meets the target for the organization's governance tier (>50% Baseline / >75% Recommended / >90% Regulated)
 - **Steps:**
-  1. Open Microsoft Purview portal > Information Protection > Explorers > Content explorer
+  1. Open Microsoft Purview portal > Solutions > Information Protection > Explorers > Data explorer (or the classic Content explorer at Solutions > Data Lifecycle Management > Explorers > Content explorer)
   2. Review the current sensitivity-label coverage snapshot for documents in SharePoint and OneDrive
   3. Check department-level breakdown for any groups below threshold
   4. Verify auto-labeling policies are active for common FSI content types
 - **Expected Result:** Organization-wide label coverage meets or exceeds the target for the selected governance tier
-- **Evidence:** Content explorer export or screenshot showing coverage percentages
+- **Evidence:** Data explorer (or Content explorer) export or screenshot showing coverage percentages
 
 ### Test 4: Permission Model Remediation Verification
 
