@@ -288,10 +288,11 @@ def test_pr_body_high_tier_legend_mentions_sro_scoping() -> None:
     pr_body = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
         "with"
     ]["body"]
-    assert (
-        "SRO rule-filing boilerplate is suppressed unless AI governance or "
-        "supervision evidence is present"
-    ) in pr_body
+    assert "SRO rule-filing boilerplate is suppressed" in pr_body
+    assert "AI governance" in pr_body
+    assert "supervision" in pr_body
+    assert "communications-with-the-public" in pr_body
+    assert "FINRA Rule 2210" in pr_body
 
 
 def test_pr_title_marks_unverified_finra_runs() -> None:

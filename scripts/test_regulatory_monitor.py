@@ -6444,6 +6444,129 @@ def test_finra_wednesday_rechecks_listing_present_remembered_unavailable_notice(
     assert detail_url in record
     assert unavailable == []
     assert result.new_notices_fetched == 1
+    assert record.count(regulatory_monitor.FINRA_NOTICES_URL) == 1
+    assert state[regulatory_monitor.FINRA_MIDWEEK_RECHECK_DATE_KEY] == "2026-09-23"
+
+
+def test_finra_wednesday_recheck_runs_once_per_utc_date(monkeypatch):
+    _pin_finra_run_at(
+        monkeypatch,
+        regulatory_monitor.datetime(
+            2026, 9, 23, tzinfo=regulatory_monitor.timezone.utc
+        ),
+    )
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-99"
+    state = {
+        "entries": {
+            f"FINRA 26-{index:02d}": "existing"
+            for index in range(1, 11)
+        },
+        regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY: {
+            "FINRA 26-99": {
+                "url": detail_url,
+                "reason": "NOT AVAILABLE AT THIS TIME",
+                "status": "permanent",
+                "expires_at": "2099-01-01T00:00:00+00:00",
+            }
+        },
+    }
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_rss_fetch_stub(
+            rss_result=_rss_response(_rss_feed(rss_items)),
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+            detail_by_url={
+                detail_url: _finra_notice_page(
+                    "Artificial intelligence supervisory obligations now apply."
+                )
+            },
+            record=record,
+        ),
+    )
+
+    first = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+        ),
+        config=config,
+        source_state=state,
+    )
+    second = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+        ),
+        config=config,
+        source_state=state,
+    )
+
+    assert [item.document_id for item in first.items] == ["FINRA 26-99"]
+    assert second.items == []
+    assert record.count(detail_url) == 1
+    assert record.count(regulatory_monitor.FINRA_NOTICES_URL) == 2
+
+
+def test_finra_wednesday_recheck_resets_on_next_utc_wednesday(monkeypatch):
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-99"
+    state = {
+        "entries": {
+            f"FINRA 26-{index:02d}": "existing"
+            for index in range(1, 11)
+        },
+        regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY: {
+            "FINRA 26-99": {
+                "url": detail_url,
+                "reason": "NOT AVAILABLE AT THIS TIME",
+                "status": "permanent",
+                "expires_at": "2099-01-01T00:00:00+00:00",
+            }
+        },
+        regulatory_monitor.FINRA_MIDWEEK_RECHECK_DATE_KEY: "2026-09-23",
+    }
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_rss_fetch_stub(
+            rss_result=_rss_response(_rss_feed(rss_items)),
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+            detail_by_url={
+                detail_url: _finra_notice_page(
+                    "Artificial intelligence supervisory obligations now apply."
+                )
+            },
+            record=record,
+        ),
+    )
+    _pin_finra_run_at(
+        monkeypatch,
+        regulatory_monitor.datetime(
+            2026, 9, 30, tzinfo=regulatory_monitor.timezone.utc
+        ),
+    )
+
+    result = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+        ),
+        config=config,
+        source_state=state,
+    )
+
+    assert [item.document_id for item in result.items] == ["FINRA 26-99"]
+    assert record.count(detail_url) == 1
+    assert state[regulatory_monitor.FINRA_MIDWEEK_RECHECK_DATE_KEY] == "2026-09-30"
 
 
 def test_finra_wednesday_remembered_unavailable_recheck_honors_cap(monkeypatch):
@@ -6593,6 +6716,10 @@ def test_finra_wednesday_remembered_unavailable_failure_is_non_degrading(
     assert regulatory_monitor._run_monitor() == regulatory_monitor.EXIT_CLEAN
     assert detail_url in record
     saved_finra = saved_states[-1]["sources"][regulatory_monitor.SOURCE_KEY_FINRA]
+    assert (
+        saved_finra[regulatory_monitor.FINRA_MIDWEEK_RECHECK_DATE_KEY]
+        == "2026-09-23"
+    )
     assert "FINRA 26-99" in saved_finra[regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY]
     assert saved_states[-1]["regulatory_monitor"]["last_finra_discovery"] == {
         "discovery_path": "RSS",
@@ -11967,6 +12094,74 @@ def test_federal_register_reg_at_notices_stay_noise(monkeypatch, title, body):
 
     assert len(items) == 1
     assert items[0].classification == regulatory_monitor.CLASSIFICATION_NOISE
+
+
+@pytest.mark.parametrize(
+    "doc_type",
+    ["RULE", "PRORULE"],
+)
+@pytest.mark.parametrize(
+    "body",
+    [
+        "In 2015, the Commission proposed Regulation Automated Trading. "
+        "This rulemaking addresses swap dealer capital requirements.",
+        "Unlike Regulation Automated Trading, this rulemaking concerns "
+        "capital models for swap dealers and futures commission merchants.",
+        "This rulemaking does not amend Regulation Automated Trading and "
+        "does not impose Reg AT requirements.",
+    ],
+)
+def test_federal_register_reg_at_reference_only_rulemaking_stays_noise(
+    monkeypatch,
+    doc_type,
+    body,
+):
+    config = _load_config()
+    document = _fr_document(
+        "2026-95004",
+        title="Capital Requirements for Swap Dealers",
+        abstract="The Commodity Futures Trading Commission references Reg AT.",
+        doc_type=doc_type,
+        agency_slug="commodity-futures-trading-commission",
+        agency_name="Commodity Futures Trading Commission",
+    )
+    session, _requested = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-09-01",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_NOISE
+
+
+def test_federal_register_reg_at_withdrawal_rulemaking_classifies_high(monkeypatch):
+    config = _load_config()
+    document = _fr_document(
+        "2026-95005",
+        title="Withdrawal of Regulation Automated Trading",
+        abstract="The Commodity Futures Trading Commission withdraws Reg AT.",
+        doc_type="RULE",
+        agency_slug="commodity-futures-trading-commission",
+        agency_name="Commodity Futures Trading Commission",
+    )
+    session, _requested = _fr_body_session(
+        document,
+        "The Commission withdraws Regulation Automated Trading.",
+        monkeypatch,
+    )
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-09-01",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert items[0].classification_reason == "Regulation Automated Trading rulemaking"
 
 
 def test_sro_automated_trading_systems_suppression_survives_reg_at_rulemaking_fix():
