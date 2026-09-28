@@ -6513,6 +6513,104 @@ def test_finra_wednesday_recheck_runs_once_per_utc_date(monkeypatch):
     assert record.count(regulatory_monitor.FINRA_NOTICES_URL) == 2
 
 
+@pytest.mark.parametrize(
+    "first_listing_result",
+    [
+        {
+            "url": regulatory_monitor.FINRA_NOTICES_URL,
+            "status_code": 429,
+            "content": "",
+            "final_url": regulatory_monitor.FINRA_NOTICES_URL,
+            "was_redirected": False,
+            "error": "HTTP 429",
+        },
+        {
+            "url": regulatory_monitor.FINRA_NOTICES_URL,
+            "status_code": 200,
+            "content": (
+                "<html><head>"
+                '<link rel="canonical" href="https://www.finra.org/rules-guidance/notices" />'
+                "</head><body><main><table class='notices-table'><tbody>"
+                "</tbody></table><p>No notices rendered.</p>"
+                "</main></body></html>"
+            ),
+            "final_url": regulatory_monitor.FINRA_NOTICES_URL,
+            "was_redirected": False,
+            "error": None,
+        },
+    ],
+)
+def test_finra_wednesday_recheck_retries_after_invalid_listing_without_marker(
+    monkeypatch,
+    first_listing_result,
+):
+    _pin_finra_run_at(
+        monkeypatch,
+        regulatory_monitor.datetime(
+            2026, 9, 23, tzinfo=regulatory_monitor.timezone.utc
+        ),
+    )
+    config = _load_config()
+    record: list[str] = []
+    rss_items = [_rss_item(f"26-{index:02d}") for index in range(1, 11)]
+    detail_url = "https://www.finra.org/rules-guidance/notices/26-99"
+    state = {
+        "entries": {
+            f"FINRA 26-{index:02d}": "existing"
+            for index in range(1, 11)
+        },
+        regulatory_monitor.FINRA_UNAVAILABLE_STATE_KEY: {
+            "FINRA 26-99": {
+                "url": detail_url,
+                "reason": "NOT AVAILABLE AT THIS TIME",
+                "status": "permanent",
+                "expires_at": "2099-01-01T00:00:00+00:00",
+            }
+        },
+    }
+    monkeypatch.setattr(
+        regulatory_monitor,
+        "fetch_page",
+        _finra_rss_fetch_stub(
+            rss_result=_rss_response(_rss_feed(rss_items)),
+            detail_by_url={
+                detail_url: _finra_notice_page(
+                    "Artificial intelligence supervisory obligations now apply."
+                )
+            },
+            record=record,
+        ),
+    )
+
+    first = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+            listing_result=first_listing_result,
+        ),
+        config=config,
+        source_state=state,
+    )
+    assert first.items == []
+    assert first.listing_cross_check == "listing cross-check unavailable"
+    assert detail_url not in record
+    assert regulatory_monitor.FINRA_MIDWEEK_RECHECK_DATE_KEY not in state
+
+    second = regulatory_monitor.discover_finra_notices(
+        session=_RssSession(
+            _rss_response(_rss_feed(rss_items)),
+            record=record,
+            listing_html=_finra_listing_page_html(["/rules-guidance/notices/26-99"]),
+        ),
+        config=config,
+        source_state=state,
+    )
+
+    assert [item.document_id for item in second.items] == ["FINRA 26-99"]
+    assert detail_url in record
+    assert state[regulatory_monitor.FINRA_MIDWEEK_RECHECK_DATE_KEY] == "2026-09-23"
+
+
 def test_finra_wednesday_recheck_resets_on_next_utc_wednesday(monkeypatch):
     config = _load_config()
     record: list[str] = []
@@ -12162,6 +12260,81 @@ def test_federal_register_reg_at_withdrawal_rulemaking_classifies_high(monkeypat
     assert len(items) == 1
     assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
     assert items[0].classification_reason == "Regulation Automated Trading rulemaking"
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "The Commission withdraws Regulation Automated Trading.",
+        "The Commission re-proposes Regulation Automated Trading.",
+        (
+            "The Commission is not proposing unrelated margin changes. "
+            "The Commission withdraws Regulation Automated Trading."
+        ),
+    ],
+)
+def test_federal_register_reg_at_generic_title_body_rulemaking_classifies_high(
+    monkeypatch,
+    body,
+):
+    config = _load_config()
+    document = _fr_document(
+        "2026-95006",
+        title="Capital Requirements for Swap Dealers",
+        abstract="The Commodity Futures Trading Commission takes a rulemaking action.",
+        doc_type="RULE",
+        agency_slug="commodity-futures-trading-commission",
+        agency_name="Commodity Futures Trading Commission",
+    )
+    session, _requested = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-09-01",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_HIGH
+    assert items[0].classification_reason == "Regulation Automated Trading rulemaking"
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        (
+            "The Commission proposes new capital requirements for swap dealers. "
+            "Regulation Automated Trading is discussed only as historical background."
+        ),
+        (
+            "The Commission proposes new capital requirements for swap dealers, "
+            "while Regulation Automated Trading is discussed only as historical background."
+        ),
+    ],
+)
+def test_federal_register_reg_at_unbound_action_reference_stays_noise(
+    monkeypatch,
+    body,
+):
+    config = _load_config()
+    document = _fr_document(
+        "2026-95007",
+        title="Capital Requirements for Swap Dealers",
+        abstract="The Commodity Futures Trading Commission references Reg AT.",
+        doc_type="RULE",
+        agency_slug="commodity-futures-trading-commission",
+        agency_name="Commodity Futures Trading Commission",
+    )
+    session, _requested = _fr_body_session(document, body, monkeypatch)
+
+    items = regulatory_monitor.fetch_federal_register_documents(
+        session=session,
+        since_date="2026-09-01",
+        config=config,
+    )
+
+    assert len(items) == 1
+    assert items[0].classification == regulatory_monitor.CLASSIFICATION_NOISE
 
 
 def test_sro_automated_trading_systems_suppression_survives_reg_at_rulemaking_fix():

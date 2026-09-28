@@ -2467,18 +2467,37 @@ REG_AT_PATTERN = re.compile(
     re.IGNORECASE,
 )
 REG_AT_OPERATIVE_ACTION_PATTERN = re.compile(
-    r"\b(?:proposes?|adopts?|amends?|withdraws?|withdrawing|"
-    r"re[-\s]?proposes?)\b",
+    r"\b(?:proposes?|proposing|adopts?|adopting|amends?|amending|"
+    r"withdraws?|withdrawing|re[-\s]?proposes?|re[-\s]?proposing|"
+    r"reopens?|reopening|finalizes?|finalizing)\b",
     re.IGNORECASE,
 )
-REG_AT_NEGATED_ACTION_PATTERN = re.compile(
-    r"\b(?:does|do|did|would|will|shall)\s+not\s+"
-    r"(?:propose|adopt|amend|withdraw|re[-\s]?propose)\b|"
-    r"\bnot\s+(?:proposing|adopting|amending|withdrawing|"
-    r"re[-\s]?proposing)\b",
+REG_AT_NEGATION_PREFIX_PATTERN = re.compile(
+    r"(?:\b(?:does|do|did|would|will|shall|is|are|was|were|be|being)\s+not\s+|"
+    r"\bnot\s+)$",
     re.IGNORECASE,
 )
-REG_AT_OPERATIVE_WINDOW_CHARS = 240
+REG_AT_CLAUSE_BOUNDARY_PATTERN = re.compile(
+    r"(?:[.!?]+|\n+|;|:|,|\s+[-\u2013\u2014]{1,2}\s+|\b(?:but|while|whereas)\b)",
+    re.IGNORECASE,
+)
+
+
+def _reg_at_action_is_negated(text: str, action_match: re.Match) -> bool:
+    """Return whether the matched operative action is locally negated."""
+    prefix = text[max(0, action_match.start() - 40): action_match.start()]
+    return REG_AT_NEGATION_PREFIX_PATTERN.search(prefix) is not None
+
+
+def _reg_at_text_has_bound_operative_action(text: str) -> bool:
+    """Return whether current operative rulemaking language binds to Reg AT."""
+    for clause in REG_AT_CLAUSE_BOUNDARY_PATTERN.split(str(text or "")):
+        if not REG_AT_PATTERN.search(clause):
+            continue
+        for action_match in REG_AT_OPERATIVE_ACTION_PATTERN.finditer(clause):
+            if not _reg_at_action_is_negated(clause, action_match):
+                return True
+    return False
 
 
 def _is_regulation_automated_trading_rulemaking(doc_type: str, *fields: str) -> bool:
@@ -2491,15 +2510,8 @@ def _is_regulation_automated_trading_rulemaking(doc_type: str, *fields: str) -> 
         return True
 
     for field in fields[1:]:
-        text = str(field or "")
-        for match in REG_AT_PATTERN.finditer(text):
-            window_start = max(0, match.start() - REG_AT_OPERATIVE_WINDOW_CHARS)
-            window_end = min(len(text), match.end() + REG_AT_OPERATIVE_WINDOW_CHARS)
-            window = text[window_start:window_end]
-            if REG_AT_NEGATED_ACTION_PATTERN.search(window):
-                continue
-            if REG_AT_OPERATIVE_ACTION_PATTERN.search(window):
-                return True
+        if _reg_at_text_has_bound_operative_action(str(field or "")):
+            return True
     return False
 
 
@@ -5355,6 +5367,8 @@ def _finra_listing_cross_check(
         if denial_reason or identity_rejection:
             return _unavailable(denial_reason or identity_rejection)
         page_links = _extract_finra_notice_links(content)
+        if not page_links:
+            return _unavailable("no regulatory notice links")
     except Exception as exc:
         return _unavailable(_source_failure_reason(exc))
 
@@ -5430,12 +5444,12 @@ def _recheck_finra_remembered_unavailable_from_listing(
     recheck_date = now.date().isoformat()
     if source_state.get(FINRA_MIDWEEK_RECHECK_DATE_KEY) == recheck_date:
         return [], 0
-    source_state[FINRA_MIDWEEK_RECHECK_DATE_KEY] = recheck_date
 
     page_links = listing_page_links or []
     if not page_links:
         logger.warning("FINRA Wednesday unavailable re-check skipped: no validated listing")
         return [], 0
+    source_state[FINRA_MIDWEEK_RECHECK_DATE_KEY] = recheck_date
 
     _request_timeout, max_retries, request_delay = _get_operational_settings(config)
     known_entry_keys = set(source_state.get("entries", {}))
