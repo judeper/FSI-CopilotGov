@@ -129,54 +129,194 @@ if ($approvedAppIdentities.Count -eq 0 -or $approvedPluginIds.Count -eq 0) {
     throw "Populate the approved AppIdentity and plugin ID allow-lists before collecting evidence."
 }
 
-$startDate = (Get-Date).AddDays(-30)
-$endDate = Get-Date
+function Get-PagedCopilotAuditRecord {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [datetime]$StartDate,
 
-$copilotEvents = Search-UnifiedAuditLog `
-    -StartDate $startDate -EndDate $endDate `
-    -Operations "CopilotInteraction" `
-    -ResultSize 5000
+        [Parameter(Mandatory)]
+        [datetime]$EndDate,
 
-$pluginEvidence = foreach ($event in $copilotEvents) {
-    $auditData = $event.AuditData | ConvertFrom-Json
+        [timespan]$SegmentDuration = [timespan]::FromHours(1)
+    )
+
+    if ($EndDate -le $StartDate) {
+        throw "EndDate must be later than StartDate."
+    }
+    if ($SegmentDuration -le [timespan]::Zero) {
+        throw "SegmentDuration must be greater than zero."
+    }
+
+    $records = [System.Collections.Generic.List[object]]::new()
+    $seenRecordIds = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::OrdinalIgnoreCase
+    )
+
+    for ($segmentStart = $StartDate; $segmentStart -lt $EndDate; $segmentStart = $segmentEnd) {
+        $segmentEnd = $segmentStart.Add($SegmentDuration)
+        if ($segmentEnd -gt $EndDate) {
+            $segmentEnd = $EndDate
+        }
+
+        $sessionId = "CopilotPluginEvidence_$([guid]::NewGuid())"
+        $pageNumber = 0
+        $previousResultIndex = -1L
+        $segmentResultCount = 0
+        $segmentExhausted = $false
+
+        do {
+            $pageNumber++
+            if ($pageNumber -gt 100) {
+                throw "Paging safety limit reached for $segmentStart to $segmentEnd."
+            }
+
+            try {
+                $page = @(
+                    Search-UnifiedAuditLog `
+                        -StartDate $segmentStart `
+                        -EndDate $segmentEnd `
+                        -RecordType CopilotInteraction `
+                        -Operations "CopilotInteraction" `
+                        -SessionId $sessionId `
+                        -SessionCommand ReturnLargeSet `
+                        -ResultSize 5000 `
+                        -ErrorAction Stop
+                )
+            }
+            catch {
+                throw (
+                    "Search-UnifiedAuditLog failed for segment $segmentStart to " +
+                    "$segmentEnd on page $pageNumber (SessionId $sessionId). " +
+                    "No evidence from this run should be treated as complete. " +
+                    "Underlying error: $($_.Exception.Message)"
+                )
+            }
+
+            if ($page.Count -eq 0) {
+                $segmentExhausted = $true
+                break
+            }
+
+            $segmentResultCount += $page.Count
+            $newRecordCount = 0
+
+            foreach ($record in $page) {
+                $auditData = $record.AuditData | ConvertFrom-Json
+                $recordId = [string]$auditData.Id
+                if ([string]::IsNullOrWhiteSpace($recordId)) {
+                    throw "An audit record is missing AuditData.Id; safe deduplication is not possible."
+                }
+
+                if ($seenRecordIds.Add($recordId)) {
+                    $records.Add(
+                        [PSCustomObject]@{
+                            Record    = $record
+                            AuditData = $auditData
+                        }
+                    )
+                    $newRecordCount++
+                }
+            }
+
+            $lastResult = $page[-1]
+            $hasResultIndex = $null -ne $lastResult.ResultIndex -and
+                -not [string]::IsNullOrWhiteSpace([string]$lastResult.ResultIndex)
+            $hasResultCount = $null -ne $lastResult.ResultCount -and
+                -not [string]::IsNullOrWhiteSpace([string]$lastResult.ResultCount)
+
+            if ($hasResultIndex) {
+                $resultIndex = [long]$lastResult.ResultIndex
+                if ($resultIndex -le $previousResultIndex -and $newRecordCount -eq 0) {
+                    throw "Audit paging made no progress for $segmentStart to $segmentEnd."
+                }
+                $previousResultIndex = $resultIndex
+            }
+
+            $moreRecordsProperty = $lastResult.AuditSearchRequestMetadata.PSObject.Properties[
+                "moreRecordsAvailable"
+            ]
+            if ($null -ne $moreRecordsProperty) {
+                $segmentExhausted = -not [System.Convert]::ToBoolean(
+                    $moreRecordsProperty.Value
+                )
+            }
+            elseif ($hasResultIndex -and $hasResultCount) {
+                $segmentExhausted = (
+                    [long]$lastResult.ResultIndex -eq [long]$lastResult.ResultCount
+                )
+            }
+
+            if (
+                $segmentResultCount -ge 50000 -or
+                ($hasResultCount -and [long]$lastResult.ResultCount -ge 50000)
+            ) {
+                throw (
+                    "The $segmentStart to $segmentEnd segment reached the Exchange Online " +
+                    "50,000-record session limit. Reduce SegmentDuration and rerun; this " +
+                    "result cannot be represented as complete."
+                )
+            }
+
+            if (-not $segmentExhausted -and $newRecordCount -eq 0) {
+                throw "Audit paging returned only duplicate records before reporting exhaustion."
+            }
+        }
+        while (-not $segmentExhausted)
+    }
+
+    return $records
+}
+
+$endDate = (Get-Date).ToUniversalTime()
+$startDate = $endDate.AddDays(-30)
+$recordEnvelopes = @(
+    Get-PagedCopilotAuditRecord -StartDate $startDate -EndDate $endDate
+)
+
+$pluginEvidence = foreach ($envelope in $recordEnvelopes) {
+    $record = $envelope.Record
+    $auditData = $envelope.AuditData
     $copilotEventData = $auditData.CopilotEventData
 
     foreach ($plugin in @($copilotEventData.AISystemPlugin)) {
-        if ($null -ne $plugin -and $plugin.Name) {
-            $rejectionReasons = @()
-            if ($auditData.Workload -ne "Copilot") {
-                $rejectionReasons += "Unexpected workload"
-            }
-            if (([string]$auditData.AppIdentity) -like "Copilot.Security.*") {
-                $rejectionReasons += "Security Copilot is out of scope"
-            }
-            elseif ($approvedAppIdentities -notcontains [string]$auditData.AppIdentity) {
-                $rejectionReasons += "AppIdentity is not approved"
-            }
-            if ($approvedPluginIds -notcontains [string]$plugin.ID) {
-                $rejectionReasons += "Plugin ID is not approved"
-            }
+        if ($null -eq $plugin) {
+            continue
+        }
 
-            [PSCustomObject]@{
-                EvidenceStatus  = if ($rejectionReasons.Count -eq 0) { "Accepted" } else { "Rejected" }
-                RejectionReason = $rejectionReasons -join "; "
-                CreationDate    = $event.CreationDate
-                UserIds         = $event.UserIds
-                Workload        = $auditData.Workload
-                AppIdentity     = $auditData.AppIdentity
-                AppHost         = $copilotEventData.AppHost
-                AgentId         = $auditData.AgentId
-                AgentName       = $auditData.AgentName
-                PluginName      = $plugin.Name
-                PluginId        = $plugin.ID
-                PluginVersion   = $plugin.Version
-            }
+        $rejectionReasons = @()
+        if ($auditData.Workload -ne "Copilot") {
+            $rejectionReasons += "Unexpected workload"
+        }
+        if (([string]$auditData.AppIdentity) -like "Copilot.Security.*") {
+            $rejectionReasons += "Security Copilot is out of scope"
+        }
+        elseif ($approvedAppIdentities -notcontains [string]$auditData.AppIdentity) {
+            $rejectionReasons += "AppIdentity is not approved"
+        }
+        if ($approvedPluginIds -notcontains [string]$plugin.ID) {
+            $rejectionReasons += "Plugin ID is not approved"
+        }
+
+        [PSCustomObject]@{
+            EvidenceStatus  = if ($rejectionReasons.Count -eq 0) { "Accepted" } else { "Rejected" }
+            RejectionReason = $rejectionReasons -join "; "
+            CreationDate    = $record.CreationDate
+            UserId          = $record.UserIds -join "; "
+            Workload        = $auditData.Workload
+            AppIdentity     = $auditData.AppIdentity
+            AppHost         = $copilotEventData.AppHost
+            AgentId         = $auditData.AgentId
+            AgentName       = $auditData.AgentName
+            PluginName      = $plugin.Name
+            PluginId        = $plugin.ID
+            PluginVersion   = $plugin.Version
         }
     }
 }
 
 Write-Host "Microsoft 365 Copilot Plugin Evidence (Last 30 Days):" -ForegroundColor Cyan
-Write-Host "Total CopilotInteraction records: $($copilotEvents.Count)"
+Write-Host "Total CopilotInteraction envelopes collected: $($recordEnvelopes.Count)"
 Write-Host "Plugin rows before scoping filters: $($pluginEvidence.Count)"
 
 $m365PluginEvidence = @($pluginEvidence | Where-Object EvidenceStatus -eq "Accepted")
@@ -206,6 +346,8 @@ if ($rejectedPluginEvidence.Count -gt 0) {
 ```
 
 The Microsoft audit schema places `AISystemPlugin` and `AppHost` under `AuditData.CopilotEventData`, while fields such as `Workload`, `AppIdentity`, `AgentId`, and `AgentName` remain at the root of `AuditData`. Microsoft also documents `CopilotInteraction` as a cross-product record type that includes Microsoft 365 Copilot, Cowork, and Security Copilot, so `Workload = Copilot` is not a sufficient product boundary by itself. Filter by an approved `AppIdentity` allow-list and keep `Copilot.Security.SecurityCopilot` out of the Microsoft 365 Copilot evidence set.
+
+`Search-UnifiedAuditLog` returns at most 5,000 records per call. Script 4 therefore reuses a stable `SessionId` with `SessionCommand ReturnLargeSet` until each one-hour segment is exhausted, deduplicates the immutable audit record ID across page and segment boundaries, and stops if any segment reaches the 50,000-record Exchange Online session limit. If that limit is hit, reduce `SegmentDuration` and rerun; do not treat the export as complete evidence.
 
 If you also need administrative change evidence for plugin or agent governance, search the documented admin operations separately, for example: `CreatePlugin`, `UpdatePlugin`, `EnablePlugin`, `DisableCopilotPlugin`, `DeployedAgent`, `UpdatedAgent`, `RemovedAgent`, `BlockedAgent`, `UnblockedAgent`, `DeletedAgent`, and `UpdatedTenantSettings`. Microsoft documents `EnablePlugin` in more than one Copilot product context, and `UpdatedTenantSettings` (Agent settings) is a different operation from `UpdateTenantSettings` (Copilot setting changes), so scope exported records before treating them as Microsoft 365 Copilot evidence.
 
