@@ -30,7 +30,7 @@ learn:
   critical_patterns:
     - pattern: '\d+\.\s+(click|select|go to|navigate)'
       reason: "UI navigation steps changed"
-    - pattern: '(deprecated|removed|no longer|retired)'
+    - pattern: '(deprecated|retired|\bremoved\b|no longer (?:available|supported|recommended|maintained|included|active|updated|used|required|accessible|valid|applies|exists|works?))'
       reason: "Deprecation notice"
     - pattern: '(breaking change|migration required)'
       reason: "Breaking changes"
@@ -75,7 +75,7 @@ learn:
   # whole-page content and logs a warning instead of failing.
   section_anchors:
     - url: 'https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365'
-      heading: "Microsoft 365 (formerly Office 365)"
+      heading: "Microsoft 365 (formerly, Office 365)"
     - url: 'https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-copilot'
       heading: "Microsoft Copilot"
 

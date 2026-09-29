@@ -37,6 +37,7 @@ from typing import Optional
 from monitoring_shared import (
     fetch_page,
     extract_learn_content_snapshot,
+    canonicalize_learn_text,
     compute_hash,
     classify_change,
     detect_learn_page_shape,
@@ -620,9 +621,9 @@ def _run_monitor(args, config: dict):
 
         # Compare to previous state
         url_state = source_state.get("urls", {}).get(entry.url, {})
-        old_hash = url_state.get("content_hash")
         old_content = url_state.get("normalized_content", "")
         old_scope = url_state.get("content_scope", "whole-page")
+        old_hash = compute_hash(canonicalize_learn_text(old_content)) if old_content else None
         old_page_shape = detect_learn_page_shape(old_content, config) if old_content else None
 
         if snapshot.page_shape:
@@ -632,6 +633,30 @@ def _run_monitor(args, config: dict):
                 entry.url,
                 snapshot.page_shape,
             )
+            if entry.url in source_state.get("urls", {}):
+                source_state["urls"][entry.url]["last_checked"] = now
+                source_state["urls"][entry.url]["last_status"] = 200
+            time.sleep(request_delay)
+            continue
+
+        if snapshot.scope_missing and old_scope.startswith("section:"):
+            print(f"  CHANGED: HIGH (Monitored section missing)")
+            logger.warning(snapshot.warning)
+            affected = find_affected_controls(entry.url, DOCS_DIR, config=config)
+
+            change = ChangeRecord(
+                url=entry.url,
+                topic=entry.topic,
+                section=entry.section,
+                classification=CLASSIFICATION_HIGH,
+                reason="Monitored section missing",
+                diff_text=snapshot.warning or "",
+                affected_controls=affected['controls'],
+                affected_playbooks=affected['playbooks'],
+            )
+            change.priority = CLASSIFICATION_HIGH
+            changes.append(change)
+
             if entry.url in source_state.get("urls", {}):
                 source_state["urls"][entry.url]["last_checked"] = now
                 source_state["urls"][entry.url]["last_status"] = 200
@@ -673,6 +698,17 @@ def _run_monitor(args, config: dict):
                 "last_checked": now,
                 "last_status": 200,
                 "last_changed": now,
+                "topic": entry.topic,
+                "section": entry.section,
+                "content_scope": snapshot.content_scope,
+            }
+        elif old_hash == new_hash:
+            source_state["urls"][entry.url] = {
+                "content_hash": new_hash,
+                "normalized_content": normalized,
+                "last_checked": now,
+                "last_status": 200,
+                "last_changed": url_state.get("last_changed", now),
                 "topic": entry.topic,
                 "section": entry.section,
                 "content_scope": snapshot.content_scope,

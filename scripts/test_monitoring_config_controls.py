@@ -3,11 +3,17 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import sys
 
+import pytest
 import yaml
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPTS_DIR.parent
+sys.path.insert(0, str(SCRIPTS_DIR))
+
+import monitoring_shared  # noqa: E402
+
 CONFIG_PATH = REPO_ROOT / "scripts" / "config" / "monitoring-config.yaml"
 CONTROLS_PATH = REPO_ROOT / "assessment" / "manifest" / "controls.json"
 
@@ -74,3 +80,24 @@ def test_learn_url_control_map_control_ids_exist_in_manifest():
         "learn.url_control_map references control IDs missing from controls.json:\n"
         + "\n".join(missing)
     )
+
+
+def test_load_monitoring_config_fails_fast_for_unknown_learn_override_control(tmp_path, capsys):
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    config["learn"]["url_control_map"] = list(config["learn"].get("url_control_map", []))
+    config["learn"]["url_control_map"].append(
+        {
+            "url": "https://learn.microsoft.com/en-us/example/bad",
+            "controls": ["9.99"],
+        }
+    )
+    temp_config = tmp_path / "monitoring-config.yaml"
+    temp_config.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+
+    with pytest.raises(SystemExit) as excinfo:
+        monitoring_shared.load_monitoring_config(temp_config)
+
+    assert excinfo.value.code == 2
+    captured = capsys.readouterr()
+    assert "learn.url_control_map" in captured.out
+    assert "9.99" in captured.out
