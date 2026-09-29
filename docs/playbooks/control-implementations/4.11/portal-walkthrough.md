@@ -36,11 +36,12 @@ Step-by-step portal configuration for integrating Microsoft 365 Copilot events i
 
 1. In **Microsoft Sentinel > Configuration > Data connectors**, locate **Microsoft Copilot (Preview)**.
 2. Enable the connector for the target workspace.
-3. Validate the table schema in Logs:
+3. Validate the table schema in **Advanced hunting** (or **Logs** for legacy Azure workspaces):
    - `CopilotActivity | getschema`
 4. Validate ingestion with the documented filter:
    - `CopilotActivity | where RecordType == "CopilotInteraction" | take 10`
-5. If zero rows are returned, treat that as a gap indicator and verify connector state, RBAC permissions, and ingestion delay.
+5. Use this connector as the primary Sentinel source for **M365 Copilot and Security Copilot** audit records. Do not rely on the Microsoft 365 connector alone for `CopilotInteraction` evidence.
+6. If zero rows are returned, treat that as a gap indicator and verify connector state, RBAC permissions, and ingestion delay.
 
 ### Step 3: Create Copilot-Specific Analytics Rules
 
