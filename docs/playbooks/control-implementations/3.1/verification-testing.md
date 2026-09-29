@@ -21,7 +21,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
   1. Run `Get-UnifiedAuditLogRetentionPolicy` and filter for Copilot-related policies.
   2. For PowerShell-created policies, confirm the policy shows `RetentionDuration: TenYears` and `RecordTypes: CopilotInteraction`. PowerShell does not support a six-year audit retention value; use `TenYears` to cover the SEC Rule 17a-4(a) minimum.
   3. If the policy was configured in the Purview portal with a 7-year duration, document that portal-only duration, verify the user population has the 10-year Audit Log Retention add-on required for the portal's 3-, 5-, and 7-year options, and retain that license evidence with the policy record.
-  4. Verify the policy priority is higher than the default retention policy.
+  4. Verify the policy priority uses a unique value and matches the intended precedence. Lower numbers take precedence over higher numbers among custom policies, and any custom policy takes precedence over the default policy.
 - **Expected Result:** FSI Copilot retention policy exists with correct duration, record types, and priority. PowerShell evidence shows `TenYears`; portal-created 7-year evidence is documented where used.
 - **Evidence:** PowerShell output or portal evidence showing the retention policy configuration.
 

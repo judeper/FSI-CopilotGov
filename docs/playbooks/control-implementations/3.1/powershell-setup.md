@@ -136,6 +136,8 @@ if ($jailbreakEvents.Count -gt 0) {
 # "SixYears" is NOT a supported value — use TenYears for FSI deployments that
 # need to help meet the SEC Rule 17a-4(a) six-year minimum (10-year retention
 # safely covers the 6-year obligation under FINRA Rule 4511 and SEC 17a-4(a)).
+# Priority values must also be unique; lower numbers take precedence over
+# higher numbers among custom policies.
 New-UnifiedAuditLogRetentionPolicy `
     -Name "FSI-Copilot-10Year-Retention" `
     -Description "10-year retention for Copilot interactions (helps meet SEC Rule 17a-4(a) six-year preservation and FINRA Rule 4511 books-and-records requirements)" `
@@ -151,7 +153,7 @@ New-UnifiedAuditLogRetentionPolicy `
     -Description "10-year retention for agent admin events (helps meet Sarbanes-Oxley §§302/404 IT general control evidence preservation, where applicable to ICFR)" `
     -RecordTypes @("CopilotAgentManagement") `
     -RetentionDuration TenYears `
-    -Priority 100
+    -Priority 110
 
 Write-Host "Audit retention policies created" -ForegroundColor Green
 ```

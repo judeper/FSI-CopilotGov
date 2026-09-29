@@ -17,12 +17,12 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
 ### Issue 2: Audit Retention Policy Not Applying
 
 - **Symptoms:** Copilot audit records expire after default 180-day period (all license tiers) despite a longer retention policy being configured.
-- **Root Cause:** The retention policy priority may be lower than the default policy, or the record type filter may not match.
+- **Root Cause:** A conflicting custom policy with a lower numeric priority value may be taking precedence, the policy may reuse a duplicate priority value, or the record type filter may not match.
 - **Resolution:**
   1. Review all retention policies: `Get-UnifiedAuditLogRetentionPolicy | Format-List`
-  2. Verify the FSI policy has a higher priority number than the default policy.
+  2. Verify the FSI policy uses a unique priority value and that its intended precedence is correct. Lower numbers take precedence over higher numbers among custom policies, and custom policies take precedence over the default policy.
   3. Confirm `RecordTypes` includes `CopilotInteraction`.
-  4. If needed, update priority on the existing policy: `Set-UnifiedAuditLogRetentionPolicy -Identity "<policy-name>" -Priority 100` (for example, `FSI-Copilot-10Year-Retention` if you used the PowerShell example policy name).
+  4. If needed, update the existing policy with a complete command: `Set-UnifiedAuditLogRetentionPolicy -Identity "FSI-Copilot-10Year-Retention" -RetentionDuration TenYears -Priority 100`. Keep priorities unique — for example, use `110` for `FSI-AgentAdmin-10Year-Retention`.
 
 ### Issue 3: Incomplete Audit Data Fields
 

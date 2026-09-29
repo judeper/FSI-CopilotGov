@@ -25,7 +25,7 @@ Step-by-step portal configuration for enabling comprehensive audit logging of al
 **Path:** purview.microsoft.com > Audit > Search
 
 1. In the **Activities - friendly names** filter, expand **Copilot activities** to view the current Copilot-specific operations.
-2. Confirm that `CopilotInteraction` is available for Microsoft Copilot interactions and that the current Teams/Facilitator activity names (`AINotesUpdate`, `LiveNotesUpdate`, `TeamCopilotMsgInteraction`) appear under the Teams-related activity lists when those scenarios are in scope.
+2. Confirm that `CopilotInteraction` is available for Microsoft Copilot interactions. For Teams/Facilitator scenarios, use the documented operation and record-type combination from [audit-copilot](https://learn.microsoft.com/en-us/purview/audit-copilot): `AINotesUpdate`, `LiveNotesUpdate`, and `TeamCopilotMsgInteraction` under the `TeamCopilotInteraction` record type. Do not assume every one of those operation names appears in the portal's friendly-name picker.
 3. If your review covers Microsoft 365 Copilot administration, confirm the current admin operations you plan to monitor (for example `CreatePlugin`, `DeletePlugin`, `EnablePlugin`, `DisableCopilotPlugin`, `UpdatePlugin`, `EnablePromptBook`, `DisablePromptBook`, `UpdatePromptBook`, `UpdateTenantSettings`) match the Microsoft audit catalog.
 4. To search for agent-specific events, use the **Record type** filter and select `CopilotAgentManagement`.
 
@@ -50,12 +50,12 @@ To surface the expanded audit schema fields — the top-level `AgentId`, `AgentN
 1. Click **New audit retention policy**.
 2. Set **Record type** to `CopilotInteraction`.
 3. Set **Duration** to 10 years (FSI regulated recommendation; minimum 6 years per SEC Rule 17a-4(a)).
-4. Set **Priority** to a value higher than the default retention policy.
+4. Set **Priority** to a unique value such as `100`. Lower numbers take precedence over higher numbers among custom policies, and any custom policy takes precedence over the default policy.
 5. Click **Save** to apply.
 6. Create a second policy for agent record types:
    - **Record types:** Select `CopilotAgentManagement`
    - **Duration:** 7 years in the portal (or 10 years if your policy standard prefers additional headroom). The Purview portal does not expose a 6-year option, and Microsoft requires the 10-year Audit Log Retention add-on for the portal's 3-, 5-, and 7-year options, and for the 10-year option.
-   - **Priority:** Same as the Copilot interaction policy
+   - **Priority:** Use a different unique value such as `110` if the Copilot interaction policy uses `100`
 
 > **Role note:** Use an account with the `Organization Configuration` role for the retention-policy step. Search-only roles such as `Audit Logs` / `View-Only Audit Logs` aren't sufficient to create or modify audit retention policies.
 
