@@ -16,7 +16,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 
 ### Test 2: Retention Policy Application
 
-- **Objective:** Verify that the 6-year retention requirement is covered for Copilot audit records
+- **Objective:** Verify that the six-year regulatory minimum is covered for Copilot audit records
 - **Steps:**
   1. Run `Get-UnifiedAuditLogRetentionPolicy` and filter for Copilot-related policies.
   2. For PowerShell-created policies, confirm the policy shows `RetentionDuration: TenYears` and `RecordTypes: CopilotInteraction`. PowerShell does not support a six-year audit retention value; use `TenYears` to cover the SEC Rule 17a-4(a) minimum.
@@ -50,7 +50,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Objective:** Verify that agent creation and modification events generate CopilotAgentManagement records (see [M365 Admin Center agent management activities](https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities))
 - **Steps:**
   1. In a test environment, have an authorized administrator create a new declarative Copilot agent or modify an existing agent (e.g., add a knowledge source or change agent instructions).
-  2. Wait 15-30 minutes for log ingestion.
+  2. Wait 30 minutes, then recheck for up to 4 hours if the event hasn't appeared yet.
   3. Search the Unified Audit Log using `-RecordType CopilotAgentManagement` filtered to the test administrator's UPN.
   4. Verify the event record contains `AgentId` and `AgentName` fields in the AuditData JSON.
 - **Expected Result:** At least one `CopilotAgentManagement` event appears with the administrator's UPN, the affected agent's ID and name, and a timestamp corresponding to the test action.
@@ -82,9 +82,9 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Objective:** Verify that agent-specific record types are covered by a retention policy
 - **Steps:**
   1. Run `Get-UnifiedAuditLogRetentionPolicy | Where-Object { $_.RecordTypes -like "*CopilotAgentManagement*" }`.
-  2. Confirm the policy exists with a minimum 6-year duration.
+  2. Confirm the policy exists with a 7-year portal duration or `TenYears` if it was created in PowerShell.
   3. Verify the policy priority is appropriately set.
-- **Expected Result:** A retention policy covering `CopilotAgentManagement` exists with 6-year duration — supporting SOX Section 404 IT general controls audit trail requirements.
+- **Expected Result:** A retention policy covering `CopilotAgentManagement` exists with a 7-year portal duration or `TenYears` from PowerShell — supporting SOX Section 404 IT general controls audit trail requirements.
 - **Evidence:** PowerShell output showing the agent record type retention policy configuration.
 
 ## Evidence Collection
@@ -103,7 +103,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Rule 17a-4(a) | Electronic record preservation — six-year retention minimum | Supports compliance through 6-year audit log retention for CopilotInteraction and agent record types |
+| SEC Rule 17a-4(a) | Electronic record preservation — six-year retention minimum | Supports compliance through retention that covers the 6-year minimum for CopilotInteraction and agent record types (7 years in portal or `TenYears` in PowerShell) |
 | FINRA Rule 4511 | Books and records | Helps meet record-keeping requirements for AI-assisted activities |
 | FINRA Rule 3110 | Supervisory procedures for registered representatives | AgentId/AgentName fields enable supervisory mapping of agent usage to approved workflows |
 | SOX Section 404 | IT general controls audit trail | CopilotAgentManagement record type provides change management evidence |

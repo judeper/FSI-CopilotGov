@@ -24,9 +24,9 @@ Step-by-step portal configuration for enabling comprehensive audit logging of al
 **Portal:** Microsoft Purview portal
 **Path:** purview.microsoft.com > Audit > Search
 
-1. In the **Activities - friendly names** filter, expand **Copilot activities** to view all Copilot-specific events.
-2. Confirm that the following activities are available for search: `CopilotInteraction`, `CopilotFeedback`, `CopilotPluginRun`.
-3. Create a saved search for "All Copilot Activity" selecting all Copilot-related event types.
+1. In the **Activities - friendly names** filter, expand **Copilot activities** to view the current Copilot-specific operations.
+2. Confirm that `CopilotInteraction` is available for Microsoft Copilot interactions and that the current Teams/Facilitator activity names (`AINotesUpdate`, `LiveNotesUpdate`, `TeamCopilotMsgInteraction`) appear under the Teams-related activity lists when those scenarios are in scope.
+3. If your review covers Microsoft 365 Copilot administration, confirm the current admin operations you plan to monitor (for example `CreatePlugin`, `DeletePlugin`, `EnablePlugin`, `DisableCopilotPlugin`, `UpdatePlugin`, `EnablePromptBook`, `DisablePromptBook`, `UpdatePromptBook`, `UpdateTenantSettings`) match the Microsoft audit catalog.
 4. To search for agent-specific events, use the **Record type** filter and select `CopilotAgentManagement`.
 
 ### Step 3: Search for New Audit Schema Fields
@@ -54,7 +54,7 @@ To surface the expanded audit schema fields — the top-level `AgentId`, `AgentN
 5. Click **Save** to apply.
 6. Create a second policy for agent record types:
    - **Record types:** Select `CopilotAgentManagement`
-   - **Duration:** 6 years (Sarbanes-Oxley §404 IT general controls require multi-year change management records)
+   - **Duration:** 7 years in the portal (or 10 years if your policy standard prefers additional headroom). The Purview portal does not expose a 6-year option.
    - **Priority:** Same as the Copilot interaction policy
 
 ### Step 5: Configure Agent-Specific Record Type Navigation
@@ -76,7 +76,7 @@ To search for agent administrative events in the portal:
 
 1. Create a new alert policy for unusual Copilot interaction volume.
 2. Set the activity to `CopilotInteraction` with threshold of more than 500 events per hour per user.
-3. Create a second alert for `JailbreakDetected` events — set threshold to 1 (any jailbreak attempt triggers an alert).
+3. Do not assume `JailbreakDetected` is a first-class alert activity. Microsoft documents it as a nested `Messages[].JailbreakDetected` property inside `CopilotInteraction` audit data, so detect it by exporting or ingesting `CopilotInteraction` records and parsing the JSON downstream (for example, in a SIEM).
 4. Assign alert recipients to the compliance monitoring team distribution group.
 
 ## FSI Recommendations
@@ -85,9 +85,9 @@ To search for agent administrative events in the portal:
 |---------|----------|-------------|-----------|
 | Audit log status | Enabled | Enabled | Enabled |
 | CopilotInteraction retention | 180 days | 1 year | 6-10 years |
-| CopilotAgentManagement retention | Not required | 1 year | 6 years |
+| CopilotAgentManagement retention | Not required | 1 year | 7-10 years |
 | Copilot activity alerts | Optional | Recommended | Required |
-| JailbreakDetected alert | Optional | Recommended | Required |
+| JailbreakDetected review automation | Optional | Recommended | Required |
 | Audit Premium or PAYG | Optional | Recommended | Required |
 | Agent record type searches | Optional | Recommended | Required |
 

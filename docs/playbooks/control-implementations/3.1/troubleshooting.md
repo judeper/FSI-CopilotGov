@@ -22,7 +22,7 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
   1. Review all retention policies: `Get-UnifiedAuditLogRetentionPolicy | Format-List`
   2. Verify the FSI policy has a higher priority number than the default policy.
   3. Confirm `RecordTypes` includes `CopilotInteraction`.
-  4. If needed, update priority: `Set-UnifiedAuditLogRetentionPolicy -Name "FSI-Copilot-6Year-Retention" -Priority 100`
+  4. If needed, update priority: `Set-UnifiedAuditLogRetentionPolicy -Name "FSI-Copilot-7Year-Retention" -Priority 100`
 
 ### Issue 3: Incomplete Audit Data Fields
 

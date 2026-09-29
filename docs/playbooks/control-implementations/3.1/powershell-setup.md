@@ -59,7 +59,9 @@ $copilotLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
 
 ```powershell
 # Search for agent configuration changes (CopilotAgentManagement record type)
-# Operations per https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities
+# Current operations include BlockedAgent, DeletedAgent, DeployedAgent,
+# RemovedAgent, UnblockedAgent, UpdatedAgent, and UpdatedTenantSettings per
+# https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
 
@@ -141,8 +143,9 @@ New-UnifiedAuditLogRetentionPolicy `
     -RetentionDuration TenYears `
     -Priority 100
 
-# Create 10-year retention policy for agent administrative record types
-# CopilotAgentManagement per https://learn.microsoft.com/graph/api/resources/security-auditlogrecordtype
+# Create 10-year retention policy for agent administrative record types.
+# Microsoft Graph documents Copilot agent-management audit data through the
+# copilotAgentManagementAuditRecord resource type.
 New-UnifiedAuditLogRetentionPolicy `
     -Name "FSI-AgentAdmin-10Year-Retention" `
     -Description "10-year retention for agent admin events (helps meet Sarbanes-Oxley §§302/404 IT general control evidence preservation, where applicable to ICFR)" `
