@@ -4,6 +4,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
+
 SCRIPTS_DIR = Path(__file__).resolve().parent
 FIXTURES_DIR = SCRIPTS_DIR / "fixtures" / "learn_monitor"
 sys.path.insert(0, str(SCRIPTS_DIR))
@@ -13,6 +15,55 @@ import monitoring_shared  # noqa: E402
 
 def _fixture(name: str) -> str:
     return (FIXTURES_DIR / name).read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    "phrase",
+    [
+        "This connector is deprecated.",
+        "This connector will be retired next quarter.",
+        "This connector is no longer supported.",
+        "This connector has been removed.",
+        "This connector is being deprecated.",
+        "This connector is no longer available.",
+        "This connector will be removed next quarter.",
+        "This connector is being retired.",
+        "Legacy connector will no longer be supported after June 2026.",
+        "Microsoft will no longer support this API.",
+        "This setting is no longer applicable.",
+        "Feature is no longer in preview.",
+        "Users are no longer able to configure this option.",
+        "Option is no longer visible in the admin center.",
+    ],
+)
+def test_deprecation_language_stays_critical_by_default(phrase: str):
+    old = "This connector is available."
+    new = phrase
+
+    classification, reason, _ = monitoring_shared.classify_change(old, new)
+
+    assert classification == monitoring_shared.CLASSIFICATION_CRITICAL
+    assert reason == "Deprecation notice"
+
+
+@pytest.mark.parametrize(
+    "phrase",
+    [
+        "and remove connections when they're no longer needed.",
+        "Delete the connector when you no longer need to collect these logs.",
+    ],
+)
+def test_known_benign_no_longer_phrases_are_not_deprecation(phrase: str):
+    old = "Connector operations are documented."
+    new = f"Connector operations are documented.\n{phrase}"
+
+    classification, reason, diff_text = monitoring_shared.classify_change(old, new)
+
+    assert phrase in diff_text
+    assert (classification, reason) != (
+        monitoring_shared.CLASSIFICATION_CRITICAL,
+        "Deprecation notice",
+    )
 
 
 def test_learn_command_bar_churn_is_noise():

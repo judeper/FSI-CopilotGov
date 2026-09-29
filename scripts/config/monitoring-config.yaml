@@ -30,7 +30,10 @@ learn:
   critical_patterns:
     - pattern: '\d+\.\s+(click|select|go to|navigate)'
       reason: "UI navigation steps changed"
-    - pattern: '(deprecated|retired|\bremoved\b|no longer (?:available|supported|recommended|maintained|included|active|updated|used|required|accessible|valid|applies|exists|works?))'
+    # Keep bare "no longer" as fail-loud deprecation language, but exclude the
+    # known benign "no longer need/needed/necessary" forms used in operational
+    # cleanup guidance. "No longer required" intentionally remains CRITICAL.
+    - pattern: '(deprecated|retired|\bremoved\b|no longer(?!\s+(?:need(?:ed|ing)?\b|necessary\b)))'
       reason: "Deprecation notice"
     - pattern: '(breaking change|migration required)'
       reason: "Breaking changes"
