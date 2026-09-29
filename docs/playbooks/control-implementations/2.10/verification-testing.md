@@ -117,7 +117,7 @@ Test cases and evidence collection for validating insider risk detection for Cop
 |-----------|-------------|------------------------------|
 | FINRA Rule 3110 | Supervisory systems | Insider risk detection supports compliance with supervisory monitoring requirements; Risky Agents addresses the 2026 FINRA Oversight Report requirement for AI agent supervisory controls |
 | FINRA Rule 3120 | Testing supervisory procedures | IRM alert generation and investigation workflow provide testable supervisory procedures for Copilot and agent oversight |
-| FINRA 2026 Oversight Report (GenAI) | Agentic AI supervisory controls | Risky Agents policy and AI usage indicators directly address FINRA's 2026 requirement for supervisory systems covering AI workflow engines |
+| FINRA 2026 Oversight Report (GenAI) | Agentic AI supervisory controls | Risky Agents policy and the configured Generative AI apps / Risky AI usage indicators directly address FINRA's 2026 requirement for supervisory systems covering AI workflow engines |
 | OCC Bulletin 2025-26 | Model risk management | IRM Triage Agent documented as model per SR 11-7; proportionate AI-assisted governance |
 | SEC Regulation S-P | Safeguards for customer data | Detecting data theft patterns helps meet customer data protection obligations |
 | GLBA §501(b) | Monitoring and testing safeguards | IRM provides ongoing monitoring evidence and quarterly testing capability |

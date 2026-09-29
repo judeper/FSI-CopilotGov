@@ -67,7 +67,7 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
   2. Adjust risk level thresholds upward to reduce noise — use the Triage Agent categorizations as a guide for which alert types are generating low-value signals
   3. Use priority user groups to focus detection on higher-risk roles
   4. Implement alert filtering to separate low-confidence from high-confidence signals
-  5. For AI usage indicators, set thresholds relative to organizational Copilot deployment scale — a fully deployed tenant will have much higher baseline AI usage than a limited pilot
+  5. For the Generative AI apps indicators and Risky AI usage indicators, set thresholds relative to organizational Copilot deployment scale — a fully deployed tenant will have much higher baseline AI usage than a limited pilot
 
 ### Issue 7: Insider Risk Data Not Correlating with Copilot Events
 

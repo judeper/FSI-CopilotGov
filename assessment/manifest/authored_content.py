@@ -1745,13 +1745,15 @@ AUTHORED: dict[str, dict] = {
         ),
         "facilitatorNotes": {
             "ask": (
-                "Are Defender for Cloud Apps Copilot session policies and "
-                "anomaly alerts reviewed on a documented cadence?"
+                "Are Defender for Cloud Apps browser-session controls for "
+                "the in-scope Microsoft 365 web workloads, plus anomaly "
+                "alerts, reviewed on a documented cadence?"
             ),
             "followUp": (
-                "Open Microsoft Defender portal > Cloud Apps > Policies. "
-                "Verify session policies targeting Copilot and alert "
-                "review records."
+                "Open Microsoft Defender portal > Cloud Apps > Policies and "
+                "verify Conditional Access App Control routing, detailed "
+                "browser-session policies, and alert review records for the "
+                "Microsoft 365 web workloads in scope."
             ),
             "timeBudgetMinutes": 6,
         },
@@ -1787,7 +1789,7 @@ AUTHORED: dict[str, dict] = {
             },
         ],
         "verifyPowerShell": (
-            "Connect-IPPSSession; "
+            "Audit prerequisite check only: Connect-IPPSSession; "
             "Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) "
             "-EndDate (Get-Date) -Operations CopilotInteraction "
             "-ResultSize 100"

@@ -203,6 +203,7 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "noBar",
         "verifyIn",
         "evidenceExpected",
+        "facilitatorNotes",
     },
     "2.10": {
         "verifyIn",

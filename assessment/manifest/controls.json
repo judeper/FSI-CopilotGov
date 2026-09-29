@@ -2072,7 +2072,7 @@
         "maturity_score": 0
       }
     },
-    "manual_question": "Are Defender for Cloud Apps Copilot session policies and anomaly alerts reviewed on a documented cadence?",
+    "manual_question": "Are Defender for Cloud Apps browser-session controls for the in-scope Microsoft 365 web workloads, plus anomaly alerts, reviewed on a documented cadence?",
     "name": "Defender for Cloud Apps — Copilot Session Controls",
     "zonesApplicable": [
       1,
@@ -2116,9 +2116,9 @@
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
-      "ask": "Are Defender for Cloud Apps Copilot session policies and anomaly alerts reviewed on a documented cadence?",
-      "followUp": "Open Microsoft Defender portal > Cloud Apps > Policies. Verify session policies targeting Copilot and alert review records.",
-      "timeBudgetMinutes": 5
+      "ask": "Are Defender for Cloud Apps browser-session controls for the in-scope Microsoft 365 web workloads, plus anomaly alerts, reviewed on a documented cadence?",
+      "followUp": "Open Microsoft Defender portal > Cloud Apps > Policies and verify Conditional Access App Control routing, detailed browser-session policies, and alert review records for the Microsoft 365 web workloads in scope.",
+      "timeBudgetMinutes": 6
     },
     "solutions": [
       {
@@ -2179,7 +2179,7 @@
         "url": "https://purview.microsoft.com/insiderriskmanagement"
       }
     ],
-    "verifyPowerShell": "Connect-IPPSSession; Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) -Operations CopilotInteraction -ResultSize 100",
+    "verifyPowerShell": "Audit prerequisite check only: Connect-IPPSSession; Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) -Operations CopilotInteraction -ResultSize 100",
     "evidenceExpected": [
       "Insider Risk policy configuration including Generative AI apps indicators and any Risky AI usage indicators",
       "Alert triage cadence and escalation path documentation",
