@@ -11,10 +11,10 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
   1. Navigate to Microsoft Purview > Data Security Posture Management > Overview
   2. Verify the service status shows "Active"
   3. Confirm the last scan date is within the past 7 days
-  4. Check that the scan scope includes all SharePoint Online sites
+  4. Confirm the **default** assessment is present for the top 100 SharePoint sites by usage, and use a **custom** assessment if evidence is needed for sites outside that weekly default scope
   5. Verify AI observability section is accessible
   6. Navigate to Microsoft 365 Admin Center > Copilot > Security and confirm DSPM security controls are accessible from this path
-- **Expected Result:** DSPM is active with current scan coverage; both access paths (Purview and MAC) are functional
+- **Expected Result:** DSPM is active, the weekly default assessment is present for the documented top-100-sites scope, and both access paths (Purview and MAC) are functional
 - **Evidence:** Screenshots of DSPM overview from Purview portal and MAC Security tab with timestamps
 
 ### Test 2: Oversharing Detection Accuracy
@@ -23,7 +23,7 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
 - **Steps:**
   1. Create a test SharePoint site with "Everyone except external users" access
   2. Upload a document with a Confidential sensitivity label to the test site
-  3. Wait for the next DSPM scan cycle (or trigger a manual assessment)
+  3. Wait for the next weekly default assessment cycle or run a custom assessment and allow the documented result-processing window
   4. Check that the test site appears in the oversharing report
   5. Clean up the test site after verification
 - **Expected Result:** The test site with sensitive labeled content and broad access appears as a Critical or High finding
@@ -52,16 +52,16 @@ Test cases and evidence collection for validating SharePoint oversharing detecti
 - **Expected Result:** Alert is generated and delivered to configured recipients within the expected timeframe
 - **Evidence:** Alert record from Purview and email notification screenshot
 
-### Test 5a: Shadow AI Discovery Functional Verification
+### Test 5a: AI Observability Functional Verification
 
-- **Objective:** Verify Shadow AI discovery is detecting unsanctioned AI tool usage
+- **Objective:** Verify AI observability is populated and the governance team is reviewing unsanctioned or high-risk AI-app findings
 - **Steps:**
   1. Navigate to Microsoft Purview > Data Security Posture Management > AI Observability
-  2. Confirm Shadow AI discovery section is enabled and populated with data
-  3. Verify the governance team has reviewed Shadow AI findings in the past 30 days
-  4. Confirm alert configurations exist for new Shadow AI tool detections
-- **Expected Result:** Shadow AI discovery is active and governance team has a process to review findings
-- **Evidence:** Screenshot of Shadow AI findings dashboard; alert configuration screenshot
+  2. Confirm the inventory of AI apps and agents is populated with recent activity data
+  3. Verify the governance team has reviewed recent high-risk or unsanctioned AI-app findings in the past 30 days
+  4. If the tenant also uses the separate Microsoft 365 admin center **Agents > Shadow AI** page, confirm that review workflow is documented separately from DSPM
+- **Expected Result:** AI observability is active and the governance team has a process to review findings from DSPM and, if applicable, the separate Shadow AI preview surface
+- **Evidence:** Screenshot of AI observability findings dashboard; review record or alert configuration screenshot
 
 ### Test 6: Copilot Access Validation Post-Remediation
 

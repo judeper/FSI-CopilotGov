@@ -67,7 +67,7 @@ Common issues and resolution steps for Copilot Pages security.
 
 ## Diagnostic Steps
 
-1. **Check sharing settings:** Verify Pages sharing configuration in Admin Center
+1. **Check sharing settings:** Verify the Cloud Policy creation/code-preview decisions and the supporting SharePoint or Loop sharing defaults that govern how Pages can be shared
 2. **Review activity logs:** Run Script 2 to track Pages creation and sharing
 3. **Check labels:** Verify sensitivity labels on recently created Pages
 4. **Verify retention:** Check retention policy scope for Pages coverage

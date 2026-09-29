@@ -7,7 +7,7 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 ### Issue 1: RSS or RCD Not Available in SharePoint Admin Center
 
 - **Symptoms:** The Restricted SharePoint Search option does not appear under Settings > Search, or `Set-SPOSite -RestrictContentOrgWideSearch` returns "unrecognized parameter" or "property not found"
-- **Root Cause:** RCD requires SharePoint Advanced Management (SAM) licensing — included with Microsoft 365 Copilot licenses at no additional cost; tenants without Copilot licenses need the standalone SAM add-on. Older versions of the SPO Management Shell may not include RCD or RSS cmdlets. **Note:** RSS new enablement is blocked from July 31, 2026 — if the RSS toggle is unavailable for enablement after that date, this is expected behavior.
+- **Root Cause:** RCD requires the SharePoint Advanced Management capabilities Microsoft documents for Copilot deployment scenarios. Verify the tenant has a Microsoft 365 Copilot license and that current SharePoint Advanced Management prerequisites are satisfied. Older versions of the SPO Management Shell may not include RCD or RSS cmdlets. **Note:** RSS new enablement is blocked from July 31, 2026 — if the RSS toggle is unavailable for enablement after that date, this is expected behavior.
 - **Resolution:**
   1. Verify SharePoint Advanced Management is licensed and activated in the tenant (check Microsoft 365 Admin Center > Billing > Licenses)
   2. Update the SharePoint Online Management Shell to the latest version: `Update-Module Microsoft.Online.SharePoint.PowerShell`

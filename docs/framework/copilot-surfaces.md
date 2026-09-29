@@ -136,7 +136,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Copilot Capabilities** | Site search and summarization (via Copilot Chat grounding), declarative agents from SharePoint sites |
 | **Data Sources** | SharePoint sites, lists, document libraries (user's accessible content) |
 | **Governance Considerations** | SharePoint is the primary content repository for most organizations and the primary source of oversharing risk. Copilot's Semantic Index indexes all SharePoint content the user can access. Permissions inherited through site hierarchies create broad access patterns. Declarative agents from SharePoint extend Copilot capabilities with site-scoped knowledge. |
-| **Key Controls** | 1.1 (Oversharing assessment), 1.2 (Permissions remediation), 1.4 (Restricted SharePoint Search), 4.10 (Declarative agents), 2.2 (Sensitivity labels) |
+| **Key Controls** | 1.1 (Oversharing assessment), 1.2 (Permissions remediation), 1.3 (Restricted Content Discovery / legacy RSS), 4.10 (Declarative agents), 2.2 (Sensitivity labels) |
 
 ### OneDrive
 
@@ -144,7 +144,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | File search, summarization, content generation from personal files |
 | **Data Sources** | User's OneDrive files, shared files |
-| **Governance Considerations** | OneDrive is the default storage location for many M365 outputs, but **Copilot Pages and Copilot Notebooks are stored in SharePoint Embedded rather than traditional OneDrive storage**. Files shared from OneDrive may not have sensitivity labels applied. "Shared with me" content is accessible to Copilot. |
+| **Governance Considerations** | OneDrive is the default storage location for many M365 outputs including Loop components and Whiteboard files, but **Copilot Pages and Copilot Notebooks are stored in SharePoint Embedded rather than traditional OneDrive storage**. Files shared from OneDrive may not have sensitivity labels applied. "Shared with me" content is accessible to Copilot. |
 | **Key Controls** | 1.12 (OneDrive governance), 2.2 (Sensitivity labels), 3.2 (Retention) |
 
 ### Planner

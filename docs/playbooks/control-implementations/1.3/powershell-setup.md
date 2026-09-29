@@ -6,7 +6,7 @@ Automation scripts for managing Restricted SharePoint Search (RSS) and Restricte
 
 - SharePoint Online Management Shell (`Microsoft.Online.SharePoint.PowerShell`)
 - SharePoint Admin role
-- SharePoint Advanced Management (SAM) license active in tenant — included with Microsoft 365 Copilot licenses at no additional cost
+- Microsoft 365 Copilot license active in the tenant so the SharePoint Advanced Management capabilities used by RCD are available
 - Approved sites list in CSV format (for RSS)
 - List of sites to exclude from Copilot discovery (for RCD)
 

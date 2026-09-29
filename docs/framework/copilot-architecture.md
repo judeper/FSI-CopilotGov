@@ -249,7 +249,7 @@ Microsoft 365 Copilot uses a Retrieval-Augmented Generation (RAG) pipeline to pr
 |-------|-------------------|------------|
 | Pre-processing | Responsible AI boundaries (Microsoft-managed) | N/A (Microsoft responsibility) |
 | Retrieval | Permission governance, oversharing remediation | 1.1, 1.2, 1.3 |
-| Retrieval | Restricted SharePoint Search | 1.4 |
+| Retrieval | Restricted Content Discovery / legacy Restricted SharePoint Search | 1.3 |
 | Retrieval | Sensitivity label enforcement | 2.2, 2.3 |
 | Retrieval | DLP policy evaluation | 2.1 |
 | Retrieval | Information barriers | 2.6 |

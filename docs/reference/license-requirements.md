@@ -33,7 +33,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 |---------|---------|----|----|---------|------------------------|-------|
 | 1.1 | Readiness Assessment — basic sharing audit | Included | Included | -- | -- | Basic sharing reports available in SharePoint Admin Center |
 | 1.2 | Oversharing Detection (DSPM for AI, SAM reports) | -- | Included | Included | Purview Suite | SAM is included with Copilot licenses (Ignite 2024); DSPM for AI requires E5 and Copilot |
-| 1.3 | Restricted SharePoint Search Configuration | Included | Included | -- | -- | Legacy RSS setting in SharePoint Admin Center. Current RCD governance is included with Copilot licenses or standalone SAM. |
+| 1.3 | Restricted SharePoint Search Configuration | Included | Included | -- | -- | Legacy RSS setting in SharePoint Admin Center. Current RCD governance requires a Microsoft Copilot license, which includes the SharePoint Advanced Management capabilities RCD depends on. |
 | 1.4 | Semantic Index Governance and Scope Control | -- | -- | Included | -- | Semantic Index processing is part of Copilot license |
 | 1.5 | Sensitivity Label Taxonomy Review | -- | Included | -- | Purview Suite or Purview add-on | Content explorer and data classification dashboards |
 | 1.6 | Permission Model Audit | Included | Included | -- | -- | Native SharePoint, OneDrive, Exchange, Teams admin capabilities |
