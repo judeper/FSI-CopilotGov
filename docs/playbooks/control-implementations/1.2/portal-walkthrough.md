@@ -59,19 +59,19 @@ For high-priority findings, use item-level remediation to address individual fil
 
 Item-level remediation is particularly valuable for sites where broad access is legitimate but specific sensitive files need to be protected.
 
-### Step 4: Enable AI Observability and Shadow AI Discovery
+### Step 4: Review AI Observability and Evaluate the Shadow AI Preview Separately
 
 **Portal:** Microsoft Purview portal
-**Path:** Data Security Posture Management > AI hub > AI observability
+**Path:** Solutions > DSPM > AI observability
 
-Configure the unified AI observability view to monitor AI activity across Microsoft 365 Copilot and any third-party AI apps in use:
+Configure **AI observability** in DSPM to monitor AI activity across Microsoft 365 Copilot and any third-party AI apps and agents in use:
 
 1. Navigate to the AI observability section
 2. Review the unified view of AI activity across all monitored AI surfaces
-3. Check **Shadow AI discovery** findings for unsanctioned AI tools detected in the organization
-4. Configure alerts for new Shadow AI tool detections
+3. Review high-risk apps, sensitive interactions, and the per-agent policy coverage shown on the page
+4. Route findings on unsanctioned or high-risk AI usage to the governance team for follow-up and remediation
 
-**Quick access:** Microsoft 365 Admin Center > Copilot > Security shows a summary of Shadow AI findings and provides a link to the full Purview DSPM experience.
+If the organization separately opts into the **Frontier preview** and meets its prerequisites, review the distinct **Microsoft 365 admin center > Agents > Shadow AI** page for unmanaged standalone AI agents. Treat that Shadow AI experience as a separate preview workflow rather than as part of DSPM AI observability.
 
 ### Step 5: Use Recommendations for Remediation Actions
 
@@ -104,15 +104,15 @@ Microsoft Learn still documents the agent as preview. The Microsoft 365 roadmap 
 **Portal:** Microsoft Purview portal
 **Path:** Data Security Posture Management > Reports and Recommendations
 
-Configure monitoring and notification cadence for ongoing oversight. Set up email notifications to the governance team when new oversharing instances are detected. Recommended alert frequency is daily digest for medium-risk and immediate notification for critical findings. Configure separate alerts or review queues for Shadow AI tool detections.
+Configure monitoring and notification cadence for ongoing oversight. Set up email notifications to the governance team when new oversharing instances are detected. Recommended alert frequency is daily digest for medium-risk and immediate notification for critical findings. For AI observability, document how the team reviews high-risk apps, sensitive interactions, and agent findings. If the tenant also uses the separate Shadow AI preview, maintain a distinct review queue and prerequisite checklist for that preview surface.
 
 ## FSI Recommendations
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Enable current DSPM and remediate all Critical findings before Copilot pilot. Enable Shadow AI discovery |
-| **Recommended** | Remediate Critical and High findings; implement Recommendations-based remediation actions; configure AI observability and Data Security Posture Agent |
-| **Regulated** | Remediate all findings; use item-level remediation for surgical fixes; require governance approval for any exceptions; continuous monitoring with SLA-based remediation; full AI observability alerting |
+| **Baseline** | Enable current DSPM and remediate all Critical findings before Copilot pilot. Review AI observability so the governance team can see current AI-app and agent activity. |
+| **Recommended** | Remediate Critical and High findings; implement Recommendations-based remediation actions; configure AI observability review procedures and the Data Security Posture Agent. If the tenant uses the separate Shadow AI preview, document its prerequisites and governance owner separately. |
+| **Regulated** | Remediate all findings; use item-level remediation for surgical fixes; require governance approval for any exceptions; continuous monitoring with SLA-based remediation; formal AI observability review with documented escalation criteria. Evaluate the Shadow AI preview only through a separate approved pilot with its own controls and evidence. |
 
 ## Next Steps
 

@@ -11,7 +11,7 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 - **Resolution:**
   1. Verify SharePoint Advanced Management is licensed and activated in the tenant (check Microsoft 365 Admin Center > Billing > Licenses)
   2. Update the SharePoint Online Management Shell to the latest version: `Update-Module Microsoft.Online.SharePoint.PowerShell`
-  3. If SAM is licensed but RCD features are not visible, check your tenant's release ring and allow 24-48 hours for feature propagation
+  3. If Copilot licensing and prerequisites are satisfied but RCD features are still not visible, check your tenant's release ring and service rollout status before concluding the feature is unavailable
   4. For RSS: if trying to enable RSS after July 31, 2026, this is expected — use RCD instead
   5. Contact Microsoft support if RCD remains unavailable after licensing and module updates
 
@@ -92,7 +92,7 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 
 | Severity | Condition | Escalation Path |
 |----------|-----------|----------------|
-| **Low** | Propagation delay on allowed list changes | Monitor and retest after 24 hours |
+| **Low** | Propagation delay on allowed list changes | Monitor and retest after about one hour |
 | **Medium** | Site limit reached, blocking approved additions | Governance committee for prioritization |
 | **High** | RSS found disabled without authorization | Security Operations for investigation |
 | **Critical** | Copilot returning content from non-allowed sites | Security Operations and CISO immediately |

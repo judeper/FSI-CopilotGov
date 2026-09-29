@@ -55,7 +55,7 @@ A preview capability for organizations with 5,000 or more Microsoft 365 Copilot 
 Custom Copilot agents defined through configuration (not code) that scope Copilot's behavior to specific data sources, instructions, and capabilities. Can be created in Copilot Studio, SharePoint, or Teams developer tools.
 
 ### DSPM for AI (Data Security Posture Management for AI)
-A Microsoft Purview capability that provides visibility into AI usage across the organization, identifies data risks related to AI interactions, and helps manage AI-related compliance. Accessible via the Purview AI hub.
+A Microsoft Purview capability that provides visibility into AI usage across the organization, identifies data risks related to AI interactions, and helps manage AI-related compliance. In the current experience, these capabilities are surfaced from **Microsoft Purview > Solutions > DSPM**, with older AI hub references retained only for classic DSPM-era navigation.
 
 ### Edit with Copilot
 Formerly known as "Agent Mode." An iterative, multi-step document creation and refinement experience in Word, Excel, and PowerPoint. Available to all Microsoft 365 users; unlicensed users are limited to web data sources only.
