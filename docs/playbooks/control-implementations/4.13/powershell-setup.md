@@ -105,14 +105,29 @@ if ($highRisk) {
 $consentReport | Export-Csv "AppConsentAudit_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 4: Copilot Interaction Monitoring for Plugin and Agent Evidence
+### Script 4: Microsoft 365 Copilot Plugin and Agent Interaction Evidence
 
 ```powershell
-# Monitor Copilot interactions and summarize documented plugin / agent evidence
-# Current Microsoft Purview documentation lists CopilotInteraction for user
-# interactions, and lists plugin / agent admin operations separately.
+# Monitor Microsoft 365 Copilot interaction records and summarize plugin evidence.
+# CopilotInteraction spans multiple Microsoft Copilot products, so use an
+# AppIdentity allow-list and exclude Security Copilot from the evidence set.
 Import-Module ExchangeOnlineManagement
-Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
+Connect-ExchangeOnline -UserPrincipalName admin@contoso.com -ShowBanner:$false
+
+# Populate exact values from the approved agent and plugin inventory.
+# Microsoft documents values such as Copilot.MicrosoftCopilot.BizChat and
+# Copilot.Studio.<app-id>; do not add Copilot.Security.SecurityCopilot.
+$approvedAppIdentities = @(
+    # "Copilot.MicrosoftCopilot.BizChat"
+    # "Copilot.Studio.<approved-app-id>"
+)
+$approvedPluginIds = @(
+    # "<approved-plugin-id>"
+)
+
+if ($approvedAppIdentities.Count -eq 0 -or $approvedPluginIds.Count -eq 0) {
+    throw "Populate the approved AppIdentity and plugin ID allow-lists before collecting evidence."
+}
 
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
@@ -124,41 +139,75 @@ $copilotEvents = Search-UnifiedAuditLog `
 
 $pluginEvidence = foreach ($event in $copilotEvents) {
     $auditData = $event.AuditData | ConvertFrom-Json
-    $plugins = @($auditData.AISystemPlugin)
+    $copilotEventData = $auditData.CopilotEventData
 
-    foreach ($plugin in $plugins) {
+    foreach ($plugin in @($copilotEventData.AISystemPlugin)) {
         if ($null -ne $plugin -and $plugin.Name) {
+            $rejectionReasons = @()
+            if ($auditData.Workload -ne "Copilot") {
+                $rejectionReasons += "Unexpected workload"
+            }
+            if (([string]$auditData.AppIdentity) -like "Copilot.Security.*") {
+                $rejectionReasons += "Security Copilot is out of scope"
+            }
+            elseif ($approvedAppIdentities -notcontains [string]$auditData.AppIdentity) {
+                $rejectionReasons += "AppIdentity is not approved"
+            }
+            if ($approvedPluginIds -notcontains [string]$plugin.ID) {
+                $rejectionReasons += "Plugin ID is not approved"
+            }
+
             [PSCustomObject]@{
-                CreationDate  = $event.CreationDate
-                UserIds       = $event.UserIds
-                PluginName    = $plugin.Name
-                PluginId      = $plugin.ID
-                PluginVersion = $plugin.Version
-                AgentId       = $auditData.AgentId
-                AgentName     = $auditData.AgentName
-                AppHost       = $auditData.AppHost
+                EvidenceStatus  = if ($rejectionReasons.Count -eq 0) { "Accepted" } else { "Rejected" }
+                RejectionReason = $rejectionReasons -join "; "
+                CreationDate    = $event.CreationDate
+                UserIds         = $event.UserIds
+                Workload        = $auditData.Workload
+                AppIdentity     = $auditData.AppIdentity
+                AppHost         = $copilotEventData.AppHost
+                AgentId         = $auditData.AgentId
+                AgentName       = $auditData.AgentName
+                PluginName      = $plugin.Name
+                PluginId        = $plugin.ID
+                PluginVersion   = $plugin.Version
             }
         }
     }
 }
 
-Write-Host "Copilot Interaction Evidence (Last 30 Days):" -ForegroundColor Cyan
+Write-Host "Microsoft 365 Copilot Plugin Evidence (Last 30 Days):" -ForegroundColor Cyan
 Write-Host "Total CopilotInteraction records: $($copilotEvents.Count)"
-Write-Host "Records with AISystemPlugin evidence: $($pluginEvidence.Count)"
+Write-Host "Plugin rows before scoping filters: $($pluginEvidence.Count)"
 
-if ($pluginEvidence.Count -gt 0) {
-    $pluginSummary = $pluginEvidence | Group-Object PluginName |
+$m365PluginEvidence = @($pluginEvidence | Where-Object EvidenceStatus -eq "Accepted")
+$rejectedPluginEvidence = @($pluginEvidence | Where-Object EvidenceStatus -eq "Rejected")
+
+Write-Host "In-scope M365 Copilot plugin rows: $($m365PluginEvidence.Count)"
+Write-Host "Rejected rows: $($rejectedPluginEvidence.Count)"
+
+if ($m365PluginEvidence.Count -gt 0) {
+    $pluginSummary = $m365PluginEvidence | Group-Object PluginName |
         Select-Object @{N='Plugin'; E={$_.Name}}, @{N='ExecutionCount'; E={$_.Count}} |
         Sort-Object ExecutionCount -Descending
 
     $pluginSummary | Format-Table -AutoSize
-    $pluginSummary | Export-Csv "PluginUsage_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
-} else {
-    Write-Host "No AISystemPlugin data found in CopilotInteraction records for the selected window." -ForegroundColor Yellow
+    $m365PluginEvidence |
+        Export-Csv "M365CopilotPluginUsage_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+}
+else {
+    Write-Warning "No in-scope Microsoft 365 Copilot plugin evidence matched the approved AppIdentity and plugin ID allow-lists."
+}
+
+if ($rejectedPluginEvidence.Count -gt 0) {
+    $rejectedPluginEvidence |
+        Export-Csv "RejectedCopilotPluginUsage_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+    Write-Warning "$($rejectedPluginEvidence.Count) plugin row(s) were excluded from the M365 Copilot evidence set; review the rejected export."
 }
 ```
 
-If you also need administrative change evidence for plugin or agent governance, search the documented admin operations separately, for example: `CreatePlugin`, `UpdatePlugin`, `EnablePlugin`, `DisablePlugin`, `DeployedAgent`, `UpdatedAgent`, `RemovedAgent`, `BlockedAgent`, `UnblockedAgent`, `DeletedAgent`, and `UpdatedTenantSettings`.
+The Microsoft audit schema places `AISystemPlugin` and `AppHost` under `AuditData.CopilotEventData`, while fields such as `Workload`, `AppIdentity`, `AgentId`, and `AgentName` remain at the root of `AuditData`. Microsoft also documents `CopilotInteraction` as a cross-product record type that includes Microsoft 365 Copilot, Cowork, and Security Copilot, so `Workload = Copilot` is not a sufficient product boundary by itself. Filter by an approved `AppIdentity` allow-list and keep `Copilot.Security.SecurityCopilot` out of the Microsoft 365 Copilot evidence set.
+
+If you also need administrative change evidence for plugin or agent governance, search the documented admin operations separately, for example: `CreatePlugin`, `UpdatePlugin`, `EnablePlugin`, `DisableCopilotPlugin`, `DeployedAgent`, `UpdatedAgent`, `RemovedAgent`, `BlockedAgent`, `UnblockedAgent`, `DeletedAgent`, and `UpdatedTenantSettings`. Microsoft documents `EnablePlugin` in more than one Copilot product context, and `UpdatedTenantSettings` (Agent settings) is a different operation from `UpdateTenantSettings` (Copilot setting changes), so scope exported records before treating them as Microsoft 365 Copilot evidence.
 
 ### Script 5: Agent tools / MCP request evidence checklist
 
@@ -178,7 +227,7 @@ Write-Host "  - Work IQ read/write setting, usage-based billing plan, and spendi
 | Plugin inventory | Monthly | Script 1 |
 | Graph connector review | Quarterly | Script 2 |
 | Permission audit | Monthly | Script 3 |
-| Copilot interaction monitoring | Weekly | Script 4 |
+| M365 Copilot plugin evidence review | Weekly | Script 4 |
 | Agent tools / MCP request review | Monthly and after approvals | Script 5 evidence checklist |
 
 ## Next Steps
