@@ -8,8 +8,11 @@ invisible to the Learn/regulatory monitors.
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
+
+import yaml
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPTS_DIR.parent
@@ -17,6 +20,7 @@ sys.path.insert(0, str(SCRIPTS_DIR))
 
 import monitoring_shared  # noqa: E402
 
+CONFIG_PATH = REPO_ROOT / "scripts" / "config" / "monitoring-config.yaml"
 
 SHAREPOINT_READINESS_URL = (
     "https://learn.microsoft.com/en-us/microsoft-365/copilot/"
@@ -263,3 +267,34 @@ def test_canonicalizer_does_not_treat_embedded_learn_host_as_learn_url():
     assert monitoring_shared._canonicalize_reference_url(
         "example.com/learn.microsoft.com/en-us/example/page"
     ) == "https://example.com/learn.microsoft.com/en-us/example/page"
+
+
+def test_url_control_overrides_merge_with_scanned_references():
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    result = monitoring_shared.find_affected_controls(
+        "https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits",
+        REPO_ROOT / "docs",
+        config=config,
+    )
+
+    control_ids = {control["control_id"] for control in result["controls"]}
+
+    assert "4.15" in control_ids
+    assert "1.9" in control_ids
+    assert "4.8" in control_ids
+
+
+def test_url_control_overrides_map_urls_without_inline_doc_references():
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    result = monitoring_shared.find_affected_controls(
+        "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms",
+        REPO_ROOT / "docs",
+        config=config,
+    )
+
+    assert {control["control_id"] for control in result["controls"]} == {
+        "1.13",
+        "2.13",
+        "2.14",
+        "4.13",
+    }
