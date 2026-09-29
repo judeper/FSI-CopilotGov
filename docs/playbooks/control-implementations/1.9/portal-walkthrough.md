@@ -51,7 +51,7 @@ Verify the license assignment processes successfully with no errors.
 ### Step 4: Configure Pay-As-You-Go (PAYG) Copilot Chat
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Copilot > Billing & usage > Pay-as-you-go services / Cost management
+**Path:** Copilot > Billing & usage > Pay-as-you-go services; Billing > Cost Management
 
 If deploying PAYG Copilot Chat (metered per-message pricing; refer to [Microsoft 365 Copilot pricing](https://www.microsoft.com/en-us/microsoft-365/copilot#plans) for current rates) for pilot users or occasional-access populations:
 

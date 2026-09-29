@@ -10,7 +10,7 @@ Common issues and resolution steps for network security controls.
 - **Root Cause:** Network latency, proxy interference, SSL inspection overhead, or firewall blocking of required endpoints.
 - **Resolution:**
   1. Run Script 1 to test endpoint connectivity and latency
-  2. Compare latency against your documented performance baselines
+  2. Compare latency against baselines — anything above 200 ms may impact experience
   3. Check whether proxy or TLS inspection behavior is interrupting WSS or adding latency
   4. Verify TLS inspection and proxy settings preserve full WSS connectivity; test a scoped exception if needed
   5. Review firewall logs for blocked connections to Copilot service endpoints
@@ -35,8 +35,8 @@ Common issues and resolution steps for network security controls.
 - **Resolution:**
   1. Download the current Microsoft 365 endpoint list from Microsoft's web service
   2. Compare against current firewall rules to identify missing entries
-  3. Verify that `*.cloud.microsoft` is allowed and that no rule is blocking `copilot.cloud.microsoft`
-  4. Remove unsupported selective blocking rules that attempt to manage Copilot Chat by domain, URL, IP, or protocol filtering alone
+  3. Verify that `*.cloud.microsoft` is allowed and that no rule is blocking `copilot.cloud.microsoft`; Microsoft doesn't support allowing only partial or selected Microsoft 365 application URLs within the `*.cloud.microsoft` domain
+  4. Review any selective blocking rules that attempt to manage Copilot Chat by domain, URL, IP, or protocol filtering alone and replace them with Tenant Restrictions v2 or admin-center controls where the firm's policy requires a more targeted control
   5. Subscribe to endpoint change notifications to stay current
 
 ### Issue 4: SSL Inspection Degrading Copilot Performance

@@ -40,7 +40,7 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 | Integrated apps | Settings > Integrated apps | `https://admin.microsoft.com/Adminportal/Home#/Settings/IntegratedApps` |
 | License assignment | Billing > Licenses | `https://admin.microsoft.com/Adminportal/Home#/licenses` |
 | Pay-as-you-go services | Copilot > Billing & usage > Pay-as-you-go services | `https://admin.microsoft.com` |
-| Cost Management | Copilot > Billing & usage > Cost management | `https://admin.microsoft.com` |
+| Cost Management | Billing > Cost Management | `https://admin.microsoft.com` |
 | User management | Users > Active users | `https://admin.microsoft.com/Adminportal/Home#/users` |
 | Groups | Teams and groups > Active teams and groups | `https://admin.microsoft.com/Adminportal/Home#/groups` |
 | Message Center | Health > Message center | `https://admin.microsoft.com/Adminportal/Home#/MessageCenter` |

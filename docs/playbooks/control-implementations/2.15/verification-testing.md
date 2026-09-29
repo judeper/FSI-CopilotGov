@@ -13,7 +13,7 @@ Test cases and evidence collection for validating network security controls.
   3. Verify that `copilot.cloud.microsoft` is not blocked and that `*.cloud.microsoft` allow-list coverage is in place
   4. Document latency values and compare against performance baselines
   5. Test from multiple network locations (headquarters, branches, VPN)
-- **Expected Result:** All required endpoints are reachable and network performance remains within documented baselines
+- **Expected Result:** All required endpoints are reachable with acceptable latency (<100 ms) or within the firm's documented approved baseline
 - **Evidence:** Connectivity test results from multiple locations
 
 ### Test 2: Private Link Scope for Adjacent Azure Resources (if deployed)

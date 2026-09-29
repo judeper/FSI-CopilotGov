@@ -7,6 +7,9 @@ Definitions of key terms, products, regulations, and concepts used throughout th
 
 ---
 
+!!! note "Naming scope note"
+    Microsoft is still using **Microsoft 365 Copilot**, **Microsoft 365 Copilot Chat**, and related labels in some SKU names, UI labels, Cloud Policy names, reports, and Microsoft Learn pages. This framework applies the rename claim-by-claim: current app and surface references are refreshed to **Microsoft Copilot** / **Microsoft Copilot Chat** where supported by primary-source wording, while exact SKU names, policy labels, historical references, and quoted Microsoft strings remain unchanged.
+
 ## Products and Services
 
 ### Agent 365

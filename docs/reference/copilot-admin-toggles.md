@@ -24,7 +24,7 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 | Copilot overview | M365 Admin Center > Copilot > Overview | Readiness, adoption, security links, and recommended actions |
 | Copilot settings | M365 Admin Center > Copilot > Settings | Tenant controls grouped under User access, Data access, Copilot actions, and Other settings |
 | Agents | M365 Admin Center > Agents > Overview / All agents / Settings | Agent inventory, sharing, templates, and user access |
-| Billing and cost | M365 Admin Center > Copilot > Billing & usage | PAYG setup, billing policies, budgets, and spend visibility |
+| Billing and cost | M365 Admin Center > Copilot > Billing & usage (setup) plus Billing > Cost Management (spend visibility) | PAYG setup, billing policies, budgets, and spend visibility |
 | Copilot Pages / Notebooks policy | `https://config.office.com` > Customization > Policy Management | Cloud Policy controls for creation and code previews |
 
 ---
@@ -48,12 +48,12 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 | Microsoft Scout — autonomous modes | Scout endpoint app (autonomous mode settings) | Off / opt-in per session | Off during pilot | Off unless separately approved low-risk scoping decision exists | Off — do not enable for regulated populations without a separately approved low-risk scoping decision covering workspace, shell, browser, network, and M365 scope | Optional autonomous modes relax approval friction and are a higher-risk governance decision. |
 | Microsoft Scout — unattended (scheduled/triggered) automations | Scout endpoint app (automations) | Off / opt-in per automation | Off during pilot | Off unless separately approved | Off — do not permit unattended execution for regulated populations without a separately approved decision | Unattended execution should be a distinct, explicit governance decision — do not treat it as included by default. |
 | Microsoft Scout — MCP-server inventory | Approved-MCP-server inventory (out-of-portal governance artifact); Scout endpoint app manages installed MCP servers | No inventory by default | Documented inventory | Approvals capture data path, authentication, and external egress | Approvals capture data path, authentication, and external egress; documented as extensibility under [Control 4.13](../controls/pillar-4-operations/4.13-extensibility-governance.md) and MCP governance under [Control 2.16](../controls/pillar-2-security/2.16-federated-connector-mcp-governance.md) | MCP servers are third-party extensibility; treat MCP output stored locally as outside the M365 DPA. |
-| Microsoft Copilot Search | Copilot > Settings > User access; Settings > Search & intelligence | On for licensed users | On for approved groups | On for approved groups | On for approved groups | AI-enriched search within the Copilot app; grounding scope governed by Restricted SharePoint Search configuration |
+| Microsoft Copilot Search | Copilot > Settings > User access; Settings > Search & intelligence | On for licensed users | On for approved groups | On for approved groups | On for approved groups | AI-enriched search within the Copilot app; grounding scope governed by Restricted Content Discovery and, where already enabled, legacy Restricted SharePoint Search |
 | Copilot Tuning (preview) | Copilot > Settings > View all > Copilot Tuning | Off until eligible tenant opts in | Off | Review — document risk assessment | Review — requires model-risk inventory entry (Control 3.8) | Available only to tenants with 5,000+ Copilot licenses during preview; requires explicit admin activation, tuning corpus review, and model-risk documentation |
 | Self-service trials and purchases for Microsoft 365 Copilot | Settings > Org settings > Self-service trials and purchases | Allow unless disabled | Off | Off | Off | Prevents unmanaged user purchases or trials |
 | PAYG billing policy | Copilot > Billing & usage > Pay-as-you-go services | Off until configured | Review | On for approved groups only | On for approved groups only | Required for metered Microsoft Copilot Chat, SharePoint agents, and Retrieval API use |
 | PAYG budget notifications | Billing policy / Cost management | Off until configured | Review | Enabled | Enabled | Provides budget alerts for variable Copilot consumption |
-| Cost monitoring | Copilot > Billing & usage > Cost management | Available when PAYG is configured | Monthly review | Monthly review | Weekly review | Tracks spend, anomalies, and department allocation |
+| Cost monitoring | Billing > Cost Management | Available when PAYG is configured | Monthly review | Monthly review | Weekly review | Tracks spend, anomalies, and department allocation |
 
 ---
 

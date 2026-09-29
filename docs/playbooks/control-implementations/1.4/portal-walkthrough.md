@@ -23,7 +23,7 @@ Review the Copilot license assignment status and readiness checks. Confirm which
 ### Step 2: Review Searchability and Discoverability Controls
 
 **Portal:** SharePoint admin center
-**Path:** Sites > Active sites > [site] > Settings > Search and offline availability; Settings > Search > Restricted SharePoint Search (legacy); site settings for Restricted Content Discovery (where licensed)
+**Path:** Sites > Active sites > [site] > Settings > Search and offline availability; Settings > Search > Restricted SharePoint Search (legacy, where already enabled; see [Microsoft Learn: Restricted SharePoint Search](https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search)); site settings for Restricted Content Discovery (where licensed)
 
 Review which SharePoint sites remain searchable and which sites are excluded from organization-wide discovery. Microsoft documents tenant-level semantic indexing primarily through searchable SharePoint Online content, while paid-license user experiences also combine Microsoft Graph and mailbox context at query time.
 

@@ -7,7 +7,7 @@ Common issues and resolution steps for Semantic Index governance.
 ### Issue 1: Semantic Index Not Processing Content
 
 - **Symptoms:** Content recently added to SharePoint or OneDrive is not discoverable through Copilot even after several days, or the index status shows processing errors
-- **Root Cause:** Semantic indexing and Copilot retrieval are not instantaneous, and the timing varies by workload and change type. Microsoft documents daily indexing for newly added eligible SharePoint documents, separate propagation for scope controls such as RCD, and different behavior for mailbox/user-context retrieval.
+- **Root Cause:** Semantic indexing and Copilot retrieval are not instantaneous, and the timing varies by workload and change type. Microsoft documents that newly added eligible SharePoint documents are indexed daily, user-mailbox content is indexed in near real time, and scope-control propagation varies separately; see [Microsoft Learn: Semantic indexing for Microsoft Copilot](https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot) and [Microsoft Learn: Restrict discovery of SharePoint sites and content](https://learn.microsoft.com/en-us/sharepoint/restricted-content-discovery).
 - **Resolution:**
   1. Check the Copilot readiness page for any index processing alerts
   2. Verify the content is in a supported format (Office documents, PDFs, text files)
