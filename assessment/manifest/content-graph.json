@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-27T00:00:00Z",
+  "generatedAt": "2026-09-29T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -90,7 +90,7 @@
       "tier": "Recommended",
       "title": "Control 1.4: Semantic Index Governance and Scope Control",
       "path": "docs/controls/pillar-1-readiness/1.4-semantic-index-governance.md",
-      "last_verified": "2026-07-26",
+      "last_verified": "2026-09-29",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -156,7 +156,7 @@
       "tier": "Baseline",
       "title": "Control 1.9: License Planning and Copilot Assignment Strategy",
       "path": "docs/controls/pillar-1-readiness/1.9-license-planning.md",
-      "last_verified": "2026-09-24",
+      "last_verified": "2026-09-29",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (IT Operations)",
@@ -438,7 +438,7 @@
       "tier": "Regulated",
       "title": "Control 2.15: Network Security and Private Connectivity",
       "path": "docs/controls/pillar-2-security/2.15-network-security.md",
-      "last_verified": "2026-08-09",
+      "last_verified": "2026-09-29",
       "regulatory_references": [
         "NYDFS Part 500",
         "FFIEC"

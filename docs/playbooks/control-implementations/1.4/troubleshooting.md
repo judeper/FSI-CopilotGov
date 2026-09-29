@@ -7,22 +7,22 @@ Common issues and resolution steps for Semantic Index governance.
 ### Issue 1: Semantic Index Not Processing Content
 
 - **Symptoms:** Content recently added to SharePoint or OneDrive is not discoverable through Copilot even after several days, or the index status shows processing errors
-- **Root Cause:** The Semantic Index requires time to process new content (typically 24-48 hours). Processing delays may occur during periods of high tenant activity or service-side throttling.
+- **Root Cause:** Semantic indexing and Copilot retrieval are not instantaneous, and the timing varies by workload and change type. Microsoft documents daily indexing for newly added eligible SharePoint documents, separate propagation for scope controls such as RCD, and different behavior for mailbox/user-context retrieval.
 - **Resolution:**
   1. Check the Copilot readiness page for any index processing alerts
   2. Verify the content is in a supported format (Office documents, PDFs, text files)
-  3. Confirm the site containing the content is not excluded from indexing
-  4. If content remains unindexed after 72 hours, request a site re-index via PnP PowerShell (`Request-PnPReindexWeb`) or the SharePoint site settings UI
+  3. Confirm the SharePoint site remains searchable and is not intentionally limited by RCD or RSS
+  4. If the problem persists after the documented service timeline, request a site re-index via PnP PowerShell (`Request-PnPReindexWeb`) or the SharePoint site settings UI and collect evidence before escalating
 
 ### Issue 2: Copilot Returning Content That Should Be Excluded
 
 - **Symptoms:** Copilot responses reference content from sources that were supposed to be excluded from the semantic index
-- **Root Cause:** Index exclusion settings may not have propagated fully, or the content was indexed before the exclusion was configured. Previously indexed content may remain in the index until it is purged.
+- **Root Cause:** The wrong control may have been used for the intended outcome. RCD excludes SharePoint content from Copilot discovery but does not remove it from the Microsoft 365 search index, while turning off site searchability removes the site from both Microsoft Search and semantic indexing. RSS, where still enabled, scopes retrieval differently from RCD.
 - **Resolution:**
-  1. Verify exclusion configuration is correctly set in Admin Center
-  2. Check the timeline — if exclusion was recently configured, allow 48-72 hours for propagation
-  3. For content indexed before exclusion, request a full re-crawl of the affected content source
-  4. As an interim measure, use Restricted SharePoint Search (Control 1.3) to limit Copilot's scope
+  1. Verify whether the intended control is RCD, RSS, or site searchability and confirm that the current setting matches the governance decision
+  2. Check the change timeline and allow for documented propagation
+  3. If the content must leave both Microsoft Search and semantic indexing, turn off site-level searchability rather than relying on RCD alone
+  4. As an interim measure, use RSS only if it is already enabled in the tenant and the retirement plan is documented
 
 ### Issue 3: Index Governance Settings Reset After Update
 
@@ -37,12 +37,12 @@ Common issues and resolution steps for Semantic Index governance.
 ### Issue 4: Inconsistent Index Behavior Across Workloads
 
 - **Symptoms:** Copilot returns content from Exchange or Teams that was expected to be excluded, while SharePoint exclusions work correctly
-- **Root Cause:** Semantic Index governance controls may have different implementation timelines across workloads. SharePoint controls are typically the most mature, while Exchange and Teams controls may lag.
+- **Root Cause:** SharePoint discoverability controls do not replace workload-specific governance for Exchange, Teams, or other Microsoft Graph content. The Semantic Index, Microsoft Graph, and workload-native permissions are separate parts of the grounding path.
 - **Resolution:**
-  1. Verify governance settings for each workload independently
-  2. Use workload-specific controls (e.g., Exchange retention policies, Teams data governance) as supplementary restrictions
-  3. Document any workload-specific gaps in the governance decision record
-  4. Monitor Microsoft 365 roadmap for updates to workload-specific index controls
+  1. Verify SharePoint searchability, RCD/RSS state, and workload-specific controls independently
+  2. Use Exchange, Teams, Purview, and information-barrier controls as the primary governance levers for non-SharePoint content
+  3. Document which control governs each workload in the decision record
+  4. Re-test with representative users to confirm that the issue is discovery scope rather than permissions or retention behavior
 
 ### Issue 5: Performance Impact from Index Scope Changes
 
@@ -60,7 +60,7 @@ Common issues and resolution steps for Semantic Index governance.
 2. **Verify configuration:** Compare current settings against documented governance baseline
 3. **Test with known content:** Search for content with a known location to confirm index behavior
 4. **Review audit logs:** Check for recent admin changes to Copilot or search settings
-5. **Cross-reference workloads:** Test index behavior across SharePoint, Exchange, and Teams independently
+5. **Cross-reference controls:** Test SharePoint searchability, RCD/RSS state, and workload-specific controls independently
 
 ## Escalation
 

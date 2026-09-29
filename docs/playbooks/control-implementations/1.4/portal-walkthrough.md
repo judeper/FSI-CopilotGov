@@ -20,14 +20,14 @@ Review the current status of the Semantic Index for your tenant. The Semantic In
 
 Review the Copilot license assignment status and readiness checks. Confirm which users are licensed for Copilot and whether tenant readiness prerequisites are met.
 
-### Step 2: Configure Content Source Scope
+### Step 2: Review Searchability and Discoverability Controls
 
-**Portal:** Microsoft 365 Admin Center
-**Path:** SharePoint Admin > Settings > Search > Restricted SharePoint Search and related content-source governance
+**Portal:** SharePoint admin center
+**Path:** Sites > Active sites > [site] > Settings > Search and offline availability; Settings > Search > Restricted SharePoint Search (legacy); site settings for Restricted Content Discovery (where licensed)
 
-Review which content sources are included in the Semantic Index. By default, the index covers SharePoint Online, OneDrive for Business, Exchange Online, and Teams messages.
+Review which SharePoint sites remain searchable and which sites are excluded from organization-wide discovery. Microsoft documents tenant-level semantic indexing primarily through searchable SharePoint Online content, while paid-license user experiences also combine Microsoft Graph and mailbox context at query time.
 
-For FSI environments, evaluate whether all content sources should be indexed. Consider excluding content sources that contain highly sensitive data until proper controls are in place.
+For FSI environments, evaluate whether any searchable SharePoint sites containing highly sensitive data should remain discoverable to Copilot. Prefer Restricted Content Discovery (RCD) for current per-site exclusion decisions; use Restricted SharePoint Search (RSS) only where it is already enabled and a retirement plan is documented.
 
 ### Step 3: Review Item-Level Processing
 
@@ -36,23 +36,24 @@ For FSI environments, evaluate whether all content sources should be indexed. Co
 
 Review Copilot activity and content interaction patterns. DSPM for AI Activity Explorer shows how Copilot interacts with organizational content, including which sensitivity labels are present on accessed items.
 
-Verify that items with "Highly Confidential" labels are handled according to your organization's policy (indexed with access enforcement vs. excluded entirely via Restricted Content Discovery).
+Verify that items with "Highly Confidential" labels are handled according to your organization's policy. Labels and DLP govern access and policy outcomes, while RCD, RSS, and site searchability govern whether SharePoint content is discoverable to Copilot.
 
-### Step 4: Set Tenant-Level Index Controls
+### Step 4: Set Discovery and Retrieval Controls
 
 **Portal:** Microsoft 365 Admin Center
 **Path:** Admin Center > Copilot > Settings
 
-Configure tenant-level controls that affect Copilot content access:
-- Restricted SharePoint Search (RSS) configuration (see Control 1.3) to scope which sites Copilot can discover
-- DLP policies for Copilot interaction channels
-- User-level Copilot license assignment that controls who can query content via Copilot
+Configure the controls that affect Copilot content discovery and retrieval:
+- Restricted Content Discovery (RCD) for current per-site exclusions from organization-wide search and Copilot
+- Restricted SharePoint Search (RSS) only where it is already enabled and its retirement timeline is being managed
+- DLP, information barriers, and workload-specific controls for content that remains discoverable
+- User-level Copilot licensing or PAYG work-based chat decisions that determine who can use broader work-grounded experiences
 
 ### Step 5: Document Index Governance Decisions
 
 Record all governance decisions about semantic index scope, including:
-- Which content sources are indexed and which are excluded
-- How sensitivity labels affect indexing behavior
+- Which SharePoint sites remain searchable, use RCD, or remain under legacy RSS scoping
+- How labels, DLP, and information barriers affect retrieved content
 - User populations enabled for Copilot querying
 - Review cadence for index governance decisions
 
@@ -60,12 +61,12 @@ Record all governance decisions about semantic index scope, including:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Review default semantic index scope and document governance decisions |
-| **Recommended** | Configure content source restrictions via RSS (Control 1.3) and DLP policies for Copilot channels |
+| **Baseline** | Review searchable SharePoint scope, current Copilot licensing posture, and document governance decisions |
+| **Recommended** | Prefer RCD for per-site exclusions, use RSS only where already enabled, and pair discoverability controls with DLP policies for Copilot channels |
 | **Regulated** | Implement formal index governance policy with change control and quarterly governance committee review |
 
 ## Next Steps
 
 - Proceed to [PowerShell Setup](powershell-setup.md) for index management automation
 - See [Verification & Testing](verification-testing.md) to validate index governance
-- Review Control 1.3 for Restricted SharePoint Search as a complementary scoping control
+- Review Control 1.3 for Restricted SharePoint Search retirement planning and RCD migration detail
