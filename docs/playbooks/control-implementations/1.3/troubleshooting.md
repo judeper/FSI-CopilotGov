@@ -18,28 +18,28 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 ### Issue 1b: RCD-Enabled Site Content Still Appearing in Copilot
 
 - **Symptoms:** After enabling `RestrictContentOrgWideSearch` on a site, Copilot still surfaces content from that site
-- **Root Cause:** RCD configuration changes require time to propagate through the search index, similar to RSS changes. Additionally, content may be cached in Copilot's retrieval layer.
+- **Root Cause:** RCD configuration changes require time to propagate through Microsoft 365 indexing systems, and large sites can take significantly longer than small sites. Additionally, content may be cached in Copilot's retrieval layer.
 - **Resolution:**
-  1. Wait 24 hours after enabling RCD before testing — changes may take up to 24 hours to propagate
+  1. Allow time for propagation before testing; Microsoft notes that large sites can require extended processing time and sites with more than 500,000 items can take more than a week to reflect the change fully
   2. Verify the setting was saved: `(Get-SPOSite -Identity <url>).RestrictContentOrgWideSearch` should return `True`
   3. Clear the user's browser cache and sign out/in to Microsoft 365 before retesting
   4. Note: RCD does not affect content already in Copilot's active context window — test with a fresh Copilot session
-  5. If RCD is not working after 48 hours, check service health for search indexing delays
+  5. If RCD is not working after the documented propagation window for the site's size, check service health for search indexing delays
 
 ### Issue 2: Allowed List Changes Not Reflected in Search Results
 
 - **Symptoms:** After adding or removing sites from the allowed list, search results do not immediately reflect the changes
-- **Root Cause:** RSS allowed list changes require time to propagate through the search index. Changes may take up to 24 hours to take full effect across all search endpoints and Copilot grounding.
+- **Root Cause:** RSS allowed list changes require time to propagate through the search index. Microsoft documents RSS as taking effect within about one hour after it is enabled.
 - **Resolution:**
-  1. Wait 24 hours after making allowed list changes before testing
+  1. Wait about one hour after making allowed list changes before testing
   2. Verify the change was saved by running `Get-SPOTenantRestrictedSearchAllowedList`
   3. Clear the user's browser cache and sign out/in to Microsoft 365
-  4. If changes are not reflected after 24 hours, check service health for search indexing delays
+  4. If changes are not reflected after the expected propagation window, check service health for search indexing delays
 
 ### Issue 3: 100-Site Allowed List Limit Reached
 
 - **Symptoms:** Attempting to add a site to the allowed list fails with a limit error, or the `Add-SPOTenantRestrictedSearchAllowedList` cmdlet returns an error about maximum capacity
-- **Root Cause:** RSS initially supports a maximum of 100 sites in the allowed list. Organizations with more than 100 sites that need Copilot access will hit this limit.
+- **Root Cause:** RSS supports a maximum of 100 sites in the allowed list. Organizations with more than 100 sites that need Copilot access will hit this limit.
 - **Resolution:**
   1. Review the current allowed list and remove sites that are no longer needed
   2. Consolidate content into fewer sites where feasible

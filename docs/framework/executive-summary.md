@@ -166,7 +166,7 @@ See [Operating Model](operating-model.md) for complete RACI matrices.
 | Microsoft Purview | Data governance, audit, eDiscovery, communication compliance | Included in E5 |
 | Microsoft Entra ID P2 | Conditional access, access reviews, identity governance | Included in E5 |
 | Microsoft Sentinel | Advanced security monitoring, analytics | Optional (Regulated recommended) |
-| SharePoint Advanced Management | Restricted SharePoint Search, access governance reports | Recommended |
+| SharePoint Advanced Management | Restricted Content Discovery, legacy Restricted SharePoint Search, access governance reports | Recommended |
 
 !!! info "Copilot Basic vs. Premium Licensing"
     Microsoft Learn distinguishes **Copilot Chat (Basic)**, **Microsoft 365 Copilot (Basic)**, and **Microsoft 365 Copilot (Premium)** experiences. Tenant Message Center posts MC1253858/MC1253863 should be checked for any April 15, 2026 in-app access change, seat threshold, and affected-app scope. Organizations should plan governance controls for both Basic and Premium populations -- Basic users can still generate content that enters regulated workflows, while Premium users have the full discovery amplification risk profile. See [Adoption Roadmap](adoption-roadmap.md) for licensing transition planning.

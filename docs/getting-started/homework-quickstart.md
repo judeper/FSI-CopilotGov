@@ -5,7 +5,7 @@ description: Pre-session tasks for the 2-4 hour M365 Copilot quick-start governa
 
 # Pre-Session Homework — Quick Start
 
-This homework supports the five-step [Quick Start](quick-start.md) engagement that covers the essential guardrails for Microsoft 365 Copilot: oversharing detection (1.2), restricted SharePoint search (1.3), DLP for Copilot (2.1), audit logging (3.1), and admin feature management (4.1).
+This homework supports the five-step [Quick Start](quick-start.md) engagement that covers the essential guardrails for Microsoft 365 Copilot: oversharing detection (1.2), Restricted Content Discovery and any legacy restricted SharePoint search posture (1.3), DLP for Copilot (2.1), audit logging (3.1), and admin feature management (4.1).
 
 Completing these tasks ahead of time helps the working session stay focused on *decisions* rather than data collection, and aids in producing a defensible record of tenant state before any Copilot configuration change. Organizations should verify that the artifacts collected here match their internal evidence-handling standards before sharing.
 
@@ -24,11 +24,11 @@ Owns tenant-level Copilot feature toggles and the M365 Admin Center Copilot page
 
 ## SharePoint Admin
 
-Owns Restricted SharePoint Search (1.3) and surfaces the oversharing signal for 1.2.
+Owns Restricted Content Discovery and any legacy Restricted SharePoint Search posture (1.3) and surfaces the oversharing signal for 1.2.
 
 - Run the **SharePoint Advanced Management (SAM) Data Access Governance reports** for "Everyone except external users", "Shared with Everyone", and "Sensitivity labels applied" and export the CSV output.
 - Export the current **tenant sharing settings** (SharePoint Admin Center → Policies → Sharing) and the **default sharing link type** for SharePoint and OneDrive.
-- Produce the current **Restricted SharePoint Search allow-list** (PowerShell: `Get-SPOTenantRestrictedSearchAllowedList`) or confirm that RSS is not yet enabled.
+- Produce the current **Restricted Content Discovery** site list and governance log. If RSS was enabled before July 31, 2026, also export the legacy **Restricted SharePoint Search allow-list** (PowerShell: `Get-SPOTenantRestrictedSearchAllowedList`); otherwise confirm RSS is not enabled.
 - Identify the **top 25 sites by item count** and tag which are in-scope for Copilot rollout.
 - Download the role checklist: [sharepoint-admin-checklist.xlsx](../assessment/templates/sharepoint-admin-checklist.xlsx).
 

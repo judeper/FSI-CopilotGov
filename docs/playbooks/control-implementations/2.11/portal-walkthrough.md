@@ -65,7 +65,7 @@ Step-by-step portal configuration for governing Copilot Pages and Copilot Notebo
 ### Step 6: Document Legal Hold and Offboarding Procedures
 
 1. Record the manual legal hold step required to add the user's container when preservation is needed.
-2. Update the offboarding procedure to preserve Pages/Notebooks content before cleanup windows expire.
+2. Update the offboarding procedure to preserve Pages/Notebooks content before cleanup windows expire, and note that Microsoft documents the integrated custodian picker rollout as expected in October 2026.
 3. Identify populations that require Information Barriers and document whether Pages/Notebooks remain disabled for them.
 
 ## FSI Recommendations

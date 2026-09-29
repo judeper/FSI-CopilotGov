@@ -138,10 +138,10 @@ The Semantic Index is a critical component for governance because it determines 
 | **Includes meeting transcripts** | Spoken content from meetings is indexed and retrievable | Teams meeting governance (Control 1.5) |
 | **Includes email content** | Full email bodies and attachments are searchable by Copilot | Exchange permissions review (Control 1.13) |
 | **Near-real-time updates** | Newly shared content becomes available to Copilot quickly | Sensitivity labels applied at creation (Control 2.2) |
-| **No content exclusion by site** | Administrators cannot selectively exclude specific SharePoint sites from the Semantic Index (except via Restricted SharePoint Search) | Restricted SharePoint Search (Control 1.4) |
+| **No content exclusion by site** | Administrators cannot selectively exclude specific SharePoint sites from the Semantic Index itself; site-level discovery suppression is handled through Restricted Content Discovery, with legacy Restricted SharePoint Search available only for existing configurations | Restricted Content Discovery / legacy RSS (Control 1.3) |
 
-!!! warning "Restricted SharePoint Search"
-    **Restricted SharePoint Search (RSS)** is the primary mechanism for limiting which SharePoint sites are included in Copilot's grounding for Microsoft 365 Copilot Chat. When enabled, only sites on the approved list are used for Copilot grounding in the Copilot Chat experience. This is a critical control for Regulated environments. Note: RSS applies to Copilot Chat grounding, not to Copilot within individual apps (e.g., Copilot in Word still accesses files the user has open or recently accessed).
+!!! warning "Restricted Content Discovery and legacy Restricted SharePoint Search"
+    **Restricted Content Discovery (RCD)** is the current Microsoft-recommended mechanism for limiting which SharePoint sites appear in Microsoft 365 Copilot discovery and organization-wide search. **Restricted SharePoint Search (RSS)** remains a legacy, temporary allow-list posture only for tenants that enabled it before July 31, 2026. Neither control changes SharePoint permissions, and both still allow recent-interaction exceptions.
 
 ---
 

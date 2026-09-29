@@ -8,7 +8,7 @@ Test cases and evidence collection for validating external sharing controls.
 
 - **Objective:** Confirm external sharing is blocked on Copilot-scoped sites
 - **Steps:**
-  1. Select a site on the Copilot RSS allowed list
+  1. Select a site in documented Copilot grounding scope where external sharing should be blocked under the firm's policy
   2. Attempt to share a document with an external user
   3. Verify the sharing is blocked by policy
   4. Verify the block is logged in audit trail

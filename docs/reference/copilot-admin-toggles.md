@@ -100,7 +100,7 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 | Create and view Copilot Pages and Copilot Notebooks | Cloud Policy > Create and view Copilot Pages and Copilot Notebooks | Enabled | Review / approved groups only | Approved groups only | Review or disable for high-risk populations | Governs whether users can create these SharePoint Embedded-backed artifacts |
 | Code previews in Copilot Chat and Copilot Pages | Cloud Policy > Enable code previews for AI-generated content in Microsoft 365 Copilot Chat and Copilot Pages | Enabled | Off | Review | Off | Controls embedded code preview execution experiences |
 | Retention coverage | Purview > Data lifecycle management > Retention policies > All SharePoint Sites | Not automatic | On | On | On | Copilot Pages / Notebooks are stored in SharePoint Embedded, not OneDrive |
-| eDiscovery / legal hold workflow | Purview eDiscovery + manual SharePoint Embedded container targeting | Manual | Document | Test | Test quarterly | Legal hold requires manual container handling per user |
+| eDiscovery / legal hold workflow | Purview eDiscovery + manual SharePoint Embedded container targeting (integrated custodian picker rollout expected October 2026) | Manual | Document | Test | Test quarterly | Legal hold requires manual container handling per user until the picker is available in the tenant |
 
 !!! note "Pages storage correction"
     Copilot Pages and Copilot Notebooks are stored in user-owned **SharePoint Embedded** containers that also support Loop My workspace. They are not governed as standard OneDrive storage even though the cleanup lifecycle resembles OneDrive after user departure.

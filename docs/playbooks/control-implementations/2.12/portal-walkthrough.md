@@ -16,7 +16,7 @@ Step-by-step portal configuration for governing external sharing and guest acces
 **Path:** SharePoint Admin > Policies > Sharing
 
 Review and configure the tenant-level external sharing policy. For FSI environments, restrict sharing to prevent Copilot from surfacing content that has been shared externally without proper controls:
-- Set tenant default to "Existing external users only" or "Only people in your organization"
+- Set tenant default to **Existing guests** or **Only people in your organization**. If you're documenting PowerShell output, the corresponding `Set-SPOTenant -SharingCapability` value is `ExistingExternalUserSharingOnly`.
 - Disable anonymous sharing links organization-wide
 - Configure sharing link expiration (maximum 30 days for FSI)
 

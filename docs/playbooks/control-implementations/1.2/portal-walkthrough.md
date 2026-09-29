@@ -16,8 +16,8 @@ DSPM is accessible from these current entry points:
 
 | Path | Use Case |
 |------|----------|
-| **Microsoft Purview portal > Solutions > DSPM** (`https://purview.microsoft.com/datasecurityposturemanagement`) | Current full DSPM experience — AI hub, reports, oversharing assessments, recommendations, AI observability, Data Security Posture Agent, and item-level remediation |
-| **Microsoft Purview portal > AI hub** (`https://purview.microsoft.com/aihub`) | Shortcut to AI-focused DSPM reporting, including **Reports > Oversharing assessments** and AI observability |
+| **Microsoft Purview portal > Solutions > DSPM** (`https://purview.microsoft.com/datasecurityposturemanagement`) | Current full DSPM experience — data risk assessments, recommendations, AI observability, Data Security Posture Agent, and item-level remediation |
+| **Microsoft Purview portal > AI hub** (`https://purview.microsoft.com/aihub`) | AI-focused shortcut that can surface related DSPM insights, but current oversharing workflows are documented under **DSPM > Discover > Data risk assessments** |
 | **Microsoft 365 Admin Center > Copilot > Security** | Quick access to Copilot-specific security controls and links to Purview DSPM |
 
 ## Steps
@@ -29,12 +29,12 @@ DSPM is accessible from these current entry points:
 
 Navigate to the current Data Security Posture Management solution and complete any first-use setup tasks if they are not already enabled. The initial activation triggers a tenant-wide scan of SharePoint Online sites, OneDrive for Business locations, and Teams-connected file storage.
 
-Accept the terms and initiate the first assessment. The initial scan typically takes 24-48 hours depending on tenant size.
+Accept the terms and initiate the first assessment. Microsoft documents two separate timing expectations: allow roughly a day before tenant data is available to act on, and expect the **first default assessment** to have a **four-day delay** before results display. For **custom assessments**, wait at least **48 hours** after the assessment completes before reviewing results.
 
 ### Step 2: Review Oversharing Assessment Results
 
 **Portal:** Microsoft Purview portal
-**Path:** AI hub > Reports > Oversharing assessments (or DSPM > Discover > Data risk assessments in unified navigation)
+**Path:** DSPM > Discover > Data risk assessments
 
 Once the scan completes, review the oversharing assessment dashboard. Current assessments surface per-site findings, including Everyone Except External Users (EEEU) access, broad sharing links, sensitivity-label context, and the remediation backlog. The report categorizes findings by risk level:
 
@@ -48,7 +48,7 @@ Filter by risk level and focus remediation on Critical and High findings first.
 ### Step 3: Use Item-Level Remediation for Critical Findings
 
 **Portal:** Microsoft Purview portal
-**Path:** AI hub > Reports > Oversharing assessments > [Select site or finding]
+**Path:** DSPM > Discover > Data risk assessments > [Select assessment] > [Select site or finding]
 
 For high-priority findings, use item-level remediation to address individual files or items without requiring site-wide permission changes:
 
@@ -96,6 +96,8 @@ The Data Security Posture Agent enables natural language investigation of data r
 1. Access the Agent tab from Asset explorer in the DSPM navigation
 2. Enter natural language queries to investigate specific data exposure risks
 3. Review findings and export results for compliance documentation
+
+Microsoft Learn still documents the agent as preview. The Microsoft 365 roadmap entry now lists general availability from June 2026 and a launched status as of its August 10, 2026 update, so verify tenant availability before depending on the agent for operational controls.
 
 ### Step 7: Set Up Alerts and Monitoring
 

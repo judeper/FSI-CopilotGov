@@ -36,7 +36,7 @@ RCD is the current discoverability control for new Copilot deployments. For each
 3. Enable "Restrict content from Microsoft 365 Copilot"
 4. Select **Save**
 
-RCD is a stronger site-level discovery control than RSS. It hides the site from Microsoft 365 Copilot and tenant-wide search experiences such as SharePoint home, Office.com, Bing, and Delve where applicable. It also removes AI-powered entry points from the site (Copilot button, AI action menus, Create pages with AI). RCD still does not change existing site permissions: users with direct permissions can open content in SharePoint, and files they own or recently interacted with can still appear.
+RCD is the current site-level discovery control. Microsoft describes it as a temporary governance control that hides the site from Microsoft 365 Copilot and tenant-wide search experiences such as SharePoint home, Office.com, and Bing while permissions and governance controls are reviewed. It also removes AI-powered entry points from the site (Copilot button, AI action menus, Create pages with AI). RCD still does not change existing site permissions: users with direct permissions can open content in SharePoint, and files they own or recently interacted with can still appear.
 
 ### Step 2: Enable Restricted SharePoint Search (RSS) — Existing Configurations Only
 
@@ -82,6 +82,8 @@ Review the complete allowed sites list. Verify each site has been reviewed for a
 **Path:** Admin Center > Copilot > Settings
 
 Verify that Copilot data access settings reflect the expected governance configuration. For RCD-based deployments, confirm Copilot does not surface content from RCD-excluded sites. For existing RSS configurations, Copilot grounding should be scoped primarily to the allowed list, with documented exceptions for recent access or Teams/Outlook sharing.
+
+If your tenant is using **Copilot in SharePoint**, also review **Settings > Site AI** on the site itself. Microsoft is retiring the preview `KnowledgeAgent*` PowerShell availability controls on **November 1, 2026** and documents that RCD is respected regardless of Site AI settings.
 
 ### Step 6: Communicate Changes to Users
 

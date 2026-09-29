@@ -35,7 +35,7 @@ Owns license assignment (1.9), tenant toggles, and change windows (1.11).
 Owns the lion's share of Pillar 1: oversharing, RSS, permissions, SAM, information architecture (1.2, 1.3, 1.6, 1.7, 1.8, 1.14, 1.15).
 
 - Run the full **SAM Data Access Governance** suite: Sharing Links, Sensitivity Labels Applied, Everyone Except External Users, and Site Access Reviews (Controls 1.2, 1.7).
-- Export **Restricted SharePoint Search** configuration or gap list (Control 1.3).
+- Export the **Restricted Content Discovery** site list and any legacy **Restricted SharePoint Search** configuration or gap list (Control 1.3).
 - Produce the **site permissions inventory** for top 50 sites by user count (Control 1.6).
 - Run **item-level permission scan** samples on 3-5 representative sites per zone (Control 1.14).
 - Capture the current **Restricted Access Control (RAC)** and **Restricted Content Discovery (RCD)** site lists (Controls 1.7, 1.15).

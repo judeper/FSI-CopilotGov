@@ -144,7 +144,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | File search, summarization, content generation from personal files |
 | **Data Sources** | User's OneDrive files, shared files |
-| **Governance Considerations** | OneDrive is the default storage location for many M365 outputs including Copilot Pages, Loop components, and Whiteboard files. Files shared from OneDrive may not have sensitivity labels applied. "Shared with me" content is accessible to Copilot. |
+| **Governance Considerations** | OneDrive is the default storage location for many M365 outputs, but **Copilot Pages and Copilot Notebooks are stored in SharePoint Embedded rather than traditional OneDrive storage**. Files shared from OneDrive may not have sensitivity labels applied. "Shared with me" content is accessible to Copilot. |
 | **Key Controls** | 1.12 (OneDrive governance), 2.2 (Sensitivity labels), 3.2 (Retention) |
 
 ### Planner
@@ -227,11 +227,11 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | Cross-application conversational AI: ask questions about any M365 content, generate content, analyze data, summarize across sources |
 | **Data Sources** | **All M365 content accessible to the user** -- SharePoint, OneDrive, Exchange, Teams, Semantic Index, web search (if enabled) |
-| **Governance Considerations** | **Highest-risk surface for discovery amplification.** Microsoft 365 Copilot Chat is the primary surface where Copilot searches across all of a user's M365 content simultaneously. A single prompt can surface documents from multiple SharePoint sites, emails, Teams chats, and meeting transcripts. This is where oversharing risk is most acute. Restricted SharePoint Search directly limits Copilot Chat's grounding scope. |
-| **Key Controls** | 1.1-1.4 (All oversharing controls), 1.4 (Restricted SharePoint Search), 2.7 (Web search controls), 3.1 (Audit logging), 3.2 (Retention) |
+| **Governance Considerations** | **Highest-risk surface for discovery amplification.** Microsoft 365 Copilot Chat is the primary surface where Copilot searches across all of a user's M365 content simultaneously. A single prompt can surface documents from multiple SharePoint sites, emails, Teams chats, and meeting transcripts. This is where oversharing risk is most acute. Restricted Content Discovery is the current site-level discoverability control; legacy Restricted SharePoint Search can still constrain grounding only where it was enabled before July 31, 2026. |
+| **Key Controls** | 1.1-1.3 (Oversharing and discoverability controls), 2.7 (Web search controls), 3.1 (Audit logging), 3.2 (Retention) |
 
-!!! warning "Microsoft 365 Copilot Chat and Restricted SharePoint Search"
-    For Regulated environments, **Restricted SharePoint Search (RSS)** is the primary mechanism for controlling which SharePoint sites Copilot Chat uses for grounding. Without RSS, Copilot Chat will ground responses using content from *any* SharePoint site the user can access. RSS limits grounding to an approved site list.
+!!! warning "Microsoft 365 Copilot Chat discoverability controls"
+    For Regulated environments, **Restricted Content Discovery (RCD)** is the current Microsoft-recommended way to suppress high-risk SharePoint sites from Microsoft 365 Copilot discovery while remediation is underway. **Restricted SharePoint Search (RSS)** is a legacy allow-list control only for tenants that enabled it before July 31, 2026; new enablement is blocked.
 
 ### Copilot Pages
 
@@ -257,8 +257,8 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | AI-powered search from within the Microsoft 365 Copilot app — returns enriched, contextual results from organizational data with Copilot-generated summaries and follow-up suggestions |
 | **Data Sources** | Microsoft Graph (SharePoint, OneDrive, Exchange, Teams), Semantic Index, tenant-scoped organizational content |
-| **Governance Considerations** | Copilot Search operates within the Copilot app and uses the user's Microsoft Graph permissions to surface organizational content. Like Copilot Chat, it amplifies discovery of content the user already has access to, but the search-focused interface may encourage more targeted data retrieval. Restricted SharePoint Search limits the grounding scope. DLP applies to content returned by Copilot Search but does not inspect data at the search source — source-level DLP should be configured separately. |
-| **Key Controls** | 1.1 (Oversharing assessment), 1.4 (Restricted SharePoint Search), 2.1 (DLP), 2.2 (Sensitivity labels), 3.1 (Audit logging) |
+| **Governance Considerations** | Copilot Search operates within the Copilot app and uses the user's Microsoft Graph permissions to surface organizational content. Like Copilot Chat, it amplifies discovery of content the user already has access to, but the search-focused interface may encourage more targeted data retrieval. Restricted Content Discovery is the current discoverability control for high-risk sites; legacy RSS affects only preexisting RSS configurations. DLP applies to content returned by Copilot Search but does not inspect data at the search source — source-level DLP should be configured separately. |
+| **Key Controls** | 1.1 (Oversharing assessment), 1.3 (Discoverability controls), 2.1 (DLP), 2.2 (Sensitivity labels), 3.1 (Audit logging) |
 | **Access** | Premium only (requires Copilot license). |
 
 ### Agent Mode / Edit with Copilot
