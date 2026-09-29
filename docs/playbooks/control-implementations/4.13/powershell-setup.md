@@ -105,36 +105,60 @@ if ($highRisk) {
 $consentReport | Export-Csv "AppConsentAudit_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 4: Plugin Usage Monitoring
+### Script 4: Copilot Interaction Monitoring for Plugin and Agent Evidence
 
 ```powershell
-# Monitor plugin usage within Copilot interactions
+# Monitor Copilot interactions and summarize documented plugin / agent evidence
+# Current Microsoft Purview documentation lists CopilotInteraction for user
+# interactions, and lists plugin / agent admin operations separately.
 Import-Module ExchangeOnlineManagement
 Connect-ExchangeOnline -UserPrincipalName admin@contoso.com
 
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
 
-$pluginEvents = Search-UnifiedAuditLog `
+$copilotEvents = Search-UnifiedAuditLog `
     -StartDate $startDate -EndDate $endDate `
-    -Operations "CopilotPluginRun" `
+    -Operations "CopilotInteraction" `
     -ResultSize 5000
 
-Write-Host "Copilot Plugin Usage (Last 30 Days):" -ForegroundColor Cyan
-Write-Host "Total plugin execution events: $($pluginEvents.Count)"
+$pluginEvidence = foreach ($event in $copilotEvents) {
+    $auditData = $event.AuditData | ConvertFrom-Json
+    $plugins = @($auditData.AISystemPlugin)
 
-if ($pluginEvents.Count -gt 0) {
-    $pluginSummary = $pluginEvents | Group-Object {
-        ($_.AuditData | ConvertFrom-Json).PluginName
-    } | Select-Object @{N='Plugin'; E={$_.Name}}, @{N='ExecutionCount'; E={$_.Count}} |
+    foreach ($plugin in $plugins) {
+        if ($null -ne $plugin -and $plugin.Name) {
+            [PSCustomObject]@{
+                CreationDate  = $event.CreationDate
+                UserIds       = $event.UserIds
+                PluginName    = $plugin.Name
+                PluginId      = $plugin.ID
+                PluginVersion = $plugin.Version
+                AgentId       = $auditData.AgentId
+                AgentName     = $auditData.AgentName
+                AppHost       = $auditData.AppHost
+            }
+        }
+    }
+}
+
+Write-Host "Copilot Interaction Evidence (Last 30 Days):" -ForegroundColor Cyan
+Write-Host "Total CopilotInteraction records: $($copilotEvents.Count)"
+Write-Host "Records with AISystemPlugin evidence: $($pluginEvidence.Count)"
+
+if ($pluginEvidence.Count -gt 0) {
+    $pluginSummary = $pluginEvidence | Group-Object PluginName |
+        Select-Object @{N='Plugin'; E={$_.Name}}, @{N='ExecutionCount'; E={$_.Count}} |
         Sort-Object ExecutionCount -Descending
 
     $pluginSummary | Format-Table -AutoSize
     $pluginSummary | Export-Csv "PluginUsage_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+} else {
+    Write-Host "No AISystemPlugin data found in CopilotInteraction records for the selected window." -ForegroundColor Yellow
 }
 ```
 
-Validate the operation names against the current Microsoft-published audit operations and the tenant's observed events before relying on this query for examination evidence.
+If you also need administrative change evidence for plugin or agent governance, search the documented admin operations separately, for example: `CreatePlugin`, `UpdatePlugin`, `EnablePlugin`, `DisablePlugin`, `DeployedAgent`, `UpdatedAgent`, `RemovedAgent`, `BlockedAgent`, `UnblockedAgent`, `DeletedAgent`, and `UpdatedTenantSettings`.
 
 ### Script 5: Agent tools / MCP request evidence checklist
 
@@ -154,7 +178,7 @@ Write-Host "  - Work IQ read/write setting, usage-based billing plan, and spendi
 | Plugin inventory | Monthly | Script 1 |
 | Graph connector review | Quarterly | Script 2 |
 | Permission audit | Monthly | Script 3 |
-| Plugin usage monitoring | Weekly | Script 4 |
+| Copilot interaction monitoring | Weekly | Script 4 |
 | Agent tools / MCP request review | Monthly and after approvals | Script 5 evidence checklist |
 
 ## Next Steps
