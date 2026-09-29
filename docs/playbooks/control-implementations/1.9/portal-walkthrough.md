@@ -88,7 +88,7 @@ Create a license assignment policy that documents:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Group-based license assignment with documented deployment plan; PAYG acceptable for pilot groups (<50 users) with Azure spend limits configured |
+| **Baseline** | Group-based license assignment with documented deployment plan; PAYG acceptable for pilot groups (<50 users) with Azure budget notifications configured |
 | **Recommended** | Phased rollout with governance gates between waves; license reclamation policy for inactive users; per-seat licenses for regular users, PAYG for occasional/seasonal users; Frontline add-on documented with FSI use cases |
 | **Regulated** | Governance committee approval required for each wave; documented business justification per user group; quarterly license utilization review; per-seat licenses required for users handling regulated data; PAYG limited to non-regulated use cases with documented justification |
 

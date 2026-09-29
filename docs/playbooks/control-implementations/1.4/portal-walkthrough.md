@@ -23,7 +23,7 @@ Review the Copilot license assignment status and readiness checks. Confirm which
 ### Step 2: Review Searchability and Discoverability Controls
 
 **Portal:** SharePoint admin center
-**Path:** Sites > Active sites > [site] > Settings > Search and offline availability; Settings > Search > Restricted SharePoint Search (legacy, where already enabled; see [Microsoft Learn: Restricted SharePoint Search](https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search)); site settings for Restricted Content Discovery (where licensed)
+**Path:** SharePoint admin center > Sites > Active sites > [site] > Settings tab for **Restrict content from Microsoft Copilot** (RCD); site > Settings > Site settings > Search and offline availability for **Allow this site to appear in Search results**; SharePoint admin center > Settings > Search > Restricted SharePoint Search (legacy, where already enabled; see [Microsoft Learn: Restricted SharePoint Search](https://learn.microsoft.com/en-us/sharepoint/restricted-sharepoint-search))
 
 Review which SharePoint sites remain searchable and which sites are excluded from organization-wide discovery. Microsoft documents tenant-level semantic indexing primarily through searchable SharePoint Online content, while paid-license user experiences also combine Microsoft Graph and mailbox context at query time.
 
@@ -47,7 +47,7 @@ Configure the controls that affect Copilot content discovery and retrieval:
 - Restricted Content Discovery (RCD) for current per-site exclusions from organization-wide search and Copilot
 - Restricted SharePoint Search (RSS) only where it is already enabled and its retirement timeline is being managed
 - DLP, information barriers, and workload-specific controls for content that remains discoverable
-- User-level Copilot licensing or PAYG work-based chat decisions that determine who can use broader work-grounded experiences
+- User-level Copilot licensing and any PAYG agent/service decisions that determine which users can access broader work-grounded experiences
 
 ### Step 5: Document Index Governance Decisions
 

@@ -36,7 +36,7 @@ Common issues and resolution steps for network security controls.
   1. Download the current Microsoft 365 endpoint list from Microsoft's web service
   2. Compare against current firewall rules to identify missing entries
   3. Verify that `*.cloud.microsoft` is allowed and that no rule is blocking `copilot.cloud.microsoft`; Microsoft doesn't support allowing only partial or selected Microsoft 365 application URLs within the `*.cloud.microsoft` domain
-  4. Review any selective blocking rules that attempt to manage Copilot Chat by domain, URL, IP, or protocol filtering alone and replace them with Tenant Restrictions v2 or admin-center controls where the firm's policy requires a more targeted control
+  4. Review any selective blocking rules that attempt to manage Copilot Chat by domain, URL, IP, or protocol filtering alone. If the firm's objective is to block personal-account sign-in while keeping `copilot.cloud.microsoft` reachable, replace that pattern with Tenant Restrictions v2; for broader Copilot-governance goals, use admin-center or Cloud Policy controls instead
   5. Subscribe to endpoint change notifications to stay current
 
 ### Issue 4: SSL Inspection Degrading Copilot Performance

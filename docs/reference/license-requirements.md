@@ -19,7 +19,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | **Microsoft Purview Suite (formerly E5 Compliance)** | Add-on for E3 providing E5-level compliance capabilities | Alternative to full E5 for compliance-focused deployments |
 | **Microsoft 365 E5 Security** | Add-on for E3 providing E5-level security capabilities | Alternative to full E5 for security-focused deployments |
 | **SharePoint Advanced Management (SAM)** | Advanced SharePoint governance (DAG reports, site lifecycle, RCD, RAC) | Included with Microsoft 365 Copilot licenses at no additional cost (Ignite 2024); also available as standalone add-on (~$3/user/month) for non-Copilot environments |
-| **Microsoft Copilot (PAYG)** | Pay-as-you-go billing for approved Copilot services | Usage-based Azure billing tied to a billing policy; commonly used for Microsoft Copilot Chat without assigning full seats |
+| **Microsoft Copilot (PAYG)** | Pay-as-you-go billing for approved Copilot services | Usage-based Azure billing tied to a billing policy; commonly used for Microsoft Copilot Chat or supported agents/services without assigning full seats, but does not by itself provide Premium-style automatic Graph grounding |
 | **Microsoft 365 F1/F3** | Frontline worker licenses | Copilot availability extended to Frontline SKUs; check current Microsoft documentation for feature parity with E3/E5 |
 
 !!! warning "Tenant Message Center Verification Required"
