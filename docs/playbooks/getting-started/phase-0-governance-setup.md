@@ -180,8 +180,8 @@ See also: [Control 3.1 -- Copilot Audit Logging](../control-implementations/3.1/
 
 **Why:** Sensitivity labels govern how Copilot handles classified content. Copilot inherits the highest sensitivity label from source content when generating outputs. A well-structured label taxonomy supports appropriate content handling.
 
-**Portal:** Microsoft Purview
-**Path:** Purview > Information Protection > Labels
+**Portal:** Microsoft Purview portal
+**Path:** Solutions > Information Protection > Sensitivity labels
 
 **Actions:**
 

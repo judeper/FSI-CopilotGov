@@ -166,14 +166,24 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         # (issue #350 drift re-verification).
         "verifyIn",
     },
+    "1.5": {
+        # Control 1.5 re-authors the verification path, evidence contract,
+        # and facilitator follow-up to reflect current Purview navigation and
+        # the current Content Explorer / auto-labeling evidence limitations.
+        "verifyIn",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
     "2.2": {
         # Force-apply the corrected Purview navigation. The stale value in
         # controls.json names the retired "Information Protection > Labels" /
-        # "Label policies" pages; the current paths are Solutions >
-        # Information Protection > Sensitivity labels and Solutions >
-        # Information Protection > Publishing policies
+        # "Label policies" pages, plus the old coverage/evidence strings. The
+        # current paths are Solutions > Information Protection > Sensitivity
+        # labels, Publishing policies, and Auto-labeling policies
         # (issue #437 drift re-verification).
         "verifyIn",
+        "evidenceExpected",
+        "facilitatorNotes",
     },
     "3.11": {
         # Force-apply the corrected Rule 17a-4(f)(2) storage-system citation

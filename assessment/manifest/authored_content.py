@@ -425,7 +425,7 @@ AUTHORED: dict[str, dict] = {
             "Sensitivity-label taxonomy document with AI-readiness review date",
             "Labels mapped to Copilot DLP content-exclusion rules",
             "Auto-labeling policy configuration for high-risk content types",
-            "Content Explorer labeled-item export cross-referenced with workload inventory totals for Copilot-grounded sites",
+            "Content Explorer labeled-item export cross-referenced with workload inventory totals for Copilot-grounded sites, supplemented with auto-labeling policy review evidence or Activity Explorer / audit evidence for encrypted SharePoint and OneDrive items that Content Explorer doesn't surface",
         ],
         "sectorYesBar": _sector_map(
             bank=(
@@ -1228,7 +1228,7 @@ AUTHORED: dict[str, dict] = {
         "evidenceExpected": [
             "Sensitivity-label taxonomy with Copilot content classification mapping",
             "Auto-labeling policy configuration plus Coverage by simulation context or Labeled items review evidence",
-            "Label usage report from Activity Explorer for the last 30 days",
+            "Activity Explorer sensitivity-label activity for the last 30 days",
             "Evidence of label propagation to Copilot-generated outputs",
         ],
         "sectorYesBar": _sector_map(

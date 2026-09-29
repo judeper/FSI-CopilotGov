@@ -101,9 +101,9 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 - **Symptoms:** Information Protection reports, Content explorer exports, auto-labeling review pages, or Activity explorer show lower label counts than expected or data appears delayed
 - **Root Cause:** These surfaces answer different questions and refresh on different cadences. Information Protection reports show a 30-day activity/adoption window rather than total inventory. Content explorer is a current snapshot that can take up to 7 days to update (14 days for SharePoint files). Activity explorer is fed by the unified audit log and is not real-time. Auto-labeling review pages show policy-specific outcomes rather than tenant-wide totals.
 - **Resolution:**
-  1. Use **Information Protection > Reports** for label activity and adoption trends only — not for coverage percentages
-  2. Use **Content explorer** plus a separate workload inventory when you need labeled-item coverage evidence
-  3. Use **Activity explorer** for recent labeling activity, allowing for unified-audit-log delay
+  1. Use **Information Protection > Reports** for its documented 30-day posture views: **Label distribution and adoption**, **Auto-labeling policy coverage**, and **Sensitivity label activity**
+  2. Use **Content explorer** plus a separate workload inventory when you need current labeled-item evidence by workload or zone; for SharePoint and OneDrive, remember that encrypted sensitivity labels don't surface there
+  3. Use **Activity explorer**, audit, or the auto-labeling policy review pages when you need a compensating evidence source for encrypted SharePoint and OneDrive items or more recent activity
   4. Use the auto-labeling policy's **Coverage by simulation context**, **Labeled items**, and **Failed** views when you need per-policy enforcement results
   5. Use PowerShell Script 2 for recent label event monitoring
   6. Check service health for any Purview reporting delays
