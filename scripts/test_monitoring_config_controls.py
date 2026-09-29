@@ -57,3 +57,20 @@ def test_keyword_control_map_control_names_match_manifest_titles():
         "monitoring-config.yaml control names do not match controls.json titles:\n"
         + "\n".join(mismatches)
     )
+
+
+def test_learn_url_control_map_control_ids_exist_in_manifest():
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    manifest_titles = _load_manifest_titles()
+    missing = []
+
+    for entry in config.get("learn", {}).get("url_control_map", []):
+        url = entry.get("url")
+        for control_id in entry.get("controls", []):
+            if control_id not in manifest_titles:
+                missing.append(f"{url}: {control_id}")
+
+    assert not missing, (
+        "learn.url_control_map references control IDs missing from controls.json:\n"
+        + "\n".join(missing)
+    )

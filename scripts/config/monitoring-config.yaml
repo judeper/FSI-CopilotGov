@@ -63,6 +63,85 @@ learn:
     - pattern: '^[+-]\s*(Table of contents|Read in English|Add to Plans?|Copy Markdown|Print)\s*$'
       reason: "Learn command-bar chrome labels"
 
+  # Page-shape guards prevent baselines and classifications from reacting to
+  # auth interstitials or other non-content responses that occasionally render
+  # in place of the real Learn article body.
+  page_shape_noise_patterns:
+    - pattern: 'access to this page requires authorization[\s\S]{0,250}(?:signing in|changing directories)'
+      reason: "Authorization interstitial"
+
+  # Optional per-URL section anchors scope hashing/diffing to a stable heading
+  # on large catalog pages. If the heading is missing, the monitor falls back to
+  # whole-page content and logs a warning instead of failing.
+  section_anchors:
+    - url: 'https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365'
+      heading: "Microsoft 365 (formerly Office 365)"
+    - url: 'https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-copilot'
+      heading: "Microsoft Copilot"
+
+  # Explicit Learn URL-to-control overrides supplement exact URL scans from the
+  # docs corpus. Use these when a monitored source is authoritative for a
+  # control family but is not yet cited verbatim in the control/playbook text.
+  url_control_map:
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-build-agents'
+      controls: ["1.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-add-knowledge'
+      controls: ["1.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/knowledge-sources'
+      controls: ["1.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/prerequisites'
+      controls: ["1.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/code-interpreter'
+      controls: ["1.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/image-generator'
+      controls: ["1.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/'
+      controls: ["4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/whats-new'
+      controls: ["4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-models'
+      controls: ["4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq'
+      controls: ["4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-local-browser'
+      controls: ["4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/cowork-usage-report'
+      controls: ["4.5", "4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/cowork-usage-report?view=o365-worldwide'
+      controls: ["4.5", "4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/managed-apps/'
+      controls: ["4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/managed-apps/index'
+      controls: ["4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/discovery-setting-ai-experiences'
+      controls: ["1.9", "4.8", "4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits'
+      controls: ["1.9", "4.8", "4.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms'
+      controls: ["1.13", "2.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry?view=o365-worldwide'
+      controls: ["1.13", "2.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry'
+      controls: ["1.13", "2.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-settings?view=o365-worldwide'
+      controls: ["1.13", "2.13", "2.14", "4.13"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-copilot-studio/'
+      controls: ["2.14", "4.14"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-copilot-studio/publication-fundamentals-publish-channels'
+      controls: ["2.14", "4.14"]
+    - url: 'https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about'
+      controls: ["2.1"]
+    - url: 'https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365'
+      controls: ["3.1", "4.11"]
+    - url: 'https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-copilot'
+      controls: ["3.1", "4.11"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview'
+      controls: ["1.1", "1.4", "1.9", "2.15"]
+    - url: 'https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-requirements'
+      controls: ["1.1", "1.4", "1.9", "2.15"]
+    - url: 'https://learn.microsoft.com/en-us/entra/global-secure-access/concept-secure-web-ai-gateway-agents'
+      controls: ["1.1", "1.4", "1.9", "2.15"]
+
 
 # === REGULATORY MONITOR CLASSIFICATION PATTERNS ===
 # These patterns are used to classify regulatory items from Federal Register and FINRA.

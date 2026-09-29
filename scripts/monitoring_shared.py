@@ -26,6 +26,7 @@ import re
 import sys
 import tempfile
 import time
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -34,7 +35,7 @@ from urllib.parse import urlparse
 
 try:
     import requests
-    from bs4 import BeautifulSoup
+    from bs4 import BeautifulSoup, Tag
 except ImportError as e:
     print(f"ERROR: Missing dependency: {e}")
     print("Install with: pip install requests beautifulsoup4")
@@ -68,6 +69,16 @@ CLASSIFICATION_NOISE = "NOISE"
 _URL_PATTERN = re.compile(
     r'(?i)(?:https?://|//|learn\.microsoft\.com/)[^\s<>"\'\]\)]+'
 )
+
+
+@dataclass(frozen=True)
+class LearnContentSnapshot:
+    """Normalized Learn content plus any scoped-monitoring metadata."""
+
+    normalized_content: str
+    content_scope: str
+    page_shape: Optional[str] = None
+    warning: Optional[str] = None
 
 # === HTTP Fetching ===
 def _parse_retry_after_seconds(header_value: Optional[str]) -> Optional[int]:
@@ -228,31 +239,190 @@ def normalize_content(html: str) -> str:
     Returns:
         Normalized text content
     """
+    return extract_learn_content_snapshot("", html, {"learn": {}}).normalized_content
+
+
+def _prepare_content_soup(html: str) -> BeautifulSoup:
+    """Parse HTML and remove major non-content chrome elements."""
     soup = BeautifulSoup(html, 'html.parser')
 
-    # Remove non-content elements
-    for tag in soup.find_all(['script', 'style', 'nav', 'header', 'footer', 'aside', 'noscript']):
+    for tag in soup.find_all(
+        ['script', 'style', 'nav', 'header', 'footer', 'aside', 'noscript']
+    ):
         tag.decompose()
 
-    # Remove Learn page chrome (feedback, metadata sections)
     for selector in ['.feedback-section', '.metadata', '.contributors', '.page-metadata']:
         for elem in soup.select(selector):
             elem.decompose()
 
-    # Find main content area
-    main = soup.find('main') or soup.find('article') or soup.find('div', class_='content')
+    return soup
 
-    if main:
-        text = main.get_text(separator='\n', strip=True)
-    else:
-        text = soup.get_text(separator='\n', strip=True)
 
-    # Normalize
-    text = re.sub(r'\n{3,}', '\n\n', text)  # Collapse blank lines
-    text = re.sub(r'[ \t]+', ' ', text)      # Collapse whitespace
-    text = re.sub(r'\d{1,2}/\d{1,2}/\d{4}', '[DATE]', text)  # Mask dates
+def _content_root(soup: BeautifulSoup) -> Tag:
+    return soup.find('main') or soup.find('article') or soup.find('div', class_='content') or soup
 
+
+def _normalize_text_content(text: str) -> str:
+    """Normalize extracted text for diff-friendly hashing."""
+    text = re.sub(r'\r\n?', '\n', text)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    text = re.sub(r'[ \t]+', ' ', text)
+    text = re.sub(r'\d{1,2}/\d{1,2}/\d{4}', '[DATE]', text)
     return text.strip()
+
+
+def _slugify_heading(text: str) -> str:
+    slug = re.sub(r'[^a-z0-9]+', '-', text.casefold()).strip('-')
+    return slug
+
+
+def _canonicalize_monitored_url(raw_url: str) -> Optional[str]:
+    """
+    Canonicalize tracked Learn URLs while preserving query and fragment.
+
+    This is used for config-driven mappings where fragment-level distinctions matter.
+    """
+    if not raw_url:
+        return None
+
+    candidate = raw_url.strip().strip("<>[]()\"'").rstrip(".,;:")
+    if not candidate:
+        return None
+
+    if candidate.startswith("//"):
+        parsed = urlparse(f"https:{candidate}")
+    elif "://" not in candidate:
+        parsed = urlparse(f"https://{candidate}")
+    else:
+        parsed = urlparse(candidate)
+
+    if parsed.scheme and parsed.scheme.lower() not in {"http", "https"}:
+        return None
+    if not parsed.netloc:
+        return None
+
+    host = parsed.netloc.lower()
+    path = re.sub(r"/+", "/", parsed.path or "/")
+    path = re.sub(r"^/en-us(?=/|$)", "", path, flags=re.IGNORECASE)
+    path = (path.rstrip("/") or "/").lower()
+    query = parsed.query
+    fragment = parsed.fragment.lower()
+
+    monitored = f"{host}{path}"
+    if query:
+        monitored += f"?{query}"
+    if fragment:
+        monitored += f"#{fragment}"
+    return monitored
+
+
+def _learn_section_anchor_for_url(url: str, config: Optional[dict]) -> Optional[str]:
+    target = _canonicalize_monitored_url(url)
+    if target is None:
+        return None
+
+    for entry in (config or {}).get("learn", {}).get("section_anchors", []):
+        candidate = _canonicalize_monitored_url(entry.get("url", ""))
+        if candidate == target:
+            return entry.get("heading")
+    return None
+
+
+def _find_section_heading(root: Tag, anchor_heading: str, fragment: str) -> Optional[Tag]:
+    heading_tags = tuple(f"h{level}" for level in range(1, 7))
+    fragment = fragment.casefold()
+    wanted_slug = _slugify_heading(anchor_heading)
+
+    if fragment:
+        fragment_target = root.find(id=fragment)
+        if fragment_target is not None:
+            if fragment_target.name in heading_tags:
+                return fragment_target
+            parent_heading = fragment_target.find_parent(heading_tags)
+            if parent_heading is not None:
+                return parent_heading
+            next_heading = fragment_target.find_next(heading_tags)
+            if next_heading is not None:
+                return next_heading
+
+    for heading in root.find_all(heading_tags):
+        heading_text = heading.get_text(separator=" ", strip=True)
+        heading_id = str(heading.get("id", "")).casefold()
+        if heading_id == fragment or _slugify_heading(heading_text) == wanted_slug:
+            return heading
+
+    return None
+
+
+def _extract_section_from_heading(heading: Tag) -> str:
+    heading_tags = tuple(f"h{level}" for level in range(1, 7))
+    level = int(heading.name[1])
+    chunks = [heading.get_text(separator="\n", strip=True)]
+
+    for sibling in heading.next_siblings:
+        if isinstance(sibling, Tag) and sibling.name in heading_tags:
+            if int(sibling.name[1]) <= level:
+                break
+        text = (
+            sibling.get_text(separator="\n", strip=True)
+            if isinstance(sibling, Tag)
+            else str(sibling).strip()
+        )
+        if text:
+            chunks.append(text)
+
+    return "\n".join(chunks)
+
+
+def detect_learn_page_shape(text: str, config: Optional[dict] = None) -> Optional[str]:
+    """Identify non-content Learn page shapes that should not drive classification."""
+    for entry in (config or {}).get("learn", {}).get("page_shape_noise_patterns", []):
+        pattern = entry.get("pattern")
+        if pattern and re.search(pattern, text, re.IGNORECASE):
+            return entry.get("reason", "Page shape noise")
+    return None
+
+
+def extract_learn_content_snapshot(
+    url: str,
+    html: str,
+    config: Optional[dict] = None,
+) -> LearnContentSnapshot:
+    """
+    Extract normalized Learn content, optionally scoped to a configured section.
+
+    Falls back to whole-page monitoring when a configured section heading cannot be
+    located, and returns a warning so callers can log the downgrade.
+    """
+    soup = _prepare_content_soup(html)
+    root = _content_root(soup)
+    anchor_heading = _learn_section_anchor_for_url(url, config)
+    fragment = urlparse(url).fragment
+    warning = None
+    content_scope = "whole-page"
+
+    if anchor_heading:
+        heading = _find_section_heading(root, anchor_heading, fragment)
+        if heading is not None:
+            extracted_text = _extract_section_from_heading(heading)
+            content_scope = f"section:{anchor_heading}"
+        else:
+            warning = (
+                f"Configured Learn section anchor not found for {url}: {anchor_heading}"
+            )
+            extracted_text = root.get_text(separator="\n", strip=True)
+    else:
+        extracted_text = root.get_text(separator="\n", strip=True)
+
+    normalized = _normalize_text_content(extracted_text)
+    page_shape = detect_learn_page_shape(normalized, config)
+
+    return LearnContentSnapshot(
+        normalized_content=normalized,
+        content_scope=content_scope,
+        page_shape=page_shape,
+        warning=warning,
+    )
 
 
 # === Content Hashing ===
@@ -306,6 +476,12 @@ def classify_change(old_text: str, new_text: str, url: str = "", config: dict = 
         return (CLASSIFICATION_NOISE, 'No text changes detected', '')
 
     diff_text = ''.join(diff_lines[:max_diff_lines])
+
+    page_shape = detect_learn_page_shape(new_text, config) or detect_learn_page_shape(
+        old_text, config
+    )
+    if page_shape:
+        return (CLASSIFICATION_NOISE, page_shape, diff_text)
 
     # Build pattern lists from config
     learn_config = config.get('learn', {})
@@ -418,7 +594,23 @@ def _content_references_url(content: str, canonical_target: Optional[str], raw_t
     return raw_target in content
 
 
-def find_affected_controls(url: str, docs_dir: Path) -> dict:
+def _learn_url_control_overrides(url: str, config: Optional[dict]) -> list[str]:
+    """Return explicit Learn URL->control overrides from monitoring config."""
+    target = _canonicalize_monitored_url(url)
+    if target is None:
+        return []
+
+    overrides: list[str] = []
+    for entry in (config or {}).get("learn", {}).get("url_control_map", []):
+        candidate = _canonicalize_monitored_url(entry.get("url", ""))
+        if candidate != target:
+            continue
+        overrides.extend(entry.get("controls", []))
+
+    return list(dict.fromkeys(overrides))
+
+
+def find_affected_controls(url: str, docs_dir: Path, config: Optional[dict] = None) -> dict:
     """
     Find controls and playbooks that reference a given URL.
 
@@ -438,6 +630,18 @@ def find_affected_controls(url: str, docs_dir: Path) -> dict:
     canonical_target = _canonicalize_reference_url(url)
     matched_control_ids = set()
     seen_playbook_paths = set()
+    seen_control_ids = set()
+    control_catalog: dict[str, dict] = {}
+
+    def _add_control(control_id: str, title: str, file_path: str) -> None:
+        if control_id in seen_control_ids:
+            return
+        seen_control_ids.add(control_id)
+        affected['controls'].append({
+            'control_id': control_id,
+            'title': title,
+            'file_path': file_path,
+        })
 
     def _add_playbook(control_id: str, playbook_file: Path) -> None:
         rel_path = str(playbook_file.relative_to(docs_dir))
@@ -464,17 +668,27 @@ def find_affected_controls(url: str, docs_dir: Path) -> dict:
             for control_file in pillar_dir.glob('*.md'):
                 try:
                     content = control_file.read_text(encoding='utf-8')
+                    control_id = control_file.stem.split('-')[0]
+                    title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
+                    control_catalog[control_id] = {
+                        'title': title_match.group(1) if title_match else control_file.stem,
+                        'file_path': str(control_file.relative_to(docs_dir)),
+                    }
                     if _content_references_url(content, canonical_target, url):
-                        control_id = control_file.stem.split('-')[0]
                         matched_control_ids.add(control_id)
-                        title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
-                        affected['controls'].append({
-                            'control_id': control_id,
-                            'title': title_match.group(1) if title_match else control_file.stem,
-                            'file_path': str(control_file.relative_to(docs_dir)),
-                        })
+                        _add_control(
+                            control_id,
+                            control_catalog[control_id]['title'],
+                            control_catalog[control_id]['file_path'],
+                        )
                 except Exception:
                     continue
+
+    for control_id in _learn_url_control_overrides(url, config):
+        matched_control_ids.add(control_id)
+        doc = control_catalog.get(control_id)
+        if doc is not None:
+            _add_control(control_id, doc['title'], doc['file_path'])
 
     # Scan playbooks — control-implementation playbooks are keyed by their
     # control directory (e.g. "2.1"); cross-cutting operational playbooks
@@ -875,7 +1089,12 @@ def validate_config(config: dict) -> tuple[bool, list[str]]:
     # Validate learn patterns
     if 'learn' in config:
         learn = config['learn']
-        for tier in ['critical_patterns', 'high_patterns', 'noise_patterns']:
+        for tier in [
+            'critical_patterns',
+            'high_patterns',
+            'noise_patterns',
+            'page_shape_noise_patterns',
+        ]:
             if tier in learn:
                 for i, entry in enumerate(learn[tier]):
                     if 'pattern' not in entry:
@@ -891,6 +1110,18 @@ def validate_config(config: dict) -> tuple[bool, list[str]]:
                                 f"    Value: '{pattern}'\n"
                                 f"    Error: {e}"
                             )
+        for i, entry in enumerate(learn.get('section_anchors', [])):
+            if 'url' not in entry:
+                errors.append(f"learn.section_anchors[{i}]: missing 'url' key")
+            if 'heading' not in entry:
+                errors.append(f"learn.section_anchors[{i}]: missing 'heading' key")
+        for i, entry in enumerate(learn.get('url_control_map', [])):
+            if 'url' not in entry:
+                errors.append(f"learn.url_control_map[{i}]: missing 'url' key")
+            if 'controls' not in entry:
+                errors.append(f"learn.url_control_map[{i}]: missing 'controls' key")
+            elif not isinstance(entry['controls'], list):
+                errors.append(f"learn.url_control_map[{i}].controls: must be a list")
 
     # Validate regulatory patterns
     if 'regulatory' in config:
@@ -936,6 +1167,8 @@ __all__ = [
     # Content processing
     'normalize_content',
     'compute_hash',
+    'extract_learn_content_snapshot',
+    'detect_learn_page_shape',
     # Change classification
     'classify_change',
     'CLASSIFICATION_CRITICAL',
