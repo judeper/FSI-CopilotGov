@@ -202,9 +202,9 @@ $evidence | ConvertTo-Json -Depth 20
 
 Record the tenant, collection timestamp, policy and assignment property names, all returned values, and the onboarding request state. A successful Exchange `Get-DataEncryptionPolicy` response by itself is not sufficient evidence for Copilot. If an Exchange mailbox DEP is also in scope, retain that output in a separately labelled Exchange-mailbox evidence record.
 
-## Script 4: Provision and verify one Premium vault per paid subscription
+## Script 4: Provision and verify one Azure Key Vault per paid subscription
 
-This is a provisioning template, not a read-only evidence query. Run it only through the approved change process. It intentionally fails if the two entries reuse a subscription. A single subscription containing two vaults is not a compliant Customer Key pair.
+This is a provisioning template, not a read-only evidence query. Run it only through the approved change process. It intentionally fails if the two entries reuse a subscription. A single subscription containing two vaults is not a compliant Customer Key pair. The example uses the production-recommended Premium SKU; Microsoft also supports Standard SKU vaults for testing and validation.
 
 ```powershell
 Import-Module Az.Accounts
@@ -269,7 +269,7 @@ $vaultEvidence = foreach ($vaultSpec in $vaults) {
 $vaultEvidence | Format-List
 ```
 
-Customer Key requires 90-day recovery configuration and purge protection for Azure Key Vault. Managed HSM has soft delete enabled by default but requires purge protection at creation. Use one Managed HSM per paid subscription when that configuration is selected. If Azure Key Vault is used for Multiple Workloads, Exchange, and SharePoint/OneDrive, create a separate vault pair for each workload scenario as Microsoft documents.
+Customer Key requires 90-day recovery configuration and purge protection for Azure Key Vault. Managed HSM has soft delete enabled by default, a configurable retention period with a 90-day default, and requires purge protection at creation. Use one Managed HSM per paid subscription when that configuration is selected. If Azure Key Vault is used for Multiple Workloads, Exchange, and SharePoint/OneDrive, create a separate vault pair for each workload scenario as Microsoft documents.
 
 ## Script 5: Inventory encrypted sensitivity labels
 

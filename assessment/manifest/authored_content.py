@@ -1623,9 +1623,9 @@ AUTHORED: dict[str, dict] = {
             {
                 "portal": "Azure portal",
                 "path": (
-                    "Review each Customer Key Azure Key Vault Premium or "
-                    "Managed HSM instance, its subscription context, key type, "
-                    "soft-delete retention, and purge protection."
+                    "Review each Customer Key Azure Key Vault or Managed "
+                    "HSM instance, its subscription context, actual SKU/key "
+                    "type, recovery settings, and purge protection."
                 ),
                 "url": "https://portal.azure.com",
             },
@@ -1660,10 +1660,12 @@ AUTHORED: dict[str, dict] = {
                 "DEP output cannot satisfy this Copilot evidence requirement"
             ),
             (
-                "Azure Key Vault Premium or Managed HSM evidence showing two "
-                "distinct paid subscriptions, one vault or HSM per subscription "
-                "for each Customer Key scenario, HSM-protected keys, 90-day "
-                "recovery configuration, and purge protection"
+                "Azure Key Vault or Managed HSM evidence showing two distinct "
+                "paid subscriptions, one vault or HSM per subscription for "
+                "each Customer Key scenario, the actual SKU, HSM-protected "
+                "production keys where applicable, Azure Key Vault 90-day "
+                "recovery configuration, Managed HSM recovery settings, and "
+                "purge protection"
             ),
             (
                 "Manual Microsoft 365 service-encryption review and applicable "
