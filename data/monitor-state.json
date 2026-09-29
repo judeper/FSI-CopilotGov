@@ -2665,10 +2665,26 @@
         "2026-19727": "v2:sha256:bfb734be8a944c5833eb88a86fadbcd56681a6fb70a24f479dc05fbd059ceba2",
         "2026-19726": "v2:sha256:9ce407797a314347cad0deb32a3cc6a179ed232c5baa8c57ddced2ba95da3669",
         "2026-19725": "v2:sha256:8fab67fcacdea1d2d95edf04cc1e78ee563e098ba819e39a398b22c20b526060",
-        "2026-19724": "v2:sha256:bcd7f9ef9987c0bfbad14b2c8015c7c04ced5677f7d96a0ad9efa4cc433237d9"
+        "2026-19724": "v2:sha256:bcd7f9ef9987c0bfbad14b2c8015c7c04ced5677f7d96a0ad9efa4cc433237d9",
+        "2026-19935": "v2:sha256:6255a806d87218893a91675c6798dcd3e0a05d16745fd0000da86a716f8a492e",
+        "2026-19916": "v2:sha256:df8e9ac12402cb55638e08e0770a6b2664ed745ef832ce75492f610affe6398b",
+        "2026-19900": "v2:sha256:93ec575fac75c1ab3583039ce22f72b2d8b09f60bb54311d65d23a1ddfdccae1",
+        "2026-19899": "v2:sha256:4cc53b730a7c9f989421a384c48805a219df9d78d19b427d360aded26bbbb238",
+        "2026-19882": "v2:sha256:661197652ca91abdd5364e9e993867ed70e6bbc084213406627bdc9a135ddb2f",
+        "2026-19873": "v2:sha256:62b8dc19934bce479be133a72e3ea1e3e27452f7caf738562c168e0a55f3ceea",
+        "2026-19872": "v2:sha256:0f6185e0d7414f5f749246267dd7a1a1e165c5a20eff14cd39bb89e6182351d7",
+        "2026-19870": "v2:sha256:8858f45bc736e59e64a16b67b321605aeee931a409d89f0a28f8a19e9236d88e",
+        "2026-19869": "v2:sha256:6d42a97cecb9bd1278b407bd979952aa4f069625b85636fc159e29f2f485e3da",
+        "2026-19868": "v2:sha256:717d4653a38f0d391bad1d5af963f930e29ac9a089186052b2c725e7b2c65dce",
+        "2026-19867": "v2:sha256:1fb3346c9943c487c9f423a86ead0631a5a3b4ae9c7463d3317b2ae8e12acab6",
+        "2026-19866": "v2:sha256:3e33cfeb81fa6cfff7f09622cf43640fe66a95d6ef76f7c6f6e538b48361a1f1",
+        "2026-19865": "v2:sha256:f724eb4fb9801b3a3df30ca8c9ef658e7427a4cf5eb2a1d09c24eb3f449e3d54",
+        "2026-19864": "v2:sha256:d7eb6bdd4fddd7fc7e347a9f8796e8338522af167a6425be5c32ac002019ae22",
+        "2026-19863": "v2:sha256:e6e1948908d937d74505237fdaab84e8b6f3bab870b2e79019566e19fdfeb347",
+        "2026-19860": "v2:sha256:cd20607c99eb40f18c402ab9f87366b96e73ede002d0481db0f341b5642cd291"
       },
-      "last_run": "2026-09-26T13:56:36.491091+00:00",
-      "last_checked": "2026-09-26"
+      "last_run": "2026-09-29T16:11:38.896070+00:00",
+      "last_checked": "2026-09-29"
     },
     "regulatory-finra": {
       "entries": {
@@ -6077,7 +6093,7 @@
         "FINRA 83-2": "v2:sha256:180481d70c63ad31c6216bc122fc220b49fef5a23c454dcc34fb25cf98fcbac7",
         "FINRA 83-1": "v2:sha256:aabcd22cc15e78daf57aa55f3ba05464b0438180cc2be488369107ad33894cf9"
       },
-      "last_run": "2026-09-26T13:56:37.153444+00:00"
+      "last_run": "2026-09-29T16:11:40.048711+00:00"
     }
   },
   "regulatory_monitor": {
@@ -6087,6 +6103,7 @@
       "validator_dropped": 0,
       "listing_cross_check": "listing cross-check ok",
       "new_notices_fetched": 0
-    }
+    },
+    "consecutive_finra_unverified_runs": 0
   }
 }
