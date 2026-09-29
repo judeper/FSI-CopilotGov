@@ -108,7 +108,7 @@ $activity |
 #   - cowork-browsing-toggle.<pdf|png>
 #   - cowork-usage-overview.<csv|pdf|png>
 #   - cowork-usage-report.<csv|pdf|png>
-#   - cowork-value-report.<csv|pdf|png>
+#   - cowork-value-report.<csv|pdf|png>   # Value tab is Frontier preview; capture only if the tenant participates
 #   - plugin-inventory.<csv|pdf|png>
 #   - customize-skills-inventory.<csv|pdf|png>
 #   - customize-uploaded-plugin-packages.<csv|pdf|png>
@@ -130,7 +130,7 @@ Compress-Archive -Path .\artifacts\4.15\* `
 | Access-request review | Weekly (during pilot) | Reviews and documents pending user access requests |
 | Model-toggle re-verification | Monthly and on Microsoft update | Re-confirms Anthropic-family/current model control state and provider data-retention posture |
 | Browser-toggle re-verification | Monthly and on Microsoft update | Re-confirms the Cowork Browsing toggle and the Edge policies it inherits |
-| Cowork usage dashboard review | Weekly (during pilot), Monthly (steady state) | Reviews Copilot > Cowork > Overview / Usage and, where enabled, Value-tab trends |
+| Cowork usage dashboard review | Weekly (during pilot), Monthly (steady state) | Reviews Copilot > Cowork > Overview / Usage and the Value tab only if the tenant participates in the Frontier preview program |
 | Plugin, uploaded package, and custom skill inventory review | Monthly | Confirms available plugins, uploaded packages, and custom skills (with sharing scope) match the approved inventory |
 | Consumption reporting review | Weekly (during pilot), Monthly (steady state) | Confirms spending remains within budget and thresholds |
 
