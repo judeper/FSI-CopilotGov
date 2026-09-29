@@ -14,13 +14,16 @@ Step-by-step portal procedures for assessing and governing Copilot extensibility
 ### Step 1: Review Current Copilot Extensions
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Agents > Settings and Settings > Integrated apps
+**Path:** Admin Center > Agents > Overview / All agents / Settings and Settings > Integrated apps
 
 Review the current state of Copilot extensions in the tenant:
 - Pre-built Microsoft plugins (Graph connectors, Microsoft apps)
 - Third-party plugins available in the Teams app store
 - Custom-built plugins and agents deployed by the organization
 - Declarative agents created from SharePoint
+- Agent settings for allowed types, sharing, user access, feedback sharing, and tags
+
+If the organization integrates supported third-party agent platforms, also open **Agents > All agents > Connected platforms > Manage** and record the latest **Sync agents** run, synchronization status, and errors. Microsoft currently documents this synchronization as a manual action.
 
 Document which extensions are currently active and their data access scope.
 
@@ -56,6 +59,7 @@ Evaluate the organization's readiness for custom Copilot agent development:
 - Assess developer team readiness and training needs
 - Document governance requirements for custom agent development
 - Define testing and approval processes for custom agents
+- Confirm whether the knowledge sources in scope require a Microsoft 365 Copilot license or pay-as-you-go billing before assuming personal or organizational work-content grounding is available
 
 ### Step 5: Document Extensibility Governance Framework
 

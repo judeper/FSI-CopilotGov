@@ -23,7 +23,7 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 |---------|--------------|----------------|
 | Copilot overview | M365 Admin Center > Copilot > Overview | Readiness, adoption, security links, and recommended actions |
 | Copilot settings | M365 Admin Center > Copilot > Settings | Tenant controls grouped under User access, Data access, Copilot actions, and Other settings |
-| Agents | M365 Admin Center > Agents > Overview / All agents / Settings | Agent inventory, sharing, templates, and user access |
+| Agents | M365 Admin Center > Agents > Overview / All agents / Settings | Agent inventory, sharing, templates, user access, feedback sharing, tags, and connected-platform review |
 | Billing and cost | M365 Admin Center > Billing > Pay-as-you-go services / Cost Management | PAYG setup, billing policies, budgets, and spend visibility |
 | Copilot Pages / Notebooks policy | `https://config.office.com` > Customization > Policy Management | Cloud Policy controls for creation and code previews |
 
@@ -114,7 +114,7 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 | Allowed agent types | Agents > Settings > Allowed agent types | Microsoft, org, and external agent types can be available | Microsoft only or approved org agents | Microsoft plus approved org/partner agents | Minimum approved types only | Controls which classes of agents users can install |
 | Agent sharing | Agents > Settings > Sharing | Varies by agent type | Restrict broad sharing | Approved groups only | Restricted with documented exceptions | Governs who can share Agent Builder agents broadly in the tenant |
 | Agent user access | Agents > Settings > User access | All users | Approved groups only | Approved groups only | Approved groups only | Limits who can access agents at all |
-| Agent Registry lifecycle review | Agents > All agents / Registry | Available | Monthly | Monthly | Weekly | Inventory, block, publish, assign owner, or remove agents |
+| Agent Registry lifecycle review | Agents > All agents / Registry | Available | Monthly | Monthly | Weekly | Inventory, block, publish, assign owner, or remove agents. For connected-platform agents, inventory is only as current as the latest manual **Sync agents** run; Registry risk counts require E7/A365 and can lag the security portals by up to one hour. |
 | Integrated apps / plugins | Settings > Integrated apps | Available | Off unless approved | Review | Off unless approved | Governs add-ins, plugins, and integrated app deployment |
 | Agent pinning | Copilot > Agents > Manage pinned agents | No agents pinned | Review | Pin sanctioned agents for approved groups | Pin sanctioned agents; document pinning policy | Controls which agents are prominently surfaced to users; up to 3 per user |
 
