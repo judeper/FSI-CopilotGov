@@ -4,7 +4,7 @@ Step-by-step portal configuration for enabling comprehensive audit logging of al
 
 ## Prerequisites
 
-- **Role:** Entra Global Admin or Purview Compliance Admin
+- **Role:** `Audit Logs` or `View-Only Audit Logs` in Microsoft Purview Audit; if you also use `Search-UnifiedAuditLog`, assign the same role capability in the Exchange admin center / Exchange Online role groups
 - **License:** Microsoft 365 E5 or E5 Compliance add-on (or PAYG Audit billing configured)
 - **Access:** Microsoft Purview portal
 

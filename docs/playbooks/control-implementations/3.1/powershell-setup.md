@@ -5,7 +5,7 @@ Automation scripts for configuring, monitoring, and reporting on Copilot interac
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph.Security`
-- **Permissions:** Purview Compliance Admin or Entra Global Admin
+- **Permissions:** `Audit Logs` or `View-Only Audit Logs` in Microsoft Purview Audit and Exchange Online for `Search-UnifiedAuditLog`; additional retention-policy management permissions as required by your Exchange / Purview role assignments
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
