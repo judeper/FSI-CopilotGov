@@ -29,12 +29,12 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 ### Issue 2: Allowed List Changes Not Reflected in Search Results
 
 - **Symptoms:** After adding or removing sites from the allowed list, search results do not immediately reflect the changes
-- **Root Cause:** RSS allowed list changes require time to propagate through the search index. Microsoft documents RSS as taking effect within about one hour after it is enabled.
+- **Root Cause:** RSS allowed list changes require time to propagate through the search index. Microsoft documents RSS itself as taking effect within about one hour after it is enabled, but it doesn't publish a fixed propagation window for later allow-list edits.
 - **Resolution:**
-  1. Wait about one hour after making allowed list changes before testing
+  1. Allow time for the change to propagate before testing; use the RSS enablement timing only as a general indicator rather than as a guaranteed SLA for allow-list edits
   2. Verify the change was saved by running `Get-SPOTenantRestrictedSearchAllowedList`
   3. Clear the user's browser cache and sign out/in to Microsoft 365
-  4. If changes are not reflected after the expected propagation window, check service health for search indexing delays
+  4. If changes still aren't reflected after allowing reasonable propagation time, check service health for search indexing delays
 
 ### Issue 3: 100-Site Allowed List Limit Reached
 
@@ -92,7 +92,7 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 
 | Severity | Condition | Escalation Path |
 |----------|-----------|----------------|
-| **Low** | Propagation delay on allowed list changes | Monitor and retest after about one hour |
+| **Low** | Propagation delay on allowed list changes | Monitor, verify the saved allow list, and retest after allowing propagation time |
 | **Medium** | Site limit reached, blocking approved additions | Governance committee for prioritization |
 | **High** | RSS found disabled without authorization | Security Operations for investigation |
 | **Critical** | Copilot returning content from non-allowed sites | Security Operations and CISO immediately |
