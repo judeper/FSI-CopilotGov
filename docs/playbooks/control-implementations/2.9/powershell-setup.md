@@ -4,23 +4,29 @@ Automation scripts for managing and monitoring Defender for Cloud Apps session c
 
 ## Prerequisites
 
-- Microsoft Defender for Cloud Apps API access
+- Microsoft Graph PowerShell SDK (optional, for supplemental exports)
 - Security Administrator role
-- API token configured for Defender for Cloud Apps
+- Access to the Microsoft Defender portal for authoritative session-policy verification
 
 ## Scripts
 
-### Script 1: Defender for Cloud Apps Alert Summary
+> Microsoft Learn pages in scope for this control document session-policy configuration in the Defender portal rather than a PowerShell cmdlet surface. Use the scripts below for supplemental telemetry exports, and verify actual session-policy settings in **Microsoft Defender portal > Cloud Apps > Policies > Policy management**.
+
+### Script 1: Supplemental XDR Alert Summary
 
 ```powershell
-# Retrieve recent Copilot-related alerts from Defender for Cloud Apps
-# Requires: Microsoft Graph SDK with SecurityAlert permissions
+# Retrieve recent alerts that may be relevant to CA App Control, AI governance,
+# or agent monitoring. This is supplemental telemetry only.
+# Requires: Microsoft Graph SDK with SecurityEvents.Read.All
 
 Import-Module Microsoft.Graph.Security
-Connect-MgGraph -Scopes "SecurityAlert.Read.All"
+Connect-MgGraph -Scopes "SecurityEvents.Read.All"
 
-$alerts = Get-MgSecurityAlert -Top 100 -OrderBy "createdDateTime desc" |
-    Where-Object { $_.Title -match "Copilot|Office 365|session" }
+$alerts = Get-MgSecurityAlert -Top 200 -Sort "createdDateTime DESC" |
+    Where-Object {
+        $_.Title -match "Copilot|AI|session|SharePoint|OneDrive" -or
+        $_.Category -match "anomaly|malware|cloud"
+    }
 
 $alertReport = @()
 foreach ($alert in $alerts) {
@@ -33,25 +39,26 @@ foreach ($alert in $alerts) {
     }
 }
 
-Write-Host "=== Copilot Session Alerts (Recent) ==="
+Write-Host "=== Cloud Apps / AI Governance Alerts (Supplemental) ==="
 Write-Host "Total alerts: $($alertReport.Count)"
 $alertReport | Format-Table Date, Title, Severity -AutoSize
-$alertReport | Export-Csv "CopilotAlerts_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+$alertReport | Export-Csv "CloudAppsAlerts_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 2: Session Activity Export
+### Script 2: Browser-Session Sign-In Export
 
 ```powershell
-# Export Copilot session activity for compliance review
-# Requires: Microsoft Graph SDK
+# Export recent Microsoft 365 sign-ins as supplemental evidence for browser
+# session review. Use MDCA policy reports for routed session matches.
+# Requires: Microsoft Graph SDK with AuditLog.Read.All and Directory.Read.All
 
 Import-Module Microsoft.Graph.Reports
-Connect-MgGraph -Scopes "AuditLog.Read.All"
+Connect-MgGraph -Scopes "AuditLog.Read.All","Directory.Read.All"
 
-$startDate = (Get-Date).AddDays(-30).ToString("yyyy-MM-dd")
-
-$activities = Get-MgAuditLogSignIn -Filter "appDisplayName eq 'Office 365' and createdDateTime ge $startDate" `
-    -Top 1000 -OrderBy "createdDateTime desc"
+$activities = Get-MgAuditLogSignIn -Top 1000 -Sort "createdDateTime DESC" |
+    Where-Object {
+        $_.AppDisplayName -match "Office|Microsoft 365|SharePoint|OneDrive|Teams"
+    }
 
 $sessionReport = @()
 foreach ($activity in $activities) {
@@ -70,35 +77,51 @@ Write-Host "Session activities exported: $($sessionReport.Count)"
 $sessionReport | Export-Csv "SessionActivity_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 3: Policy Compliance Status
+### Script 3: Portal Verification Checklist Export
 
 ```powershell
-# Check Defender for Cloud Apps policy status
-# Requires: Microsoft Graph SDK
+# Export a checklist of the portal locations that must be reviewed for this
+# control because Microsoft documents them as the authoritative surfaces.
 
-Import-Module Microsoft.Graph.Security
-Connect-MgGraph -Scopes "Policy.Read.All"
+$checks = @(
+    [PSCustomObject]@{
+        Area = "Conditional Access App Control apps"
+        Path = "Defender > Settings > Cloud Apps > Connected apps > Conditional Access App Control apps"
+        Expectation = "Target Microsoft 365 web apps are enabled"
+    }
+    [PSCustomObject]@{
+        Area = "Session policies"
+        Path = "Defender > Cloud Apps > Policies > Policy management > Conditional Access"
+        Expectation = "Monitor-only redirect validation plus detailed audit/block policies as applicable"
+    }
+    [PSCustomObject]@{
+        Area = "Policy report"
+        Path = "Defender > Cloud Apps > Policies > Policy management"
+        Expectation = "Recent routed sign-ins and session-policy matches"
+    }
+    [PSCustomObject]@{
+        Area = "Generative AI catalog"
+        Path = "Defender > Cloud Apps > Cloud app catalog"
+        Expectation = "Generative AI risk-score review documented"
+    }
+    [PSCustomObject]@{
+        Area = "Cloud Discovery"
+        Path = "Defender > Cloud Apps > Cloud discovery > Discovered apps"
+        Expectation = "High-risk AI apps sanctioned or unsanctioned per policy"
+    }
+)
 
-Write-Host "=== Defender for Cloud Apps Policy Status ==="
-Write-Host ""
-Write-Host "Verify session policies in the Defender portal:"
-Write-Host "  security.microsoft.com > Cloud Apps > Policies > Policy management"
-Write-Host ""
-Write-Host "Key policies to verify:"
-Write-Host "  1. FSI Copilot Session Monitoring - Status: Active"
-Write-Host "  2. Copilot Content Inspection - Status: Active"
-Write-Host "  3. Sensitive Data Alert - Status: Active"
-Write-Host ""
-Write-Host "Run this check weekly to verify all governance policies remain active."
+$checks | Format-Table Area, Path, Expectation -AutoSize
+$checks | Export-Csv "CloudAppsPortalChecklist_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
 ## Scheduled Tasks
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
-| Alert Summary Review | Daily | Review and triage session alerts |
-| Activity Export | Weekly | Compliance documentation |
-| Policy Status Check | Weekly | Verify governance policies are active |
+| Alert Summary Review | Daily | Review and triage supplemental MDCA/XDR alerts |
+| Sign-In Export | Weekly | Supplemental browser-session context |
+| Portal Checklist Export | Weekly | Verify authoritative MDCA governance settings |
 
 ## Next Steps
 

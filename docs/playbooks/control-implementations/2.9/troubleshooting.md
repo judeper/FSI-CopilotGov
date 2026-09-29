@@ -4,15 +4,16 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 
 ## Common Issues
 
-### Issue 1: Copilot Activities Not Appearing in Activity Log
+### Issue 1: Routed Browser Sessions Not Appearing in Policy Reports or Activity Log
 
-- **Symptoms:** Copilot interactions are not visible in the Defender for Cloud Apps activity log despite session policies being configured
-- **Root Cause:** Conditional Access App Control may not be fully configured for Microsoft 365, or the session routing may not be active for the specific Copilot workload.
+- **Symptoms:** Expected Microsoft 365 browser sessions are not visible in the Defender for Cloud Apps policy report or activity log despite session policies being configured
+- **Root Cause:** Conditional Access App Control may not be fully configured for the target web apps, the session might not be browser-based, or investigators might be expecting **Monitor only** to record more than the routed login activity.
 - **Resolution:**
-  1. Verify Conditional Access App Control is enabled for Microsoft 365 in Defender settings
+  1. Verify Conditional Access App Control is enabled for the target Microsoft 365 web apps in Defender settings
   2. Check the Conditional Access policy routes traffic through Defender for Cloud Apps
-  3. Verify the user's session was proxied (check for the Defender for Cloud Apps session control indicator in the browser)
-  4. Allow 24 hours for activity data to appear in the log
+  3. Verify the user's session was proxied (check for the Defender for Cloud Apps lock icon in Edge or the `.mcas` suffix in other browsers)
+  4. If the policy uses **Monitor only**, expect routed **Login** activity only. For detailed file or action monitoring, use **Block activities** or **Control file download/upload (with inspection)** with **Audit** or **Block**
+  5. Confirm the user tested in a supported browser session rather than a native desktop client such as Teams desktop
 
 ### Issue 2: Session Control Causing Performance Issues
 
@@ -27,22 +28,23 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 ### Issue 3: False Positive Alerts Overwhelming Security Team
 
 - **Symptoms:** High volume of alerts for normal Copilot usage patterns, creating alert fatigue
-- **Root Cause:** Alert thresholds may be too sensitive, or alert conditions may match normal business activity.
+- **Root Cause:** Alert thresholds may be too sensitive, normal business activity may match the conditions, or the anomaly-detection learning period may not have elapsed.
 - **Resolution:**
   1. Review alert patterns and identify the most common false positive types
   2. Adjust alert thresholds to reduce noise (e.g., increase the activity count threshold)
   3. Create suppression rules for known-good activity patterns
   4. Use alert aggregation to group related alerts into single incidents
-  5. Implement a tiered alerting approach (informational vs. actionable)
+  5. Allow the documented seven-day anomaly-detection learning period before concluding that the baseline is stable
+  6. Implement a tiered alerting approach (informational vs. actionable)
 
 ### Issue 4: Content Inspection Missing Sensitive Data
 
 - **Symptoms:** Known sensitive data passes through Copilot sessions without triggering content inspection alerts
-- **Root Cause:** Content inspection patterns may not match the specific data format, or inspection may not be configured for the specific Copilot interaction type.
+- **Root Cause:** Content inspection patterns may not match the specific data format, the policy may be using **Monitor only** instead of a content-inspecting session control type, or inspection may not be configured for the specific supported activity.
 - **Resolution:**
   1. Review content inspection sensitive information type definitions
   2. Test with known data patterns to verify detection capability
-  3. Verify the session policy applies to the specific interaction type where data was missed
+  3. Verify the session policy uses **Block activities** or **Control file download/upload (with inspection)** for the supported activity where data was missed
   4. Add custom inspection rules for organization-specific data patterns
 
 ### Issue 5: Agent Threat Detection Alerts Not Appearing
@@ -60,7 +62,7 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 ### Issue 6: Generative AI App Catalog Not Showing Discovered Apps
 
 - **Symptoms:** The Cloud app catalog Generative AI filter shows apps but no "discovered" usage data, or the catalog shows fewer apps than expected
-- **Root Cause:** Discovery data requires traffic analysis either through Microsoft Defender for Endpoint integration or manual log upload. Without endpoint agents or log upload configured, only the catalog (not discovery) will be visible.
+- **Root Cause:** Discovery data requires traffic analysis either through Microsoft Defender for Endpoint integration or manual log upload. Without endpoint agents or log upload configured, only the catalog (not the **Discovered apps** usage evidence) is visible.
 - **Resolution:**
   1. Navigate to Defender portal > Cloud Apps > Settings > Cloud Discovery to check discovery configuration
   2. If Microsoft Defender for Endpoint is deployed: verify the "Defender for Endpoint integration" toggle is enabled in Cloud Discovery settings — this enables automatic traffic analysis for discovery
@@ -72,9 +74,9 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 
 1. **Verify proxy routing:** Check browser URL for Defender for Cloud Apps session control indicators during Copilot use
 2. **Check policy status:** Defender > Policies > verify all session policies are "Enabled"
-3. **Review activity log:** Search for any Copilot-related activities in the last 24 hours
+3. **Review policy reports and activity log:** Search for routed sign-ins and any monitored file or action events from the last 24 hours
 4. **Test detection:** Use a test document with known sensitive data patterns
-5. **Check CA integration:** Verify the Conditional Access policy references Defender for Cloud Apps
+5. **Check CA integration:** Verify the Conditional Access policy references Defender for Cloud Apps and that native-client blocking is configured where required
 
 ## Escalation
 

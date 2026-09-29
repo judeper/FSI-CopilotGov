@@ -7,49 +7,50 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
 ### Issue 1: Risky Agents Policy Not Visible
 
 - **Symptoms:** The default Risky Agents (preview) policy does not appear in the IRM policy list
-- **Root Cause:** The Risky Agents (preview) policy is available by default only to organizations with supported licenses once Insider Risk Management is set up; rollout of the preview and license entitlement can vary by tenant. The policy may also be deployed under a different display name.
+- **Root Cause:** The Risky Agents (preview) policy is available by default only to organizations with supported licenses once Insider Risk Management is set up. Missing setup prerequisites or tenant entitlement can prevent it from appearing.
 - **Resolution:**
-  1. Verify the tenant has Microsoft 365 E5 Compliance licensing active and Insider Risk Management is set up
+  1. Verify the tenant has a supported Insider Risk Management subscription and that Insider Risk Management is set up
   2. Check the IRM policy list with a filter for "All" policy states (including disabled or pending)
-  3. Confirm the tenant is currently entitled to the Risky Agents (preview) capability; check the Microsoft 365 roadmap and message center for rollout status
-  4. If the policy has not appeared, create a Risky Agents policy manually using the available template in IRM
+  3. Confirm the tenant is currently entitled to the Risky Agents (preview) capability
+  4. If the default policy is still absent, verify whether a custom policy can be created from the Risky Agents template or open a Microsoft support case
   5. For agent types not listed as supported (Microsoft prebuilt agents, third-party agents, SharePoint agents), configure monitoring via DSPM for AI or Defender for Cloud Apps as a compensating control
 
-### Issue 2: AI Usage Indicators Not Available
+### Issue 2: Generative AI Apps or Risky AI Usage Indicators Not Available
 
-- **Symptoms:** The AI usage indicator category does not appear in IRM Policy indicators settings
-- **Root Cause:** AI usage indicators may require specific licensing or may be in staged rollout to tenants.
+- **Symptoms:** The **Generative AI apps indicators** section or **Risky AI usage indicators (preview)** do not appear in IRM Policy indicators settings
+- **Root Cause:** The indicators may require specific licensing, pay-as-you-go billing for some data sources, or may not be available in the tenant yet.
 - **Resolution:**
-  1. Verify Microsoft 365 E5 Compliance licensing is active
+  1. Verify the tenant has a supported Insider Risk Management subscription and any required add-ons
   2. Verify Copilot activity logging is enabled in the tenant
-  3. Check the Microsoft 365 roadmap for AI usage indicator availability in your region
-  4. Use general Copilot interaction volume indicators as an alternative until AI usage indicators are available
+  3. Enable pay-as-you-go billing if you need non-Microsoft 365 AI data sources
+  4. Use traditional DLP, device, and office indicators as compensating controls until the AI indicators are available
 
 ### Issue 3: No Copilot-Specific Indicators Available
 
 - **Symptoms:** Insider Risk Management settings do not show Copilot-specific indicators
-- **Root Cause:** Copilot-specific indicators may require specific licensing or may be in staged rollout.
+- **Root Cause:** The tenant might not yet expose the current **Generative AI apps indicators** or **Risky AI usage indicators (preview)** surfaces, or the browser/extension prerequisites for risky AI usage might be missing.
 - **Resolution:**
-  1. Verify Microsoft 365 E5 Compliance licensing is active
-  2. Check the Microsoft 365 roadmap for Copilot insider risk indicator availability
+  1. Verify the current **Policy indicators** page exposes **Generative AI apps indicators**
+  2. Configure the Microsoft Compliance Extension and browser signal prerequisites where required for the template
   3. Use general data access and DLP-based indicators as alternatives
-  4. Configure custom indicators using Copilot audit log events
+  4. Configure custom indicators or audit-backed review using CopilotInteraction audit records
 
 ### Issue 4: IRM Triage Agent Not Producing Context Summaries
 
-- **Symptoms:** Alerts do not show Triage Agent context summaries; Triage Agent feature not visible in IRM settings
-- **Root Cause:** The IRM Triage Agent entitlement and rollout can vary by tenant. The feature may not yet be available in the tenant, or the tenant might not have the required entitlement enabled.
+- **Symptoms:** Alerts do not show Triage Agent context summaries; the Triage Agent feature isn't visible in Purview Agents or Insider Risk alerts
+- **Root Cause:** The IRM Triage Agent is deployed through the Purview **Agents** experience and depends on Security Copilot prerequisites, including SCUs and Microsoft 365 data sharing. The feature might not yet be enabled for the tenant.
 - **Resolution:**
   1. Verify the tenant currently has access to the IRM Triage Agent capability
-  2. Navigate to Microsoft Purview > Insider Risk Management > Settings and look for the Triage Agent configuration
-  3. Enable the Triage Agent if it is available but disabled
-  4. If the Triage Agent is enabled but context summaries are absent, allow 24-48 hours for the system to process existing alerts
-  5. Check that the IRM investigator role has appropriate access to view Triage Agent outputs
+  2. Navigate to Microsoft Purview > Agents > Explore agents and confirm the agent is deployed
+  3. Verify Security Copilot onboarding, SCU availability, Microsoft 365 data sharing, and the Purview plug-in prerequisites
+  4. Review Insider Risk Management > Alerts (preview) for triaged alerts after the agent runs
+  5. If the Triage Agent is deployed but context summaries are absent, allow 24-48 hours for the system to process existing alerts
+  6. Check that the IRM investigator role has appropriate access to view Triage Agent outputs
 
 ### Issue 5: Data Risk Graph Not Loading or Missing Data
 
 - **Symptoms:** The Data risk graph tab is accessible on an alert but does not load, or shows no activity data
-- **Root Cause:** The data risk graph will not load if the anonymized usernames privacy setting is enabled in IRM privacy settings; it also does not support admin unit-scoped access. Separately, if the data lake and data risk graph onboarding has only just completed, the graph may not yet have data — the graph initially shows the most recent seven days and takes time to grow to the full 30-day window.
+- **Root Cause:** The data risk graph will not load if the anonymized usernames privacy setting is enabled in IRM privacy settings; it also does not support admin unit-scoped access. Separately, if the data lake and data risk graph onboarding has only just completed, the graph may not yet have data — the graph initially shows the most recent seven days and takes time to grow to the full 30-day window. Microsoft also plans to retire the experience on November 24, 2026.
 - **Resolution:**
   1. Confirm the anonymized usernames privacy setting is disabled (Microsoft Purview > Insider Risk Management > Settings > Privacy) — the data risk graph cannot be used with it enabled
   2. Confirm the investigator viewing the graph is not scoped to an admin unit; admin units are not supported in the data risk graph
@@ -103,8 +104,8 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
 
 1. **Check policy status:** Run Script 1 to verify policies are active
 2. **Verify Risky Agents:** Microsoft Purview > Insider Risk Management > Policies — filter for agent policies
-3. **Review indicators:** Microsoft Purview > Insider Risk Management > Settings > Policy indicators — confirm AI usage category enabled
-4. **Check Triage Agent:** Microsoft Purview > Insider Risk Management > Settings — verify Triage Agent is enabled
+3. **Review indicators:** Microsoft Purview > Insider Risk Management > Settings > Policy indicators — confirm the Generative AI apps indicators and any Risky AI usage indicators you require are enabled
+4. **Check Triage Agent:** Microsoft Purview > Agents > Explore agents and Insider Risk Management > Alerts (preview) — verify the Triage Agent is deployed and producing output
 5. **Test detection:** Generate test activity and monitor for risk signals
 6. **Review audit logs:** Verify Copilot events appear in the unified audit log
 7. **Check privacy settings:** Verify pseudonymization is properly configured

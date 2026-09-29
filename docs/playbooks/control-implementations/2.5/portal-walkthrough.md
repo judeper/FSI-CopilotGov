@@ -22,9 +22,9 @@ Review the current Copilot data access configuration. Copilot grounds its respon
 ### Step 2: Apply Restricted Content Discovery to High-Risk Sites
 
 **Portal:** SharePoint admin center
-**Path:** Sites > Active sites > [Site] > Settings > **Restrict content from Microsoft 365 Copilot**
+**Path:** Sites > Active sites > [Site] > Settings > **Restrict content from Microsoft Copilot**
 
-Apply Restricted Content Discovery (RCD) as the primary mechanism for grounding scope limitation. RCD hides site content from organization-wide discovery experiences and Microsoft 365 Copilot discovery scenarios, and removes AI entry points such as the Copilot button, AI actions menus, and **Create pages with AI** on the site. It does not change permissions. RCD requires SharePoint Advanced Management availability and a Microsoft 365 Copilot license.
+Apply Restricted Content Discovery (RCD) as the primary mechanism for grounding scope limitation. RCD hides site content from organization-wide discovery experiences and Microsoft Copilot discovery scenarios, and removes AI entry points such as the Copilot button, AI actions menus, and **Create pages with AI** on the site. It does not change permissions. RCD requires SharePoint Advanced Management availability and a Microsoft Copilot license.
 
 Restricted SharePoint Search (Control 1.3) is retiring — Microsoft blocks new enablement starting July 31, 2026 and directs organizations to RCD for content discoverability. Where RSS is already enabled, maintain the allow list while planning its retirement.
 

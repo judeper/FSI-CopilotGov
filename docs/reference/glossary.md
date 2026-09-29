@@ -76,7 +76,7 @@ Microsoft's AI assistant embedded across Microsoft 365 applications. Copilot use
 The orchestration layer for Microsoft 365 Copilot that coordinates prompts, retrieval from Microsoft Graph and Copilot Search, tool use, responsible AI processing, and foundation model calls. Microsoft Learn describes Microsoft 365 Copilot as acting as an *orchestrator*. *"Microsoft 365 Brain"* is an informal term for this layer and is not canonical Microsoft product terminology.
 
 ### Microsoft Defender for Cloud Apps
-A Cloud Access Security Broker (CASB) that provides visibility, control, and threat protection for cloud services including Microsoft 365. Used to create session policies that can monitor and control Copilot interactions in web sessions.
+A Cloud Access Security Broker (CASB) that provides visibility, control, and threat protection for cloud services including Microsoft 365. Used to create browser-session policies for supported Microsoft 365 web apps, discover and govern Shadow AI, and complement Purview audit records when governing Copilot usage.
 
 ### Microsoft Entra ID
 Microsoft's cloud-based identity and access management service. Provides Conditional Access, identity protection, and access governance capabilities used to control who can access Copilot and under what conditions.

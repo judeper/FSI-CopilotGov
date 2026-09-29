@@ -196,7 +196,20 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "verifyIn",
         "evidenceExpected",
         "facilitatorNotes",
-    }
+    },
+    "2.9": {
+        "yesBar",
+        "partialBar",
+        "noBar",
+        "verifyIn",
+        "evidenceExpected",
+    },
+    "2.10": {
+        "verifyIn",
+        "verifyPowerShell",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
 }
 
 

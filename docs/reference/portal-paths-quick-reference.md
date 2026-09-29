@@ -113,10 +113,12 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 
 | Setting | Navigation Path | Direct URL |
 |---------|----------------|------------|
-| Insider risk management | Insider risk management > Overview | `https://purview.microsoft.com/insiderriskmanagement` |
-| Insider risk policies | Insider risk management > Policies | `https://purview.microsoft.com/insiderriskmanagement/policies` |
-| DSPM for AI | DSPM for AI > Overview | `https://purview.microsoft.com/ai-hub` |
-| DSPM for AI policies | DSPM for AI > Policies | `https://purview.microsoft.com/ai-hub/policies` |
+| Insider risk management | Solutions > Insider Risk Management > Overview | `https://purview.microsoft.com/insiderriskmanagement` |
+| Insider risk policies | Solutions > Insider Risk Management > Policies | `https://purview.microsoft.com/insiderriskmanagement/policies` |
+| Insider risk alerts *(preview)* | Solutions > Insider Risk Management > Alerts *(preview)* | Tenant-specific URL |
+| Purview agents | Agents > Explore agents | Tenant-specific URL |
+| Data Security Posture Management | Solutions > DSPM | `https://purview.microsoft.com/datasecurityposturemanagement` |
+| DSPM for AI *(classic)* | Solutions > DSPM for AI (classic) | `https://purview.microsoft.com/ai-hub` |
 
 ### Data Classification
 
@@ -203,7 +205,7 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 | Sharing settings | Policies > Sharing | Tenant-specific URL |
 | Access control | Policies > Access control | Tenant-specific URL |
 | Site creation settings | Settings > Site creation | Tenant-specific URL |
-| Restricted Content Discovery (per site) | Sites > Active sites > [site] > Settings > Restrict content from Microsoft 365 Copilot | Tenant-specific URL |
+| Restricted Content Discovery (per site) | Sites > Active sites > [site] > Settings > Restrict content from Microsoft Copilot | Tenant-specific URL |
 | Restricted SharePoint Search *(legacy — retiring; new enablement blocked from July 31, 2026)* | Settings > Search > Restricted SharePoint Search | Tenant-specific URL |
 | Copilot agents (SharePoint) | Settings > Copilot agents | Tenant-specific URL |
 | Data Access Governance reports | Reports > Data access governance | Tenant-specific URL |

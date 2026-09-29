@@ -47,7 +47,7 @@ Owns DLP for Copilot (2.1), Copilot audit logging (3.1), and DSPM for AI (refere
 Supports DLP coverage review (2.1) and provides the Defender/Conditional Access context for quick-start scope.
 
 - Export the **Conditional Access policy set** that targets Copilot apps (Microsoft 365 Copilot, Copilot Chat, SharePoint) and note any gaps for unmanaged devices.
-- Pull the current **Defender for Cloud Apps** connector list and any active session/access policies that apply to Copilot traffic.
+- Pull the current **Defender for Cloud Apps** connector list and any active browser-session or access policies that apply to the Microsoft 365 web sessions your Copilot users rely on.
 - List **sign-in risk** and **user risk** policies currently in effect for users with Copilot licenses.
 - Download the role checklist: [security-admin-checklist.xlsx](../assessment/templates/security-admin-checklist.xlsx).
 
