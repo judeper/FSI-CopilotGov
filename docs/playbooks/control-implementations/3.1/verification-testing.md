@@ -9,7 +9,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Objective:** Confirm that Copilot interactions generate audit log entries
 - **Steps:**
   1. Have a licensed test user initiate a Copilot interaction in Word, Excel, or Teams.
-  2. Wait 15-30 minutes for log ingestion.
+  2. Wait for the normal audit-ingestion window. Microsoft says core services are typically available within 60 to 90 minutes after an event occurs, while other services may take longer.
   3. Search the Unified Audit Log for `CopilotInteraction` events filtered to the test user.
 - **Expected Result:** At least one `CopilotInteraction` record appears with the test user's UPN, timestamp, application context, and prompt metadata.
 - **Evidence:** Screenshot of audit log search results showing the captured interaction with timestamps.
@@ -20,7 +20,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Steps:**
   1. Run `Get-UnifiedAuditLogRetentionPolicy` and filter for Copilot-related policies.
   2. For PowerShell-created policies, confirm the policy shows `RetentionDuration: TenYears` and `RecordTypes: CopilotInteraction`. PowerShell does not support a six-year audit retention value; use `TenYears` to cover the SEC Rule 17a-4(a) minimum.
-  3. If the policy was configured in the Purview portal with a 7-year duration, document that portal-only duration and retain the portal evidence with the policy record.
+  3. If the policy was configured in the Purview portal with a 7-year duration, document that portal-only duration, verify the user population has the 10-year Audit Log Retention add-on required for the portal's 3-, 5-, and 7-year options, and retain that license evidence with the policy record.
   4. Verify the policy priority is higher than the default retention policy.
 - **Expected Result:** FSI Copilot retention policy exists with correct duration, record types, and priority. PowerShell evidence shows `TenYears`; portal-created 7-year evidence is documented where used.
 - **Evidence:** PowerShell output or portal evidence showing the retention policy configuration.
@@ -50,7 +50,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Objective:** Verify that agent creation and modification events generate CopilotAgentManagement records (see [M365 Admin Center agent management activities](https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities))
 - **Steps:**
   1. In a test environment, have an authorized administrator create a new declarative Copilot agent or modify an existing agent (e.g., add a knowledge source or change agent instructions).
-  2. Wait 30 minutes, then recheck for up to 4 hours if the event hasn't appeared yet.
+  2. Wait for the normal audit-ingestion window. Microsoft says core services are typically available within 60 to 90 minutes after an event occurs, while other services may take longer, so allow extra time before treating the record as missing.
   3. Search the Unified Audit Log using `-RecordType CopilotAgentManagement` filtered to the test administrator's UPN.
   4. Verify the event record contains `AgentId` and `AgentName` fields in the AuditData JSON.
 - **Expected Result:** At least one `CopilotAgentManagement` event appears with the administrator's UPN, the affected agent's ID and name, and a timestamp corresponding to the test action.
@@ -83,8 +83,9 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Steps:**
   1. Run `Get-UnifiedAuditLogRetentionPolicy | Where-Object { $_.RecordTypes -like "*CopilotAgentManagement*" }`.
   2. Confirm the policy exists with a 7-year portal duration or `TenYears` if it was created in PowerShell.
-  3. Verify the policy priority is appropriately set.
-- **Expected Result:** A retention policy covering `CopilotAgentManagement` exists with a 7-year portal duration or `TenYears` from PowerShell — supporting SOX Section 404 IT general controls audit trail requirements.
+  3. If the policy uses the 7-year portal duration, verify the affected users have the 10-year Audit Log Retention add-on required for the portal's 3-, 5-, and 7-year options.
+  4. Verify the policy priority is appropriately set.
+- **Expected Result:** A retention policy covering `CopilotAgentManagement` exists with a 7-year portal duration (backed by the required add-on license) or `TenYears` from PowerShell — supporting SOX Section 404 IT general controls audit trail requirements.
 - **Evidence:** PowerShell output showing the agent record type retention policy configuration.
 
 ## Evidence Collection

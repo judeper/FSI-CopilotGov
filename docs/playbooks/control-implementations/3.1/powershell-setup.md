@@ -5,7 +5,7 @@ Automation scripts for configuring, monitoring, and reporting on Copilot interac
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph.Security`
-- **Permissions:** `Audit Logs` or `View-Only Audit Logs` in Microsoft Purview Audit and Exchange Online for `Search-UnifiedAuditLog`; additional retention-policy management permissions as required by your Exchange / Purview role assignments
+- **Permissions:** `Audit Logs` or `View-Only Audit Logs` in Microsoft Purview Audit and Exchange Online for `Search-UnifiedAuditLog`. To create or modify audit retention policies, Microsoft documents the `Organization Configuration` role in Microsoft Purview and the corresponding Security & Compliance PowerShell permissions for `New-UnifiedAuditLogRetentionPolicy` / `Set-UnifiedAuditLogRetentionPolicy`.
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -156,7 +156,7 @@ New-UnifiedAuditLogRetentionPolicy `
 Write-Host "Audit retention policies created" -ForegroundColor Green
 ```
 
-> **Portal-only durations:** The Microsoft Purview portal also exposes 7 days, 30 days, 6 months, 9 months, 1 year, 3 years, 5 years, and 7 years as audit retention duration options — these are portal-only choices and are not surfaced as PowerShell `-RetentionDuration` enum values. Organizations that prefer a 7-year retention period (closer to the 6-year regulatory minimum) should configure those policies through the portal rather than PowerShell.
+> **Portal-only durations:** The Microsoft Purview portal also exposes 7 days, 30 days, 6 months, 9 months, 1 year, 3 years, 5 years, and 7 years as audit retention duration options — these are portal-only choices and are not surfaced as PowerShell `-RetentionDuration` enum values. Microsoft requires the 10-year Audit Log Retention add-on for the portal's 3-, 5-, and 7-year options. Organizations that prefer a 7-year retention period (closer to the 6-year regulatory minimum) should configure those policies through the portal rather than PowerShell.
 
 ### Script 7: Daily Copilot Activity Summary Report
 

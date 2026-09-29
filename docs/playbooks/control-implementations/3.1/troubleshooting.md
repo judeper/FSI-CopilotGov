@@ -7,11 +7,11 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
 ### Issue 1: Copilot Interactions Not Appearing in Audit Logs
 
 - **Symptoms:** Audit log searches for `CopilotInteraction` return no results despite confirmed Copilot usage.
-- **Root Cause:** Unified Audit Log ingestion may be disabled, or insufficient time has elapsed for log propagation (up to 24 hours for some record types).
+- **Root Cause:** Unified Audit Log ingestion may be disabled, or insufficient time has elapsed for normal audit ingestion. Microsoft doesn't guarantee a specific SLA; core services are typically available within 60 to 90 minutes after an event occurs, while other services may take longer.
 - **Resolution:**
   1. Verify audit logging is enabled: `Get-AdminAuditLogConfig | Select UnifiedAuditLogIngestionEnabled`
   2. If disabled, enable it: `Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true`
-  3. Wait at least 24 hours after enabling before expecting complete Copilot interaction records.
+  3. Allow for the normal audit-ingestion window before treating missing results as a failure; core services are typically available within 60 to 90 minutes, while other services may take longer.
   4. Confirm the user has a valid Copilot license assigned.
 
 ### Issue 2: Audit Retention Policy Not Applying
@@ -22,7 +22,7 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
   1. Review all retention policies: `Get-UnifiedAuditLogRetentionPolicy | Format-List`
   2. Verify the FSI policy has a higher priority number than the default policy.
   3. Confirm `RecordTypes` includes `CopilotInteraction`.
-  4. If needed, update priority: `Set-UnifiedAuditLogRetentionPolicy -Name "FSI-Copilot-7Year-Retention" -Priority 100`
+  4. If needed, update priority on the existing policy: `Set-UnifiedAuditLogRetentionPolicy -Identity "<policy-name>" -Priority 100` (for example, `FSI-Copilot-10Year-Retention` if you used the PowerShell example policy name).
 
 ### Issue 3: Incomplete Audit Data Fields
 
@@ -54,12 +54,12 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
 ### Issue 5: Agent Events Not Appearing (CopilotAgentManagement Latency)
 
 - **Symptoms:** An administrator creates or modifies a Copilot agent, but no `CopilotAgentManagement` event appears in the Unified Audit Log when searching immediately after.
-- **Root Cause:** Agent administrative events may have longer ingestion latency than standard CopilotInteraction events — typically 30 minutes to 4 hours depending on tenant load and event pipeline. This is expected behavior, not a configuration error.
+- **Root Cause:** Microsoft doesn't guarantee a specific audit-ingestion SLA. Core services are typically available within 60 to 90 minutes after an event occurs, while other services may take longer. Delayed Copilot agent records aren't by themselves proof of a configuration failure.
 - **Resolution:**
-  1. Wait at least 4 hours after the agent configuration change before searching for the event.
-  2. If no event appears after 24 hours, verify the administrator performing the change has sufficient permissions for the action to be logged.
-  3. Search with a broader date range to account for potential timestamp alignment issues: `Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-2) -EndDate (Get-Date) -RecordType CopilotAgentManagement`
-  4. Confirm the `CopilotAgentManagement` record type is available in your tenant by checking the Microsoft 365 Admin Center under Service features.
+  1. Allow for normal audit ingestion; core services typically appear within 60 to 90 minutes, while other services may take longer.
+  2. Search with a broader date range to account for potential timestamp alignment issues: `Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-2) -EndDate (Get-Date) -RecordType CopilotAgentManagement`
+  3. Confirm the `CopilotAgentManagement` record type is available in your tenant by checking the Microsoft 365 Admin Center under Service features.
+  4. If records still don't appear after allowing additional time and broadening the search, verify the administrator performing the change had sufficient permissions for the action to be logged.
 
 ### Issue 6: PAYG Billing Unexpected Cost Spike
 
@@ -86,9 +86,9 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
 
 1. **Check service health:** Verify Microsoft 365 audit service status in the Admin Center under Service Health.
 2. **Verify licensing:** Confirm Copilot and E5 Compliance licenses are assigned to affected users.
-3. **Test with known interaction:** Have a test user perform a Copilot action and check for the record after 30 minutes.
+3. **Test with known interaction:** Have a test user perform a Copilot action and check for the record after the normal audit-ingestion window (typically 60 to 90 minutes for core services; other services may take longer).
 4. **Review admin audit log:** Check for any recent changes to audit configuration that may have disrupted logging.
-5. **Check agent event latency:** For CopilotAgentManagement events, allow up to 4 hours before diagnosing a missing event.
+5. **Check agent event latency:** For CopilotAgentManagement events, allow for the normal audit-ingestion window first and broaden the search before diagnosing a missing event.
 
 ## Escalation
 
@@ -97,7 +97,7 @@ Common issues, diagnostic procedures, and resolution steps for Copilot interacti
 | Critical | Audit logging completely non-functional | Microsoft Premier Support — Severity A |
 | High | Copilot events missing for multiple users | Internal compliance team + Microsoft Support |
 | High | JailbreakDetected event with no legitimate business explanation | Security incident response team — escalate per FFIEC incident response procedures |
-| Medium | CopilotAgentManagement events missing after 24 hours | Internal IT support — verify permissions and record type availability |
+| Medium | CopilotAgentManagement events still missing after repeated checks beyond the normal audit-ingestion window | Internal IT support — verify permissions and record type availability |
 | Medium | Individual user audit gaps | Internal IT support — verify licensing and configuration |
 | Medium | PAYG billing spike | Finance + IT — review event volume and evaluate E5 vs PAYG cost comparison |
 | Low | Minor field discrepancies | Document and monitor — review at next quarterly assessment |

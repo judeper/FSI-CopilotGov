@@ -4,7 +4,7 @@ Step-by-step portal configuration for enabling comprehensive audit logging of al
 
 ## Prerequisites
 
-- **Role:** `Audit Logs` or `View-Only Audit Logs` in Microsoft Purview Audit; if you also use `Search-UnifiedAuditLog`, assign the same role capability in the Exchange admin center / Exchange Online role groups
+- **Role:** `Audit Logs` or `View-Only Audit Logs` in Microsoft Purview Audit for search and export. If you also use `Search-UnifiedAuditLog`, assign the same role capability in the Exchange admin center / Exchange Online role groups. For the retention-policy step below, Microsoft documents the `Organization Configuration` role in Microsoft Purview as required.
 - **License:** Microsoft 365 E5 or E5 Compliance add-on (or PAYG Audit billing configured)
 - **Access:** Microsoft Purview portal
 
@@ -54,8 +54,10 @@ To surface the expanded audit schema fields — the top-level `AgentId`, `AgentN
 5. Click **Save** to apply.
 6. Create a second policy for agent record types:
    - **Record types:** Select `CopilotAgentManagement`
-   - **Duration:** 7 years in the portal (or 10 years if your policy standard prefers additional headroom). The Purview portal does not expose a 6-year option.
+   - **Duration:** 7 years in the portal (or 10 years if your policy standard prefers additional headroom). The Purview portal does not expose a 6-year option, and Microsoft requires the 10-year Audit Log Retention add-on for the portal's 3-, 5-, and 7-year options, and for the 10-year option.
    - **Priority:** Same as the Copilot interaction policy
+
+> **Role note:** Use an account with the `Organization Configuration` role for the retention-policy step. Search-only roles such as `Audit Logs` / `View-Only Audit Logs` aren't sufficient to create or modify audit retention policies.
 
 ### Step 5: Configure Agent-Specific Record Type Navigation
 
@@ -74,6 +76,8 @@ To search for agent administrative events in the portal:
 **Portal:** Microsoft Purview portal
 **Path:** purview.microsoft.com > Policies > Alert policies
 
+> **Permission note:** This step requires policy-management permissions beyond the search-only `Audit Logs` / `View-Only Audit Logs` roles. Use the alert-policy administration role assignment your tenant documents for Purview policy management.
+
 1. Create a new alert policy for unusual Copilot interaction volume.
 2. Set the activity to `CopilotInteraction` with threshold of more than 500 events per hour per user.
 3. Do not assume `JailbreakDetected` is a first-class alert activity. Microsoft documents it as a nested `Messages[].JailbreakDetected` property inside `CopilotInteraction` audit data, so detect it by exporting or ingesting `CopilotInteraction` records and parsing the JSON downstream (for example, in a SIEM).
@@ -84,7 +88,7 @@ To search for agent administrative events in the portal:
 | Setting | Baseline | Recommended | Regulated |
 |---------|----------|-------------|-----------|
 | Audit log status | Enabled | Enabled | Enabled |
-| CopilotInteraction retention | 180 days | 1 year | 6-10 years |
+| CopilotInteraction retention | 180 days | 1 year | 7-10 years |
 | CopilotAgentManagement retention | Not required | 1 year | 7-10 years |
 | Copilot activity alerts | Optional | Recommended | Required |
 | JailbreakDetected review automation | Optional | Recommended | Required |
