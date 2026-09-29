@@ -21,7 +21,7 @@ Step-by-step admin-center workflow for governing Microsoft 365 Copilot Cowork af
 | Microsoft 365 admin center | Agents > All Agents > Cowork | Shows Cowork as an agentic system for inventory and management context; not an access-control surface at GA |
 | Microsoft 365 admin center | Copilot settings > Anthropic model family and current model controls | Governs third-party model availability and provider data-retention review |
 | Microsoft 365 admin center | Copilot > Settings > View All > Cowork settings > Allow browser access | Governs the **Cowork Browsing** tenant toggle for local Microsoft Edge browser use |
-| Microsoft 365 admin center | Copilot > Cowork > Overview / Usage / Value / Settings | Provides Cowork-specific reporting, settings shortcuts, request visibility, and task/value views |
+| Microsoft 365 admin center | Copilot > Cowork > Overview / Usage / Value / Settings | Provides Cowork-specific reporting, settings shortcuts, request visibility, and task/value views; the **Value** tab is part of the Frontier preview program |
 | Microsoft 365 admin center | Integrated apps / plugin availability controls | Governs Microsoft and partner plugin availability, deployment, and connector authentication |
 | Cowork (web) | Customize > Plugins and Customize > Skills | Governs uploaded plugin packages, user-created and uploaded custom skills, and sharing scope |
 | Microsoft Purview portal | Copilot governance surfaces per the Purview for Cowork guidance | Provides the capabilities currently documented for Cowork AI interactions, including audit, sensitivity labels, insider risk, communication compliance, eDiscovery, and data lifecycle management; verify DLP rollout separately |
@@ -44,7 +44,7 @@ Open **M365 Admin Center > Agents > All Agents > Cowork** and confirm that Cowor
 
 ### Step 4: Govern model toggles
 
-In **M365 Admin Center > Copilot settings**, record the current state and scope of the **Anthropic model family** control and any model-specific controls visible in the tenant. Current Microsoft Learn model names include Claude Fable 5.1 and direct admins to Anthropic data-retention guidance; do not rely on stale model names or assume the same defaults in every tenant. Leave any model with provider-retention implications disabled for regulated data unless legal, privacy, and compliance have reviewed the retention terms and approved the use. If the Anthropic family is disabled per policy, coordinate with the pilot on which models remain available for their tasks.
+In **M365 Admin Center > Copilot settings**, record the current state and scope of the **Anthropic model family** control and any model-specific controls visible in the tenant. Review the models listed on the current [Choose a model for Cowork](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-models) page and the associated Anthropic data-retention guidance; do not rely on stale model names or assume the same defaults in every tenant. Leave any model with provider-retention implications disabled for regulated data unless legal, privacy, and compliance have reviewed the retention terms and approved the use. If the Anthropic family is disabled per policy, coordinate with the pilot on which models remain available for their tasks.
 
 ### Step 5: Govern the Cowork Browsing tenant toggle
 
@@ -56,7 +56,7 @@ Review the plugins available to Cowork through the admin plugin controls, includ
 
 ### Step 7: Set consumption limits and monitor spend
 
-In **Copilot > Cost management > Configuration**, set per-user or per-group consumption limits sized to the pilot's approved budget. Cowork consumption includes model responses, tool/skill calls, image generation, and browser tasks — reflect all four in the review. Then review **Copilot > Cowork > Usage** and, where enabled, the **Value** tab to validate active users, task mix, retention, and assisted-hours or credits-spent context. Establish a review cadence so consumption growth is visible before month-end and before threshold breaches.
+In **Copilot > Cost management > Configuration**, set per-user or per-group consumption limits sized to the pilot's approved budget. Cowork consumption includes model responses, tool/skill calls, image generation, and browser tasks — reflect all four in the review. Then review **Copilot > Cowork > Usage** to validate active users, task mix, and retention, and use the **Value** tab only if the tenant is in the Frontier preview program. Establish a review cadence so consumption growth is visible before month-end and before threshold breaches.
 
 ### Step 8: Confirm Purview, audit, and supervision coverage
 

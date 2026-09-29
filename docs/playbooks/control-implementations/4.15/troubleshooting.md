@@ -12,7 +12,7 @@ Common issues and resolution steps for governing Microsoft 365 Copilot Cowork af
 ### Issue 2: Cowork Is Not Visible to Any Users
 
 - **Symptoms:** Users report Cowork is not surfaced in Microsoft 365 Copilot.
-- **Resolution:** Check whether the intended access posture is billing-only (targeted users only) or billing + discovery (broader awareness with request flow). If broad discovery is intended, turn on **M365 Admin Center > Copilot > Settings > AI experiences enabled by usage-based billing**. If discovery is deliberately off, communicate the pilot scope to users so they understand why Cowork is not visible.
+- **Resolution:** Check whether the intended access posture is billing-only (targeted users only) or billing + discovery (broader awareness with request flow). If broad discovery is intended, remember that **M365 Admin Center > Copilot > Settings > AI experiences enabled by usage-based billing** is the current **deprecated** discovery/request setting that Microsoft says will be replaced. Use it only with a documented transition note for the future request-access control. If discovery is deliberately off, communicate the pilot scope to users so they understand why Cowork is not visible.
 
 ### Issue 3: Unexpected Access Requests
 
@@ -57,7 +57,7 @@ Common issues and resolution steps for governing Microsoft 365 Copilot Cowork af
 ### Issue 11: Consumption Trending Over Budget
 
 - **Symptoms:** Consumption reporting in **Copilot > Cost management > Configuration** shows spend on track to exceed the approved budget.
-- **Resolution:** Review per-user or per-group consumption limits, tighten them where appropriate, and identify the activity classes driving spend (model responses, tools/skills, image generation, browser tasks, scheduled tasks). Cross-check **Copilot > Cowork > Usage** and, where enabled, **Value** to see which users and task categories are driving consumption. Communicate limit changes to the pilot and record the decision.
+- **Resolution:** Review per-user or per-group consumption limits, tighten them where appropriate, and identify the activity classes driving spend (model responses, tools/skills, image generation, and browser tasks). Cross-check **Copilot > Cowork > Usage** for user/task trends and use **Value** only if the tenant participates in the Frontier preview program, because that preview surface carries the assisted-hours, credits-spent, and task-category breakdowns. Communicate limit changes to the pilot and record the decision.
 
 ### Issue 12: Cowork Activity Missing from Audit
 
