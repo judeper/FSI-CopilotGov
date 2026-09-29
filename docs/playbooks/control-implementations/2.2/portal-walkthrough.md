@@ -4,7 +4,7 @@ Step-by-step portal configuration for enforcing sensitivity label classification
 
 ## Prerequisites
 
-- Microsoft Purview Information Protection Administrator role
+- Microsoft Purview Information Protection Admin role
 - Microsoft 365 E5 or E5 Compliance license
 - Sensitivity label taxonomy deployed (see Control 1.5)
 - Label inheritance policies defined
@@ -95,7 +95,9 @@ Service-side auto-labeling policies support nested rule logic (AND/OR/NOT) throu
    - NOT: File path contains "/public-disclosures/" (exclude investor relations materials)
 4. On the **Additional label settings** page, select **All locations** to override manually applied lower-priority labels on emails and on SharePoint and OneDrive files. **Emails only** limits the override to email
 5. New policies save in simulation mode — run simulation for 14 days before enforcing
-6. Review simulation false positive rate (target <3% before enforcement)
+6. After enforcement, review **Coverage by simulation context** and the policy's **Labeled items** tab, including the **Failed** view, to confirm which files were labeled, are pending, or could not be labeled
+7. If a SharePoint document library already has a default sensitivity label and you need that label applied to files that predate the library configuration, create the dedicated auto-labeling policy for default-library labels rather than rebuilding the library as a content-inspection rule
+8. Review simulation false positive rate (target <3% before enforcement)
 
 ### Step 7: Configure Label-Based Access Restrictions for Copilot
 
@@ -112,16 +114,16 @@ For labels that include encryption, review how Copilot interacts with encrypted 
 
 > **Permission Level Names:** The Microsoft Purview portal and the custom permissions dialog in Word, Excel, and PowerPoint for Windows (version 2411 and later) use updated permissions level names — **Reviewer** is now **Restricted Editor**, **Co-Author** is now **Editor**, and **Co-Owner** is now **Owner**. Other applications continue to use the original naming. **Save As, Export is not included in the Editor level when it is configured in the Microsoft Purview portal** — assign it through custom permissions where users need to create derivative documents. Existing labels using the old permission names continue to function, but new label configurations and documentation should use the updated names.
 
-### Step 8: Enable Label Analytics for Copilot Content
+### Step 8: Review Label Activity, Coverage, and Failures for Copilot Content
 
 **Portal:** Microsoft Purview portal
-**Path:** Solutions > Information Protection > Label analytics
+**Path:** Solutions > Information Protection > Reports; Solutions > Information Protection > Policies > Auto-labeling policies; Solutions > Data Lifecycle Management > Explorers > Content explorer; Solutions > Data Classification > Activity explorer
 
-Enable label analytics to monitor how labels are applied to Copilot-generated content. Track:
-- Label distribution on Copilot-generated documents
-- Label changes (upgrades and downgrades) on Copilot content
-- Unlabeled Copilot content (should be zero with mandatory labeling)
-- Agent-generated content label distribution (where applicable)
+Use the current Purview monitoring surfaces together, because no single page answers every Copilot-label question:
+- **Information Protection > Reports** — monitor label application and adoption trends over the 30-day reporting window
+- **Auto-labeling policy review pages** — inspect **Coverage by simulation context**, **Labeled items**, and **Failed** results for service-side auto-labeling on SharePoint and OneDrive
+- **Content explorer** — export the current labeled-item snapshot by workload and label when you need inventory evidence
+- **Activity explorer** — monitor recent label activity events and downstream handling, including label applies/changes/removals
 - **Default labels for meetings and calendar events** — verify the label policy setting **Apply a default label to meetings and calendar events** is configured for regulated user groups. For Teams, the default label applies to new calendar events but is not applied automatically when an existing unlabeled meeting is updated. Default labeling helps prevent unclassified meeting content (transcripts, notes, recordings) from being surfaced by Copilot without appropriate classification.
 
 ## FSI Recommendations

@@ -1511,6 +1511,11 @@
         "portal": "Microsoft Purview portal",
         "path": "Solutions > Information Protection > Publishing policies",
         "url": "https://purview.microsoft.com/informationprotection/labelpolicies"
+      },
+      {
+        "portal": "Microsoft Purview portal",
+        "path": "Solutions > Information Protection > Policies > Auto-labeling policies",
+        "url": "https://purview.microsoft.com/informationprotection/autolabeling"
       }
     ],
     "verifyPowerShell": "Connect-IPPSSession; Get-Label | Select-Object Name, Priority, ContentType; Get-LabelPolicy | Select-Object Name, Labels, Settings",
