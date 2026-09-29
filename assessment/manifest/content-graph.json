@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-27T00:00:00Z",
+  "generatedAt": "2026-09-29T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -884,7 +884,7 @@
       "tier": "Recommended",
       "title": "Control 4.15: Copilot Cowork Governance",
       "path": "docs/controls/pillar-4-operations/4.15-copilot-cowork-governance.md",
-      "last_verified": "2026-09-24",
+      "last_verified": "2026-09-29",
       "regulatory_references": [
         "FFIEC IT Examination Handbook",
         "GLBA §501(b)",

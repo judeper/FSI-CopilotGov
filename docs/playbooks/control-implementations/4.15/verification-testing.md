@@ -6,8 +6,8 @@ Test cases and evidence collection for validating access posture (Cowork-selecti
 
 ### Test 1: Access Posture Matches the Approved Decision
 
-- **Objective:** Confirm usage-based billing scope and the discovery setting match the documented pilot decision.
-- **Expected Result:** The Cost management export lists only users/groups in the approved pilot; the discovery setting is off (or matches the approved posture), and both decisions are recorded with an approver.
+- **Objective:** Confirm usage-based billing scope and the current discovery/request setting match the documented pilot decision.
+- **Expected Result:** The Cost management export lists only users/groups in the approved pilot; the current discovery/request setting is off (or matches the approved posture), and both decisions are recorded with an approver. If the tenant is preparing for Microsoft's replacement request-access control, the transition approach is documented.
 - **Evidence:** Cost management billing-scope export, discovery-setting screenshot/export, and the access-posture decision record.
 
 ### Test 2: Access Requests Are Handled Under a Documented Workflow
@@ -43,8 +43,8 @@ Test cases and evidence collection for validating access posture (Cowork-selecti
 ### Test 7: Consumption Limits Match the Approved Budget
 
 - **Objective:** Validate that per-user or per-group consumption limits reflect the approved pilot budget and that consumption reporting is reviewed on cadence.
-- **Expected Result:** Limits match the budget; consumption reporting shows model responses, tools/skills, image generation, and browser tasks trending within budget.
-- **Evidence:** Consumption-limits export and the most recent consumption reporting review record.
+- **Expected Result:** Limits match the budget; consumption reporting shows model responses, tools/skills, image generation, browser tasks, and scheduled-task activity trending within budget. The Cowork Usage report is reviewed alongside Cost management and, where enabled, the Value tab.
+- **Evidence:** Consumption-limits export, Cowork usage dashboard export, and the most recent consumption reporting review record.
 
 ### Test 8: Purview and Audit Coverage Confirmed
 
@@ -59,6 +59,7 @@ Test cases and evidence collection for validating access posture (Cowork-selecti
 | Access-posture decision record | Governance workspace | CSV / Markdown | Per retention policy |
 | Cost management billing-scope export | M365 Admin Center > Copilot > Cost management > Configuration | CSV / PDF / PNG | Per retention policy |
 | Discovery-setting state | M365 Admin Center > Copilot > Settings | PDF / PNG | Per retention policy |
+| Cowork usage dashboard export | M365 Admin Center > Copilot > Cowork > Overview / Usage / Value | CSV / PDF / PNG | Per retention policy |
 | Access-request register | Governance workspace | CSV / Markdown | Per retention policy |
 | Anthropic-family toggle export | M365 Admin Center > Copilot settings | PDF / PNG | Per retention policy |
 | Current model-control and provider-retention evidence | M365 Admin Center > Copilot settings / current Microsoft Learn model guidance | PDF / PNG / Markdown | Per retention policy |
