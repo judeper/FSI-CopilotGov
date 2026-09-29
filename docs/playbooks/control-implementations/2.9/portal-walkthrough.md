@@ -50,7 +50,7 @@ Configure alerts for the routed web-session events and anomaly detections that m
 - Sensitive content detected during supported file download, upload, or send/share actions
 - Policy violation attempts in routed browser sessions
 - Impossible travel or activity from infrequent country/region after the anomaly-detection learning period
-- Malware detection for supported file transfers
+- Malware detection for supported file transfers **after you explicitly enable the built-in malware policy, which Microsoft documents as disabled by default**
 
 ### Step 5: Configure Activity Logging
 
