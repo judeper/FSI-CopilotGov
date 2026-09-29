@@ -8,7 +8,7 @@ Test cases and evidence collection procedures for Microsoft Sentinel integration
 
 - **Objective:** Verify that Copilot events are being ingested into the Sentinel workspace
 - **Steps:**
-  1. Navigate to **Microsoft Sentinel > Investigation & response > Hunting > Advanced hunting** in the Microsoft Defender portal. For legacy workspaces still operating in Azure portal, use **Microsoft Sentinel > Logs**.
+  1. Navigate to **Investigation & response > Hunting > Advanced hunting** in the Microsoft Defender portal. For legacy workspaces still operating in Azure portal, use **Microsoft Sentinel > Logs**.
   2. Run the query: `CopilotActivity | where RecordType == "CopilotInteraction" | project TimeGenerated, ActorUserId, ActorName, SrcIpAddr, Workload, AIModelName, LLMEventData | take 10`
   3. If records are returned, verify timestamps and sampled fields are populated.
   4. If zero records are returned, treat as a gap signal and verify connector status, permissions, and ingestion delay before concluding data absence.
