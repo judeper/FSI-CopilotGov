@@ -29,6 +29,10 @@ $events = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate `
     -Operations CopilotInteraction -ResultSize 5000
 
 if ($events.Count -eq 5000) {
+    Write-Warning "Search-UnifiedAuditLog returned the 5,000-row cap. Off-hours counts may be incomplete; rerun with narrower windows if you need a complete export."
+}
+
+if ($events.Count -eq 5000) {
     Write-Warning "Search-UnifiedAuditLog returned the 5,000-row cap. Treat this as a spot-check only, not a complete export."
 }
 

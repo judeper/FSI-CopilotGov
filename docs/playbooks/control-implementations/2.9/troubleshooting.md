@@ -27,7 +27,7 @@ Common issues and resolution steps for Defender for Cloud Apps session controls.
 
 ### Issue 3: False Positive Alerts Overwhelming Security Team
 
-- **Symptoms:** High volume of alerts for normal Copilot usage patterns, creating alert fatigue
+- **Symptoms:** High volume of alerts for normal Microsoft 365 web-session activity, creating alert fatigue
 - **Root Cause:** Alert thresholds may be too sensitive, normal business activity may match the conditions, or the anomaly-detection learning period may not have elapsed.
 - **Resolution:**
   1. Review alert patterns and identify the most common false positive types

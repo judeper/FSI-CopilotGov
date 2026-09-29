@@ -1,6 +1,6 @@
 # Control 2.9: Defender for Cloud Apps — Copilot Session Controls — Portal Walkthrough
 
-Step-by-step portal configuration for deploying Microsoft Defender for Cloud Apps session controls to monitor and govern Copilot interactions.
+Step-by-step portal configuration for deploying Microsoft Defender for Cloud Apps session controls to monitor and govern browser-based Microsoft 365 sessions used alongside Copilot.
 
 ## Prerequisites
 
