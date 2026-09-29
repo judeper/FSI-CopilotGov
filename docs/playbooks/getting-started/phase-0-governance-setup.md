@@ -191,7 +191,7 @@ See also: [Control 3.1 -- Copilot Audit Logging](../control-implementations/3.1/
     - Do label policies restrict sharing appropriately at each tier?
 
 2. **Evaluate Copilot-specific label behaviors:**
-    - Labels with encryption: Copilot can access encrypted content only if the user has decryption rights
+    - Labels with encryption: Copilot respects the user's usage rights. Users without the EXTRACT (Copy) right can't have Copilot summarize the encrypted item, though Copilot can still return a link in documented scenarios; OWNER includes EXTRACT automatically.
     - Labels with "Do not forward" or "Encrypt-only": These restrictions carry forward to Copilot-generated content
     - Labels scoped to specific groups: Copilot respects group-scoped label access
 
