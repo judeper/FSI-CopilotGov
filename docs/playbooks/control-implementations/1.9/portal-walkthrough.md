@@ -57,7 +57,7 @@ If deploying PAYG Copilot Chat (metered per-message pricing; refer to [Microsoft
 
 1. Create or review the billing policy tied to the correct Azure subscription.
 2. Add the approved users or groups to the billing policy and document the cost owner.
-3. Add a budget limit and notification routing to the billing policy.
+3. Add a budget threshold and notification routing to the billing policy, and document that the threshold is notification-only rather than an enforced spend cap.
 4. Connect the billing policy to Microsoft Copilot Chat.
 5. Review **Settings > Org settings > Self-service trials and purchases** and document the per-product self-service state for Microsoft 365 Copilot and related products.
 6. Record which populations are on the PAYG model versus per-seat licensing in the deployment plan.
