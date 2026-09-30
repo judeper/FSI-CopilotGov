@@ -209,7 +209,7 @@
       "tier": "Regulated",
       "title": "Control 1.13: Extensibility Readiness (Copilot Connectors, Plugins, Declarative Agents)",
       "path": "docs/controls/pillar-1-readiness/1.13-extensibility-readiness.md",
-      "last_verified": "2026-07-26",
+      "last_verified": "2026-09-29",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Handbook (Information Security Booklet)",
@@ -427,7 +427,7 @@
       "tier": "Recommended",
       "title": "Control 2.14: Declarative and SharePoint Agents Governance",
       "path": "docs/controls/pillar-2-security/2.14-declarative-agents-governance.md",
-      "last_verified": "2026-09-24",
+      "last_verified": "2026-09-29",
       "regulatory_references": [
         "GLBA §501(b)"
       ]
@@ -854,7 +854,7 @@
       "tier": "Recommended",
       "title": "Control 4.13: Copilot Extensibility and Agent Operations Governance",
       "path": "docs/controls/pillar-4-operations/4.13-extensibility-governance.md",
-      "last_verified": "2026-09-24",
+      "last_verified": "2026-09-29",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC IT Examination Handbook",

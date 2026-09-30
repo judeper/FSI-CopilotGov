@@ -497,7 +497,7 @@ For detailed implementation guidance, including Baseline Security Mode configura
 | **Unified agent inventory** | Single view of all agents — Microsoft first-party, organization-published, partner, and Copilot Studio agents | Supports compliance inventory and ownership tracking across agent sources |
 | **Agent usage analytics** | Telemetry on sessions, active users, runtime, and exception rates per agent | Aids in identifying material agent dependencies and operational risk |
 | **Centralized policy controls** | Allowed types, sharing rules, user access, and template governance in one surface | Reduces configuration drift by consolidating previously distributed settings |
-| **Cross-platform visibility** | Agents from Microsoft 365, Copilot Studio, and third-party integrations appear in the same registry | Helps address third-party risk and lifecycle management for all agent sources |
+| **Cross-platform visibility** | Agents from Microsoft 365, Copilot Studio, and supported third-party integrations can appear in the same registry, but connected-platform discovery is only as current as the latest manual **Sync agents** run and observability varies by platform | Helps address third-party risk and lifecycle management for all agent sources without assuming continuous third-party synchronization |
 
 ### Governance Implications
 

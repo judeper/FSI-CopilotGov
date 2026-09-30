@@ -29,6 +29,9 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 | Agent allowed types | Agents > Settings > Allowed agent types | `https://admin.microsoft.com` |
 | Agent sharing | Agents > Settings > Sharing | `https://admin.microsoft.com` |
 | Agent user access | Agents > Settings > User access | `https://admin.microsoft.com` |
+| Agent feedback sharing | Agents > Settings > Agent feedback sharing | `https://admin.microsoft.com` |
+| Agent tags | Agents > Settings > Tags | `https://admin.microsoft.com` |
+| Connected platforms | Agents > All agents > Connected platforms > Manage | `https://admin.microsoft.com` |
 
 ### General Settings
 

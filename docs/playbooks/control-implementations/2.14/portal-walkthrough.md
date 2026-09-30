@@ -34,6 +34,8 @@ The **Agents > Settings** page exposes several distinct controls — each govern
 - **Security templates (policy templates)** — reusable security policies for new agents. Do not conflate this with the **Apply template** management-rule action, which applies a preexisting or custom template to eligible existing published agents.
 - **Sharing** — controls whether (and which groups of) users can share agents organization-wide. **Note:** sharing controls apply only to agents built with Microsoft 365 Copilot Agent Builder; SharePoint agents and other agent types are governed through their own publishing surfaces.
 - **User access** — controls how users *access and install* agents (All users / No users / Specific users or groups). This setting governs **consumption**, not **creation**. Restricting User access to a pilot group is a useful Baseline lever, but it does not restrict who can build a new declarative agent — that is gated by Copilot license, Agent Builder availability, and SharePoint agent permissions on source sites (see Step 3).
+- **Agent feedback sharing** — controls whether developers receive thumbs-up / thumbs-down feedback and comments. It doesn't change who can rate agents or what an agent can access.
+- **Tags** — lets administrators manage organization-wide discovery labels. Microsoft currently allows up to 50 tags, and deleting a tag removes it from every agent that uses it.
 
 When reviewing or using **Apply template**:
 
@@ -66,9 +68,10 @@ For each declarative agent, the data access scope is defined by the SharePoint s
 **Path:** Admin Center > Agents > Settings > Sharing
 
 Control how declarative agents are shared:
-- Limit sharing to "People with existing access" to the underlying content
+- Limit broad sharing to approved groups or disable it where appropriate; the Agent Builder **Sharing** control currently offers **All users**, **No users**, or **Specific users**
 - Disable organization-wide agent publishing for unapproved agents
 - Require governance review before broad distribution
+- Separately verify that the underlying SharePoint site, library, or file permissions still enforce the intended content boundary for anyone who can access the agent
 
 ### Step 5: Document Agent Governance Framework
 
