@@ -751,7 +751,7 @@ AUTHORED: dict[str, dict] = {
                 "appropriate under its Appendix A risk assessment, and "
                 "license-assignment controls are included in the program "
                 "status reported to the board or a board committee at least "
-                "annually under Appendix A, III.F."
+                "annually under Appendix A, III.F (a \"should\" guideline)."
             ),
         ),
         "facilitatorNotes": {
@@ -3225,12 +3225,12 @@ AUTHORED: dict[str, dict] = {
             ),
             insurance_carrier=(
                 "For carriers subject to 23 NYCRR 500, Copilot-related "
-                "incidents, including incidents at a third-party service "
-                "provider such as Microsoft, are reported to the "
-                "superintendent within 72 hours after the carrier "
-                "determines a cybersecurity incident has occurred, and the "
-                "annual April 15 certification or acknowledgment is "
-                "supported by dated compliance records."
+                "events the carrier determines are cybersecurity incidents "
+                "under §500.1, including at a third-party service provider "
+                "such as Microsoft, are reported to the superintendent "
+                "within 72 hours after that determination, and the annual "
+                "April 15 certification or acknowledgment is supported by "
+                "dated compliance records."
             ),
             credit_union=(
                 "Where Copilot-related activity meets the reportable-cyber-"

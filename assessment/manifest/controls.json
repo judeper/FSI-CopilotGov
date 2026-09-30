@@ -788,7 +788,7 @@
       "broker-dealer": "Licenses assigned by registered-rep status; utilization reviewed monthly by supervisory principal.",
       "investment-adviser": "TODO: sector-specific yes-bar",
       "insurance-carrier": "For carriers subject to 23 NYCRR 500, Copilot-enabled account access is reviewed at least annually, and access that is no longer necessary is removed.",
-      "credit-union": "Copilot license-assignment review is treated as an access-control measure the credit union has concluded is appropriate under its Appendix A risk assessment, and license-assignment controls are included in the program status reported to the board or a board committee at least annually under Appendix A, III.F.",
+      "credit-union": "Copilot license-assignment review is treated as an access-control measure the credit union has concluded is appropriate under its Appendix A risk assessment, and license-assignment controls are included in the program status reported to the board or a board committee at least annually under Appendix A, III.F (a \"should\" guideline).",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3450,7 +3450,7 @@
       "bank": "SOX §§302/404 attestations address Copilot where applicable to ICFR; GLBA §501(b) safeguards review includes Copilot.",
       "broker-dealer": "FINRA Rule 4530 reporting covers Copilot-related incidents; books-and-records certifications include Copilot interactions.",
       "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "For carriers subject to 23 NYCRR 500, Copilot-related incidents, including incidents at a third-party service provider such as Microsoft, are reported to the superintendent within 72 hours after the carrier determines a cybersecurity incident has occurred, and the annual April 15 certification or acknowledgment is supported by dated compliance records.",
+      "insurance-carrier": "For carriers subject to 23 NYCRR 500, Copilot-related events the carrier determines are cybersecurity incidents under §500.1, including at a third-party service provider such as Microsoft, are reported to the superintendent within 72 hours after that determination, and the annual April 15 certification or acknowledgment is supported by dated compliance records.",
       "credit-union": "Where Copilot-related activity meets the reportable-cyber-incident definition, the credit union notifies the NCUA-designated point of contact as soon as possible and no later than 72 hours after it reasonably believes the incident occurred or, for third-party incidents in §748.1(c)(1)(i)(C), within 72 hours of being notified by the third party, whichever is sooner.",
       "other": "TODO: sector-specific yes-bar"
     },
