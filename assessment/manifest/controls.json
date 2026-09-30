@@ -1013,8 +1013,8 @@
       "bank": "Training covers GLBA NPI handling expectations for AI; completion tracked per FFIEC IT Handbook requirements.",
       "broker-dealer": "Training includes FINRA Rule 3110 supervisory awareness; completion tracked for registered representatives.",
       "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
+      "insurance-carrier": "For carriers subject to 23 NYCRR 500.14(a)(3), Copilot training is included in periodic, at least annual, cybersecurity awareness training that is updated for AI-related risks identified in the carrier's risk assessment.",
+      "credit-union": "Copilot training is folded into the credit union's member-information security program, and staff with Copilot access are trained to implement that program, consistent with 12 CFR part 748, appendix A, III.C.2.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4709,10 +4709,10 @@
     "collectorField": "",
     "sectorYesBar": {
       "bank": "Feedback data governed per GLBA §501(b); reviewed monthly by product owner.",
-      "broker-dealer": "TODO: sector-specific yes-bar",
-      "investment-adviser": "TODO: sector-specific yes-bar",
+      "broker-dealer": "Feedback submission for registered-representative populations is set by a documented, risk-based decision, and the screenshot/attachment, Microsoft follow-up, and log-file/content-sample feedback policies are disabled unless the firm approves a support use case, with those decisions recorded in the firm's written safeguards policies and procedures under 17 CFR 248.30(a).",
+      "investment-adviser": "Feedback submission for adviser and client-service populations is set by a documented, risk-based decision, and the screenshot/attachment, Microsoft follow-up, and log-file/content-sample feedback policies are disabled unless the adviser approves a support use case, with those decisions recorded in the adviser's written safeguards policies and procedures under 17 CFR 248.30(a).",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
+      "credit-union": "Feedback submission for member-service populations is set by a documented, risk-based decision, and the screenshot/attachment, Microsoft follow-up, and log-file/content-sample feedback policies are disabled unless the credit union approves a support use case, with those decisions recorded within the credit union's member-information security program, consistent with 12 CFR part 748, appendix A.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
