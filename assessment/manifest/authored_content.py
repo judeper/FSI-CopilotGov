@@ -4221,17 +4221,18 @@ AUTHORED: dict[str, dict] = {
         "priority": "high",
         "yesBar": (
             "Copilot Cowork governance reflects GA operating controls: usage-based "
-            "billing scope is approved, discovery is set deliberately, model "
-            "toggles (including Anthropic family and Claude Fable 5 preview) are "
-            "documented, local browser use is governed as a preview sub-feature, "
-            "consumption limits are monitored, plugin/skill inventories are "
-            "approved, and Purview/audit coverage is evidenced."
+            "billing scope is approved, the current discovery/request control is "
+            "set deliberately, model toggles (including Anthropic family and any "
+            "provider-retention model variants) are documented, local browser use "
+            "is governed deliberately, Cowork usage reporting is reviewed, "
+            "plugin/skill inventories are approved, and Purview/audit coverage "
+            "is evidenced."
         ),
         "partialBar": (
             "Cowork governance is partially implemented, but one or more required "
             "GA decisions (billing/discovery, model policy, browser toggle, "
-            "consumption limits, plugin/skill approvals, or Purview coverage) "
-            "is missing, outdated, or lacks approver evidence."
+            "consumption limits, usage reporting, plugin/skill approvals, or "
+            "Purview coverage) is missing, outdated, or lacks approver evidence."
         ),
         "noBar": (
             "Cowork is effectively unmanaged: billing/discovery posture is not "
@@ -4246,12 +4247,17 @@ AUTHORED: dict[str, dict] = {
             },
             {
                 "portal": "Microsoft 365 admin center",
-                "path": "Copilot > Settings > AI experiences enabled by usage-based billing",
+                "path": "Copilot > Settings > AI experiences enabled by usage-based billing (current deprecated setting)",
                 "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
             },
             {
                 "portal": "Microsoft 365 admin center",
                 "path": "Copilot > Settings > View all > Cowork settings",
+                "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
+            },
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Copilot > Cowork > Usage / Settings",
                 "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
             },
             {
@@ -4263,10 +4269,10 @@ AUTHORED: dict[str, dict] = {
         "verifyPowerShell": "",
         "evidenceExpected": [
             "Usage-based billing scope export (user/group assignments) with approver",
-            "Discovery-setting decision record and access-request workflow evidence",
-            "Model-policy record for Anthropic family and Claude Fable 5 (Preview)",
+            "Current discovery-setting decision record, transition note, and access-request workflow evidence",
+            "Model-policy record for Anthropic family and any enabled provider-retention model variants",
             "Cowork Browsing tenant-toggle decision tied to browser-control review",
-            "Consumption-limit policy and recent spend/consumption report",
+            "Consumption-limit policy plus recent Cost management and Cowork usage reports",
             "Approved plugin, uploaded package, and custom-skill inventory with owner",
             "Purview coverage evidence (audit/eDiscovery/DLP alignment) and gap log",
         ],
@@ -4310,10 +4316,10 @@ AUTHORED: dict[str, dict] = {
                 "and Purview supervision) before expansion?"
             ),
             "followUp": (
-                "Open Copilot cost-management and settings pages to confirm billing "
-                "scope, discovery state, model/browser toggles, and consumption "
-                "limits. Then verify plugin/skill approvals plus Purview/audit "
-                "coverage evidence and unresolved gaps."
+                "Open Copilot cost-management, Cowork, and settings pages to "
+                "confirm billing scope, discovery state, model/browser toggles, "
+                "usage reporting, and consumption limits. Then verify plugin/skill "
+                "approvals plus Purview/audit coverage evidence and unresolved gaps."
             ),
             "timeBudgetMinutes": 8,
         },

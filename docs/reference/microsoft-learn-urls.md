@@ -101,8 +101,10 @@ Curated list of Microsoft Learn documentation URLs organized by governance topic
 | Copilot Cowork available models | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-models](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-models) |
 | Manage Copilot Cowork plugins | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-manage-plugins) |
 | Copilot Cowork FAQ | [https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-faq) |
-| Managing AI experiences enabled by usage-based billing | [https://learn.microsoft.com/en-us/microsoft-365/copilot/discovery-setting-ai-experiences](https://learn.microsoft.com/en-us/microsoft-365/copilot/discovery-setting-ai-experiences) |
+| Discovery setting for AI experiences enabled by usage-based billing | [https://learn.microsoft.com/en-us/microsoft-365/copilot/discovery-setting-ai-experiences](https://learn.microsoft.com/en-us/microsoft-365/copilot/discovery-setting-ai-experiences) |
 | Manage Copilot Credits (usage-based billing) | [https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits](https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits) |
+| Copilot Cowork usage report | [https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/cowork-usage-report](https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/cowork-usage-report) |
+| What is Microsoft Copilot Managed Runtime (preview) | [https://learn.microsoft.com/en-us/microsoft-365/managed-apps/index](https://learn.microsoft.com/en-us/microsoft-365/managed-apps/index) |
 
 ---
 

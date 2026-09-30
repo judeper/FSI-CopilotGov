@@ -127,7 +127,7 @@ Phase 4: Optimization and Lifecycle (Week 7-8)
 | 4.12 Change Management | 4.1 Admin Settings | Changes assessed against admin settings baseline |
 | 4.13 Extensibility | 1.13 Readiness, 2.13 Security | Lifecycle governance builds on readiness and security assessment |
 | 4.14 Copilot Studio | 1.10 Vendor Risk, 4.13 Extensibility | Studio lifecycle complements extensibility governance |
-| 4.15 Copilot Cowork | 1.10 Vendor Risk, 4.13 Extensibility | Preview agentic capability governed alongside extensibility and vendor-risk intake |
+| 4.15 Copilot Cowork | 1.10 Vendor Risk, 4.13 Extensibility | Generally available agentic capability governed alongside extensibility and vendor-risk intake |
 | 4.16 Microsoft Scout | 1.9 License, 1.10 Vendor Risk, 2.13 Plugin/Connector, 2.16 MCP, 4.13 Extensibility | Endpoint agentic preview whose gates and MCP intake compose across extensibility, MCP, and third-party inference controls |
 
 ---
