@@ -284,6 +284,17 @@ def test_pr_body_reports_finra_cross_check_and_verification_state() -> None:
     assert "steps.monitor.outputs.finra_verification_state" in pr_body
 
 
+def test_pr_body_high_tier_legend_mentions_sro_scoping() -> None:
+    pr_body = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
+        "with"
+    ]["body"]
+    assert "SRO rule-filing boilerplate is suppressed" in pr_body
+    assert "AI governance" in pr_body
+    assert "supervision" in pr_body
+    assert "communications-with-the-public" in pr_body
+    assert "FINRA Rule 2210" in pr_body
+
+
 def test_pr_title_marks_unverified_finra_runs() -> None:
     meta_run = _step(MONITOR_JOB, "Prepare Regulatory Monitor PR metadata")["run"]
     assert "UNVERIFIED (FINRA listing cross-check unavailable)" in meta_run

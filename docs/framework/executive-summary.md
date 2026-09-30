@@ -40,7 +40,7 @@ Microsoft 365 Copilot embeds generative AI directly into the applications your w
 | 6 | **Meeting Transcription Exposure** | Teams meeting transcriptions indexed by Copilot expose spoken content (including off-the-record remarks) to anyone with meeting access | 1.5, 3.2, 4.6 |
 | 7 | **Copilot Pages Data Sprawl** | Copilot Pages create new collaborative content outside traditional governance boundaries, potentially duplicating regulated data without retention controls | 3.2, 4.8 |
 | 8 | **Hallucination in Regulated Contexts** | Copilot generates plausible but incorrect financial data, regulatory citations, or client information that enters official documents | 3.5, 3.7 |
-| 9 | **Plugin and Connector Data Exposure** | Graph connectors and plugins extend Copilot's data reach beyond M365, potentially grounding responses in unvetted or unclassified external data | 2.8, 4.10 |
+| 9 | **Plugin and Connector Data Exposure** | Graph connectors and plugins extend Copilot's data reach beyond M365, potentially grounding responses in unvetted or unclassified external data | 2.13, 4.13 |
 | 10 | **Insufficient Access Governance for Semantic Index** | The Semantic Index indexes all content accessible to the user; without regular access reviews, stale permissions create an expanding attack surface | 1.2, 1.4, 1.6 |
 
 ---

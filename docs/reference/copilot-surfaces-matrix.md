@@ -64,7 +64,7 @@ Feature-by-control applicability matrix showing which governance controls apply 
 |----------------|-----|-------------------|-------------------|---------------|-----------|------------|--------------|----------------|---------------|
 | **Copilot Chat (Basic)** | Partial | Partial | Supported | Supported | Partial | Partial | Partial | Partial | Supported |
 | **Copilot Chat (Premium / Microsoft 365 Copilot)** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Supported |
-| **Microsoft 365 Copilot Search** | Partial | Partial | Supported | Supported | Partial | Partial | Supported | N/A | Supported |
+| **Microsoft Copilot Search** | Partial | Partial | Supported | Supported | Partial | Partial | Supported | N/A | Supported |
 | **Copilot Pages** | Supported | Supported | Supported | Supported | Supported | Supported | Partial | N/A | Supported |
 | **Copilot Notebooks** | Supported | N/A | Supported | Supported | Supported | Supported | Partial | N/A | Supported |
 | **Edit with Copilot (Agent Mode)** | Supported | Supported | Supported | Supported | Supported | Supported | Supported | Partial | Supported |
@@ -163,7 +163,7 @@ Microsoft distinguishes between **Copilot Chat Basic** (no additional Copilot li
 | Surface | Basic Access | Premium Access |
 |---------|-------------|---------------|
 | **Copilot Chat** | Available; web grounding and user-provided organizational data only, without automatic tenant-wide Microsoft Graph grounding | Available with Microsoft Graph grounding across permitted organizational data |
-| **Microsoft 365 Copilot Search** | Not available | Available to eligible licensed users from the Search module in the Microsoft 365 Copilot app |
+| **Microsoft Copilot Search** | Not available | Available to eligible licensed users from the Search module in the Microsoft Copilot app |
 | **Edit with Copilot (Agent Mode)** | Available with web data grounding only | Available with organizational data via Microsoft Graph |
 | **Copilot Pages / Copilot Notebooks** | Available where tenant policy and app entitlement permit; content created from Basic chats is not automatically Graph-grounded | Available with Microsoft Graph-grounded content and SharePoint Embedded storage |
 | **Copilot Cowork** | Not available | Available |

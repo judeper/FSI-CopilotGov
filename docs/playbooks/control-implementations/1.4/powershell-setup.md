@@ -11,10 +11,13 @@ Automation scripts for managing and monitoring the Microsoft 365 Semantic Index 
 
 ## Scripts
 
-### Script 1: Semantic Index Coverage Report
+### Script 1: SharePoint Scope Review Report
 
 ```powershell
-# Generate report on semantic index coverage across Microsoft 365 workloads
+# Generate a SharePoint inventory for semantic-index governance review.
+# Note: Get-MgSite alone doesn't tell you whether a site is excluded from
+# Microsoft Search or whether RCD is enabled. Searchability and RCD must be
+# validated through SharePoint settings or SPO admin cmdlets separately.
 # Requires: Microsoft Graph SDK
 
 Import-Module Microsoft.Graph.Reports
@@ -26,33 +29,35 @@ $report = @{
     GeneratedDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     SharePointSites = @{
         Total = 0
-        IndexEligible = 0
-        Excluded = 0
+        InventoriedForReview = 0
     }
 }
 
-# Count SharePoint sites and their index eligibility
+# Count SharePoint sites for governance review
 $sites = Get-MgSite -All
 $report.SharePointSites.Total = $sites.Count
 
 foreach ($site in $sites) {
     $siteDetail = Get-MgSite -SiteId $site.Id -Property "sharepointIds,displayName"
-    # TODO: Add actual eligibility logic (e.g., check for RCD exclusion, site lock state)
-    # Currently this counter mirrors Total — refine with your org's index eligibility criteria
-    $report.SharePointSites.IndexEligible++
+    # TODO: Add org-specific enrichment for site searchability and RCD state
+    # from SharePoint administration sources. Those controls are separate from
+    # the Microsoft Graph site inventory and can't be inferred here.
+    $report.SharePointSites.InventoriedForReview++
 }
 
-Write-Host "=== Semantic Index Coverage Report ==="
+Write-Host "=== SharePoint Scope Review Report ==="
 Write-Host "Total SharePoint sites: $($report.SharePointSites.Total)"
-Write-Host "Index-eligible sites: $($report.SharePointSites.IndexEligible)"
+Write-Host "Sites inventoried for review: $($report.SharePointSites.InventoriedForReview)"
 
-$report | ConvertTo-Json -Depth 3 | Out-File "SemanticIndexCoverage_$(Get-Date -Format 'yyyyMMdd').json"
+$report | ConvertTo-Json -Depth 3 | Out-File "SharePointScopeReview_$(Get-Date -Format 'yyyyMMdd').json"
 ```
 
-### Script 2: Content Source Inventory for Index Governance
+### Script 2: SharePoint Governance Review Inventory
 
 ```powershell
-# Inventory content sources to inform semantic index governance decisions
+# Inventory SharePoint sites to inform searchability and discoverability
+# governance decisions. Sensitivity labels can prioritize review, but they do
+# not by themselves determine whether a site is in the Microsoft Search index.
 # Requires: SharePoint Online Management Shell, Exchange Online Management
 
 Import-Module Microsoft.Online.SharePoint.PowerShell
@@ -78,12 +83,12 @@ foreach ($site in $spoSites) {
         # NOTE: SensitivityLabel returns a GUID, not a display name.
         # Resolve GUID to name via: Get-Label | Select DisplayName, Guid
         # Replace the GUID below with your "Highly Confidential" label GUID.
-        IndexRecommendation = $(if ($detail.SensitivityLabel -match "<your-highly-confidential-label-guid>") { "Review Required" } else { "Include" })
+        GovernanceReviewRecommendation = $(if ($detail.SensitivityLabel -match "<your-highly-confidential-label-guid>") { "Review site searchability and discoverability controls" } else { "Review with business owner" })
     }
 }
 
-$inventory | Export-Csv "ContentSourceInventory_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
-Write-Host "Inventoried $($inventory.Count) content sources for index governance review."
+$inventory | Export-Csv "SharePointGovernanceReview_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+Write-Host "Inventoried $($inventory.Count) SharePoint sites for governance review."
 ```
 
 ### Script 3: Monitor Copilot Query Patterns
@@ -119,8 +124,8 @@ $usageSummary | Export-Csv "CopilotUsageSummary_$(Get-Date -Format 'yyyyMMdd').c
 
 | Task | Frequency | Purpose |
 |------|-----------|---------|
-| Index Coverage Report | Monthly | Track semantic index scope and coverage changes |
-| Content Source Inventory | Quarterly | Support governance review of index scope decisions |
+| SharePoint Scope Review Report | Monthly | Track SharePoint sites that need searchability and discoverability review |
+| SharePoint Governance Review Inventory | Quarterly | Support governance review of searchability, RCD, and related scope decisions |
 | Copilot Query Pattern Review | Monthly | Identify anomalous usage patterns for governance review |
 
 ## Next Steps

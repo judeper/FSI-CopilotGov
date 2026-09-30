@@ -56,8 +56,8 @@ Step-by-step portal review for the current Microsoft 365 Copilot administration 
 **Portal:** Microsoft 365 Admin Center
 
 1. Open **Settings > Org settings > Self-service trials and purchases** and confirm Microsoft 365 Copilot self-service purchasing is configured as approved.
-2. Open **Billing > Pay-as-you-go services** and confirm whether any billing policies are active.
-3. Open **Cost Management** and review cost visibility if PAYG is enabled.
+2. Open **Copilot > Billing & usage > Pay-as-you-go services** and confirm whether any billing policies are active.
+3. Open **Billing > Cost Management** and review cost visibility if PAYG is enabled.
 
 ### Step 6: Review Baseline Security Mode
 

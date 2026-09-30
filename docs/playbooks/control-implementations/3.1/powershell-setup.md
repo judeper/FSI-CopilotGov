@@ -5,7 +5,7 @@ Automation scripts for configuring, monitoring, and reporting on Copilot interac
 ## Prerequisites
 
 - **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph.Security`
-- **Permissions:** Purview Compliance Admin or Entra Global Admin
+- **Permissions:** `Audit Logs` or `View-Only Audit Logs` in Microsoft Purview Audit and Exchange Online for `Search-UnifiedAuditLog`. To create or modify audit retention policies, Microsoft documents the `Organization Configuration` role in Microsoft Purview and the corresponding Security & Compliance PowerShell permissions for `New-UnifiedAuditLogRetentionPolicy` / `Set-UnifiedAuditLogRetentionPolicy`.
 - **PowerShell:** Version 7.x recommended
 
 ## Connect to Required Services
@@ -59,7 +59,9 @@ $copilotLogs | Select-Object CreationDate, UserIds, Operations, AuditData |
 
 ```powershell
 # Search for agent configuration changes (CopilotAgentManagement record type)
-# Operations per https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities
+# Current operations include BlockedAgent, DeletedAgent, DeployedAgent,
+# RemovedAgent, UnblockedAgent, UpdatedAgent, and UpdatedTenantSettings per
+# https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities
 $startDate = (Get-Date).AddDays(-30)
 $endDate = Get-Date
 
@@ -134,6 +136,8 @@ if ($jailbreakEvents.Count -gt 0) {
 # "SixYears" is NOT a supported value — use TenYears for FSI deployments that
 # need to help meet the SEC Rule 17a-4(a) six-year minimum (10-year retention
 # safely covers the 6-year obligation under FINRA Rule 4511 and SEC 17a-4(a)).
+# Priority values must also be unique; lower numbers take precedence over
+# higher numbers among custom policies.
 New-UnifiedAuditLogRetentionPolicy `
     -Name "FSI-Copilot-10Year-Retention" `
     -Description "10-year retention for Copilot interactions (helps meet SEC Rule 17a-4(a) six-year preservation and FINRA Rule 4511 books-and-records requirements)" `
@@ -141,19 +145,20 @@ New-UnifiedAuditLogRetentionPolicy `
     -RetentionDuration TenYears `
     -Priority 100
 
-# Create 10-year retention policy for agent administrative record types
-# CopilotAgentManagement per https://learn.microsoft.com/graph/api/resources/security-auditlogrecordtype
+# Create 10-year retention policy for agent administrative record types.
+# Microsoft Graph documents Copilot agent-management audit data through the
+# copilotAgentManagementAuditRecord resource type.
 New-UnifiedAuditLogRetentionPolicy `
     -Name "FSI-AgentAdmin-10Year-Retention" `
     -Description "10-year retention for agent admin events (helps meet Sarbanes-Oxley §§302/404 IT general control evidence preservation, where applicable to ICFR)" `
     -RecordTypes @("CopilotAgentManagement") `
     -RetentionDuration TenYears `
-    -Priority 100
+    -Priority 110
 
 Write-Host "Audit retention policies created" -ForegroundColor Green
 ```
 
-> **Portal-only durations:** The Microsoft Purview portal also exposes 7 days, 30 days, 6 months, 9 months, 1 year, 3 years, 5 years, and 7 years as audit retention duration options — these are portal-only choices and are not surfaced as PowerShell `-RetentionDuration` enum values. Organizations that prefer a 7-year retention period (closer to the 6-year regulatory minimum) should configure those policies through the portal rather than PowerShell.
+> **Portal-only durations:** The Microsoft Purview portal also exposes 7 days, 30 days, 6 months, 9 months, 1 year, 3 years, 5 years, and 7 years as audit retention duration options — these are portal-only choices and are not surfaced as PowerShell `-RetentionDuration` enum values. Microsoft requires the 10-year Audit Log Retention add-on for the portal's 3-, 5-, and 7-year options. Organizations that prefer a 7-year retention period (closer to the 6-year regulatory minimum) should configure those policies through the portal rather than PowerShell.
 
 ### Script 7: Daily Copilot Activity Summary Report
 
