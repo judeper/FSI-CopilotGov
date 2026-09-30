@@ -59,12 +59,12 @@ DLP, sensitivity labels, conditional access, information barriers, data minimiza
 | [ ] | 2.2 | Sensitivity Labels and Classification | B | | | Label taxonomy and auto-labeling strategy governing Copilot content classification |
 | [ ] | 2.3 | Conditional Access Policies | B | | | Entra CA policies for device compliance, location restrictions, and risk-based authentication |
 | [ ] | 2.4 | Information Barriers (Chinese Wall) | Reg | | | Purview Information Barriers to enforce MNPI separation across Copilot interactions |
-| [ ] | 2.5 | Data Minimization and Grounding Scope | R | | | Limit data scope Copilot can access via RSS, site exclusions, and data access governance |
+| [ ] | 2.5 | Data Minimization and Grounding Scope | R | | | Limit data scope Copilot can access via Restricted Content Discovery, restricted site access, any remaining RSS allow-list, and data access governance |
 | [ ] | 2.6 | Web Search Controls | B | | | Govern web search and web grounding capabilities; disable for regulated user populations |
 | [ ] | 2.7 | Data Residency | R | | | Governance over data residency and cross-border data flows for Copilot processing |
 | [ ] | 2.8 | Encryption | B | | | Verify encryption for data in transit, at rest, and during AI processing (CMK/DKE implications) |
-| [ ] | 2.9 | Defender for Cloud Apps | R | | | Microsoft Defender for Cloud Apps (MDCA) session policies for real-time monitoring and anomaly detection of Copilot usage |
-| [ ] | 2.10 | Insider Risk Detection | R | | | Purview IRM policies to detect anomalous Copilot usage indicating data exfiltration or misuse |
+| [ ] | 2.9 | Defender for Cloud Apps | R | | | Microsoft Defender for Cloud Apps browser-session controls for Copilot-adjacent Microsoft 365 web sessions, plus Shadow AI discovery and anomaly monitoring |
+| [ ] | 2.10 | Insider Risk Detection | R | | | Purview Insider Risk policies, generative AI indicators, and supporting alert workflows to detect risky Copilot or agent usage |
 | [ ] | 2.11 | Copilot Pages Security | R | | | Security and sharing controls for Copilot Pages (creation, sharing scope, label inheritance) |
 | [ ] | 2.12 | External Sharing Governance | R | | | Govern guest access and external sharing settings impacting Copilot content surfacing |
 | [ ] | 2.13 | Plugin and Connector Security | R | | | Security governance for Copilot plugins and Graph connectors (approval, OAuth, monitoring) |

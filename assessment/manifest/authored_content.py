@@ -1723,31 +1723,37 @@ AUTHORED: dict[str, dict] = {
     "2.9": {
         "priority": "high",
         "yesBar": (
-            "Defender for Cloud Apps session policies and anomaly alerts "
-            "are configured for Copilot workloads, reviewed on a documented "
-            "cadence, and integrated with the SOC alerting pipeline."
+            "Defender for Cloud Apps browser-session controls and anomaly "
+            "alerts are configured for the Microsoft 365 web workloads that "
+            "Copilot users rely on, reviewed on a documented cadence, and "
+            "integrated with the SOC alerting pipeline."
         ),
         "partialBar": (
-            "Defender for Cloud Apps is enabled but session policies do not "
-            "specifically cover Copilot workloads, or alert review is ad hoc."
+            "Defender for Cloud Apps is enabled but browser-session "
+            "controls do not yet cover the relevant Microsoft 365 web "
+            "workloads, or alert review is ad hoc."
         ),
         "noBar": (
-            "No Defender for Cloud Apps session controls are configured "
-            "for Copilot workloads."
+            "No Defender for Cloud Apps browser-session or access controls "
+            "are configured for the Microsoft 365 web workloads in scope "
+            "for Copilot governance."
         ),
         "verifyIn": [
             {
                 "portal": "Microsoft Defender portal",
-                "path": "Cloud Apps > Policies > Policy management",
+                "path": (
+                    "Cloud Apps > Policies > Policy management > Conditional "
+                    "Access, plus Cloud Apps > Cloud app catalog / Cloud discovery"
+                ),
                 "url": "https://security.microsoft.com/cloudapps/policies/management",
             },
         ],
         "verifyPowerShell": "",
         "evidenceExpected": [
-            "Defender for Cloud Apps session policy configuration for Copilot",
-            "Anomaly detection alert rules targeting Copilot usage",
+            "Defender for Cloud Apps session-policy configuration for the protected Microsoft 365 web workloads",
+            "Anomaly detection handling and review evidence relevant to those workloads",
             "Alert review cadence documentation",
-            "SOC integration evidence for Copilot-related alerts",
+            "SOC integration evidence for Cloud Apps and agent-related alerts",
         ],
         "sectorYesBar": _sector_map(
             bank=(
@@ -1758,13 +1764,15 @@ AUTHORED: dict[str, dict] = {
         ),
         "facilitatorNotes": {
             "ask": (
-                "Are Defender for Cloud Apps Copilot session policies and "
-                "anomaly alerts reviewed on a documented cadence?"
+                "Are Defender for Cloud Apps browser-session controls for "
+                "the in-scope Microsoft 365 web workloads, plus anomaly "
+                "alerts, reviewed on a documented cadence?"
             ),
             "followUp": (
-                "Open Microsoft Defender portal > Cloud Apps > Policies. "
-                "Verify session policies targeting Copilot and alert "
-                "review records."
+                "Open Microsoft Defender portal > Cloud Apps > Policies and "
+                "verify Conditional Access App Control routing, detailed "
+                "browser-session policies, and alert review records for the "
+                "Microsoft 365 web workloads in scope."
             ),
             "timeBudgetMinutes": 6,
         },
@@ -1791,19 +1799,24 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "Microsoft Purview portal",
-                "path": "Insider Risk Management > Policies",
+                "path": (
+                    "Insider Risk Management > Policies and Settings > Policy "
+                    "indicators; if triage automation is used, Agents > Explore "
+                    "agents and Insider Risk Management > Alerts (preview)"
+                ),
                 "url": "https://purview.microsoft.com/insiderriskmanagement",
             },
         ],
         "verifyPowerShell": (
-            "Connect-IPPSSession; "
-            "Get-InsiderRiskPolicy | Select-Object Name, IsEnabled, "
-            "PolicyType"
+            "Audit prerequisite check only: Connect-IPPSSession; "
+            "Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) "
+            "-EndDate (Get-Date) -Operations CopilotInteraction "
+            "-ResultSize 100"
         ),
         "evidenceExpected": [
-            "Insider Risk policy configuration including Copilot indicators",
+            "Insider Risk policy configuration including Generative AI apps indicators and any Risky AI usage indicators",
             "Alert triage cadence and escalation path documentation",
-            "Recent alert review log (last 30 days)",
+            "Recent alert review log (last 30 days), including Risky Agents coverage where applicable",
             "Integration with HR/legal escalation workflows",
         ],
         "sectorYesBar": _sector_map(
@@ -1824,8 +1837,8 @@ AUTHORED: dict[str, dict] = {
             ),
             "followUp": (
                 "Open Microsoft Purview portal > Insider Risk Management. "
-                "Verify policy indicators include Copilot activities and "
-                "review recent alert log."
+                "Verify policy indicators include the required generative AI "
+                "monitoring settings, and review recent alert log entries."
             ),
             "timeBudgetMinutes": 6,
         },
