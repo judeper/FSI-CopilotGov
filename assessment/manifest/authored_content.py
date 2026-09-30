@@ -885,6 +885,18 @@ AUTHORED: dict[str, dict] = {
                 "Training includes FINRA Rule 3110 supervisory awareness; "
                 "completion tracked for registered representatives."
             ),
+            insurance_carrier=(
+                "For carriers subject to 23 NYCRR 500.14(a)(3), Copilot "
+                "training is included in periodic, at least annual, "
+                "cybersecurity awareness training that is updated for AI-"
+                "related risks identified in the carrier's risk assessment."
+            ),
+            credit_union=(
+                "Copilot training is folded into the credit union's member-"
+                "information security program, and staff with Copilot access "
+                "are trained to implement that program, consistent with 12 "
+                "CFR part 748, appendix A, III.C.2."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -4188,6 +4200,34 @@ AUTHORED: dict[str, dict] = {
             bank=(
                 "Feedback data governed per GLBA §501(b); reviewed monthly "
                 "by product owner."
+            ),
+            broker_dealer=(
+                "Feedback submission for registered-representative "
+                "populations is set by a documented, risk-based decision, "
+                "and the screenshot/attachment, Microsoft follow-up, and "
+                "log-file/content-sample feedback policies are disabled "
+                "unless the firm approves a support use case, with those "
+                "decisions recorded in the firm's written safeguards "
+                "policies and procedures under 17 CFR 248.30(a)."
+            ),
+            investment_adviser=(
+                "Feedback submission for adviser and client-service "
+                "populations is set by a documented, risk-based decision, "
+                "and the screenshot/attachment, Microsoft follow-up, and "
+                "log-file/content-sample feedback policies are disabled "
+                "unless the adviser approves a support use case, with those "
+                "decisions recorded in the adviser's written safeguards "
+                "policies and procedures under 17 CFR 248.30(a)."
+            ),
+            credit_union=(
+                "Feedback submission for member-service populations is set "
+                "by a documented, risk-based decision, and the screenshot/"
+                "attachment, Microsoft follow-up, and log-file/content-"
+                "sample feedback policies are disabled unless the credit "
+                "union approves a support use case, with those decisions "
+                "recorded within the credit union's member-information "
+                "security program, consistent with 12 CFR part 748, "
+                "appendix A."
             ),
         ),
         "facilitatorNotes": {
