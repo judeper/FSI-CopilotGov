@@ -3986,8 +3986,8 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "Microsoft Sentinel",
-                "path": "Analytics > Active rules",
-                "url": "https://portal.azure.com/#blade/Microsoft_Azure_Security_Insights/MainMenuBlade/Analytics",
+                "path": "Configuration > Analytics > Active rules (Defender portal primary; Azure portal legacy)",
+                "url": "https://security.microsoft.com",
             },
         ],
         "verifyPowerShell": (
