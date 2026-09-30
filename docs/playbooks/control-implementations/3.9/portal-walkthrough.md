@@ -16,7 +16,7 @@ Step-by-step portal configuration for implementing AI disclosure and transparenc
 ### Step 1: Configure Sensitivity Labels for AI-Generated Content Disclosure
 
 **Portal:** Microsoft Purview portal
-**Path:** Solutions > Information protection > Labels > Create a label
+**Path:** Solutions > Information Protection > Sensitivity labels > + Create > Label
 
 1. Create a sensitivity label named "AI-Assisted Content".
 2. Set the label description: "Content drafted with or substantially assisted by Microsoft 365 Copilot."

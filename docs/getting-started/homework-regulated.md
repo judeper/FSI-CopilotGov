@@ -44,7 +44,7 @@ This homework supports engagements where the working session will produce artifa
 ## Purview Compliance Admin
 
 - Produce **DLP policy effectiveness reports** for Copilot locations including incident volume, false-positive rate, and policy-tuning change log (Control 2.1).
-- Export the **sensitivity label analytics** (application coverage per zone), auto-labeling accuracy by SIT, and any prompt-inspection policy evidence.
+- Export **Information Protection reports** (label activity/adoption trends, auto-labeling policy coverage, sensitivity label activity), **Content explorer** or equivalent current labeled-item evidence by zone, the auto-labeling policy's **Coverage by simulation context** / **Labeled items** results, and any prompt-inspection policy evidence. For SharePoint and OneDrive, encrypted sensitivity labels do not surface in Content explorer, so supplement with **Activity explorer**, audit, or auto-labeling policy review evidence.
 - Capture **audit log retention attestation** confirming Copilot interaction records are held for the institution's required period (commonly 7 years for FINRA/SEC-scoped records) (Control 3.1, 3.11).
 - Produce **eDiscovery (Premium) case inventory** with Copilot-content custodian holds and export-ready status (Control 3.3).
 - Export **Communication Compliance** policy coverage, review SLAs, and escalation records for Copilot-touched communications (Control 3.4).

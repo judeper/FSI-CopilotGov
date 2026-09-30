@@ -32,11 +32,12 @@ Test cases and evidence collection for validating the sensitivity label taxonomy
 - **Steps:**
   1. Create test documents containing known sensitive data patterns (sample account numbers, SSN patterns)
   2. Store test documents in a monitored SharePoint location
-  3. Wait for auto-labeling processing (24-48 hours)
-  4. Verify the correct sensitivity label was applied to each test document
-  5. Clean up test documents after verification
+  3. Run the policy in simulation mode first and confirm the documents appear in simulation results
+  4. Turn the policy on, then review **Coverage by simulation context** and the policy's **Labeled items** tab to confirm which files were labeled
+  5. If any expected file was not labeled, inspect the **Failed** view and record the reported reason
+  6. Clean up test documents after verification
 - **Expected Result:** Auto-labeling correctly identifies and labels test documents with appropriate sensitivity levels
-- **Evidence:** Before and after screenshots of test documents showing label application
+- **Evidence:** Simulation results, Coverage by simulation context output, and before/after screenshots of test documents showing label application
 
 ### Test 4: Mandatory Labeling Enforcement
 

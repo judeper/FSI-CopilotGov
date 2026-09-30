@@ -201,7 +201,12 @@ Use the current DSPM for AI overview as the primary reference; the classic AI hu
 | Microsoft Graph connectors overview | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-copilot-connector?toc=%2Fgraph%2Ftoc.json](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-copilot-connector?toc=%2Fgraph%2Ftoc.json) |
 | Declarative agents for Copilot | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent) |
 | Build agents with Agent Builder | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-build-agents](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-build-agents) |
+| Add knowledge sources in Agent Builder | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-add-knowledge](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-add-knowledge) |
 | Agent Builder capabilities | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder) |
+| Declarative agent knowledge sources | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/knowledge-sources](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/knowledge-sources) |
+| Agent capabilities and licensing models | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/prerequisites#agent-capabilities-and-licensing-models](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/prerequisites#agent-capabilities-and-licensing-models) |
+| Code interpreter capability | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/code-interpreter](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/code-interpreter) |
+| Image generator capability | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/image-generator](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/image-generator) |
 | Copilot Tuning admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-tuning-admin-guide) |
 | M365 Agents admin guide | [https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/agent-essentials/m365-agents-admin-guide) |
 
@@ -229,7 +234,7 @@ Use the current DSPM for AI overview as the primary reference; the classic AI hu
 | Agent management in Microsoft 365 admin center | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview?view=o365-worldwide) |
 | Agent registry in Microsoft 365 admin center | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry?view=o365-worldwide) |
 | Agent settings in Microsoft 365 admin center | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-settings?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-settings?view=o365-worldwide) |
-| Microsoft Agent 365 registry sync | [https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms](https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms) |
+| Connected platforms in Microsoft Agent 365 (manual sync) | [https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms](https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms) |
 | Manage agents in Microsoft 365 | [https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-copilot-agents-integrated-apps?view=o365-worldwide) |
 | Microsoft 365 Copilot agent governance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-are-apps) |
 | Copilot agent security and compliance | [https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/data-privacy-security) |
@@ -281,7 +286,11 @@ Use the current DSPM for AI overview as the primary reference; the classic AI hu
 | Topic | URL |
 |-------|-----|
 | Microsoft Sentinel overview | [https://learn.microsoft.com/en-us/azure/sentinel/overview](https://learn.microsoft.com/en-us/azure/sentinel/overview) |
+| Microsoft Sentinel in the Microsoft Defender portal | [https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal](https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal) |
+| Transition Microsoft Sentinel to the Defender portal | [https://learn.microsoft.com/en-us/azure/sentinel/move-to-defender](https://learn.microsoft.com/en-us/azure/sentinel/move-to-defender) |
 | Connect Microsoft 365 data | [https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365](https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365) |
+| CopilotActivity table reference | [https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/copilotactivity](https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/copilotactivity) |
+| Manage data tiers and retention | [https://learn.microsoft.com/en-us/azure/sentinel/manage-data-overview](https://learn.microsoft.com/en-us/azure/sentinel/manage-data-overview) |
 | Create analytics rules | [https://learn.microsoft.com/en-us/azure/sentinel/create-analytics-rules](https://learn.microsoft.com/en-us/azure/sentinel/create-analytics-rules) |
 | Create workbooks | [https://learn.microsoft.com/en-us/azure/sentinel/monitor-your-data](https://learn.microsoft.com/en-us/azure/sentinel/monitor-your-data) |
 
