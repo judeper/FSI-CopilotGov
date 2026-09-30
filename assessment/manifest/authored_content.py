@@ -2739,6 +2739,22 @@ AUTHORED: dict[str, dict] = {
                 "eDiscovery readiness verified for Copilot per SOX "
                 "litigation-hold requirements."
             ),
+            investment_adviser=(
+                "Copilot activity searches and exports are tested against "
+                "adviser mailboxes so records the firm treats as Rule 204-2 "
+                "books and records can be identified, preserved, and "
+                "promptly produced on request."
+            ),
+            credit_union=(
+                "Copilot content the credit union retains to meet an NCUA "
+                "record-retention requirement is searchable and exportable "
+                "in a format that accurately reflects the information, "
+                "remains accessible to persons entitled to access, can be "
+                "reproduced, and can be read by examiners with equipment or "
+                "software the credit union maintains; the credit union "
+                "confirms with counsel which Copilot content, if any, is in "
+                "that scope."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -2908,9 +2924,19 @@ AUTHORED: dict[str, dict] = {
                 "updated to cover Copilot use in client-facing and trading "
                 "workflows; review conducted at least monthly."
             ),
+            bank=(
+                "For covered banks—generally those with average total "
+                "consolidated assets of $50 billion or more, plus smaller "
+                "banks the OCC brings into scope under 12 CFR part 30, "
+                "appendix D—Copilot use is assigned to a business owner, "
+                "independent risk oversight, and internal audit, with board "
+                "or risk-committee reporting on a documented cadence."
+            ),
             investment_adviser=(
-                "Supervisory oversight aligned to SEC Reg BI best-interest "
-                "obligations for Copilot-assisted recommendations."
+                "A designated CCO administers Copilot policies for advice, "
+                "marketing, and client-communication workflows under Rule "
+                "206(4)-7, with annual review evidence and documented "
+                "escalation of exceptions."
             ),
         ),
         "facilitatorNotes": {
@@ -3328,6 +3354,22 @@ AUTHORED: dict[str, dict] = {
             bank=(
                 "Copilot interactions retained per SOX record-keeping "
                 "requirements where applicable to ICFR evidence."
+            ),
+            investment_adviser=(
+                "Copilot-assisted advice, marketing, and annual-review "
+                "records the adviser treats as Rule 204-2 books and records "
+                "are preserved at least 5 years, the first 2 in an "
+                "appropriate office, and can be produced from the "
+                "retention/eDiscovery workflow on request."
+            ),
+            credit_union=(
+                "Copilot records the credit union retains to meet an NCUA "
+                "record-retention requirement accurately reflect the "
+                "information, remain accessible to persons entitled to "
+                "access, are capable of reproduction, and are readable by "
+                "examiners with equipment or software the credit union "
+                "maintains; the credit union confirms with counsel which "
+                "Copilot records are in that scope."
             ),
         ),
         "facilitatorNotes": {

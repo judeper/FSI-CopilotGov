@@ -357,6 +357,10 @@ def test_311_force_replace_is_scoped_to_listed_fields_only():
     assert merged_311["noBar"] == "hand-edited 3.11 no bar that must survive"
 
 
+def test_36_sector_yes_bar_force_replace_is_pinned():
+    assert "sectorYesBar" in merger._CONTROL_FORCE_REPLACE_FIELDS["3.6"]
+
+
 # ── issue #255 / PR #356 content invariants (authored source + manifest) ────
 
 
