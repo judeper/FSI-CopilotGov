@@ -35,7 +35,7 @@ Use this guide to diagnose scoped encryption evidence. Do not convert a connecto
   2. Remember that OWNER includes EXTRACT and that the person applying encryption is the Rights Management owner.
   3. Test whether the item is open in an Office app, directly referenced where supported, or protected with user-defined permissions.
   4. For Edge, check whether Edge DLP is deployed before assuming EXTRACT alone controls active-tab behavior.
-  5. Identify whether the source is an external plugin or Graph connector; sensitivity labels/encryption for those external sources are not generally recognized by Microsoft 365 Copilot Chat.
+  5. Identify whether the source is an external plugin or Graph connector; sensitivity labels/encryption for those external sources are not generally recognized by Microsoft Copilot Chat.
   6. If the item is DKE-protected, treat the Copilot exclusion as expected behavior.
 
 ### Issue 4: A handshake shows TLS 1.2 instead of TLS 1.3

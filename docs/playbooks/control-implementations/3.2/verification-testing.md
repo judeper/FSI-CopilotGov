@@ -32,7 +32,7 @@ Test cases and evidence collection procedures to confirm data retention policies
 
 - **Objective:** Validate that Copilot Chat history and meeting recap content is retained by the Copilot experiences policy
 - **Steps:**
-  1. Have a test user perform a Copilot interaction in Microsoft 365 Copilot Chat.
+  1. Have a test user perform a Copilot interaction in Microsoft Copilot Chat.
   2. Wait for retention policy processing (up to 7 days for initial deployment).
   3. Use Content Search to locate the interaction data in the Copilot experiences location.
   4. Verify the content is marked as retained per the applied policy.
