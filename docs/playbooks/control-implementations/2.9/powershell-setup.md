@@ -27,7 +27,8 @@ Connect-MgGraph -Scopes "SecurityAlert.Read.All"
 $alerts = Get-MgSecurityAlertV2 -Top 200 -Sort "createdDateTime DESC" |
     Where-Object {
         $_.Title -match "Copilot|AI|session|SharePoint|OneDrive" -or
-        $_.Category -match "anomaly|malware|cloud"
+        $_.ServiceSource -eq "microsoftDefenderForCloudApps" -or
+        $_.DetectionSource -in @("cloudAppSecurity", "appGovernancePolicy", "appGovernanceDetection")
     }
 
 $alertReport = @()

@@ -25,14 +25,19 @@ Connect-MgGraph -Scopes "Organization.ReadWrite.All", "AuditLog.Read.All", "User
 # Note: Viva Insights Copilot Chat analytics respect configured minimum group size thresholds
 
 # Retrieve Copilot Chat usage detail (aggregated at tenant level)
-$reportUri = "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUsageUserDetail(period='D30')"
+# Use report version v1 so the CSV header remains "Copilot Chat Last Activity Date".
+$reportUri = "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D30',version='v1')"
 Invoke-MgGraphRequest -Method GET -Uri $reportUri -OutputFilePath "CopilotChatUsage_$(Get-Date -Format 'yyyyMMdd').csv"
 
 $usageData = Import-Csv "CopilotChatUsage_$(Get-Date -Format 'yyyyMMdd').csv"
+$copilotChatActivityColumn = 'Copilot Chat Last Activity Date'
 
 # Summarize Copilot Chat activity by department
 $deptSummary = $usageData | Group-Object Department | ForEach-Object {
-    $activeUsers = ($_.Group | Where-Object { $_.'Microsoft 365 Copilot Chat Last Activity Date' -ne '' }).Count
+    $activeUsers = ($_.Group | Where-Object {
+        $activityProperty = $_.PSObject.Properties[$copilotChatActivityColumn]
+        $null -ne $activityProperty -and $null -ne $activityProperty.Value -and $activityProperty.Value -ne ''
+    }).Count
     $totalLicensed = $_.Count
     [PSCustomObject]@{
         Department              = if ($_.Name) { $_.Name } else { "Unassigned" }
@@ -69,7 +74,7 @@ Write-Host ""
 
 # Check Copilot Chat usage report availability
 try {
-    $testUri = "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUsageUserDetail(period='D7')"
+    $testUri = "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D7',version='v1')"
     Invoke-MgGraphRequest -Method GET -Uri $testUri -OutputFilePath "$env:TEMP\CopilotTest.csv"
     $testData = Import-Csv "$env:TEMP\CopilotTest.csv"
     Write-Host "Copilot Chat usage reporting: ACTIVE ($($testData.Count) records in past 7 days)" -ForegroundColor Green

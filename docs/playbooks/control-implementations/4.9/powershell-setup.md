@@ -4,7 +4,7 @@ Automation scripts for detecting, reporting, and analyzing Copilot-related incid
 
 ## Prerequisites
 
-- **Modules:** `ExchangeOnlineManagement`, `Microsoft.Graph`
+- **Modules:** `ExchangeOnlineManagement`; `Microsoft.Graph.Security` only if you add supplemental `alerts_v2` evidence
 - **Permissions:** Purview Compliance Admin, Security Administrator
 - **PowerShell:** Version 7.x recommended
 
@@ -13,7 +13,12 @@ Automation scripts for detecting, reporting, and analyzing Copilot-related incid
 ```powershell
 Import-Module ExchangeOnlineManagement
 Connect-IPPSSession -UserPrincipalName admin@contoso.com
-Connect-MgGraph -Scopes "AuditLog.Read.All", "SecurityEvents.Read.All"
+
+# Optional supplemental XDR alert evidence:
+# Import-Module Microsoft.Graph.Security
+# Connect-MgGraph -Scopes "SecurityAlert.Read.All"
+# Use alerts_v2 (Get-MgSecurityAlertV2). The legacy /security/alerts endpoint
+# and legacy alert-read scopes retire on October 15, 2026.
 ```
 
 ## Scripts

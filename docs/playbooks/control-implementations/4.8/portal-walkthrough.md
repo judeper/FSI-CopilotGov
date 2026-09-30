@@ -23,9 +23,9 @@ Step-by-step portal configuration for implementing cost allocation, chargeback, 
 ### Step 1b: Configure Pay-As-You-Go Billing Policies
 
 **Portal:** Microsoft 365 Admin Center and Microsoft Cost Management
-**Path:** Copilot > Billing & usage > Pay-as-you-go services; Copilot > Cost management for Copilot Credits
+**Path:** Copilot > Billing & usage > Pay-as-you-go services *(in some tenants, reached from Copilot > Cost management via **Classic Billing & usage**)*; Copilot > Cost management for Copilot Credits
 
-1. Open **Copilot > Billing & usage > Pay-as-you-go services** in the Microsoft 365 admin center for Copilot Chat or SharePoint agents, or **Copilot > Cost management** for Cowork, apps built with Cowork, and Work IQ API spending policies.
+1. Open **Copilot > Billing & usage > Pay-as-you-go services** *(or **Copilot > Cost management > Classic Billing & usage > Pay-as-you-go services** where that banner is shown)* in the Microsoft 365 admin center for Copilot Chat or SharePoint agents, or **Copilot > Cost management** for Cowork, apps built with Cowork, and Work IQ API spending policies.
 2. Create or review the billing policy tied to the correct Azure subscription.
 3. Add the approved users or groups to the billing policy and document the responsible cost owner.
 4. Add a budget threshold and notification routing to the billing policy or Copilot Credit spending policy; document whether the control is notification-only, a separate spending limit, or an access-granting policy scope.

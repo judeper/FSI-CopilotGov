@@ -78,7 +78,7 @@ The IRM Triage Agent automates initial alert triage:
 1. Enable the Triage Agent only after verifying that Security Copilot prerequisites are met, including SCUs and Microsoft 365 data sharing
 2. Deploy the agent from **Agents > Explore agents** and start with **Agent runs manually on one alert at a time**
 3. After validation, configure the agent to run automatically on a schedule for the selected alert timeframe
-4. For Regulated tier: configure human-in-the-loop requirement — alerts cannot be dismissed without investigator review of Triage Agent recommendation
+4. For Regulated tier: document a human-in-the-loop workflow so investigators review Triage Agent recommendations before dismissing alerts
 5. Document the Triage Agent in the firm's model inventory per OCC Bulletin 2011-12 (SR 11-7)
 
 ### Step 7: Set Up Alert Triage Workflow
