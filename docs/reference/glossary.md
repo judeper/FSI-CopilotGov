@@ -7,6 +7,9 @@ Definitions of key terms, products, regulations, and concepts used throughout th
 
 ---
 
+!!! note "Naming scope note"
+    Microsoft is still using **Microsoft 365 Copilot**, **Microsoft 365 Copilot Chat**, and related labels in some SKU names, UI labels, Cloud Policy names, reports, and Microsoft Learn pages. This framework applies the rename claim-by-claim: current app and surface references are refreshed to **Microsoft Copilot** / **Microsoft Copilot Chat** where supported by primary-source wording, while exact SKU names, policy labels, historical references, and quoted Microsoft strings remain unchanged.
+
 ## Products and Services
 
 ### Agent 365
@@ -24,8 +27,8 @@ Previously referred to in some Microsoft Learn articles as AI in SharePoint. A S
 ### Azure Information Protection (AIP)
 Microsoft's cloud-based solution for classifying and protecting documents and emails by applying labels. Sensitivity labels in Microsoft Purview are the successor to AIP labels; the underlying encryption and rights management capabilities remain.
 
-### Microsoft 365 Copilot Chat
-The Microsoft 365 Copilot chat experience available through the Microsoft 365 Copilot app and web entry points. Copilot Chat Basic uses web grounding and allows users to provide organizational data in the conversation; it does **not** automatically query all Microsoft Graph data the user can access. Full Microsoft Graph grounding across permitted organizational data requires Copilot Chat Premium through a Microsoft 365 Copilot license.
+### Microsoft Copilot Chat
+The chat experience now delivered through the Microsoft Copilot app and web entry points such as `copilot.cloud.microsoft` (previously Microsoft 365 Copilot Chat). Copilot Chat Basic uses web grounding and allows users to provide organizational data in the conversation; it does **not** automatically query all Microsoft Graph data the user can access. Full Microsoft Graph grounding across permitted organizational data requires Copilot Chat Premium through a Microsoft 365 Copilot license. PAYG can separately enable agents that have access to organizational content, but that is not the same as making Copilot Chat itself automatically Graph-grounded.
 
 ### Copilot Chat (Basic)
 The no-additional-license tier of Copilot Chat available to Microsoft 365 users. Basic is web-grounded and can use organizational data that users explicitly provide, but it does not provide automatic tenant-wide Microsoft Graph grounding.
@@ -37,13 +40,13 @@ The paid tier of Copilot Chat included with a Microsoft 365 Copilot license. Pro
 A Microsoft 365 Copilot capability that enables delegation of multi-step business tasks to Copilot, with users able to monitor and intervene in the process. Cowork reached **general availability in June 2026**; access is now gated by usage-based billing on Copilot Credits (model responses, tools/skills, image generation, browser tasks), and the current **AI experiences enabled by usage-based billing** discovery setting lets users request access when billing is not yet enabled for them. Microsoft now documents that setting as deprecated pending replacement by a request-access control. For current model availability, preview flags, and provider-retention notes, review the current [Choose a model for Cowork](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-models) page rather than relying on a static list. Cowork also includes an optional **Cowork Browsing** capability (off by default) that drives the user's local Microsoft Edge browser under Conditional Access, Purview DLP, browser management policy, and site allow/block/view-only rules.
 
 ### Copilot Pages
-A collaborative AI-powered canvas created from Microsoft 365 Copilot Chat responses. Users can convert a Copilot response into a Page for further editing and sharing. Copilot Pages (`.page` files) are stored in a user-owned SharePoint Embedded container shared with Copilot Notebooks and Loop My workspace, and creation is governed through Microsoft 365 Cloud Policy.
+A collaborative AI-powered canvas created from Microsoft Copilot Chat responses. Users can convert a Copilot response into a Page for further editing and sharing. Copilot Pages (`.page` files) are stored in a user-owned SharePoint Embedded container shared with Copilot Notebooks and Loop My workspace, and creation is governed through Microsoft 365 Cloud Policy.
 
 ### Copilot Notebooks
-An AI-assisted notebook surface in the Microsoft 365 Copilot app for collecting, grounding, and working with related Copilot content. Copilot Notebooks use the same user-owned SharePoint Embedded container as Copilot Pages and Loop My workspace.
+An AI-assisted notebook surface in the Microsoft Copilot app for collecting, grounding, and working with related Copilot content. Copilot Notebooks use the same user-owned SharePoint Embedded container as Copilot Pages and Loop My workspace.
 
-### Microsoft 365 Copilot Search
-The Search module in the Microsoft 365 Copilot app and its Microsoft 365 admin center management experience. Copilot Search helps users discover Microsoft 365 and configured third-party data source content within their existing permissions.
+### Microsoft Copilot Search
+The Search module in the Microsoft Copilot app and its Microsoft 365 admin center management experience. Microsoft Copilot Search helps users discover Microsoft 365 and configured third-party data source content within their existing permissions.
 
 ### Copilot Studio
 Microsoft's agent authoring environment for creating declarative, custom, and pro-code agents. SharePoint declarative agents and Agent 365 inventory/policy oversight are covered by this framework; detailed Copilot Studio build, environment, ALM, and model-card governance belongs in FSI-AgentGov.
@@ -70,7 +73,7 @@ A unique identity assigned to Copilot agents in Microsoft Entra ID, enabling sec
 Connectors that bring external data (from third-party systems, databases, or file shares) into the Microsoft Graph, making that data searchable and available to Copilot for grounding. Each connector requires security review as it expands Copilot's data access surface.
 
 ### Microsoft 365 Copilot
-Microsoft's AI assistant embedded across Microsoft 365 applications. Copilot uses large language models (LLMs) grounded in organizational data accessed through the Microsoft Graph. It operates within the user's existing permission boundaries.
+Microsoft's licensed, work-grounded AI assistant embedded across Microsoft 365 applications. The standalone app is now named Microsoft Copilot, while the add-on license and many admin/report surfaces continue to use Microsoft 365 Copilot. Copilot uses large language models (LLMs) grounded in organizational data accessed through the Microsoft Graph and operates within the user's existing permission boundaries.
 
 ### Copilot orchestrator
 The orchestration layer for Microsoft 365 Copilot that coordinates prompts, retrieval from Microsoft Graph and Copilot Search, tool use, responsible AI processing, and foundation model calls. Microsoft Learn describes Microsoft 365 Copilot as acting as an *orchestrator*. *"Microsoft 365 Brain"* is an informal term for this layer and is not canonical Microsoft product terminology.
@@ -128,7 +131,7 @@ A third-party foundation model provider available in preview where Microsoft ena
 ## Governance and Security Concepts
 
 ### Authoritative Sources
-SharePoint sites designated by administrators as authoritative content in the Microsoft 365 admin center. These sites rank higher in Microsoft 365 Copilot Search results and improve the trustworthiness of AI-generated answers.
+SharePoint sites designated by administrators as authoritative content in the Microsoft 365 admin center. These sites rank higher in Microsoft Copilot Search results and improve the trustworthiness of AI-generated answers.
 
 ### Auto-labeling
 The ability to automatically apply sensitivity labels to content based on sensitive information type detection or other conditions, without requiring user action. Includes client-side auto-labeling (label recommendation) and service-side auto-labeling (automatic application).

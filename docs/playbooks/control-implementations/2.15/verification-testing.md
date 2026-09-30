@@ -6,13 +6,14 @@ Test cases and evidence collection for validating network security controls.
 
 ### Test 1: Endpoint Connectivity Verification
 
-- **Objective:** Confirm all Microsoft 365 Copilot endpoints are reachable from the corporate network
+- **Objective:** Confirm all required Microsoft 365 and Microsoft Copilot access paths are reachable from the corporate network
 - **Steps:**
   1. Run PowerShell Script 1 from a corporate network workstation
   2. Verify all endpoints report "Reachable: True"
-  3. Document latency values and compare against performance baselines
-  4. Test from multiple network locations (headquarters, branches, VPN)
-- **Expected Result:** All Copilot endpoints reachable with acceptable latency (<100ms)
+  3. Verify that `copilot.cloud.microsoft` is not blocked and that `*.cloud.microsoft` allow-list coverage is in place
+  4. Document latency values and compare against performance baselines
+  5. Test from multiple network locations (headquarters, branches, VPN)
+- **Expected Result:** All required endpoints are reachable with acceptable latency (<100 ms) or within the firm's documented approved baseline
 - **Evidence:** Connectivity test results from multiple locations
 
 ### Test 2: Private Link Scope for Adjacent Azure Resources (if deployed)
@@ -33,7 +34,7 @@ Test cases and evidence collection for validating network security controls.
   1. Review firewall rules against Microsoft's published endpoint requirements
   2. Verify no rules block required Copilot service endpoints
   3. Test Copilot functionality from behind the firewall
-  4. Verify full WSS connectivity to `*.cloud.microsoft` and `*.office.com`; document any scoped TLS inspection exceptions
+  4. Verify full WSS connectivity to `*.cloud.microsoft`, `copilot.cloud.microsoft`, and `*.office.com`; document any scoped TLS inspection exceptions
 - **Expected Result:** All required traffic permitted through firewall
 - **Evidence:** Firewall rule audit and functional test results
 

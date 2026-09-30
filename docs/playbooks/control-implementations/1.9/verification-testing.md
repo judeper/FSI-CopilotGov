@@ -65,10 +65,10 @@ Test cases and evidence collection for validating Copilot license management.
 - **Objective:** Verify PAYG Copilot Chat is governed and tracked appropriately
 - **Steps:**
   1. Confirm Azure Cost Management shows PAYG Copilot Chat usage data
-  2. Verify spend limits or budget alerts are configured in Azure Cost Management
+  2. Verify budget alerts or notification thresholds are configured in Azure Cost Management
   3. Confirm that governance policies (DLP, sensitivity labels, information barriers) apply to PAYG users
   4. Review PAYG user list against the governance policy scope to identify any coverage gaps
-- **Expected Result:** PAYG Copilot Chat spending is tracked, limited, and governed
+- **Expected Result:** PAYG Copilot Chat spending is tracked, budget notifications are configured, and usage remains governed through documented review
 - **Evidence:** Azure Cost Management configuration; PAYG usage report; governance policy scope confirmation
 
 ## Evidence Collection

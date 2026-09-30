@@ -18,6 +18,7 @@ Automation scripts for verifying and monitoring network security for Copilot con
 # Requires: Network access from the test machine
 
 $endpoints = @(
+    @{ Name = "Microsoft Copilot app"; URL = "copilot.cloud.microsoft"; Port = 443 },
     @{ Name = "SharePoint Online"; URL = "<tenant>.sharepoint.com"; Port = 443 },
     @{ Name = "Exchange Online"; URL = "outlook.office365.com"; Port = 443 },
     @{ Name = "Teams"; URL = "teams.microsoft.com"; Port = 443 },
@@ -47,7 +48,7 @@ if ($failures -gt 0) {
 }
 ```
 
-Use the Microsoft 365 endpoint web service for firewall configuration. Separately verify full WSS connectivity to the published Copilot domains, `*.cloud.microsoft` and `*.office.com`; `Test-NetConnection` to a few representative hosts does not validate wildcard coverage or the WebSocket protocol.
+Use the Microsoft 365 endpoint web service for firewall configuration. Separately verify full WSS connectivity to the published Copilot domains, `*.cloud.microsoft`, `copilot.cloud.microsoft`, and `*.office.com`; `Test-NetConnection` to a few representative hosts does not validate wildcard coverage or the WebSocket protocol. Use the Microsoft 365 Connectivity Test tool for domain-level validation where needed.
 
 ### Script 2: Azure Private Link Status Check (Adjacent Azure Resources Only)
 

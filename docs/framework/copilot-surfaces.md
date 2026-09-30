@@ -1,6 +1,6 @@
 # Copilot Surfaces
 
-Where Microsoft 365 Copilot appears across M365 applications, with governance considerations for each surface.
+Where Microsoft Copilot app surfaces and Microsoft 365 Copilot capabilities appear across M365 applications, with governance considerations for each surface.
 
 ---
 
@@ -20,7 +20,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Communication** | Outlook, Teams | Customer communication drafting, meeting exposure | 3.4, 3.5, 3.6 |
 | **Collaboration** | SharePoint, OneDrive, Planner, Stream | Data discovery amplification, sharing | 1.1, 1.2, 4.8 |
 | **Intelligence** | Viva Insights, Viva Engage, Viva Learning, Viva Pulse, Viva Goals | Employee data analysis, behavioral insights | 3.10, 4.3 |
-| **AI-Native** | Microsoft 365 Copilot Chat, Copilot Pages | Cross-tenant data retrieval, new content surfaces | 1.4, 3.2, 4.8 |
+| **AI-Native** | Microsoft Copilot Chat, Copilot Pages | Cross-tenant data retrieval, new content surfaces | 1.4, 3.2, 4.8 |
 | **Extensibility** | Plugins, Graph connectors, declarative agents | Extended data reach, external data flow | 2.13, 2.14, 2.16, 4.13 |
 
 ---
@@ -136,7 +136,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Copilot Capabilities** | Site search and summarization (via Copilot Chat grounding), declarative agents from SharePoint sites |
 | **Data Sources** | SharePoint sites, lists, document libraries (user's accessible content) |
 | **Governance Considerations** | SharePoint is the primary content repository for most organizations and the primary source of oversharing risk. Copilot's Semantic Index indexes all SharePoint content the user can access. Permissions inherited through site hierarchies create broad access patterns. Declarative agents from SharePoint extend Copilot capabilities with site-scoped knowledge. |
-| **Key Controls** | 1.1 (Oversharing assessment), 1.2 (Permissions remediation), 1.4 (Restricted SharePoint Search), 4.10 (Declarative agents), 2.2 (Sensitivity labels) |
+| **Key Controls** | 1.1 (Oversharing assessment), 1.2 (Permissions remediation), 1.3-1.4 (Restricted Content Discovery, legacy RSS, and semantic-index scope governance), 4.10 (Declarative agents), 2.2 (Sensitivity labels) |
 
 ### OneDrive
 
@@ -221,17 +221,17 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 ## AI-Native Surfaces
 
-### Microsoft 365 Copilot Chat
+### Microsoft Copilot Chat
 
 | Attribute | Details |
 |-----------|---------|
 | **Copilot Capabilities** | Cross-application conversational AI: ask questions about any M365 content, generate content, analyze data, summarize across sources |
 | **Data Sources** | **All M365 content accessible to the user** -- SharePoint, OneDrive, Exchange, Teams, Semantic Index, web search (if enabled) |
-| **Governance Considerations** | **Highest-risk surface for discovery amplification.** Microsoft 365 Copilot Chat is the primary surface where Copilot searches across all of a user's M365 content simultaneously. A single prompt can surface documents from multiple SharePoint sites, emails, Teams chats, and meeting transcripts. This is where oversharing risk is most acute. Restricted SharePoint Search directly limits Copilot Chat's grounding scope. |
-| **Key Controls** | 1.1-1.4 (All oversharing controls), 1.4 (Restricted SharePoint Search), 2.7 (Web search controls), 3.1 (Audit logging), 3.2 (Retention) |
+| **Governance Considerations** | **Highest-risk surface for discovery amplification.** Microsoft Copilot Chat (previously Microsoft 365 Copilot Chat) is the primary surface where Copilot searches across all of a user's M365 content simultaneously. A single prompt can surface documents from multiple SharePoint sites, emails, Teams chats, and meeting transcripts. This is where oversharing risk is most acute. For current deployments, Restricted Content Discovery (RCD) is the preferred SharePoint discoverability control; legacy Restricted SharePoint Search (RSS) may still limit grounding only where it was already enabled before July 31, 2026. |
+| **Key Controls** | 1.1-1.4 (All oversharing controls, including RCD and legacy RSS where already enabled), 2.7 (Web search controls), 3.1 (Audit logging), 3.2 (Retention) |
 
-!!! warning "Microsoft 365 Copilot Chat and Restricted SharePoint Search"
-    For Regulated environments, **Restricted SharePoint Search (RSS)** is the primary mechanism for controlling which SharePoint sites Copilot Chat uses for grounding. Without RSS, Copilot Chat will ground responses using content from *any* SharePoint site the user can access. RSS limits grounding to an approved site list.
+!!! warning "Microsoft Copilot Chat and SharePoint discoverability controls"
+    For current deployments, **Restricted Content Discovery (RCD)** is the Microsoft-recommended mechanism for limiting discovery of selected SharePoint sites in Microsoft Copilot Chat while permissions are reviewed. **Restricted SharePoint Search (RSS)** is a retiring, short-term legacy control whose new enablement was blocked starting July 31, 2026. Where RSS is already enabled, it can still limit grounding to an approved site list during transition, but it should not be treated as the long-term operating model.
 
 ### Copilot Pages
 
@@ -251,14 +251,14 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Governance Considerations** | Notebooks are stored in SharePoint Embedded containers. Notebooks don't have Notebook-level sensitivity labels — they share a user-owned container with Copilot Pages and Loop My workspace — so DLP is the compensating control for detecting sensitive Notebook content. Governance also requires retention policies covering SharePoint Embedded, eDiscovery inclusion, and sharing controls analogous to Copilot Pages. |
 | **Key Controls** | 2.11 (Copilot Pages governance — applies similarly), 2.1 (DLP), 3.2 (Retention), 1.11 (Sharing governance) |
 
-### Microsoft 365 Copilot Search
+### Microsoft Copilot Search
 
 | Attribute | Details |
 |-----------|---------|
-| **Copilot Capabilities** | AI-powered search from within the Microsoft 365 Copilot app — returns enriched, contextual results from organizational data with Copilot-generated summaries and follow-up suggestions |
+| **Copilot Capabilities** | AI-powered search from within the Microsoft Copilot app — returns enriched, contextual results from organizational data with Copilot-generated summaries and follow-up suggestions |
 | **Data Sources** | Microsoft Graph (SharePoint, OneDrive, Exchange, Teams), Semantic Index, tenant-scoped organizational content |
-| **Governance Considerations** | Copilot Search operates within the Copilot app and uses the user's Microsoft Graph permissions to surface organizational content. Like Copilot Chat, it amplifies discovery of content the user already has access to, but the search-focused interface may encourage more targeted data retrieval. Restricted SharePoint Search limits the grounding scope. DLP applies to content returned by Copilot Search but does not inspect data at the search source — source-level DLP should be configured separately. |
-| **Key Controls** | 1.1 (Oversharing assessment), 1.4 (Restricted SharePoint Search), 2.1 (DLP), 2.2 (Sensitivity labels), 3.1 (Audit logging) |
+| **Governance Considerations** | Copilot Search operates within the Copilot app and uses the user's Microsoft Graph permissions to surface organizational content. Like Copilot Chat, it amplifies discovery of content the user already has access to, but the search-focused interface may encourage more targeted data retrieval. RCD and, where already enabled, legacy RSS affect the SharePoint discovery scope. DLP applies to content returned by Copilot Search but does not inspect data at the search source — source-level DLP should be configured separately. |
+| **Key Controls** | 1.1 (Oversharing assessment), 1.3-1.4 (RCD, legacy RSS, and semantic-index scope governance), 2.1 (DLP), 2.2 (Sensitivity labels), 3.1 (Audit logging) |
 | **Access** | Premium only (requires Copilot license). |
 
 ### Agent Mode / Edit with Copilot
@@ -297,7 +297,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | **Researcher:** Deep research across web and organizational data, producing comprehensive multi-source reports. **Analyst:** Advanced data analysis with Python code execution, chart generation, and data transformation capabilities. |
 | **Data Sources** | Researcher: M365 content via Microsoft Graph plus web data. Analyst: uploaded files, referenced data, M365 content. |
-| **Governance Considerations** | Researcher and Analyst are embedded first-party experiences within the Microsoft 365 Copilot Chat interface — they are **not** installable agents and are not managed through the Agent Registry. They coexist with agents and inherit Copilot Chat governance capabilities, but access decisions should be documented separately. Researcher outputs may combine web and organizational data, increasing review requirements for regulated use. Analyst generates and executes Python code, creating executable content risk similar to Excel Copilot. |
+| **Governance Considerations** | Researcher and Analyst are embedded first-party experiences within the Microsoft Copilot Chat interface — they are **not** installable agents and are not managed through the Agent Registry. They coexist with agents and inherit Copilot Chat governance capabilities, but access decisions should be documented separately. Researcher outputs may combine web and organizational data, increasing review requirements for regulated use. Analyst generates and executes Python code, creating executable content risk similar to Excel Copilot. |
 | **Key Controls** | 3.1 (Audit logging), 2.7 (Web search controls — Researcher), 3.8 (Model risk — if outputs inform regulated decisions), 2.1 (DLP) |
 | **Access** | Premium only (requires Copilot license). |
 
@@ -353,7 +353,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 
 | Tier | Risk Level | Surfaces | Governance Priority |
 |------|-----------|----------|-------------------|
-| **Tier 1 (Highest)** | High | Microsoft 365 Copilot Chat, Outlook, Teams, Copilot Cowork, Microsoft Scout (Frontier preview) | Full governance at all levels |
+| **Tier 1 (Highest)** | High | Microsoft Copilot Chat, Outlook, Teams, Copilot Cowork, Microsoft Scout (Frontier preview) | Full governance at all levels |
 | **Tier 2** | Medium-High | Word, Excel, PowerPoint, SharePoint, Copilot Pages, Copilot Search, Agent Mode / Edit with Copilot, Copilot Tuning (preview), Researcher, Analyst | Sensitivity labels, DLP, audit |
 | **Tier 3** | Medium | OneNote, Loop, OneDrive, Stream, Plugins, Connectors | Standard governance, monitoring |
 | **Tier 4** | Lower | Whiteboard, Forms, Planner, Viva suite | Baseline governance, awareness |
