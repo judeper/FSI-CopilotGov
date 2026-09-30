@@ -136,7 +136,6 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Copilot Capabilities** | Site search and summarization (via Copilot Chat grounding), declarative agents from SharePoint sites |
 | **Data Sources** | SharePoint sites, lists, document libraries (user's accessible content) |
 | **Governance Considerations** | SharePoint is the primary content repository for most organizations and the primary source of oversharing risk. Copilot's Semantic Index indexes all SharePoint content the user can access. Permissions inherited through site hierarchies create broad access patterns. Declarative agents from SharePoint extend Copilot capabilities with site-scoped knowledge. |
-<<<<<<< HEAD
 | **Key Controls** | 1.1 (Oversharing assessment), 1.2 (Permissions remediation), 1.3-1.4 (Restricted Content Discovery, legacy RSS, and semantic-index scope governance), 4.10 (Declarative agents), 2.2 (Sensitivity labels) |
 
 ### OneDrive

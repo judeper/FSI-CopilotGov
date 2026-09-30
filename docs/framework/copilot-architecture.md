@@ -138,7 +138,6 @@ The Semantic Index is a critical component for governance because it determines 
 | **Includes meeting transcripts** | Spoken content from meetings is indexed and retrievable | Teams meeting governance (Control 1.5) |
 | **Includes email content** | Full email bodies and attachments are searchable by Copilot | Exchange permissions review (Control 1.13) |
 | **Near-real-time updates** | Newly shared content becomes available to Copilot quickly | Sensitivity labels applied at creation (Control 2.2) |
-<<<<<<< HEAD
 | **No content exclusion by site** | Administrators cannot selectively exclude specific SharePoint sites from the Semantic Index alone. Current practice uses site searchability controls or Restricted Content Discovery (RCD), with legacy Restricted SharePoint Search (RSS) only where it was already enabled. | Site searchability, Restricted Content Discovery, legacy Restricted SharePoint Search (Controls 1.3-1.4) |
 
 !!! warning "SharePoint discoverability controls"
