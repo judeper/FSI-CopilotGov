@@ -31,7 +31,7 @@ Pre-deployment data hygiene, oversharing remediation, permissions audit, sensiti
 |---|---|---------|-------|--------|-------|-------|
 | [ ] | 1.1 | Copilot Readiness Assessment | B | | | Pre-deployment assessment of data environment, classification maturity, and permission sprawl |
 | [ ] | 1.2 | Oversharing Detection (DSPM for AI) | B | | | Purview DSPM oversharing assessments, Activity Explorer, and remediation workflows |
-| [ ] | 1.3 | Restricted SharePoint Search | R | | | Configure RSS to limit Copilot grounding scope to curated allow-list of SharePoint sites |
+| [ ] | 1.3 | Restricted SharePoint Search | R | | | Apply Restricted Content Discovery to high-risk sites and document any legacy RSS allow-list kept during migration |
 | [ ] | 1.4 | Semantic Index Governance | R | | | Govern Semantic Index scope and understand Copilot grounding behavior across workloads |
 | [ ] | 1.5 | Sensitivity Label Taxonomy Review | B | | | Review and update label taxonomy for Copilot-specific scenarios (auto-labeling, DLP integration) |
 | [ ] | 1.6 | Permission Model Audit | B | | | Comprehensive permission audit across SharePoint, OneDrive, Exchange, Teams, and Graph |

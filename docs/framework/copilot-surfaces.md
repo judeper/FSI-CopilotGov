@@ -144,7 +144,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | File search, summarization, content generation from personal files |
 | **Data Sources** | User's OneDrive files, shared files |
-| **Governance Considerations** | OneDrive is the default storage location for many M365 outputs including Copilot Pages, Loop components, and Whiteboard files. Files shared from OneDrive may not have sensitivity labels applied. "Shared with me" content is accessible to Copilot. |
+| **Governance Considerations** | OneDrive is the default storage location for many M365 outputs including Loop components and Whiteboard files, but **Copilot Pages and Copilot Notebooks are stored in SharePoint Embedded rather than traditional OneDrive storage**. Files shared from OneDrive may not have sensitivity labels applied. "Shared with me" content is accessible to Copilot. |
 | **Key Controls** | 1.12 (OneDrive governance), 2.2 (Sensitivity labels), 3.2 (Retention) |
 
 ### Planner
@@ -257,7 +257,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 |-----------|---------|
 | **Copilot Capabilities** | AI-powered search from within the Microsoft Copilot app — returns enriched, contextual results from organizational data with Copilot-generated summaries and follow-up suggestions |
 | **Data Sources** | Microsoft Graph (SharePoint, OneDrive, Exchange, Teams), Semantic Index, tenant-scoped organizational content |
-| **Governance Considerations** | Copilot Search operates within the Copilot app and uses the user's Microsoft Graph permissions to surface organizational content. Like Copilot Chat, it amplifies discovery of content the user already has access to, but the search-focused interface may encourage more targeted data retrieval. RCD and, where already enabled, legacy RSS affect the SharePoint discovery scope. DLP applies to content returned by Copilot Search but does not inspect data at the search source — source-level DLP should be configured separately. |
+| **Governance Considerations** | Microsoft Copilot Search operates within the Microsoft Copilot app and uses the user's Microsoft Graph permissions to surface organizational content. Like Microsoft Copilot Chat, it amplifies discovery of content the user already has access to, but the search-focused interface may encourage more targeted data retrieval. RCD and, where already enabled, legacy RSS affect the SharePoint discovery scope. DLP applies to content returned by Copilot Search but does not inspect data at the search source — source-level DLP should be configured separately. |
 | **Key Controls** | 1.1 (Oversharing assessment), 1.3-1.4 (RCD, legacy RSS, and semantic-index scope governance), 2.1 (DLP), 2.2 (Sensitivity labels), 3.1 (Audit logging) |
 | **Access** | Premium only (requires Copilot license). |
 

@@ -159,7 +159,7 @@ Several governance topics appear in both repositories. Each provides self-contai
 | **Sensitivity labels** | Labels on documents, emails, sites that Copilot accesses; auto-labeling policies; label-based DLP for Copilot | Labels on SharePoint sites used for agent grounding; label-based data protection |
 | **DLP policies** | M365 DLP policies (Exchange, SharePoint, OneDrive, Teams) that apply to Copilot-surfaced content | DLP connector policies in Power Platform that control agent data boundaries |
 | **Audit logging** | CopilotInteraction events in Unified Audit Log; Copilot-specific retention | Power Platform audit events; agent interaction logging; agent-specific retention |
-| **SharePoint governance** | Oversharing assessment, permissions remediation, Restricted SharePoint Search for Copilot grounding | SharePoint as agent knowledge source; Pillar 4 controls for agent-specific SharePoint governance |
+| **SharePoint governance** | Oversharing assessment, permissions remediation, Restricted Content Discovery plus any legacy Restricted SharePoint Search posture for Copilot grounding | SharePoint as agent knowledge source; Pillar 4 controls for agent-specific SharePoint governance |
 | **eDiscovery** | eDiscovery for Copilot-generated content and interaction logs | eDiscovery for agent interactions and outputs |
 | **Retention policies** | Retention for Copilot interactions, Copilot Pages, Copilot-generated content | Retention for agent conversation logs, agent outputs |
 | **Conditional access** | CA policies for Copilot user access | CA policies for agent creator and admin access |
@@ -192,7 +192,7 @@ If your organization already uses FSI-AgentGov and is now deploying M365 Copilot
 | Oversharing assessment and remediation | Copilot amplifies oversharing; agents have scoped data access |
 | Copilot feature toggle management | Per-app controls, web search settings unique to Copilot |
 | Communication compliance for Copilot | Copilot-drafted emails require FINRA 2210 review |
-| Restricted SharePoint Search | Controls Copilot Chat grounding scope; not applicable to agents |
+| Restricted Content Discovery / legacy Restricted SharePoint Search | Controls Copilot discovery scope; not applicable to agents |
 | Copilot Pages governance | New content surface unique to Copilot |
 | Teams meeting/transcription governance | Copilot indexes meeting transcripts; agents do not |
 

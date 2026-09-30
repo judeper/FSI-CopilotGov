@@ -14,15 +14,15 @@ Step-by-step portal workflow for selecting SharePoint sites, validating scope, a
 
 | Portal | Path | Why it matters |
 |--------|------|----------------|
-| Microsoft Purview | Data Security Posture Management > Assessments > Oversharing | Confirms which sites still warrant item-level analysis |
-| SharePoint admin center | Reports > Data access governance | Helps identify high-risk sites, libraries, and owners |
+| Microsoft Purview | DSPM > Discover > Data risk assessments | Confirms which sites still warrant item-level analysis |
+| SharePoint admin center | Reports > Data access governance | Helps identify high-risk sites, libraries, owners, and overshared items through the detailed EEEU/Everyone snapshot report |
 | Microsoft Entra admin center | Groups and enterprise applications | Validates broad group access and ownership before remediation |
 
 ## Steps
 
 ### Step 1: Confirm the site-level baseline
 
-Review DSPM and SharePoint Advanced Management findings for the sites you plan to scan. Record why each site is in scope and which owner or business unit approved the review.
+Review DSPM and SharePoint Advanced Management findings for the sites you plan to scan. Record why each site is in scope and which owner or business unit approved the review. If your organization has only Microsoft 365 E5 access to Data access governance reporting, note Microsoft's documented limitation that activity reports are available but snapshot reports, remedial actions, and results beyond 10,000 sites are not.
 
 ### Step 2: Narrow the library and folder scope
 

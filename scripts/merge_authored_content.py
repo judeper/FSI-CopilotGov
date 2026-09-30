@@ -62,10 +62,30 @@ _DERIVED_FIELDS: set[str] = {"collectorField"}
 # authored_content.py. This is intentionally narrow: all controls/fields
 # outside these sets keep the default preservation behavior.
 _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
+    "1.2": {
+        # Control 1.2 was re-verified against the current DSPM experience.
+        # Force the current Data risk assessments navigation and facilitator
+        # prompts over the stale AI hub-era values in controls.json.
+        "yesBar",
+        "noBar",
+        "verifyIn",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
     "1.3": {
         # Authored checks[] wires the grounding_sources_approved evaluator;
         # zone_thresholds must be force-replaced because the generated value
         # is based on 0 checks and would not update without force-replace.
+        # The current authored content is RCD-first and treats RSS as a
+        # legacy configuration only for pre-2026-07-31 deployments.
+        "yesBar",
+        "partialBar",
+        "noBar",
+        "verifyIn",
+        "verifyPowerShell",
+        "evidenceExpected",
+        "sectorYesBar",
+        "facilitatorNotes",
         "checks",
         "zone_thresholds",
     },
@@ -80,6 +100,15 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "partialBar",
         "verifyIn",
         "verifyPowerShell",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
+    "2.11": {
+        # Control 2.11 now uses Cloud Policy as the canonical admin path and
+        # carries the current eDiscovery / sharing guidance for Pages and
+        # Notebooks. Force these human-authored verification fields over the
+        # stale Copilot admin-center path in controls.json.
+        "verifyIn",
         "evidenceExpected",
         "facilitatorNotes",
     },

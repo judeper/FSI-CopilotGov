@@ -7,39 +7,39 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 ### Issue 1: RSS or RCD Not Available in SharePoint Admin Center
 
 - **Symptoms:** The Restricted SharePoint Search option does not appear under Settings > Search, or `Set-SPOSite -RestrictContentOrgWideSearch` returns "unrecognized parameter" or "property not found"
-- **Root Cause:** RCD requires SharePoint Advanced Management (SAM) licensing — included with Microsoft 365 Copilot licenses at no additional cost; tenants without Copilot licenses need the standalone SAM add-on. Older versions of the SPO Management Shell may not include RCD or RSS cmdlets. **Note:** RSS new enablement is blocked from July 31, 2026 — if the RSS toggle is unavailable for enablement after that date, this is expected behavior.
+- **Root Cause:** RCD requires the SharePoint Advanced Management capabilities Microsoft documents for Copilot deployment scenarios. Verify the tenant has a Microsoft 365 Copilot license and that current SharePoint Advanced Management prerequisites are satisfied. Older versions of the SPO Management Shell may not include RCD or RSS cmdlets. **Note:** RSS new enablement is blocked from July 31, 2026 — if the RSS toggle is unavailable for enablement after that date, this is expected behavior.
 - **Resolution:**
   1. Verify SharePoint Advanced Management is licensed and activated in the tenant (check Microsoft 365 Admin Center > Billing > Licenses)
   2. Update the SharePoint Online Management Shell to the latest version: `Update-Module Microsoft.Online.SharePoint.PowerShell`
-  3. If SAM is licensed but RCD features are not visible, check your tenant's release ring and allow 24-48 hours for feature propagation
+  3. If Copilot licensing and prerequisites are satisfied but RCD features are still not visible, check your tenant's release ring and service rollout status before concluding the feature is unavailable
   4. For RSS: if trying to enable RSS after July 31, 2026, this is expected — use RCD instead
   5. Contact Microsoft support if RCD remains unavailable after licensing and module updates
 
 ### Issue 1b: RCD-Enabled Site Content Still Appearing in Copilot
 
 - **Symptoms:** After enabling `RestrictContentOrgWideSearch` on a site, Copilot still surfaces content from that site
-- **Root Cause:** RCD configuration changes require time to propagate through the search index, similar to RSS changes. Additionally, content may be cached in Copilot's retrieval layer.
+- **Root Cause:** RCD configuration changes require time to propagate through Microsoft 365 indexing systems, and large sites can take significantly longer than small sites. Additionally, content may be cached in Copilot's retrieval layer.
 - **Resolution:**
-  1. Wait 24 hours after enabling RCD before testing — changes may take up to 24 hours to propagate
+  1. Allow time for propagation before testing; Microsoft notes that large sites can require extended processing time and sites with more than 500,000 items can take more than a week to reflect the change fully
   2. Verify the setting was saved: `(Get-SPOSite -Identity <url>).RestrictContentOrgWideSearch` should return `True`
   3. Clear the user's browser cache and sign out/in to Microsoft 365 before retesting
   4. Note: RCD does not affect content already in Copilot's active context window — test with a fresh Copilot session
-  5. If RCD is not working after 48 hours, check service health for search indexing delays
+  5. If RCD is not working after the documented propagation window for the site's size, check service health for search indexing delays
 
 ### Issue 2: Allowed List Changes Not Reflected in Search Results
 
 - **Symptoms:** After adding or removing sites from the allowed list, search results do not immediately reflect the changes
-- **Root Cause:** RSS allowed list changes require time to propagate through the search index. Changes may take up to 24 hours to take full effect across all search endpoints and Copilot grounding.
+- **Root Cause:** RSS allowed list changes require time to propagate through the search index. Microsoft documents RSS itself as taking effect within about one hour after it is enabled, but it doesn't publish a fixed propagation window for later allow-list edits.
 - **Resolution:**
-  1. Wait 24 hours after making allowed list changes before testing
+  1. Allow time for the change to propagate before testing; use the RSS enablement timing only as a general indicator rather than as a guaranteed SLA for allow-list edits
   2. Verify the change was saved by running `Get-SPOTenantRestrictedSearchAllowedList`
   3. Clear the user's browser cache and sign out/in to Microsoft 365
-  4. If changes are not reflected after 24 hours, check service health for search indexing delays
+  4. If changes still aren't reflected after allowing reasonable propagation time, check service health for search indexing delays
 
 ### Issue 3: 100-Site Allowed List Limit Reached
 
 - **Symptoms:** Attempting to add a site to the allowed list fails with a limit error, or the `Add-SPOTenantRestrictedSearchAllowedList` cmdlet returns an error about maximum capacity
-- **Root Cause:** RSS initially supports a maximum of 100 sites in the allowed list. Organizations with more than 100 sites that need Copilot access will hit this limit.
+- **Root Cause:** RSS supports a maximum of 100 sites in the allowed list. Organizations with more than 100 sites that need Copilot access will hit this limit.
 - **Resolution:**
   1. Review the current allowed list and remove sites that are no longer needed
   2. Consolidate content into fewer sites where feasible
@@ -92,7 +92,7 @@ Common issues and resolution steps for Restricted SharePoint Search (RSS) and Re
 
 | Severity | Condition | Escalation Path |
 |----------|-----------|----------------|
-| **Low** | Propagation delay on allowed list changes | Monitor and retest after 24 hours |
+| **Low** | Propagation delay on allowed list changes | Monitor, verify the saved allow list, and retest after allowing propagation time |
 | **Medium** | Site limit reached, blocking approved additions | Governance committee for prioritization |
 | **High** | RSS found disabled without authorization | Security Operations for investigation |
 | **Critical** | Copilot returning content from non-allowed sites | Security Operations and CISO immediately |
