@@ -523,8 +523,10 @@ AUTHORED: dict[str, dict] = {
             investment_adviser=(
                 "Permission audit covers client portfolio, fund, and "
                 "delegated-mailbox access containing customer information; "
-                "periodic access re-certification evidence is retained in "
-                "the adviser's safeguards program under Regulation S-P."
+                "periodic access re-certification evidence is retained, "
+                "consistent with SEC Division of Examinations "
+                "cybersecurity observations and as part of the adviser's "
+                "written safeguards policies under Regulation S-P."
             ),
             insurance_carrier=(
                 "Audit covers claims and underwriting sites with PHI; "
@@ -1350,7 +1352,7 @@ AUTHORED: dict[str, dict] = {
                 "Conditional Access requires MFA for Copilot users handling "
                 "customer records; adviser-issued devices accessing Copilot "
                 "are governed through MDM-backed compliant-device controls, "
-                "and access rights are re-certified periodically."
+                "and users' access rights are re-certified on a periodic basis."
             ),
             insurance_carrier=(
                 "CA policies enforce MFA and compliant device per NYDFS "
@@ -1358,9 +1360,10 @@ AUTHORED: dict[str, dict] = {
             ),
             credit_union=(
                 "Conditional Access requires MFA for Copilot users with "
-                "access to member information; policy evidence shows "
-                "compliant-device restrictions for those populations as part "
-                "of the credit union's Appendix A access-control program."
+                "access to member information; compliant-device restrictions "
+                "are documented, as measures the credit union has concluded "
+                "are appropriate under its Appendix A III.C.1(a) "
+                "access-control risk assessment."
             ),
         ),
         "facilitatorNotes": {
@@ -3970,13 +3973,18 @@ AUTHORED: dict[str, dict] = {
             insurance_carrier=(
                 "Incident runbook covers prompt investigation, determination "
                 "of scope and nonpublic information involved, restoration "
-                "steps, 72-hour commissioner notice where thresholds are met, "
+                "steps, commissioner notice within the deadline set by the "
+                "applicable state's insurance data-security law where "
+                "notification thresholds are met (NAIC Model #668 §6 uses "
+                "72 hours from determination; enacted state deadlines vary), "
                 "and documentation of control lapses."
             ),
             credit_union=(
-                "Incident runbook covers prompt investigation, NCUA/regulator "
-                "notification, containment, and member-notification assessment "
-                "for unauthorized access to member information."
+                "Incident runbook covers prompt investigation, NCUA "
+                "notification assessed against the §748.1(c) "
+                "reportable-cyber-incident definition, containment, and "
+                "member-notification assessment under Appendix B for "
+                "unauthorized access to member information."
             ),
         ),
         "facilitatorNotes": {

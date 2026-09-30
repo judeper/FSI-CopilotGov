@@ -532,7 +532,7 @@
     "sectorYesBar": {
       "bank": "Permission audit covers all NPI-bearing sites; EEEU grants remediated within 5 business days; audit cadence aligned to GLBA §501(b) safeguards.",
       "broker-dealer": "Audit covers research, IB, and client-facing sites; information-barrier scope validated at each audit cycle.",
-      "investment-adviser": "Permission audit covers client portfolio, fund, and delegated-mailbox access containing customer information; periodic access re-certification evidence is retained in the adviser's safeguards program under Regulation S-P.",
+      "investment-adviser": "Permission audit covers client portfolio, fund, and delegated-mailbox access containing customer information; periodic access re-certification evidence is retained, consistent with SEC Division of Examinations cybersecurity observations and as part of the adviser's written safeguards policies under Regulation S-P.",
       "insurance-carrier": "Audit covers claims and underwriting sites with PHI; HIPAA access-control evidence produced.",
       "credit-union": "Permission audit covers member-information sites, Teams, OneDrive, and delegated mailboxes; findings show access is limited to authorized individuals and broad-access remediation is tracked through the Appendix A security program.",
       "other": "TODO: sector-specific yes-bar"
@@ -1612,9 +1612,9 @@
     "sectorYesBar": {
       "bank": "CA policies enforce MFA + compliant device for all Copilot users; location restrictions apply to high-risk NPI access per FFIEC expectations.",
       "broker-dealer": "CA policies enforce MFA for all registered representatives using Copilot; compliant device required per FINRA cybersecurity guidance.",
-      "investment-adviser": "Conditional Access requires MFA for Copilot users handling customer records; adviser-issued devices accessing Copilot are governed through MDM-backed compliant-device controls, and access rights are re-certified periodically.",
+      "investment-adviser": "Conditional Access requires MFA for Copilot users handling customer records; adviser-issued devices accessing Copilot are governed through MDM-backed compliant-device controls, and users' access rights are re-certified on a periodic basis.",
       "insurance-carrier": "CA policies enforce MFA and compliant device per NYDFS Part 500 MFA requirements for Copilot workloads.",
-      "credit-union": "Conditional Access requires MFA for Copilot users with access to member information; policy evidence shows compliant-device restrictions for those populations as part of the credit union's Appendix A access-control program.",
+      "credit-union": "Conditional Access requires MFA for Copilot users with access to member information; compliant-device restrictions are documented, as measures the credit union has concluded are appropriate under its Appendix A III.C.1(a) access-control risk assessment.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -4867,8 +4867,8 @@
       "bank": "Incident response aligned to OCC Heightened Standards; regulatory reporting per GLBA §501(b) and NYDFS Part 500 breach notification requirements.",
       "broker-dealer": "Incident reporting per FINRA Rule 4530; Copilot-specific incidents subject to supervisory escalation.",
       "investment-adviser": "Incident runbook covers unauthorized access to or use of customer information, scope assessment, containment, recovery, and affected-individual notice under Regulation S-P's response-program requirements.",
-      "insurance-carrier": "Incident runbook covers prompt investigation, determination of scope and nonpublic information involved, restoration steps, 72-hour commissioner notice where thresholds are met, and documentation of control lapses.",
-      "credit-union": "Incident runbook covers prompt investigation, NCUA/regulator notification, containment, and member-notification assessment for unauthorized access to member information.",
+      "insurance-carrier": "Incident runbook covers prompt investigation, determination of scope and nonpublic information involved, restoration steps, commissioner notice within the deadline set by the applicable state's insurance data-security law where notification thresholds are met (NAIC Model #668 §6 uses 72 hours from determination; enacted state deadlines vary), and documentation of control lapses.",
+      "credit-union": "Incident runbook covers prompt investigation, NCUA notification assessed against the §748.1(c) reportable-cyber-incident definition, containment, and member-notification assessment under Appendix B for unauthorized access to member information.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
