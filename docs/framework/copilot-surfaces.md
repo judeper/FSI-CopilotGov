@@ -21,7 +21,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Collaboration** | SharePoint, OneDrive, Planner, Stream | Data discovery amplification, sharing | 1.1, 1.2, 4.8 |
 | **Intelligence** | Viva Insights, Viva Engage, Viva Learning, Viva Pulse, Viva Goals | Employee data analysis, behavioral insights | 3.10, 4.3 |
 | **AI-Native** | Microsoft Copilot Chat, Copilot Pages | Cross-tenant data retrieval, new content surfaces | 1.4, 3.2, 4.8 |
-| **Extensibility** | Plugins, Graph connectors, declarative agents | Extended data reach, external data flow | 2.8, 4.10 |
+| **Extensibility** | Plugins, Graph connectors, declarative agents | Extended data reach, external data flow | 2.13, 2.14, 2.16, 4.13 |
 
 ---
 
@@ -276,8 +276,8 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | Attribute | Details |
 |-----------|---------|
 | **Copilot Capabilities** | Multi-step task delegation — users assign complex business workflows to Copilot for autonomous execution with periodic checkpoints for monitoring and intervention. Cowork reached **general availability in June 2026** and includes a **Cowork Browsing** capability (off by default) that drives the user's local Microsoft Edge browser under Conditional Access, Purview DLP, browser management policy, and site allow/block/view-only rules. |
-| **Data Sources** | All M365 content accessible to the user — SharePoint, OneDrive, Exchange, Teams, Semantic Index. Model policy spans Claude Opus 4.8, Sonnet 5, a Sonnet+Opus Advisor pairing, GPT 5.5, Imagen 2, and Claude Fable 5 (Preview, off by default and requires provider data retention). |
-| **Governance Considerations** | Cowork introduces autonomous multi-step processing where Copilot independently accesses and combines data from multiple sources. Access is now gated by **usage-based billing (Copilot Credits)** in Copilot > Cost management; discovery is a separate setting under Copilot > Settings > AI experiences and lets users request access when billing is not enabled for them. Every browser task is recorded in the unified audit log. Task outputs should be reviewed before distribution, particularly for client-facing or regulated content. Organizations should document which business functions are approved for Cowork delegation, whether the Anthropic model family is enabled, and whether the Cowork Browsing tenant toggle is on. |
+| **Data Sources** | All M365 content accessible to the user — SharePoint, OneDrive, Exchange, Teams, Semantic Index. Model availability and provider-retention notes can change quickly by tenant and release wave; verify the current [Choose a model for Cowork](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-models) page before relying on a static model list. |
+| **Governance Considerations** | Cowork introduces autonomous multi-step processing where Copilot independently accesses and combines data from multiple sources. Access is now gated by **usage-based billing (Copilot Credits)** in Copilot > Cost management; the current **AI experiences enabled by usage-based billing** discovery setting is deprecated pending replacement, but today still lets users request access when billing is not enabled for them. Cowork also appears as an agentic system under **Agents > All Agents > Cowork**, but that surface is not the GA access gate. Every browser task is recorded in the unified audit log. Task outputs should be reviewed before distribution, particularly for client-facing or regulated content. Organizations should document which business functions are approved for Cowork delegation, whether the Anthropic model family is enabled, and whether the Cowork Browsing tenant toggle is on. |
 | **Key Controls** | 3.1 (Audit logging), 3.5 (Communication review), 2.2 (Sensitivity labels), 1.1 (Oversharing assessment), 4.15 (Cowork governance) |
 | **Access** | Premium only (Microsoft 365 Copilot license). Cowork model responses, tools/skills, image generation, and browser tasks consume Copilot Credits under usage-based billing. |
 
@@ -325,7 +325,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Copilot Capabilities** | Extend Copilot with third-party integrations (e.g., ServiceNow, Salesforce, Jira) via message extensions and API plugins |
 | **Data Sources** | External systems accessed by the plugin |
 | **Governance Considerations** | Plugins send data to and receive data from external services. Each plugin represents a potential data exfiltration path. Plugin data is not subject to M365 DLP policies at the plugin boundary. Organizations must evaluate each plugin for data classification, authentication, and audit requirements. |
-| **Key Controls** | 2.8 (Plugin governance), 3.1 (Audit logging), 2.1 (DLP) |
+| **Key Controls** | 2.13 (Plugin and connector governance), 3.1 (Audit logging), 2.1 (DLP) |
 
 ### Graph Connectors
 
@@ -334,7 +334,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Copilot Capabilities** | Extend Copilot's knowledge base with content from external systems ingested into Microsoft Graph |
 | **Data Sources** | External data ingested via connectors (file shares, databases, third-party SaaS) |
 | **Governance Considerations** | Ingested data becomes part of Copilot's grounding corpus. ACL (access control list) mapping must accurately reflect source system permissions. Misconfigured ACLs can expose external data to unauthorized users via Copilot. Sensitivity labels should be applied to ingested content. |
-| **Key Controls** | 2.8 (Connector governance), 2.2 (Sensitivity labels), 1.1 (Access assessment) |
+| **Key Controls** | 2.13 (Connector governance), 2.2 (Sensitivity labels), 1.1 (Access assessment) |
 
 ### Declarative Agents from SharePoint
 

@@ -160,7 +160,7 @@ CopilotActivity
 "@
 
 Write-Host "Copilot Event Flow Validation Query:" -ForegroundColor Cyan
-Write-Host "Run this query in Sentinel > Logs to verify data ingestion:"
+Write-Host "Run this query in Defender portal > Investigation & response > Hunting > Advanced hunting (or Sentinel > Logs for legacy Azure workspaces) to verify data ingestion:"
 Write-Host $query
 Write-Host ""
 Write-Host "Expected: Consistent event counts across hourly buckets during business hours" -ForegroundColor Yellow

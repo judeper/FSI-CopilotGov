@@ -36,9 +36,11 @@ from typing import Optional
 # Import shared monitoring framework
 from monitoring_shared import (
     fetch_page,
-    normalize_content,
+    extract_learn_content_snapshot,
+    canonicalize_learn_text,
     compute_hash,
     classify_change,
+    detect_learn_page_shape,
     find_affected_controls,
     format_change_summary,
     load_state,
@@ -88,7 +90,6 @@ logger = logging.getLogger(__name__)
 
 try:
     import requests
-    from bs4 import BeautifulSoup
 except ImportError as e:
     print(f"ERROR: Missing dependency: {e}")
     print("Install with: pip install requests beautifulsoup4")
@@ -369,10 +370,13 @@ def _debug_single_url(url: str, config: dict):
 
     print("\n2. Extracting content...")
     try:
-        normalized = normalize_content(result['content'])
-        print(f"   Normalized length: {len(normalized)} chars")
+        snapshot = extract_learn_content_snapshot(url, result['content'], config)
+        if snapshot.warning:
+            print(f"   Anchor warning: {snapshot.warning}")
+        print(f"   Content scope: {snapshot.content_scope}")
+        print(f"   Normalized length: {len(snapshot.normalized_content)} chars")
         print(f"   First 500 chars:\n   ---")
-        print("   " + normalized[:500].replace("\n", "\n   "))
+        print("   " + snapshot.normalized_content[:500].replace("\n", "\n   "))
         print("   ---")
     except Exception as e:
         print(f"   ERROR extracting content: {e}")
@@ -380,7 +384,7 @@ def _debug_single_url(url: str, config: dict):
         return
 
     print("\n3. Computing hash...")
-    content_hash = compute_hash(normalized)
+    content_hash = compute_hash(snapshot.normalized_content)
     print(f"   Hash: {content_hash}")
 
     print("\n4. Finding affected files...")
@@ -407,7 +411,10 @@ def _debug_single_url(url: str, config: dict):
             print("   Content: CHANGED")
             if old_state.get("normalized_content"):
                 classification, reason, diff_text = classify_change(
-                    old_state["normalized_content"], normalized, url, config=config
+                    old_state["normalized_content"],
+                    snapshot.normalized_content,
+                    url,
+                    config=config,
                 )
                 print(f"   Classification: {classification} ({reason})")
     else:
@@ -606,13 +613,55 @@ def _run_monitor(args, config: dict):
             })
 
         # Extract and hash content
-        normalized = normalize_content(result['content'])
+        snapshot = extract_learn_content_snapshot(entry.url, result['content'], config)
+        if snapshot.warning:
+            logger.warning(snapshot.warning)
+        normalized = snapshot.normalized_content
         new_hash = compute_hash(normalized)
 
         # Compare to previous state
         url_state = source_state.get("urls", {}).get(entry.url, {})
-        old_hash = url_state.get("content_hash")
         old_content = url_state.get("normalized_content", "")
+        old_scope = url_state.get("content_scope", "whole-page")
+        old_hash = compute_hash(canonicalize_learn_text(old_content)) if old_content else None
+        old_page_shape = detect_learn_page_shape(old_content, config) if old_content else None
+
+        if snapshot.page_shape:
+            print(f"  NOISE: {snapshot.page_shape} (baseline preserved)")
+            logger.warning(
+                "Skipping Learn baseline update for %s due to page-shape noise: %s",
+                entry.url,
+                snapshot.page_shape,
+            )
+            if entry.url in source_state.get("urls", {}):
+                source_state["urls"][entry.url]["last_checked"] = now
+                source_state["urls"][entry.url]["last_status"] = 200
+            time.sleep(request_delay)
+            continue
+
+        if snapshot.scope_missing and old_scope.startswith("section:"):
+            print(f"  CHANGED: HIGH (Monitored section missing)")
+            logger.warning(snapshot.warning)
+            affected = find_affected_controls(entry.url, DOCS_DIR, config=config)
+
+            change = ChangeRecord(
+                url=entry.url,
+                topic=entry.topic,
+                section=entry.section,
+                classification=CLASSIFICATION_HIGH,
+                reason="Monitored section missing",
+                diff_text=snapshot.warning or "",
+                affected_controls=affected['controls'],
+                affected_playbooks=affected['playbooks'],
+            )
+            change.priority = CLASSIFICATION_HIGH
+            changes.append(change)
+
+            if entry.url in source_state.get("urls", {}):
+                source_state["urls"][entry.url]["last_checked"] = now
+                source_state["urls"][entry.url]["last_status"] = 200
+            time.sleep(request_delay)
+            continue
 
         if old_hash is None:
             # New URL - baseline
@@ -627,6 +676,42 @@ def _run_monitor(args, config: dict):
                 "last_changed": now,
                 "topic": entry.topic,
                 "section": entry.section,
+                "content_scope": snapshot.content_scope,
+            }
+        elif old_page_shape:
+            print(f"  BASELINE REFRESH: Replacing prior {old_page_shape} snapshot")
+            source_state["urls"][entry.url] = {
+                "content_hash": new_hash,
+                "normalized_content": normalized,
+                "last_checked": now,
+                "last_status": 200,
+                "last_changed": now,
+                "topic": entry.topic,
+                "section": entry.section,
+                "content_scope": snapshot.content_scope,
+            }
+        elif snapshot.content_scope != old_scope:
+            print(f"  RESCOPED: Establishing {snapshot.content_scope} baseline")
+            source_state["urls"][entry.url] = {
+                "content_hash": new_hash,
+                "normalized_content": normalized,
+                "last_checked": now,
+                "last_status": 200,
+                "last_changed": now,
+                "topic": entry.topic,
+                "section": entry.section,
+                "content_scope": snapshot.content_scope,
+            }
+        elif old_hash == new_hash:
+            source_state["urls"][entry.url] = {
+                "content_hash": new_hash,
+                "normalized_content": normalized,
+                "last_checked": now,
+                "last_status": 200,
+                "last_changed": url_state.get("last_changed", now),
+                "topic": entry.topic,
+                "section": entry.section,
+                "content_scope": snapshot.content_scope,
             }
         elif new_hash != old_hash:
             # Content changed
@@ -634,7 +719,7 @@ def _run_monitor(args, config: dict):
             print(f"  CHANGED: {classification} ({reason})")
 
             # Find affected files
-            affected = find_affected_controls(entry.url, DOCS_DIR)
+            affected = find_affected_controls(entry.url, DOCS_DIR, config=config)
 
             change = ChangeRecord(
                 url=entry.url,
@@ -658,6 +743,7 @@ def _run_monitor(args, config: dict):
                 "last_changed": now,
                 "topic": entry.topic,
                 "section": entry.section,
+                "content_scope": snapshot.content_scope,
             }
         else:
             # No change

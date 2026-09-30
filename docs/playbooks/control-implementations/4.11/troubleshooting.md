@@ -31,9 +31,9 @@ Common issues and resolution steps for Microsoft Sentinel integration with Copil
 - **Root Cause:** High-volume Copilot interactions generating large amounts of audit data that increase ingestion costs.
 - **Resolution:**
   1. Review Sentinel workspace data volume: check Usage and estimated costs in the workspace settings.
-  2. Consider filtering Copilot events at ingestion to reduce volume (only ingest events matching specific criteria).
-  3. Use Sentinel's basic log tier for high-volume, low-priority Copilot events.
-  4. Implement data collection rules to filter events before ingestion.
+  2. Review whether the `CopilotActivity` table plan and retention settings are appropriate for the investigation/search window you need.
+  3. Use Sentinel's basic or data-lake-capable table plans for lower-priority Copilot evidence only after validating the resulting query limitations against your SOC workflow.
+  4. Do **not** assume workspace-transform DCR filtering is available for the Microsoft Copilot connector; that connector currently doesn't support it.
   5. Set up cost alerts in Azure to monitor workspace spending.
 
 ### Issue 4: Workbook Queries Timing Out
@@ -49,7 +49,7 @@ Common issues and resolution steps for Microsoft Sentinel integration with Copil
 ## Diagnostic Steps
 
 1. **Check connector status:** Navigate to Sentinel > Data connectors and verify connector health.
-2. **Test data ingestion:** Run `CopilotActivity | where RecordType == "CopilotInteraction" | where TimeGenerated > ago(1h) | take 10` in Logs.
+2. **Test data ingestion:** Run `CopilotActivity | where RecordType == "CopilotInteraction" | where TimeGenerated > ago(1h) | take 10` in Defender portal Advanced hunting (or Azure portal Logs for legacy workspaces).
 3. **Review analytics rule health:** Check Sentinel > Analytics for rule execution status.
 4. **Monitor workspace costs:** Navigate to the workspace > Usage and estimated costs.
 

@@ -263,7 +263,7 @@ Sensitivity labels interact with Copilot in three key ways:
 
 1. **Label inheritance:** When Copilot generates content based on one or more labeled source documents, the output inherits the highest sensitivity label. If Copilot references both an "Internal" document and a "Highly Confidential" document, the generated content receives the "Highly Confidential" label.
 
-2. **Encryption enforcement:** If a sensitivity label includes encryption settings, Copilot respects those settings. Users who do not have decryption rights cannot use Copilot to access the encrypted content.
+2. **Encryption enforcement:** If a sensitivity label includes encryption settings, Copilot respects the user's usage rights. Users without the EXTRACT (Copy) right can't have Copilot summarize the encrypted item, though Copilot can still return a link in documented scenarios; OWNER includes EXTRACT automatically.
 
 3. **DLP integration:** DLP policies can use sensitivity labels as conditions. For example, a DLP policy can block Copilot from processing "Highly Confidential" content in certain contexts.
 

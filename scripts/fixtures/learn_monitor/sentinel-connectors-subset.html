@@ -1,0 +1,495 @@
+<main>
+<details>
+ <summary>
+  <strong>
+   Filewall for Microsoft 365
+  </strong>
+ </summary>
+ <p>
+ </p>
+ <p>
+  <strong>
+   Supported by:
+  </strong>
+  <a data-linktype="external" href="https://www.odi-x.com/contact-filewall-support">
+   Filewall
+  </a>
+ </p>
+ <p>
+  Ingest events from Filewall into Microsoft Sentinel (Exchange, SharePoint, OneDrive and Teams).
+ </p>
+ <p>
+  <strong>
+   Log Analytics table(s):
+  </strong>
+ </p>
+ <table>
+  <thead>
+   <tr>
+    <th>
+     Table
+    </th>
+    <th>
+     DCR support
+    </th>
+    <th>
+     Lake-only ingestion
+    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td>
+     <code>
+      FilewallExchange_CL
+     </code>
+    </td>
+    <td>
+     Yes
+    </td>
+    <td>
+     Yes
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <p>
+  <strong>
+   Data collection rule support:
+  </strong>
+  <a data-linktype="absolute-path" href="/en-us/azure/azure-monitor/logs/tutorial-workspace-transformations-portal">
+   Workspace transform DCR
+  </a>
+ </p>
+ <p>
+  <strong>
+   Prerequisites:
+  </strong>
+ </p>
+ <ul>
+  <li>
+   <strong>
+    Filewall API access
+   </strong>
+   : A Filewall API key is required.
+  </li>
+ </ul>
+ <p>
+  <strong>
+   Setup Instructions:
+  </strong>
+ </p>
+ <p>
+  Click
+  <strong>
+   Add connection, paste your Filewall API key, and click Connect
+  </strong>
+  . This will create 4 polling connections (Exchange, SharePoint, OneDrive, Teams).
+ </p>
+ <ul>
+  <li>
+   Data Connectors Grid (configure in portal)
+  </li>
+ </ul>
+ <p>
+  <br/>
+  <br/>
+ </p>
+</details>
+
+<details>
+ <summary>
+  <strong>
+   Microsoft 365 (formerly, Office 365)
+  </strong>
+ </summary>
+ <p>
+ </p>
+ <p>
+  <strong>
+   Supported by:
+  </strong>
+  <a data-linktype="external" href="https://support.microsoft.com/">
+   Microsoft Corporation
+  </a>
+ </p>
+ <p>
+  The Microsoft 365 (formerly, Office 365) activity log connector provides insight into ongoing user activities. You will get details of operations such as file downloads, access requests sent, changes to group events, set-mailbox and details of the user who performed the actions. By connecting Microsoft 365 logs into Microsoft Sentinel you can use this data to view dashboards, create custom alerts, and improve your investigation process. For more information, see the
+  <a data-linktype="external" href="https://go.microsoft.com/fwlink/p/?linkid=2219943&amp;wt.mc_id=sentinel_dataconnectordocs_content_cnl_csasci">
+   Microsoft Sentinel documentation
+  </a>
+  .
+ </p>
+ <p>
+  <strong>
+   Log Analytics table(s):
+  </strong>
+ </p>
+ <table>
+  <thead>
+   <tr>
+    <th>
+     Table
+    </th>
+    <th>
+     DCR support
+    </th>
+    <th>
+     Lake-only ingestion
+    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td>
+     <a data-linktype="absolute-path" href="/en-us/azure/azure-monitor/reference/tables/OfficeActivity">
+      <code>
+       OfficeActivity
+      </code>
+     </a>
+    </td>
+    <td>
+     Yes
+    </td>
+    <td>
+     Yes
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <p>
+  <strong>
+   Data collection rule support:
+  </strong>
+  <a data-linktype="absolute-path" href="/en-us/azure/azure-monitor/logs/tutorial-workspace-transformations-portal">
+   Workspace transform DCR
+  </a>
+  <br/>
+  <br/>
+ </p>
+</details>
+
+<details>
+ <summary>
+  <strong>
+   Microsoft 365 Insider Risk Management
+  </strong>
+ </summary>
+ <p>
+ </p>
+ <p>
+  <strong>
+   Supported by:
+  </strong>
+  <a data-linktype="external" href="https://support.microsoft.com/">
+   Microsoft Corporation
+  </a>
+ </p>
+ <p>
+  Microsoft 365 Insider Risk Management is a compliance solution in Microsoft 365 that helps minimize internal risks by enabling you to detect, investigate, and act on malicious and inadvertent activities in your organization. Risk analysts in your organization can quickly take appropriate actions to make sure users are compliant with your organization's compliance standards.
+ </p>
+ <p>
+  Insider risk policies allow you to:
+ </p>
+ <ul>
+  <li>
+   define the types of risks you want to identify and detect in your organization.
+  </li>
+  <li>
+   decide on what actions to take in response, including escalating cases to Microsoft Advanced eDiscovery if needed.
+  </li>
+ </ul>
+ <p>
+  This solution produces alerts that can be seen by Office customers in the Insider Risk Management solution in Microsoft 365 Compliance Center.
+  <a data-linktype="external" href="https://aka.ms/OfficeIRMConnector">
+   Learn More
+  </a>
+  about Insider Risk Management.
+ </p>
+ <p>
+  These alerts can be imported into Microsoft Sentinel with this connector, allowing you to see, investigate, and respond to them in a broader organizational threat context. For more information, see the
+  <a data-linktype="external" href="https://go.microsoft.com/fwlink/p/?linkid=2223721&amp;wt.mc_id=sentinel_dataconnectordocs_content_cnl_csasci">
+   Microsoft Sentinel documentation
+  </a>
+  .
+ </p>
+ <p>
+  <strong>
+   Log Analytics table(s):
+  </strong>
+ </p>
+ <table>
+  <thead>
+   <tr>
+    <th>
+     Table
+    </th>
+    <th>
+     DCR support
+    </th>
+    <th>
+     Lake-only ingestion
+    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td>
+     <a data-linktype="absolute-path" href="/en-us/azure/azure-monitor/reference/tables/SecurityAlert">
+      <code>
+       SecurityAlert
+      </code>
+     </a>
+    </td>
+    <td>
+     Yes
+    </td>
+    <td>
+     Yes
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <p>
+  <strong>
+   Data collection rule support:
+  </strong>
+  <a data-linktype="absolute-path" href="/en-us/azure/azure-monitor/logs/tutorial-workspace-transformations-portal">
+   Workspace transform DCR
+  </a>
+  <br/>
+  <br/>
+ </p>
+</details>
+
+<details>
+ <summary>
+  <strong>
+   Microsoft Copilot
+  </strong>
+ </summary>
+ <p>
+ </p>
+ <p>
+  <strong>
+   Supported by:
+  </strong>
+  <a data-linktype="external" href="https://support.microsoft.com/">
+   Microsoft
+  </a>
+ </p>
+ <p>
+  The Microsoft Copilot logs connector in Microsoft Sentinel enables seamless ingestion of Copilot-generated activity logs from M365 Copilot and Security Copilot into Microsoft Sentinel for advanced threat detection, investigation and response. It collects telemetry from Microsoft Copilot services such as usage data and system responses and ingests into Microsoft Sentinel, allowing security teams to monitor for misuse, detect anomalies, and maintain compliance with organizational policies.
+ </p>
+ <p>
+  <strong>
+   Log Analytics table(s):
+  </strong>
+ </p>
+ <table>
+  <thead>
+   <tr>
+    <th>
+     Table
+    </th>
+    <th>
+     DCR support
+    </th>
+    <th>
+     Lake-only ingestion
+    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td>
+     <a data-linktype="absolute-path" href="/en-us/azure/azure-monitor/reference/tables/CopilotActivity">
+      <code>
+       CopilotActivity
+      </code>
+     </a>
+    </td>
+    <td>
+     No
+    </td>
+    <td>
+     Yes
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <p>
+  <strong>
+   Data collection rule support:
+  </strong>
+  Not currently supported
+ </p>
+ <p>
+  <strong>
+   Prerequisites:
+  </strong>
+ </p>
+ <ul>
+  <li>
+   <strong>
+    Tenant Permissions
+   </strong>
+   : 'Security Administrator' or 'Global Administrator' on the workspace's tenant.
+  </li>
+ </ul>
+ <p>
+  <strong>
+   Setup Instructions:
+  </strong>
+ </p>
+ <p>
+  <strong>
+   Connect Microsoft Copilot audit logs to Microsoft Sentinel
+  </strong>
+ </p>
+ <p>
+  This connector uses the Office Management API to get your Microsoft Copilot audit logs. The logs will be stored and processed in your existing Microsoft Sentinel workspace. You can find the data in the
+  <strong>
+   CopilotActivity
+  </strong>
+  table.
+ </p>
+ <ul>
+  <li>
+   Enable/Disable Connection
+  </li>
+ </ul>
+ <p>
+  <br/>
+  <br/>
+ </p>
+</details>
+
+<details>
+ <summary>
+  <strong>
+   Microsoft Dataverse
+  </strong>
+ </summary>
+ <p>
+ </p>
+ <p>
+  <strong>
+   Supported by:
+  </strong>
+  <a data-linktype="external" href="https://azure.microsoft.com/support/">
+   Microsoft Corporation
+  </a>
+ </p>
+ <p>
+  Microsoft Dataverse is a scalable and secure data platform that enables organizations to store and manage data used by business applications. The Microsoft Dataverse data connector provides the capability to ingest Dataverse and Dynamics 365 CRM activity logs from the Microsoft Purview Audit log into Microsoft Sentinel.
+ </p>
+ <p>
+  <strong>
+   Log Analytics table(s):
+  </strong>
+ </p>
+ <table>
+  <thead>
+   <tr>
+    <th>
+     Table
+    </th>
+    <th>
+     DCR support
+    </th>
+    <th>
+     Lake-only ingestion
+    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td>
+     <a data-linktype="absolute-path" href="/en-us/azure/azure-monitor/reference/tables/DataverseActivity">
+      <code>
+       DataverseActivity
+      </code>
+     </a>
+    </td>
+    <td>
+     Yes
+    </td>
+    <td>
+     Yes
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <p>
+  <strong>
+   Data collection rule support:
+  </strong>
+  <a data-linktype="absolute-path" href="/en-us/azure/azure-monitor/logs/tutorial-workspace-transformations-portal">
+   Workspace transform DCR
+  </a>
+ </p>
+ <p>
+  <strong>
+   Prerequisites:
+  </strong>
+ </p>
+ <ul>
+  <li>
+   <strong>
+    Tenant Permissions
+   </strong>
+   : 'Security Administrator' or 'Global Administrator' on the workspace's tenant.
+  </li>
+  <li>
+   <strong>
+    Micorosft Purview Audit
+   </strong>
+   : Microsoft Purview Audit (Standard or Premium) must be activated.
+  </li>
+  <li>
+   <strong>
+    Production Dataverse
+   </strong>
+   : Activity logging is available only for Production environments. Other types, such as sandbox, do not support activity logging.
+  </li>
+  <li>
+   <strong>
+    Dataverse Audit Settings
+   </strong>
+   : Audit settings must be configured both globally and at the entity/table level. For more information, see
+   <a data-linktype="absolute-path" href="/en-us/azure/sentinel/business-applications/deploy-power-platform-solution">
+    Dataverse audit settings
+   </a>
+   .
+  </li>
+ </ul>
+ <p>
+  <strong>
+   Setup Instructions:
+  </strong>
+ </p>
+ <p>
+  <strong>
+   Connect Microsoft Dataverse audit logs to Microsoft Sentinel
+  </strong>
+ </p>
+ <p>
+  This connector uses the Office Management API to get your Dataverse audit logs. The logs will be stored and processed in your existing Microsoft Sentinel workspace. You can find the data in the
+  <strong>
+   DataverseActivity
+  </strong>
+  table.
+ </p>
+ <ul>
+  <li>
+   Enable/Disable Connection
+  </li>
+ </ul>
+ <p>
+  <br/>
+  <br/>
+ </p>
+</details>
+
+</main>
