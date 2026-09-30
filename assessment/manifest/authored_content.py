@@ -283,6 +283,14 @@ AUTHORED: dict[str, dict] = {
                 "restrictions until remediation closes, and any legacy RSS "
                 "documentation is maintained as transition evidence."
             ),
+            credit_union=(
+                "Where member-information sites need extra review before "
+                "broader discoverability, RCD is documented as a temporary "
+                "governance control while access is right-sized, and any "
+                "legacy RSS allow-list is limited to approved sites while the "
+                "credit union tests and adjusts its safeguards under Appendix "
+                "A III.C.3 and III.E."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -992,6 +1000,24 @@ AUTHORED: dict[str, dict] = {
                 "Scans cover MNPI documents; information-barrier compliance "
                 "validated at item level."
             ),
+            investment_adviser=(
+                "Item-level scans cover selected customer-information "
+                "SharePoint sites, and potentially overshared items are "
+                "removed, relabeled, or assigned to owners to support the "
+                "adviser's written safeguards under Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, item-level scans cover selected "
+                "PHI-bearing SharePoint sites, and flagged items are reviewed "
+                "and remediated through access-report and security-incident "
+                "procedures under 45 CFR 164.308(a)(1)(ii)(D)."
+            ),
+            credit_union=(
+                "Item-level scans cover selected member-information "
+                "SharePoint sites, and flagged sharing links or owner "
+                "notifications feed the credit union's access-control and "
+                "testing measures under Appendix A III.C.1.a and III.C.3."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -1049,6 +1075,26 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Drift monitoring includes information-barrier-protected "
                 "sites; reconciliation documented for FINRA exam readiness."
+            ),
+            investment_adviser=(
+                "Quarterly site-permissions baselines and monthly sharing-"
+                "activity reports cover customer-information sites, and "
+                "change history or site access reviews are used to "
+                "investigate and remediate drift as part of the adviser's "
+                "written safeguards under Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, quarterly site-permissions baselines "
+                "and monthly sharing-activity reports cover PHI sites, and "
+                "change history or site access reviews support regular review "
+                "of access reports under 45 CFR 164.308(a)(1)(ii)(D)."
+            ),
+            credit_union=(
+                "Quarterly site-permissions baselines and monthly sharing-"
+                "activity reports cover member-information sites, and change "
+                "history or site access reviews feed the credit union's "
+                "testing and adjustment of safeguards under Appendix A "
+                "III.C.3 and III.E."
             ),
         ),
         "facilitatorNotes": {
@@ -1838,6 +1884,30 @@ AUTHORED: dict[str, dict] = {
                 "patterns; alerts reviewed by SOC within 4-hour SLA per "
                 "FFIEC expectations."
             ),
+            broker_dealer=(
+                "Browser session policies cover the Microsoft 365 web "
+                "workloads that handle customer information, and anomaly "
+                "alerts are triaged as part of Regulation S-P safeguards and "
+                "the firm's written supervisory procedures."
+            ),
+            investment_adviser=(
+                "Browser session policies cover the Microsoft 365 web "
+                "workloads that handle customer information, and anomaly "
+                "alerts are reviewed as part of the adviser's written "
+                "safeguards under Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, browser session policies cover PHI-"
+                "handling Microsoft 365 web workloads, and anomaly alerts "
+                "feed regular review of access reports and security-incident "
+                "tracking under 45 CFR 164.308(a)(1)(ii)(D)."
+            ),
+            credit_union=(
+                "Browser session policies cover member-information Microsoft "
+                "365 web workloads, and anomaly alerts feed the credit "
+                "union's monitoring systems and procedures and regular "
+                "testing under Appendix A III.C.1.f and III.C.3."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -1905,6 +1975,24 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Insider Risk covers registered-rep Copilot usage; alerts "
                 "reviewed by supervisory principal per FINRA Rule 3110."
+            ),
+            investment_adviser=(
+                "Risky AI usage or data-leak indicators are enabled for "
+                "in-scope users, and Insider Risk alerts are investigated as "
+                "part of the adviser's written safeguards and incident "
+                "response for customer information under Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, Insider Risk policies cover risky AI or "
+                "data-leak indicators for PHI-handling users, and alerts are "
+                "reviewed through access-report and security-incident "
+                "procedures under 45 CFR 164.308(a)(1)(ii)(D) and (a)(6)(ii)."
+            ),
+            credit_union=(
+                "Risky AI usage or data-leak indicators are enabled for in-"
+                "scope users with member-information access, and alerts feed "
+                "the credit union's monitoring and response procedures under "
+                "Appendix A III.C.1.f-g and III.C.3."
             ),
         ),
         "facilitatorNotes": {

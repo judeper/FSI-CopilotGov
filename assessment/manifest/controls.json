@@ -261,7 +261,7 @@
       "broker-dealer": "Research and investment-banking sites carry documented RCD exclusions to honor information barriers, and any legacy RSS allow-list is reviewed by a supervisory principal monthly.",
       "investment-adviser": "RCD is applied to private fund or portfolio-company sites until permissions and labels are remediated; any legacy RSS allow-list is limited to approved client-service and ops sites.",
       "insurance-carrier": "Claims and underwriting sites with PHI carry documented RCD restrictions until remediation closes, and any legacy RSS documentation is maintained as transition evidence.",
-      "credit-union": "TODO: sector-specific yes-bar",
+      "credit-union": "Where member-information sites need extra review before broader discoverability, RCD is documented as a temporary governance control while access is right-sized, and any legacy RSS allow-list is limited to approved sites while the credit union tests and adjusts its safeguards under Appendix A III.C.3 and III.E.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1175,9 +1175,9 @@
     "sectorYesBar": {
       "bank": "Item-level scans cover NPI-bearing documents; overly broad permissions remediated within 5 business days per GLBA §501(b) safeguards.",
       "broker-dealer": "Scans cover MNPI documents; information-barrier compliance validated at item level.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
+      "investment-adviser": "Item-level scans cover selected customer-information SharePoint sites, and potentially overshared items are removed, relabeled, or assigned to owners to support the adviser's written safeguards under Regulation S-P.",
+      "insurance-carrier": "Where HIPAA applies, item-level scans cover selected PHI-bearing SharePoint sites, and flagged items are reviewed and remediated through access-report and security-incident procedures under 45 CFR 164.308(a)(1)(ii)(D).",
+      "credit-union": "Item-level scans cover selected member-information SharePoint sites, and flagged sharing links or owner notifications feed the credit union's access-control and testing measures under Appendix A III.C.1.a and III.C.3.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -1263,9 +1263,9 @@
     "sectorYesBar": {
       "bank": "Drift monitoring runs weekly on NPI sites; reconciliation SLA is 5 business days.",
       "broker-dealer": "Drift monitoring includes information-barrier-protected sites; reconciliation documented for FINRA exam readiness.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
+      "investment-adviser": "Quarterly site-permissions baselines and monthly sharing-activity reports cover customer-information sites, and change history or site access reviews are used to investigate and remediate drift as part of the adviser's written safeguards under Regulation S-P.",
+      "insurance-carrier": "Where HIPAA applies, quarterly site-permissions baselines and monthly sharing-activity reports cover PHI sites, and change history or site access reviews support regular review of access reports under 45 CFR 164.308(a)(1)(ii)(D).",
+      "credit-union": "Quarterly site-permissions baselines and monthly sharing-activity reports cover member-information sites, and change history or site access reviews feed the credit union's testing and adjustment of safeguards under Appendix A III.C.3 and III.E.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2113,10 +2113,10 @@
     "collectorField": "",
     "sectorYesBar": {
       "bank": "Session policies monitor exfiltration and anomalous usage patterns; alerts reviewed by SOC within 4-hour SLA per FFIEC expectations.",
-      "broker-dealer": "TODO: sector-specific yes-bar",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
+      "broker-dealer": "Browser session policies cover the Microsoft 365 web workloads that handle customer information, and anomaly alerts are triaged as part of Regulation S-P safeguards and the firm's written supervisory procedures.",
+      "investment-adviser": "Browser session policies cover the Microsoft 365 web workloads that handle customer information, and anomaly alerts are reviewed as part of the adviser's written safeguards under Regulation S-P.",
+      "insurance-carrier": "Where HIPAA applies, browser session policies cover PHI-handling Microsoft 365 web workloads, and anomaly alerts feed regular review of access reports and security-incident tracking under 45 CFR 164.308(a)(1)(ii)(D).",
+      "credit-union": "Browser session policies cover member-information Microsoft 365 web workloads, and anomaly alerts feed the credit union's monitoring systems and procedures and regular testing under Appendix A III.C.1.f and III.C.3.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -2196,9 +2196,9 @@
     "sectorYesBar": {
       "bank": "Insider Risk policies include Copilot data exfiltration indicators; alerts triaged daily per SOX IT general control requirements.",
       "broker-dealer": "Insider Risk covers registered-rep Copilot usage; alerts reviewed by supervisory principal per FINRA Rule 3110.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
-      "insurance-carrier": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
+      "investment-adviser": "Risky AI usage or data-leak indicators are enabled for in-scope users, and Insider Risk alerts are investigated as part of the adviser's written safeguards and incident response for customer information under Regulation S-P.",
+      "insurance-carrier": "Where HIPAA applies, Insider Risk policies cover risky AI or data-leak indicators for PHI-handling users, and alerts are reviewed through access-report and security-incident procedures under 45 CFR 164.308(a)(1)(ii)(D) and (a)(6)(ii).",
+      "credit-union": "Risky AI usage or data-leak indicators are enabled for in-scope users with member-information access, and alerts feed the credit union's monitoring and response procedures under Appendix A III.C.1.f-g and III.C.3.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
