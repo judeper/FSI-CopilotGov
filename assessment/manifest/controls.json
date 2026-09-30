@@ -3112,9 +3112,9 @@
     "sectorYesBar": {
       "bank": "eDiscovery readiness verified for Copilot per SOX litigation-hold requirements.",
       "broker-dealer": "eDiscovery verified for Copilot content per FINRA Rule 4511; custodian holds tested for registered-rep Copilot data.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
+      "investment-adviser": "Copilot activity searches and exports are tested against adviser mailboxes so records the firm treats as Rule 204-2 books and records can be identified, preserved, and promptly produced on request.",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
+      "credit-union": "Copilot activity searches and exports are tested so records preserved under NCUA Part 749 remain accessible to persons entitled to access, reproducible, and available for examiner requests.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
@@ -3367,9 +3367,9 @@
     "portalPlaybookUrl": "/playbooks/control-implementations/3.6/portal-walkthrough/",
     "collectorField": "",
     "sectorYesBar": {
-      "bank": "TODO: sector-specific yes-bar",
+      "bank": "Copilot use is assigned to a business owner, independent risk oversight, and internal audit, with board or risk-committee reporting on a documented cadence; covered banks should align these roles to 12 CFR part 30, appendix D.",
       "broker-dealer": "Designated supervisory principal per FINRA Rule 3110; WSPs updated to cover Copilot use in client-facing and trading workflows; review conducted at least monthly.",
-      "investment-adviser": "Supervisory oversight aligned to SEC Reg BI best-interest obligations for Copilot-assisted recommendations.",
+      "investment-adviser": "A designated CCO administers Copilot policies for advice, marketing, and client-communication workflows under Rule 206(4)-7, with annual review evidence and documented escalation of exceptions.",
       "insurance-carrier": "TODO: sector-specific yes-bar",
       "credit-union": "TODO: sector-specific yes-bar",
       "other": "TODO: sector-specific yes-bar"
@@ -3866,9 +3866,9 @@
     "sectorYesBar": {
       "bank": "Copilot interactions retained per SOX record-keeping requirements where applicable to ICFR evidence.",
       "broker-dealer": "Copilot interactions captured per Rule 17a-4(f)(2) where applicable to required records; WORM archive or audit-trail alternative per SEC Release No. 34-96034 validated; retrievable within 48 hours for FINRA exam requests.",
-      "investment-adviser": "TODO: sector-specific yes-bar",
+      "investment-adviser": "Copilot-assisted advice, marketing, and annual-review records the adviser treats as Rule 204-2 books and records are preserved at least 5 years, the first 2 in an appropriate office, and can be produced from the retention/eDiscovery workflow on request.",
       "insurance-carrier": "TODO: sector-specific yes-bar",
-      "credit-union": "TODO: sector-specific yes-bar",
+      "credit-union": "Copilot records the credit union preserves under NCUA Part 749 remain accurate, accessible to persons entitled to access, reproducible, and testable with the equipment or software examiners need to retrieve them.",
       "other": "TODO: sector-specific yes-bar"
     },
     "facilitatorNotes": {
