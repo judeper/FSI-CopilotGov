@@ -3790,6 +3790,16 @@ AUTHORED: dict[str, dict] = {
                 "record-keeping; Copilot disabled for NPI-sensitive "
                 "committee meetings unless approved."
             ),
+            investment_adviser=(
+                "Where the adviser treats Teams meeting transcripts/"
+                "recordings and Copilot prompt/response data as required "
+                "books and records under Rule 204-2(a)(7), organizer "
+                "controls and Purview retention/eDiscovery preserve meeting "
+                "transcripts/recordings (OneDrive or SharePoint) and "
+                "Copilot prompt/response data (the user's Exchange mailbox), "
+                "as applicable; legal/compliance confirms which meeting "
+                "types and items create required records."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -3850,6 +3860,15 @@ AUTHORED: dict[str, dict] = {
                 "Call recording retention aligned to GLBA §501(b) "
                 "expectations; Copilot disabled for customer service lines "
                 "unless approved."
+            ),
+            investment_adviser=(
+                "Where the adviser treats Teams call transcripts or Copilot "
+                "call/transfer summaries as required books and records under "
+                "Rule 204-2(a)(7), calling policies require saved "
+                "transcripts for retained Copilot artifacts and "
+                "retention/eDiscovery covers those records; "
+                "legal/compliance confirms which call workflows create "
+                "required records."
             ),
         ),
         "facilitatorNotes": {
@@ -4244,6 +4263,15 @@ AUTHORED: dict[str, dict] = {
                 "BC/DR plan includes Copilot per FINRA Rule 4370 business "
                 "continuity requirements."
             ),
+            insurance_carrier=(
+                "For NYDFS-covered insurers, the written business continuity "
+                "and disaster recovery plans required by 23 NYCRR 500.16 "
+                "include recovery of critical data and information systems, "
+                "offsite backups of essential information, and accessible "
+                "current plan copies for implementing staff; Copilot-"
+                "dependent workflows are included where they support "
+                "critical operations."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -4302,9 +4330,32 @@ AUTHORED: dict[str, dict] = {
                 "anomalous usage per FFIEC IT Handbook expectations; SOC "
                 "review within 4-hour SLA."
             ),
+            broker_dealer=(
+                "Sentinel analytics ingest CopilotInteraction audit events "
+                "and documented escalation routes them to supervisory staff "
+                "as part of the firm's supervisory system and WSPs (FINRA "
+                "Rule 3110); surveillance evidence the firm treats as "
+                "required records follows retention under FINRA Rule 4511 "
+                "and Exchange Act Rule 17a-4."
+            ),
+            investment_adviser=(
+                "For advisers registered or required to be registered, "
+                "Sentinel analytics ingest CopilotInteraction audit events "
+                "for Copilot-supported client workflows, and the adviser's "
+                "documented alerts and escalation paths are reviewed at "
+                "least annually as part of the Rule 206(4)-7 policies-and-"
+                "procedures effectiveness review."
+            ),
             insurance_carrier=(
                 "Sentinel rules cover Copilot PHI access anomalies per "
                 "NYDFS Part 500 monitoring requirements."
+            ),
+            credit_union=(
+                "CopilotInteraction alerts are mapped to the credit union's "
+                "written information security program, consistent with "
+                "Appendix A to Part 748 (intrusion-monitoring and response "
+                "measures the credit union has determined appropriate; board "
+                "reporting 'at least annually')."
             ),
         ),
         "facilitatorNotes": {
@@ -4359,6 +4410,26 @@ AUTHORED: dict[str, dict] = {
                 "Change management aligned to SOX IT general control "
                 "change advisory requirements; feature rollouts risk-reviewed "
                 "before enablement."
+            ),
+            broker_dealer=(
+                "Copilot feature changes affecting registered-person "
+                "workflows are evaluated before enablement, with WSP "
+                "updates (FINRA Rule 3110(b)) and supervisory sign-off per "
+                "firm procedure; FINRA Regulatory Notice 24-09 says firms "
+                "should evaluate Gen AI tools prior to deploying them."
+            ),
+            investment_adviser=(
+                "Copilot feature changes that affect advice, marketing, or "
+                "client communications trigger CCO review and updates to "
+                "written policies and procedures under Rule 206(4)-7, with "
+                "annual-review evidence that the controls remain effective."
+            ),
+            credit_union=(
+                "Copilot feature changes that affect member information or "
+                "member-information systems are evaluated and, as "
+                "appropriate, adjusted within the Appendix A to Part 748 "
+                "information security program (III.E), with annual board "
+                "reporting per III.F."
             ),
         ),
         "facilitatorNotes": {
