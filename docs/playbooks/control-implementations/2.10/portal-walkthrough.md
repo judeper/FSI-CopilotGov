@@ -45,27 +45,29 @@ The Risky Agents policy (in preview) is available by default to organizations wi
 Create an insider risk policy targeting Copilot usage:
 - **Template:** Risky AI usage as the primary Copilot policy; add Data leaks or Data theft by departing users only where those trigger models are needed
 - **Users:** All Copilot-licensed users (or priority user groups)
-- **Triggering events:** Risky AI usage indicators, DLP policy match, unusual Copilot activity volume, or departing employee signal as appropriate to the chosen template
+- **Triggering events:** Risky AI usage indicators, DLP policy match, or departing employee signal as appropriate to the chosen template. Organization-defined audit analytics can inform review, but they aren't built-in IRM triggers.
 - **Indicators:** Enable Generative AI apps indicators, Risky AI usage indicators, and any supporting data-access indicators you need
 
-### Step 4: Configure Risk Levels and Thresholds
+### Step 4: Configure Supported Indicator Settings in the Policy Workflow
 
 **Portal:** Microsoft Purview
-**Path:** Microsoft Purview > Insider Risk Management > Settings > Risk level thresholds
+**Path:** Microsoft Purview > Insider Risk Management > Policies > Create policy (or edit a custom policy) > Indicators
 
-Configure organization-defined review criteria for Copilot-related risk in a way that stays consistent with what Microsoft actually documents:
-- **Low risk:** Local triage heuristics can flag activity for analyst review, but don't treat those heuristics as built-in IRM indicators
-- **Medium risk:** Prioritize activity that combines risky prompts or sensitive AI responses with DLP, device, or exfiltration context
-- **High risk:** Escalate scenarios that combine risky AI interactions with HR signals, sensitive-data access, device activity, or agent-related alerts
+Configure only the settings Microsoft documents in the policy workflow:
+- Select the supported indicators you want the policy to evaluate
+- Configure supported indicator-level thresholds where the policy workflow exposes them
+- Use real-time analytics recommendations only where Learn documents that capability as available
+- Keep organization-defined audit heuristics separate from built-in IRM indicator settings
 
 ### Step 5: Set Up Data Risk Graphs
 
 **Portal:** Microsoft Purview > Insider Risk Management > Recommended actions
 
-Data risk graphs provide a visual investigation experience — powered by Microsoft Sentinel integration — for alert-related SharePoint and OneDrive exfiltration activity. Microsoft has announced retirement of this experience on **November 24, 2026**:
-1. Select the **Set up data lake and data risk graph** recommended action and complete the Microsoft Sentinel data lake onboarding (the data lake uses pay-as-you-go billing; initial onboarding can take up to 60 minutes, with data risk graph availability for investigations taking 24-48 hours)
+Data risk graphs provide a visual investigation experience — powered by Microsoft Sentinel integration — for alert-related SharePoint and OneDrive exfiltration activity. Microsoft has announced retirement of this experience on **November 24, 2026**, and Learn now states that new data risk graph onboarding closed on **September 24, 2026**:
+1. If your tenant onboarded before **September 24, 2026**, use the existing **Set up data lake and data risk graph** onboarding and complete the Microsoft Sentinel data lake prerequisites (the data lake uses pay-as-you-go billing; historical onboarding took up to 60 minutes, with data risk graph availability for investigations taking 24-48 hours)
 2. After setup, open an alert at Insider Risk Management > **Alerts (preview)** and select the **Data risk graph** tab to review the connected assets, users, and exfiltration activity (anonymous/company sharing links, downloads, renames in SharePoint and OneDrive)
-3. Incorporate data risk graph review into the standard investigation procedure for alerts involving potential cross-department data movement
+3. Incorporate data risk graph review into the standard investigation procedure for alerts involving potential cross-department data movement while the feature remains available
+4. Current Learn doesn't name a direct successor to the data risk graph experience, so document the replacement investigation workflow before retirement
 
 ### Step 6: Enable IRM Triage Agent
 

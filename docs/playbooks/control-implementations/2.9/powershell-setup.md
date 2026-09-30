@@ -17,12 +17,14 @@ Automation scripts for managing and monitoring Defender for Cloud Apps session c
 ```powershell
 # Retrieve recent alerts that may be relevant to CA App Control, AI governance,
 # or agent monitoring. This is supplemental telemetry only.
-# Requires: Microsoft Graph SDK with SecurityEvents.Read.All
+# The legacy /security/alerts API retires on October 15, 2026 and will stop
+# returning data after that date, so use alerts_v2.
+# Requires: Microsoft Graph SDK with SecurityAlert.Read.All
 
 Import-Module Microsoft.Graph.Security
-Connect-MgGraph -Scopes "SecurityEvents.Read.All"
+Connect-MgGraph -Scopes "SecurityAlert.Read.All"
 
-$alerts = Get-MgSecurityAlert -Top 200 -Sort "createdDateTime DESC" |
+$alerts = Get-MgSecurityAlertV2 -Top 200 -Sort "createdDateTime DESC" |
     Where-Object {
         $_.Title -match "Copilot|AI|session|SharePoint|OneDrive" -or
         $_.Category -match "anomaly|malware|cloud"

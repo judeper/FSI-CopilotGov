@@ -55,7 +55,7 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
   1. Confirm the anonymized usernames privacy setting is disabled (Microsoft Purview > Insider Risk Management > Settings > Privacy) — the data risk graph cannot be used with it enabled
   2. Confirm the investigator viewing the graph is not scoped to an admin unit; admin units are not supported in the data risk graph
   3. Confirm the investigator is assigned the **Insider Risk Management Graph Reader** role (included by default in several built-in IRM role groups)
-  4. Verify the **Set up data lake and data risk graph** recommended action shows Complete; allow 24-48 hours after onboarding for initial data to populate, and expect gradual growth toward the full 30-day window
+  4. If the tenant onboarded before **September 24, 2026**, verify the **Set up data lake and data risk graph** recommended action shows Complete; allow 24-48 hours after onboarding for initial data to populate, and expect gradual growth toward the full 30-day window
   5. Confirm the alert's underlying activity is one of the supported exfiltration activities (SharePoint/OneDrive sharing links, downloads, renames) — the graph does not represent Copilot prompt/response content
 
 ### Issue 6: High Volume of Low-Quality Alerts

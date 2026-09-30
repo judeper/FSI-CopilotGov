@@ -23,9 +23,9 @@ Test cases and evidence collection for validating insider risk detection for Cop
   2. Locate the default Risky Agents policy
   3. Verify the policy scope includes all deployed Copilot Studio, Microsoft Foundry, and P4AI SDK agents
   4. Confirm alert routing is configured to reach both compliance and agent deployment owners
-  5. Review the policy thresholds for FSI appropriateness
-- **Expected Result:** Risky Agents policy is active, scoped correctly across all supported agent types, and alert routing is configured
-- **Evidence:** Policy configuration screenshot; alert routing configuration
+  5. If the default policy doesn't meet the organization's needs, verify a **custom** policy exists for the additional FSI requirements instead of assuming the default policy is editable
+- **Expected Result:** Risky Agents policy is active, scoped correctly across all supported agent types, and alert routing is configured; any extra FSI tuning is implemented through supported custom-policy paths
+- **Evidence:** Policy configuration screenshot; alert routing configuration; custom policy evidence if applicable
 
 ### Test 3: Generative AI Indicator Functionality
 
@@ -54,12 +54,12 @@ Test cases and evidence collection for validating insider risk detection for Cop
 
 - **Objective:** Confirm the data risk graph is set up and integrated into investigation procedures
 - **Steps:**
-  1. Navigate to Microsoft Purview > Insider Risk Management > Recommended actions and confirm the **Set up data lake and data risk graph** action shows Complete
+  1. If the tenant previously onboarded before **September 24, 2026**, navigate to Microsoft Purview > Insider Risk Management > Recommended actions and confirm the **Set up data lake and data risk graph** action shows Complete
   2. Navigate to Insider Risk Management > **Alerts (preview)** and open an alert
   3. Select the **Data risk graph** tab and verify graph data is loading (allow 24-48 hours after initial onboarding for data to populate)
   4. Confirm the graph displays the alert-related SharePoint/OneDrive exfiltration activity (sharing links, downloads, renames) for the 30-day window
   5. Verify investigators know to include data risk graph review in the standard investigation procedure for alerts involving potential cross-department data movement
-- **Expected Result:** Data risk graph is set up and accessible from alerts while the feature remains available, displaying alert-related exfiltration activity
+- **Expected Result:** For previously onboarded tenants, the data risk graph is set up and accessible from alerts while the feature remains available, displaying alert-related exfiltration activity
 - **Evidence:** Screenshot of the data risk graph tab showing activity data
 
 ### Test 6: IRM Triage Agent Operation
