@@ -2652,10 +2652,14 @@ AUTHORED: dict[str, dict] = {
                 "promptly produced on request."
             ),
             credit_union=(
-                "Copilot activity searches and exports are tested so records "
-                "preserved under NCUA Part 749 remain accessible to persons "
-                "entitled to access, reproducible, and available for "
-                "examiner requests."
+                "Copilot content the credit union retains to meet an NCUA "
+                "record-retention requirement is searchable and exportable "
+                "in a format that accurately reflects the information, "
+                "remains accessible to persons entitled to access, can be "
+                "reproduced, and can be read by examiners with equipment or "
+                "software the credit union maintains; the credit union "
+                "confirms with counsel which Copilot content, if any, is in "
+                "that scope."
             ),
         ),
         "facilitatorNotes": {
@@ -2827,10 +2831,12 @@ AUTHORED: dict[str, dict] = {
                 "workflows; review conducted at least monthly."
             ),
             bank=(
-                "Copilot use is assigned to a business owner, independent "
-                "risk oversight, and internal audit, with board or risk-"
-                "committee reporting on a documented cadence; covered banks "
-                "should align these roles to 12 CFR part 30, appendix D."
+                "For covered banks—generally those with average total "
+                "consolidated assets of $50 billion or more, plus smaller "
+                "banks the OCC brings into scope under 12 CFR part 30, "
+                "appendix D—Copilot use is assigned to a business owner, "
+                "independent risk oversight, and internal audit, with board "
+                "or risk-committee reporting on a documented cadence."
             ),
             investment_adviser=(
                 "A designated CCO administers Copilot policies for advice, "
@@ -3263,10 +3269,13 @@ AUTHORED: dict[str, dict] = {
                 "retention/eDiscovery workflow on request."
             ),
             credit_union=(
-                "Copilot records the credit union preserves under NCUA Part "
-                "749 remain accurate, accessible to persons entitled to "
-                "access, reproducible, and testable with the equipment or "
-                "software examiners need to retrieve them."
+                "Copilot records the credit union retains to meet an NCUA "
+                "record-retention requirement accurately reflect the "
+                "information, remain accessible to persons entitled to "
+                "access, are capable of reproduction, and are readable by "
+                "examiners with equipment or software the credit union "
+                "maintains; the credit union confirms with counsel which "
+                "Copilot records are in that scope."
             ),
         ),
         "facilitatorNotes": {
