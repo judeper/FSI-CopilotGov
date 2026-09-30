@@ -2413,7 +2413,7 @@
   },
   {
     "id": "2.13",
-    "title": "Control 2.13: Plugin and Graph Connector Security Governance",
+    "title": "Control 2.13: Plugin and Copilot Connector Security Governance",
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.13-plugin-connector-security.md",

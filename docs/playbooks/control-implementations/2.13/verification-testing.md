@@ -1,4 +1,4 @@
-# Control 2.13: Plugin and Graph Connector Security — Verification & Testing
+# Control 2.13: Plugin and Copilot Connector Security — Verification & Testing
 
 Test cases and evidence collection for validating plugin and connector security.
 
@@ -25,9 +25,9 @@ Test cases and evidence collection for validating plugin and connector security.
 - **Expected Result:** Users cannot self-consent; the request reaches an authorized reviewer; no unauthorized legacy grant remains
 - **Evidence:** Script 3 output, request-workflow record, and existing-grant review
 
-### Test 3: Graph Connector ACL Verification
+### Test 3: Copilot Connector ACL Verification
 
-- **Objective:** Confirm Graph connector ACLs correctly restrict content access
+- **Objective:** Confirm Copilot connector ACLs correctly restrict content access
 - **Steps:**
   1. Under **Microsoft 365 Admin Center > Copilot > Connectors > Your Connections**, verify each connection's access permission
   2. Test with a user who should not have access — verify content is not returned by Copilot
@@ -65,5 +65,5 @@ Test cases and evidence collection for validating plugin and connector security.
 |-----------|-------------|------------------------------|
 | 12 CFR part 30, appendix D (OCC Heightened Standards) | Third-party risk management | Plugin security supports compliance with third-party technology risk requirements |
 | FINRA Rule 3110 | Technology oversight | Plugin governance supports compliance with supervisory technology controls |
-| NIST CSF | PR.IP-1 Baseline configuration | Plugin restrictions help establish and maintain secure baseline configurations |
+| NIST CSF | PR.PS-01 Configuration management practices are applied | Plugin restrictions help establish and maintain secure baseline configurations |
 - Back to [Control 2.13](../../../controls/pillar-2-security/2.13-plugin-connector-security.md)

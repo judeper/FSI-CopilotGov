@@ -413,7 +413,7 @@
       "id": "2.13",
       "pillar": 2,
       "tier": "Recommended",
-      "title": "Control 2.13: Plugin and Graph Connector Security Governance",
+      "title": "Control 2.13: Plugin and Copilot Connector Security Governance",
       "path": "docs/controls/pillar-2-security/2.13-plugin-connector-security.md",
       "last_verified": "2026-09-30",
       "regulatory_references": [

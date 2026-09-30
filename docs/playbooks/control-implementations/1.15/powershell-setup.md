@@ -19,7 +19,7 @@ Automation workflow for capturing approved SharePoint permission baselines, dete
 
 ```powershell
 Set-Location C:\Repos\FSI-CopilotGov-Solutions\solutions\17-sharepoint-permissions-drift
-pwsh .\scripts\Deploy-Solution.ps1 -ConfigurationTier regulated -TenantId <tenant-guid>
+pwsh .\scripts\Deploy-Solution.ps1 -ConfigurationTier regulated -TenantId "<tenant-guid>"
 ```
 
 ### Script 2: Capture the approved permissions baseline
