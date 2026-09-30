@@ -2413,7 +2413,7 @@
   },
   {
     "id": "2.13",
-    "title": "Control 2.13: Plugin and Graph Connector Security Governance",
+    "title": "Control 2.13: Plugin and Copilot Connector Security Governance",
     "pillar": 2,
     "pillar_name": "Security & Data Protection",
     "source_file": "docs/controls/pillar-2-security/2.13-plugin-connector-security.md",
@@ -2438,7 +2438,7 @@
       }
     },
     "manual_question": "Are the Agent Registry, Agent Tools, Copilot connectors, consent controls, and plugin audit evidence reconciled to approved inventory on a documented cadence?",
-    "name": "Plugin and Graph Connector Security Governance",
+    "name": "Plugin and Copilot Connector Security Governance",
     "zonesApplicable": [
       1,
       2,
@@ -5444,8 +5444,8 @@
       "SEC-17a-4"
     ],
     "priority": "high",
-    "yesBar": "Microsoft Scout is governed through all three required gates (Frontier scope, managed-endpoint policy with admin attestation, and GitHub Copilot Business/Enterprise entitlement), with managed endpoint posture validated, shell/browser/local-file permissions governed, autonomous/unattended modes explicitly controlled, MCP approvals documented, mixed M365/GitHub/local boundary risks acknowledged, and supervision evidence retained.",
-    "partialBar": "Scout governance exists but one or more critical controls is missing or stale (gate reconciliation, endpoint policy evidence, permission defaults, MCP approval records, supervision cadence, or known-evidence limitations tracking).",
+    "yesBar": "Microsoft Scout is governed through all three required gates (Frontier scope, managed-endpoint policy with admin attestation, and GitHub Copilot Business/Enterprise entitlement), with managed endpoint posture validated, shell/browser/local-file permissions governed, autonomous/unattended modes explicitly controlled, tool-server approvals documented, mixed M365/GitHub/local boundary risks acknowledged, and supervision evidence retained.",
+    "partialBar": "Scout governance exists but one or more critical controls is missing or stale (gate reconciliation, endpoint policy evidence, permission defaults, tool-server approval records, supervision cadence, or known-evidence limitations tracking).",
     "noBar": "Scout is enabled or piloted without reconciled Frontier/Intune/GitHub gating, without documented permission boundaries, and without evidence of supervision or residual-risk acceptance for local and third-party processing surfaces.",
     "verifyIn": [
       {
@@ -5472,9 +5472,9 @@
       "GitHub Copilot Business/Enterprise entitlement export matched to pilot users",
       "Documented default permission posture for local files, shell commands, and browser actions",
       "Autonomous-mode and unattended-automation decision records with scope constraints",
-      "Approved MCP inventory including authentication, egress, and data-path classification",
+      "Approved tool-server inventory including authentication, egress, and data-path classification",
       "Boundary map showing M365-protected data vs GitHub/local/third-party processing surfaces",
-      "Known unsupported evidence register (local automation artifacts, local MCP output, third-party inference telemetry)"
+      "Known unsupported evidence register (local automation artifacts, local tool output, third-party inference telemetry)"
     ],
     "controlDocUrl": "/controls/pillar-4-operations/4.16-microsoft-scout-governance/",
     "portalPlaybookUrl": "/playbooks/control-implementations/4.16/portal-walkthrough/",
@@ -5488,9 +5488,9 @@
       "other": "TODO: define sector-specific regulated Scout threshold once Microsoft publishes GA-stable evidence and policy surfaces."
     },
     "facilitatorNotes": {
-      "ask": "Can you show reconciled evidence that Scout is governed across Frontier scope, Intune policy + attestation, and GitHub Copilot entitlement, with explicit controls for permissions, autonomy, and MCP?",
-      "followUp": "Validate all three gates against the same pilot roster, then review permission defaults (local file/shell/browser), autonomous-mode posture, MCP approvals, and the known unsupported evidence register for local/third-party boundaries.",
-      "timeBudgetMinutes": 5
+      "ask": "Can you show reconciled evidence that Scout is governed across Frontier scope, Intune policy + attestation, and GitHub Copilot entitlement, with explicit controls for permissions, autonomy, and tool-server access?",
+      "followUp": "Validate all three gates against the same pilot roster, then review permission defaults (local file/shell/browser), autonomous-mode posture, tool-server approvals, and the known unsupported evidence register for local/third-party boundaries.",
+      "timeBudgetMinutes": 10
     },
     "solutions": []
   }

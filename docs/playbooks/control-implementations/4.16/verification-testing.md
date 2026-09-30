@@ -1,6 +1,6 @@
 # Control 4.16: Microsoft Scout Governance - Verification & Testing
 
-Test cases and evidence collection for validating the three Scout admin gates (Frontier scoping, endpoint policy + admin attestation, GitHub Copilot entitlement), the default permission posture, MCP-server governance, and the documented storage and inference boundary during the Frontier preview.
+Test cases and evidence collection for validating the three Scout admin gates (Frontier scoping, endpoint policy + admin attestation, GitHub Copilot entitlement), the default permission posture, tool-server governance, and the documented storage and inference boundary during the Frontier preview.
 
 ## Test Cases
 
@@ -19,7 +19,7 @@ Test cases and evidence collection for validating the three Scout admin gates (F
 ### Test 2b: Documented ADMX Admin Controls Are Configured to the Approved Pilot Posture
 
 - **Objective:** Confirm the pilot posture is recorded (and, where applicable, configured) for each of the ten ADMX admin controls documented in [Manage admin controls in Intune for Microsoft Scout](https://learn.microsoft.com/microsoft-scout/manage-group-policy): `PolicyVersion`, `DisabledServers`, `DisabledPermissions`, `ForcePrompt`, `DisabledModels`, `DisabledProviders`, `DisableHeartbeat`, `DisableWorkflows`, `RestrictToWorkspace`, and `BrowserEgressBlockedOrigins`.
-- **Expected Result:** For each setting, the pilot posture is documented (with citation to current Microsoft documentation) and reconciled to the sampled `HKLM\SOFTWARE\Policies\Scout` values captured in `scout-local-policy-sample.csv`. Where a setting is "not configured / verify against current Microsoft default," the documentation notes that explicitly. For settings that materially reduce blast radius (`DisabledServers`, `DisabledPermissions`, `ForcePrompt`, `DisabledProviders`, `DisableWorkflows`, `RestrictToWorkspace`, `BrowserEgressBlockedOrigins`), values match the approved-MCP inventory, permission-type decision, unattended-execution decision, workspace-scoping standard, third-party inference exclusion decision, and browser-egress decision respectively.
+- **Expected Result:** For each setting, the pilot posture is documented (with citation to current Microsoft documentation) and reconciled to the sampled `HKLM\SOFTWARE\Policies\Scout` values captured in `scout-local-policy-sample.csv`. Where a setting is "not configured / verify against current Microsoft default," the documentation notes that explicitly. For settings that materially reduce blast radius (`DisabledServers`, `DisabledPermissions`, `ForcePrompt`, `DisabledProviders`, `DisableWorkflows`, `RestrictToWorkspace`, `BrowserEgressBlockedOrigins`), values match the approved tool-server inventory, permission-type decision, unattended-execution decision, workspace-scoping standard, third-party inference exclusion decision, and browser-egress decision respectively.
 - **Evidence:** Pilot posture record for each ADMX setting; `scout-local-policy-sample.csv`; Intune policy export showing configured values.
 
 ### Test 3: Admin Attestation Is Complete and Retained
@@ -70,11 +70,11 @@ Test cases and evidence collection for validating the three Scout admin gates (F
 - **Expected Result:** Unattended automations are disabled (Scout's ADMX `DisableWorkflows` is set to disable Automations) or the unattended-execution decision is documented and approved.
 - **Evidence:** Unattended-execution posture record and the sampled `DisableWorkflows` value.
 
-### Test 9: Approved-MCP-Server Inventory Matches Configuration and, Where Applicable, `DisabledServers` Reflects the Exclusion
+### Test 9: Approved Tool-Server Inventory Matches Configuration and, Where Applicable, `DisabledServers` Reflects the Exclusion
 
-- **Objective:** Confirm the approved-MCP-server inventory matches configured MCP servers, that each entry captures the data path, authentication mechanism, and external egress, and that where the pilot excludes MCP servers, the exclusion is reflected in the documented `DisabledServers` ADMX setting.
-- **Expected Result:** No configured MCP server is outside the approved inventory; each entry has the required metadata; each server routes through extensibility governance under Control 4.13; the `DisabledServers` value matches the exclusion decision.
-- **Evidence:** Approved-MCP-server inventory, configured-server reconciliation, and the sampled `DisabledServers` value.
+- **Objective:** Confirm the approved tool-server inventory matches configured tool servers, that each entry captures the data path, authentication mechanism, and external egress, and that where the pilot excludes tool servers, the exclusion is reflected in the documented `DisabledServers` ADMX setting.
+- **Expected Result:** No configured tool server is outside the approved inventory; each entry has the required metadata; each server routes through extensibility governance under Control 4.13; the `DisabledServers` value matches the exclusion decision.
+- **Evidence:** Approved tool-server inventory, configured-server reconciliation, and the sampled `DisabledServers` value.
 
 ### Test 9b: Permission-Type Exclusions Are Reflected in `DisabledPermissions`
 
@@ -109,19 +109,19 @@ Test cases and evidence collection for validating the three Scout admin gates (F
 ### Test 10: Storage and Inference Boundary Is Documented
 
 - **Objective:** Confirm the governance record identifies which Scout data lives in OneDrive versus locally on the endpoint, and identifies third-party inference as outside M365 protections.
-- **Expected Result:** Documentation names OneDrive-stored data (session, memory), locally stored data (automation instructions, MCP output — outside the M365 DPA), and third-party inference (outside M365 residency, retention, label enforcement, and eDiscovery). Residual-risk acceptance is recorded.
+- **Expected Result:** Documentation names OneDrive-stored data (session, memory), locally stored data (automation instructions, tool output — outside the M365 DPA), and third-party inference (outside M365 residency, retention, label enforcement, and eDiscovery). Residual-risk acceptance is recorded.
 - **Evidence:** Boundary documentation and risk-acceptance record.
 
 ### Test 11: Audit and Supervision Coverage Assessment Is Complete
 
 - **Objective:** Confirm a documented assessment names what Scout activity is captured by Purview and which categories are known unsupported evidence.
-- **Expected Result:** Assessment names captured activity (M365-sourced admin/agent events) and known gaps (local shell execution, automation instructions, MCP output, third-party inference, sensitivity-label inheritance on generated content), each with a remediation owner or a documented risk acceptance.
+- **Expected Result:** Assessment names captured activity (M365-sourced admin/agent events) and known gaps (local shell execution, automation instructions, tool output, third-party inference, sensitivity-label inheritance on generated content), each with a remediation owner or a documented risk acceptance.
 - **Evidence:** Coverage assessment and evidence-gap manifest.
 
 ### Test 12: Incident-Response Playbook Covers Independent Gate Revocation
 
 - **Objective:** Confirm the incident-response playbook covers independent revocation of Frontier scoping, endpoint policy, and GitHub Copilot entitlement, plus preservation of locally stored Scout artifacts.
-- **Expected Result:** Playbook names the revocation owner and steps for each gate and describes preservation of local automation instructions and MCP output for investigation.
+- **Expected Result:** Playbook names the revocation owner and steps for each gate and describes preservation of local automation instructions and tool output for investigation.
 - **Evidence:** Incident-response playbook excerpt.
 
 ### Test 13: Sensitivity-Label Behavior on Generated Content Is Acknowledged
@@ -132,7 +132,7 @@ Test cases and evidence collection for validating the three Scout admin gates (F
 
 ### Test 14: External Content Is Treated as Untrusted
 
-- **Objective:** Confirm the governance record acknowledges that Scout treats external content (web, files outside the workspace, MCP server output) as untrusted, and that prompt-injection resistance is a platform responsibility rather than a customer-configurable control.
+- **Objective:** Confirm the governance record acknowledges that Scout treats external content (web, files outside the workspace, or tool-server output) as untrusted, and that prompt-injection resistance is a platform responsibility rather than a customer-configurable control.
 - **Expected Result:** Documented acknowledgment and any complementary controls (for example, workspace scoping, browser-navigation restrictions) named.
 - **Evidence:** Untrusted-content acknowledgment.
 
@@ -150,7 +150,7 @@ Test cases and evidence collection for validating the three Scout admin gates (F
 | Installation-privilege deployment record (system-context, JIT elevation, or exception) | Governance workspace / Intune app assignments | Markdown / CSV | Per retention policy |
 | ADMX admin-control posture record (per setting) | Governance workspace | Markdown / CSV | 7 years for regulated evidence sets |
 | Permission-mode decision (shell / autonomous / unattended) | Governance workspace | Markdown | 7 years for regulated evidence sets |
-| Approved-MCP-server inventory | Governance workspace | CSV / Markdown | Per retention policy |
+| Approved tool-server inventory | Governance workspace | CSV / Markdown | Per retention policy |
 | Storage and inference boundary documentation | Governance workspace | Markdown | 7 years for regulated evidence sets |
 | M365 audit subset for Scout-related activity | Unified audit log | CSV | 7 years for regulated evidence sets |
 | Evidence-gap manifest | Governance workspace | Text / Markdown | Per retention policy |

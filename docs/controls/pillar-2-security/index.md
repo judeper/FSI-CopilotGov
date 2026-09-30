@@ -33,7 +33,7 @@ Each control provides three governance levels — **Baseline**, **Recommended**,
 | [2.10](2.10-insider-risk-detection.md) | Insider Risk Detection for Copilot Usage Patterns | GLBA §501(b), Sarbanes-Oxley §§302/404, FINRA 3110 | High |
 | [2.11](2.11-copilot-pages-security.md) | Copilot Pages Security and Sharing Controls | GLBA §501(b), FINRA 4511 | High |
 | [2.12](2.12-external-sharing-governance.md) | External Sharing and Guest Access Governance | GLBA §501(b), SEC Reg S-P | High |
-| [2.13](2.13-plugin-connector-security.md) | Plugin and Graph Connector Security Governance | GLBA §501(b), FFIEC | Medium |
+| [2.13](2.13-plugin-connector-security.md) | Plugin and Copilot Connector Security Governance | GLBA §501(b), FFIEC | Medium |
 | [2.14](2.14-declarative-agents-governance.md) | Declarative and SharePoint Agents Governance | GLBA §501(b) | Medium |
 | [2.15](2.15-network-security.md) | Network Security and Private Connectivity | NYDFS Part 500, FFIEC | Medium |
 | [2.16](2.16-federated-connector-mcp-governance.md) | Federated Copilot Connector and MCP Governance | GLBA §501(b), SEC Reg S-P, FFIEC, OCC Bulletin 2023-17 | Medium |
