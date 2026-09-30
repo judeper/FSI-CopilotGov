@@ -9,7 +9,7 @@ Common issues and resolution steps for web search and grounding controls.
 - **Symptoms:** Administrators look for a web search on/off toggle under Copilot settings in the Microsoft 365 admin center and cannot find one
 - **Root Cause:** Microsoft states the scenario is not configured in the Microsoft 365 admin center. The admin center page provides a shortcut to the **Allow web search in Copilot** policy in the Cloud Policy service for Microsoft 365 Apps, which is where the setting actually lives.
 - **Resolution:**
-  1. Go to Admin Center > Copilot > Settings > Data Access > **Web search for Microsoft 365 Copilot and Microsoft 365 Copilot Chat** and follow the shortcut
+  1. Go to Admin Center > Copilot > Settings > Data Access > **Web search for Microsoft Copilot and Microsoft Copilot Chat** and follow the shortcut
   2. Alternatively, go directly to `https://config.office.com` > Customization > Policy Management and configure **Allow web search in Copilot**
   3. Verify the signed-in account holds Office Apps Administrator (Microsoft's recommended role), Security Administrator, or Entra Global Admin
   4. If the Cloud Policy setting itself is unavailable, contact Microsoft support to verify feature availability for the tenant
@@ -22,7 +22,7 @@ Common issues and resolution steps for web search and grounding controls.
   1. Confirm the user is a member of a group assigned to the policy configuration
   2. Have the user close and restart the Office app (or sign out and back in) and retest
   3. Allow up to 24 hours for users not covered by an assigned policy configuration, then retest
-  4. Verify the content is actually web-sourced (check for web citations in the response — Microsoft states these appear in Microsoft 365 Copilot Chat and remain in the thread for 24 hours)
+  4. Verify the content is actually web-sourced (check for web citations in the response — Microsoft states these appear in Microsoft Copilot Chat and remain in the thread for 24 hours)
   5. If content appears to be from organizational sources that match web content, this is expected
 
 ### Issue 3: Users Requesting Web Search Access
