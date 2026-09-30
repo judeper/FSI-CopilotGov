@@ -2125,9 +2125,10 @@ AUTHORED: dict[str, dict] = {
         },
     },
     # ---------------------------------------------------------------
-    # 2.13 — Plugin and Graph Connector Security Governance
+    # 2.13 — Plugin and Copilot Connector Security Governance
     # ---------------------------------------------------------------
     "2.13": {
+        "name": "Plugin and Copilot Connector Security Governance",
         "priority": "high",
         "yesBar": (
             "The Agent Registry, Agent Tools inventory, and Copilot connector "
@@ -4588,14 +4589,14 @@ AUTHORED: dict[str, dict] = {
             "(Frontier scope, managed-endpoint policy with admin attestation, and "
             "GitHub Copilot Business/Enterprise entitlement), with managed endpoint "
             "posture validated, shell/browser/local-file permissions governed, "
-            "autonomous/unattended modes explicitly controlled, MCP approvals "
+            "autonomous/unattended modes explicitly controlled, tool-server approvals "
             "documented, mixed M365/GitHub/local boundary risks acknowledged, and "
             "supervision evidence retained."
         ),
         "partialBar": (
             "Scout governance exists but one or more critical controls is missing "
             "or stale (gate reconciliation, endpoint policy evidence, permission "
-            "defaults, MCP approval records, supervision cadence, or known-evidence "
+            "defaults, tool-server approval records, supervision cadence, or known-evidence "
             "limitations tracking)."
         ),
         "noBar": (
@@ -4629,9 +4630,9 @@ AUTHORED: dict[str, dict] = {
             "GitHub Copilot Business/Enterprise entitlement export matched to pilot users",
             "Documented default permission posture for local files, shell commands, and browser actions",
             "Autonomous-mode and unattended-automation decision records with scope constraints",
-            "Approved MCP inventory including authentication, egress, and data-path classification",
+            "Approved tool-server inventory including authentication, egress, and data-path classification",
             "Boundary map showing M365-protected data vs GitHub/local/third-party processing surfaces",
-            "Known unsupported evidence register (local automation artifacts, local MCP output, third-party inference telemetry)",
+            "Known unsupported evidence register (local automation artifacts, local tool output, third-party inference telemetry)",
         ],
         "sectorYesBar": _sector_map(
             bank=(
@@ -4668,12 +4669,12 @@ AUTHORED: dict[str, dict] = {
             "ask": (
                 "Can you show reconciled evidence that Scout is governed across "
                 "Frontier scope, Intune policy + attestation, and GitHub Copilot "
-                "entitlement, with explicit controls for permissions, autonomy, and MCP?"
+                "entitlement, with explicit controls for permissions, autonomy, and tool-server access?"
             ),
             "followUp": (
                 "Validate all three gates against the same pilot roster, then review "
                 "permission defaults (local file/shell/browser), autonomous-mode "
-                "posture, MCP approvals, and the known unsupported evidence register "
+                "posture, tool-server approvals, and the known unsupported evidence register "
                 "for local/third-party boundaries."
             ),
             "timeBudgetMinutes": 10,

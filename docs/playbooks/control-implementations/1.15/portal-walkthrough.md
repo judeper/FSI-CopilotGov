@@ -14,7 +14,7 @@ Step-by-step governance workflow for establishing approved permission baselines,
 | Portal | Path | Why it matters |
 |--------|------|----------------|
 | SharePoint admin center | Reports > Data access governance | Establishes the approved access baseline for each monitored site |
-| Microsoft Entra admin center | Groups / Access reviews | Supports group membership validation and downstream recertification |
+| Microsoft Entra admin center | ID Governance > Access Reviews | Supports group membership validation and downstream recertification |
 | Governance reporting surface | Evidence repository / review workspace | Stores drift findings, approvals, and exception records |
 
 ## Steps

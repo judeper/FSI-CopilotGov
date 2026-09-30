@@ -1,11 +1,11 @@
-# Control 2.13: Plugin and Graph Connector Security — Portal Walkthrough
+# Control 2.13: Plugin and Copilot Connector Security — Portal Walkthrough
 
-Step-by-step portal configuration for securing Copilot plugins and Microsoft Graph connectors.
+Step-by-step portal configuration for securing Copilot plugins and Copilot connectors.
 
 ## Prerequisites
 
 - Microsoft 365 Admin Center access with an appropriate agent-management role
-- Global Administrator access for Microsoft Entra consent-workflow configuration
+- Entra Global Admin access for Microsoft Entra consent-workflow configuration
 - Plugin security review process approved by governance committee
 
 ## Steps
