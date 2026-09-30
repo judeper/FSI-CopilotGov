@@ -74,7 +74,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | 2.10 | Insider Risk Detection | -- | Included | -- | Purview Suite or Insider Risk add-on | Risky AI usage, Risky Agents, and related insider-risk workflows; some indicators and the Triage Agent also require PAYG/SCU prerequisites |
 | 2.11 | Copilot Pages Security and Sharing Controls | Included | Included | Included | -- | Admin settings for Copilot Pages sharing |
 | 2.12 | External Sharing and Guest Access Governance | Included | Included | -- | -- | Entra ID access reviews require P2 (included in E5) |
-| 2.13 | Plugin and Graph Connector Security Governance | Included | Included | Included | -- | Integrated Apps settings in M365 Admin Center |
+| 2.13 | Plugin and Copilot Connector Security Governance | Included | Included | Included | -- | Integrated Apps settings in M365 Admin Center |
 | 2.14 | Declarative and SharePoint Agents Governance | Included | Included | Included | -- | Admin settings for agent deployment and management |
 | 2.15 | Network Security and Private Connectivity | Included | Included | -- | -- | Network-level controls are infrastructure; not license-dependent |
 

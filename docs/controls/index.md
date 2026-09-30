@@ -49,7 +49,7 @@ DLP, sensitivity labels, conditional access, encryption, information barriers, a
 | 2.10 | [Insider Risk Detection for Copilot Usage Patterns](pillar-2-security/2.10-insider-risk-detection.md) | Recommended |
 | 2.11 | [Copilot Pages Security and Sharing Controls](pillar-2-security/2.11-copilot-pages-security.md) | Baseline |
 | 2.12 | [External Sharing and Guest Access Governance](pillar-2-security/2.12-external-sharing-governance.md) | Baseline |
-| 2.13 | [Plugin and Graph Connector Security Governance](pillar-2-security/2.13-plugin-connector-security.md) | Recommended |
+| 2.13 | [Plugin and Copilot Connector Security Governance](pillar-2-security/2.13-plugin-connector-security.md) | Recommended |
 | 2.14 | [Declarative and SharePoint Agents Governance](pillar-2-security/2.14-declarative-agents-governance.md) | Recommended |
 | 2.15 | [Network Security and Private Connectivity](pillar-2-security/2.15-network-security.md) | Regulated |
 | 2.16 | [Federated Copilot Connector and MCP Governance](pillar-2-security/2.16-federated-connector-mcp-governance.md) | Baseline |
