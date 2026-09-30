@@ -732,6 +732,23 @@ AUTHORED: dict[str, dict] = {
                 "Licenses assigned by registered-rep status; utilization "
                 "reviewed monthly by supervisory principal."
             ),
+            investment_adviser=(
+                "Copilot license-assignment criteria are included in the "
+                "adviser's annual Rule 206(4)-7 review of policy adequacy "
+                "and effectiveness, with the CCO administering the related "
+                "entitlement policy."
+            ),
+            insurance_carrier=(
+                "For carriers subject to 23 NYCRR 500, Copilot-enabled "
+                "account access is reviewed at least annually, and access "
+                "that is no longer necessary is removed."
+            ),
+            credit_union=(
+                "Copilot license-assignment review is treated as an access-"
+                "control measure the credit union has concluded is "
+                "appropriate under its Appendix A risk assessment, and "
+                "program status is reported to the board at least annually."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -782,6 +799,17 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Assessment includes FINRA Regulatory Notice coverage; "
                 "vendor risk reviewed as part of supervisory review program."
+            ),
+            insurance_carrier=(
+                "For carriers subject to 23 NYCRR 500, the Microsoft "
+                "Copilot vendor assessment documents third-party "
+                "identification, due diligence, minimum cybersecurity "
+                "requirements, and periodic reassessment under §500.11."
+            ),
+            credit_union=(
+                "The Microsoft Copilot vendor assessment documents the due "
+                "diligence, contractual safeguards, and service-provider "
+                "monitoring the credit union applies under Appendix A, III.D."
             ),
         ),
         "facilitatorNotes": {
@@ -2986,6 +3014,20 @@ AUTHORED: dict[str, dict] = {
                 "FINRA Rule 4530 reporting covers Copilot-related incidents; "
                 "books-and-records certifications include Copilot interactions."
             ),
+            insurance_carrier=(
+                "For carriers subject to 23 NYCRR 500, Copilot-related "
+                "incidents that meet the cybersecurity-incident threshold "
+                "are reported to the superintendent within 72 hours, and "
+                "the annual April 15 certification or acknowledgment is "
+                "supported by dated compliance records."
+            ),
+            credit_union=(
+                "Where Copilot-related activity meets the reportable-cyber-"
+                "incident definition, the credit union notifies the NCUA-"
+                "designated point of contact as soon as possible and no "
+                "later than 72 hours after it reasonably believes the "
+                "incident occurred."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -3188,6 +3230,12 @@ AUTHORED: dict[str, dict] = {
             "Evidence of disclosure usage in recent external communications",
         ],
         "sectorYesBar": _sector_map(
+            bank=(
+                "Where Copilot-assisted credit decisions lead to adverse "
+                "action, the notice states the specific principal reasons "
+                "regardless of algorithm complexity, and templates are "
+                "reviewed by compliance before issuance."
+            ),
             broker_dealer=(
                 "AI disclosure aligned to FINRA Regulatory Notice 24-09 "
                 "and SEC Press Release 2024-36 AI washing enforcement "
@@ -3197,6 +3245,13 @@ AUTHORED: dict[str, dict] = {
             investment_adviser=(
                 "AI disclosure aligned to SEC Marketing Rule (Rule 206(4)-1) "
                 "and Investment Advisers Act §206; reviewed by CCO."
+            ),
+            credit_union=(
+                "Where Copilot-assisted lending or underwriting decisions "
+                "lead to member adverse action, the notice states the "
+                "specific principal reasons regardless of algorithm "
+                "complexity, and templates are reviewed by compliance "
+                "before issuance."
             ),
         ),
         "facilitatorNotes": {
@@ -3420,6 +3475,25 @@ AUTHORED: dict[str, dict] = {
                 "Evidence pack structured for FINRA Rule 3120 testing and "
                 "inspection response."
             ),
+            investment_adviser=(
+                "The evidence-collection runbook supports prompt production "
+                "of electronic Rule 204-2 books and records in the stored "
+                "medium or a legible printout, with means to access, view, "
+                "and print them."
+            ),
+            insurance_carrier=(
+                "For carriers subject to 23 NYCRR 500, the evidence-"
+                "collection runbook retains the records, schedules, "
+                "documentation, and data supporting the annual certification "
+                "or acknowledgment for five years and keeps them ready for "
+                "examination."
+            ),
+            credit_union=(
+                "The evidence-collection runbook produces records in a "
+                "format NCUA examiners can access on request, including the "
+                "equipment or software needed to reproduce them during the "
+                "examination process."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -3529,6 +3603,13 @@ AUTHORED: dict[str, dict] = {
             bank=(
                 "Retention covers Pages/Notebooks per SOX record-keeping "
                 "requirements."
+            ),
+            investment_adviser=(
+                "Where the adviser treats Copilot Pages, Notebook sections, "
+                "or Loop components as Rule 204-2 books and records, Rule "
+                "204-2(g) procedures index them for retrieval, safeguard "
+                "them from alteration, and limit access to authorized "
+                "personnel and examiners."
             ),
         ),
         "facilitatorNotes": {
