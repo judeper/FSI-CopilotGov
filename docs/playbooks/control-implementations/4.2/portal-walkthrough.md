@@ -56,7 +56,7 @@ Step-by-step portal configuration for governing Copilot capabilities in Microsof
 ### Step 4: Configure Sensitivity Labels for Meetings
 
 **Portal:** Microsoft Purview portal
-**Path:** Solutions > Information protection > Labels
+**Path:** Solutions > Information Protection > Sensitivity labels
 
 1. Create or configure sensitivity labels for meeting types:
    - **Internal — Standard:** Copilot enabled with transcript

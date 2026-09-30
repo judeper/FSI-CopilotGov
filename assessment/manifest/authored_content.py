@@ -412,7 +412,7 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "Microsoft Purview portal",
-                "path": "Information Protection > Labels",
+                "path": "Solutions > Information Protection > Sensitivity labels",
                 "url": "https://purview.microsoft.com/informationprotection/labels",
             },
         ],
@@ -425,7 +425,7 @@ AUTHORED: dict[str, dict] = {
             "Sensitivity-label taxonomy document with AI-readiness review date",
             "Labels mapped to Copilot DLP content-exclusion rules",
             "Auto-labeling policy configuration for high-risk content types",
-            "Label usage report showing coverage across Copilot-grounded sites",
+            "Content Explorer labeled-item export cross-referenced with workload inventory totals for Copilot-grounded sites, supplemented with auto-labeling policy review evidence or Activity Explorer / audit evidence for encrypted SharePoint and OneDrive items that Content Explorer doesn't surface",
         ],
         "sectorYesBar": _sector_map(
             bank=(
@@ -447,9 +447,10 @@ AUTHORED: dict[str, dict] = {
                 "readiness in the last 12 months?"
             ),
             "followUp": (
-                "Open Microsoft Purview portal > Information Protection > Labels. "
-                "Verify the taxonomy has been reviewed for Copilot and that "
-                "DLP rules reference the appropriate labels."
+                "Open Microsoft Purview portal > Solutions > Information Protection > "
+                "Sensitivity labels. Verify the taxonomy has been reviewed for "
+                "Copilot, that DLP rules reference the appropriate labels, and "
+                "that auto-labeling review evidence exists for high-risk content."
             ),
             "timeBudgetMinutes": 6,
         },
@@ -1213,6 +1214,11 @@ AUTHORED: dict[str, dict] = {
                 "path": "Solutions > Information Protection > Publishing policies",
                 "url": "https://purview.microsoft.com/informationprotection/labelpolicies",
             },
+            {
+                "portal": "Microsoft Purview portal",
+                "path": "Solutions > Information Protection > Policies > Auto-labeling policies",
+                "url": "https://purview.microsoft.com/informationprotection/autolabeling",
+            },
         ],
         "verifyPowerShell": (
             "Connect-IPPSSession; "
@@ -1221,8 +1227,8 @@ AUTHORED: dict[str, dict] = {
         ),
         "evidenceExpected": [
             "Sensitivity-label taxonomy with Copilot content classification mapping",
-            "Auto-labeling policy configuration and coverage report",
-            "Label usage report from Activity Explorer for the last 30 days",
+            "Auto-labeling policy configuration plus Coverage by simulation context or Labeled items review evidence",
+            "Activity Explorer sensitivity-label activity for the last 30 days",
             "Evidence of label propagation to Copilot-generated outputs",
         ],
         "sectorYesBar": _sector_map(
@@ -1260,9 +1266,10 @@ AUTHORED: dict[str, dict] = {
                 "content?"
             ),
             "followUp": (
-                "Open Microsoft Purview portal > Information Protection. "
-                "Verify label policies, auto-labeling rules, and check "
-                "Activity Explorer for label usage trends."
+                "Open Microsoft Purview portal > Solutions > Information Protection. "
+                "Verify label policies, auto-labeling rules, Coverage by "
+                "simulation context or Labeled items review results, and check "
+                "Activity Explorer for recent label activity."
             ),
             "timeBudgetMinutes": 8,
         },

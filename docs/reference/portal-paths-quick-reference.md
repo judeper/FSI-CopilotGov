@@ -73,9 +73,9 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 
 | Setting | Navigation Path | Direct URL |
 |---------|----------------|------------|
-| Sensitivity labels | Information protection > Labels | `https://purview.microsoft.com/informationprotection/labels` |
-| Label policies | Information protection > Label policies | `https://purview.microsoft.com/informationprotection/labelpolicies` |
-| Auto-labeling | Information protection > Auto-labeling | `https://purview.microsoft.com/informationprotection/autolabeling` |
+| Sensitivity labels | Information Protection > Sensitivity labels | `https://purview.microsoft.com/informationprotection/labels` |
+| Label policies | Information Protection > Publishing policies | `https://purview.microsoft.com/informationprotection/labelpolicies` |
+| Auto-labeling | Information Protection > Policies > Auto-labeling policies | `https://purview.microsoft.com/informationprotection/autolabeling` |
 
 ### Audit and Retention
 
