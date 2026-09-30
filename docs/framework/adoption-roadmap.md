@@ -59,7 +59,7 @@ Organizations should adapt timelines and priorities based on their specific regu
 - [ ] Configure DLP policies for sensitive information types (SSN, account numbers, financial data) -- Control 2.1
 - [ ] Deploy sensitivity labels to priority content (or validate existing labels) -- Control 2.2
 - [ ] Configure web search policy (enable/disable per governance level decision) -- Control 2.6
-- [ ] Review and configure plugin/connector policies (default deny recommended) -- Control 2.8
+- [ ] Review and configure plugin/connector policies (default deny recommended) -- Control 2.13
 - [ ] Enable Copilot audit logging (verify CopilotInteraction events flow to Unified Audit Log) -- Control 3.1
 
 **Week 4: Operational Readiness**

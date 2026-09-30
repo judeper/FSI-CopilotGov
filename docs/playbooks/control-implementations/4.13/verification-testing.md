@@ -20,9 +20,10 @@ Test cases and evidence collection procedures for Copilot extensibility governan
 - **Objective:** Validate that widely available agents are visible in the Registry and have assigned owners
 - **Steps:**
   1. Review the current Registry inventory.
-  2. Identify any ownerless or broadly shared agents.
-  3. Verify follow-up or remediation is recorded for each exception.
-- **Expected Result:** Registry is current and owner accountability is clear.
+  2. If supported third-party platforms are connected, verify the latest **Connected platforms > Sync agents** run and record any synchronization errors before treating the Registry as complete.
+  3. Identify any ownerless or broadly shared agents.
+  4. Verify follow-up or remediation is recorded for each exception.
+- **Expected Result:** Registry is current for the last completed sync, and owner accountability is clear.
 - **Evidence:** Registry export or screenshots with owner fields.
 
 ### Test 3: Plugin Approval Workflow

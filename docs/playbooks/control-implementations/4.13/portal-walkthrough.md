@@ -17,7 +17,8 @@ Step-by-step portal configuration for governing plugins, Graph connectors, and a
 
 1. Review hero metrics for active users, sessions, exception rate, and runtime.
 2. Review governance action cards for pending requests or ownerless agents.
-3. Record follow-up actions in the governance register.
+3. If the tenant uses Agent Registry risk details, record whether the required E7 or A365 license is present and note that Microsoft documents Registry risk counts as potentially up to one hour behind the underlying security portals.
+4. Record follow-up actions in the governance register.
 
 ### Step 2: Review Agent Registry and Ownership
 
@@ -26,7 +27,8 @@ Step-by-step portal configuration for governing plugins, Graph connectors, and a
 
 1. Review published, shared, blocked, and ownerless agents.
 2. Confirm each broadly available agent has an owner and approval record.
-3. Block or remove agents that do not meet policy.
+3. If supported third-party platforms are connected, open **Connected platforms > Manage** and capture the latest **Sync agents** time, synchronized-agent count, and any synchronization errors. Microsoft currently documents **Sync agents** as manual.
+4. Block or remove agents that do not meet policy.
 
 ### Step 3: Configure Agent Settings
 
@@ -35,7 +37,7 @@ Step-by-step portal configuration for governing plugins, Graph connectors, and a
 
 1. Review allowed agent types.
 2. Review sharing controls.
-3. Review user access scope and policy templates used for new agents.
+3. Review user access scope, policy templates, feedback sharing, and tags used for new or existing agents.
 
 #### Verify Apply Template Scope for Existing Agents
 

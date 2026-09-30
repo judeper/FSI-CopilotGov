@@ -7,11 +7,11 @@ Use this guide to diagnose scoped encryption evidence. Do not convert a connecto
 ### Issue 1: Customer Key onboarding validation fails
 
 - **Symptoms:** The Customer Key Onboarding Service reports a failed `ValidationResult`, or `FailedValidations` contains subscription, recovery, key, or permission errors.
-- **Likely causes:** The request reused one subscription, named a vault/HSM outside the declared subscription, used an ineligible subscription, lacks 90-day recovery/purge protection where required, has an expired/unsupported key, or lacks required Microsoft 365 application access.
+- **Likely causes:** The request reused one subscription, named a vault/HSM outside the declared subscription, used an ineligible subscription, lacks Azure Key Vault 90-day recovery/purge protection or the required Managed HSM recovery settings, has an expired/unsupported key, or lacks required Microsoft 365 application access.
 - **Resolution:**
   1. Confirm two **distinct paid** Azure subscription IDs are supplied to the request.
   2. Select each subscription explicitly with `Set-AzContext` and verify the vault/HSM resides in that subscription.
-  3. For Azure Key Vault, verify 90-day soft-delete retention and purge protection. For Managed HSM, verify purge protection and the applicable recovery settings.
+  3. For Azure Key Vault, verify 90-day soft-delete retention and purge protection. For Managed HSM, verify purge protection and the configured recovery or soft-delete retention settings.
   4. Verify the key is appropriate for the selected Customer Key configuration, is not expired, and permits required operations.
   5. Review `$request.FailedValidations`, remediate the stated item, and rerun `Validate`; do not use `Enable` until validation succeeds.
 

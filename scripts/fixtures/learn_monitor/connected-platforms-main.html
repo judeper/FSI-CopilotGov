@@ -1,0 +1,880 @@
+<main class="layout-body-main" data-bi-name="content" dir="ltr" id="main" lang="en-us" role="main">
+ <div class="content-header default-focus border-bottom-none" data-bi-name="content-header" id="ms--content-header">
+  <div class="content-header-controls margin-xxs margin-inline-sm-tablet">
+   <button aria-haspopup="true" class="contents-button button button-sm margin-right-xxs" data-bi-name="contents-expand" data-contents-button="" type="button">
+    <span aria-hidden="true" class="icon">
+     <span class="docon docon-menu">
+     </span>
+    </span>
+    <span class="contents-expand-title">
+     Table of contents
+    </span>
+   </button>
+   <button aria-controls="action-panel" class="ap-collapse-behavior ap-expanded button button-sm" data-bi-name="ap-collapse" type="button">
+    <span aria-hidden="true" class="icon">
+     <span class="docon docon-exit-mode">
+     </span>
+    </span>
+    <span>
+     Exit editor mode
+    </span>
+   </button>
+  </div>
+ </div>
+ <div aria-label="Action Panel" class="action-panel" id="action-panel" role="region" tabindex="-1">
+ </div>
+ <div class="reading-width margin-inline-auto layout-padding padding-top-none padding-top-sm-tablet padding-bottom-sm" data-main-column="">
+  <div>
+   <div class="background-color-body margin-bottom-xs display-none-print" id="article-header">
+    <div class="display-flex align-items-center justify-content-space-between">
+     <details class="popover popover-left" data-for="article-header-breadcrumbs" id="article-header-breadcrumbs-overflow-popover">
+      <summary aria-label="All breadcrumbs" class="button button-clear button-primary button-sm inner-focus">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-more">
+        </span>
+       </span>
+      </summary>
+      <div class="popover-content" id="article-header-breadcrumbs-overflow">
+      </div>
+     </details>
+     <bread-crumbs aria-label="Breadcrumbs" class="overflow-hidden flex-grow-1 margin-right-sm margin-right-md-tablet margin-right-lg-desktop margin-left-negative-xxs padding-left-xxs" data-test-id="article-header-breadcrumbs" id="article-header-breadcrumbs" role="group">
+     </bread-crumbs>
+     <div class="opacity-none margin-left-auto display-flex flex-wrap-no-wrap align-items-stretch" id="article-header-page-actions">
+      <button aria-expanded="false" aria-label="Ask Learn" class="button button-sm border-none inner-focus display-none-tablet flex-shrink-0" data-ask-learn-modal-entry="" data-bi-name="ask-learn-assistant-entry" data-test-id="ask-learn-assistant-modal-entry-mobile" hidden="" style="min-width: max-content;" type="button">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+        </span>
+       </span>
+      </button>
+      <button aria-expanded="false" class="button button-sm display-none display-inline-flex-tablet display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn" data-ask-learn-modal-entry="" data-bi-name="ask-learn-assistant-entry" data-test-id="ask-learn-assistant-modal-entry-tablet" hidden="" style="min-width: max-content;" type="button">
+       <span aria-hidden="true" class="icon font-size-lg">
+        <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+        </span>
+       </span>
+       <span>
+        Ask Learn
+       </span>
+      </button>
+      <button aria-controls="ask-learn-flyout" aria-expanded="false" class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn" data-ask-learn-flyout-entry="" data-bi-name="ask-learn-assistant-entry" data-flyout-button="toggle" data-test-id="ask-learn-assistant-flyout-entry" hidden="" style="min-width: max-content;" type="button">
+       <span aria-hidden="true" class="icon font-size-lg">
+        <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+        </span>
+       </span>
+       <span>
+        Ask Learn
+       </span>
+      </button>
+      <details class="popover popover-right" id="article-header-page-actions-overflow">
+       <summary aria-label="More actions" class="justify-content-flex-start button button-clear button-sm button-primary inner-focus" title="More actions">
+        <span aria-hidden="true" class="icon">
+         <span class="docon docon-more-vertical">
+         </span>
+        </span>
+       </summary>
+       <div class="popover-content">
+        <button class="button button-clear button-sm button-block justify-content-flex-start text-align-left inner-focus display-none display-inline-flex-tablet" data-bi-name="focus-mode-entry" data-focus-mode="" data-page-action-item="overflow-all" data-popover-close="" id="ms--focus-mode-button" type="button">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-glasses">
+          </span>
+         </span>
+         <span>
+          Reading mode
+         </span>
+        </button>
+        <button class="display-block-layout-menu-collapsed button-block button-sm inner-focus button button-clear display-none-tablet justify-content-flex-start text-align-left" data-bi-name="contents-expand" data-contents-button="" data-page-action-item="overflow-mobile" data-popover-close="" type="button">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-editor-list-bullet">
+          </span>
+         </span>
+         <span class="contents-expand-title">
+          Table of contents
+         </span>
+        </button>
+        <a class="button-sm inner-focus button button-clear button-block justify-content-flex-start text-align-left" data-bi-name="language-toggle" data-check-hidden="true" data-page-action-item="overflow-all" data-read-in-link="" hidden="" href="#" id="lang-link-overflow">
+         <span aria-hidden="true" class="icon" data-read-in-link-icon="">
+          <span class="docon docon-locale-globe">
+          </span>
+         </span>
+         <span data-read-in-link-text="">
+          Read in English
+         </span>
+        </a>
+        <button class="collection button button-clear button-sm button-block justify-content-flex-start text-align-left inner-focus" data-bi-name="collection" data-check-hidden="true" data-list-type="collection" data-page-action-item="overflow-all" data-popover-close="" type="button">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-circle-addition">
+          </span>
+         </span>
+         <span class="collection-status">
+          Add
+         </span>
+        </button>
+        <button class="collection button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus" data-bi-name="plan" data-check-hidden="true" data-list-type="plan" data-page-action-item="overflow-all" data-popover-close="" hidden="" type="button">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-circle-addition">
+          </span>
+         </span>
+         <span class="plan-status">
+          Add to Plans
+         </span>
+        </button>
+        <a class="button button-clear button-block button-sm inner-focus justify-content-flex-start text-align-left text-decoration-none" data-bi-name="edit" data-check-hidden="true" data-contenteditbtn="" data-original_content_git_url="https://github.com/MicrosoftDocs/agent365-docs-pr/blob/live/agent365-docs/admin/connected-platforms.md" data-original_content_git_url_template="{repo}/blob/{branch}/agent365-docs/admin/connected-platforms.md" data-page-action-item="overflow-all" data-pr_branch="" data-pr_repo="" hidden="" href="">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-edit-outline">
+          </span>
+         </span>
+         <span>
+          Edit
+         </span>
+        </a>
+        <hr class="margin-block-xxs"/>
+        <button class="button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus" data-bi-name="copy-markdown" data-check-hidden="true" data-copy-markdown="" data-copy-state="idle" data-page-action-item="overflow-all" type="button">
+         <span aria-hidden="true" class="icon color-primary">
+          <span class="docon docon-code-lang" data-show-when="idle">
+          </span>
+          <span class="loader" data-show-when="loading" hidden="">
+          </span>
+          <span class="docon docon-check-mark" data-show-when="success" hidden="">
+          </span>
+         </span>
+         <span>
+          Copy Markdown
+         </span>
+        </button>
+        <button class="button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus" data-bi-name="print" data-check-hidden="true" data-page-action-item="overflow-all" data-popover-close="" data-print-page="" type="button">
+         <span aria-hidden="true" class="icon color-primary">
+          <span class="docon docon-print">
+          </span>
+         </span>
+         <span>
+          Print
+         </span>
+        </button>
+       </div>
+      </details>
+     </div>
+    </div>
+   </div>
+   <!-- privateUnauthorizedTemplate is hidden by default -->
+   <div data-bi-name="permission-content-unauthorized-private" hidden="" unauthorized-private-section="">
+    <hr class="hr margin-top-xs margin-bottom-sm"/>
+    <div class="notification notification-info">
+     <div class="notification-content">
+      <p class="margin-top-none notification-title">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-exclamation-circle-solid">
+        </span>
+       </span>
+       <span>
+        Note
+       </span>
+      </p>
+      <p class="margin-top-none authentication-determined not-authenticated">
+       Access to this page requires authorization. You can try
+       <a class="docs-sign-in" data-bi-name="permission-content-sign-in" href="#">
+        signing in
+       </a>
+       or
+       <a class="docs-change-directory" data-bi-name="permisson-content-change-directory">
+        changing directories
+       </a>
+       .
+      </p>
+      <p class="margin-top-none authentication-determined authenticated">
+       Access to this page requires authorization. You can try
+       <a class="docs-change-directory" data-bi-name="permisson-content-change-directory">
+        changing directories
+       </a>
+       .
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="content">
+    <h1 id="connected-platforms-in-microsoft-agent-365">
+     Connected platforms in Microsoft Agent 365
+    </h1>
+   </div>
+   <div class="page-metadata-container display-flex gap-xxs justify-content-space-between align-items-center flex-wrap-wrap" data-bi-name="article-metadata" data-test-id="article-metadata" id="article-metadata">
+    <div class="margin-block-xxs display-none display-none-print" data-hide-on-archived="" hidden="" id="user-feedback">
+     <button class="button button-sm button-clear button-primary display-none" data-bi-name="user-feedback-button" data-test-id="conceptual-feedback-button" data-user-feedback-button="" hidden="" id="user-feedback-button" type="button">
+      <span aria-hidden="true" class="icon">
+       <span class="docon docon-like">
+       </span>
+      </span>
+      <span>
+       Feedback
+      </span>
+     </button>
+    </div>
+   </div>
+   <div class="display-none-print" data-id="ai-summary">
+    <div class="margin-top-xs display-flex align-items-center" id="ms--ai-summary-cta">
+     <span aria-hidden="true" class="icon">
+      <span class="docon docon-sparkle-fill gradient-text-vivid">
+      </span>
+     </span>
+     <button class="tag tag-sm tag-suggestion margin-left-xxs" data-an="ai-summary" data-bi-name="ai-summary-cta" data-test-id="ai-summary-cta" id="ms--ai-summary" type="button">
+      <span class="ai-summary-cta-text">
+       Summarize this article for me
+      </span>
+     </button>
+    </div>
+    <!-- Slot where the client will render the summary card after the user clicks the CTA -->
+    <div class="margin-top-xs" id="ms--ai-summary-header">
+    </div>
+   </div>
+   <nav aria-label="In this article" class="doc-outline display-none-desktop display-none-print margin-bottom-sm" data-bi-name="intopic toc" id="center-doc-outline">
+    <h2 class="title is-6 margin-block-xs" id="ms--in-this-article">
+     In this article
+    </h2>
+   </nav>
+   <div class="content">
+    <p>
+     Use the
+     <strong>
+      Connected platforms
+     </strong>
+     page to connect supported third-party agent
+platforms to Microsoft Agent 365. After you create a connection, Agent 365 can
+discover supported agents and add them to the Microsoft 365 agent registry.
+Synchronization, management, and observability capabilities vary by platform.
+    </p>
+    <p>
+     Setting up a connection is a shared task:
+    </p>
+    <ul>
+     <li>
+      The
+      <strong>
+       Agent 365 AI administrator
+      </strong>
+      creates and manages the connection in the
+Microsoft 365 admin center.
+     </li>
+     <li>
+      The
+      <strong>
+       platform administrator
+      </strong>
+      creates the source-platform credentials,
+grants the required permissions, and enables platform-side telemetry when
+applicable.
+     </li>
+    </ul>
+    <h2 id="manage-external-platform-connections">
+     Manage external platform connections
+    </h2>
+    <p>
+     Create and manage external platform connections from the
+     <strong>
+      Connected
+platforms
+     </strong>
+     page in the Microsoft 365 admin center.
+    </p>
+    <p>
+     <span class="mx-imgBorder">
+      <a data-linktype="relative-path" href="media/agent-registry/platform-registry-sync.png#lightbox">
+       <img alt="Screenshot of the Connected platforms page in the Microsoft 365 admin center showing the Google Cloud connection details pane with synchronization status and synchronized agents." data-linktype="relative-path" src="media/agent-registry/platform-registry-sync.png"/>
+      </a>
+     </span>
+    </p>
+    <p>
+     From this page, you can:
+    </p>
+    <ul>
+     <li>
+      Create platform connections.
+     </li>
+     <li>
+      View connection synchronization status.
+     </li>
+     <li>
+      Monitor the latest synchronization activity.
+     </li>
+     <li>
+      Review errors associated with synchronization attempts.
+     </li>
+     <li>
+      Delete existing connections.
+     </li>
+    </ul>
+    <h2 id="supported-platforms">
+     Supported platforms
+    </h2>
+    <table>
+     <thead>
+      <tr>
+       <th>
+        Platform
+       </th>
+       <th>
+        Supported environment
+       </th>
+       <th>
+        Agent synchronization
+       </th>
+       <th>
+        Observability
+       </th>
+       <th>
+        Configuration guide
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        Amazon Bedrock
+       </td>
+       <td>
+        Agents Classic and AgentCore
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        <a data-linktype="relative-path" href="connected-platforms-amazon-bedrock">
+         Connect Amazon Bedrock
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Google Vertex AI
+       </td>
+       <td>
+        Vertex AI agents
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        <a data-linktype="relative-path" href="connected-platforms-google-vertex-ai">
+         Connect Google Vertex AI
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Salesforce Agentforce
+       </td>
+       <td>
+        Agentforce
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        Coming soon
+       </td>
+       <td>
+        <a data-linktype="relative-path" href="connected-platforms-salesforce-agent-force">
+         Connect Salesforce Agentforce
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Databricks Genie
+       </td>
+       <td>
+        Genie
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        Coming soon
+       </td>
+       <td>
+        <a data-linktype="relative-path" href="connected-platforms-databricks-genie">
+         Connect Databricks Genie
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Anthropic Claude
+       </td>
+       <td>
+        Managed Agents
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        <a data-linktype="relative-path" href="connected-platforms-anthropic-claude">
+         Connect Anthropic Claude Managed Agents
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Oracle Generative AI Agents
+       </td>
+       <td>
+        Generative AI Agents
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        Coming soon
+       </td>
+       <td>
+        <a data-linktype="relative-path" href="connected-platforms-oracle-generative-ai">
+         Connect Oracle Generative AI Agents
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Snowflake Cortex
+       </td>
+       <td>
+        Cortex Agents
+       </td>
+       <td>
+        Yes
+       </td>
+       <td>
+        Coming soon
+       </td>
+       <td>
+        <a data-linktype="relative-path" href="connected-platforms-snowflake-cortex">
+         Connect Snowflake Cortex
+        </a>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <h2 id="connection-lifecycle">
+     Connection lifecycle
+    </h2>
+    <ol>
+     <li>
+      <strong>
+       Prepare
+      </strong>
+      : Work with your platform administrator to select the account,
+project, workspace, compartment, or region and prepare the required
+credentials and permissions.
+     </li>
+     <li>
+      <strong>
+       Connect
+      </strong>
+      : Create and validate the connection in the Microsoft 365 admin
+center.
+     </li>
+     <li>
+      <strong>
+       Synchronize
+      </strong>
+      : Start synchronization so that Agent 365 discovers supported
+agents and adds them to the agent registry.
+     </li>
+     <li>
+      <strong>
+       Verify
+      </strong>
+      : Confirm the expected agents, metadata, and capabilities with
+your platform administrator.
+     </li>
+     <li>
+      <strong>
+       Operate
+      </strong>
+      : Monitor synchronization, rotate credentials, review errors,
+and remove connections when they're no longer needed.
+     </li>
+    </ol>
+    <h2 id="administrator-responsibilities">
+     Administrator responsibilities
+    </h2>
+    <table>
+     <thead>
+      <tr>
+       <th>
+        Task
+       </th>
+       <th>
+        Agent 365 AI administrator
+       </th>
+       <th>
+        Platform administrator
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        Confirm Agent 365 access and role
+       </td>
+       <td>
+        Owns
+       </td>
+       <td>
+        Informed
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Select the source account, project, workspace, or region
+       </td>
+       <td>
+        Consulted
+       </td>
+       <td>
+        Owns
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Create credentials
+       </td>
+       <td>
+        Informed
+       </td>
+       <td>
+        Owns
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Grant source-platform permissions
+       </td>
+       <td>
+        Informed
+       </td>
+       <td>
+        Owns
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Create and validate the Agent 365 connection
+       </td>
+       <td>
+        Owns
+       </td>
+       <td>
+        Supports
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Verify synchronized agents
+       </td>
+       <td>
+        Owns
+       </td>
+       <td>
+        Supports
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Enable source telemetry
+       </td>
+       <td>
+        Consulted
+       </td>
+       <td>
+        Owns
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Rotate or revoke credentials
+       </td>
+       <td>
+        Coordinates
+       </td>
+       <td>
+        Owns
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <h2 id="create-a-platform-connection">
+     Create a platform connection
+    </h2>
+    <ol>
+     <li>
+      Open the
+      <a data-linktype="external" href="https://admin.microsoft.com/Adminportal/Home#/homepage">
+       Microsoft 365 admin center
+      </a>
+      .
+     </li>
+     <li>
+      In the navigation pane, select
+      <strong>
+       Agents
+      </strong>
+      &gt;
+      <strong>
+       All Agents
+      </strong>
+      .
+     </li>
+     <li>
+      In the
+      <strong>
+       Connected platforms
+      </strong>
+      web part, select
+      <strong>
+       Manage
+      </strong>
+      .
+     </li>
+     <li>
+      Select
+      <strong>
+       + Connect a platform
+      </strong>
+      .
+     </li>
+     <li>
+      Enter a connection name and description.
+     </li>
+     <li>
+      Select the platform.
+     </li>
+     <li>
+      Enter the provider-specific values described in the provider guide.
+     </li>
+     <li>
+      Validate the credentials.
+     </li>
+     <li>
+      Save the connection.
+     </li>
+    </ol>
+    <p>
+     After you save the connection, select
+     <strong>
+      Sync agents
+     </strong>
+     to start synchronization. Manual synchronization is required.
+    </p>
+    <h2 id="manage-an-existing-connection">
+     Manage an existing connection
+    </h2>
+    <p>
+     Select an existing connection to review:
+    </p>
+    <ul>
+     <li>
+      Identify the platform provider.
+     </li>
+     <li>
+      Confirm the connected account, project, workspace, compartment, or region.
+     </li>
+     <li>
+      Review the last run date.
+     </li>
+     <li>
+      Review the latest synchronization status.
+     </li>
+     <li>
+      Confirm the total number of synchronized agents.
+     </li>
+     <li>
+      Review the synchronization results.
+     </li>
+     <li>
+      Investigate any synchronization errors.
+     </li>
+    </ul>
+    <p>
+     Follow the relevant provider guide when you need to rotate credentials, change the source scope, revoke access, or remove the connection.
+    </p>
+    <h2 id="related-content">
+     Related content
+    </h2>
+    <ul>
+     <li>
+      <a data-linktype="relative-path" href="connected-platforms-amazon-bedrock">
+       Connect Amazon Bedrock
+      </a>
+     </li>
+     <li>
+      <a data-linktype="relative-path" href="connected-platforms-google-vertex-ai">
+       Connect Google Vertex AI
+      </a>
+     </li>
+     <li>
+      <a data-linktype="relative-path" href="connected-platforms-salesforce-agent-force">
+       Connect Salesforce Agentforce
+      </a>
+     </li>
+     <li>
+      <a data-linktype="relative-path" href="connected-platforms-databricks-genie">
+       Connect Databricks Genie
+      </a>
+     </li>
+     <li>
+      <a data-linktype="relative-path" href="connected-platforms-anthropic-claude">
+       Connect Anthropic Claude Managed Agents
+      </a>
+     </li>
+     <li>
+      <a data-linktype="relative-path" href="connected-platforms-oracle-generative-ai">
+       Connect Oracle Generative AI Agents
+      </a>
+     </li>
+     <li>
+      <a data-linktype="relative-path" href="connected-platforms-snowflake-cortex">
+       Connect Snowflake Cortex
+      </a>
+     </li>
+     <li>
+      <a data-linktype="relative-path" href="third-party-agent-observability">
+       Third-party agent observability (Frontier)
+      </a>
+     </li>
+     <li>
+      <a data-linktype="relative-path" href="troubleshoot-connected-platforms">
+       Troubleshoot connected platforms
+      </a>
+     </li>
+    </ul>
+   </div>
+   <div class="margin-block-xs" data-bi-name="inline-notification" id="ms--inline-notifications">
+   </div>
+   <div aria-atomic="true" aria-live="assertive" aria-relevant="additions" class="visually-hidden" id="assertive-live-region" role="alert">
+   </div>
+   <div aria-atomic="true" aria-live="polite" aria-relevant="additions" class="visually-hidden" id="polite-live-region" role="status">
+   </div>
+   <!-- feedback section -->
+   <section class="font-size-sm margin-top-md display-none-print display-none-desktop" data-bi-name="site-feedback-section" data-test-id="site-user-feedback-footer" id="site-user-feedback-footer">
+    <hr class="hr"/>
+    <h2 class="title is-3" id="ms--feedback">
+     Feedback
+    </h2>
+    <div class="display-flex flex-wrap-wrap align-items-center">
+     <p class="font-weight-semibold margin-xxs margin-left-none">
+      Was this page helpful?
+     </p>
+     <div class="buttons">
+      <button aria-pressed="false" class="thumb-rating-button like button button-primary button-sm" data-bi-name="button-rating-yes" data-binary-rating-response="rating-yes" data-test-id="footer-rating-yes" title="This article is helpful" type="button">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-like">
+        </span>
+       </span>
+       <span>
+        Yes
+       </span>
+      </button>
+      <button aria-pressed="false" class="thumb-rating-button dislike button button-primary button-sm" data-bi-name="button-rating-no" data-binary-rating-response="rating-no" data-test-id="footer-rating-no" hidden="" id="standard-rating-no-button" title="This article is not helpful" type="button">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-dislike">
+        </span>
+       </span>
+       <span>
+        No
+       </span>
+      </button>
+      <details class="popover popover-top" data-test-id="footer-feedback-popover" id="mobile-help-popover">
+       <summary aria-pressed="false" class="thumb-rating-button dislike button button-primary button-sm" data-bi-an="feedback-unhelpful-popover" data-bi-name="button-rating-no" data-binary-rating-response="rating-no" data-test-id="details-footer-rating-no" title="This article is not helpful">
+        <span aria-hidden="true" class="icon">
+         <span class="docon docon-dislike">
+         </span>
+        </span>
+        <span>
+         No
+        </span>
+       </summary>
+       <div aria-describedby="popover-description" aria-labelledby="popover-heading" class="popover-content width-200 width-300-tablet" role="dialog">
+        <p class="font-size-lg margin-bottom-xxs font-weight-semibold" id="popover-heading">
+         Need help with this topic?
+        </p>
+        <p class="font-size-sm margin-bottom-xs" id="popover-description">
+         Want to try using Ask Learn to clarify or guide you through this topic?
+        </p>
+        <div class="buttons flex-direction-row flex-wrap justify-content-center gap-xxs">
+         <div>
+          <button aria-expanded="false" aria-label="Ask Learn" class="button button-sm border inner-focus display-none margin-right-xxs" data-ask-learn-modal-entry-feedback="" data-bi-an="feedback-unhelpful-popover" data-bi-name="ask-learn-assistant-entry-troubleshoot" data-test-id="ask-learn-assistant-modal-entry-mobile-feedback" hidden="" style="min-width: max-content;" type="button">
+           <span aria-hidden="true" class="icon">
+            <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+            </span>
+           </span>
+          </button>
+          <button aria-expanded="false" class="button button-sm display-inline-flex display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn margin-right-xxs" data-ask-learn-modal-entry-feedback="" data-bi-an="feedback-unhelpful-popover" data-bi-name="ask-learn-assistant-entry-troubleshoot" data-test-id="ask-learn-assistant-modal-entry-tablet-feedback" hidden="" style="min-width: max-content;" type="button">
+           <span aria-hidden="true" class="icon font-size-lg">
+            <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+            </span>
+           </span>
+           <span>
+            Ask Learn
+           </span>
+          </button>
+          <button aria-controls="ask-learn-flyout" aria-expanded="false" class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn margin-right-xxs" data-ask-learn-flyout-entry-show-only="" data-bi-an="feedback-unhelpful-popover" data-bi-name="ask-learn-assistant-entry-troubleshoot" data-flyout-button="toggle" data-test-id="ask-learn-assistant-flyout-entry-feedback" hidden="" style="min-width: max-content;" type="button">
+           <span aria-hidden="true" class="icon font-size-lg">
+            <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+            </span>
+           </span>
+           <span>
+            Ask Learn
+           </span>
+          </button>
+         </div>
+         <button class="button button-sm margin-right-xxs" data-bi-an="feedback-unhelpful-popover" data-bi-name="feedback-suggest" data-help-option="suggest-fix" data-test-id="suggest-fix" type="button">
+          <span aria-hidden="true" class="icon">
+           <span class="docon docon-feedback">
+           </span>
+          </span>
+          <span>
+           Suggest a fix?
+          </span>
+         </button>
+        </div>
+       </div>
+      </details>
+     </div>
+    </div>
+   </section>
+   <!-- end feedback section -->
+  </div>
+  <div class="display-none-print" id="ms--additional-resources-mobile">
+   <hr class="hr" hidden=""/>
+   <h2 class="title is-3" hidden="" id="ms--additional-resources-mobile-heading">
+    Additional resources
+   </h2>
+   <section class="" data-bi-name="recommendations" hidden="" id="right-rail-recommendations-mobile">
+   </section>
+   <section class="" data-bi-name="learning-resource-card" hidden="" id="right-rail-training-mobile">
+   </section>
+   <section class="" data-bi-name="events-card" hidden="" id="right-rail-events-mobile">
+   </section>
+  </div>
+  <div class="page-metadata-container" data-bi-name="article-metadata-footer" data-test-id="article-metadata-footer" id="article-metadata-footer">
+   <hr class="hr"/>
+   <ul class="metadata page-metadata" data-bi-name="page info" dir="ltr" lang="en-us">
+    <li class="visibility-hidden-visual-diff">
+     <span class="badge badge-sm text-wrap-pretty">
+      <span>
+       Last updated on
+       <local-time class="is-invisible" data-article-date-source="calculated" datetime="2026-09-29T01:03:00.000Z" format="twoDigitNumeric">
+        2026-09-29
+       </local-time>
+      </span>
+     </span>
+    </li>
+   </ul>
+  </div>
+ </div>
+</main>

@@ -59,7 +59,7 @@ Test cases and evidence collection procedures to validate Copilot administrative
 - **Objective:** Confirm cost-enablement controls are governed
 - **Steps:**
   1. Review **Settings > Org settings > Self-service trials and purchases**.
-  2. Review **Billing > Pay-as-you-go services**.
+  2. Review **Copilot > Billing & usage > Pay-as-you-go services**.
   3. Confirm any active billing policy or self-service exception is documented and approved.
 - **Expected Result:** Billing-related Copilot controls match policy.
 - **Evidence:** Screenshots and approval references.
