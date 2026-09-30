@@ -9,19 +9,19 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Objective:** Confirm that Copilot interactions generate audit log entries
 - **Steps:**
   1. Have a licensed test user initiate a Copilot interaction in Word, Excel, or Teams.
-  2. Wait 15-30 minutes for log ingestion.
+  2. Wait for the normal audit-ingestion window. Microsoft says core services are typically available within 60 to 90 minutes after an event occurs, while other services may take longer.
   3. Search the Unified Audit Log for `CopilotInteraction` events filtered to the test user.
 - **Expected Result:** At least one `CopilotInteraction` record appears with the test user's UPN, timestamp, application context, and prompt metadata.
 - **Evidence:** Screenshot of audit log search results showing the captured interaction with timestamps.
 
 ### Test 2: Retention Policy Application
 
-- **Objective:** Verify that the 6-year retention requirement is covered for Copilot audit records
+- **Objective:** Verify that the six-year regulatory minimum is covered for Copilot audit records
 - **Steps:**
   1. Run `Get-UnifiedAuditLogRetentionPolicy` and filter for Copilot-related policies.
   2. For PowerShell-created policies, confirm the policy shows `RetentionDuration: TenYears` and `RecordTypes: CopilotInteraction`. PowerShell does not support a six-year audit retention value; use `TenYears` to cover the SEC Rule 17a-4(a) minimum.
-  3. If the policy was configured in the Purview portal with a 7-year duration, document that portal-only duration and retain the portal evidence with the policy record.
-  4. Verify the policy priority is higher than the default retention policy.
+  3. If the policy was configured in the Purview portal with a 7-year duration, document that portal-only duration, verify the user population has the 10-year Audit Log Retention add-on required for the portal's 3-, 5-, and 7-year options, and retain that license evidence with the policy record.
+  4. Verify the policy priority uses a unique value and matches the intended precedence. Lower numbers take precedence over higher numbers among custom policies, and any custom policy takes precedence over the default policy.
 - **Expected Result:** FSI Copilot retention policy exists with correct duration, record types, and priority. PowerShell evidence shows `TenYears`; portal-created 7-year evidence is documented where used.
 - **Evidence:** PowerShell output or portal evidence showing the retention policy configuration.
 
@@ -50,7 +50,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Objective:** Verify that agent creation and modification events generate CopilotAgentManagement records (see [M365 Admin Center agent management activities](https://learn.microsoft.com/purview/audit-log-activities#microsoft-365-admin-center-agent-management-activities))
 - **Steps:**
   1. In a test environment, have an authorized administrator create a new declarative Copilot agent or modify an existing agent (e.g., add a knowledge source or change agent instructions).
-  2. Wait 15-30 minutes for log ingestion.
+  2. Wait for the normal audit-ingestion window. Microsoft says core services are typically available within 60 to 90 minutes after an event occurs, while other services may take longer, so allow extra time before treating the record as missing.
   3. Search the Unified Audit Log using `-RecordType CopilotAgentManagement` filtered to the test administrator's UPN.
   4. Verify the event record contains `AgentId` and `AgentName` fields in the AuditData JSON.
 - **Expected Result:** At least one `CopilotAgentManagement` event appears with the administrator's UPN, the affected agent's ID and name, and a timestamp corresponding to the test action.
@@ -82,9 +82,10 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 - **Objective:** Verify that agent-specific record types are covered by a retention policy
 - **Steps:**
   1. Run `Get-UnifiedAuditLogRetentionPolicy | Where-Object { $_.RecordTypes -like "*CopilotAgentManagement*" }`.
-  2. Confirm the policy exists with a minimum 6-year duration.
-  3. Verify the policy priority is appropriately set.
-- **Expected Result:** A retention policy covering `CopilotAgentManagement` exists with 6-year duration — supporting SOX Section 404 IT general controls audit trail requirements.
+  2. Confirm the policy exists with a 7-year portal duration or `TenYears` if it was created in PowerShell.
+  3. If the policy uses the 7-year portal duration, verify the affected users have the 10-year Audit Log Retention add-on required for the portal's 3-, 5-, and 7-year options.
+  4. Verify the policy priority is appropriately set.
+- **Expected Result:** A retention policy covering `CopilotAgentManagement` exists with a 7-year portal duration (backed by the required add-on license) or `TenYears` from PowerShell — supporting SOX Section 404 IT general controls audit trail requirements.
 - **Evidence:** PowerShell output showing the agent record type retention policy configuration.
 
 ## Evidence Collection
@@ -103,7 +104,7 @@ Test cases and evidence collection procedures to validate that Copilot interacti
 
 | Regulation | Requirement | How This Control Helps |
 |-----------|-------------|----------------------|
-| SEC Rule 17a-4(a) | Electronic record preservation — six-year retention minimum | Supports compliance through 6-year audit log retention for CopilotInteraction and agent record types |
+| SEC Rule 17a-4(a) | Electronic record preservation — six-year retention minimum | Supports compliance through retention that covers the 6-year minimum for CopilotInteraction and agent record types (7 years in portal or `TenYears` in PowerShell) |
 | FINRA Rule 4511 | Books and records | Helps meet record-keeping requirements for AI-assisted activities |
 | FINRA Rule 3110 | Supervisory procedures for registered representatives | AgentId/AgentName fields enable supervisory mapping of agent usage to approved workflows |
 | SOX Section 404 | IT general controls audit trail | CopilotAgentManagement record type provides change management evidence |

@@ -1,0 +1,97 @@
+Table of contents
+Exit editor mode
+Ask Learn
+Ask Learn
+Reading mode
+Table of contents
+Read in English
+Add
+Add to Plans
+Edit
+Copy Markdown
+Print
+Note
+Access to this page requires authorization. You can try
+signing in
+or
+changing directories
+.
+Access to this page requires authorization. You can try
+changing directories
+.
+Connected platforms in Microsoft Agent 365
+Feedback
+Summarize this article for me
+Use the
+Connected platforms
+page to connect supported third-party agent
+platforms to Microsoft Agent 365. After you create a connection, Agent 365 can
+discover supported agents and add them to the Microsoft 365 agent registry.
+Synchronization, management, and observability capabilities vary by platform.
+Setting up a connection is a shared task:
+The
+Agent 365 AI administrator
+creates and manages the connection in the
+Microsoft 365 admin center.
+The
+platform administrator
+creates the source-platform credentials,
+grants the required permissions, and enables platform-side telemetry when
+applicable.
+Manage external platform connections
+Create and manage external platform connections from the
+Connected
+platforms
+page in the Microsoft 365 admin center.
+From this page, you can:
+Create platform connections.
+View connection synchronization status.
+Monitor the latest synchronization activity.
+Review errors associated with synchronization attempts.
+Delete existing connections.
+Supported platforms
+Platform
+Supported environment
+Agent synchronization
+Observability
+Configuration guide
+Amazon Bedrock
+Agents Classic and AgentCore
+Yes
+Yes
+Connect Amazon Bedrock
+Google Vertex AI
+Vertex AI agents
+Yes
+Yes
+Connect Google Vertex AI
+Salesforce Agentforce
+Agentforce
+Yes
+Coming soon
+Connect Salesforce Agentforce
+Databricks Genie
+Genie
+Yes
+Coming soon
+Connect Databricks Genie
+Anthropic Claude
+Managed Agents
+Yes
+Yes
+Connect Anthropic Claude Managed Agents
+Oracle Generative AI Agents
+Generative AI Agents
+Yes
+Coming soon
+Connect Oracle Generative AI Agents
+Snowflake Cortex
+Cortex Agents
+Yes
+Coming soon
+Connect Snowflake Cortex
+Connection lifecycle
+Prepare
+: Work with your platform administrator to select the account,
+project, workspace, compartment, or region and prepare the required
+credentials 

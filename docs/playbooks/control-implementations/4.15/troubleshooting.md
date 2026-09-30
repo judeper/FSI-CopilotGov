@@ -1,6 +1,6 @@
 # Control 4.15: Copilot Cowork Governance - Troubleshooting
 
-Common issues and resolution steps for governing Microsoft 365 Copilot Cowork after its June 2026 general availability, including access gating (spending policies + discovery), model controls, local browser use, plugin and Customize-page extensibility, and consumption limits.
+Common issues and resolution steps for governing Microsoft 365 Copilot Cowork after its June 2026 general availability, including access gating (spending policies + the current discovery/request setting), model controls, local browser use, plugin and Customize-page extensibility, and consumption limits.
 
 ## Common Issues
 
@@ -12,63 +12,69 @@ Common issues and resolution steps for governing Microsoft 365 Copilot Cowork af
 ### Issue 2: Cowork Is Not Visible to Any Users
 
 - **Symptoms:** Users report Cowork is not surfaced in Microsoft 365 Copilot.
-- **Resolution:** Check whether the intended access posture is billing-only (targeted users only) or billing + discovery (broader awareness with request flow). If broad discovery is intended, turn on **M365 Admin Center > Copilot > Settings > AI experiences enabled by usage-based billing**. If discovery is deliberately off, communicate the pilot scope to users so they understand why Cowork is not visible.
+- **Resolution:** Check whether the intended access posture is billing-only (targeted users only) or billing + discovery (broader awareness with request flow). If broad discovery is intended, remember that **M365 Admin Center > Copilot > Settings > AI experiences enabled by usage-based billing** is the current **deprecated** discovery/request setting that Microsoft says will be replaced. Use it only with a documented transition note for the future request-access control. If discovery is deliberately off, communicate the pilot scope to users so they understand why Cowork is not visible.
 
 ### Issue 3: Unexpected Access Requests
 
 - **Symptoms:** Admins receive Cowork access requests from users outside the approved pilot.
-- **Resolution:** If discovery is on tenant-wide, users without billing enabled can request access from within Cowork. Route each request through the documented review workflow (policy, cost, compliance) before enabling billing for the requester. If request volume is unmanageable, consider turning discovery off and re-communicating the pilot scope.
+- **Resolution:** If the current discovery/request setting is on tenant-wide, users without billing enabled can request access from within Cowork. Route each request through the documented review workflow (policy, cost, compliance) before enabling billing for the requester. Because Microsoft now documents this setting as deprecated pending replacement, also record any tenant transition decision for the future request-access control. If request volume is unmanageable, consider turning discovery off and re-communicating the pilot scope.
 
-### Issue 4: Cowork Activity from Users Outside the Approved Scope
+### Issue 4: Admins Change the Cowork Entry Under Agents > All Agents but Access Does Not Change
+
+- **Symptoms:** An admin adjusts Cowork under **Microsoft 365 Admin Center > Agents > All Agents > Cowork**, but users still retain or lack Cowork access unexpectedly.
+- **Resolution:** At GA, the **Cowork** entry is an inventory and management-context surface, not the access gate. Reconcile access in **Copilot > Cost management > Configuration** and the current discovery/request setting under **Copilot > Settings**. If the tenant previously used Frontier or preview-era agent controls, document the migration to spending-policy access control.
+
+### Issue 5: Cowork Activity from Users Outside the Approved Scope
 
 - **Symptoms:** `cowork-out-of-scope-activity.csv` is non-empty.
 - **Resolution:** Compare the users with activity against the Cost management billing-scope export. If billing was enabled for a user outside the approved pilot, verify the approval basis or remove the user from scope. If billing scope is correct but out-of-scope users still appear, re-run the audit pull and confirm that the reconciliation input is current.
 
-### Issue 5: Model with Provider-Retention Implications Enabled Without Retention Review
+### Issue 6: Model with Provider-Retention Implications Enabled Without Retention Review
 
 - **Symptoms:** An Anthropic or other model with provider-retention implications is enabled in **M365 Admin Center > Copilot settings**, but the provider data-retention posture has not been reviewed and approved for the intended data classes.
 - **Resolution:** Disable the model for regulated data until legal, privacy, and compliance have reviewed the current Microsoft Learn model name, provider, retention terms, and tenant toggle behavior. Treat any in-product banner as a reminder, not a substitute for governance approval.
 
-### Issue 6: Anthropic Model Family Was Disabled Without Coordination
+### Issue 7: Anthropic Model Family Was Disabled Without Coordination
 
 - **Symptoms:** Pilot users report their Cowork model choices have narrowed unexpectedly.
 - **Resolution:** In **M365 Admin Center > Copilot settings**, check whether the Anthropic model family toggle was disabled. Coordinate with the change register — if the change was intentional, communicate the remaining model choices (for example, GPT 5.5) to the pilot; if unintentional, restore the previous state and document the incident.
 
-### Issue 7: Cowork Browsing Is Enabled Without a Documented Review
+### Issue 8: Cowork Browsing Is Enabled Without a Documented Review
 
 - **Symptoms:** The **Cowork Browsing** toggle is on but no browser-use review record exists.
 - **Resolution:** Turn the toggle off, complete a documented review that references the tenant's Conditional Access, Microsoft Purview DLP where applicable, browser management policy, Edge policy, and any site allow/block/view-only rules that should apply, then re-enable if approved. Microsoft Learn states browser use is GA, but regulated use still requires tenant evidence.
 
-### Issue 8: Browser Task Fails or Is Blocked
+### Issue 9: Browser Task Fails or Is Blocked
 
 - **Symptoms:** A Cowork browser task cannot complete, or Cowork reports the site is blocked.
 - **Resolution:** Because browser tasks run in the user's local Microsoft Edge, they inherit web filtering, Conditional Access, DLP, and browser management policy. Verify that Edge is installed and up to date, that the user is signed in to Edge with the same work/school account used for Cowork, and that no policy is blocking the target site or action. If the block is intentional, the failure is expected; document the outcome.
 
-### Issue 9: Unapproved Plugin or Uploaded Package Available to Cowork
+### Issue 10: Unapproved Plugin or Uploaded Package Available to Cowork
 
 - **Symptoms:** A plugin, uploaded plugin package, or shared custom skill not on the approved inventory is usable in Cowork.
 - **Resolution:** Restrict the plugin through the admin plugin controls, remove the uploaded package or skill (or restrict its sharing scope) from **Cowork > Customize**, reconcile the inventory, and route the item through extensibility governance under [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md).
 
-### Issue 10: Consumption Trending Over Budget
+### Issue 11: Consumption Trending Over Budget
 
 - **Symptoms:** Consumption reporting in **Copilot > Cost management > Configuration** shows spend on track to exceed the approved budget.
-- **Resolution:** Review per-user or per-group consumption limits, tighten them where appropriate, and identify the activity classes driving spend (model responses, tools/skills, image generation, browser tasks). Communicate limit changes to the pilot and record the decision.
+- **Resolution:** Review per-user or per-group consumption limits, tighten them where appropriate, and identify the activity classes driving spend (model responses, tools/skills, image generation, and browser tasks). Cross-check **Copilot > Cowork > Usage** for user/task trends and use **Value** only if the tenant participates in the Frontier preview program, because that preview surface carries the assisted-hours, credits-spent, and task-category breakdowns. Communicate limit changes to the pilot and record the decision.
 
-### Issue 11: Cowork Activity Missing from Audit
+### Issue 12: Cowork Activity Missing from Audit
 
 - **Symptoms:** Expected Cowork events do not appear in Purview audit pulls.
 - **Resolution:** Confirm unified audit logging is enabled tenant-wide, and re-run the audit pull with a wider operation set and the Cowork filter. Because Microsoft's audit-log-activities reference evolves, re-verify the operation list against current documentation. Document any preview-related coverage gap with a remediation owner. For browser task events specifically, confirm that browser use is enabled and that at least one browser task has been attempted in the reporting window.
 
 ## Diagnostic Steps
 
-1. Confirm the intended access posture (billing scope, discovery on/off) against **Copilot > Cost management > Configuration** and **Copilot > Settings > AI experiences enabled by usage-based billing**.
-2. Confirm model toggle state under **Copilot settings** (Anthropic family and any model with provider-retention implications).
-3. Confirm the **Cowork Browsing** toggle state under **Copilot > Settings > View All > Cowork settings**.
-4. Reconcile Cowork users against the approved pilot group.
-5. Re-run the audit pull and review out-of-scope activity.
-6. Reconcile the plugin, uploaded-package, and custom-skill inventory against approvals.
-7. Review consumption reporting and per-user/per-group limits.
-8. Validate Purview coverage against the Purview for Cowork guidance.
+1. Confirm the intended access posture (billing scope, current discovery/request setting on/off) against **Copilot > Cost management > Configuration** and **Copilot > Settings > AI experiences enabled by usage-based billing**.
+2. Confirm whether admins are relying on **Agents > All Agents > Cowork** only for inventory/context rather than access control.
+3. Confirm model toggle state under **Copilot settings** (Anthropic family and any model with provider-retention implications).
+4. Confirm the **Cowork Browsing** toggle state under **Copilot > Settings > View All > Cowork settings**.
+5. Reconcile Cowork users against the approved pilot group.
+6. Re-run the audit pull and review out-of-scope activity.
+7. Reconcile the plugin, uploaded-package, and custom-skill inventory against approvals.
+8. Review consumption reporting, **Copilot > Cowork > Usage**, and per-user/per-group limits.
+9. Validate Purview coverage against the Purview for Cowork guidance.
 
 ## Escalation
 
