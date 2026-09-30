@@ -1,0 +1,49 @@
+Table of contents
+Exit editor mode
+Ask Learn
+Ask Learn
+Reading mode
+Table of contents
+Read in English
+Add
+Add to Plans
+Edit
+Copy Markdown
+Print
+Note
+Access to this page requires authorization. You can try
+signing in
+or
+changing directories
+.
+Access to this page requires authorization. You can try
+changing directories
+.
+Learn about Endpoint data loss prevention
+Feedback
+Summarize this article for me
+You can use Microsoft Purview Data Loss Prevention (DLP) to monitor the actions that are being taken on items you've determined to be sensitive and to help prevent the unintentional sharing of those items.
+Endpoint data loss prevention
+(Endpoint DLP) extends the activity monitoring and protection capabilities of DLP to Windows 10/11, macOS (the three latest released major versions) devices, and Windows certain server versions. Once devices are onboarded into the Microsoft Purview solutions, the information about what users are doing with sensitive items is made visible in
+activity explorer
+. You can then enforce protective actions on those items via
+DLP policies
+.
+When are files classified by Endpoint DLP?
+Endpoint DLP classifies files under the following conditions:
+Creation or Modification:
+Every time a file is created or modified, it is fully scanned for sensitive information types (SITs) and labels. The file is then evaluated for matches against DLP policies and rules.
+Reading an Already Classified File:
+When an already classified file is read, Endpoint DLP checks for any changes to the policies, rules, or SITs. If there is a change in the DLP configuration, it re-evaluates the policies and rules, but it will not re-extract the text.
+Tip
+If you're looking for device control for removable storage, see
+Microsoft Defender for Endpoint Device Control Removable Storage Access Control
+.
+Note
+Endpoint DLP cannot detect the sensitivity label from another tenant on a document.
+Endpoint DLP Windows 10/11 and macOS support
+Endpoint DLP allows you to onboard devices running Windows Server 2019 and later versions.
+Note
+Installing the supported Windows Server KBs disables the
+Classification
+feature on the server. This means that Endpoint DLP won't classify files on the server. 

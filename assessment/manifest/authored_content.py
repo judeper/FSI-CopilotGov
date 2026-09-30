@@ -412,7 +412,7 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "Microsoft Purview portal",
-                "path": "Information Protection > Labels",
+                "path": "Solutions > Information Protection > Sensitivity labels",
                 "url": "https://purview.microsoft.com/informationprotection/labels",
             },
         ],
@@ -425,7 +425,7 @@ AUTHORED: dict[str, dict] = {
             "Sensitivity-label taxonomy document with AI-readiness review date",
             "Labels mapped to Copilot DLP content-exclusion rules",
             "Auto-labeling policy configuration for high-risk content types",
-            "Label usage report showing coverage across Copilot-grounded sites",
+            "Content Explorer labeled-item export cross-referenced with workload inventory totals for Copilot-grounded sites, supplemented with auto-labeling policy review evidence or Activity Explorer / audit evidence for encrypted SharePoint and OneDrive items that Content Explorer doesn't surface",
         ],
         "sectorYesBar": _sector_map(
             bank=(
@@ -447,9 +447,10 @@ AUTHORED: dict[str, dict] = {
                 "readiness in the last 12 months?"
             ),
             "followUp": (
-                "Open Microsoft Purview portal > Information Protection > Labels. "
-                "Verify the taxonomy has been reviewed for Copilot and that "
-                "DLP rules reference the appropriate labels."
+                "Open Microsoft Purview portal > Solutions > Information Protection > "
+                "Sensitivity labels. Verify the taxonomy has been reviewed for "
+                "Copilot, that DLP rules reference the appropriate labels, and "
+                "that auto-labeling review evidence exists for high-risk content."
             ),
             "timeBudgetMinutes": 6,
         },
@@ -1213,6 +1214,11 @@ AUTHORED: dict[str, dict] = {
                 "path": "Solutions > Information Protection > Publishing policies",
                 "url": "https://purview.microsoft.com/informationprotection/labelpolicies",
             },
+            {
+                "portal": "Microsoft Purview portal",
+                "path": "Solutions > Information Protection > Policies > Auto-labeling policies",
+                "url": "https://purview.microsoft.com/informationprotection/autolabeling",
+            },
         ],
         "verifyPowerShell": (
             "Connect-IPPSSession; "
@@ -1221,8 +1227,8 @@ AUTHORED: dict[str, dict] = {
         ),
         "evidenceExpected": [
             "Sensitivity-label taxonomy with Copilot content classification mapping",
-            "Auto-labeling policy configuration and coverage report",
-            "Label usage report from Activity Explorer for the last 30 days",
+            "Auto-labeling policy configuration plus Coverage by simulation context or Labeled items review evidence",
+            "Activity Explorer sensitivity-label activity for the last 30 days",
             "Evidence of label propagation to Copilot-generated outputs",
         ],
         "sectorYesBar": _sector_map(
@@ -1260,9 +1266,10 @@ AUTHORED: dict[str, dict] = {
                 "content?"
             ),
             "followUp": (
-                "Open Microsoft Purview portal > Information Protection. "
-                "Verify label policies, auto-labeling rules, and check "
-                "Activity Explorer for label usage trends."
+                "Open Microsoft Purview portal > Solutions > Information Protection. "
+                "Verify label policies, auto-labeling rules, Coverage by "
+                "simulation context or Labeled items review results, and check "
+                "Activity Explorer for recent label activity."
             ),
             "timeBudgetMinutes": 8,
         },
@@ -1623,9 +1630,9 @@ AUTHORED: dict[str, dict] = {
             {
                 "portal": "Azure portal",
                 "path": (
-                    "Review each Customer Key Azure Key Vault Premium or "
-                    "Managed HSM instance, its subscription context, key type, "
-                    "soft-delete retention, and purge protection."
+                    "Review each Customer Key Azure Key Vault or Managed "
+                    "HSM instance, its subscription context, actual SKU/key "
+                    "type, recovery settings, and purge protection."
                 ),
                 "url": "https://portal.azure.com",
             },
@@ -1660,10 +1667,12 @@ AUTHORED: dict[str, dict] = {
                 "DEP output cannot satisfy this Copilot evidence requirement"
             ),
             (
-                "Azure Key Vault Premium or Managed HSM evidence showing two "
-                "distinct paid subscriptions, one vault or HSM per subscription "
-                "for each Customer Key scenario, HSM-protected keys, 90-day "
-                "recovery configuration, and purge protection"
+                "Azure Key Vault or Managed HSM evidence showing two distinct "
+                "paid subscriptions, one vault or HSM per subscription for "
+                "each Customer Key scenario, the actual SKU, HSM-protected "
+                "production keys where applicable, Azure Key Vault 90-day "
+                "recovery configuration, Managed HSM recovery settings, and "
+                "purge protection"
             ),
             (
                 "Manual Microsoft 365 service-encryption review and applicable "
@@ -3979,8 +3988,8 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "Microsoft Sentinel",
-                "path": "Analytics > Active rules",
-                "url": "https://portal.azure.com/#blade/Microsoft_Azure_Security_Insights/MainMenuBlade/Analytics",
+                "path": "Configuration > Analytics > Active rules (Defender portal primary; Azure portal legacy)",
+                "url": "https://security.microsoft.com",
             },
         ],
         "verifyPowerShell": (
@@ -4212,17 +4221,18 @@ AUTHORED: dict[str, dict] = {
         "priority": "high",
         "yesBar": (
             "Copilot Cowork governance reflects GA operating controls: usage-based "
-            "billing scope is approved, discovery is set deliberately, model "
-            "toggles (including Anthropic family and Claude Fable 5 preview) are "
-            "documented, local browser use is governed as a preview sub-feature, "
-            "consumption limits are monitored, plugin/skill inventories are "
-            "approved, and Purview/audit coverage is evidenced."
+            "billing scope is approved, the current discovery/request control is "
+            "set deliberately, model toggles (including Anthropic family and any "
+            "provider-retention model variants) are documented, local browser use "
+            "is governed deliberately, Cowork usage reporting is reviewed, "
+            "plugin/skill inventories are approved, and Purview/audit coverage "
+            "is evidenced."
         ),
         "partialBar": (
             "Cowork governance is partially implemented, but one or more required "
             "GA decisions (billing/discovery, model policy, browser toggle, "
-            "consumption limits, plugin/skill approvals, or Purview coverage) "
-            "is missing, outdated, or lacks approver evidence."
+            "consumption limits, usage reporting, plugin/skill approvals, or "
+            "Purview coverage) is missing, outdated, or lacks approver evidence."
         ),
         "noBar": (
             "Cowork is effectively unmanaged: billing/discovery posture is not "
@@ -4237,12 +4247,17 @@ AUTHORED: dict[str, dict] = {
             },
             {
                 "portal": "Microsoft 365 admin center",
-                "path": "Copilot > Settings > AI experiences enabled by usage-based billing",
+                "path": "Copilot > Settings > AI experiences enabled by usage-based billing (current deprecated setting)",
                 "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
             },
             {
                 "portal": "Microsoft 365 admin center",
                 "path": "Copilot > Settings > View all > Cowork settings",
+                "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
+            },
+            {
+                "portal": "Microsoft 365 admin center",
+                "path": "Copilot > Cowork > Usage / Settings",
                 "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
             },
             {
@@ -4254,10 +4269,10 @@ AUTHORED: dict[str, dict] = {
         "verifyPowerShell": "",
         "evidenceExpected": [
             "Usage-based billing scope export (user/group assignments) with approver",
-            "Discovery-setting decision record and access-request workflow evidence",
-            "Model-policy record for Anthropic family and Claude Fable 5 (Preview)",
+            "Current discovery-setting decision record, transition note, and access-request workflow evidence",
+            "Model-policy record for Anthropic family and any enabled provider-retention model variants",
             "Cowork Browsing tenant-toggle decision tied to browser-control review",
-            "Consumption-limit policy and recent spend/consumption report",
+            "Consumption-limit policy plus recent Cost management and Cowork usage reports",
             "Approved plugin, uploaded package, and custom-skill inventory with owner",
             "Purview coverage evidence (audit/eDiscovery/DLP alignment) and gap log",
         ],
@@ -4301,10 +4316,10 @@ AUTHORED: dict[str, dict] = {
                 "and Purview supervision) before expansion?"
             ),
             "followUp": (
-                "Open Copilot cost-management and settings pages to confirm billing "
-                "scope, discovery state, model/browser toggles, and consumption "
-                "limits. Then verify plugin/skill approvals plus Purview/audit "
-                "coverage evidence and unresolved gaps."
+                "Open Copilot cost-management, Cowork, and settings pages to "
+                "confirm billing scope, discovery state, model/browser toggles, "
+                "usage reporting, and consumption limits. Then verify plugin/skill "
+                "approvals plus Purview/audit coverage evidence and unresolved gaps."
             ),
             "timeBudgetMinutes": 8,
         },

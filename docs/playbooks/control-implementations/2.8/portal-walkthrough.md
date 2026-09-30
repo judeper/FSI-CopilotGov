@@ -52,11 +52,11 @@ Customer Key setup and validation are performed through Exchange Online PowerShe
 
 1. Run and retain `Get-M365DataAtRestEncryptionPolicy` and `Get-M365DataAtRestEncryptionPolicyAssignment` output, preserving every returned property and the collection timestamp. These are the multi-workload Customer Key evidence sources for Copilot.
 2. Retain the relevant multi-workload DEP state and Customer Key Onboarding Service request result.
-3. Confirm the request used **two distinct paid Azure subscriptions** and that there is one Azure Key Vault Premium vault or Managed HSM in each subscription for the Customer Key scenario.
+3. Confirm the request used **two distinct paid Azure subscriptions** and that there is one Azure Key Vault or Managed HSM instance in each subscription for the Customer Key scenario.
 4. In the [Azure portal](https://portal.azure.com), review each vault/HSM in its own subscription context:
-   - Premium/HSM configuration and HSM-protected production key.
+   - Actual vault or HSM SKU and whether the production key is HSM-protected. Standard Azure Key Vault is supported for testing/validation, while Premium is Microsoft’s recommended production configuration.
    - Azure Key Vault soft-delete retention of 90 days and purge protection.
-   - Managed HSM purge protection and the applicable recovery configuration.
+   - Managed HSM purge protection and the configured recovery/soft-delete retention settings.
    - Required Microsoft 365 application permissions and key operation access.
 5. Confirm the Customer Key Onboarding Service `Validate` result is successful before retaining `Enable` evidence.
 

@@ -9,7 +9,7 @@ Automation workflow for capturing evidence supporting Cowork governance at gener
 - `Microsoft.Graph` (`AuditLog.Read.All`, `Group.Read.All`) for group membership reconciliation
 - M365 Global Reader (or equivalent least-privilege read role); AI Administrator or M365 Global Admin is required to view Cost management and Copilot settings in the portal
 - Approved evidence-retention path
-- Portal exports (or documented screenshots) capturing: spending-policy scope, selected services, discovery-setting state, Anthropic-family/current model controls, provider data-retention review, Cowork Browsing toggle, plugin availability, uploaded plugin packages, custom skills and their sharing scope, and per-user/per-group consumption limits
+- Portal exports (or documented screenshots) capturing: spending-policy scope, selected services, current discovery/request-setting state, Anthropic-family/current model controls, provider data-retention review, Cowork Browsing toggle, plugin availability, uploaded plugin packages, custom skills and their sharing scope, per-user/per-group consumption limits, and the Cowork usage dashboard views relevant to governance
 - An exported or documented record of the approved pilot group
 
 > **Important:** There is no publicly documented Cowork-specific PowerShell cmdlet that returns the tenant's usage-based billing scope, discovery setting, model toggles, Cowork Browsing toggle, plugin inventory, custom skills, or consumption limits. Those governance decisions must be captured from the Microsoft 365 admin center and the Cowork Customize page as portal exports or screenshots. Do not rely on undocumented cmdlets. The scripts below capture only the evidence that has documented API/PowerShell paths: unified-audit-log activity (including Cowork browser tasks) and Microsoft Graph group membership.
@@ -104,8 +104,11 @@ $activity |
 #   - cost-management-billing-scope.<csv|pdf|png>
 #   - discovery-setting-state.<pdf|png>
 #   - copilot-settings-anthropic-family-toggle.<pdf|png>
-#   - copilot-settings-fable5-preview-toggle.<pdf|png>
+#   - copilot-settings-current-model-toggle.<pdf|png>
 #   - cowork-browsing-toggle.<pdf|png>
+#   - cowork-usage-overview.<csv|pdf|png>
+#   - cowork-usage-report.<csv|pdf|png>
+#   - cowork-value-report.<csv|pdf|png>   # Value tab is Frontier preview; capture only if the tenant participates
 #   - plugin-inventory.<csv|pdf|png>
 #   - customize-skills-inventory.<csv|pdf|png>
 #   - customize-uploaded-plugin-packages.<csv|pdf|png>
@@ -127,6 +130,7 @@ Compress-Archive -Path .\artifacts\4.15\* `
 | Access-request review | Weekly (during pilot) | Reviews and documents pending user access requests |
 | Model-toggle re-verification | Monthly and on Microsoft update | Re-confirms Anthropic-family/current model control state and provider data-retention posture |
 | Browser-toggle re-verification | Monthly and on Microsoft update | Re-confirms the Cowork Browsing toggle and the Edge policies it inherits |
+| Cowork usage dashboard review | Weekly (during pilot), Monthly (steady state) | Reviews Copilot > Cowork > Overview / Usage and the Value tab only if the tenant participates in the Frontier preview program |
 | Plugin, uploaded package, and custom skill inventory review | Monthly | Confirms available plugins, uploaded packages, and custom skills (with sharing scope) match the approved inventory |
 | Consumption reporting review | Weekly (during pilot), Monthly (steady state) | Confirms spending remains within budget and thresholds |
 

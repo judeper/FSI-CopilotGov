@@ -1,0 +1,51 @@
+Table of contents
+Exit editor mode
+Ask Learn
+Ask Learn
+Reading mode
+Table of contents
+Read in English
+Add
+Add to Plans
+Edit
+Copy Markdown
+Print
+Note
+Access to this page requires authorization. You can try
+signing in
+or
+changing directories
+.
+Access to this page requires authorization. You can try
+changing directories
+.
+Build agents by using Agent Builder in Microsoft 365 Copilot
+Feedback
+Summarize this article for me
+The Agent Builder feature in Microsoft 365 Copilot provides a simple interface that you can use to quickly build declarative agents by using natural language. This article describes how to use Agent Builder to build an agent for Copilot.
+When you choose
+New agent
+in Microsoft 365 Copilot, you can:
+Use natural language to describe your agent, and Copilot builds it for you (recommended).
+Configure your agent manually via the
+Configure
+tab
+.
+Start with a
+template
+to create an agent for a specific use case.
+Use natural language to describe your agent (recommended)
+You can use Agent Builder in Microsoft 365 Copilot to create an agent by using natural language. As you provide information conversationally, the agentâs name, description, and instructions update automatically to refine its behavior. This approach:
+Understands a user's intent through natural language.
+Provides suggestions, guidance, and next-best prompts.
+Generates optimized agent instructions to build accurate, high-quality agents.
+Using natural language saves time and helps you create effective agents without manual configuration. In response to your natural language description, Agent Builder:
+Configures the agent automatically.
+Suggests and applies refinements. For example: "Include email attachments in summaries". Agent Builder suggests:
+Show only attachments from unread messages
+Summarize attachments by file type
+Adds knowledge sources. For example: "Summarize my daily emails and include attachments." Agent Builder adds
+My emails
+as a knowledge source.
+Integrates capabilities. For example: "Create a PowerPoint presentation from this outline" or "Analyze this Excel data and generate a chart." Code interpreter and image generator capabilities are automatically available.
+You can also ch

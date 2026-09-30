@@ -47,8 +47,8 @@ Control 2.8 requires a manual evidence pack. The tests below deliberately separa
   1. Run `Get-M365DataAtRestEncryptionPolicy` and `Get-M365DataAtRestEncryptionPolicyAssignment` after connecting to Exchange Online. Preserve every returned property and the property names, using [Script 3](powershell-setup.md#script-3-review-the-multi-workload-customer-key-dep-and-assignment).
   2. Confirm both a tenant-level multi-workload DEP policy and its tenant assignment are present and match the approved Copilot scenario. `Get-DataEncryptionPolicy` is Exchange-mailbox DEP evidence only and cannot satisfy this test.
   3. Record two **different paid** Azure subscription IDs in the Customer Key scenario evidence.
-  4. Verify one Azure Key Vault Premium vault or Managed HSM instance in each subscription for the scenario.
-  5. For Azure Key Vault, verify 90-day soft-delete retention and purge protection; for Managed HSM, verify purge protection and applicable recovery configuration.
+  4. Verify one Azure Key Vault (Standard or Premium) vault or Managed HSM instance in each subscription for the scenario; if Azure Key Vault is used for production data, confirm the Premium SKU and HSM-protected keys.
+  5. For Azure Key Vault, verify 90-day soft-delete retention and purge protection; for Managed HSM, verify purge protection and the configured recovery or soft-delete retention settings.
   6. Verify production keys are HSM-protected where that design is required.
   7. Run the Customer Key Onboarding Service in `Validate` mode and retain the property-preserving onboarding request output.
   8. Before enabling, confirm `ValidationResult` is successful. Retain enablement evidence only after approved enablement completes.

@@ -113,6 +113,9 @@ FINRA_UNVERIFIED_CLEAN_STATE = "unverified-clean"
 FINRA_UNAVAILABLE_STATE_KEY = "unavailable_notices"
 FINRA_UNAVAILABLE_MAX_ENTRIES = 50
 FINRA_UNAVAILABLE_EXPIRY_DAYS = 30
+FINRA_MIDWEEK_UNAVAILABLE_RECHECK_WEEKDAY = 2  # Wednesday, UTC
+FINRA_MIDWEEK_UNAVAILABLE_RECHECK_LIMIT = 10
+FINRA_MIDWEEK_RECHECK_DATE_KEY = "midweek_recheck_date"
 FINRA_REPEATED_PERMANENT_STATUSES = frozenset({404, 410})
 FINRA_RULE_FILING_TITLE_PREFIX = (
     "Self-Regulatory Organizations; Financial Industry Regulatory Authority, Inc."
@@ -1474,6 +1477,14 @@ class FinraDiscoveryResult:
     listing_cross_check: str = "not run"
 
 
+@dataclass
+class FinraListingCrossCheckResult:
+    """Validated FINRA page-0 listing data and reportable cross-check status."""
+
+    status: str
+    page_links: list[str]
+
+
 def _source_failure_reason(exc: Exception) -> str:
     """Return a compact source-failure reason safe for logs and reports."""
     reason = str(exc).strip()
@@ -2111,7 +2122,7 @@ AI_PRODUCT_METRIC_CONTEXT_PATTERN = re.compile(
     r"(?:cloud\s+and\s+)?artificial\s+intelligence\s+infrastructure\s+revenues?|"
     r"artificial\s+intelligence\s+revenues?|"
     r"revenues?\s+(?:broken\s+out\s+)?by\s+[^.]{0,160}"
-    r"artificial\s+intelligence"
+    r"artificial\s+intelligence(?:\s+infrastructure)?\s+revenues?"
     r")\b",
     re.IGNORECASE,
 )
@@ -2446,6 +2457,62 @@ def _federal_register_document_fingerprint(document: dict) -> str:
 def _is_finra_rule_filing_title(title: str) -> bool:
     """Return whether a Federal Register title is a FINRA SRO rule filing."""
     return str(title or "").startswith(FINRA_RULE_FILING_TITLE_PREFIX)
+
+
+REG_AT_RULEMAKING_DOC_TYPES = frozenset(
+    {"RULE", "PRORULE", "RULES", "PROPOSED RULE"}
+)
+REG_AT_PATTERN = re.compile(
+    r"\b(?:regulation\s+automated\s+trading|reg\s+at)\b",
+    re.IGNORECASE,
+)
+REG_AT_OPERATIVE_ACTION_PATTERN = re.compile(
+    r"\b(?:proposes?|proposing|adopts?|adopting|amends?|amending|"
+    r"withdraws?|withdrawing|re[-\s]?proposes?|re[-\s]?proposing|"
+    r"reopens?|reopening|finalizes?|finalizing)\b",
+    re.IGNORECASE,
+)
+REG_AT_NEGATION_PREFIX_PATTERN = re.compile(
+    r"(?:\b(?:does|do|did|would|will|shall|is|are|was|were|be|being)\s+not\s+|"
+    r"\bnot\s+)$",
+    re.IGNORECASE,
+)
+REG_AT_CLAUSE_BOUNDARY_PATTERN = re.compile(
+    r"(?:[.!?]+|\n+|;|:|,|\s+[-\u2013\u2014]{1,2}\s+|\b(?:but|while|whereas)\b)",
+    re.IGNORECASE,
+)
+
+
+def _reg_at_action_is_negated(text: str, action_match: re.Match) -> bool:
+    """Return whether the matched operative action is locally negated."""
+    prefix = text[max(0, action_match.start() - 40): action_match.start()]
+    return REG_AT_NEGATION_PREFIX_PATTERN.search(prefix) is not None
+
+
+def _reg_at_text_has_bound_operative_action(text: str) -> bool:
+    """Return whether current operative rulemaking language binds to Reg AT."""
+    for clause in REG_AT_CLAUSE_BOUNDARY_PATTERN.split(str(text or "")):
+        if not REG_AT_PATTERN.search(clause):
+            continue
+        for action_match in REG_AT_OPERATIVE_ACTION_PATTERN.finditer(clause):
+            if not _reg_at_action_is_negated(clause, action_match):
+                return True
+    return False
+
+
+def _is_regulation_automated_trading_rulemaking(doc_type: str, *fields: str) -> bool:
+    """Return whether a FR rule/proposed-rule item is Reg AT rulemaking."""
+    normalized_type = re.sub(r"[\s_-]+", " ", str(doc_type or "").strip()).upper()
+    if normalized_type not in REG_AT_RULEMAKING_DOC_TYPES:
+        return False
+    title = fields[0] if fields else ""
+    if REG_AT_PATTERN.search(title or ""):
+        return True
+
+    for field in fields[1:]:
+        if _reg_at_text_has_bound_operative_action(str(field or "")):
+            return True
+    return False
 
 
 @dataclass
@@ -4556,6 +4623,25 @@ def fetch_federal_register_documents(
                     tier, reason = source_tier, source_reason
                     effective_text = fallback_text
 
+        if (
+            source_label == "Federal Register"
+            and (
+                agency_short == "CFTC"
+                or "commodity-futures-trading-commission" in agency_slugs
+            )
+            and _classification_severity(tier) < _classification_severity(
+                CLASSIFICATION_HIGH
+            )
+            and _is_regulation_automated_trading_rulemaking(
+                doc_type,
+                title,
+                abstract,
+                authoritative_body,
+            )
+        ):
+            tier = CLASSIFICATION_HIGH
+            reason = "Regulation Automated Trading rulemaking"
+
         if tier in {CLASSIFICATION_CRITICAL, CLASSIFICATION_HIGH}:
             abstract_controls = find_affected_controls_by_keywords(
                 title,
@@ -5242,16 +5328,16 @@ def _finra_listing_cross_check(
     config: dict,
     rss_candidates: list[FinraRssCandidate],
     source_state: dict,
-) -> str:
+) -> FinraListingCrossCheckResult:
     """Check page-0 listing notice IDs against RSS plus the baseline."""
-    def _unavailable(reason: str) -> str:
+    def _unavailable(reason: str) -> FinraListingCrossCheckResult:
         message = (
             "FINRA listing page-0 cross-check unavailable; RSS result is "
             f"unverified-clean ({reason})"
         )
         logger.warning(message)
         print(f"::warning::{message}")
-        return "listing cross-check unavailable"
+        return FinraListingCrossCheckResult("listing cross-check unavailable", [])
 
     request_timeout, _max_retries, _request_delay = _get_operational_settings(config)
     try:
@@ -5281,6 +5367,8 @@ def _finra_listing_cross_check(
         if denial_reason or identity_rejection:
             return _unavailable(denial_reason or identity_rejection)
         page_links = _extract_finra_notice_links(content)
+        if not page_links:
+            return _unavailable("no regulatory notice links")
     except Exception as exc:
         return _unavailable(_source_failure_reason(exc))
 
@@ -5309,8 +5397,142 @@ def _finra_listing_cross_check(
             "and baseline: %s",
             ", ".join(missing),
         )
-        return "listing cross-check mismatch"
-    return "listing cross-check ok"
+        return FinraListingCrossCheckResult(
+            "listing cross-check mismatch",
+            page_links,
+        )
+    return FinraListingCrossCheckResult("listing cross-check ok", page_links)
+
+
+def _remember_finra_unavailable_recheck_failure(
+    unavailable_notices: list[dict],
+    *,
+    document_id: str,
+    title: str,
+    url: str,
+    reason: str,
+) -> None:
+    unavailable_notices.append(
+        {
+            "document_id": document_id,
+            "title": title,
+            "url": url,
+            "reason": reason,
+            "remembered": True,
+        }
+    )
+
+
+def _recheck_finra_remembered_unavailable_from_listing(
+    *,
+    session: requests.Session,
+    config: dict,
+    source_state: dict,
+    unavailable_notices: list[dict],
+    listing_page_links: Optional[list[str]] = None,
+    skip_entry_keys: Optional[set[str]] = None,
+) -> tuple[list[RegulatoryItem], int]:
+    """Try one Wednesday page-0 refetch for remembered unavailable notices."""
+    now = datetime.now(timezone.utc)
+    if now.weekday() != FINRA_MIDWEEK_UNAVAILABLE_RECHECK_WEEKDAY:
+        return [], 0
+
+    persistent_unavailable = _finra_persistent_unavailable_reasons(source_state)
+    if not persistent_unavailable:
+        return [], 0
+
+    recheck_date = now.date().isoformat()
+    if source_state.get(FINRA_MIDWEEK_RECHECK_DATE_KEY) == recheck_date:
+        return [], 0
+
+    page_links = listing_page_links or []
+    if not page_links:
+        logger.warning("FINRA Wednesday unavailable re-check skipped: no validated listing")
+        return [], 0
+    source_state[FINRA_MIDWEEK_RECHECK_DATE_KEY] = recheck_date
+
+    _request_timeout, max_retries, request_delay = _get_operational_settings(config)
+    known_entry_keys = set(source_state.get("entries", {}))
+    skip_entry_keys = skip_entry_keys or set()
+    candidate_links = []
+    seen_keys: set[str] = set()
+    for link in page_links:
+        document_id = _finra_entry_key_for_link(link)
+        if (
+            not document_id
+            or document_id in known_entry_keys
+            or document_id in skip_entry_keys
+            or document_id not in persistent_unavailable
+            or document_id in seen_keys
+        ):
+            continue
+        candidate_links.append(link)
+        seen_keys.add(document_id)
+        if len(candidate_links) >= FINRA_MIDWEEK_UNAVAILABLE_RECHECK_LIMIT:
+            break
+
+    if not candidate_links:
+        return [], 0
+
+    items: list[RegulatoryItem] = []
+    detail_cache: dict[str, str] = {}
+    unavailable_cache: dict[str, str] = {}
+    detail_fetches = 0
+    for link in candidate_links:
+        title = link.get_text(strip=True)
+        url = link.get("data-monitor-canonical-url") or _canonical_finra_notice_url(
+            link.get("href", "")
+        )
+        if url is None:
+            continue
+        document_id = _finra_document_id_from_url(url)
+        publication_date, publication_date_is_synthetic = (
+            _derive_finra_publication_date(link, url)
+        )
+        local_unavailable: list[dict] = []
+        try:
+            item, detail_fetches = _build_finra_notice_item(
+                title=title,
+                url=url,
+                publication_date=publication_date,
+                publication_date_is_synthetic=publication_date_is_synthetic,
+                session=session,
+                config=config,
+                detail_cache=detail_cache,
+                unavailable_cache=unavailable_cache,
+                persistent_unavailable={},
+                unavailable_notices=local_unavailable,
+                detail_fetches=detail_fetches,
+                detail_fetch_limit=FINRA_MIDWEEK_UNAVAILABLE_RECHECK_LIMIT,
+                request_delay=request_delay,
+                max_retries=max_retries,
+            )
+        except Exception as exc:
+            logger.warning(
+                "FINRA Wednesday unavailable re-check kept %s remembered: %s",
+                document_id,
+                _source_failure_reason(exc),
+            )
+            _remember_finra_unavailable_recheck_failure(
+                unavailable_notices,
+                document_id=document_id,
+                title=title,
+                url=url,
+                reason=persistent_unavailable[document_id],
+            )
+            continue
+        if item is None:
+            _remember_finra_unavailable_recheck_failure(
+                unavailable_notices,
+                document_id=document_id,
+                title=title,
+                url=url,
+                reason=persistent_unavailable[document_id],
+            )
+            continue
+        items.append(item)
+
+    return items, detail_fetches
 
 
 def discover_finra_notices(
@@ -5426,7 +5648,7 @@ def discover_finra_notices(
         rss_result.candidates,
         source_state,
     )
-    if listing_cross_check == "listing cross-check mismatch":
+    if listing_cross_check.status == "listing cross-check mismatch":
         return _fetch_finra_notices_with_discovery_metadata(
             session=session,
             config=config,
@@ -5437,7 +5659,7 @@ def discover_finra_notices(
             persistent_unavailable=persistent_unavailable,
             discovery_path="RSS+listing-cross-check-fallback",
             validator_dropped=rss_result.validator_dropped,
-            listing_cross_check=listing_cross_check,
+            listing_cross_check=listing_cross_check.status,
         )
 
     try:
@@ -5456,14 +5678,28 @@ def discover_finra_notices(
             exc,
             discovery_path="RSS",
             validator_dropped=rss_result.validator_dropped,
-            listing_cross_check=listing_cross_check,
+            listing_cross_check=listing_cross_check.status,
         ) from exc
+    recheck_items, recheck_fetches = _recheck_finra_remembered_unavailable_from_listing(
+        session=session,
+        config=config,
+        source_state=source_state,
+        unavailable_notices=unavailable_notices,
+        listing_page_links=listing_cross_check.page_links,
+        skip_entry_keys={
+            _finra_document_id_from_url(candidate.url)
+            for candidate in rss_result.candidates
+        },
+    )
+    if recheck_items:
+        items.extend(recheck_items)
+        detail_fetches += recheck_fetches
     return FinraDiscoveryResult(
         items=items,
         discovery_path="RSS",
         validator_dropped=rss_result.validator_dropped,
         new_notices_fetched=detail_fetches,
-        listing_cross_check=listing_cross_check,
+        listing_cross_check=listing_cross_check.status,
     )
 
 

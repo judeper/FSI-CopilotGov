@@ -54,9 +54,9 @@ Common issues and resolution steps for Copilot administrative settings, agent go
 - **Symptoms:** Metered Copilot usage is visible but not tied to the expected department or billing policy.
 - **Root Cause:** Billing policy scope or documentation is incomplete.
 - **Resolution:**
-  1. Review **Billing > Pay-as-you-go services**.
+  1. Review **Copilot > Billing & usage > Pay-as-you-go services**.
   2. Validate which users or groups are tied to each billing policy.
-  3. Review **Cost Management** and update cost-owner documentation.
+  3. Review **Billing > Cost Management** and update cost-owner documentation.
 
 ### Issue 7: Baseline Security Mode Conflicts with Existing Controls
 

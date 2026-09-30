@@ -156,7 +156,7 @@ $frontlineReport | Export-Csv "FrontlineCopilotStatus_$(Get-Date -Format 'yyyyMM
 | Utilization Report | Monthly | Identify inactive users for license reclamation |
 | Assignment Verification | After each deployment wave | Confirm successful license assignments |
 | Frontline Copilot Report | Quarterly | Confirm Frontline add-on assignments are accurate and governance policies are applied |
-| PAYG Usage Review | Monthly | Review Azure Cost Management for PAYG Copilot Chat spend against budget limits |
+| PAYG Usage Review | Monthly | Review Azure Cost Management for PAYG Copilot Chat spend against configured budget notifications |
 
 ## Next Steps
 

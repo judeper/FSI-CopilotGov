@@ -38,10 +38,12 @@ Use Private Link **only** for *adjacent Azure resources* an internal Copilot Stu
 
 **Portal:** Network management console (organization-specific)
 
-Review firewall and proxy rules for Microsoft 365 Copilot endpoints:
-- Allow required Copilot endpoints per Microsoft's published endpoint list
-- Verify TLS inspection and proxy settings preserve full WSS connectivity to `*.cloud.microsoft` and `*.office.com`; scope exceptions only where required
+Review firewall and proxy rules for Microsoft Copilot and Microsoft 365 endpoints:
+- Allow required Microsoft 365 endpoint-service records from Microsoft's published list
+- Add `*.cloud.microsoft` to allow lists and verify that `copilot.cloud.microsoft` is not blocked by filters, proxy rules, Conditional Access, or app control
+- Verify TLS inspection and proxy settings preserve full WSS connectivity to `*.cloud.microsoft`, `copilot.cloud.microsoft`, and `*.office.com`; scope exceptions only where required
 - Verify no content inspection is degrading Copilot response quality
+- Avoid unsupported selective domain, URL, IP, or protocol blocking for Copilot Chat; use service-side controls instead
 - Document all network path configurations for compliance
 
 ### Step 4: Configure Network Location in Conditional Access
