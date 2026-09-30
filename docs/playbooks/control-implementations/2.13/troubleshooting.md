@@ -1,4 +1,4 @@
-# Control 2.13: Plugin and Graph Connector Security — Troubleshooting
+# Control 2.13: Plugin and Copilot Connector Security — Troubleshooting
 
 Common issues and resolution steps for plugin and connector security.
 
@@ -14,9 +14,9 @@ Common issues and resolution steps for plugin and connector security.
   3. Where licensed, verify the plugin under **Agents > Tools > Plugins** and correct its user or group scope
   4. Allow 24 hours for policy propagation after changes
 
-### Issue 2: Graph Connector Returning Unauthorized Content
+### Issue 2: Copilot Connector Returning Unauthorized Content
 
-- **Symptoms:** Users see content from Graph connectors that they should not have access to
+- **Symptoms:** Users see content from Copilot connectors that they should not have access to
 - **Root Cause:** ACL mapping may be incorrect, or the connector may not be enforcing ACLs properly.
 - **Resolution:**
   1. Review the connection under **Microsoft 365 Admin Center > Copilot > Connectors > Your Connections**

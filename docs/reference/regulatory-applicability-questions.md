@@ -185,4 +185,4 @@ This appendix captures open applicability questions that each firm should resolv
 
 ## Control 4.16 — Microsoft Scout Governance
 
-1. Which Scout artifacts and actions are records, supervisory materials, or incident evidence for this firm: local workspace files, shell-command transcripts, browser automation, WorkIQ/Microsoft 365 retrievals, session/memory data in OneDrive, automation instructions, MCP server output, third-party inference content, and GitHub Copilot entitlement records; and which categories require endpoint capture outside Microsoft 365 eDiscovery?
+1. Which Scout artifacts and actions are records, supervisory materials, or incident evidence for this firm: local workspace files, shell-command transcripts, browser automation, WorkIQ/Microsoft 365 retrievals, session/memory data in OneDrive, automation instructions, tool output, third-party inference content, and GitHub Copilot entitlement records; and which categories require endpoint capture outside Microsoft 365 eDiscovery?

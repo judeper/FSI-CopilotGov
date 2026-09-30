@@ -122,7 +122,7 @@ Admin settings, per-app configuration, analytics, Viva governance, cost tracking
 | [ ] | 4.13 | Extensibility Governance | R | | | Ongoing lifecycle governance for deployed plugins, Graph connectors, and declarative agents |
 | [ ] | 4.14 | Copilot Studio Agent Lifecycle Governance | R | | | End-to-end lifecycle governance for Copilot Studio agents (authoring, testing, publishing, versioning, deprecation) |
 | [ ] | 4.15 | Copilot Cowork Governance | R | | | Governance for Microsoft 365 Copilot Cowork (June 2026 GA): usage-based billing gating, current deprecated discovery/request control, model policy, Cowork Browsing tenant toggle, and supervision coverage |
-| [ ] | 4.16 | Microsoft Scout Governance | Reg | | | Governance for Microsoft Scout (Frontier preview endpoint agent): Frontier scoping, Intune endpoint policy plus admin attestation, and GitHub Copilot Business/Enterprise entitlement gates; shell/browser/MCP/subagent/automation posture; and documentation of storage and inference activity outside the M365 DPA |
+| [ ] | 4.16 | Microsoft Scout Governance | Reg | | | Governance for Microsoft Scout (Frontier preview endpoint agent): Frontier scoping, Intune endpoint policy plus admin attestation, and GitHub Copilot Business/Enterprise entitlement gates; shell/browser/tool-server/subagent/automation posture; and documentation of storage and inference activity outside the M365 DPA |
 
 ---
 

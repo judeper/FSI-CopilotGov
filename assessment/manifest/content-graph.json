@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-29T00:00:00Z",
+  "generatedAt": "2026-09-30T00:00:00Z",
   "counts": {
     "controls": 64,
     "pillars": 4,
@@ -236,7 +236,7 @@
       "tier": "Recommended",
       "title": "Control 1.15: SharePoint Permissions Drift Detection",
       "path": "docs/controls/pillar-1-readiness/1.15-sharepoint-permissions-drift.md",
-      "last_verified": "2026-07-26",
+      "last_verified": "2026-09-30",
       "regulatory_references": [
         "GLBA §501(b)",
         "SEC Rule 17a-4",
@@ -413,9 +413,9 @@
       "id": "2.13",
       "pillar": 2,
       "tier": "Recommended",
-      "title": "Control 2.13: Plugin and Graph Connector Security Governance",
+      "title": "Control 2.13: Plugin and Copilot Connector Security Governance",
       "path": "docs/controls/pillar-2-security/2.13-plugin-connector-security.md",
-      "last_verified": "2026-08-09",
+      "last_verified": "2026-09-30",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC"
