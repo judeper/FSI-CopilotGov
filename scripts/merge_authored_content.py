@@ -193,6 +193,15 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         # value in place after authored_content.py is corrected.
         "verifyIn",
     },
+    "4.16": {
+        # Scout terminology is sourced from authored_content.py and must stay
+        # aligned with current Microsoft Learn wording for tool servers and
+        # local tool output, not stale MCP-server phrasing.
+        "yesBar",
+        "partialBar",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
     "3.10": {
         "verifyPowerShell",
     },

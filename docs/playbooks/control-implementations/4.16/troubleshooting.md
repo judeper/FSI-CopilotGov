@@ -77,7 +77,7 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 ### Issue 9: Tool Server Configured Outside the Approved Inventory
 
 - **Symptoms:** A configured tool server is not present on the approved inventory, or the inventory entry is missing data path, authentication, or egress metadata.
-- **Resolution:** Restrict or remove the unapproved tool server, complete the inventory entry with the required metadata, and route the integration through extensibility governance under [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md) before re-enablement. If the same integration is also exposed through MCP elsewhere in the environment, coordinate the approval with [Control 2.16](../../../controls/pillar-2-security/2.16-federated-connector-mcp-governance.md).
+- **Resolution:** Restrict or remove the unapproved tool server, complete the inventory entry with the required metadata, and route the integration through extensibility governance under [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md) before re-enablement. If the same integration is also governed as a federated connector elsewhere in the environment, coordinate the approval with Control 2.16.
 
 ### Issue 10: Scout Output Contains Content That Should Be Labeled
 
@@ -107,7 +107,7 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 ### Issue 15: External Web Content Appears to Influence Scout Behavior Unexpectedly
 
 - **Symptoms:** Scout appears to take actions consistent with instructions embedded in retrieved web content or external tool output.
-- **Resolution:** Recognize that Scout tags external content as **untrusted**, but prompt-injection resistance is a Microsoft platform responsibility rather than a customer-configurable control. Report the behavior to Microsoft through Frontier preview feedback channels, restrict the browser or MCP surface, and document the incident with local artifacts preserved.
+- **Resolution:** Recognize that Scout tags external content as **untrusted**, but prompt-injection resistance is a Microsoft platform responsibility rather than a customer-configurable control. Report the behavior to Microsoft through Frontier preview feedback channels, restrict the browser or tool-server surface, and document the incident with local artifacts preserved.
 
 ## Diagnostic Steps
 
