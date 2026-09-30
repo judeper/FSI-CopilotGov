@@ -18,10 +18,10 @@ Step-by-step portal configuration for deploying insider risk detection that moni
 **Path:** Microsoft Purview > Insider Risk Management > Settings > Policy indicators
 
 Enable Copilot-relevant and AI-relevant indicators in the insider risk settings:
-- Unusual volume of file access via Copilot
-- Sensitive content access patterns through Copilot
-- Copilot usage outside normal business hours
-- Bulk content summarization or extraction patterns
+- Sensitive prompts or responses involving regulated data
+- Risky prompt behavior in monitored AI apps
+- Agent-related risky behavior where the Risky Agents template applies
+- Companion office, device, DLP, or browser indicators approved for your use case
 - **Generative AI apps indicators** and **Risky AI usage indicators (preview)** for the Copilot and agent experiences you want to monitor
 
 ### Step 2: Review Default Risky Agents Policy
@@ -34,7 +34,7 @@ The Risky Agents policy (in preview) is available by default to organizations wi
 1. Locate the Risky Agents policy in the policy list
 2. Review the scope — confirm all deployed Copilot Studio, Microsoft Foundry, and P4AI SDK agents are covered; verify the current preview status, licensing, and tenant availability before relying on it
 3. Review alert routing — configure agent risk alerts to route to both the compliance team and agent deployment owners
-4. Review default thresholds and customize for FSI context if needed
+4. Review default policy behavior and customize any permitted settings for FSI context if needed, without assuming undocumented volume thresholds
 5. Note: Microsoft prebuilt agents, third-party agents, and SharePoint agents are not listed among the supported agent types — apply compensating monitoring via DSPM for AI or Defender for Cloud Apps for these agent types
 
 ### Step 3: Create Insider Risk Policy for Copilot
@@ -53,10 +53,10 @@ Create an insider risk policy targeting Copilot usage:
 **Portal:** Microsoft Purview
 **Path:** Microsoft Purview > Insider Risk Management > Settings > Risk level thresholds
 
-Configure thresholds that define what constitutes elevated risk for Copilot usage:
-- **Low risk:** Slightly above-average Copilot interaction volume
-- **Medium risk:** Significant increase in sensitive content access via Copilot, or AI usage volume 2x peer baseline
-- **High risk:** Bulk data extraction patterns, off-hours access to restricted content, agent data volume anomaly, or AI usage 3x+ peer baseline
+Configure organization-defined review criteria for Copilot-related risk in a way that stays consistent with what Microsoft actually documents:
+- **Low risk:** Local triage heuristics can flag activity for analyst review, but don't treat those heuristics as built-in IRM indicators
+- **Medium risk:** Prioritize activity that combines risky prompts or sensitive AI responses with DLP, device, or exfiltration context
+- **High risk:** Escalate scenarios that combine risky AI interactions with HR signals, sensitive-data access, device activity, or agent-related alerts
 
 ### Step 5: Set Up Data Risk Graphs
 

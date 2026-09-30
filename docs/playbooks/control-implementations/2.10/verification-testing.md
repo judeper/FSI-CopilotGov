@@ -33,7 +33,7 @@ Test cases and evidence collection for validating insider risk detection for Cop
 - **Steps:**
   1. Navigate to Microsoft Purview > Insider Risk Management > Settings > Policy indicators
   2. Confirm the **Generative AI apps indicators** section is configured and the applicable **Risky AI usage indicators (preview)** are enabled
-  3. Generate above-normal Copilot and agent activity volume with a test account
+  3. Generate test activity that matches the documented signal types, such as risky prompts, sensitive responses, or approved companion indicators
   4. Wait for the processing cycle (24-48 hours)
   5. Check the test user's risk timeline for risky AI usage or other configured AI-related signals
 - **Expected Result:** AI-related indicators appear in the risk timeline for elevated-activity accounts
@@ -43,11 +43,11 @@ Test cases and evidence collection for validating insider risk detection for Cop
 
 - **Objective:** Verify the system detects anomalous Copilot usage patterns
 - **Steps:**
-  1. Generate above-normal Copilot activity volume with a test account
+  1. Generate a test scenario that should trigger the configured IRM policy, such as a risky AI prompt, sensitive AI response, or approved companion exfiltration signal
   2. Wait for the insider risk processing cycle (24-48 hours)
   3. Check for risk alerts or elevated risk scores on the test account
   4. Verify the anomaly is captured in the insider risk dashboard
-- **Expected Result:** Anomalous activity generates a risk signal
+- **Expected Result:** The configured risky-AI or companion signal generates a risk signal
 - **Evidence:** Insider risk alert or risk score increase for test account
 
 ### Test 5: Data Risk Graph Accessibility

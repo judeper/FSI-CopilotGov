@@ -61,13 +61,13 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
 ### Issue 6: High Volume of Low-Quality Alerts
 
 - **Symptoms:** Insider risk generates many alerts for routine Copilot usage, overwhelming investigators
-- **Root Cause:** Risk thresholds may be too sensitive, or the baseline for normal Copilot usage has not been properly established. Organizations that have recently expanded Copilot access may see elevated alert volume as baselines are recalibrated.
+- **Root Cause:** The configured policies or companion indicators may be too broad for the organization's actual use patterns, or analysts may be treating local review heuristics as if they were built-in IRM thresholds.
 - **Resolution:**
-  1. Allow 2-4 weeks for the system to establish behavioral baselines after a significant Copilot rollout
-  2. Adjust risk level thresholds upward to reduce noise — use the Triage Agent categorizations as a guide for which alert types are generating low-value signals
+  1. Review which specific indicators, templates, or companion signals are generating the noise
+  2. Narrow the in-scope apps, users, or companion indicators rather than inventing unsupported built-in thresholds
   3. Use priority user groups to focus detection on higher-risk roles
   4. Implement alert filtering to separate low-confidence from high-confidence signals
-  5. For the Generative AI apps indicators and Risky AI usage indicators, set thresholds relative to organizational Copilot deployment scale — a fully deployed tenant will have much higher baseline AI usage than a limited pilot
+  5. If you use organization-defined audit heuristics outside IRM, document them separately from the built-in IRM indicators
 
 ### Issue 7: Insider Risk Data Not Correlating with Copilot Events
 
