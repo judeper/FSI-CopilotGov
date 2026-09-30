@@ -886,8 +886,8 @@ AUTHORED: dict[str, dict] = {
             credit_union=(
                 "Copilot training is folded into the credit union's member-"
                 "information security program, and staff with Copilot access "
-                "are trained to implement that program under 12 CFR part 748, "
-                "appendix A, III.C.2."
+                "are trained to implement that program, consistent with 12 "
+                "CFR part 748, appendix A, III.C.2."
             ),
         ),
         "facilitatorNotes": {
@@ -3934,39 +3934,7 @@ AUTHORED: dict[str, dict] = {
             "Review cadence documentation and most recent review date",
             "Statistical-limitation disclaimers in leadership reports",
         ],
-        "sectorYesBar": _sector_map(
-            bank=(
-                "Copilot Dashboard access for banking business lines is "
-                "limited to approved dashboard roles, and leaders see only group-"
-                "level metrics that meet the minimum group size and any "
-                "required exclusion-list rules."
-            ),
-            broker_dealer=(
-                "Copilot Dashboard access for registered-representative or "
-                "supervisory populations is limited to approved dashboard "
-                "roles, "
-                "and leaders see only group-level metrics that meet the "
-                "minimum group size and any required exclusion-list rules."
-            ),
-            investment_adviser=(
-                "Copilot Dashboard access for adviser and portfolio teams is "
-                "limited to approved dashboard roles, and leaders see only group-"
-                "level metrics that meet the minimum group size and any "
-                "required exclusion-list rules."
-            ),
-            insurance_carrier=(
-                "Copilot Dashboard access for claims or underwriting teams is "
-                "limited to approved dashboard roles, and leaders see only group-"
-                "level metrics that meet the minimum group size and any "
-                "required exclusion-list rules."
-            ),
-            credit_union=(
-                "Copilot Dashboard access for member-service and lending "
-                "teams is limited to approved dashboard roles, and leaders see only "
-                "group-level metrics that meet the minimum group size and any "
-                "required exclusion-list rules."
-            ),
-        ),
+        "sectorYesBar": _sector_map(),
         "facilitatorNotes": {
             "ask": (
                 "Are Viva Insights Copilot impact reports reviewed on a "
@@ -4017,25 +3985,28 @@ AUTHORED: dict[str, dict] = {
                 "by product owner."
             ),
             broker_dealer=(
-                "Registered-representative populations stay on restricted "
-                "feedback or have feedback disabled unless the firm approves "
-                "a support use case, and screenshot/log-file/content-sample "
-                "submission follows the firm's 17 CFR 248.30(a) safeguards "
-                "program."
+                "Registered-representative populations have feedback "
+                "submission disabled unless the firm approves a support use "
+                "case, and the screenshot/attachment, follow-up, and log-file/"
+                "content-sample feedback policies are set in line with the "
+                "firm's written safeguards policies and procedures under 17 "
+                "CFR 248.30(a)."
             ),
             investment_adviser=(
-                "Adviser and client-service populations stay on restricted "
-                "feedback or have feedback disabled unless the adviser "
-                "approves a support use case, and screenshot/log-file/"
-                "content-sample submission follows the adviser's 17 CFR "
-                "248.30(a) safeguards program."
+                "Adviser and client-service populations have feedback "
+                "submission disabled unless the adviser approves a support "
+                "use case, and the screenshot/attachment, follow-up, and "
+                "log-file/content-sample feedback policies are set in line "
+                "with the adviser's written safeguards policies and "
+                "procedures under 17 CFR 248.30(a)."
             ),
             credit_union=(
-                "Member-service populations stay on restricted feedback or "
-                "have feedback disabled unless the credit union approves a "
-                "support use case, and feedback handling remains inside the "
-                "credit union's 12 CFR part 748, appendix A member-"
-                "information security program."
+                "Member-service populations have feedback submission disabled "
+                "unless the credit union approves a support use case, and "
+                "the screenshot/attachment, follow-up, and log-file/content-"
+                "sample feedback policies are set in line with the credit "
+                "union's member-information security program, consistent with "
+                "12 CFR part 748, appendix A."
             ),
         ),
         "facilitatorNotes": {
