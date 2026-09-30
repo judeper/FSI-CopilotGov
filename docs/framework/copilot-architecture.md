@@ -138,10 +138,10 @@ The Semantic Index is a critical component for governance because it determines 
 | **Includes meeting transcripts** | Spoken content from meetings is indexed and retrievable | Teams meeting governance (Control 1.5) |
 | **Includes email content** | Full email bodies and attachments are searchable by Copilot | Exchange permissions review (Control 1.13) |
 | **Near-real-time updates** | Newly shared content becomes available to Copilot quickly | Sensitivity labels applied at creation (Control 2.2) |
-| **No content exclusion by site** | Administrators cannot selectively exclude specific SharePoint sites from the Semantic Index (except via Restricted SharePoint Search) | Restricted SharePoint Search (Control 1.4) |
+| **No content exclusion by site** | Administrators cannot selectively exclude specific SharePoint sites from the Semantic Index alone; current practice uses site searchability controls or Restricted Content Discovery (RCD), with legacy RSS only where it was already enabled | Site searchability, Restricted Content Discovery, legacy Restricted SharePoint Search (Controls 1.3-1.4) |
 
-!!! warning "Restricted SharePoint Search"
-    **Restricted SharePoint Search (RSS)** is the primary mechanism for limiting which SharePoint sites are included in Copilot's grounding for Microsoft 365 Copilot Chat. When enabled, only sites on the approved list are used for Copilot grounding in the Copilot Chat experience. This is a critical control for Regulated environments. Note: RSS applies to Copilot Chat grounding, not to Copilot within individual apps (e.g., Copilot in Word still accesses files the user has open or recently accessed).
+!!! warning "SharePoint discoverability controls"
+    **Restricted Content Discovery (RCD)** is the current Microsoft-recommended mechanism for limiting discovery of selected SharePoint sites in Microsoft Copilot while permissions are reviewed. **Restricted SharePoint Search (RSS)** is a retiring, temporary legacy control whose new enablement was blocked starting July 31, 2026. Where RSS is already enabled, it can still limit Copilot Chat grounding to the approved list during transition, but it should not be treated as the long-term operating model. Site searchability settings remain the way to exclude a site's content from both Microsoft Search and tenant-level semantic indexing.
 
 ---
 
@@ -416,9 +416,9 @@ Copilot plugins extend functionality by allowing Copilot to interact with extern
 
 | Control | Purpose |
 |---------|---------|
-| Plugin approval workflow | Restrict which plugins are available to users (Control 2.8) |
-| Graph connector ACL review | Verify permission mapping for ingested content (Control 2.8) |
-| Plugin data classification | Classify data accessed by each plugin (Control 2.8) |
+| Plugin approval workflow | Restrict which plugins are available to users (Control 2.13) |
+| Graph connector ACL review | Verify permission mapping for ingested content (Control 2.13) |
+| Plugin data classification | Classify data accessed by each plugin (Control 2.13) |
 | Plugin audit logging | Log plugin invocations and data exchanges (Control 3.1) |
 
 ---
@@ -497,7 +497,7 @@ For detailed implementation guidance, including Baseline Security Mode configura
 | **Unified agent inventory** | Single view of all agents — Microsoft first-party, organization-published, partner, and Copilot Studio agents | Supports compliance inventory and ownership tracking across agent sources |
 | **Agent usage analytics** | Telemetry on sessions, active users, runtime, and exception rates per agent | Aids in identifying material agent dependencies and operational risk |
 | **Centralized policy controls** | Allowed types, sharing rules, user access, and template governance in one surface | Reduces configuration drift by consolidating previously distributed settings |
-| **Cross-platform visibility** | Agents from Microsoft 365, Copilot Studio, and third-party integrations appear in the same registry | Helps address third-party risk and lifecycle management for all agent sources |
+| **Cross-platform visibility** | Agents from Microsoft 365, Copilot Studio, and supported third-party integrations can appear in the same registry, but connected-platform discovery is only as current as the latest manual **Sync agents** run and observability varies by platform | Helps address third-party risk and lifecycle management for all agent sources without assuming continuous third-party synchronization |
 
 ### Governance Implications
 
@@ -589,7 +589,7 @@ For FSI environments, organizations should document which business functions are
 | **No model training** | Microsoft does not use customer tenant data to train, retrain, or improve foundation models |
 | **Transient processing** | Prompts and responses are processed transiently; they are not stored by the LLM service after the interaction completes |
 | **Audit logging** | Copilot interactions generate audit events that are stored in the tenant's Unified Audit Log |
-| **Encryption** | Data is encrypted in transit (TLS 1.2+) and at rest (AES-256) |
+| **Encryption** | Data is encrypted in transit (TLS 1.2 baseline, with TLS 1.3 rollout by service) and at rest with Microsoft 365 service-side encryption layers |
 
 ### Data Residency
 

@@ -45,12 +45,13 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 - **Root Cause:** Complex nested conditions can have logic errors in how AND/OR/NOT operators are grouped. The condition builder requires careful ordering — the sequence of condition groups and the selected operator between groups determines final logic.
 - **Resolution:**
   1. Run the auto-labeling policy in simulation mode and review match results
-  2. For over-labeling (false positives): check NOT conditions — verify exclusion groups are correctly excluding intended paths/content types
-  3. For under-labeling (false negatives): check AND conditions — verify all required conditions are actually being met by test documents; lower confidence levels if SITs are not matching
-  4. Test each condition group individually before combining them:
+  2. After enforcement, compare the latest simulation to the actual results in **Coverage by simulation context**, because simulation evaluates a single policy and overlapping policies can change the enforced outcome
+  3. For over-labeling (false positives): check NOT conditions — verify exclusion groups are correctly excluding intended paths/content types
+  4. For under-labeling (false negatives): check AND conditions — verify all required conditions are actually being met by test documents; lower confidence levels if SITs are not matching
+  5. Test each condition group individually before combining them:
      - Create a test policy with only one condition group, verify it matches as expected
      - Add the second condition group and verify the combined logic
-  5. Review the simulation mode results for sample documents to understand which conditions are and are not matching
+  6. Review the **Labeled items** tab and the **Failed** view for sample documents to understand which conditions matched and whether label application failed after a match
 
 ### Issue 5: Auto-Labeling Overriding Manually Applied Labels on Files
 
@@ -69,8 +70,9 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 - **Resolution:**
   1. Enable auto-labeling policies as a safety net for unlabeled content
   2. Configure a default sensitivity label on the SharePoint document libraries that hold Copilot-accessible content — this is location-based labeling and raises files that carry a lower-priority label
-  3. Run the unlabeled content detection scripts (Script 3 or Script 4) weekly to catch gaps
-  4. Review upload paths and confirm all channels enforce labeling
+  3. If files already existed in those libraries before the default label was configured, create the dedicated auto-labeling policy that applies document-library default labels to existing files at rest
+  4. Run the unlabeled content detection scripts (Script 3 or Script 4) weekly to catch gaps
+  5. Review upload paths and confirm all channels enforce labeling
 
 ### Issue 7: Label Conflicts with Multiple Source Documents
 
@@ -94,15 +96,17 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
   5. If Copilot should not use the content, document the observed supported-surface behavior and apply a DLP, DKE, or connected-experience control appropriate to the approved design.
   6. Check whether the label carries the `BlockContentAnalysisServices` PowerShell advanced setting, which stops Office apps from sending the labeled content to connected experiences that analyze content, including Copilot.
 
-### Issue 9: Label Analytics Showing Incomplete Data
+### Issue 9: Label Reporting or Explorer Data Showing Incomplete Results
 
-- **Symptoms:** Label analytics reports in Purview show lower label counts than expected or data appears to be delayed
-- **Root Cause:** Label analytics data has a reporting lag of up to 7 days. Additionally, label events from all workloads may not be aggregated in real-time.
+- **Symptoms:** Information Protection reports, Content explorer exports, auto-labeling review pages, or Activity explorer show lower label counts than expected or data appears delayed
+- **Root Cause:** These surfaces answer different questions and refresh on different cadences. Information Protection reports show a 30-day activity/adoption window rather than total inventory. Content explorer is a current snapshot that can take up to 7 days to update (14 days for SharePoint files). Activity explorer is fed by the unified audit log and is not real-time. Auto-labeling review pages show policy-specific outcomes rather than tenant-wide totals.
 - **Resolution:**
-  1. Allow 7 days for data to fully populate in label analytics
-  2. Cross-reference with audit log data for more current information
-  3. Use PowerShell Script 2 for near-real-time label event monitoring
-  4. Check service health for any Purview reporting delays
+  1. Use **Information Protection > Reports** for its documented 30-day posture views: **Label distribution and adoption**, **Auto-labeling policy coverage**, and **Sensitivity label activity**
+  2. Use **Content explorer** plus a separate workload inventory when you need current labeled-item evidence by workload or zone; for SharePoint and OneDrive, remember that encrypted sensitivity labels don't surface there
+  3. Use **Activity explorer**, audit, or the auto-labeling policy review pages when you need a compensating evidence source for encrypted SharePoint and OneDrive items or more recent activity
+  4. Use the auto-labeling policy's **Coverage by simulation context**, **Labeled items**, and **Failed** views when you need per-policy enforcement results
+  5. Use PowerShell Script 2 for recent label event monitoring
+  6. Check service health for any Purview reporting delays
 
 ## Diagnostic Steps
 
@@ -118,7 +122,7 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 
 | Severity | Condition | Escalation Path |
 |----------|-----------|----------------|
-| **Low** | Label analytics reporting delays | Monitor and recheck after 7 days |
+| **Low** | Label reporting refresh delay | Monitor and recheck after the applicable refresh window |
 | **Low** | Auto-labeling false positive pattern in nested conditions | DLP/label policy tuning team |
 | **Medium** | Inconsistent label inheritance behavior post-migration | Information protection team |
 | **Medium** | Agent response label higher than expected, causing DLP disruption | Information protection team + agent owner |

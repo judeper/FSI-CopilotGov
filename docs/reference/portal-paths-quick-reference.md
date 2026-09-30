@@ -29,6 +29,9 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 | Agent allowed types | Agents > Settings > Allowed agent types | `https://admin.microsoft.com` |
 | Agent sharing | Agents > Settings > Sharing | `https://admin.microsoft.com` |
 | Agent user access | Agents > Settings > User access | `https://admin.microsoft.com` |
+| Agent feedback sharing | Agents > Settings > Agent feedback sharing | `https://admin.microsoft.com` |
+| Agent tags | Agents > Settings > Tags | `https://admin.microsoft.com` |
+| Connected platforms | Agents > All agents > Connected platforms > Manage | `https://admin.microsoft.com` |
 
 ### General Settings
 
@@ -39,8 +42,8 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 | Services settings | Settings > Org settings > Services | `https://admin.microsoft.com/Adminportal/Home#/Settings/Services` |
 | Integrated apps | Settings > Integrated apps | `https://admin.microsoft.com/Adminportal/Home#/Settings/IntegratedApps` |
 | License assignment | Billing > Licenses | `https://admin.microsoft.com/Adminportal/Home#/licenses` |
-| Pay-as-you-go services | Billing > Pay-as-you-go services | `https://admin.microsoft.com` |
-| Cost Management | Cost Management | `https://admin.microsoft.com` |
+| Pay-as-you-go services | Copilot > Billing & usage > Pay-as-you-go services | `https://admin.microsoft.com` |
+| Cost Management | Billing > Cost Management | `https://admin.microsoft.com` |
 | User management | Users > Active users | `https://admin.microsoft.com/Adminportal/Home#/users` |
 | Groups | Teams and groups > Active teams and groups | `https://admin.microsoft.com/Adminportal/Home#/groups` |
 | Message Center | Health > Message center | `https://admin.microsoft.com/Adminportal/Home#/MessageCenter` |
@@ -73,9 +76,9 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 
 | Setting | Navigation Path | Direct URL |
 |---------|----------------|------------|
-| Sensitivity labels | Information protection > Labels | `https://purview.microsoft.com/informationprotection/labels` |
-| Label policies | Information protection > Label policies | `https://purview.microsoft.com/informationprotection/labelpolicies` |
-| Auto-labeling | Information protection > Auto-labeling | `https://purview.microsoft.com/informationprotection/autolabeling` |
+| Sensitivity labels | Information Protection > Sensitivity labels | `https://purview.microsoft.com/informationprotection/labels` |
+| Label policies | Information Protection > Publishing policies | `https://purview.microsoft.com/informationprotection/labelpolicies` |
+| Auto-labeling | Information Protection > Policies > Auto-labeling policies | `https://purview.microsoft.com/informationprotection/autolabeling` |
 
 ### Audit and Retention
 

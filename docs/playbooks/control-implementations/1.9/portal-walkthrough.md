@@ -51,14 +51,14 @@ Verify the license assignment processes successfully with no errors.
 ### Step 4: Configure Pay-As-You-Go (PAYG) Copilot Chat
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Billing > Pay-as-you-go services / Cost Management
+**Path:** Copilot > Billing & usage > Pay-as-you-go services; Billing > Cost Management
 
 If deploying PAYG Copilot Chat (metered per-message pricing; refer to [Microsoft 365 Copilot pricing](https://www.microsoft.com/en-us/microsoft-365/copilot#plans) for current rates) for pilot users or occasional-access populations:
 
 1. Create or review the billing policy tied to the correct Azure subscription.
 2. Add the approved users or groups to the billing policy and document the cost owner.
-3. Add a budget limit and notification routing to the billing policy.
-4. Connect the billing policy to Microsoft 365 Copilot Chat.
+3. Add a budget threshold and notification routing to the billing policy, and document that the threshold is notification-only rather than an enforced spend cap.
+4. Connect the billing policy to Microsoft Copilot Chat.
 5. Review **Settings > Org settings > Self-service trials and purchases** and document the per-product self-service state for Microsoft 365 Copilot and related products.
 6. Record which populations are on the PAYG model versus per-seat licensing in the deployment plan.
 
@@ -88,7 +88,7 @@ Create a license assignment policy that documents:
 
 | Tier | Recommendation |
 |------|---------------|
-| **Baseline** | Group-based license assignment with documented deployment plan; PAYG acceptable for pilot groups (<50 users) with Azure spend limits configured |
+| **Baseline** | Group-based license assignment with documented deployment plan; PAYG acceptable for pilot groups (<50 users) with Azure budget notifications configured |
 | **Recommended** | Phased rollout with governance gates between waves; license reclamation policy for inactive users; per-seat licenses for regular users, PAYG for occasional/seasonal users; Frontline add-on documented with FSI use cases |
 | **Regulated** | Governance committee approval required for each wave; documented business justification per user group; quarterly license utilization review; per-seat licenses required for users handling regulated data; PAYG limited to non-regulated use cases with documented justification |
 

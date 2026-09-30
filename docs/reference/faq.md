@@ -43,7 +43,7 @@ When a user asks Copilot a question, Copilot queries the Microsoft Graph using t
 
 ### What is the difference between Copilot Chat Basic and Premium?
 
-**Copilot Chat (Basic)** is the free tier available to all Microsoft 365 users via the web (copilot.microsoft.com) and Outlook. It uses web data only and does not access organizational data through the Microsoft Graph.
+**Copilot Chat (Basic)** is the free tier available to eligible Microsoft 365 users via the Microsoft Copilot app entry points for work accounts, including `copilot.cloud.microsoft`, plus Outlook. It uses web data only and does not access organizational data through the Microsoft Graph.
 
 **Copilot Chat (Premium)** requires a Microsoft 365 Copilot license and provides full access to organizational data via Microsoft Graph, priority access, and advanced features across all Microsoft 365 apps.
 
@@ -263,7 +263,7 @@ Sensitivity labels interact with Copilot in three key ways:
 
 1. **Label inheritance:** When Copilot generates content based on one or more labeled source documents, the output inherits the highest sensitivity label. If Copilot references both an "Internal" document and a "Highly Confidential" document, the generated content receives the "Highly Confidential" label.
 
-2. **Encryption enforcement:** If a sensitivity label includes encryption settings, Copilot respects those settings. Users who do not have decryption rights cannot use Copilot to access the encrypted content.
+2. **Encryption enforcement:** If a sensitivity label includes encryption settings, Copilot respects the user's usage rights. Users without the EXTRACT (Copy) right can't have Copilot summarize the encrypted item, though Copilot can still return a link in documented scenarios; OWNER includes EXTRACT automatically.
 
 3. **DLP integration:** DLP policies can use sensitivity labels as conditions. For example, a DLP policy can block Copilot from processing "Highly Confidential" content in certain contexts.
 

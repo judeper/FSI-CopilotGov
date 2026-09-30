@@ -28,7 +28,7 @@ Step-by-step portal configuration for implementing cost allocation, chargeback, 
 1. Open **Copilot > Billing & usage > Pay-as-you-go services** in the Microsoft 365 admin center for Copilot Chat or SharePoint agents, or **Copilot > Cost management** for Cowork, apps built with Cowork, and Work IQ API spending policies.
 2. Create or review the billing policy tied to the correct Azure subscription.
 3. Add the approved users or groups to the billing policy and document the responsible cost owner.
-4. Add a budget limit and notification routing to the billing policy or Copilot Credit spending policy; document whether the control is notification-only, a spending limit, or an access-granting policy scope.
+4. Add a budget threshold and notification routing to the billing policy or Copilot Credit spending policy; document whether the control is notification-only, a separate spending limit, or an access-granting policy scope.
 5. Connect the billing policy or spending policy to the approved service, such as Microsoft Copilot Chat, SharePoint agents, or Cowork.
 6. Open **Cost Management** to review usage and charges for the connected service.
 7. Review **Settings > Org settings > Self-service trials and purchases** and document the per-product self-service state for Microsoft 365 Copilot and related products.

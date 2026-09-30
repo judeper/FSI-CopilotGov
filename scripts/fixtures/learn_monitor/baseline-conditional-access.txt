@@ -1,0 +1,48 @@
+Table of contents
+Exit editor mode
+Ask Learn
+Ask Learn
+Reading mode
+Table of contents
+Read in English
+Add
+Add to Plans
+Edit
+Copy Markdown
+Print
+Note
+Access to this page requires authorization. You can try
+signing in
+or
+changing directories
+.
+Access to this page requires authorization. You can try
+changing directories
+.
+What is Conditional Access?
+Feedback
+Summarize this article for me
+Overview
+Modern security extends beyond an organization's network perimeter to include user and device identity. Organizations now use identity-driven signals as part of their access control decisions. Microsoft Entra Conditional Access brings signals together, to make decisions, and enforce organizational policies. Conditional Access is Microsoft's
+Zero Trust policy engine
+taking signals from various sources into account when enforcing policy decisions.
+Conditional Access policies at their simplest are if-then statements:
+if
+a user wants to access a resource,
+then
+they must complete an action. For example: If a user wants to access an application or service like Microsoft 365, then they must perform multifactor authentication to gain access.
+Admins are faced with two primary goals:
+Empower users to be productive wherever and whenever
+Protect the organization's assets
+Use Conditional Access policies to apply the right access controls when needed to keep your organization secure and don't interfere with productivity.
+Important
+Conditional Access policies are enforced after first-factor authentication is completed. Conditional Access isn't intended to be an organization's frontline defense for scenarios like denial-of-service (DoS) attacks, but it can use signals from these events to determine access.
+Common signals
+Conditional Access uses signals from various sources to make access decisions.
+Some of these signals include:
+User, group, or agent
+Policies can be targeted to specific users, groups, and agents (Preview) giving admins fine-grained control over access.
+Support for agent identities and agent users extends Zero Trust principles to AI workloads.
+IP location information
+Organizations can create IP address ranges that can be used when making policy decisions.
+Admins can specif
