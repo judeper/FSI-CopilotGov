@@ -1003,20 +1003,26 @@ AUTHORED: dict[str, dict] = {
             investment_adviser=(
                 "Item-level scans cover selected customer-information "
                 "SharePoint sites, and potentially overshared items are "
-                "removed, relabeled, or assigned to owners to support the "
-                "adviser's written safeguards under Regulation S-P."
+                "resolved by removing the sharing link, applying a "
+                "sensitivity label, or notifying the site owner, supporting "
+                "the adviser's written safeguards under Regulation S-P."
             ),
             insurance_carrier=(
                 "Where HIPAA applies, item-level scans cover selected "
-                "PHI-bearing SharePoint sites, and flagged items are reviewed "
-                "and remediated through access-report and security-incident "
-                "procedures under 45 CFR 164.308(a)(1)(ii)(D)."
+                "PHI-bearing SharePoint sites, and potentially overshared "
+                "items are resolved by removing the sharing link, applying a "
+                "sensitivity label, or notifying the site owner, supporting "
+                "risk analysis and risk management under 45 CFR "
+                "164.308(a)(1)(ii)(A)-(B) and access establishment and "
+                "modification under 45 CFR 164.308(a)(4)(ii)(C)."
             ),
             credit_union=(
                 "Item-level scans cover selected member-information "
-                "SharePoint sites, and flagged sharing links or owner "
-                "notifications feed the credit union's access-control and "
-                "testing measures under Appendix A III.C.1.a and III.C.3."
+                "SharePoint sites, and flagged items are relabeled, have "
+                "sharing links removed, or are routed to site owners, "
+                "supporting access-control measures the credit union has "
+                "adopted after considering Appendix A III.C.1.a and its "
+                "testing under III.C.3."
             ),
         ),
         "facilitatorNotes": {
@@ -1077,24 +1083,26 @@ AUTHORED: dict[str, dict] = {
                 "sites; reconciliation documented for FINRA exam readiness."
             ),
             investment_adviser=(
-                "Quarterly site-permissions baselines and monthly sharing-"
-                "activity reports cover customer-information sites, and "
-                "change history or site access reviews are used to "
-                "investigate and remediate drift as part of the adviser's "
-                "written safeguards under Regulation S-P."
+                "Microsoft-recommended quarterly site-permissions baselines "
+                "and monthly sharing-activity reports cover customer-"
+                "information sites, and change history or site access "
+                "reviews are used to investigate and remediate drift, "
+                "supporting the adviser's written safeguards under "
+                "Regulation S-P."
             ),
             insurance_carrier=(
-                "Where HIPAA applies, quarterly site-permissions baselines "
-                "and monthly sharing-activity reports cover PHI sites, and "
-                "change history or site access reviews support regular review "
-                "of access reports under 45 CFR 164.308(a)(1)(ii)(D)."
+                "Where HIPAA applies, Microsoft-recommended quarterly site-"
+                "permissions baselines and monthly sharing-activity reports "
+                "cover PHI sites, and change history or site access reviews "
+                "support regular review of access reports under 45 CFR "
+                "164.308(a)(1)(ii)(D)."
             ),
             credit_union=(
-                "Quarterly site-permissions baselines and monthly sharing-"
-                "activity reports cover member-information sites, and change "
-                "history or site access reviews feed the credit union's "
-                "testing and adjustment of safeguards under Appendix A "
-                "III.C.3 and III.E."
+                "Microsoft-recommended quarterly site-permissions baselines "
+                "and monthly sharing-activity reports cover member-"
+                "information sites, and change history or site access "
+                "reviews support the credit union's testing and adjustment "
+                "of safeguards under Appendix A III.C.3 and III.E."
             ),
         ),
         "facilitatorNotes": {
@@ -1887,8 +1895,10 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Browser session policies cover the Microsoft 365 web "
                 "workloads that handle customer information, and anomaly "
-                "alerts are triaged as part of Regulation S-P safeguards and "
-                "the firm's written supervisory procedures."
+                "alerts are triaged as part of the firm's safeguards under "
+                "Regulation S-P §248.30(a) and, where the firm has "
+                "incorporated them, its FINRA Rule 3110(b) supervisory "
+                "procedures."
             ),
             investment_adviser=(
                 "Browser session policies cover the Microsoft 365 web "
@@ -1904,9 +1914,10 @@ AUTHORED: dict[str, dict] = {
             ),
             credit_union=(
                 "Browser session policies cover member-information Microsoft "
-                "365 web workloads, and anomaly alerts feed the credit "
-                "union's monitoring systems and procedures and regular "
-                "testing under Appendix A III.C.1.f and III.C.3."
+                "365 web workloads, and anomaly alerts feed monitoring "
+                "systems and procedures the credit union has adopted under "
+                "Appendix A III.C.1.f, and its evaluation and adjustment of "
+                "the program under III.E."
             ),
         ),
         "facilitatorNotes": {
@@ -1990,9 +2001,11 @@ AUTHORED: dict[str, dict] = {
             ),
             credit_union=(
                 "Risky AI usage or data-leak indicators are enabled for in-"
-                "scope users with member-information access, and alerts feed "
-                "the credit union's monitoring and response procedures under "
-                "Appendix A III.C.1.f-g and III.C.3."
+                "scope users with member-information access, supporting the "
+                "credit union's assessment of internal threats under "
+                "Appendix A III.B.1 and, to the extent adopted, its "
+                "monitoring and response measures under III.C.1.f-g and "
+                "program adjustment under III.E."
             ),
         ),
         "facilitatorNotes": {
