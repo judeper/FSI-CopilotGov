@@ -70,14 +70,14 @@ Common issues and resolution steps for Copilot license management.
 
 ### Issue 7: PAYG Copilot Chat Unexpected Costs
 
-- **Symptoms:** Azure Cost Management shows higher-than-expected PAYG Copilot Chat charges; spend limit has been reached unexpectedly
+- **Symptoms:** Azure Cost Management shows higher-than-expected PAYG Copilot Chat charges, or budget-notification alerts arrive sooner than expected
 - **Root Cause:** PAYG usage is metered per message and can accumulate rapidly with high-volume users or if access is broader than intended.
 - **Resolution:**
-  1. Navigate to Azure portal > Cost Management > Budgets and verify spend alerts are configured for PAYG Copilot Chat
+  1. Navigate to Microsoft 365 admin center > Billing > Cost Management and Azure portal > Cost Management > Budgets; verify spend alerts are configured for PAYG Copilot Chat
   2. Review usage breakdown by user or resource in Azure Cost Management to identify high-volume users
   3. For users with consistently high PAYG costs, evaluate whether a per-seat Copilot license is more cost-effective
-  4. If PAYG access was granted more broadly than intended, review PAYG access configuration in MAC and restrict to the intended user population
-  5. Set lower budget alert thresholds to receive earlier warning before spend limits are reached
+  4. If PAYG access was granted more broadly than intended, review the billing-policy connection in Microsoft 365 admin center > Copilot > Billing & usage > Pay-as-you-go services and restrict it to the intended user population
+  5. Set lower budget alert thresholds to receive earlier warning before costs exceed the firm's expected budget range
 
 ## Diagnostic Steps
 

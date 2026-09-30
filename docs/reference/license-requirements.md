@@ -14,12 +14,12 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | **Microsoft 365 E3** | Productivity, security basics, compliance basics | Baseline governance — requires add-ons for most regulated controls |
 | **Microsoft 365 E5** | Full productivity, advanced security, advanced compliance | Recommended for FSI — includes Purview, Defender, and advanced compliance |
 | **Microsoft 365 Copilot (Premium)** | Per-user add-on enabling full AI assistance across M365 apps (also referred to as "Microsoft 365 Copilot" in most admin documentation) | Required for full Copilot functionality across all M365 apps |
-| **Microsoft 365 Copilot (Basic) / Copilot Chat (Basic)** | Included experience for users without a Microsoft 365 Copilot Premium add-on. Public Microsoft Learn documentation describes standalone Copilot Chat and standard in-app Copilot access; verify tenant-visible Message Center posts MC1253858/MC1253863 for any April 15, 2026 change to unlicensed in-app access | Provides basic Copilot access without per-user Premium license cost; governance controls still apply |
+| **Microsoft Copilot Chat (Basic) / Microsoft 365 Copilot (Basic)** | Included chat and standard in-app experiences for users without a Microsoft 365 Copilot Premium add-on. Public Microsoft Learn documentation distinguishes Microsoft Copilot Chat from Microsoft 365 Copilot (Basic); verify tenant-visible Message Center posts MC1253858/MC1253863 for any April 15, 2026 change to unlicensed in-app access | Provides basic Copilot access without per-user Premium license cost; governance controls still apply |
 | **Third-party model providers** | Admins can enable Anthropic Claude and xAI models for specific users or groups through Copilot settings | Introduces additional data handling, model risk, and data residency considerations for FSI environments |
 | **Microsoft Purview Suite (formerly E5 Compliance)** | Add-on for E3 providing E5-level compliance capabilities | Alternative to full E5 for compliance-focused deployments |
 | **Microsoft 365 E5 Security** | Add-on for E3 providing E5-level security capabilities | Alternative to full E5 for security-focused deployments |
 | **SharePoint Advanced Management (SAM)** | Advanced SharePoint governance (DAG reports, site lifecycle, RCD, RAC) | Included with Microsoft 365 Copilot licenses at no additional cost (Ignite 2024); also available as standalone add-on (~$3/user/month) for non-Copilot environments |
-| **Microsoft 365 Copilot (PAYG)** | Pay-as-you-go billing for approved Copilot services | Usage-based Azure billing tied to a billing policy; commonly used for Copilot Chat without assigning full seats |
+| **Microsoft Copilot (PAYG)** | Pay-as-you-go billing for approved Copilot services | Usage-based Azure billing tied to a billing policy; commonly used for Microsoft Copilot Chat or supported agents/services without assigning full seats, but does not by itself provide Premium-style automatic Graph grounding |
 | **Microsoft 365 F1/F3** | Frontline worker licenses | Copilot availability extended to Frontline SKUs; check current Microsoft documentation for feature parity with E3/E5 |
 
 !!! warning "Tenant Message Center Verification Required"
@@ -33,7 +33,7 @@ License requirements for each governance capability in the FSI Copilot Governanc
 |---------|---------|----|----|---------|------------------------|-------|
 | 1.1 | Readiness Assessment — basic sharing audit | Included | Included | -- | -- | Basic sharing reports available in SharePoint Admin Center |
 | 1.2 | Oversharing Detection (DSPM for AI, SAM reports) | -- | Included | Included | Purview Suite | SAM is included with Copilot licenses (Ignite 2024); DSPM for AI requires E5 and Copilot |
-| 1.3 | Restricted SharePoint Search Configuration | Included | Included | -- | -- | Available in SharePoint Admin Center; limits Microsoft 365 Copilot Chat grounding |
+| 1.3 | Restricted SharePoint Search Configuration | Included | Included | -- | -- | Legacy temporary control in SharePoint Admin Center; new enablement blocked from July 31, 2026 and current deployments should prefer RCD for Copilot discoverability governance |
 | 1.4 | Semantic Index Governance and Scope Control | -- | -- | Included | -- | Semantic Index processing is part of Copilot license |
 | 1.5 | Sensitivity Label Taxonomy Review | -- | Included | -- | Purview Suite or Purview add-on | Content explorer and data classification dashboards |
 | 1.6 | Permission Model Audit | Included | Included | -- | -- | Native SharePoint, OneDrive, Exchange, Teams admin capabilities |
@@ -157,7 +157,7 @@ E5 is strongly recommended for FSI environments. The cost of individual add-ons 
 | Microsoft 365 Copilot | Copilot functionality per user; includes SAM at no additional cost |
 | Microsoft Sentinel | SIEM/SOAR for Copilot audit data |
 | Viva Insights (optional) | Advanced Copilot adoption analytics |
-| Microsoft 365 Copilot PAYG (optional) | Pay-as-you-go for approved occasional Copilot Chat users through billing policy governance |
+| Microsoft Copilot PAYG (optional) | Pay-as-you-go for approved occasional Copilot Chat users through billing policy governance |
 
 ---
 

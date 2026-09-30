@@ -43,7 +43,7 @@ When a user asks Copilot a question, Copilot queries the Microsoft Graph using t
 
 ### What is the difference between Copilot Chat Basic and Premium?
 
-**Copilot Chat (Basic)** is the free tier available to all Microsoft 365 users via the web (copilot.microsoft.com) and Outlook. It uses web data only and does not access organizational data through the Microsoft Graph.
+**Copilot Chat (Basic)** is the free tier available to eligible Microsoft 365 users via the Microsoft Copilot app entry points for work accounts, including `copilot.cloud.microsoft`, plus Outlook. It uses web data only and does not access organizational data through the Microsoft Graph.
 
 **Copilot Chat (Premium)** requires a Microsoft 365 Copilot license and provides full access to organizational data via Microsoft Graph, priority access, and advanced features across all Microsoft 365 apps.
 
