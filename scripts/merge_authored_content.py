@@ -210,13 +210,6 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "evidenceExpected",
         "facilitatorNotes",
     },
-    "1.6": {
-        # Batch B2 corrected previously-authored branch-local sectorYesBar
-        # text after regulatory review. Force replacement is required so the
-        # reviewed language replaces the non-TODO values already present in
-        # controls.json on this branch.
-        "sectorYesBar",
-    },
     "2.2": {
         # Force-apply the corrected Purview navigation. The stale value in
         # controls.json names the retired "Information Protection > Labels" /
@@ -227,13 +220,6 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "verifyIn",
         "evidenceExpected",
         "facilitatorNotes",
-    },
-    "2.3": {
-        # Batch B2 corrected previously-authored branch-local sectorYesBar
-        # text after regulatory review. Force replacement is required so the
-        # reviewed language replaces the non-TODO values already present in
-        # controls.json on this branch.
-        "sectorYesBar",
     },
     "3.11": {
         # Force-apply the corrected Rule 17a-4(f)(2) storage-system citation
@@ -256,13 +242,6 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "verifyIn",
         "evidenceExpected",
         "facilitatorNotes",
-    },
-    "4.9": {
-        # Batch B2 corrected previously-authored branch-local sectorYesBar
-        # text after regulatory review. Force replacement is required so the
-        # reviewed language replaces the non-TODO values already present in
-        # controls.json on this branch.
-        "sectorYesBar",
     },
     "2.9": {
         "yesBar",
