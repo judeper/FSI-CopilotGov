@@ -11,8 +11,8 @@ Test cases and evidence collection for validating insider risk detection for Cop
   1. Navigate to Microsoft Purview > Insider Risk Management > Policies
   2. Verify Copilot-related policies show "Active" status
   3. Run Script 1 to confirm policy configuration
-  4. Check that policy indicators include both Copilot-specific signals and AI usage indicators
-- **Expected Result:** All configured insider risk policies are active with AI usage indicators enabled
+  4. Check that policy indicators include the required **Generative AI apps indicators** and any **Risky AI usage indicators (preview)** in scope
+- **Expected Result:** All configured insider risk policies are active with the required generative-AI indicators enabled
 - **Evidence:** Policy status screenshot and PowerShell output
 
 ### Test 2: Risky Agents Policy Verification
@@ -23,54 +23,55 @@ Test cases and evidence collection for validating insider risk detection for Cop
   2. Locate the default Risky Agents policy
   3. Verify the policy scope includes all deployed Copilot Studio, Microsoft Foundry, and P4AI SDK agents
   4. Confirm alert routing is configured to reach both compliance and agent deployment owners
-  5. Review the policy thresholds for FSI appropriateness
-- **Expected Result:** Risky Agents policy is active, scoped correctly across all supported agent types, and alert routing is configured
-- **Evidence:** Policy configuration screenshot; alert routing configuration
+  5. If the default policy doesn't meet the organization's needs, verify a **custom** policy exists for the additional FSI requirements instead of assuming the default policy is editable
+- **Expected Result:** Risky Agents policy is active, scoped correctly across all supported agent types, and alert routing is configured; any extra FSI tuning is implemented through supported custom-policy paths
+- **Evidence:** Policy configuration screenshot; alert routing configuration; custom policy evidence if applicable
 
-### Test 3: AI Usage Indicator Functionality
+### Test 3: Generative AI Indicator Functionality
 
-- **Objective:** Verify AI usage indicators are active and producing signals
+- **Objective:** Verify the generative-AI monitoring indicators are active and producing signals
 - **Steps:**
   1. Navigate to Microsoft Purview > Insider Risk Management > Settings > Policy indicators
-  2. Confirm AI usage indicator category is enabled
-  3. Generate above-normal Copilot and agent activity volume with a test account
+  2. Confirm the **Generative AI apps indicators** section is configured and the applicable **Risky AI usage indicators (preview)** are enabled
+  3. Generate test activity that matches the documented signal types, such as risky prompts, sensitive responses, or approved companion indicators
   4. Wait for the processing cycle (24-48 hours)
-  5. Check the test user's risk timeline for AI usage indicator signals
-- **Expected Result:** AI usage indicators appear in the risk timeline for elevated-activity accounts
-- **Evidence:** IRM risk timeline showing AI usage indicator signals
+  5. Check the test user's risk timeline for risky AI usage or other configured AI-related signals
+- **Expected Result:** AI-related indicators appear in the risk timeline for elevated-activity accounts
+- **Evidence:** IRM risk timeline showing the triggered AI-related signals
 
 ### Test 4: Anomaly Detection Functionality
 
 - **Objective:** Verify the system detects anomalous Copilot usage patterns
 - **Steps:**
-  1. Generate above-normal Copilot activity volume with a test account
+  1. Generate a test scenario that should trigger the configured IRM policy, such as a risky AI prompt, sensitive AI response, or approved companion exfiltration signal
   2. Wait for the insider risk processing cycle (24-48 hours)
   3. Check for risk alerts or elevated risk scores on the test account
   4. Verify the anomaly is captured in the insider risk dashboard
-- **Expected Result:** Anomalous activity generates a risk signal
+- **Expected Result:** The configured risky-AI or companion signal generates a risk signal
 - **Evidence:** Insider risk alert or risk score increase for test account
 
 ### Test 5: Data Risk Graph Accessibility
 
 - **Objective:** Confirm the data risk graph is set up and integrated into investigation procedures
 - **Steps:**
-  1. Navigate to Microsoft Purview > Insider Risk Management > Recommended actions and confirm the **Set up data lake and data risk graph** action shows Complete
-  2. Navigate to Insider Risk Management > Alerts and open an alert
+  1. If the tenant previously onboarded before **September 24, 2026**, navigate to Microsoft Purview > Insider Risk Management > Recommended actions and confirm the **Set up data lake and data risk graph** action shows Complete
+  2. Navigate to Insider Risk Management > **Alerts (preview)** and open an alert
   3. Select the **Data risk graph** tab and verify graph data is loading (allow 24-48 hours after initial onboarding for data to populate)
   4. Confirm the graph displays the alert-related SharePoint/OneDrive exfiltration activity (sharing links, downloads, renames) for the 30-day window
   5. Verify investigators know to include data risk graph review in the standard investigation procedure for alerts involving potential cross-department data movement
-- **Expected Result:** Data risk graph is set up and accessible from alerts, displaying alert-related exfiltration activity
+- **Expected Result:** For previously onboarded tenants, the data risk graph is set up and accessible from alerts while the feature remains available, displaying alert-related exfiltration activity
 - **Evidence:** Screenshot of the data risk graph tab showing activity data
 
 ### Test 6: IRM Triage Agent Operation
 
 - **Objective:** Verify the Triage Agent is functioning and producing useful context summaries
 - **Steps:**
-  1. Navigate to Microsoft Purview > Insider Risk Management > Alerts
-  2. Select an active alert and review the Triage Agent context summary
-  3. Verify the summary includes: activity type detected, data involved, user risk history context
-  4. Confirm the alert severity categorization is reasonable
-  5. For Regulated tier: verify that the human-in-the-loop workflow requires investigator confirmation before alert dismissal
+  1. Navigate to Microsoft Purview > Agents > Explore agents and confirm the Insider Risk Management Triage Agent is deployed
+  2. Navigate to Microsoft Purview > Insider Risk Management > Alerts (preview)
+  3. Select an active alert and review the Triage Agent context summary
+  4. Verify the summary includes: activity type detected, data involved, user risk history context
+  5. Confirm the alert severity categorization is reasonable
+  6. For Regulated tier: verify that the human-in-the-loop workflow requires investigator confirmation before alert dismissal
 - **Expected Result:** Triage Agent produces actionable context summaries; severity categorizations are appropriate
 - **Evidence:** Screenshot of Triage Agent context summary for an active alert
 
@@ -78,7 +79,7 @@ Test cases and evidence collection for validating insider risk detection for Cop
 
 - **Objective:** Verify the alert triage process functions correctly
 - **Steps:**
-  1. Identify an active insider risk alert (or create one via testing)
+  1. Identify an active insider risk alert (or create one via testing) in **Alerts (preview)**
   2. Verify the alert is routed to the assigned investigator
   3. Complete the triage workflow: review Triage Agent context, classify, and take action
   4. For agent risk alerts: verify routing reaches both compliance and agent deployment owners
@@ -103,7 +104,7 @@ Test cases and evidence collection for validating insider risk detection for Cop
 |--------------|--------|-----------------|-----------|
 | Insider risk policy configuration | PDF | Compliance evidence repository | 7 years |
 | Risky Agents policy configuration | PDF | Compliance evidence repository | 7 years |
-| AI usage indicator configuration | Screenshot | Compliance evidence repository | 7 years |
+| Generative AI / Risky AI usage indicator configuration | Screenshot | Compliance evidence repository | 7 years |
 | Triage Agent model inventory entry | PDF | Model risk management repository | 7 years |
 | Alert and triage records | PDF | Compliance evidence repository | 7 years |
 | Usage anomaly reports | CSV | Compliance evidence repository | 7 years |
@@ -116,7 +117,7 @@ Test cases and evidence collection for validating insider risk detection for Cop
 |-----------|-------------|------------------------------|
 | FINRA Rule 3110 | Supervisory systems | Insider risk detection supports compliance with supervisory monitoring requirements; Risky Agents addresses the 2026 FINRA Oversight Report requirement for AI agent supervisory controls |
 | FINRA Rule 3120 | Testing supervisory procedures | IRM alert generation and investigation workflow provide testable supervisory procedures for Copilot and agent oversight |
-| FINRA 2026 Oversight Report (GenAI) | Agentic AI supervisory controls | Risky Agents policy and AI usage indicators directly address FINRA's 2026 requirement for supervisory systems covering AI workflow engines |
+| FINRA 2026 Oversight Report (GenAI) | Agentic AI supervisory controls | Risky Agents policy and the configured Generative AI apps / Risky AI usage indicators directly address FINRA's 2026 requirement for supervisory systems covering AI workflow engines |
 | OCC Bulletin 2025-26 | Model risk management | IRM Triage Agent documented as model per SR 11-7; proportionate AI-assisted governance |
 | SEC Regulation S-P | Safeguards for customer data | Detecting data theft patterns helps meet customer data protection obligations |
 | GLBA §501(b) | Monitoring and testing safeguards | IRM provides ongoing monitoring evidence and quarterly testing capability |

@@ -8,18 +8,18 @@ Test cases and evidence collection for validating session controls.
 
 - **Objective:** Confirm Copilot sessions are monitored by Defender for Cloud Apps
 - **Steps:**
-  1. As a test user, perform several Copilot interactions in Word and Teams
-  2. Navigate to Defender > Investigate > Activity Log
-  3. Filter for the test user and verify Copilot activities appear
-  4. Confirm activity details include interaction context
-- **Expected Result:** Copilot activities appear in the Defender activity log
-- **Evidence:** Activity log entries for test user
+  1. As a test user, sign out of existing Microsoft 365 browser sessions and then reauthenticate to the protected Microsoft 365 web app
+  2. Confirm the session is routed through Conditional Access App Control (lock icon in Edge or `.mcas` suffix in another supported browser)
+  3. Navigate to Defender > Cloud Apps > Policies > Policy management and open the relevant session policy report
+  4. Confirm the routed **Login** activity appears for the test user; if using detailed policies, confirm the supported file or activity events also appear
+- **Expected Result:** Routed browser sessions appear in the policy report; detailed monitored actions appear only when a content-inspecting or block-activities policy is in scope
+- **Evidence:** Policy report entries for the test user, plus screenshots of routed-session indicators
 
 ### Test 2: Content Inspection Detection
 
-- **Objective:** Verify content inspection detects sensitive data in sessions
+- **Objective:** Verify content inspection detects sensitive data in supported browser-session actions
 - **Steps:**
-  1. Use Copilot to interact with a document containing test sensitive data
+  1. In a supported browser session, attempt a governed file download, upload, or send/share action involving a document that contains test sensitive data
   2. Verify the session policy content inspection triggers
   3. Confirm the alert is generated with the correct severity
   4. Verify the detection details include the sensitive information type
@@ -28,10 +28,10 @@ Test cases and evidence collection for validating session controls.
 
 ### Test 3: Alert Generation and Delivery
 
-- **Objective:** Confirm alerts are generated and delivered to the security team
+- **Objective:** Confirm routed-session or anomaly alerts are generated and delivered to the security team
 - **Steps:**
-  1. Trigger a session policy condition (e.g., sensitive data detection)
-  2. Verify an alert appears in Defender portal > Alerts
+  1. Trigger a supported session-policy condition (for example, a sensitive file download) or a test anomaly scenario consistent with your tenant policy
+  2. Verify an alert or policy match appears in Defender portal > Alerts or in the relevant policy report
   3. Confirm email notification is delivered to configured recipients
   4. Verify alert severity matches the policy configuration
 - **Expected Result:** Alerts generated and delivered within expected timeframe
@@ -43,11 +43,11 @@ Test cases and evidence collection for validating session controls.
 - **Steps:**
   1. Navigate to Defender portal > Cloud Apps > Cloud app catalog > filter by Generative AI category
   2. Confirm the catalog loads and displays generative AI apps
-  3. Check the "Discovered apps" view to identify any generative AI apps used in the organization that are not Microsoft 365 Copilot
-  4. Verify that high-risk discovered generative AI apps have governance policies applied (blocked, unsanctioned, or explicitly approved)
-  5. Confirm Microsoft 365 Copilot is marked as "Sanctioned" in the catalog
-- **Expected Result:** Generative AI catalog has been reviewed; high-risk apps are governed; sanctioned apps are documented
-- **Evidence:** App catalog screenshot with discovered apps; governance policy configuration for high-risk apps
+  3. Open Defender portal > Cloud Apps > Cloud discovery > Discovered apps and identify any generative AI apps used in the organization that are not Microsoft Copilot
+  4. Verify that high-risk discovered generative AI apps have governance actions applied (unsanctioned, blocked through a supported governance stream, or explicitly approved)
+  5. Confirm the sanctioned/unsanctioned review cadence is documented
+- **Expected Result:** Generative AI catalog and Cloud Discovery have both been reviewed; high-risk apps are governed; approval or prohibition decisions are documented
+- **Evidence:** App catalog screenshot, discovered-app evidence, and governance policy/configuration for high-risk apps
 
 ### Test 5: Agent Threat Detection Verification
 
@@ -67,7 +67,7 @@ Test cases and evidence collection for validating session controls.
 | Evidence Item | Format | Storage Location | Retention |
 |--------------|--------|-----------------|-----------|
 | Session policy configuration | Screenshot/PDF | Compliance evidence repository | 7 years |
-| Activity log samples | CSV | Compliance evidence repository | 7 years |
+| Policy report / activity log samples | CSV | Compliance evidence repository | 7 years |
 | Alert records | CSV | Compliance evidence repository | 7 years |
 | Content inspection test results | PDF | Compliance evidence repository | 7 years |
 

@@ -116,6 +116,7 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         # Control 2.13 was re-authored for Agent Registry, Agent Tools,
         # connector, consent, and paged audit evidence. Replace the stale
         # Integrated apps/service-principal-only assessment content.
+        "name",
         "yesBar",
         "partialBar",
         "noBar",
@@ -242,7 +243,21 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "verifyIn",
         "evidenceExpected",
         "facilitatorNotes",
-    }
+    },
+    "2.9": {
+        "yesBar",
+        "partialBar",
+        "noBar",
+        "verifyIn",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
+    "2.10": {
+        "verifyIn",
+        "verifyPowerShell",
+        "evidenceExpected",
+        "facilitatorNotes",
+    },
 }
 
 

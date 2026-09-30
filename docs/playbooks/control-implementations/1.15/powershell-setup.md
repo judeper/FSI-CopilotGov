@@ -60,7 +60,7 @@ pwsh .\scripts\Export-DriftEvidence.ps1 `
 | Task | Cadence | Notes |
 |------|---------|-------|
 | Baseline refresh | After approved structural change | Do not overwrite a baseline until the new state is approved |
-| Drift scan | Monthly or more frequently for high-risk sites | Align to governance tier and change cadence |
+| Drift scan | Quarterly for Baseline, monthly for Recommended (with bi-weekly scans on HIGH-risk sites), weekly for Regulated | Align to the control's governance-tier cadence and documented change windows |
 | Evidence export | After each formal scan cycle | Keep with CAB, exception, or incident records |
 
 ## Next Steps

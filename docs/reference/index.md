@@ -11,7 +11,7 @@ Quick-reference documents, lookup tables, and curated resources for the FSI Copi
 
 | Document | Description |
 |----------|-------------|
-| [Copilot Surfaces Matrix](copilot-surfaces-matrix.md) | Feature-by-control applicability matrix showing which governance controls apply to each M365 Copilot surface (Word, Teams, Microsoft 365 Copilot Chat, etc.) |
+| [Copilot Surfaces Matrix](copilot-surfaces-matrix.md) | Feature-by-control applicability matrix showing which governance controls apply to each M365 Copilot surface (Word, Teams, Microsoft Copilot Chat, etc.) |
 | [Copilot Admin Toggles](copilot-admin-toggles.md) | Inventory of the highest-value admin toggles for M365 Copilot with portal paths, defaults, and FSI-recommended values |
 | [Regulatory Mappings](regulatory-mappings.md) | Regulation-to-control mapping table covering FINRA, SEC, SOX, GLBA, OCC, CFPB, and FFIEC references |
 | [Regulatory Applicability Questions](regulatory-applicability-questions.md) | Counsel/compliance questions each firm should resolve before treating regulatory references as applicable |

@@ -91,7 +91,7 @@ Common issues and resolution steps for sensitivity label enforcement with Copilo
 - **Resolution:**
   1. Verify the requesting user’s effective EXTRACT right and whether that user is the Rights Management owner.
   2. Test the item unopened, directly referenced where supported, and open in an Office app. For Edge, determine whether Edge DLP is deployed before treating EXTRACT as determinative.
-  3. Identify external plugin/Graph connector sources; do not assume their label/encryption metadata is recognized by Microsoft 365 Copilot Chat.
+  3. Identify external plugin/Graph connector sources; do not assume their label/encryption metadata is recognized by Microsoft Copilot Chat.
   4. If the user should have access, check the encryption configuration and add the user to the authorized list. Note: in the Microsoft Purview portal and the custom permissions dialog in Word, Excel, and PowerPoint for Windows (version 2411 and later), the permission level previously called "Reviewer" is now **Restricted Editor**, "Co-Author" is now **Editor**, and "Co-Owner" is now **Owner** — use the updated names when configuring encryption permissions. Restricted Editor does not include EXTRACT (Copy); Editor and Owner do.
   5. If Copilot should not use the content, document the observed supported-surface behavior and apply a DLP, DKE, or connected-experience control appropriate to the approved design.
   6. Check whether the label carries the `BlockContentAnalysisServices` PowerShell advanced setting, which stops Office apps from sending the labeled content to connected experiences that analyze content, including Copilot.

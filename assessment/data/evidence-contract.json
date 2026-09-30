@@ -149,7 +149,7 @@
       "source": "graph",
       "jsonPath": "copilot_service_principals",
       "evaluator": "exists_non_empty",
-      "evidenceKey": "Plugin and Graph Connector inventory"
+      "evidenceKey": "Plugin and Copilot Connector inventory"
     },
     {
       "controlId": "2.14",

@@ -96,7 +96,7 @@ $outOfScope | Export-Csv .\artifacts\4.16\scout-intune-out-of-scope-assignments.
 
 ### Script 4: Inspect the local Windows ADMX-backed policy values on a sampled device
 
-Read-only inspection. Microsoft's [Manage admin controls in Intune for Microsoft Scout](https://learn.microsoft.com/microsoft-scout/manage-group-policy) documents the Scout Windows ADMX policy as device-scoped and stored under `HKLM\SOFTWARE\Policies\Scout`. The **Allow Microsoft Scout Frontier access** capability (from [Set up Microsoft Scout with Intune](https://learn.microsoft.com/microsoft-scout/admin-intune-setup)) is the sign-in gate; the other documented values give admins policy-level control over MCP servers, permission types, models, providers, Heartbeat, Automations, workspace scoping, browser egress, and forced approval prompts. Verify names against the current article before treating output as evidence. Do not write to policy hives from this playbook.
+Read-only inspection. Microsoft's [Manage admin controls in Intune for Microsoft Scout](https://learn.microsoft.com/microsoft-scout/manage-group-policy) documents the Scout Windows ADMX policy as device-scoped and stored under `HKLM\SOFTWARE\Policies\Scout`. The **Allow Microsoft Scout Frontier access** capability (from [Set up Microsoft Scout with Intune](https://learn.microsoft.com/microsoft-scout/admin-intune-setup)) is the sign-in gate; the other documented values give admins policy-level control over tool servers, permission kinds (including `mcp`), models, providers, Heartbeat, Automations, workspace scoping, browser egress, and forced approval prompts. Verify names against the current article before treating output as evidence. Do not write to policy hives from this playbook.
 
 ```powershell
 # Documented ADMX admin controls under HKLM\SOFTWARE\Policies\Scout.
@@ -184,7 +184,7 @@ $licenseReport |
 
 ### Script 5: Pull the subset of Scout-related activity visible to Purview audit
 
-Scout activity that flows through M365 (for example, Copilot admin surfaces or Frontier-related admin events) is visible through the unified audit log; local shell execution, MCP output, automation instructions, and third-party inference are **not** captured by Purview and must be sourced from endpoint tooling (out of scope of this script).
+Scout activity that flows through M365 (for example, Copilot admin surfaces or Frontier-related admin events) is visible through the unified audit log; local shell execution, tool output, automation instructions, and third-party inference are **not** captured by Purview and must be sourced from endpoint tooling (out of scope of this script).
 
 ```powershell
 Connect-ExchangeOnline -ShowBanner:$false
@@ -214,7 +214,7 @@ Search-UnifiedAuditLog -StartDate $start -EndDate $end `
 Scout evidence gaps (Frontier preview):
 - Local shell command execution logs — sourced from endpoint tooling, not Purview.
 - Automation instructions stored on the endpoint — outside the M365 DPA.
-- MCP server output stored on the endpoint — outside the M365 DPA.
+- Tool output stored on the endpoint — outside the M365 DPA.
 - Third-party inference request/response content — outside M365 residency, retention, label enforcement, and eDiscovery.
 - Sensitivity-label inheritance on Scout-generated or modified content — not reliably inherited.
 GitHub Copilot Business/Enterprise entitlement reconciliation is captured out-of-band from the GitHub administration surface.
@@ -235,7 +235,7 @@ Compress-Archive -Path .\artifacts\4.16\* `
 | GitHub Copilot entitlement reconciliation | Monthly | Out-of-band from GitHub administration; documents the GitHub Copilot Business/Enterprise entitlement gate |
 | Admin-attestation record review | Quarterly | Confirms Microsoft's Frontier organization sign-up (attestation) gate remains valid and named admins are still authorized |
 | Installation-privilege deployment review | Quarterly | Confirms the Scout installer deployment pattern (system-context managed deployment, just-in-time elevation, or documented exception) remains in force so end users are not granted standing local Administrator rights |
-| MCP-server inventory review | Monthly | Confirms configured MCP servers match the approved inventory; where the ADMX `DisabledServers` setting is used, confirm the policy value matches the inventory decision |
+| Tool-server inventory review | Monthly | Confirms configured tool servers match the approved inventory; where the ADMX `DisabledServers` setting is used, confirm the policy value matches the inventory decision |
 | Permission-mode review | Monthly | Confirms shell default posture (with `ForcePrompt` where applied), autonomous-mode posture, and unattended-automation posture (with `DisableWorkflows` where applied) match the approved decisions |
 | Provider/model exclusion review | Quarterly | Confirms `DisabledProviders` and `DisabledModels` ADMX values match the third-party inference exclusion decision |
 | M365 audit pull (Scout subset) | Weekly | Aligns with the pilot supervisory review cadence |
@@ -244,8 +244,8 @@ Compress-Archive -Path .\artifacts\4.16\* `
 
 ## Next Steps
 
-- Continue to [Verification & Testing](verification-testing.md) for gate, permission, MCP, and boundary-coverage validation.
-- Reference [Troubleshooting](troubleshooting.md) for entitlement, endpoint-policy, attestation, MCP, and boundary-related issues.
+- Continue to [Verification & Testing](verification-testing.md) for gate, permission, tool-server, and boundary-coverage validation.
+- Reference [Troubleshooting](troubleshooting.md) for entitlement, endpoint-policy, attestation, tool-server, and boundary-related issues.
 
 *FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview) · Last Verified 2026-09-24*
 - Back to [Control 4.16](../../../controls/pillar-4-operations/4.16-microsoft-scout-governance.md)

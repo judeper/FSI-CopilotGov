@@ -357,7 +357,7 @@ Copilot Pages is an AI-native content surface that allows users to collaborate o
 
 ### How Copilot Pages Work
 
-1. User generates content via Copilot (in Microsoft 365 Copilot Chat or a supported Microsoft 365 app)
+1. User generates content via Copilot (in Microsoft Copilot Chat or a supported Microsoft 365 app)
 2. User promotes the response to a "Page" for collaboration
 3. The Page is stored in the user's SharePoint Embedded container (shared platform with Copilot Notebooks and Loop My workspace)
 4. Other users can be invited to collaborate on the Page
@@ -375,27 +375,27 @@ Copilot Pages is an AI-native content surface that allows users to collaborate o
 
 ---
 
-## Plugin and Graph Connector Data Flow
+## Plugin and Copilot Connector Data Flow
 
-Copilot's data reach can be extended beyond native Microsoft 365 content through plugins and Graph connectors.
+Copilot's data reach can be extended beyond native Microsoft 365 content through plugins and Copilot connectors.
 
-### Graph Connectors
+### Copilot Connectors
 
-Graph connectors ingest external data (from third-party systems, databases, or file shares) into the Microsoft Graph, making it available to Copilot for grounding.
+Copilot connectors ingest external data (from third-party systems, databases, or file shares) into Microsoft Graph, making it available to Copilot for grounding.
 
 ```
 +------------------------------------------------------------------+
-|                    GRAPH CONNECTOR DATA FLOW                       |
+|                   COPILOT CONNECTOR DATA FLOW                     |
 |                                                                    |
 |  +------------------+     +-----------------+     +--------------+ |
-|  | External System  | --> | Graph Connector | --> | Microsoft    | |
+|  | External System  | --> | Copilot Connector | -> | Microsoft    | |
 |  | (ServiceNow,     |     | (ingestion and  |     | Graph        | |
 |  |  Salesforce,     |     |  ACL mapping)   |     | (searchable  | |
 |  |  file shares)    |     |                 |     |  by Copilot) | |
 |  +------------------+     +-----------------+     +--------------+ |
 |                                                                    |
 |  GOVERNANCE CONSIDERATIONS:                                        |
-|  - External data inherits Graph connector ACLs, not source ACLs   |
+|  - External data inherits Copilot connector ACLs, not source ACLs |
 |  - ACL mapping must accurately reflect source permissions          |
 |  - External data becomes part of Copilot's grounding corpus       |
 |  - Sensitivity labels should be applied to ingested content        |
@@ -417,7 +417,7 @@ Copilot plugins extend functionality by allowing Copilot to interact with extern
 | Control | Purpose |
 |---------|---------|
 | Plugin approval workflow | Restrict which plugins are available to users (Control 2.13) |
-| Graph connector ACL review | Verify permission mapping for ingested content (Control 2.13) |
+| Copilot connector ACL review | Verify permission mapping for ingested content (Control 2.13) |
 | Plugin data classification | Classify data accessed by each plugin (Control 2.13) |
 | Plugin audit logging | Log plugin invocations and data exchanges (Control 3.1) |
 

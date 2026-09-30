@@ -70,11 +70,11 @@ License requirements for each governance capability in the FSI Copilot Governanc
 | 2.6 | Web Search and Web Grounding Controls | Included | Included | Included | -- | Admin toggle in M365 Admin Center |
 | 2.7 | Data Residency and Cross-Border Data Flow | Included | Included | -- | Microsoft 365 Multi-Geo (optional) | Multi-Geo requires add-on; Microsoft data boundary configuration |
 | 2.8 | Encryption (Data in Transit and at Rest) | Included | Included | -- | -- | Rights Management encryption included in E3 |
-| 2.9 | Defender for Cloud Apps — Session Controls | -- | Included | -- | E5 Security or Defender for Cloud Apps | Session and access policies for cloud app governance |
-| 2.10 | Insider Risk Detection | -- | Included | -- | Purview Suite or Insider Risk add-on | Anomalous Copilot usage detection |
+| 2.9 | Defender for Cloud Apps — Session Controls | -- | Included | -- | E5 Security or Defender for Cloud Apps | Browser-session and access policies for cloud app governance; generative AI discovery and unsanction controls |
+| 2.10 | Insider Risk Detection | -- | Included | -- | Purview Suite or Insider Risk add-on | Risky AI usage, Risky Agents, and related insider-risk workflows; some indicators and the Triage Agent also require PAYG/SCU prerequisites |
 | 2.11 | Copilot Pages Security and Sharing Controls | Included | Included | Included | -- | Admin settings for Copilot Pages sharing |
 | 2.12 | External Sharing and Guest Access Governance | Included | Included | -- | -- | Entra ID access reviews require P2 (included in E5) |
-| 2.13 | Plugin and Graph Connector Security Governance | Included | Included | Included | -- | Integrated Apps settings in M365 Admin Center |
+| 2.13 | Plugin and Copilot Connector Security Governance | Included | Included | Included | -- | Integrated Apps settings in M365 Admin Center |
 | 2.14 | Declarative and SharePoint Agents Governance | Included | Included | Included | -- | Admin settings for agent deployment and management |
 | 2.15 | Network Security and Private Connectivity | Included | Included | -- | -- | Network-level controls are infrastructure; not license-dependent |
 
@@ -176,7 +176,7 @@ E5 is strongly recommended for FSI environments. The cost of individual add-ons 
 | Insider Risk Management | No | Yes | No anomalous AI usage detection in E3 |
 | DSPM for AI | No | Yes | No Copilot-specific data posture monitoring in E3 |
 | Conditional Access (risk-based) | No | Yes | No risk-based policies in E3 (basic CA available) |
-| Defender for Cloud Apps | No | Yes | No session policies for Copilot web sessions in E3 |
+| Defender for Cloud Apps | No | Yes | No Conditional Access App Control session policies for browser-based Microsoft 365 and Copilot-related web sessions in E3 |
 
 !!! tip "Recommendation"
     For any FSI organization subject to FINRA, SEC, or banking regulations, **Microsoft 365 E5 is the practical minimum** for achieving Recommended or Regulated governance levels. The regulatory requirements for audit retention, supervisory review, information barriers, and eDiscovery effectively require E5 capabilities.

@@ -65,5 +65,5 @@ Test cases and evidence collection for validating plugin and connector security.
 |-----------|-------------|------------------------------|
 | 12 CFR part 30, appendix D (OCC Heightened Standards) | Third-party risk management | Plugin security supports compliance with third-party technology risk requirements |
 | FINRA Rule 3110 | Technology oversight | Plugin governance supports compliance with supervisory technology controls |
-| NIST CSF | PR.PS-01 Configuration management practices are applied | Plugin restrictions help establish and maintain secure baseline configurations |
+| NIST CSF | PR.PS-01 Configuration management practices are established and applied | Plugin restrictions help establish and maintain secure baseline configurations |
 - Back to [Control 2.13](../../../controls/pillar-2-security/2.13-plugin-connector-security.md)

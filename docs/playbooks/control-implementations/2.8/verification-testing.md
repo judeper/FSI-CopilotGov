@@ -63,7 +63,7 @@ Control 2.8 requires a manual evidence pack. The tests below deliberately separa
   2. Test an OWNER user. Confirm that OWNER includes EXTRACT and record the expected outcome.
   3. Test an unopened SharePoint/OneDrive item encrypted with user-defined permissions, a direct `/` reference where supported, and the same item open in an Office app.
   4. If Edge DLP is not deployed, test the active encrypted browser-tab exception and record the result.
-  5. Test each external plugin or Graph connector source separately; do not assume sensitivity labels/encryption applied to external data are recognized by Microsoft 365 Copilot Chat.
+  5. Test each external plugin or Graph connector source separately; do not assume sensitivity labels/encryption applied to external data are recognized by Microsoft Copilot Chat.
   6. Test a DKE-protected item separately. Confirm that it is not returned by Copilot/agents and that Copilot cannot be used in the app while the DKE item is open.
 - **Expected result:** Outcomes match the documented user, source, and surface boundary; deviations have an owner and escalation path.
 - **Evidence:** Test matrix with user role/rights, source, surface, expected result, actual result, date, and tester.

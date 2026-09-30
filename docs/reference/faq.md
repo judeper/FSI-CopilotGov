@@ -107,7 +107,7 @@ Microsoft 365 Copilot interaction data is stored within the Microsoft 365 compli
 
 | Data Type | Storage Location | Retention |
 |-----------|-----------------|-----------|
-| **Microsoft 365 Copilot Chat conversations** | User's Exchange Online mailbox (hidden folder) | Subject to Exchange retention policies |
+| **Microsoft Copilot Chat conversations** | User's Exchange Online mailbox (hidden folder) | Subject to Exchange retention policies |
 | **Copilot in Teams chat** | Teams chat storage (Azure-based) | Subject to Teams retention policies |
 | **Copilot in Teams meetings** | Meeting transcript storage (Exchange/SharePoint) | Subject to meeting retention policies |
 | **Copilot in Outlook** | Exchange Online (within the email context) | Subject to Exchange retention policies |
@@ -143,7 +143,7 @@ Copilot usage can be audited through several mechanisms:
 
 2. **Copilot Usage Reports:** M365 Admin Center > Reports > Usage > Microsoft 365 Copilot. Provides aggregated usage metrics (active users, feature adoption) without individual interaction content.
 
-3. **DSPM for AI:** Microsoft Purview > DSPM for AI provides a dashboard showing Copilot interaction volume, sensitive data exposure in Copilot interactions, and risk indicators.
+3. **Data Security Posture Management:** Microsoft Purview > Solutions > **DSPM** is the current dashboard for Copilot and AI data-security posture; **DSPM for AI (classic)** remains available for tenants that haven't yet moved to the current experience.
 
 4. **Microsoft Sentinel:** For enterprise-scale monitoring, stream Copilot audit data to Sentinel for correlation with other security events, custom analytics rules, and automated incident response.
 
@@ -161,7 +161,7 @@ Copilot interaction data is subject to the same Microsoft Purview retention poli
 
 | Copilot Context | Retention Governed By | Policy Location |
 |----------------|----------------------|-----------------|
-| Microsoft 365 Copilot Chat | Exchange Online Copilot retention policy | Purview > Data lifecycle management > Retention policies > Copilot |
+| Microsoft Copilot Chat | Exchange Online Copilot retention policy | Purview > Data lifecycle management > Retention policies > Copilot |
 | Teams chat | Teams chat retention policy | Purview > Data lifecycle management > Retention policies > Teams |
 | Teams meetings | Teams meeting/transcript retention policy | Purview > Data lifecycle management > Retention policies > Teams |
 | Outlook | Exchange Online retention policy | Purview > Data lifecycle management > Retention policies > Exchange |
@@ -182,9 +182,9 @@ Copilot interaction data is subject to the same Microsoft Purview retention poli
 
 ## Governance Features
 
-### How does DSPM for AI relate to Copilot governance?
+### How does Data Security Posture Management relate to Copilot governance?
 
-DSPM for AI (Data Security Posture Management for AI) is a Microsoft Purview capability specifically designed to help organizations govern AI usage including Microsoft 365 Copilot. It provides:
+Microsoft Purview **Data Security Posture Management (DSPM)** is the current front door for governing AI usage, including Microsoft 365 Copilot. The earlier **DSPM for AI** experience is now the classic version and still appears in some tenants and Microsoft Learn articles. Across those experiences, the Microsoft Purview posture tooling provides:
 
 1. **Visibility:** Dashboard showing how Copilot is being used across the organization, including interaction volume by app, user group, and time period.
 
@@ -194,7 +194,7 @@ DSPM for AI (Data Security Posture Management for AI) is a Microsoft Purview cap
 
 4. **Compliance monitoring:** Ongoing monitoring that helps detect anomalous patterns in Copilot usage that may indicate data handling concerns.
 
-DSPM for AI complements (does not replace) the broader governance controls in this framework. Think of it as a monitoring and assessment layer that helps you measure the effectiveness of your DLP, labeling, and access control implementations.
+DSPM complements (does not replace) the broader governance controls in this framework. Think of it as a monitoring and assessment layer that helps you measure the effectiveness of your DLP, labeling, and access control implementations.
 
 **Requirements:** Microsoft Purview Suite (formerly E5 Compliance) + Microsoft 365 Copilot license.
 
@@ -220,7 +220,7 @@ These are companion frameworks that address different aspects of Microsoft 365 A
 
 **Which do you need?**
 
-- Deploying M365 Copilot (Word, Teams, Outlook, Microsoft 365 Copilot Chat, etc.)? Start with FSI-CopilotGov.
+- Deploying M365 Copilot (Word, Teams, Outlook, Microsoft Copilot Chat, etc.)? Start with FSI-CopilotGov.
 - Building custom agents in Copilot Studio or Agent Builder? Start with FSI-AgentGov.
 - Doing both? Use both frameworks independently — they are designed to complement each other.
 

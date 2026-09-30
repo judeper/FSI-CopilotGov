@@ -44,10 +44,10 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 - **Symptoms:** Scout is executing shell commands without prompting on actions the pilot did not intend to auto-approve.
 - **Resolution:** Reset the default posture to **prompt** unless a specific low-risk auto-approve list has been approved. Any auto-approve list should be narrow and documented; treat auto-approve as an elevated permission and re-run the permission-mode review. Where the pilot needs a policy-level override, enable the documented **Force human approval for all non-read actions** (`ForcePrompt`) ADMX setting so user-mode auto-approve settings for non-read actions are overridden regardless of local approval configuration.
 
-### Issue 6b: Blocked Provider, Model, or MCP Server Still Appears Available in Scout
+### Issue 6b: Blocked Provider, Model, or Tool Server Still Appears Available in Scout
 
-- **Symptoms:** A provider (for example, Anthropic or OpenAI), model, or MCP server (for example, `filesystem`, `playwright`, `WorkIQ`) that the pilot intended to exclude still appears available in the Scout UI or is invoked by a task.
-- **Resolution:** Confirm the exclusion is reflected in the documented ADMX admin controls — **Disabled AI model providers** (`DisabledProviders`) for providers, **Disabled AI models** (`DisabledModels`) for models, and **Disabled MCP servers** (`DisabledServers`) for MCP servers — using the values documented in [Manage admin controls in Intune for Microsoft Scout](https://learn.microsoft.com/microsoft-scout/manage-group-policy). Verify the policy is assigned to the affected device group and applied on the sampled device (`HKLM\SOFTWARE\Policies\Scout`). User-mode preference is not a substitute for a policy-level exclusion.
+- **Symptoms:** A provider (for example, Anthropic or OpenAI), model, or tool server (for example, `filesystem`, `playwright`, `WorkIQ`) that the pilot intended to exclude still appears available in the Scout UI or is invoked by a task.
+- **Resolution:** Confirm the exclusion is reflected in the documented ADMX admin controls — **Disabled AI model providers** (`DisabledProviders`) for providers, **Disabled AI models** (`DisabledModels`) for models, and **Disabled tool servers** (`DisabledServers`) for tool servers — using the values documented in [Manage admin controls in Intune for Microsoft Scout](https://learn.microsoft.com/microsoft-scout/manage-group-policy). Verify the policy is assigned to the affected device group and applied on the sampled device (`HKLM\SOFTWARE\Policies\Scout`). User-mode preference is not a substitute for a policy-level exclusion.
 
 ### Issue 6c: Scout Writes Files Outside the Intended Workspace
 
@@ -74,10 +74,10 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 - **Symptoms:** A scheduled or triggered Scout automation is running unattended for a regulated user population without a separately approved unattended-execution decision.
 - **Resolution:** Disable the automation. Re-enable only after the unattended-execution decision is documented and approved, and add the automation to the supervisory review scope where its outputs contribute to client-facing work or recordkeeping. Where the pilot posture is "off," back it with the documented **Disable Automations** (`DisableWorkflows`) ADMX setting so user-mode configuration cannot re-enable automations without a policy change.
 
-### Issue 9: MCP Server Configured Outside the Approved Inventory
+### Issue 9: Tool Server Configured Outside the Approved Inventory
 
-- **Symptoms:** A configured MCP server is not present on the approved inventory, or the inventory entry is missing data path, authentication, or egress metadata.
-- **Resolution:** Restrict or remove the unapproved MCP server, complete the inventory entry with the required metadata, and route the server through extensibility governance under [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md) before re-enablement.
+- **Symptoms:** A configured tool server is not present on the approved inventory, or the inventory entry is missing data path, authentication, or egress metadata.
+- **Resolution:** Restrict or remove the unapproved tool server, complete the inventory entry with the required metadata, and route the integration through extensibility governance under [Control 4.13](../../../controls/pillar-4-operations/4.13-extensibility-governance.md) before re-enablement. If the same integration is also exposed through MCP elsewhere in the environment, coordinate the approval with [Control 2.16](../../../controls/pillar-2-security/2.16-federated-connector-mcp-governance.md).
 
 ### Issue 10: Scout Output Contains Content That Should Be Labeled
 
@@ -87,17 +87,17 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 ### Issue 11: Purview Audit Does Not Show Expected Scout Activity
 
 - **Symptoms:** Expected Scout activity does not appear in Purview unified-audit-log pulls.
-- **Resolution:** Recognize that Purview captures only the M365-sourced subset of Scout activity. Local shell execution, MCP output, automation instructions, and third-party inference are outside M365 protections and are not captured by Purview. Source those categories from endpoint tooling, and document the coverage as **known unsupported evidence** rather than a Purview configuration bug.
+- **Resolution:** Recognize that Purview captures only the M365-sourced subset of Scout activity. Local shell execution, tool output, automation instructions, and third-party inference are outside M365 protections and are not captured by Purview. Source those categories from endpoint tooling, and document the coverage as **known unsupported evidence** rather than a Purview configuration bug.
 
 ### Issue 12: Session or Memory Data Retention Concern in OneDrive
 
 - **Symptoms:** Session or memory data in OneDrive is not aligning with the organization's retention posture.
 - **Resolution:** Confirm the tenant controls applied to OneDrive apply as expected to Scout session and memory storage, and re-verify against current Microsoft documentation. Coordinate with OneDrive tenant controls owners and update the boundary documentation.
 
-### Issue 13: Automation Instructions or MCP Output Requested for eDiscovery
+### Issue 13: Automation Instructions or Tool Output Requested for eDiscovery
 
-- **Symptoms:** eDiscovery request cannot locate Scout automation instructions or MCP output.
-- **Resolution:** Recognize that automation instructions and MCP output are stored locally on the endpoint and are **outside the M365 DPA**. Source these from the endpoint through incident-response or endpoint tooling. This is a documented boundary of Scout during preview, not an eDiscovery configuration bug — document the coverage gap for legal, compliance, and eDiscovery stakeholders.
+- **Symptoms:** eDiscovery request cannot locate Scout automation instructions or tool output.
+- **Resolution:** Recognize that automation instructions and tool output are stored locally on the endpoint and are **outside the M365 DPA**. Source these from the endpoint through incident-response or endpoint tooling. This is a documented boundary of Scout during preview, not an eDiscovery configuration bug — document the coverage gap for legal, compliance, and eDiscovery stakeholders.
 
 ### Issue 14: Third-Party Inference Content Requested for eDiscovery or Retention Hold
 
@@ -106,7 +106,7 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 
 ### Issue 15: External Web Content Appears to Influence Scout Behavior Unexpectedly
 
-- **Symptoms:** Scout appears to take actions consistent with instructions embedded in retrieved web content or MCP server output.
+- **Symptoms:** Scout appears to take actions consistent with instructions embedded in retrieved web content or external tool output.
 - **Resolution:** Recognize that Scout tags external content as **untrusted**, but prompt-injection resistance is a Microsoft platform responsibility rather than a customer-configurable control. Report the behavior to Microsoft through Frontier preview feedback channels, restrict the browser or MCP surface, and document the incident with local artifacts preserved.
 
 ## Diagnostic Steps
@@ -119,7 +119,7 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 6. Reconcile GitHub Copilot Business or Enterprise entitlement for the affected user.
 7. Confirm the deployment pattern for the Scout installer did not require granting standing local Administrator rights on the endpoint.
 8. Review the shell permission default (and `ForcePrompt` where applied), autonomous-mode posture, and unattended-automation posture (`DisableWorkflows` where applied) against the documented decisions.
-9. Reconcile the configured MCP servers (and any `DisabledServers` / `DisabledPermissions` values) against the approved-MCP-server inventory and permission-type decision.
+9. Reconcile the configured tool servers (and any `DisabledServers` / `DisabledPermissions` values) against the approved tool-server inventory and permission-type decision.
 10. Reconcile any `DisabledProviders` / `DisabledModels` values against the third-party inference exclusion decision.
 11. Consult the storage-and-inference boundary documentation and the evidence-gap manifest before treating a coverage question as a bug.
 
@@ -128,7 +128,7 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 | Severity | Condition | Escalation Path |
 |----------|-----------|-----------------|
 | Low | Documentation gap or single out-of-scope entitlement | Governance analyst |
-| Medium | Endpoint policy or Frontier scope drift, unapproved MCP server, shell auto-approve broader than intended | Governance lead and M365 or endpoint admin |
+| Medium | Endpoint policy or Frontier scope drift, unapproved tool server, shell auto-approve broader than intended | Governance lead and M365 or endpoint admin |
 | High | Autonomous mode or unattended automation enabled for a regulated population without separate approval | Compliance lead, endpoint admin, and Copilot admin |
 | High | eDiscovery or retention request cannot be satisfied for Scout local artifacts or third-party inference content | Legal, compliance, and eDiscovery leads |
 | Critical | Scout action against regulated data outside approved governance, or evidence of prompt-injection-influenced action against regulated data | CISO, compliance officer, incident-response lead; preserve local artifacts and coordinate with Microsoft through Frontier preview feedback channels |
