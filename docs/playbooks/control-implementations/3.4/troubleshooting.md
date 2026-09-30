@@ -41,7 +41,7 @@ Common issues and resolution steps for communication compliance monitoring of Co
 - **Symptoms:** Known communications from Security Copilot or Copilot Studio interactions are not appearing in the CC review queue.
 - **Root Cause:** This framework's configuration guidance covers Microsoft 365 Copilot and Copilot Chat only. Security Copilot, Fabric Copilot, and Copilot Studio are mentioned in this control for awareness -- their CC monitoring configuration is outside this framework's scope.
 - **Resolution:**
-  1. Confirm the surface in question is within scope for this framework (Microsoft 365 Copilot or Microsoft 365 Copilot Chat).
+  1. Confirm the surface in question is within scope for this framework (Microsoft 365 Copilot or Microsoft Copilot Chat).
   2. For out-of-scope surfaces (Security Copilot, Fabric Copilot, Copilot Studio), consult Microsoft documentation specific to those products for CC monitoring configuration and billing prerequisites.
   3. For in-scope surfaces that are not being captured, verify **Microsoft Copilot experiences** is enabled as a generative AI location in the policy (see Issue 2).
 

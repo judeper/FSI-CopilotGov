@@ -27,7 +27,7 @@ Step-by-step portal configuration for establishing data retention policies that 
 **Portal:** Microsoft Purview portal
 **Path:** purview.microsoft.com > Data lifecycle management > Retention policies > New retention policy
 
-The **Microsoft Copilot experiences** location is the primary retention target for M365 Copilot deployments. It covers Microsoft 365 Copilot Chat history, Copilot interactions in Word/Excel/PowerPoint/Outlook/Teams, and Copilot Pages.
+The **Microsoft Copilot experiences** location is the primary retention target for M365 Copilot deployments. It covers Microsoft Copilot Chat history, Copilot interactions in Word/Excel/PowerPoint/Outlook/Teams, and Copilot Pages.
 
 1. Click **New retention policy** and name it `FSI-Copilot-Experiences-Retention`.
 2. Add a description: "Retains Microsoft Copilot experiences content per FSI regulatory requirements — covers Copilot Chat history, meeting recaps, and in-app Copilot interactions."
