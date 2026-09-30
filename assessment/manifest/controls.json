@@ -2746,7 +2746,7 @@
     "portalPlaybookUrl": "/playbooks/control-implementations/2.16/portal-walkthrough/",
     "collectorField": "Graph_MCPGovernance",
     "sectorYesBar": {
-      "bank": "MCP servers assessed per OCC Bulletin 2023-17 third-party risk requirements; allow-list reviewed quarterly.",
+      "bank": "MCP endpoints assessed per OCC Bulletin 2023-17 third-party risk requirements; allow-list reviewed quarterly.",
       "broker-dealer": "Federated connectors stay within the tenant's Allowed agent types and connector-level allowed-user scope, and MCP servers surfaced through Agents > Tools are approved or blocked on an approved list, with supervisory review under written supervisory procedures, consistent with FINRA Rule 3110.",
       "investment-adviser": "Federated connectors and MCP servers that can reach customer information document user-scoped access, service-provider boundaries, and review evidence under the adviser's written safeguards and compliance policies, consistent with Regulation S-P and Advisers Act Rule 206(4)-7.",
       "insurance-carrier": "Where state insurance data-security laws modeled on NAIC Model #668 apply, federated connectors and MCP servers document nonpublic-information access, third-party safeguards, and incident-accountability expectations; state adoption varies.",

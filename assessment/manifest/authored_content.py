@@ -2565,7 +2565,7 @@ AUTHORED: dict[str, dict] = {
         ],
         "sectorYesBar": _sector_map(
             bank=(
-                "MCP servers assessed per OCC Bulletin 2023-17 third-party "
+                "MCP endpoints assessed per OCC Bulletin 2023-17 third-party "
                 "risk requirements; allow-list reviewed quarterly."
             ),
             broker_dealer=(
