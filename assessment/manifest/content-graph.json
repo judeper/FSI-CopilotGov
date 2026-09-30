@@ -353,7 +353,7 @@
       "tier": "Baseline",
       "title": "Control 2.8: Encryption (Data in Transit and at Rest)",
       "path": "docs/controls/pillar-2-security/2.8-encryption.md",
-      "last_verified": "2026-08-25",
+      "last_verified": "2026-09-29",
       "regulatory_references": [
         "GLBA §501(b)",
         "FFIEC",

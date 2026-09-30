@@ -416,9 +416,9 @@ Copilot plugins extend functionality by allowing Copilot to interact with extern
 
 | Control | Purpose |
 |---------|---------|
-| Plugin approval workflow | Restrict which plugins are available to users (Control 2.8) |
-| Graph connector ACL review | Verify permission mapping for ingested content (Control 2.8) |
-| Plugin data classification | Classify data accessed by each plugin (Control 2.8) |
+| Plugin approval workflow | Restrict which plugins are available to users (Control 2.13) |
+| Graph connector ACL review | Verify permission mapping for ingested content (Control 2.13) |
+| Plugin data classification | Classify data accessed by each plugin (Control 2.13) |
 | Plugin audit logging | Log plugin invocations and data exchanges (Control 3.1) |
 
 ---
@@ -589,7 +589,7 @@ For FSI environments, organizations should document which business functions are
 | **No model training** | Microsoft does not use customer tenant data to train, retrain, or improve foundation models |
 | **Transient processing** | Prompts and responses are processed transiently; they are not stored by the LLM service after the interaction completes |
 | **Audit logging** | Copilot interactions generate audit events that are stored in the tenant's Unified Audit Log |
-| **Encryption** | Data is encrypted in transit (TLS 1.2+) and at rest (AES-256) |
+| **Encryption** | Data is encrypted in transit (TLS 1.2 baseline, with TLS 1.3 rollout by service) and at rest with Microsoft 365 service-side encryption layers |
 
 ### Data Residency
 
