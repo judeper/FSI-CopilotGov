@@ -740,6 +740,19 @@ AUTHORED: dict[str, dict] = {
                 "Licenses assigned by registered-rep status; utilization "
                 "reviewed monthly by supervisory principal."
             ),
+            insurance_carrier=(
+                "For carriers subject to 23 NYCRR 500, Copilot-enabled "
+                "account access is reviewed at least annually, and access "
+                "that is no longer necessary is removed."
+            ),
+            credit_union=(
+                "Copilot license-assignment review is treated as an access-"
+                "control measure the credit union has concluded is "
+                "appropriate under its Appendix A risk assessment, and "
+                "license-assignment controls are included in the program "
+                "status reported to the board or a board committee at least "
+                "annually under Appendix A, III.F (a \"should\" guideline)."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -790,6 +803,19 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Assessment includes FINRA Regulatory Notice coverage; "
                 "vendor risk reviewed as part of supervisory review program."
+            ),
+            insurance_carrier=(
+                "For carriers subject to 23 NYCRR 500, the Microsoft "
+                "Copilot vendor assessment documents third-party "
+                "identification, due diligence, minimum cybersecurity "
+                "requirements, and periodic reassessment under §500.11."
+            ),
+            credit_union=(
+                "Where Microsoft is a service provider with access to member "
+                "information, the vendor assessment documents due "
+                "diligence, contractual safeguards, and, where indicated by "
+                "the risk assessment, service-provider monitoring under "
+                "Appendix A, III.D."
             ),
         ),
         "facilitatorNotes": {
@@ -3197,6 +3223,24 @@ AUTHORED: dict[str, dict] = {
                 "FINRA Rule 4530 reporting covers Copilot-related incidents; "
                 "books-and-records certifications include Copilot interactions."
             ),
+            insurance_carrier=(
+                "For carriers subject to 23 NYCRR 500, Copilot-related "
+                "events the carrier determines are cybersecurity incidents "
+                "under §500.1, including at a third-party service provider "
+                "such as Microsoft, are reported to the superintendent "
+                "within 72 hours after that determination, and the annual "
+                "April 15 certification or acknowledgment is supported by "
+                "dated compliance records."
+            ),
+            credit_union=(
+                "Where Copilot-related activity meets the reportable-cyber-"
+                "incident definition, the credit union notifies the NCUA-"
+                "designated point of contact as soon as possible and no "
+                "later than 72 hours after it reasonably believes the "
+                "incident occurred or, for third-party incidents in "
+                "§748.1(c)(1)(i)(C), within 72 hours of being notified by "
+                "the third party, whichever is sooner."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -3631,6 +3675,28 @@ AUTHORED: dict[str, dict] = {
                 "Evidence pack structured for FINRA Rule 3120 testing and "
                 "inspection response."
             ),
+            investment_adviser=(
+                "Where evidence-pack items are records the adviser treats as "
+                "required under Rule 204-2 and stores electronically, the "
+                "runbook supports prompt production of a legible copy in the "
+                "stored medium and format, a legible printout, and means to "
+                "access, view, and print them."
+            ),
+            insurance_carrier=(
+                "For carriers subject to 23 NYCRR 500, the evidence-"
+                "collection runbook retains the records, schedules, "
+                "documentation, and data supporting the annual certification "
+                "or acknowledgment for five years and keeps them ready for "
+                "examination."
+            ),
+            credit_union=(
+                "For records NCUA regulations require the credit union to "
+                "retain under 12 CFR 749.5 and records NCUA may request in "
+                "examination under 12 CFR 741.1, the evidence-collection "
+                "runbook produces records in a format examiners can access "
+                "on request, including the equipment or software needed to "
+                "reproduce them during the examination process."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -3740,6 +3806,13 @@ AUTHORED: dict[str, dict] = {
             bank=(
                 "Retention covers Pages/Notebooks per SOX record-keeping "
                 "requirements."
+            ),
+            investment_adviser=(
+                "Where the adviser treats Copilot Pages, Notebook sections, "
+                "or Loop components as Rule 204-2 books and records, Rule "
+                "204-2(g) procedures index them for retrieval, safeguard "
+                "them from alteration, and limit access to authorized "
+                "personnel and examiners."
             ),
         ),
         "facilitatorNotes": {
