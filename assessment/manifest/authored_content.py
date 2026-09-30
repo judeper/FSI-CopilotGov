@@ -134,7 +134,8 @@ AUTHORED: dict[str, dict] = {
     "1.2": {
         "priority": "critical",
         "yesBar": (
-            "DSPM for AI is enabled, an oversharing assessment / data risk "
+            "Data Security Posture Management is enabled, an oversharing "
+            "assessment / data risk "
             "assessment runs on a documented cadence (weekly or better), "
             "findings are triaged into a tracked remediation backlog with "
             "named owners, and item-level remediation has been used at "
@@ -146,10 +147,10 @@ AUTHORED: dict[str, dict] = {
             "ownership is not formally assigned."
         ),
         "noBar": (
-            "DSPM for AI is not enabled, no oversharing assessment has been "
-            "run, or 'Everyone' / 'Everyone Except External Users' (EEEU) "
-            "sharing exists on Copilot-grounded sites without compensating "
-            "controls."
+            "Data Security Posture Management is not enabled, no "
+            "oversharing assessment has been run, or 'Everyone' / "
+            "'Everyone Except External Users' (EEEU) sharing exists on "
+            "Copilot-grounded sites without compensating controls."
         ),
         "verifyIn": [
             {
@@ -159,8 +160,8 @@ AUTHORED: dict[str, dict] = {
             },
             {
                 "portal": "Microsoft Purview portal",
-                "path": "DSPM for AI > Reports > Oversharing assessments",
-                "url": "https://purview.microsoft.com/aihub",
+                "path": "DSPM > Discover > Data risk assessments",
+                "url": "https://purview.microsoft.com/datasecurityposturemanagement",
             },
         ],
         "verifyPowerShell": (
@@ -168,7 +169,7 @@ AUTHORED: dict[str, dict] = {
             "Get-DlpCompliancePolicy | Where-Object { $_.Name -like '*Copilot*' -or $_.Name -like '*Oversharing*' }"
         ),
         "evidenceExpected": [
-            "DSPM for AI oversharing assessment report (PDF/JSON export)",
+            "DSPM data risk assessment or oversharing assessment export (Excel/CSV/JSON/TSV)",
             "Remediation backlog ticket count + closure cadence",
             "Item-level remediation log entries for the last 30 days",
             "List of sites with EEEU/Everyone sharing flagged + dispositioned",
@@ -201,13 +202,13 @@ AUTHORED: dict[str, dict] = {
         ),
         "facilitatorNotes": {
             "ask": (
-                "Has DSPM for AI been enabled, has an oversharing or data "
+                "Has Data Security Posture Management been enabled, has an oversharing or data "
                 "risk assessment been run within the last 30 days, and is "
                 "remediation tracked with named owners?"
             ),
             "followUp": (
-                "Open Microsoft Purview portal > Data Security Posture Management > "
-                "Reports. Show the most recent oversharing/data-risk-assessment "
+                "Open Microsoft Purview portal > DSPM > Discover > Data risk "
+                "assessments. Show the most recent oversharing/data-risk-assessment "
                 "report, pull the top 5 flagged sites, and confirm each has "
                 "an owner and target date in the remediation backlog."
             ),
@@ -220,75 +221,83 @@ AUTHORED: dict[str, dict] = {
     "1.3": {
         "priority": "high",
         "yesBar": (
-            "RSS is enabled tenant-wide as a short-term scoping control with "
-            "a documented allow-list of approved sites (≤100), RCD is used "
-            "for targeted high-risk sites, and there is a documented exit "
-            "plan to transition to long-term Purview / SAM governance. The "
-            "assessment notes that RSS and RCD do not change user permissions "
-            "or replace labels, RBAC, or DLP."
+            "Restricted Content Discovery (RCD) is documented for high-risk "
+            "sites, any legacy Restricted SharePoint Search (RSS) "
+            "configuration is explicitly inventoried and governed as a "
+            "transition-only posture, and there is a documented plan to rely "
+            "on long-term Purview / SAM governance rather than on temporary "
+            "discoverability controls. The assessment notes that RCD and "
+            "legacy RSS do not change user permissions or replace labels, "
+            "RBAC, or DLP."
         ),
         "partialBar": (
-            "RSS is enabled but the allow-list lacks documented review "
-            "cadence, exceptions for recently accessed or Teams/Outlook-shared "
-            "sites are not tracked, RCD is used without a written exception "
-            "register, or no exit plan to long-term governance exists."
+            "RCD is used but the site list lacks documented review cadence or "
+            "justification, legacy RSS exceptions for recently accessed or "
+            "Teams/Outlook-shared sites are not tracked where RSS is still in "
+            "use, or no exit plan to long-term governance exists."
         ),
         "noBar": (
-            "RSS is not enabled and no compensating control (RCD targeted "
-            "exclusions, Purview / SAM access governance, or item-level "
-            "scoping) is in place to limit Copilot's tenant-wide search scope."
+            "No current discoverability control is documented: high-risk "
+            "sites are not managed with RCD, any legacy RSS posture is "
+            "untracked, and no compensating Purview / SAM access governance "
+            "or item-level scoping is in place to limit Copilot's search scope."
         ),
         "verifyIn": [
             {
                 "portal": "SharePoint admin center",
-                "path": "Settings > Search > Restricted SharePoint Search",
+                "path": "Sites > Active sites > [site] > Settings > Restrict content from Microsoft Copilot",
                 "url": "https://admin.microsoft.com/sharepoint",
             },
         ],
         "verifyPowerShell": (
             "Connect-SPOService -Url https://<tenant>-admin.sharepoint.com; "
-            "Get-SPOTenantRestrictedSearchMode; "
-            "Get-SPOTenantRestrictedSearchAllowedList; "
             "Get-SPOSite -Identity https://<site-url> | "
-            "Select-Object Url, RestrictContentOrgWideSearch"
+            "Select-Object Url, RestrictContentOrgWideSearch; "
+            "Get-SPOTenantRestrictedSearchMode; "
+            "Get-SPOTenantRestrictedSearchAllowedList"
         ),
         "evidenceExpected": [
-            "PowerShell output showing Get-SPOTenantRestrictedSearchMode returns Enabled",
-            "Current allow-list site URLs (≤100) with business owner per site",
-            "RCD exception register for targeted site-level exclusions",
+            "Current RCD site list or tenant report with site justification, owner, and review date",
+            "If RSS was enabled before July 31, 2026: current allow-list site URLs (≤100) with business owner per site",
             "Documented exit plan / transition target date to long-term Purview+SAM governance",
         ],
         "sectorYesBar": _sector_map(
             bank=(
-                "RSS enabled with allow-list reviewed quarterly; loan-ops, "
-                "trust, and treasury sites included; deposit/credit account "
-                "sites carrying NPI excluded until DSPM remediation closes."
+                "RCD is applied to high-risk loan-ops, trust, treasury, or "
+                "deposit/credit-account sites carrying NPI until DSPM "
+                "remediation closes, and any legacy RSS posture is reviewed "
+                "quarterly."
             ),
             broker_dealer=(
-                "RSS enabled; research and investment-banking sites carry RCD "
-                "exclusion to honor information barriers; allow-list reviewed "
-                "by supervisory principal monthly."
+                "Research and investment-banking sites carry documented RCD "
+                "exclusions to honor information barriers, and any legacy RSS "
+                "allow-list is reviewed by a supervisory principal monthly."
             ),
             investment_adviser=(
-                "RSS enabled with allow-list limited to approved client-service "
-                "and ops sites; private fund / portfolio company sites excluded."
+                "RCD is applied to private fund or portfolio-company sites "
+                "until permissions and labels are remediated; any legacy RSS "
+                "allow-list is limited to approved client-service and ops sites."
             ),
             insurance_carrier=(
-                "RSS enabled; claims and underwriting sites with PHI excluded "
-                "from allow-list; HIPAA business-associate documentation references RSS scope."
+                "Claims and underwriting sites with PHI carry documented RCD "
+                "restrictions until remediation closes, and any legacy RSS "
+                "documentation is maintained as transition evidence."
             ),
         ),
         "facilitatorNotes": {
             "ask": (
-                "Is Restricted SharePoint Search enabled, with a curated "
-                "allow-list of ≤100 sites and a documented review cadence?"
+                "Is Restricted Content Discovery documented for high-risk "
+                "sites, and if RSS was enabled before July 31, 2026, is the "
+                "legacy allow-list still curated and reviewed?"
             ),
             "followUp": (
-                "Open SharePoint admin center > Settings > Search and verify "
-                "Restricted SharePoint Search is on. Run Get-SPOTenantRestrictedSearchMode "
+                "Open SharePoint admin center > Sites > Active sites > [site] > "
+                "Settings and verify Restrict content from Microsoft Copilot "
+                "for sampled high-risk sites. Run Get-SPOSite for the RCD state, "
+                "and if RSS is still active run Get-SPOTenantRestrictedSearchMode "
                 "and Get-SPOTenantRestrictedSearchAllowedList, confirm count is within "
                 "the 100-site limit, and ask the SharePoint Admin who owns the "
-                "quarterly review and where recently accessed/shared exceptions are documented."
+                "review cadence and where recent-access/shared exceptions are documented."
             ),
             "timeBudgetMinutes": 6,
         },
@@ -296,8 +305,9 @@ AUTHORED: dict[str, dict] = {
             {
                 "check_id": "1.3-grounding-sources-approved",
                 "description": (
-                    "Verify all SharePoint sites used for Copilot grounding are "
-                    "in the approved allow-list (Restricted SharePoint Search enabled)."
+                    "Verify SharePoint grounding sources follow the documented "
+                    "discoverability posture: RCD where required and legacy RSS "
+                    "allow-list approval where RSS remains enabled."
                 ),
                 "api_call": "Get-PnPSiteSearchQueryResults",
                 "pass_condition": "grounding_sources_approved",
@@ -1842,21 +1852,21 @@ AUTHORED: dict[str, dict] = {
         ),
         "verifyIn": [
             {
-                "portal": "Microsoft 365 admin center",
-                "path": "Copilot > Settings > Pages",
-                "url": "https://admin.microsoft.com/Adminportal/Home#/copilot",
+                "portal": "Microsoft 365 Cloud Policy service",
+                "path": "Customization > Policy Management",
+                "url": "https://config.office.com",
             },
             {
-                "portal": "SharePoint admin center",
-                "path": "Active sites > Loop app",
-                "url": "https://admin.microsoft.com/sharepoint",
+                "portal": "Microsoft Purview portal",
+                "path": "Data lifecycle management > Retention policies > All SharePoint Sites",
+                "url": "https://purview.microsoft.com",
             },
         ],
         "verifyPowerShell": "",
         "evidenceExpected": [
-            "Pages sharing policy configuration",
+            "Cloud Policy scope for Create and view Copilot Pages and Copilot Notebooks plus code-preview setting",
             "Sensitivity label enforcement for Pages content",
-            "External sharing restriction evidence",
+            "External sharing restriction evidence for the supporting SharePoint and Loop collaboration surfaces",
             "Sharing activity audit log entries for Pages",
         ],
         "sectorYesBar": _sector_map(
@@ -1875,8 +1885,10 @@ AUTHORED: dict[str, dict] = {
                 "sensitivity labels and external sharing restrictions?"
             ),
             "followUp": (
-                "Open Microsoft 365 admin center > Copilot > Settings. "
-                "Verify Pages sharing policy and label enforcement."
+                "Open Cloud Policy at config.office.com and verify the Create "
+                "and view Copilot Pages and Copilot Notebooks policy scope and "
+                "the code-preview setting. Then verify retention and label "
+                "coverage in Purview and confirm sharing defaults in SharePoint."
             ),
             "timeBudgetMinutes": 6,
         },

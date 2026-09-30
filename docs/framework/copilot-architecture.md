@@ -138,10 +138,10 @@ The Semantic Index is a critical component for governance because it determines 
 | **Includes meeting transcripts** | Spoken content from meetings is indexed and retrievable | Teams meeting governance (Control 1.5) |
 | **Includes email content** | Full email bodies and attachments are searchable by Copilot | Exchange permissions review (Control 1.13) |
 | **Near-real-time updates** | Newly shared content becomes available to Copilot quickly | Sensitivity labels applied at creation (Control 2.2) |
-| **No content exclusion by site** | Administrators cannot selectively exclude specific SharePoint sites from the Semantic Index alone; current practice uses site searchability controls or Restricted Content Discovery (RCD), with legacy RSS only where it was already enabled | Site searchability, Restricted Content Discovery, legacy Restricted SharePoint Search (Controls 1.3-1.4) |
+| **No content exclusion by site** | Administrators cannot selectively exclude specific SharePoint sites from the Semantic Index alone. Current practice uses site searchability controls or Restricted Content Discovery (RCD), with legacy Restricted SharePoint Search (RSS) only where it was already enabled. | Site searchability, Restricted Content Discovery, legacy Restricted SharePoint Search (Controls 1.3-1.4) |
 
 !!! warning "SharePoint discoverability controls"
-    **Restricted Content Discovery (RCD)** is the current Microsoft-recommended mechanism for limiting discovery of selected SharePoint sites in Microsoft Copilot while permissions are reviewed. **Restricted SharePoint Search (RSS)** is a retiring, temporary legacy control whose new enablement was blocked starting July 31, 2026. Where RSS is already enabled, it can still limit Copilot Chat grounding to the approved list during transition, but it should not be treated as the long-term operating model. Site searchability settings remain the way to exclude a site's content from both Microsoft Search and tenant-level semantic indexing.
+    **Restricted Content Discovery (RCD)** is the current Microsoft-recommended mechanism for limiting discovery of selected SharePoint sites in Microsoft Copilot while permissions are reviewed. **Restricted SharePoint Search (RSS)** is a retiring, temporary legacy control whose new enablement was blocked starting July 31, 2026. Where RSS is already enabled, it can still limit Microsoft Copilot Chat grounding to the approved list during transition, but it should not be treated as the long-term operating model. Site searchability settings remain the way to exclude a site's content from both Microsoft Search and tenant-level semantic indexing.
 
 ---
 
@@ -249,7 +249,7 @@ Microsoft 365 Copilot uses a Retrieval-Augmented Generation (RAG) pipeline to pr
 |-------|-------------------|------------|
 | Pre-processing | Responsible AI boundaries (Microsoft-managed) | N/A (Microsoft responsibility) |
 | Retrieval | Permission governance, oversharing remediation | 1.1, 1.2, 1.3 |
-| Retrieval | Restricted SharePoint Search | 1.4 |
+| Retrieval | Restricted Content Discovery / legacy Restricted SharePoint Search | 1.3 |
 | Retrieval | Sensitivity label enforcement | 2.2, 2.3 |
 | Retrieval | DLP policy evaluation | 2.1 |
 | Retrieval | Information barriers | 2.6 |

@@ -19,7 +19,7 @@ Automation workflow for scanning uniquely permissioned SharePoint items and prod
 
 ```powershell
 Set-Location C:\Repos\FSI-CopilotGov-Solutions\solutions\16-item-level-oversharing-scanner
-pwsh .\scripts\Deploy-Solution.ps1 -ConfigurationTier recommended -TenantId <tenant-guid>
+pwsh .\scripts\Deploy-Solution.ps1 -ConfigurationTier recommended -TenantId "<tenant-guid>"
 ```
 
 ### Script 2: Enumerate item-level permissions
