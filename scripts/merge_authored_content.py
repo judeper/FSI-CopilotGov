@@ -173,12 +173,6 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "checks",
         "zone_thresholds",
     },
-    "3.3": {
-        # Force-apply the corrected credit-union wording over the prior
-        # branch-authored Part 749 text, which overstated the vital-records
-        # scope and misplaced the examiner-access clause.
-        "sectorYesBar",
-    },
     "3.6": {
         # Force-apply the re-authored investment-adviser supervision text over
         # the stale Reg BI wording while preserving the new bank override.
