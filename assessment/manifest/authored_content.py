@@ -283,6 +283,14 @@ AUTHORED: dict[str, dict] = {
                 "restrictions until remediation closes, and any legacy RSS "
                 "documentation is maintained as transition evidence."
             ),
+            credit_union=(
+                "Where member-information sites need extra review before "
+                "broader discoverability, RCD is documented as a temporary "
+                "governance control while access is right-sized, and any "
+                "legacy RSS allow-list is limited to approved sites while the "
+                "credit union tests and adjusts its safeguards under Appendix "
+                "A III.C.3 and III.E."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -1004,6 +1012,30 @@ AUTHORED: dict[str, dict] = {
                 "Scans cover MNPI documents; information-barrier compliance "
                 "validated at item level."
             ),
+            investment_adviser=(
+                "Item-level scans cover selected customer-information "
+                "SharePoint sites, and potentially overshared items are "
+                "resolved by removing the sharing link, applying a "
+                "sensitivity label, or notifying the site owner, supporting "
+                "the adviser's written safeguards under Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, item-level scans cover selected "
+                "PHI-bearing SharePoint sites, and potentially overshared "
+                "items are resolved by removing the sharing link, applying a "
+                "sensitivity label, or notifying the site owner, supporting "
+                "risk analysis and risk management under 45 CFR "
+                "164.308(a)(1)(ii)(A)-(B) and access establishment and "
+                "modification under 45 CFR 164.308(a)(4)(ii)(C)."
+            ),
+            credit_union=(
+                "Item-level scans cover selected member-information "
+                "SharePoint sites, and flagged items are relabeled, have "
+                "sharing links removed, or are routed to site owners, "
+                "supporting access-control measures the credit union has "
+                "adopted after considering Appendix A III.C.1.a and its "
+                "testing under III.C.3."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -1061,6 +1093,28 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Drift monitoring includes information-barrier-protected "
                 "sites; reconciliation documented for FINRA exam readiness."
+            ),
+            investment_adviser=(
+                "Microsoft-recommended quarterly site-permissions baselines "
+                "and monthly sharing-activity reports cover customer-"
+                "information sites, and change history or site access "
+                "reviews are used to investigate and remediate drift, "
+                "supporting the adviser's written safeguards under "
+                "Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, Microsoft-recommended quarterly site-"
+                "permissions baselines and monthly sharing-activity reports "
+                "cover PHI sites, and change history or site access reviews "
+                "support regular review of access reports under 45 CFR "
+                "164.308(a)(1)(ii)(D)."
+            ),
+            credit_union=(
+                "Microsoft-recommended quarterly site-permissions baselines "
+                "and monthly sharing-activity reports cover member-"
+                "information sites, and change history or site access "
+                "reviews support the credit union's testing and adjustment "
+                "of safeguards under Appendix A III.C.3 and III.E."
             ),
         ),
         "facilitatorNotes": {
@@ -1850,6 +1904,33 @@ AUTHORED: dict[str, dict] = {
                 "patterns; alerts reviewed by SOC within 4-hour SLA per "
                 "FFIEC expectations."
             ),
+            broker_dealer=(
+                "Browser session policies cover the Microsoft 365 web "
+                "workloads that handle customer information, and anomaly "
+                "alerts are triaged as part of the firm's safeguards under "
+                "Regulation S-P §248.30(a) and, where the firm has "
+                "incorporated them, its FINRA Rule 3110(b) supervisory "
+                "procedures."
+            ),
+            investment_adviser=(
+                "Browser session policies cover the Microsoft 365 web "
+                "workloads that handle customer information, and anomaly "
+                "alerts are reviewed as part of the adviser's written "
+                "safeguards under Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, browser session policies cover PHI-"
+                "handling Microsoft 365 web workloads, and anomaly alerts "
+                "feed regular review of access reports and security-incident "
+                "tracking under 45 CFR 164.308(a)(1)(ii)(D)."
+            ),
+            credit_union=(
+                "Browser session policies cover member-information Microsoft "
+                "365 web workloads, and anomaly alerts feed monitoring "
+                "systems and procedures the credit union has adopted under "
+                "Appendix A III.C.1.f, and its evaluation and adjustment of "
+                "the program under III.E."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -1917,6 +1998,26 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Insider Risk covers registered-rep Copilot usage; alerts "
                 "reviewed by supervisory principal per FINRA Rule 3110."
+            ),
+            investment_adviser=(
+                "Risky AI usage or data-leak indicators are enabled for "
+                "in-scope users, and Insider Risk alerts are investigated as "
+                "part of the adviser's written safeguards and incident "
+                "response for customer information under Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, Insider Risk policies cover risky AI or "
+                "data-leak indicators for PHI-handling users, and alerts are "
+                "reviewed through access-report and security-incident "
+                "procedures under 45 CFR 164.308(a)(1)(ii)(D) and (a)(6)(ii)."
+            ),
+            credit_union=(
+                "Risky AI usage or data-leak indicators are enabled for in-"
+                "scope users with member-information access, supporting the "
+                "credit union's assessment of internal threats under "
+                "Appendix A III.B.1 and, to the extent adopted, its "
+                "monitoring and response measures under III.C.1.f-g and "
+                "program adjustment under III.E."
             ),
         ),
         "facilitatorNotes": {
@@ -3701,6 +3802,16 @@ AUTHORED: dict[str, dict] = {
                 "record-keeping; Copilot disabled for NPI-sensitive "
                 "committee meetings unless approved."
             ),
+            investment_adviser=(
+                "Where the adviser treats Teams meeting transcripts/"
+                "recordings and Copilot prompt/response data as required "
+                "books and records under Rule 204-2(a)(7), organizer "
+                "controls and Purview retention/eDiscovery preserve meeting "
+                "transcripts/recordings (OneDrive or SharePoint) and "
+                "Copilot prompt/response data (the user's Exchange mailbox), "
+                "as applicable; legal/compliance confirms which meeting "
+                "types and items create required records."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -3761,6 +3872,15 @@ AUTHORED: dict[str, dict] = {
                 "Call recording retention aligned to GLBA §501(b) "
                 "expectations; Copilot disabled for customer service lines "
                 "unless approved."
+            ),
+            investment_adviser=(
+                "Where the adviser treats Teams call transcripts or Copilot "
+                "call/transfer summaries as required books and records under "
+                "Rule 204-2(a)(7), calling policies require saved "
+                "transcripts for retained Copilot artifacts and "
+                "retention/eDiscovery covers those records; "
+                "legal/compliance confirms which call workflows create "
+                "required records."
             ),
         ),
         "facilitatorNotes": {
@@ -4183,6 +4303,15 @@ AUTHORED: dict[str, dict] = {
                 "BC/DR plan includes Copilot per FINRA Rule 4370 business "
                 "continuity requirements."
             ),
+            insurance_carrier=(
+                "For NYDFS-covered insurers, the written business continuity "
+                "and disaster recovery plans required by 23 NYCRR 500.16 "
+                "include recovery of critical data and information systems, "
+                "offsite backups of essential information, and accessible "
+                "current plan copies for implementing staff; Copilot-"
+                "dependent workflows are included where they support "
+                "critical operations."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -4241,9 +4370,32 @@ AUTHORED: dict[str, dict] = {
                 "anomalous usage per FFIEC IT Handbook expectations; SOC "
                 "review within 4-hour SLA."
             ),
+            broker_dealer=(
+                "Sentinel analytics ingest CopilotInteraction audit events "
+                "and documented escalation routes them to supervisory staff "
+                "as part of the firm's supervisory system and WSPs (FINRA "
+                "Rule 3110); surveillance evidence the firm treats as "
+                "required records follows retention under FINRA Rule 4511 "
+                "and Exchange Act Rule 17a-4."
+            ),
+            investment_adviser=(
+                "For advisers registered or required to be registered, "
+                "Sentinel analytics ingest CopilotInteraction audit events "
+                "for Copilot-supported client workflows, and the adviser's "
+                "documented alerts and escalation paths are reviewed at "
+                "least annually as part of the Rule 206(4)-7 policies-and-"
+                "procedures effectiveness review."
+            ),
             insurance_carrier=(
                 "Sentinel rules cover Copilot PHI access anomalies per "
                 "NYDFS Part 500 monitoring requirements."
+            ),
+            credit_union=(
+                "CopilotInteraction alerts are mapped to the credit union's "
+                "written information security program, consistent with "
+                "Appendix A to Part 748 (intrusion-monitoring and response "
+                "measures the credit union has determined appropriate; board "
+                "reporting 'at least annually')."
             ),
         ),
         "facilitatorNotes": {
@@ -4298,6 +4450,26 @@ AUTHORED: dict[str, dict] = {
                 "Change management aligned to SOX IT general control "
                 "change advisory requirements; feature rollouts risk-reviewed "
                 "before enablement."
+            ),
+            broker_dealer=(
+                "Copilot feature changes affecting registered-person "
+                "workflows are evaluated before enablement, with WSP "
+                "updates (FINRA Rule 3110(b)) and supervisory sign-off per "
+                "firm procedure; FINRA Regulatory Notice 24-09 says firms "
+                "should evaluate Gen AI tools prior to deploying them."
+            ),
+            investment_adviser=(
+                "Copilot feature changes that affect advice, marketing, or "
+                "client communications trigger CCO review and updates to "
+                "written policies and procedures under Rule 206(4)-7, with "
+                "annual-review evidence that the controls remain effective."
+            ),
+            credit_union=(
+                "Copilot feature changes that affect member information or "
+                "member-information systems are evaluated and, as "
+                "appropriate, adjusted within the Appendix A to Part 748 "
+                "information security program (III.E), with annual board "
+                "reporting per III.F."
             ),
         ),
         "facilitatorNotes": {
