@@ -174,6 +174,11 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "checks",
         "zone_thresholds",
     },
+    "3.6": {
+        # Force-apply the re-authored investment-adviser supervision text over
+        # the stale Reg BI wording while preserving the new bank override.
+        "sectorYesBar",
+    },
     "3.8a": {
         # The harvest fallback fabricates a conventional /3.8a/portal-walkthrough/
         # route even though no such playbook file exists. Force the authored

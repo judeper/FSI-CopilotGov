@@ -446,9 +446,19 @@ AUTHORED: dict[str, dict] = {
                 "Labels cover MNPI, research, and client-confidential tiers; "
                 "reviewed by supervisory principal for FINRA WSP alignment."
             ),
+            investment_adviser=(
+                "Labels cover client portfolio and advisory records; "
+                "auto-labeling and DLP rules map those labels to client NPI "
+                "controls under SEC Reg S-P."
+            ),
             insurance_carrier=(
                 "Labels cover PHI and PII tiers; HIPAA alignment verified "
                 "with privacy officer."
+            ),
+            credit_union=(
+                "Labels cover member NPI categories; auto-labeling and DLP "
+                "rules map those labels to member-information safeguards "
+                "under NCUA Part 748."
             ),
         ),
         "facilitatorNotes": {
@@ -520,9 +530,23 @@ AUTHORED: dict[str, dict] = {
                 "Audit covers research, IB, and client-facing sites; "
                 "information-barrier scope validated at each audit cycle."
             ),
+            investment_adviser=(
+                "Permission audit covers client portfolio, fund, and "
+                "delegated-mailbox access containing customer information; "
+                "periodic access re-certification evidence is retained, "
+                "consistent with SEC Division of Examinations "
+                "cybersecurity observations and as part of the adviser's "
+                "written safeguards policies under Regulation S-P."
+            ),
             insurance_carrier=(
                 "Audit covers claims and underwriting sites with PHI; "
                 "HIPAA access-control evidence produced."
+            ),
+            credit_union=(
+                "Permission audit covers member-information sites, Teams, "
+                "OneDrive, and delegated mailboxes; findings show access is "
+                "limited to authorized individuals and broad-access "
+                "remediation is tracked through the Appendix A security program."
             ),
         ),
         "facilitatorNotes": {
@@ -1334,9 +1358,22 @@ AUTHORED: dict[str, dict] = {
                 "using Copilot; compliant device required per FINRA "
                 "cybersecurity guidance."
             ),
+            investment_adviser=(
+                "Conditional Access requires MFA for Copilot users handling "
+                "customer records; adviser-issued devices accessing Copilot "
+                "are governed through MDM-backed compliant-device controls, "
+                "and users' access rights are re-certified on a periodic basis."
+            ),
             insurance_carrier=(
                 "CA policies enforce MFA and compliant device per NYDFS "
                 "Part 500 MFA requirements for Copilot workloads."
+            ),
+            credit_union=(
+                "Conditional Access requires MFA for Copilot users with "
+                "access to member information; compliant-device restrictions "
+                "are documented, as measures the credit union has concluded "
+                "are appropriate under its Appendix A III.C.1(a) "
+                "access-control risk assessment."
             ),
         ),
         "facilitatorNotes": {
@@ -1459,6 +1496,22 @@ AUTHORED: dict[str, dict] = {
                 "Grounding scope respects information barriers; research and "
                 "MNPI sites excluded unless IB-validated."
             ),
+            investment_adviser=(
+                "Org-wide discovery is limited for client portfolio and "
+                "private fund sites pending permissions review; Restricted "
+                "Content Discovery is documented for client NPI under SEC "
+                "Reg S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, org-wide discovery is limited for PHI "
+                "repositories pending access review; Restricted Content "
+                "Discovery supports minimum-necessary use."
+            ),
+            credit_union=(
+                "Org-wide discovery is limited for member-information sites "
+                "pending access review; Restricted Content Discovery is "
+                "documented under NCUA Part 748 safeguards."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -1526,6 +1579,21 @@ AUTHORED: dict[str, dict] = {
                 "Web search disabled for registered representatives by "
                 "default; enabled only with supervisory approval and DLP "
                 "MNPI SIT restriction."
+            ),
+            investment_adviser=(
+                "Web search is disabled or group-scoped for users handling "
+                "client NPI, and DLP web-search blocking covers advisory-"
+                "account SITs under SEC Reg S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, web search is disabled or group-scoped "
+                "for users handling PHI, and DLP web-search blocking covers "
+                "PHI/PII prompts to support minimum-necessary use."
+            ),
+            credit_union=(
+                "Web search is disabled or group-scoped for users handling "
+                "member information, and DLP web-search blocking covers "
+                "member-identifier SITs under NCUA Part 748."
             ),
         ),
         "facilitatorNotes": {
@@ -1699,6 +1767,15 @@ AUTHORED: dict[str, dict] = {
                 "A current manual evidence pack records negotiated TLS results "
                 "and the applicable multi-workload Customer Key DEP and "
                 "key-management review for Copilot data flows."
+            ),
+            credit_union=(
+                "A current manual evidence pack records negotiated TLS "
+                "results and encryption controls for electronic member "
+                "information (including the multi-workload Customer Key "
+                "data encryption policy and key-management evidence where "
+                "deployed), supporting the credit union's risk-based "
+                "encryption determination under 12 CFR part 748, "
+                "Appendix A, III.C.1(c)."
             ),
         ),
         "facilitatorNotes": {
@@ -1977,6 +2054,23 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "External sharing restricted per SEC Reg S-P; guest "
                 "access reviews conducted monthly."
+            ),
+            investment_adviser=(
+                "External sharing is disabled or restricted to named, "
+                "approved guests for client-record sites, and guest access "
+                "is recertified through access reviews to support SEC Reg "
+                "S-P safeguards for client information."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, external sharing for PHI sites is "
+                "disabled or restricted to named guests, and guest access is "
+                "recertified with expiration and review controls."
+            ),
+            credit_union=(
+                "External sharing is disabled or restricted to named, "
+                "approved guests for member-information sites, and guest "
+                "access is recertified through access reviews under NCUA "
+                "Part 748 safeguards."
             ),
         ),
         "facilitatorNotes": {
@@ -2646,6 +2740,22 @@ AUTHORED: dict[str, dict] = {
                 "eDiscovery readiness verified for Copilot per SOX "
                 "litigation-hold requirements."
             ),
+            investment_adviser=(
+                "Copilot activity searches and exports are tested against "
+                "adviser mailboxes so records the firm treats as Rule 204-2 "
+                "books and records can be identified, preserved, and "
+                "promptly produced on request."
+            ),
+            credit_union=(
+                "Copilot content the credit union retains to meet an NCUA "
+                "record-retention requirement is searchable and exportable "
+                "in a format that accurately reflects the information, "
+                "remains accessible to persons entitled to access, can be "
+                "reproduced, and can be read by examiners with equipment or "
+                "software the credit union maintains; the credit union "
+                "confirms with counsel which Copilot content, if any, is in "
+                "that scope."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -2815,9 +2925,19 @@ AUTHORED: dict[str, dict] = {
                 "updated to cover Copilot use in client-facing and trading "
                 "workflows; review conducted at least monthly."
             ),
+            bank=(
+                "For covered banks—generally those with average total "
+                "consolidated assets of $50 billion or more, plus smaller "
+                "banks the OCC brings into scope under 12 CFR part 30, "
+                "appendix D—Copilot use is assigned to a business owner, "
+                "independent risk oversight, and internal audit, with board "
+                "or risk-committee reporting on a documented cadence."
+            ),
             investment_adviser=(
-                "Supervisory oversight aligned to SEC Reg BI best-interest "
-                "obligations for Copilot-assisted recommendations."
+                "A designated CCO administers Copilot policies for advice, "
+                "marketing, and client-communication workflows under Rule "
+                "206(4)-7, with annual review evidence and documented "
+                "escalation of exceptions."
             ),
         ),
         "facilitatorNotes": {
@@ -3236,6 +3356,22 @@ AUTHORED: dict[str, dict] = {
                 "Copilot interactions retained per SOX record-keeping "
                 "requirements where applicable to ICFR evidence."
             ),
+            investment_adviser=(
+                "Copilot-assisted advice, marketing, and annual-review "
+                "records the adviser treats as Rule 204-2 books and records "
+                "are preserved at least 5 years, the first 2 in an "
+                "appropriate office, and can be produced from the "
+                "retention/eDiscovery workflow on request."
+            ),
+            credit_union=(
+                "Copilot records the credit union retains to meet an NCUA "
+                "record-retention requirement accurately reflect the "
+                "information, remain accessible to persons entitled to "
+                "access, are capable of reproduction, and are readable by "
+                "examiners with equipment or software the credit union "
+                "maintains; the credit union confirms with counsel which "
+                "Copilot records are in that scope."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -3478,6 +3614,12 @@ AUTHORED: dict[str, dict] = {
             insurance_carrier=(
                 "AI Administrator role used; Cloud Policy enforces "
                 "Pages/Notebooks scope for PHI handling units; settings reviewed monthly."
+            ),
+            credit_union=(
+                "AI Administrator is used for day-to-day Copilot settings; "
+                "changes to Copilot access, billing, and Cloud Policy are "
+                "documented as member-information-system modifications within "
+                "the credit union's information security program."
             ),
         ),
         "facilitatorNotes": {
@@ -3931,6 +4073,28 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Incident reporting per FINRA Rule 4530; Copilot-specific "
                 "incidents subject to supervisory escalation."
+            ),
+            investment_adviser=(
+                "Incident runbook covers unauthorized access to or use of "
+                "customer information, scope assessment, containment, recovery, "
+                "and affected-individual notice under Regulation S-P's "
+                "response-program requirements."
+            ),
+            insurance_carrier=(
+                "Incident runbook covers prompt investigation, determination "
+                "of scope and nonpublic information involved, restoration "
+                "steps, commissioner notice within the deadline set by the "
+                "applicable state's insurance data-security law where "
+                "notification thresholds are met (NAIC Model #668 §6 uses "
+                "72 hours from determination; enacted state deadlines vary), "
+                "and documentation of control lapses."
+            ),
+            credit_union=(
+                "Incident runbook covers prompt investigation, NCUA "
+                "notification assessed against the §748.1(c) "
+                "reportable-cyber-incident definition, containment, and "
+                "member-notification assessment under Appendix B for "
+                "unauthorized access to member information."
             ),
         ),
         "facilitatorNotes": {
