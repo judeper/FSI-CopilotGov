@@ -213,7 +213,7 @@ See also: [Control 1.5 -- Sensitivity Label Taxonomy Review](../control-implemen
 **Why:** The Copilot Control System provides centralized access to Microsoft 365 Copilot admin features, including license status, data security and compliance controls, plugin permissions, user feedback, and the use of web data as grounding data. During Phase 0, baseline scoping should include the web-grounding decision before pilot licenses are assigned.
 
 **Portals:** Microsoft 365 admin center; Cloud Policy service for Microsoft 365
-**Paths:** Microsoft 365 admin center > Copilot; Copilot > Settings > Data Access > Web search for Microsoft 365 Copilot and Microsoft 365 Copilot Chat; config.office.com
+**Paths:** Microsoft 365 admin center > Copilot; Copilot > Settings > Data Access > Web search for Microsoft Copilot and Microsoft Copilot Chat; config.office.com
 
 **Actions:**
 
@@ -225,7 +225,7 @@ See also: [Control 1.5 -- Sensitivity Label Taxonomy Review](../control-implemen
     - Web data grounding status
 
 2. **Document pilot scoping decisions** for the current Copilot surfaces:
-    - Microsoft 365 Copilot Chat (Basic and Premium where applicable)
+    - Microsoft Copilot Chat (Basic and Premium where applicable)
     - Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard, Forms, and Planner experiences
     - Copilot Pages and Notebooks, including Copilot Cowork co-authoring experiences
     - Declarative agents, SharePoint agents, plugins, and connectors
@@ -234,11 +234,11 @@ See also: [Control 1.5 -- Sensitivity Label Taxonomy Review](../control-implemen
 3. **Configure web grounding through Cloud Policy**:
     - Create or update the Cloud Policy configuration scoped to the pilot and exception groups
     - Search for **Allow web search in Copilot**
-    - Select the governance-approved option for Microsoft 365 Copilot, Microsoft 365 Copilot Chat, and Work/Web mode behavior
+    - Select the governance-approved option for Microsoft Copilot, Microsoft Copilot Chat, and Work/Web mode behavior
     - Assign the policy to the approved security groups and verify policy propagation before pilot testing
 
 4. **Review the web search entry point in the Copilot Control System**:
-    - Navigate to Copilot > Settings > Data Access > **Web search for Microsoft 365 Copilot and Microsoft 365 Copilot Chat**
+    - Navigate to Copilot > Settings > Data Access > **Web search for Microsoft Copilot and Microsoft Copilot Chat**
     - Confirm the displayed web-grounding state aligns with the Cloud Policy decision
     - Note that Microsoft documents this page as a shortcut to Cloud Policy rather than a separate configuration surface, and that tenant-wide domain exclusion is not a documented capability — see [Control 2.6](../../controls/pillar-2-security/2.6-web-search-controls.md) for the documented selective mechanisms
 

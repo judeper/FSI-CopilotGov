@@ -140,7 +140,7 @@ Admin portal navigation paths for the main Microsoft 365 Copilot governance cont
 | Setting | Navigation Path | Direct URL |
 |---------|----------------|------------|
 | Copilot Pages / Notebooks creation | Customization > Policy Management > Create and view Copilot Pages and Copilot Notebooks | `https://config.office.com` |
-| Copilot code previews | Customization > Policy Management > Enable code previews for AI-generated content in Microsoft 365 Copilot Chat and Copilot Pages | `https://config.office.com` |
+| Copilot code previews | Customization > Policy Management > Enable code previews for AI-generated content in Microsoft Copilot Chat and Copilot Pages | `https://config.office.com` |
 
 ---
 
