@@ -953,10 +953,12 @@ AUTHORED: dict[str, dict] = {
                 "third-party safeguards; state adoption varies."
             ),
             credit_union=(
-                "Extensibility approvals document member-information access, "
-                "service-provider due diligence, contractual safeguards, and "
-                "periodic oversight, consistent with 12 CFR part 748, "
-                "appendix A and NCUA third-party relationship guidance."
+                "Where extensibility surfaces involve a service provider "
+                "with access to member information, approvals document that "
+                "access, service-provider due diligence, contractual "
+                "safeguards, and monitoring where indicated by the risk "
+                "assessment, consistent with 12 CFR part 748, appendix A, "
+                "III.D and NCUA third-party relationship guidance."
             ),
         ),
         "facilitatorNotes": {
@@ -2462,17 +2464,19 @@ AUTHORED: dict[str, dict] = {
         ],
         "sectorYesBar": _sector_map(
             bank=(
-                "MCP endpoints assessed per OCC Bulletin 2023-17 third-party "
+                "MCP servers assessed per OCC Bulletin 2023-17 third-party "
                 "risk requirements; allow-list reviewed quarterly."
             ),
             broker_dealer=(
-                "Federated connectors and MCP endpoints that can surface "
-                "customer or securities-business data stay on an approved "
-                "allow-list with connector-level allowed-user scope and "
-                "supervisory review, consistent with FINRA Rule 3110."
+                "Federated connectors stay within the tenant's Allowed agent "
+                "types and connector-level allowed-user scope, and MCP "
+                "servers surfaced through Agents > Tools are approved or "
+                "blocked on an approved list, with supervisory review under "
+                "written supervisory procedures, consistent with FINRA Rule "
+                "3110."
             ),
             investment_adviser=(
-                "Federated connectors and MCP endpoints that can reach "
+                "Federated connectors and MCP servers that can reach "
                 "customer information document user-scoped access, "
                 "service-provider boundaries, and review evidence under the "
                 "adviser's written safeguards and compliance policies, "
@@ -2481,16 +2485,18 @@ AUTHORED: dict[str, dict] = {
             ),
             insurance_carrier=(
                 "Where state insurance data-security laws modeled on NAIC "
-                "Model #668 apply, federated connectors and MCP endpoints "
+                "Model #668 apply, federated connectors and MCP servers "
                 "document nonpublic-information access, third-party "
                 "safeguards, and incident-accountability expectations; state "
                 "adoption varies."
             ),
             credit_union=(
-                "Federated connectors and MCP endpoints document "
-                "member-information access, service-provider due diligence, "
-                "contractual safeguards, and ongoing oversight, consistent "
-                "with 12 CFR part 748, appendix A and NCUA third-party "
+                "Where a federated connector or MCP server is operated by a "
+                "service provider with access to member information, "
+                "approvals document that access, service-provider due "
+                "diligence, contractual safeguards, and monitoring where "
+                "indicated by the risk assessment, consistent with 12 CFR "
+                "part 748, appendix A, III.D and NCUA third-party "
                 "relationship guidance."
             ),
         ),
@@ -2558,10 +2564,12 @@ AUTHORED: dict[str, dict] = {
             ),
             investment_adviser=(
                 "Cross-tenant trust relationships that can expose customer "
-                "information are scoped to named users, groups, or "
-                "applications and reviewed under the adviser's written "
-                "safeguards and compliance policies, consistent with "
-                "Regulation S-P and Advisers Act Rule 206(4)-7."
+                "information are inventoried and, where the tenant control "
+                "path supports it (for example Entra cross-tenant access "
+                "settings), scoped to named users, groups, or applications "
+                "and reviewed under the adviser's written safeguards and "
+                "compliance policies, consistent with Regulation S-P and "
+                "Advisers Act Rule 206(4)-7."
             ),
             insurance_carrier=(
                 "Where state insurance data-security laws modeled on NAIC "
@@ -2570,10 +2578,12 @@ AUTHORED: dict[str, dict] = {
                 "scope, and third-party safeguards; state adoption varies."
             ),
             credit_union=(
-                "Cross-tenant trust relationships involving member "
-                "information document scoped access, due diligence, and "
-                "service-provider oversight, consistent with 12 CFR part "
-                "748, appendix A and NCUA third-party relationship guidance."
+                "Where an external tenant is a service provider with access "
+                "to member information, trust relationships document scoped "
+                "access, service-provider due diligence, contractual "
+                "safeguards, and monitoring where indicated by the risk "
+                "assessment, consistent with 12 CFR part 748, appendix A, "
+                "III.D and NCUA third-party relationship guidance."
             ),
         ),
         "facilitatorNotes": {
@@ -4494,10 +4504,10 @@ AUTHORED: dict[str, dict] = {
             ),
             credit_union=(
                 "For agents that can access member information, lifecycle "
-                "records tie development, testing, publication, and "
-                "retirement to the credit union's written information "
-                "security program, testing, and board reporting under "
-                "12 CFR part 748, appendix A."
+                "records are retained so key-control testing (III.C.3), "
+                "program adjustment (III.E), and board reporting (III.F) "
+                "can reflect them, consistent with 12 CFR part 748, "
+                "appendix A."
             ),
         ),
         "facilitatorNotes": {
