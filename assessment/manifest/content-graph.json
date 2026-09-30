@@ -827,7 +827,7 @@
       "tier": "Regulated",
       "title": "Control 4.11: Microsoft Sentinel Integration for Copilot Events",
       "path": "docs/controls/pillar-4-operations/4.11-sentinel-integration.md",
-      "last_verified": "2026-08-25",
+      "last_verified": "2026-09-29",
       "regulatory_references": [
         "FFIEC IT Examination Handbook (Information Security)",
         "Sarbanes-Oxley §§302/404",

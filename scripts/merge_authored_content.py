@@ -156,6 +156,13 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "evidenceExpected",
         "facilitatorNotes",
     },
+    "4.11": {
+        # Force-apply the Defender-portal-first verification path. The
+        # generated manifest still contains the older Azure-portal route, and
+        # preserve-existing merge semantics would otherwise leave that stale
+        # value in place after authored_content.py is corrected.
+        "verifyIn",
+    },
     "3.10": {
         "verifyPowerShell",
     },
