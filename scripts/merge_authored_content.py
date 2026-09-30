@@ -101,7 +101,6 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "verifyIn",
         "verifyPowerShell",
         "evidenceExpected",
-        "sectorYesBar",
         "facilitatorNotes",
     },
     "2.11": {
@@ -163,12 +162,6 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "evidenceExpected",
         "sectorYesBar",
         "facilitatorNotes",
-    },
-    "2.5": {
-        # Control 2.5 sector yes-bars now describe Restricted Content
-        # Discovery as a temporary organization-wide discovery control while
-        # permissions are reviewed, replacing stronger exclusion wording.
-        "sectorYesBar",
     },
     "3.1": {
         # Authored checks[] wires the audit_log_enabled evaluator.
