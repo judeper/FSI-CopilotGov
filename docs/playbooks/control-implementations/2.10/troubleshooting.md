@@ -44,7 +44,7 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
   2. Navigate to Microsoft Purview > Agents > Explore agents and confirm the agent is deployed
   3. Verify Security Copilot onboarding, SCU availability, Microsoft 365 data sharing, and the Purview plug-in prerequisites
   4. Review Insider Risk Management > Alerts (preview) for triaged alerts after the agent runs
-  5. If the Triage Agent is deployed but context summaries are absent, allow time for the agent to finish triaging in-scope alerts (Learn documents up to 2 hours after initial setup for the Data Security Triage Agent; treat longer delays as a troubleshooting signal)
+  5. If the Triage Agent is deployed but context summaries are absent, allow time for the agent to finish triaging in-scope alerts (Learn documents up to 2 hours after initial setup for the Microsoft Purview Triage Agent in Insider Risk Management; treat longer delays as a troubleshooting signal)
   6. Check that the IRM investigator role has appropriate access to view Triage Agent outputs
 
 ### Issue 5: Data Risk Graph Not Loading or Missing Data

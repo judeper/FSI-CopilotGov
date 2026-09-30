@@ -89,6 +89,11 @@ _CONTROL_FORCE_REPLACE_FIELDS: dict[str, set[str]] = {
         "checks",
         "zone_thresholds",
     },
+    "1.4": {
+        # Control 1.4 verification now uses the current Restricted Content
+        # Discovery portal label from authored_content.py.
+        "verifyIn",
+    },
     "2.12": {
         # Authored checks[] wires the no_external_sharing_on_grounding evaluator.
         # Guest-lifecycle fields limit SharePoint/OneDrive expiration to eligible

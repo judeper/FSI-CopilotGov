@@ -350,7 +350,7 @@ AUTHORED: dict[str, dict] = {
         "verifyIn": [
             {
                 "portal": "SharePoint admin center",
-                "path": "Sites > Active sites > [site] > Settings > Restrict content from Microsoft 365 Copilot",
+                "path": "Sites > Active sites > [site] > Settings > Restrict content from Microsoft Copilot",
                 "url": "https://admin.microsoft.com/sharepoint",
             },
         ],

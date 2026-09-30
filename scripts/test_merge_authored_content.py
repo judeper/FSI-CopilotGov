@@ -361,6 +361,10 @@ def test_36_sector_yes_bar_force_replace_is_pinned():
     assert "sectorYesBar" in merger._CONTROL_FORCE_REPLACE_FIELDS["3.6"]
 
 
+def test_14_verify_in_force_replace_is_pinned():
+    assert "verifyIn" in merger._CONTROL_FORCE_REPLACE_FIELDS["1.4"]
+
+
 # ── issue #255 / PR #356 content invariants (authored source + manifest) ────
 
 

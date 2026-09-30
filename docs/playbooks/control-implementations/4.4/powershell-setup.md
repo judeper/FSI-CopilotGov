@@ -17,35 +17,49 @@ Connect-MgGraph -Scopes "Organization.ReadWrite.All", "AuditLog.Read.All", "User
 
 ## Scripts
 
-### Script 1: Copilot Chat Analytics — Department Usage Report
+### Script 1: Copilot Chat Activity Summary for Licensed Users
 
 ```powershell
-# Report Copilot Chat usage aggregated by department from Viva Insights data
+# Report Copilot Chat activity from the Microsoft 365 Copilot usage-detail CSV.
+# This report includes only Microsoft 365 Copilot-licensed users.
+# Department isn't included in the v1 usage-detail columns; for a department
+# view, join these rows to Get-MgUser -Property Department separately.
 # Requires: Microsoft Graph Scopes — Reports.Read.All, Organization.Read.All
 # Note: Viva Insights Copilot Chat analytics respect configured minimum group size thresholds
 
 # Retrieve Copilot Chat usage detail (aggregated at tenant level)
-$reportUri = "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUsageUserDetail(period='D30')"
+# Use report version v1 so the CSV header remains "Copilot Chat Last Activity Date".
+$reportUri = "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D30',version='v1')"
 Invoke-MgGraphRequest -Method GET -Uri $reportUri -OutputFilePath "CopilotChatUsage_$(Get-Date -Format 'yyyyMMdd').csv"
 
-$usageData = Import-Csv "CopilotChatUsage_$(Get-Date -Format 'yyyyMMdd').csv"
+$usageData = @(Import-Csv "CopilotChatUsage_$(Get-Date -Format 'yyyyMMdd').csv")
+$copilotChatActivityColumn = 'Copilot Chat Last Activity Date'
 
-# Summarize Copilot Chat activity by department
-$deptSummary = $usageData | Group-Object Department | ForEach-Object {
-    $activeUsers = ($_.Group | Where-Object { $_.'Microsoft 365 Copilot Chat Last Activity Date' -ne '' }).Count
-    $totalLicensed = $_.Count
-    [PSCustomObject]@{
-        Department              = if ($_.Name) { $_.Name } else { "Unassigned" }
-        LicensedUsers           = $totalLicensed
-        ActiveCopilotChatUsers  = $activeUsers
-        AdoptionRate            = if ($totalLicensed -gt 0) { "$([math]::Round($activeUsers / $totalLicensed * 100, 1))%" } else { "N/A" }
-    }
-} | Sort-Object AdoptionRate -Descending
+if (-not $usageData -or $usageData.Count -eq 0) {
+    throw "The Copilot usage report returned zero rows. Verify that Microsoft 365 Copilot-licensed users have activity in the selected period."
+}
 
-Write-Host "Copilot Chat Analytics — Department Adoption Summary (Last 30 Days):" -ForegroundColor Cyan
-$deptSummary | Format-Table -AutoSize
-$deptSummary | Export-Csv "CopilotChatAdoption_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
-Write-Host "Note: Departments below the configured minimum group size threshold appear with suppressed data in the Viva Insights portal." -ForegroundColor Yellow
+if (-not ($usageData[0].PSObject.Properties.Name -contains $copilotChatActivityColumn)) {
+    $availableHeaders = $usageData[0].PSObject.Properties.Name -join ", "
+    throw "Expected CSV header '$copilotChatActivityColumn' was not found. Available headers: $availableHeaders"
+}
+
+$activeUsers = @($usageData | Where-Object {
+    $_.$copilotChatActivityColumn -and $_.$copilotChatActivityColumn -ne ''
+}).Count
+$totalLicensed = @($usageData).Count
+
+$summary = [PSCustomObject]@{
+    ReportScope             = "Microsoft 365 Copilot-licensed users"
+    LicensedUsers           = $totalLicensed
+    ActiveCopilotChatUsers  = $activeUsers
+    AdoptionRate            = if ($totalLicensed -gt 0) { "$([math]::Round($activeUsers / $totalLicensed * 100, 1))%" } else { "N/A" }
+}
+
+Write-Host "Copilot Chat Activity Summary (Last 30 Days):" -ForegroundColor Cyan
+$summary | Format-Table -AutoSize
+$summary | Export-Csv "CopilotChatActivitySummary_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
+Write-Host "Note: The Graph usage-detail API returns Microsoft 365 Copilot-licensed users only. Join to Microsoft Graph user profiles if you need department-level reporting." -ForegroundColor Yellow
 ```
 
 ### Script 2: Configure Copilot Chat Analytics Reporting Scope and Privacy Thresholds
@@ -69,7 +83,7 @@ Write-Host ""
 
 # Check Copilot Chat usage report availability
 try {
-    $testUri = "https://graph.microsoft.com/v1.0/reports/getMicrosoft365CopilotUsageUserDetail(period='D7')"
+    $testUri = "https://graph.microsoft.com/v1.0/copilot/reports/getMicrosoft365CopilotUsageUserDetail(period='D7',version='v1')"
     Invoke-MgGraphRequest -Method GET -Uri $testUri -OutputFilePath "$env:TEMP\CopilotTest.csv"
     $testData = Import-Csv "$env:TEMP\CopilotTest.csv"
     Write-Host "Copilot Chat usage reporting: ACTIVE ($($testData.Count) records in past 7 days)" -ForegroundColor Green
