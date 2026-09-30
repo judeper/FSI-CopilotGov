@@ -446,9 +446,19 @@ AUTHORED: dict[str, dict] = {
                 "Labels cover MNPI, research, and client-confidential tiers; "
                 "reviewed by supervisory principal for FINRA WSP alignment."
             ),
+            investment_adviser=(
+                "Labels cover client portfolio and advisory records; "
+                "auto-labeling and DLP rules map those labels to client NPI "
+                "controls under SEC Reg S-P."
+            ),
             insurance_carrier=(
                 "Labels cover PHI and PII tiers; HIPAA alignment verified "
                 "with privacy officer."
+            ),
+            credit_union=(
+                "Labels cover member NPI categories; auto-labeling and DLP "
+                "rules map those labels to member-information safeguards "
+                "under NCUA Part 748."
             ),
         ),
         "facilitatorNotes": {
@@ -1486,6 +1496,22 @@ AUTHORED: dict[str, dict] = {
                 "Grounding scope respects information barriers; research and "
                 "MNPI sites excluded unless IB-validated."
             ),
+            investment_adviser=(
+                "Org-wide discovery is limited for client portfolio and "
+                "private fund sites pending permissions review; Restricted "
+                "Content Discovery is documented for client NPI under SEC "
+                "Reg S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, org-wide discovery is limited for PHI "
+                "repositories pending access review; Restricted Content "
+                "Discovery supports minimum-necessary use."
+            ),
+            credit_union=(
+                "Org-wide discovery is limited for member-information sites "
+                "pending access review; Restricted Content Discovery is "
+                "documented under NCUA Part 748 safeguards."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -1553,6 +1579,21 @@ AUTHORED: dict[str, dict] = {
                 "Web search disabled for registered representatives by "
                 "default; enabled only with supervisory approval and DLP "
                 "MNPI SIT restriction."
+            ),
+            investment_adviser=(
+                "Web search is disabled or group-scoped for users handling "
+                "client NPI, and DLP web-search blocking covers advisory-"
+                "account SITs under SEC Reg S-P."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, web search is disabled or group-scoped "
+                "for users handling PHI, and DLP web-search blocking covers "
+                "PHI/PII prompts to support minimum-necessary use."
+            ),
+            credit_union=(
+                "Web search is disabled or group-scoped for users handling "
+                "member information, and DLP web-search blocking covers "
+                "member-identifier SITs under NCUA Part 748."
             ),
         ),
         "facilitatorNotes": {
@@ -1726,6 +1767,15 @@ AUTHORED: dict[str, dict] = {
                 "A current manual evidence pack records negotiated TLS results "
                 "and the applicable multi-workload Customer Key DEP and "
                 "key-management review for Copilot data flows."
+            ),
+            credit_union=(
+                "A current manual evidence pack records negotiated TLS "
+                "results and encryption controls for electronic member "
+                "information (including the multi-workload Customer Key "
+                "data encryption policy and key-management evidence where "
+                "deployed), supporting the credit union's risk-based "
+                "encryption determination under 12 CFR part 748, "
+                "Appendix A, III.C.1(c)."
             ),
         ),
         "facilitatorNotes": {
@@ -2004,6 +2054,23 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "External sharing restricted per SEC Reg S-P; guest "
                 "access reviews conducted monthly."
+            ),
+            investment_adviser=(
+                "External sharing is disabled or restricted to named, "
+                "approved guests for client-record sites, and guest access "
+                "is recertified through access reviews to support SEC Reg "
+                "S-P safeguards for client information."
+            ),
+            insurance_carrier=(
+                "Where HIPAA applies, external sharing for PHI sites is "
+                "disabled or restricted to named guests, and guest access is "
+                "recertified with expiration and review controls."
+            ),
+            credit_union=(
+                "External sharing is disabled or restricted to named, "
+                "approved guests for member-information sites, and guest "
+                "access is recertified through access reviews under NCUA "
+                "Part 748 safeguards."
             ),
         ),
         "facilitatorNotes": {
