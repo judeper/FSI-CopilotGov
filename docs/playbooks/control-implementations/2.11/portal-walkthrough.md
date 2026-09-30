@@ -26,7 +26,7 @@ Step-by-step portal configuration for governing Copilot Pages and Copilot Notebo
 **Portal:** Microsoft 365 Cloud Policy service  
 **Path:** `https://config.office.com` > **Customization** > **Policy Management**
 
-1. Review **Enable code previews for AI-generated content in Microsoft 365 Copilot Chat and Copilot Pages**.
+1. Review **Enable code previews for AI-generated content in Microsoft Copilot Chat and Copilot Pages**.
 2. Disable it unless the business case is documented and approved.
 3. If enabled, document which teams are allowed to use the feature.
 
@@ -44,7 +44,7 @@ Step-by-step portal configuration for governing Copilot Pages and Copilot Notebo
 
 ### Step 4: Validate Sharing and Collaboration Posture
 
-**Portal:** Microsoft 365 Copilot app, Loop app, SharePoint Admin Center
+**Portal:** Microsoft Copilot app, Loop app, SharePoint Admin Center
 
 1. Create a test Page with an approved pilot account.
 2. Confirm the default sharing behavior aligns with the firm's approved model.
