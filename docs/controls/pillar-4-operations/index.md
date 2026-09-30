@@ -114,7 +114,7 @@ Phase 4: Optimization and Lifecycle (Week 7-8)
 - Control 4.12 (Change Management) should be established before broad Copilot deployment to capture feature changes from the start.
 - Control 4.13 (Extensibility Governance) builds on Control 1.13 (Extensibility Readiness) and Control 2.13 (Plugin Security).
 - Control 4.14 (Copilot Studio Agent Lifecycle) complements Control 4.13 with Studio-specific lifecycle governance and depends on Control 1.10 (Vendor Risk Management) for intake clearance.
-- Control 4.16 (Microsoft Scout Governance) governs a Frontier-preview endpoint agentic capability with a mixed data-protection boundary (some inference and local artifacts outside the M365 DPA); it depends on Control 1.9 (License Planning) for the GitHub Copilot Business/Enterprise entitlement gate, Control 1.10 (Vendor Risk Management) for the third-party inference boundary, Control 2.13 (Plugin/Connector Security) and Control 2.16 (MCP Governance) for MCP-server intake, and Control 4.13 (Extensibility Governance) for skills, subagents, and MCP as extensibility surfaces.
+- Control 4.16 (Microsoft Scout Governance) governs a Frontier-preview endpoint agentic capability with a mixed data-protection boundary (some inference and local artifacts outside the M365 DPA); it depends on Control 1.9 (License Planning) for the GitHub Copilot Business/Enterprise entitlement gate, Control 1.10 (Vendor Risk Management) for the third-party inference boundary, Control 2.13 (Plugin/Connector Security) and Control 2.16 (Federated Connector Governance) for related external-integration review, and Control 4.13 (Extensibility Governance) for skills, subagents, and tool servers as extensibility surfaces.
 
 ### Cross-Pillar Dependencies
 
@@ -128,7 +128,7 @@ Phase 4: Optimization and Lifecycle (Week 7-8)
 | 4.13 Extensibility | 1.13 Readiness, 2.13 Security | Lifecycle governance builds on readiness and security assessment |
 | 4.14 Copilot Studio | 1.10 Vendor Risk, 4.13 Extensibility | Studio lifecycle complements extensibility governance |
 | 4.15 Copilot Cowork | 1.10 Vendor Risk, 4.13 Extensibility | Generally available agentic capability governed alongside extensibility and vendor-risk intake |
-| 4.16 Microsoft Scout | 1.9 License, 1.10 Vendor Risk, 2.13 Plugin/Connector, 2.16 MCP, 4.13 Extensibility | Endpoint agentic preview whose gates and MCP intake compose across extensibility, MCP, and third-party inference controls |
+| 4.16 Microsoft Scout | 1.9 License, 1.10 Vendor Risk, 2.13 Plugin/Connector, 2.16 Federated Connector, 4.13 Extensibility | Endpoint agentic preview whose gates and tool-server intake compose across extensibility, related federated-connector review, and third-party inference controls |
 
 ---
 

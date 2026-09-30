@@ -1,6 +1,6 @@
-# Control 2.13: Plugin and Graph Connector Security — PowerShell Setup
+# Control 2.13: Plugin and Copilot Connector Security — PowerShell Setup
 
-Automation scripts for managing plugin and Graph connector security.
+Automation scripts for managing plugin and Copilot connector security.
 
 ## Prerequisites
 
@@ -34,7 +34,7 @@ Get-AdminAuditLogConfig | Select-Object UnifiedAuditLogIngestionEnabled
 # Audit delegated OAuth grants for candidate plugin and agent service principals.
 # Reconcile this best-effort result with the Agent Registry and Agent Tools inventory.
 Import-Module Microsoft.Graph.Applications
-Connect-MgGraph -Scopes "Application.Read.All","Directory.Read.All"
+Connect-MgGraph -Scopes "Directory.Read.All"
 
 $apps = Get-MgServicePrincipal -All -Property "id,displayName,appId,tags,oauth2PermissionScopes,appRoles"
 $copilotApps = $apps | Where-Object {
@@ -62,10 +62,12 @@ $appReport | Format-Table Name, PermCount -AutoSize
 $appReport | Export-Csv "PluginPermissions_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
 ```
 
-### Script 2: Graph Connector Security Audit
+Script 1 requests `Directory.Read.All` because `Get-MgServicePrincipalOauth2PermissionGrant` requires it; `Application.Read.All` is sufficient for `Get-MgServicePrincipal` alone but not for enumerating delegated OAuth grants on the service principal.
+
+### Script 2: Copilot Connector Security Audit
 
 ```powershell
-# Audit Graph connector configurations and access controls
+# Audit Copilot connector configurations and access controls
 Import-Module Microsoft.Graph.Search
 Connect-MgGraph -Scopes "ExternalConnection.Read.All"
 
@@ -81,7 +83,7 @@ foreach ($conn in $connectors) {
     }
 }
 
-Write-Host "=== Graph Connector Security Audit ==="
+Write-Host "=== Copilot Connector Security Audit ==="
 Write-Host "Active connectors: $($connReport.Count)"
 $connReport | Format-Table Name, State -AutoSize
 $connReport | Export-Csv "ConnectorSecurity_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation
