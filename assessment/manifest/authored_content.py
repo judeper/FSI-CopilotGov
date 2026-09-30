@@ -1470,21 +1470,20 @@ AUTHORED: dict[str, dict] = {
                 "MNPI sites excluded unless IB-validated."
             ),
             investment_adviser=(
-                "Grounding scope excludes client portfolio and private fund "
-                "sites pending permissions review; Restricted Content "
-                "Discovery or equivalent scoping is documented for client "
-                "NPI under SEC Reg S-P."
+                "Org-wide discovery is limited for client portfolio and "
+                "private fund sites pending permissions review; Restricted "
+                "Content Discovery is documented for client NPI under SEC "
+                "Reg S-P."
             ),
             insurance_carrier=(
-                "Where HIPAA applies, grounding scope excludes PHI "
+                "Where HIPAA applies, org-wide discovery is limited for PHI "
                 "repositories pending access review; Restricted Content "
-                "Discovery or equivalent scoping supports minimum-necessary "
-                "use."
+                "Discovery supports minimum-necessary use."
             ),
             credit_union=(
-                "Grounding scope excludes member-information sites pending "
-                "access review; Restricted Content Discovery or equivalent "
-                "scoping is documented under NCUA Part 748 safeguards."
+                "Org-wide discovery is limited for member-information sites "
+                "pending access review; Restricted Content Discovery is "
+                "documented under NCUA Part 748 safeguards."
             ),
         ),
         "facilitatorNotes": {
@@ -1745,8 +1744,11 @@ AUTHORED: dict[str, dict] = {
             credit_union=(
                 "A current manual evidence pack records negotiated TLS "
                 "results and encryption controls for electronic member "
-                "information, including applicable MDEP and key-management "
-                "evidence, per NCUA Part 748."
+                "information (including the multi-workload Customer Key "
+                "data encryption policy and key-management evidence where "
+                "deployed), supporting the credit union's risk-based "
+                "encryption determination under 12 CFR part 748, "
+                "Appendix A, III.C.1(c)."
             ),
         ),
         "facilitatorNotes": {
@@ -2027,9 +2029,10 @@ AUTHORED: dict[str, dict] = {
                 "access reviews conducted monthly."
             ),
             investment_adviser=(
-                "External sharing is disabled for client-record sites, and "
-                "guest access is recertified through access reviews to "
-                "support SEC Reg S-P safeguards for client information."
+                "External sharing is disabled or restricted to named, "
+                "approved guests for client-record sites, and guest access "
+                "is recertified through access reviews to support SEC Reg "
+                "S-P safeguards for client information."
             ),
             insurance_carrier=(
                 "Where HIPAA applies, external sharing for PHI sites is "
@@ -2037,9 +2040,10 @@ AUTHORED: dict[str, dict] = {
                 "recertified with expiration and review controls."
             ),
             credit_union=(
-                "External sharing is disabled for member-information sites, "
-                "and guest access is recertified through access reviews "
-                "under NCUA Part 748 safeguards."
+                "External sharing is disabled or restricted to named, "
+                "approved guests for member-information sites, and guest "
+                "access is recertified through access reviews under NCUA "
+                "Part 748 safeguards."
             ),
         ),
         "facilitatorNotes": {
