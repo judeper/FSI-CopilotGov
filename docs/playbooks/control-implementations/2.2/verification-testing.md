@@ -49,9 +49,10 @@ Test cases and evidence collection for validating sensitivity label enforcement 
   4. Create a second test document matching only part of the nested condition (e.g., CUSIP pattern only, no earnings keyword) and verify the label is NOT applied
   5. Create a third test document that would match conditions but is in an excluded folder (NOT condition) and verify the label is NOT applied
   6. **Override test:** Confirm the policy's **Additional label settings** page is set to **All locations**. Manually apply a lower-priority label (e.g., "Internal — General") to a file that matches auto-labeling conditions. Verify the auto-labeling policy replaces the manual label with the higher-priority label
-  7. **Negative override test:** Manually apply a *higher*-priority label to a matching file and verify the auto-labeling policy does not downgrade it
+  7. Turn the policy on and review **Coverage by simulation context** plus the policy's **Labeled items** and **Failed** views to confirm the expected files were labeled and to capture any failures
+  8. **Negative override test:** Manually apply a *higher*-priority label to a matching file and verify the auto-labeling policy does not downgrade it
 - **Expected Result:** Nested auto-labeling conditions correctly apply and withhold labels based on combined condition logic; auto-labeling replaces manually applied lower-priority labels on files when **All locations** is configured, and leaves higher-priority manual labels intact
-- **Evidence:** Screenshots of labeled and unlabeled test documents with condition logic documentation, including both override scenarios
+- **Evidence:** Simulation results, Coverage by simulation context output, and screenshots of labeled and unlabeled test documents with condition logic documentation, including both override scenarios
 
 ### Test 4a: Default Labeling for Meetings and Calendar Events
 
@@ -75,6 +76,18 @@ Test cases and evidence collection for validating sensitivity label enforcement 
   4. Repeat across Word, Excel, and PowerPoint
 - **Expected Result:** Default sensitivity label applied to all new Copilot content
 - **Evidence:** Screenshots of new documents with default labels
+
+### Test 5a: SharePoint Library Default Label Applied to Existing Files
+
+- **Objective:** Where the tenant uses SharePoint document-library default labels, verify the dedicated auto-labeling policy applies the library default to eligible files that already existed in the library
+- **Steps:**
+  1. Configure a SharePoint document library with a default sensitivity label and confirm the library contains older unlabeled files that predate that configuration
+  2. Create the dedicated auto-labeling policy that applies default sensitivity labels from SharePoint document libraries to existing files, and scope it to the target site
+  3. Run the policy in simulation mode and confirm the expected site, library, default label, and files appear
+  4. Turn the policy on and review **Coverage by simulation context** plus the policy's **Labeled items** and **Failed** views
+  5. Confirm eligible files receive the library's default sensitivity label and document any unsupported, open, or unavailable files that remain unlabeled
+- **Expected Result:** Eligible existing files in scoped libraries receive the library default label through the dedicated policy; unsupported or unavailable files are surfaced for follow-up
+- **Evidence:** Library settings screenshot, simulation results, Coverage by simulation context output, and labeled-item evidence after enforcement
 
 ### Test 6: Mandatory Labeling Enforcement
 

@@ -21,7 +21,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Collaboration** | SharePoint, OneDrive, Planner, Stream | Data discovery amplification, sharing | 1.1, 1.2, 4.8 |
 | **Intelligence** | Viva Insights, Viva Engage, Viva Learning, Viva Pulse, Viva Goals | Employee data analysis, behavioral insights | 3.10, 4.3 |
 | **AI-Native** | Microsoft 365 Copilot Chat, Copilot Pages | Cross-tenant data retrieval, new content surfaces | 1.4, 3.2, 4.8 |
-| **Extensibility** | Plugins, Graph connectors, declarative agents | Extended data reach, external data flow | 2.8, 4.10 |
+| **Extensibility** | Plugins, Graph connectors, declarative agents | Extended data reach, external data flow | 2.13, 2.14, 2.16, 4.13 |
 
 ---
 
@@ -325,7 +325,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Copilot Capabilities** | Extend Copilot with third-party integrations (e.g., ServiceNow, Salesforce, Jira) via message extensions and API plugins |
 | **Data Sources** | External systems accessed by the plugin |
 | **Governance Considerations** | Plugins send data to and receive data from external services. Each plugin represents a potential data exfiltration path. Plugin data is not subject to M365 DLP policies at the plugin boundary. Organizations must evaluate each plugin for data classification, authentication, and audit requirements. |
-| **Key Controls** | 2.8 (Plugin governance), 3.1 (Audit logging), 2.1 (DLP) |
+| **Key Controls** | 2.13 (Plugin and connector governance), 3.1 (Audit logging), 2.1 (DLP) |
 
 ### Graph Connectors
 
@@ -334,7 +334,7 @@ This document catalogs every Copilot surface, the data it accesses, and the gove
 | **Copilot Capabilities** | Extend Copilot's knowledge base with content from external systems ingested into Microsoft Graph |
 | **Data Sources** | External data ingested via connectors (file shares, databases, third-party SaaS) |
 | **Governance Considerations** | Ingested data becomes part of Copilot's grounding corpus. ACL (access control list) mapping must accurately reflect source system permissions. Misconfigured ACLs can expose external data to unauthorized users via Copilot. Sensitivity labels should be applied to ingested content. |
-| **Key Controls** | 2.8 (Connector governance), 2.2 (Sensitivity labels), 1.1 (Access assessment) |
+| **Key Controls** | 2.13 (Connector governance), 2.2 (Sensitivity labels), 1.1 (Access assessment) |
 
 ### Declarative Agents from SharePoint
 

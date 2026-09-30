@@ -284,7 +284,11 @@ Use the current DSPM for AI overview as the primary reference; the classic AI hu
 | Topic | URL |
 |-------|-----|
 | Microsoft Sentinel overview | [https://learn.microsoft.com/en-us/azure/sentinel/overview](https://learn.microsoft.com/en-us/azure/sentinel/overview) |
+| Microsoft Sentinel in the Microsoft Defender portal | [https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal](https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal) |
+| Transition Microsoft Sentinel to the Defender portal | [https://learn.microsoft.com/en-us/azure/sentinel/move-to-defender](https://learn.microsoft.com/en-us/azure/sentinel/move-to-defender) |
 | Connect Microsoft 365 data | [https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365](https://learn.microsoft.com/en-us/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365) |
+| CopilotActivity table reference | [https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/copilotactivity](https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/copilotactivity) |
+| Manage data tiers and retention | [https://learn.microsoft.com/en-us/azure/sentinel/manage-data-overview](https://learn.microsoft.com/en-us/azure/sentinel/manage-data-overview) |
 | Create analytics rules | [https://learn.microsoft.com/en-us/azure/sentinel/create-analytics-rules](https://learn.microsoft.com/en-us/azure/sentinel/create-analytics-rules) |
 | Create workbooks | [https://learn.microsoft.com/en-us/azure/sentinel/monitor-your-data](https://learn.microsoft.com/en-us/azure/sentinel/monitor-your-data) |
 
