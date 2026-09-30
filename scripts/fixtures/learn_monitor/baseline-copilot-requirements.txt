@@ -1,0 +1,53 @@
+Table of contents
+Exit editor mode
+Ask Learn
+Ask Learn
+Reading mode
+Table of contents
+Read in English
+Add
+Add to Plans
+Edit
+Copy Markdown
+Print
+Note
+Access to this page requires authorization. You can try
+signing in
+or
+changing directories
+.
+Access to this page requires authorization. You can try
+changing directories
+.
+Microsoft 365 app and network requirements for Microsoft Copilot
+Feedback
+Summarize this article for me
+Important
+Microsoft 365 Copilot is now named Microsoft Copilot, and Microsoft 365 Copilot Chat is now named Microsoft Copilot Chat. The primary URL for accessing the updated Copilot app will be
+copilot.cloud.microsoft
+. To help ensure users' connections aren't blocked, see
+Recommended actions
+(in this article).
+Microsoft Copilot
+is an AI-powered productivity tool that integrates with Microsoft 365 Apps. This integration allows users to use Copilot in individual apps, such as Word, PowerPoint, Teams, Excel, Outlook, and more. The Copilot experiences are designed to provide users with an AI assistant in the apps they use every day.
+As a result of this integration, there are some app and network requirements for Microsoft Copilot to integrate with your Microsoft 365 apps. These requirements are nearly identical to the requirements for using Microsoft 365 Apps.
+As part of your
+Microsoft Copilot adoption
+, make sure you configure the app and network requirements that allow the app integration.
+This article lists the Microsoft 365 app and network requirements to use Microsoft Copilot in your Microsoft 365 apps.
+This article applies to:
+Microsoft Copilot
+Prerequisites
+Users must have a Microsoft 365 license assigned to them. You can find the list of eligible base licenses in
+Microsoft Copilot license options
+or in the
+Microsoft 365 Copilot service description guide
+.
+Users must have
+Microsoft Entra ID
+accounts. You can add or sync users by using the
+onboarding wizard in the Microsoft 365 admin center
+.
+Microsoft Copilot supports primary mailboxes that are hosted on Exchange Online. It's also available on users' archive mailboxes and shared and delegate mailboxes that they have access to.
+Note
+Chat experiences in Word, Excel, and PowerPoint vary dependi

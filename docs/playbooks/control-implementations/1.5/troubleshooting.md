@@ -18,13 +18,14 @@ Common issues and resolution steps for sensitivity label taxonomy management.
 ### Issue 2: Auto-Labeling Not Applying Labels
 
 - **Symptoms:** Auto-labeling policies are configured but documents are not being labeled automatically
-- **Root Cause:** Policies may still be in simulation mode, the sensitive information type patterns may not match the content, or the policy scope may exclude the relevant locations.
+- **Root Cause:** Policies may still be in simulation mode, simulation might have completed for a single policy while overlapping active policies change the enforced result, the sensitive information type patterns may not match the content, the files may predate the relevant SIT definitions, or the policy scope may exclude the relevant locations.
 - **Resolution:**
   1. Check policy mode: `Get-AutoSensitivityLabelPolicy -Identity <name>` — confirm Mode is "Enable"
-  2. Review simulation results to verify the policy matches expected content
-  3. Verify sensitive information type definitions match your data patterns
-  4. Confirm the policy scope includes the SharePoint sites and OneDrive locations where content resides
-  5. Check for conflicting policies that may override auto-labeling
+  2. Review the completed simulation and then, after enforcement, inspect **Coverage by simulation context** to compare what simulation found versus what enforcement labeled
+  3. Open the policy's **Labeled items** tab and switch to the **Failed** view to identify files the service could not label
+  4. Verify sensitive information type definitions match your data patterns and confirm the files were created or modified after the SIT definitions were created or changed
+  5. Confirm the policy scope includes the SharePoint sites and OneDrive locations where content resides
+  6. Check for conflicting policies that may override auto-labeling
 
 ### Issue 3: Label Priority Conflicts
 
@@ -47,14 +48,14 @@ Common issues and resolution steps for sensitivity label taxonomy management.
   4. If Edge DLP is not deployed, test active encrypted browser-tab behavior; test external plugin/Graph connector sources separately.
   5. If the organization intends a Copilot exclusion, validate the appropriate DLP, DKE, or connected-experience control rather than relying on an untested label outcome.
 
-### Issue 5: Sub-Labels Not Displaying Correctly
+### Issue 5: Label Groups or Legacy Sublabels Not Displaying Correctly
 
-- **Symptoms:** Sub-labels appear as standalone labels or do not show under the correct parent label
-- **Root Cause:** Sub-label parent assignment may be incorrect, or the label policy may publish the sub-label but not the parent label.
+- **Symptoms:** Labels appear as standalone labels unexpectedly, or legacy sublabels do not show under the expected parent/grouping
+- **Root Cause:** The tenant may still be on the legacy parent/child model, the parent label or label group transition may not be complete, or the label policy may publish the child label without the required parent container.
 - **Resolution:**
-  1. Verify parent-child relationship: `Get-Label | Where-Object ParentId -ne $null`
-  2. Confirm both parent and child labels are included in the same label policy
-  3. Check that the parent label is not disabled while the child label is enabled
+  1. Verify whether the tenant is using legacy parent labels or the modern label-group scheme: `Get-Label | Select-Object DisplayName, ParentId, IsParent`
+  2. If still on the legacy model, confirm both parent and child labels are included in the same label policy
+  3. If the tenant is migrating, verify the **Migrate to the modern label scheme** workflow has completed and that any replacement sublabel created during migration is published as intended
   4. Force a client-side policy refresh and restart the Office application
 
 ## Diagnostic Steps

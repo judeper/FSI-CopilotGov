@@ -1,0 +1,737 @@
+<main class="layout-body-main" data-bi-name="content" dir="ltr" id="main" lang="en-us" role="main">
+ <div class="content-header default-focus border-bottom-none" data-bi-name="content-header" id="ms--content-header">
+  <div class="content-header-controls margin-xxs margin-inline-sm-tablet">
+   <button aria-haspopup="true" class="contents-button button button-sm margin-right-xxs" data-bi-name="contents-expand" data-contents-button="" type="button">
+    <span aria-hidden="true" class="icon">
+     <span class="docon docon-menu">
+     </span>
+    </span>
+    <span class="contents-expand-title">
+     Table of contents
+    </span>
+   </button>
+   <button aria-controls="action-panel" class="ap-collapse-behavior ap-expanded button button-sm" data-bi-name="ap-collapse" type="button">
+    <span aria-hidden="true" class="icon">
+     <span class="docon docon-exit-mode">
+     </span>
+    </span>
+    <span>
+     Exit editor mode
+    </span>
+   </button>
+  </div>
+ </div>
+ <div aria-label="Action Panel" class="action-panel" id="action-panel" role="region" tabindex="-1">
+ </div>
+ <div class="reading-width margin-inline-auto layout-padding padding-top-none padding-top-sm-tablet padding-bottom-sm" data-main-column="">
+  <div>
+   <div class="background-color-body margin-bottom-xs display-none-print" id="article-header">
+    <div class="display-flex align-items-center justify-content-space-between">
+     <details class="popover popover-left" data-for="article-header-breadcrumbs" id="article-header-breadcrumbs-overflow-popover">
+      <summary aria-label="All breadcrumbs" class="button button-clear button-primary button-sm inner-focus">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-more">
+        </span>
+       </span>
+      </summary>
+      <div class="popover-content" id="article-header-breadcrumbs-overflow">
+      </div>
+     </details>
+     <bread-crumbs aria-label="Breadcrumbs" class="overflow-hidden flex-grow-1 margin-right-sm margin-right-md-tablet margin-right-lg-desktop margin-left-negative-xxs padding-left-xxs" data-test-id="article-header-breadcrumbs" id="article-header-breadcrumbs" role="group">
+     </bread-crumbs>
+     <div class="opacity-none margin-left-auto display-flex flex-wrap-no-wrap align-items-stretch" id="article-header-page-actions">
+      <button aria-expanded="false" aria-label="Ask Learn" class="button button-sm border-none inner-focus display-none-tablet flex-shrink-0" data-ask-learn-modal-entry="" data-bi-name="ask-learn-assistant-entry" data-test-id="ask-learn-assistant-modal-entry-mobile" hidden="" style="min-width: max-content;" type="button">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+        </span>
+       </span>
+      </button>
+      <button aria-expanded="false" class="button button-sm display-none display-inline-flex-tablet display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn" data-ask-learn-modal-entry="" data-bi-name="ask-learn-assistant-entry" data-test-id="ask-learn-assistant-modal-entry-tablet" hidden="" style="min-width: max-content;" type="button">
+       <span aria-hidden="true" class="icon font-size-lg">
+        <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+        </span>
+       </span>
+       <span>
+        Ask Learn
+       </span>
+      </button>
+      <button aria-controls="ask-learn-flyout" aria-expanded="false" class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn" data-ask-learn-flyout-entry="" data-bi-name="ask-learn-assistant-entry" data-flyout-button="toggle" data-test-id="ask-learn-assistant-flyout-entry" hidden="" style="min-width: max-content;" type="button">
+       <span aria-hidden="true" class="icon font-size-lg">
+        <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+        </span>
+       </span>
+       <span>
+        Ask Learn
+       </span>
+      </button>
+      <details class="popover popover-right" id="article-header-page-actions-overflow">
+       <summary aria-label="More actions" class="justify-content-flex-start button button-clear button-sm button-primary inner-focus" title="More actions">
+        <span aria-hidden="true" class="icon">
+         <span class="docon docon-more-vertical">
+         </span>
+        </span>
+       </summary>
+       <div class="popover-content">
+        <button class="button button-clear button-sm button-block justify-content-flex-start text-align-left inner-focus display-none display-inline-flex-tablet" data-bi-name="focus-mode-entry" data-focus-mode="" data-page-action-item="overflow-all" data-popover-close="" id="ms--focus-mode-button" type="button">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-glasses">
+          </span>
+         </span>
+         <span>
+          Reading mode
+         </span>
+        </button>
+        <button class="display-block-layout-menu-collapsed button-block button-sm inner-focus button button-clear display-none-tablet justify-content-flex-start text-align-left" data-bi-name="contents-expand" data-contents-button="" data-page-action-item="overflow-mobile" data-popover-close="" type="button">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-editor-list-bullet">
+          </span>
+         </span>
+         <span class="contents-expand-title">
+          Table of contents
+         </span>
+        </button>
+        <a class="button-sm inner-focus button button-clear button-block justify-content-flex-start text-align-left" data-bi-name="language-toggle" data-check-hidden="true" data-page-action-item="overflow-all" data-read-in-link="" hidden="" href="#" id="lang-link-overflow">
+         <span aria-hidden="true" class="icon" data-read-in-link-icon="">
+          <span class="docon docon-locale-globe">
+          </span>
+         </span>
+         <span data-read-in-link-text="">
+          Read in English
+         </span>
+        </a>
+        <button class="collection button button-clear button-sm button-block justify-content-flex-start text-align-left inner-focus" data-bi-name="collection" data-check-hidden="true" data-list-type="collection" data-page-action-item="overflow-all" data-popover-close="" type="button">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-circle-addition">
+          </span>
+         </span>
+         <span class="collection-status">
+          Add
+         </span>
+        </button>
+        <button class="collection button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus" data-bi-name="plan" data-check-hidden="true" data-list-type="plan" data-page-action-item="overflow-all" data-popover-close="" hidden="" type="button">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-circle-addition">
+          </span>
+         </span>
+         <span class="plan-status">
+          Add to Plans
+         </span>
+        </button>
+        <a class="button button-clear button-block button-sm inner-focus justify-content-flex-start text-align-left text-decoration-none" data-bi-name="edit" data-check-hidden="true" data-contenteditbtn="" data-original_content_git_url="https://github.com/MicrosoftDocs/entra-docs-pr/blob/live/docs/identity/conditional-access/overview.md" data-original_content_git_url_template="{repo}/blob/{branch}/docs/identity/conditional-access/overview.md" data-page-action-item="overflow-all" data-pr_branch="" data-pr_repo="" href="https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/conditional-access/overview.md">
+         <span aria-hidden="true" class="icon">
+          <span class="docon docon-edit-outline">
+          </span>
+         </span>
+         <span>
+          Edit
+         </span>
+        </a>
+        <hr class="margin-block-xxs"/>
+        <button class="button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus" data-bi-name="copy-markdown" data-check-hidden="true" data-copy-markdown="" data-copy-state="idle" data-page-action-item="overflow-all" type="button">
+         <span aria-hidden="true" class="icon color-primary">
+          <span class="docon docon-code-lang" data-show-when="idle">
+          </span>
+          <span class="loader" data-show-when="loading" hidden="">
+          </span>
+          <span class="docon docon-check-mark" data-show-when="success" hidden="">
+          </span>
+         </span>
+         <span>
+          Copy Markdown
+         </span>
+        </button>
+        <button class="button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus" data-bi-name="print" data-check-hidden="true" data-page-action-item="overflow-all" data-popover-close="" data-print-page="" type="button">
+         <span aria-hidden="true" class="icon color-primary">
+          <span class="docon docon-print">
+          </span>
+         </span>
+         <span>
+          Print
+         </span>
+        </button>
+       </div>
+      </details>
+     </div>
+    </div>
+   </div>
+   <!-- privateUnauthorizedTemplate is hidden by default -->
+   <div data-bi-name="permission-content-unauthorized-private" hidden="" unauthorized-private-section="">
+    <hr class="hr margin-top-xs margin-bottom-sm"/>
+    <div class="notification notification-info">
+     <div class="notification-content">
+      <p class="margin-top-none notification-title">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-exclamation-circle-solid">
+        </span>
+       </span>
+       <span>
+        Note
+       </span>
+      </p>
+      <p class="margin-top-none authentication-determined not-authenticated">
+       Access to this page requires authorization. You can try
+       <a class="docs-sign-in" data-bi-name="permission-content-sign-in" href="#">
+        signing in
+       </a>
+       or
+       <a class="docs-change-directory" data-bi-name="permisson-content-change-directory">
+        changing directories
+       </a>
+       .
+      </p>
+      <p class="margin-top-none authentication-determined authenticated">
+       Access to this page requires authorization. You can try
+       <a class="docs-change-directory" data-bi-name="permisson-content-change-directory">
+        changing directories
+       </a>
+       .
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="content">
+    <h1 id="what-is-conditional-access">
+     What is Conditional Access?
+    </h1>
+   </div>
+   <div class="page-metadata-container display-flex gap-xxs justify-content-space-between align-items-center flex-wrap-wrap" data-bi-name="article-metadata" data-test-id="article-metadata" id="article-metadata">
+    <div class="margin-block-xxs display-none display-none-print" data-hide-on-archived="" hidden="" id="user-feedback">
+     <button class="button button-sm button-clear button-primary display-none" data-bi-name="user-feedback-button" data-test-id="conceptual-feedback-button" data-user-feedback-button="" hidden="" id="user-feedback-button" type="button">
+      <span aria-hidden="true" class="icon">
+       <span class="docon docon-like">
+       </span>
+      </span>
+      <span>
+       Feedback
+      </span>
+     </button>
+    </div>
+   </div>
+   <div class="display-none-print" data-id="ai-summary">
+    <div class="margin-top-xs display-flex align-items-center" id="ms--ai-summary-cta">
+     <span aria-hidden="true" class="icon">
+      <span class="docon docon-sparkle-fill gradient-text-vivid">
+      </span>
+     </span>
+     <button class="tag tag-sm tag-suggestion margin-left-xxs" data-an="ai-summary" data-bi-name="ai-summary-cta" data-test-id="ai-summary-cta" id="ms--ai-summary" type="button">
+      <span class="ai-summary-cta-text">
+       Summarize this article for me
+      </span>
+     </button>
+    </div>
+    <!-- Slot where the client will render the summary card after the user clicks the CTA -->
+    <div class="margin-top-xs" id="ms--ai-summary-header">
+    </div>
+   </div>
+   <nav aria-label="In this article" class="doc-outline display-none-desktop display-none-print margin-bottom-sm" data-bi-name="intopic toc" id="center-doc-outline">
+    <h2 class="title is-6 margin-block-xs" id="ms--in-this-article">
+     In this article
+    </h2>
+   </nav>
+   <div class="content">
+    <h2 id="overview">
+     Overview
+    </h2>
+    <p>
+     Modern security extends beyond an organization's network perimeter to include user and device identity. Organizations now use identity-driven signals as part of their access control decisions. Microsoft Entra Conditional Access brings signals together, to make decisions, and enforce organizational policies. Conditional Access is Microsoft's
+     <a data-linktype="absolute-path" href="/en-us/security/zero-trust/deploy/identity">
+      Zero Trust policy engine
+     </a>
+     taking signals from various sources into account when enforcing policy decisions.
+    </p>
+    <p>
+     <span class="mx-imgBorder">
+      <a data-linktype="relative-path" href="media/common-conditional-access-media/conditional-access-signal-decision-enforcement.png#lightbox">
+       <img alt="Diagram showing concept of Conditional Access signals plus decision to enforce organizational policy." data-linktype="relative-path" src="media/common-conditional-access-media/conditional-access-signal-decision-enforcement.png"/>
+      </a>
+     </span>
+    </p>
+    <p>
+     Conditional Access policies at their simplest are if-then statements:
+     <strong>
+      if
+     </strong>
+     a user wants to access a resource,
+     <strong>
+      then
+     </strong>
+     they must complete an action. For example: If a user wants to access an application or service like Microsoft 365, then they must perform multifactor authentication to gain access.
+    </p>
+    <p>
+     Admins are faced with two primary goals:
+    </p>
+    <ul>
+     <li>
+      Empower users to be productive wherever and whenever
+     </li>
+     <li>
+      Protect the organization's assets
+     </li>
+    </ul>
+    <p>
+     Use Conditional Access policies to apply the right access controls when needed to keep your organization secure and don't interfere with productivity.
+    </p>
+    <div class="IMPORTANT">
+     <p>
+      Important
+     </p>
+     <p>
+      Conditional Access policies are enforced after first-factor authentication is completed. Conditional Access isn't intended to be an organization's frontline defense for scenarios like denial-of-service (DoS) attacks, but it can use signals from these events to determine access.
+     </p>
+    </div>
+    <h2 id="common-signals">
+     Common signals
+    </h2>
+    <p>
+     Conditional Access uses signals from various sources to make access decisions.
+    </p>
+    <p>
+     <span class="mx-imgBorder">
+      <img alt="Diagram that shows Conditional Access as the Zero Trust policy engine aggregating signals from various sources." data-linktype="relative-path" src="media/overview/conditional-access-central-policy-engine-zero-trust.png"/>
+     </span>
+    </p>
+    <p>
+     Some of these signals include:
+    </p>
+    <ul>
+     <li>
+      <strong>
+       User, group, or agent
+      </strong>
+      <ul>
+       <li>
+        Policies can be targeted to specific users, groups, and agents (Preview) giving admins fine-grained control over access.
+       </li>
+       <li>
+        Support for agent identities and agent users extends Zero Trust principles to AI workloads.
+       </li>
+      </ul>
+     </li>
+     <li>
+      <strong>
+       IP location information
+      </strong>
+      <ul>
+       <li>
+        Organizations can create IP address ranges that can be used when making policy decisions.
+       </li>
+       <li>
+        Admins can specify entire countries/regions IP ranges to block or allow traffic from.
+       </li>
+      </ul>
+     </li>
+     <li>
+      <strong>
+       Device
+      </strong>
+      <ul>
+       <li>
+        Users with devices of specific platforms or marked with a specific state can be used when enforcing Conditional Access policies.
+       </li>
+       <li>
+        Use filters for devices to target policies to specific devices like privileged access workstations.
+       </li>
+      </ul>
+     </li>
+     <li>
+      <strong>
+       Application
+      </strong>
+      <ul>
+       <li>
+        Trigger different Conditional Access policies when users attempt to access specific applications.
+       </li>
+       <li>
+        Apply policies to traditional cloud apps, on-premises applications, and agent resources.
+       </li>
+      </ul>
+     </li>
+     <li>
+      <strong>
+       Real-time and calculated risk detection
+      </strong>
+      <ul>
+       <li>
+        Integrates signals from
+        <a data-linktype="relative-path" href="../../id-protection/overview-identity-protection">
+         Microsoft Entra ID Protection
+        </a>
+        to identify and remediate risky users, sign-in behavior, and agent activities.
+       </li>
+      </ul>
+     </li>
+     <li>
+      <strong>
+       <a data-linktype="absolute-path" href="/en-us/defender-cloud-apps/what-is-defender-for-cloud-apps">
+        Microsoft Defender for Cloud Apps
+       </a>
+      </strong>
+      <ul>
+       <li>
+        Monitors and controls user application access and sessions in real time. This integration improves visibility and control over access and activities in your cloud environment.
+       </li>
+      </ul>
+     </li>
+    </ul>
+    <h2 id="common-decisions">
+     Common decisions
+    </h2>
+    <ul>
+     <li>
+      Block access is the most restrictive decision.
+     </li>
+     <li>
+      Grant access
+     </li>
+     <li>
+      A less restrictive decision that might require one or more of the following options:
+      <ul>
+       <li>
+        Require multifactor authentication
+       </li>
+       <li>
+        Require authentication strength
+       </li>
+       <li>
+        Require the device to be marked as compliant
+       </li>
+       <li>
+        Require a Microsoft Entra hybrid joined device
+       </li>
+       <li>
+        Require an approved client app
+       </li>
+       <li>
+        Require an app protection policy
+       </li>
+       <li>
+        Require a password change
+       </li>
+       <li>
+        Require terms of use
+       </li>
+      </ul>
+     </li>
+    </ul>
+    <h2 id="commonly-applied-policies">
+     Commonly applied policies
+    </h2>
+    <p>
+     Many organizations have
+     <a data-linktype="relative-path" href="concept-conditional-access-policy-common">
+      common access concerns that Conditional Access policies can help with
+     </a>
+     , such as:
+    </p>
+    <ul>
+     <li>
+      Requiring multifactor authentication for users with administrative roles
+     </li>
+     <li>
+      Requiring multifactor authentication for Azure management tasks
+     </li>
+     <li>
+      Blocking sign-ins for users who try to use legacy authentication protocols
+     </li>
+     <li>
+      Requiring trusted locations for security information registration
+     </li>
+     <li>
+      Blocking or granting access from specific locations
+     </li>
+     <li>
+      Blocking risky sign-in behaviors
+     </li>
+     <li>
+      Requiring organization-managed devices for specific applications
+     </li>
+    </ul>
+    <p>
+     Admins can create policies from scratch or start with a template policy in the portal or by using the Microsoft Graph API.
+    </p>
+    <p>
+     <a name="admin-experience">
+     </a>
+    </p>
+    <h2 id="admin-experience">
+     Admin experience
+    </h2>
+    <p>
+     Admins with at least the
+     <a data-linktype="relative-path" href="../role-based-access-control/permissions-reference#security-reader">
+      Security Reader
+     </a>
+     role can find Conditional Access in the
+     <a data-linktype="external" href="https://entra.microsoft.com">
+      Microsoft Entra admin center
+     </a>
+     under
+     <strong>
+      Entra ID
+     </strong>
+     &gt;
+     <strong>
+      Conditional Access
+     </strong>
+     .
+    </p>
+    <ul>
+     <li>
+      <p>
+       The
+       <strong>
+        Overview
+       </strong>
+       page shows a summary of recent activity that relates to Conditional Access policies. Here you can see how many policies are enabled vs report-only, agent and user activity, applications, devices, and general security alerts with suggestions.
+       <span class="mx-imgBorder">
+        <a data-linktype="relative-path" href="media/overview/conditional-access-overview.png#lightbox">
+         <img alt="Screenshot of the Conditional Access overview page." data-linktype="relative-path" src="media/overview/conditional-access-overview.png"/>
+        </a>
+       </span>
+      </p>
+     </li>
+     <li>
+      <p>
+       The
+       <strong>
+        Coverage
+       </strong>
+       tab shows a summary of applications with and without Conditional Access policy coverage over the past seven days.
+       <span class="mx-imgBorder">
+        <a data-linktype="relative-path" href="media/overview/conditional-access-coverage-tab.png#lightbox">
+         <img alt="Screenshot of the Conditional Access coverage tab showing application policy coverage." data-linktype="relative-path" src="media/overview/conditional-access-coverage-tab.png"/>
+        </a>
+       </span>
+      </p>
+     </li>
+     <li>
+      <p>
+       The
+       <strong>
+        Policies
+       </strong>
+       page lists all of the polices in your tenant, including report-only policies and policies created by the Conditional Access Optimization Agent (if applicable). Options to filter, view "What if" scenarios, and create new policies are available here.
+       <span class="mx-imgBorder">
+        <a data-linktype="relative-path" href="media/overview/conditional-access-policies-list.png#lightbox">
+         <img alt="Screenshot of the Conditional Access policies list page." data-linktype="relative-path" src="media/overview/conditional-access-policies-list.png"/>
+        </a>
+       </span>
+      </p>
+     </li>
+    </ul>
+    <h3 id="conditional-access-optimization-agent">
+     Conditional Access Optimization Agent
+    </h3>
+    <p>
+     The
+     <a data-linktype="relative-path" href="../../security-copilot/conditional-access-agent-optimization">
+      Conditional Access Optimization Agent
+     </a>
+     with Microsoft Security Copilot suggests new policies and changes to existing ones based on Zero Trust principles and Microsoft best practices. With one click, apply the suggestion to automatically update or create a Conditional Access policy. The agent needs at least the Microsoft Entra ID P1 license and
+     <a data-linktype="absolute-path" href="/en-us/copilot/security/manage-usage">
+      security compute units (SCU)
+     </a>
+     .
+    </p>
+    <h2 id="license-requirements">
+     License requirements
+    </h2>
+    <p>
+     Using this feature requires Microsoft Entra ID P1 licenses. To find the right license for your requirements, see
+     <a data-linktype="external" href="https://www.microsoft.com/security/business/identity-access-management/azure-ad-pricing">
+      Compare generally available features of Microsoft Entra ID
+     </a>
+     .
+    </p>
+    <p>
+     Customers with
+     <a data-linktype="absolute-path" href="/en-us/office365/servicedescriptions/office-365-service-descriptions-technet-library">
+      Microsoft 365 Business Premium licenses
+     </a>
+     can also use Conditional Access features.
+    </p>
+    <p>
+     Risk-based Conditional Access policies (sign-in risk and user risk) require
+     <a data-linktype="relative-path" href="../../id-protection/overview-identity-protection">
+      Microsoft Entra ID Protection
+     </a>
+     , which is a Microsoft Entra ID P2 feature. For details, see
+     <a data-linktype="relative-path" href="../../fundamentals/licensing">
+      Microsoft Entra licensing
+     </a>
+     .
+    </p>
+    <p>
+     Other products and features that interact with Conditional Access policies require appropriate licensing for those products and features, including Microsoft Entra Workload ID, Microsoft Entra ID Protection, Microsoft Intune, and Microsoft Purview.
+    </p>
+    <p>
+     When the licenses required for Conditional Access expire, policies aren't automatically disabled or deleted. This graceful state lets customers migrate away from Conditional Access policies without a sudden change in their security posture. You can view and delete remaining policies, but you can't update them.
+    </p>
+    <p>
+     <a data-linktype="relative-path" href="../../fundamentals/security-defaults">
+      Security defaults
+     </a>
+     help protect against identity-related attacks and are available for all customers.
+    </p>
+    <h2 id="zero-trust">
+     Zero Trust
+    </h2>
+    <p>
+     This feature helps organizations to align their
+     <a data-linktype="absolute-path" href="/en-us/security/zero-trust/deploy/identity">
+      identities
+     </a>
+     with the three guiding principles of a Zero Trust architecture:
+    </p>
+    <ul>
+     <li>
+      Verify explicitly
+     </li>
+     <li>
+      Use least privilege
+     </li>
+     <li>
+      Assume breach
+     </li>
+    </ul>
+    <p>
+     To find out more about Zero Trust and other ways to align your organization to the guiding principles, see the
+     <a data-linktype="absolute-path" href="/en-us/security/zero-trust/">
+      Zero Trust Guidance Center
+     </a>
+     .
+    </p>
+    <h2 id="next-steps">
+     Next steps
+    </h2>
+    <p>
+     <a data-linktype="relative-path" href="plan-conditional-access">
+      Plan your Conditional Access deployment
+     </a>
+    </p>
+   </div>
+   <div class="margin-block-xs" data-bi-name="inline-notification" id="ms--inline-notifications">
+   </div>
+   <div aria-atomic="true" aria-live="assertive" aria-relevant="additions" class="visually-hidden" id="assertive-live-region" role="alert">
+   </div>
+   <div aria-atomic="true" aria-live="polite" aria-relevant="additions" class="visually-hidden" id="polite-live-region" role="status">
+   </div>
+   <!-- feedback section -->
+   <section class="font-size-sm margin-top-md display-none-print display-none-desktop" data-bi-name="site-feedback-section" data-test-id="site-user-feedback-footer" id="site-user-feedback-footer">
+    <hr class="hr"/>
+    <h2 class="title is-3" id="ms--feedback">
+     Feedback
+    </h2>
+    <div class="display-flex flex-wrap-wrap align-items-center">
+     <p class="font-weight-semibold margin-xxs margin-left-none">
+      Was this page helpful?
+     </p>
+     <div class="buttons">
+      <button aria-pressed="false" class="thumb-rating-button like button button-primary button-sm" data-bi-name="button-rating-yes" data-binary-rating-response="rating-yes" data-test-id="footer-rating-yes" title="This article is helpful" type="button">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-like">
+        </span>
+       </span>
+       <span>
+        Yes
+       </span>
+      </button>
+      <button aria-pressed="false" class="thumb-rating-button dislike button button-primary button-sm" data-bi-name="button-rating-no" data-binary-rating-response="rating-no" data-test-id="footer-rating-no" hidden="" id="standard-rating-no-button" title="This article is not helpful" type="button">
+       <span aria-hidden="true" class="icon">
+        <span class="docon docon-dislike">
+        </span>
+       </span>
+       <span>
+        No
+       </span>
+      </button>
+      <details class="popover popover-top" data-test-id="footer-feedback-popover" id="mobile-help-popover">
+       <summary aria-pressed="false" class="thumb-rating-button dislike button button-primary button-sm" data-bi-an="feedback-unhelpful-popover" data-bi-name="button-rating-no" data-binary-rating-response="rating-no" data-test-id="details-footer-rating-no" title="This article is not helpful">
+        <span aria-hidden="true" class="icon">
+         <span class="docon docon-dislike">
+         </span>
+        </span>
+        <span>
+         No
+        </span>
+       </summary>
+       <div aria-describedby="popover-description" aria-labelledby="popover-heading" class="popover-content width-200 width-300-tablet" role="dialog">
+        <p class="font-size-lg margin-bottom-xxs font-weight-semibold" id="popover-heading">
+         Need help with this topic?
+        </p>
+        <p class="font-size-sm margin-bottom-xs" id="popover-description">
+         Want to try using Ask Learn to clarify or guide you through this topic?
+        </p>
+        <div class="buttons flex-direction-row flex-wrap justify-content-center gap-xxs">
+         <div>
+          <button aria-expanded="false" aria-label="Ask Learn" class="button button-sm border inner-focus display-none margin-right-xxs" data-ask-learn-modal-entry-feedback="" data-bi-an="feedback-unhelpful-popover" data-bi-name="ask-learn-assistant-entry-troubleshoot" data-test-id="ask-learn-assistant-modal-entry-mobile-feedback" hidden="" style="min-width: max-content;" type="button">
+           <span aria-hidden="true" class="icon">
+            <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+            </span>
+           </span>
+          </button>
+          <button aria-expanded="false" class="button button-sm display-inline-flex display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn margin-right-xxs" data-ask-learn-modal-entry-feedback="" data-bi-an="feedback-unhelpful-popover" data-bi-name="ask-learn-assistant-entry-troubleshoot" data-test-id="ask-learn-assistant-modal-entry-tablet-feedback" hidden="" style="min-width: max-content;" type="button">
+           <span aria-hidden="true" class="icon font-size-lg">
+            <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+            </span>
+           </span>
+           <span>
+            Ask Learn
+           </span>
+          </button>
+          <button aria-controls="ask-learn-flyout" aria-expanded="false" class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn margin-right-xxs" data-ask-learn-flyout-entry-show-only="" data-bi-an="feedback-unhelpful-popover" data-bi-name="ask-learn-assistant-entry-troubleshoot" data-flyout-button="toggle" data-test-id="ask-learn-assistant-flyout-entry-feedback" hidden="" style="min-width: max-content;" type="button">
+           <span aria-hidden="true" class="icon font-size-lg">
+            <span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo">
+            </span>
+           </span>
+           <span>
+            Ask Learn
+           </span>
+          </button>
+         </div>
+         <button class="button button-sm margin-right-xxs" data-bi-an="feedback-unhelpful-popover" data-bi-name="feedback-suggest" data-help-option="suggest-fix" data-test-id="suggest-fix" type="button">
+          <span aria-hidden="true" class="icon">
+           <span class="docon docon-feedback">
+           </span>
+          </span>
+          <span>
+           Suggest a fix?
+          </span>
+         </button>
+        </div>
+       </div>
+      </details>
+     </div>
+    </div>
+   </section>
+   <!-- end feedback section -->
+  </div>
+  <div class="display-none-print" id="ms--additional-resources-mobile">
+   <hr class="hr" hidden=""/>
+   <h2 class="title is-3" hidden="" id="ms--additional-resources-mobile-heading">
+    Additional resources
+   </h2>
+   <section class="" data-bi-name="recommendations" hidden="" id="right-rail-recommendations-mobile">
+   </section>
+   <section class="" data-bi-name="learning-resource-card" hidden="" id="right-rail-training-mobile">
+   </section>
+   <section class="" data-bi-name="events-card" hidden="" id="right-rail-events-mobile">
+   </section>
+  </div>
+  <div class="page-metadata-container" data-bi-name="article-metadata-footer" data-test-id="article-metadata-footer" id="article-metadata-footer">
+   <hr class="hr"/>
+   <ul class="metadata page-metadata" data-bi-name="page info" dir="ltr" lang="en-us">
+    <li class="visibility-hidden-visual-diff">
+     <span class="badge badge-sm text-wrap-pretty">
+      <span>
+       Last updated on
+       <local-time class="is-invisible" data-article-date-source="calculated" datetime="2026-04-27T08:00:00.000Z" format="twoDigitNumeric">
+        2026-04-27
+       </local-time>
+      </span>
+     </span>
+    </li>
+   </ul>
+  </div>
+ </div>
+</main>
