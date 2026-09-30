@@ -27,21 +27,22 @@ Common issues and resolution steps for SharePoint oversharing detection using DS
 ### Issue 3: Oversharing Scan Returns Incomplete Results
 
 - **Symptoms:** Known overshared sites do not appear in the DSPM assessment, or the total site count is significantly lower than expected
-- **Root Cause:** DSPM scans are incremental and may not cover all sites in the initial scan. Sites created after the last scan cycle, or sites with specific template types, may be excluded.
+- **Root Cause:** DSPM scans are incremental and may not cover all sites in the initial scan. Microsoft also documents different timing windows for different assessment types: the first default assessment has a four-day delay before results display, while custom assessments require at least 48 hours after completion before results are available.
 - **Resolution:**
   1. Verify the scan scope in DSPM settings includes the expected site templates
-  2. Check that recently created sites have had sufficient time to be indexed (allow 48 hours)
-  3. Use the PowerShell oversharing detection script (Script 1) as a supplementary scan
-  4. Compare DSPM results with manual PowerShell scan output to identify coverage gaps
+  2. For a first-time default assessment, allow the documented four-day delay before concluding coverage is incomplete
+  3. For a custom assessment, wait at least 48 hours after completion before reviewing results
+  4. Use the PowerShell oversharing detection script (Script 1) as a supplementary scan
+  5. Compare DSPM results with manual PowerShell scan output to identify coverage gaps
 
 ### Issue 4: Remediation Actions Not Taking Effect
 
 - **Symptoms:** After restricting sharing capability on a site, the site still appears as overshared in the next DSPM scan, or users can still access content they should not
-- **Root Cause:** Sharing capability changes affect future sharing actions but do not automatically revoke existing shared links. Additionally, DSPM scan results may be cached.
+- **Root Cause:** Sharing capability changes affect future sharing actions but do not automatically revoke existing shared links. Additionally, default assessment results refresh on the weekly schedule, while custom assessments don't refresh in place and must be rerun.
 - **Resolution:**
   1. After changing sharing capability, also remove existing sharing links using `Remove-PnPFileSharingLink`
   2. For organization-wide links, use the SharePoint Admin Center to review and revoke active links
-  3. Wait for at least one full DSPM scan cycle (24-48 hours) before verifying
+  3. For the weekly default assessment, wait for the next scheduled run; for a custom assessment, duplicate and rerun the assessment and then wait at least 48 hours for updated results
   4. Use `Get-SPOSite -Identity <url> -Detailed` to confirm the setting persisted
 
 ### Issue 5: High Volume of False Positives

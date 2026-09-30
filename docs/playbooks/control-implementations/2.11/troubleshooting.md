@@ -10,7 +10,7 @@ Common issues and resolution steps for Copilot Pages security.
 - **Root Cause:** Pages sharing may inherit tenant-level sharing defaults if specific Pages controls are not configured.
 - **Resolution:**
   1. Review and adjust tenant-level sharing settings if they affect Pages
-  2. Configure Pages-specific sharing controls in Admin Center > Copilot > Pages
+  2. Verify the creation and code-preview decisions in Cloud Policy (`config.office.com`) and confirm that tenant/site sharing defaults in SharePoint and supporting Loop experiences match the firm's Pages-sharing policy
   3. Apply DLP policies to Pages content as an additional safeguard
   4. Communicate sharing expectations to Copilot users through training
 
@@ -67,7 +67,7 @@ Common issues and resolution steps for Copilot Pages security.
 
 ## Diagnostic Steps
 
-1. **Check sharing settings:** Verify Pages sharing configuration in Admin Center
+1. **Check sharing settings:** Verify the Cloud Policy creation/code-preview decisions and the supporting SharePoint or Loop sharing defaults that govern how Pages can be shared
 2. **Review activity logs:** Run Script 2 to track Pages creation and sharing
 3. **Check labels:** Verify sensitivity labels on recently created Pages
 4. **Verify retention:** Check retention policy scope for Pages coverage

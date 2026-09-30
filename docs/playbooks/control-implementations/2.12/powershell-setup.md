@@ -39,6 +39,10 @@ $sharingReport | Export-Csv "ExternalSharing_$(Get-Date -Format 'yyyyMMdd').csv"
 ### Script 2: SharePoint and OneDrive Guest-Access Expiration Audit
 
 ```powershell
+# Requires: SharePoint Online Management Shell
+Import-Module Microsoft.Online.SharePoint.PowerShell
+Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
+
 # Review the tenant-level resource-access expiration setting
 $tenant = Get-SPOTenant
 $tenant | Select-Object ExternalUserExpirationRequired, ExternalUserExpireInDays

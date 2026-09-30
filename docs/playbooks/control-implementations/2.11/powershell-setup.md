@@ -25,8 +25,8 @@ Write-Host "Tenant sharing capability: $($tenant.SharingCapability)"
 Write-Host "Default sharing link type: $($tenant.DefaultSharingLinkType)"
 Write-Host "Default link permission: $($tenant.DefaultLinkPermission)"
 Write-Host ""
-Write-Host "Verify Pages-specific settings in Admin Center > Copilot > Pages"
-Write-Host "Recommended: Sharing limited to 'Specific people', external sharing disabled"
+Write-Host "Verify creation and code-preview policy in Cloud Policy (config.office.com) and confirm tenant/site sharing defaults in SharePoint admin center"
+Write-Host "Recommended: sharing limited to specific people by default, with external sharing blocked or tightly scoped per site"
 ```
 
 ### Script 2: Monitor Pages Activity in Audit Logs
@@ -84,7 +84,7 @@ $sharingEvents = Search-UnifiedAuditLog -StartDate $startDate -EndDate $endDate 
     -Operations "SharingSet","SharingInvitationCreated","AnonymousLinkCreated" `
     -ResultSize 1000
 
-# Filter for Pages content (stored as .page/.pod files in OneDrive/SharePoint)
+# Filter for Pages content (stored as .page/.pod files in SharePoint Embedded-backed containers surfaced through Loop/SharePoint audit records)
 $pagesSharing = $sharingEvents | Where-Object {
     $auditData = $_.AuditData | ConvertFrom-Json
     $auditData.ObjectId -match "\.page$|\.pod$" -or

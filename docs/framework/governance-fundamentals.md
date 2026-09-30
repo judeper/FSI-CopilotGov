@@ -130,7 +130,7 @@ Copilot closes this gap instantly. Governance must address the permissions gap *
 | Oversharing assessment | 1.1 | Pre-deployment (required) |
 | Permission remediation | 1.2, 1.3 | Pre-deployment |
 | Sensitivity label deployment | 2.2, 2.3 | Pre-deployment |
-| Restricted SharePoint Search | 1.4 | Pre-deployment (Regulated) |
+| Restricted SharePoint Search | 1.3 | Pre-deployment (Regulated) |
 | Ongoing access reviews | 1.6 | Post-deployment (continuous) |
 
 ---

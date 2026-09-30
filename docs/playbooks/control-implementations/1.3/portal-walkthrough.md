@@ -5,7 +5,7 @@ Step-by-step portal configuration for implementing Restricted SharePoint Search 
 ## Prerequisites
 
 - SharePoint Admin role
-- SharePoint Advanced Management (SAM) license — included with Microsoft 365 Copilot licenses at no additional cost; standalone SAM add-on required for tenants without Copilot licenses
+- Microsoft 365 Copilot license so the SharePoint Advanced Management capabilities used by RCD are available
 - List of approved SharePoint sites for Copilot grounding (for RSS)
 - List of sites to exclude from Copilot discovery (for RCD)
 - Governance committee approval on the allowed sites list and exclusion list
@@ -33,10 +33,10 @@ RCD is the current discoverability control for new Copilot deployments. For each
 
 1. Navigate to the site in Active sites
 2. Open the site Settings panel
-3. Enable "Restrict content from Microsoft 365 Copilot"
+3. Enable "Restrict content from Microsoft Copilot"
 4. Select **Save**
 
-RCD is a stronger site-level discovery control than RSS. It hides the site from Microsoft 365 Copilot and tenant-wide search experiences such as SharePoint home, Office.com, Bing, and Delve where applicable. It also removes AI-powered entry points from the site (Copilot button, AI action menus, Create pages with AI). RCD still does not change existing site permissions: users with direct permissions can open content in SharePoint, and files they own or recently interacted with can still appear.
+RCD is the current site-level discovery control. Microsoft describes it as a temporary governance control that hides the site from Microsoft 365 Copilot and tenant-wide search experiences such as SharePoint home, Office.com, and Bing while permissions and governance controls are reviewed. It also removes AI-powered entry points from the site (Copilot button, AI action menus, Create pages with AI). RCD still does not change existing site permissions: users with direct permissions can open content in SharePoint, and files they own or recently interacted with can still appear.
 
 ### Step 2: Enable Restricted SharePoint Search (RSS) — Existing Configurations Only
 
@@ -82,6 +82,8 @@ Review the complete allowed sites list. Verify each site has been reviewed for a
 **Path:** Admin Center > Copilot > Settings
 
 Verify that Copilot data access settings reflect the expected governance configuration. For RCD-based deployments, confirm Copilot does not surface content from RCD-excluded sites. For existing RSS configurations, Copilot grounding should be scoped primarily to the allowed list, with documented exceptions for recent access or Teams/Outlook sharing.
+
+If your tenant is using **Copilot in SharePoint**, also review **Settings > Site AI** on the site itself. Microsoft documents Site AI as a **site-owner** surface for choosing the default site agent, hiding the Copilot button for visitors, and enabling advanced document processing. It is **not** a tenant-admin allow/deny equivalent to the preview `KnowledgeAgent*` PowerShell controls that retire on **November 1, 2026**. RCD remains the control for suppressing Copilot and AI entry points on a site regardless of Site AI settings.
 
 ### Step 6: Communicate Changes to Users
 
