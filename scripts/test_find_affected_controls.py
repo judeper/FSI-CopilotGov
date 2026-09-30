@@ -35,8 +35,8 @@ REDIRECTED_URL_IMPACTS = [
     ),
     (
         "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/connected-platforms",
-        set(),
-        0,
+        {"1.13", "2.14", "4.13"},
+        12,
     ),
     (
         "https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/whats-new",
