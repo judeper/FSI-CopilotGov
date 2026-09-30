@@ -3690,12 +3690,14 @@ AUTHORED: dict[str, dict] = {
                 "committee meetings unless approved."
             ),
             investment_adviser=(
-                "Where the adviser treats Teams meeting transcripts, recaps, "
-                "or Copilot prompt/response records as required books and "
-                "records under Rule 204-2(a)(7), organizer controls and "
-                "Purview retention/eDiscovery preserve the OneDrive or "
-                "SharePoint artifacts for those meetings; legal/compliance "
-                "confirms which meeting types create required records."
+                "Where the adviser treats Teams meeting transcripts/"
+                "recordings and Copilot prompt/response data as required "
+                "books and records under Rule 204-2(a)(7), organizer "
+                "controls and Purview retention/eDiscovery preserve meeting "
+                "transcripts/recordings (OneDrive or SharePoint) and "
+                "Copilot prompt/response data (the user's Exchange mailbox), "
+                "as applicable; legal/compliance confirms which meeting "
+                "types and items create required records."
             ),
         ),
         "facilitatorNotes": {
@@ -4169,13 +4171,6 @@ AUTHORED: dict[str, dict] = {
                 "dependent workflows are included where they support "
                 "critical operations."
             ),
-            credit_union=(
-                "The credit union has identified which Copilot-supported "
-                "member-service procedures or records are vital records "
-                "under 12 CFR part 749 and covered them with duplicate "
-                "storage, restoration steps, and at least annual plan "
-                "review under the catastrophic-act preparedness guidelines."
-            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -4237,11 +4232,13 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Sentinel analytics ingest CopilotInteraction audit events "
                 "and documented escalation routes them to supervisory staff "
-                "under FINRA Rule 3110; surveillance evidence the firm "
-                "treats as required records follows retention under FINRA "
-                "Rule 4511 and Exchange Act Rule 17a-4."
+                "as part of the firm's supervisory system and WSPs (FINRA "
+                "Rule 3110); surveillance evidence the firm treats as "
+                "required records follows retention under FINRA Rule 4511 "
+                "and Exchange Act Rule 17a-4."
             ),
             investment_adviser=(
+                "For advisers registered or required to be registered, "
                 "Sentinel analytics ingest CopilotInteraction audit events "
                 "for Copilot-supported client workflows, and the adviser's "
                 "documented alerts and escalation paths are reviewed at "
@@ -4253,10 +4250,11 @@ AUTHORED: dict[str, dict] = {
                 "NYDFS Part 500 monitoring requirements."
             ),
             credit_union=(
-                "CopilotInteraction alerts are mapped to the Appendix A to "
-                "Part 748 written information security program, including "
-                "intrusion monitoring, response procedures, and annual "
-                "board reporting on the program's status."
+                "CopilotInteraction alerts are mapped to the credit union's "
+                "written information security program, consistent with "
+                "Appendix A to Part 748 (intrusion-monitoring and response "
+                "measures the credit union has determined appropriate; board "
+                "reporting 'at least annually')."
             ),
         ),
         "facilitatorNotes": {
@@ -4313,11 +4311,11 @@ AUTHORED: dict[str, dict] = {
                 "before enablement."
             ),
             broker_dealer=(
-                "Copilot feature changes that affect registered-person "
-                "workflows go through documented pre-enablement testing, "
-                "supervisory approval, and WSP updates, consistent with "
-                "FINRA Rule 3110 and FINRA's AI guidance on supervisory "
-                "control systems."
+                "Copilot feature changes affecting registered-person "
+                "workflows are evaluated before enablement, with WSP "
+                "updates (FINRA Rule 3110(b)) and supervisory sign-off per "
+                "firm procedure; FINRA Regulatory Notice 24-09 says firms "
+                "should evaluate Gen AI tools prior to deploying them."
             ),
             investment_adviser=(
                 "Copilot feature changes that affect advice, marketing, or "
@@ -4327,10 +4325,10 @@ AUTHORED: dict[str, dict] = {
             ),
             credit_union=(
                 "Copilot feature changes that affect member information or "
-                "member-information systems are evaluated and approved as "
-                "updates to the Appendix A to Part 748 written information "
-                "security program, which the board oversees and management "
-                "reports on at least annually."
+                "member-information systems are evaluated and, as "
+                "appropriate, adjusted within the Appendix A to Part 748 "
+                "information security program (III.E), with annual board "
+                "reporting per III.F."
             ),
         ),
         "facilitatorNotes": {
