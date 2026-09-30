@@ -14,7 +14,7 @@ Step-by-step portal configuration for controlling Copilot's ability to search th
 ### Step 1: Review Web Search Settings
 
 **Portal:** Microsoft 365 Admin Center
-**Path:** Admin Center > Copilot > Settings > Data Access > Web search for Microsoft 365 Copilot and Microsoft 365 Copilot Chat
+**Path:** Admin Center > Copilot > Settings > Data Access > Web search for Microsoft Copilot and Microsoft Copilot Chat
 
 Review the current web search configuration for Copilot. The admin control is the **Allow web search in Copilot** policy in the Cloud Policy service for Microsoft 365 Apps; Microsoft states the Microsoft 365 admin center Data Access page is a shortcut only and that the scenario is not configured there. In commercial tenants, if the policy is not configured, web search is on by default (unless **Allow the use of additional optional connected experiences in Office** is set to **Disabled**) and may use the Bing search service to supplement responses with public web content. For FSI environments, this behavior requires careful governance.
 

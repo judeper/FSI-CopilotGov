@@ -357,7 +357,7 @@ Copilot Pages is an AI-native content surface that allows users to collaborate o
 
 ### How Copilot Pages Work
 
-1. User generates content via Copilot (in Microsoft 365 Copilot Chat or a supported Microsoft 365 app)
+1. User generates content via Copilot (in Microsoft Copilot Chat or a supported Microsoft 365 app)
 2. User promotes the response to a "Page" for collaboration
 3. The Page is stored in the user's SharePoint Embedded container (shared platform with Copilot Notebooks and Loop My workspace)
 4. Other users can be invited to collaborate on the Page

@@ -1504,7 +1504,7 @@ AUTHORED: dict[str, dict] = {
                 "portal": "Microsoft 365 admin center",
                 "path": (
                     "Copilot > Settings > Data Access > Web search for "
-                    "Microsoft 365 Copilot and Microsoft 365 Copilot Chat"
+                    "Microsoft Copilot and Microsoft Copilot Chat"
                 ),
                 "url": "https://admin.microsoft.com/AdminPortal/Home#/copilot",
             },
