@@ -73,7 +73,7 @@ For each label in scope, capture the effective rights and test outcomes rather t
 2. OWNER: Full control includes EXTRACT; the person applying encryption is the Rights Management owner and can receive the content.
 3. User-defined permissions: test unopened SharePoint/OneDrive files, direct `/` references, and a file open in an Office app.
 4. Edge: if Edge DLP is not deployed, test the active-browser-tab exception.
-5. External plugins and Graph connectors: test separately because their sensitivity labels/encryption are not recognized by Microsoft 365 Copilot Chat; Power BI is a documented exception.
+5. External plugins and Graph connectors: test separately because their sensitivity labels/encryption are not recognized by Microsoft Copilot Chat; Power BI is a documented exception.
 6. DKE: test separately as an intentional Copilot/agent exclusion.
 
 ### Step 6: Assemble the manual evidence pack

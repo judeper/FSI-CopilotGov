@@ -65,7 +65,7 @@ Test cases and evidence collection for validating Information Barrier enforcemen
 - **Objective:** Verify the IB coverage matrix reflects the actual enforcement status of all Copilot surfaces
 - **Steps:**
   1. For each Copilot surface in the control's coverage matrix, perform a functional test from a user in one IB segment to access content from a barrier-separated segment
-  2. Confirm Microsoft 365 Copilot Chat, Word, Excel, PowerPoint, and Teams Copilot scenarios respect SharePoint/OneDrive and Teams barrier test content where those workloads enforce IB
+  2. Confirm Microsoft Copilot Chat, Word, Excel, PowerPoint, and Teams Copilot scenarios respect SharePoint/OneDrive and Teams barrier test content where those workloads enforce IB
   3. Confirm Outlook/email separation is handled by approved non-IB controls if the firm's wall design requires email restrictions
   4. Confirm Copilot Pages, Copilot Notebooks, Channel Agent, and embedded-file agent knowledge are treated as unsupported/limited for IB rather than assumed covered
   5. Document test results against the coverage matrix

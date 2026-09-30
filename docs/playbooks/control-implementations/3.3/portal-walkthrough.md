@@ -60,7 +60,7 @@ The Microsoft Purview eDiscovery experience consolidates discovery work into cas
 2. Under **Custodian locations**, select the custodians added in Step 3.
 3. Under search conditions, use the condition builder for Copilot activity or a documented KQL fallback:
    - **Condition builder:** Add condition > Item class / Type > Contains any of > Copilot activity for Copilot and other AI activity records.
-   - **KQL fallback:** use documented item classes such as `itemclass:IPM.SkypeTeams.Message.Copilot.*` for Microsoft 365 Copilot or `itemclass:IPM.SkypeTeams.Message.Copilot.BizChat` for Microsoft 365 Copilot Chat.
+   - **KQL fallback:** use documented item classes such as `itemclass:IPM.SkypeTeams.Message.Copilot.*` for Microsoft 365 Copilot or `itemclass:IPM.SkypeTeams.Message.Copilot.BizChat` for Microsoft Copilot Chat.
 4. Use supported search conditions, item classes, date ranges, and custodian/source filters to narrow results by user, timeframe, workload, and investigation scope.
 5. Set the date range appropriate to the discovery request.
 6. Run the search estimate to preview results before committing to review.
