@@ -24,7 +24,7 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 | Copilot overview | M365 Admin Center > Copilot > Overview | Readiness, adoption, security links, and recommended actions |
 | Copilot settings | M365 Admin Center > Copilot > Settings | Tenant controls grouped under User access, Data access, Copilot actions, and Other settings |
 | Agents | M365 Admin Center > Agents > Overview / All agents / Settings | Agent inventory, sharing, templates, user access, feedback sharing, tags, and connected-platform review |
-| Billing and cost | M365 Admin Center > Copilot > Billing & usage (setup; in some tenants, reached from Copilot > Cost management via **Classic Billing & usage**) plus Billing > Cost Management (spend visibility) | PAYG setup, billing policies, budgets, and spend visibility |
+| Billing and cost | M365 Admin Center > Copilot > Cost management > Classic Billing & usage (Learn-documented setup path; older wording/tenants might still show Copilot > Billing & usage) plus Billing > Cost Management (spend visibility) | PAYG setup, billing policies, budgets, and spend visibility |
 | Copilot Pages / Notebooks policy | `https://config.office.com` > Customization > Policy Management | Cloud Policy controls for creation and code previews |
 
 ---
@@ -51,7 +51,7 @@ Current inventory of the highest-value Microsoft 365 Copilot administrative cont
 | Microsoft Copilot Search | Copilot > Settings > User access; Settings > Search & intelligence | On for licensed users | On for approved groups | On for approved groups | On for approved groups | AI-enriched search within the Copilot app; grounding scope governed by Restricted Content Discovery and, where already enabled, legacy Restricted SharePoint Search |
 | Copilot Tuning (preview) | Copilot > Settings > View all > Copilot Tuning | Off until eligible tenant opts in | Off | Review — document risk assessment | Review — requires model-risk inventory entry (Control 3.8) | Available only to tenants with 5,000+ Copilot licenses during preview; requires explicit admin activation, tuning corpus review, and model-risk documentation |
 | Self-service trials and purchases for Microsoft 365 Copilot | Settings > Org settings > Self-service trials and purchases | Allow unless disabled | Off | Off | Off | Prevents unmanaged user purchases or trials |
-| PAYG billing policy | Copilot > Billing & usage > Pay-as-you-go services *(or Copilot > Cost management > Classic Billing & usage > Pay-as-you-go services where that banner is shown)* | Off until configured | Review | On for approved groups only | On for approved groups only | Required for metered Microsoft Copilot Chat, SharePoint agents, and Retrieval API use |
+| PAYG billing policy | Copilot > Cost management > Classic Billing & usage > Pay-as-you-go services *(older wording/tenants might still show Copilot > Billing & usage > Pay-as-you-go services)* | Off until configured | Review | On for approved groups only | On for approved groups only | Required for metered Microsoft Copilot Chat, SharePoint agents, and Retrieval API use |
 | PAYG budget notifications | Billing policy / Cost management | Off until configured | Review | Enabled | Enabled | Provides budget alerts for variable Copilot consumption |
 | Cost monitoring | Billing > Cost Management | Available when PAYG is configured | Monthly review | Monthly review | Weekly review | Tracks spend, anomalies, and department allocation |
 

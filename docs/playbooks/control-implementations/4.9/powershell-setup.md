@@ -18,7 +18,7 @@ Connect-IPPSSession -UserPrincipalName admin@contoso.com
 # Import-Module Microsoft.Graph.Security
 # Connect-MgGraph -Scopes "SecurityAlert.Read.All"
 # Use alerts_v2 (Get-MgSecurityAlertV2). The legacy /security/alerts endpoint
-# and legacy alert-read scopes retire on October 15, 2026.
+# retires on October 15, 2026.
 ```
 
 ## Scripts
