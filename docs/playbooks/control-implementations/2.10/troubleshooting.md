@@ -31,7 +31,7 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
 - **Root Cause:** The tenant might not yet expose the current **Generative AI apps indicators** or **Risky AI usage indicators (preview)** surfaces, or the browser/extension prerequisites for risky AI usage might be missing.
 - **Resolution:**
   1. Verify the current **Policy indicators** page exposes **Generative AI apps indicators**
-  2. Configure the Microsoft Compliance Extension and browser signal prerequisites where required for the template
+  2. Install the browser extension the template requires: for Risky AI usage, Learn names the Microsoft Insider risk extension (Microsoft Edge) or the Microsoft Purview extension (Chrome); browser signal detection for other indicators also uses the Microsoft Compliance Extension, so confirm the extension name shown in your tenant against the current Learn browser-support page
   3. Use general data access and DLP-based indicators as alternatives
   4. Configure custom indicators or audit-backed review using CopilotInteraction audit records
 
@@ -44,7 +44,7 @@ Common issues and resolution steps for insider risk detection for Copilot and ag
   2. Navigate to Microsoft Purview > Agents > Explore agents and confirm the agent is deployed
   3. Verify Security Copilot onboarding, SCU availability, Microsoft 365 data sharing, and the Purview plug-in prerequisites
   4. Review Insider Risk Management > Alerts (preview) for triaged alerts after the agent runs
-  5. If the Triage Agent is deployed but context summaries are absent, allow 24-48 hours for the system to process existing alerts
+  5. If the Triage Agent is deployed but context summaries are absent, allow time for the agent to finish triaging in-scope alerts (Learn documents up to 2 hours after initial setup for the Data Security Triage Agent; treat longer delays as a troubleshooting signal)
   6. Check that the IRM investigator role has appropriate access to view Triage Agent outputs
 
 ### Issue 5: Data Risk Graph Not Loading or Missing Data
