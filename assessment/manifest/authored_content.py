@@ -520,9 +520,21 @@ AUTHORED: dict[str, dict] = {
                 "Audit covers research, IB, and client-facing sites; "
                 "information-barrier scope validated at each audit cycle."
             ),
+            investment_adviser=(
+                "Permission audit covers client portfolio, fund, and "
+                "delegated-mailbox access containing customer information; "
+                "periodic access re-certification evidence is retained in "
+                "the adviser's safeguards program under Regulation S-P."
+            ),
             insurance_carrier=(
                 "Audit covers claims and underwriting sites with PHI; "
                 "HIPAA access-control evidence produced."
+            ),
+            credit_union=(
+                "Permission audit covers member-information sites, Teams, "
+                "OneDrive, and delegated mailboxes; findings show access is "
+                "limited to authorized individuals and broad-access "
+                "remediation is tracked through the Appendix A security program."
             ),
         ),
         "facilitatorNotes": {
@@ -1334,9 +1346,21 @@ AUTHORED: dict[str, dict] = {
                 "using Copilot; compliant device required per FINRA "
                 "cybersecurity guidance."
             ),
+            investment_adviser=(
+                "Conditional Access requires MFA for Copilot users handling "
+                "customer records; adviser-issued devices accessing Copilot "
+                "are governed through MDM-backed compliant-device controls, "
+                "and access rights are re-certified periodically."
+            ),
             insurance_carrier=(
                 "CA policies enforce MFA and compliant device per NYDFS "
                 "Part 500 MFA requirements for Copilot workloads."
+            ),
+            credit_union=(
+                "Conditional Access requires MFA for Copilot users with "
+                "access to member information; policy evidence shows "
+                "compliant-device restrictions for those populations as part "
+                "of the credit union's Appendix A access-control program."
             ),
         ),
         "facilitatorNotes": {
@@ -3478,6 +3502,12 @@ AUTHORED: dict[str, dict] = {
                 "AI Administrator role used; Cloud Policy enforces "
                 "Pages/Notebooks scope for PHI handling units; settings reviewed monthly."
             ),
+            credit_union=(
+                "AI Administrator is used for day-to-day Copilot settings; "
+                "changes to Copilot access, billing, and Cloud Policy are "
+                "documented as member-information-system modifications within "
+                "the credit union's information security program."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -3930,6 +3960,23 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Incident reporting per FINRA Rule 4530; Copilot-specific "
                 "incidents subject to supervisory escalation."
+            ),
+            investment_adviser=(
+                "Incident runbook covers unauthorized access to or use of "
+                "customer information, scope assessment, containment, recovery, "
+                "and affected-individual notice under Regulation S-P's "
+                "response-program requirements."
+            ),
+            insurance_carrier=(
+                "Incident runbook covers prompt investigation, determination "
+                "of scope and nonpublic information involved, restoration "
+                "steps, 72-hour commissioner notice where thresholds are met, "
+                "and documentation of control lapses."
+            ),
+            credit_union=(
+                "Incident runbook covers prompt investigation, NCUA/regulator "
+                "notification, containment, and member-notification assessment "
+                "for unauthorized access to member information."
             ),
         ),
         "facilitatorNotes": {
