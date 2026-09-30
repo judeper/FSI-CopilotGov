@@ -932,6 +932,32 @@ AUTHORED: dict[str, dict] = {
                 "third-party risk requirements; each connector/plug-in "
                 "risk-classified before approval."
             ),
+            broker_dealer=(
+                "Extensibility surfaces that can reach customer or "
+                "securities-business data are approved under written "
+                "supervisory procedures, with a designated supervisory "
+                "principal before registered-person use, consistent with FINRA "
+                "Rule 3110."
+            ),
+            investment_adviser=(
+                "Extensibility surfaces that can reach customer information "
+                "are approved under the adviser's written compliance and "
+                "safeguards policies, with data flows and service-provider "
+                "access documented, consistent with Advisers Act Rule "
+                "206(4)-7 and Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where state insurance data-security laws modeled on NAIC "
+                "Model #668 apply, extensibility approvals document "
+                "nonpublic-information flows, risk assessment, and "
+                "third-party safeguards; state adoption varies."
+            ),
+            credit_union=(
+                "Extensibility approvals document member-information access, "
+                "service-provider due diligence, contractual safeguards, and "
+                "periodic oversight, consistent with 12 CFR part 748, "
+                "appendix A and NCUA third-party relationship guidance."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -1106,6 +1132,20 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Tuning review includes supervisory principal approval before "
                 "publishing for registered-representative use."
+            ),
+            investment_adviser=(
+                "Tuned agents used in adviser workflows are approved under "
+                "the adviser's written compliance and safeguards policies, "
+                "with evaluation artifacts retained for annual review and "
+                "customer-information controls, consistent with Advisers Act "
+                "Rule 206(4)-7 and Regulation S-P."
+            ),
+            insurance_carrier=(
+                "Where tuned agents can make or support consumer-impacting "
+                "insurance decisions, written AIS Program approval, testing, "
+                "and retained evaluation evidence are documented consistent "
+                "with the NAIC Model Bulletin on AI Systems by Insurers; "
+                "state adoption varies."
             ),
         ),
         "facilitatorNotes": {
@@ -2424,6 +2464,34 @@ AUTHORED: dict[str, dict] = {
                 "MCP endpoints assessed per OCC Bulletin 2023-17 third-party "
                 "risk requirements; allow-list reviewed quarterly."
             ),
+            broker_dealer=(
+                "Federated connectors and MCP endpoints that can surface "
+                "customer or securities-business data stay on an approved "
+                "allow-list with connector-level allowed-user scope and "
+                "supervisory review, consistent with FINRA Rule 3110."
+            ),
+            investment_adviser=(
+                "Federated connectors and MCP endpoints that can reach "
+                "customer information document user-scoped access, "
+                "service-provider boundaries, and review evidence under the "
+                "adviser's written safeguards and compliance policies, "
+                "consistent with Regulation S-P and Advisers Act Rule "
+                "206(4)-7."
+            ),
+            insurance_carrier=(
+                "Where state insurance data-security laws modeled on NAIC "
+                "Model #668 apply, federated connectors and MCP endpoints "
+                "document nonpublic-information access, third-party "
+                "safeguards, and incident-accountability expectations; state "
+                "adoption varies."
+            ),
+            credit_union=(
+                "Federated connectors and MCP endpoints document "
+                "member-information access, service-provider due diligence, "
+                "contractual safeguards, and ongoing oversight, consistent "
+                "with 12 CFR part 748, appendix A and NCUA third-party "
+                "relationship guidance."
+            ),
         ),
         "facilitatorNotes": {
             "ask": (
@@ -2486,6 +2554,25 @@ AUTHORED: dict[str, dict] = {
                 "Federation trust reviewed by supervisory principal; "
                 "FINRA Rule 3110 supervision scope includes federated "
                 "agent interactions."
+            ),
+            investment_adviser=(
+                "Cross-tenant trust relationships that can expose customer "
+                "information are scoped to named users, groups, or "
+                "applications and reviewed under the adviser's written "
+                "safeguards and compliance policies, consistent with "
+                "Regulation S-P and Advisers Act Rule 206(4)-7."
+            ),
+            insurance_carrier=(
+                "Where state insurance data-security laws modeled on NAIC "
+                "Model #668 apply, cross-tenant trust relationships "
+                "involving nonpublic information document counterparties, "
+                "scope, and third-party safeguards; state adoption varies."
+            ),
+            credit_union=(
+                "Cross-tenant trust relationships involving member "
+                "information document scoped access, due diligence, and "
+                "service-provider oversight, consistent with 12 CFR part "
+                "748, appendix A and NCUA third-party relationship guidance."
             ),
         ),
         "facilitatorNotes": {
@@ -4389,6 +4476,27 @@ AUTHORED: dict[str, dict] = {
             broker_dealer=(
                 "Agent lifecycle includes supervisory approval gate per "
                 "FINRA Rule 3110 before publication for registered-rep use."
+            ),
+            investment_adviser=(
+                "Copilot Studio agents used in adviser workflows move "
+                "through documented build, test, publish, and versioning "
+                "gates under the adviser's written compliance program, with "
+                "approvals retained for annual review consistent with "
+                "Advisers Act Rule 206(4)-7."
+            ),
+            insurance_carrier=(
+                "Where agent outputs can make or support consumer-impacting "
+                "insurance decisions, lifecycle records align testing, "
+                "publication, monitoring, and updates to a written AIS "
+                "Program consistent with the NAIC Model Bulletin on AI "
+                "Systems by Insurers; state adoption varies."
+            ),
+            credit_union=(
+                "For agents that can access member information, lifecycle "
+                "records tie development, testing, publication, and "
+                "retirement to the credit union's written information "
+                "security program, testing, and board reporting under "
+                "12 CFR part 748, appendix A."
             ),
         ),
         "facilitatorNotes": {
