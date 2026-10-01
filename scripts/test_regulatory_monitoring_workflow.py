@@ -328,30 +328,32 @@ def test_cleanup_matrix_is_documented_and_uses_tested_selector() -> None:
     cleanup_run = _step(MONITOR_JOB, "Close prior superseded Regulatory Monitor PRs")[
         "run"
     ]
+    metadata_run = _step(
+        MONITOR_JOB,
+        "Prepare Regulatory Monitor PR metadata",
+    )["run"]
     pr_body = _step(MONITOR_JOB, "Open / update PR with regulatory findings")[
         "with"
     ]["body"]
 
     assert "scripts/regulatory_monitor_cleanup.py" in cleanup_run
     assert "select \\" in cleanup_run
-    assert "emit-marker" in _step(
-        MONITOR_JOB,
-        "Prepare Regulatory Monitor PR metadata",
-    )["run"]
-    assert "if ! python scripts/regulatory_monitor_cleanup.py emit-marker" in _step(
-        MONITOR_JOB,
-        "Prepare Regulatory Monitor PR metadata",
-    )["run"]
-    assert "opening the PR without a cleanup marker" in _step(
-        MONITOR_JOB,
-        "Prepare Regulatory Monitor PR metadata",
-    )["run"]
+    assert "emit-marker" in metadata_run
+    assert "if ! python scripts/regulatory_monitor_cleanup.py emit-marker" in metadata_run
+    assert "opening the PR without a cleanup marker" in metadata_run
     assert "--new-result" in cleanup_run
-    assert "--new-report-file" in cleanup_run
+    assert '--new-report-file "${{ steps.pr-meta.outputs.cleanup_report_file }}"' in cleanup_run
+    assert '--new-report-file "${{ steps.monitor.outputs.report_file }}"' not in cleanup_run
     assert "steps.pr-meta.outputs.cleanup_kind" in cleanup_run
     assert "--json number,headRefName,author,title,labels,body" in cleanup_run
     assert '--limit "$pr_limit"' in cleanup_run
     assert 'pr_limit=200' in cleanup_run
+    assert (
+        'cleanup_report_file="$RUNNER_TEMP/regulatory-monitor-report-${{ github.run_id }}.md"'
+        in metadata_run
+    )
+    assert 'cp -- "${{ steps.monitor.outputs.report_file }}" "$cleanup_report_file"' in metadata_run
+    assert 'echo "cleanup_report_file=$cleanup_report_file" >> "$GITHUB_OUTPUT"' in metadata_run
     assert "verified-clean" in cleanup_run
     assert "Superseded by ${superseding_ref} under the Regulatory Monitor cleanup matrix" in cleanup_run
     assert "unverified runs must not close degraded PRs" in pr_body
