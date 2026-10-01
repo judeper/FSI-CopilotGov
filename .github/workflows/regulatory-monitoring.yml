@@ -246,6 +246,9 @@ jobs:
               } >> "$GITHUB_OUTPUT"
             fi
           fi
+          cleanup_report_file="$RUNNER_TEMP/regulatory-monitor-report-${{ github.run_id }}.md"
+          cp -- "${{ steps.monitor.outputs.report_file }}" "$cleanup_report_file"
+          echo "cleanup_report_file=$cleanup_report_file" >> "$GITHUB_OUTPUT"
           if ! python scripts/regulatory_monitor_cleanup.py emit-marker \
             --report-file "${{ steps.monitor.outputs.report_file }}" \
             --result "$cleanup_kind" \
@@ -396,7 +399,7 @@ jobs:
             new_result="verified-clean"
             superseding_ref="verified clean run ${{ github.run_number }} (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
           else
-            new_report_args=(--new-report-file "${{ steps.monitor.outputs.report_file }}")
+            new_report_args=(--new-report-file "${{ steps.pr-meta.outputs.cleanup_report_file }}")
           fi
           selection_file="$(mktemp)"
           trap 'rm -f "$selection_file"' EXIT
