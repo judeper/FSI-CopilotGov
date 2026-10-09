@@ -55,7 +55,7 @@ Review the provider paths separately and retain screenshots or exports showing t
 2. Open **AI providers for other large language models** and review SpaceXAI as an independent processor (used with Copilot Studio and Copilot Cowork).
    - Confirm the legal terms were reviewed before enablement.
    - Record the users or Entra security groups authorized to use the provider.
-3. Back under **AI providers operating as Microsoft subprocessors**, check separately whether **SpaceXAI** is enabled as a subprocessor (preview; Frontier-program customers outside the EU, EFTA, UK, government clouds, and sovereign clouds). It is a distinct setting from the independent-processor setting, is disabled by default, and is not carried over from earlier SpaceXAI settings; record the assigned users or groups and the documented exclusions (including in-country processing).
+3. Back under **AI providers operating as Microsoft subprocessors**, check separately whether **SpaceXAI** is enabled as a subprocessor (preview; Frontier-program customers outside the EU, EFTA, and UK or other environments Learn lists as excluded). It is a distinct setting from the independent-processor setting, is disabled by default, and is not carried over from earlier SpaceXAI settings; record the assigned users or groups and the documented exclusions (including in-country processing).
 4. For Copilot Studio use, confirm the corresponding external-model control is also enabled only in approved Power Platform environments.
 5. Reconcile each enabled provider and model category to the vendor inventory, data-flow map, and risk-acceptance record.
 
