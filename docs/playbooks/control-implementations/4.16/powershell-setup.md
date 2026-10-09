@@ -6,7 +6,8 @@ Automation workflow for reconciling the three Scout admin gates, capturing Intun
 
 - PowerShell 7+
 - `Microsoft.Graph` (permissions: `DeviceManagementConfiguration.Read.All`, `DeviceManagementApps.Read.All`, `Group.Read.All`, `User.Read.All`, `Directory.Read.All`) for Intune device-configuration inspection, group reconciliation, and Microsoft 365 Copilot license assignment reads
-- `ExchangeOnlineManagement` for unified-audit-log queries (Scout-related admin events flow through admin-agent management operations)
+- `Microsoft.Graph.Beta.DeviceManagement` (same permissions) because Windows group-policy configurations are exposed only through the Microsoft Graph beta endpoint
+- `ExchangeOnlineManagement` for unified-audit-log queries (Script 5 queries the generic Microsoft 365 agent-management operations; Microsoft Learn does not document Scout-specific audit operations)
 - On the local Windows device being sampled: rights to read `HKLM` policy hives
 - M365 Global Reader (or equivalent least-privilege read role) for the tenant surfaces
 - GitHub administrator access to the linked GitHub organization or enterprise for entitlement reconciliation (out-of-band; use the GitHub UI or `gh` CLI — no PowerShell module invocation is included here)
@@ -24,8 +25,8 @@ The Windows Scout policy is deployed as an imported ADMX / group-policy configur
 ```powershell
 Connect-MgGraph -Scopes 'DeviceManagementConfiguration.Read.All','Group.Read.All' -NoWelcome
 
-# Windows imported ADMX / group policy configurations
-$gpConfigs = Get-MgDeviceManagementGroupPolicyConfiguration -All |
+# Windows imported ADMX / group policy configurations (beta-only Graph resource)
+$gpConfigs = Get-MgBetaDeviceManagementGroupPolicyConfiguration -All |
   Select-Object Id, DisplayName, Description, CreatedDateTime, LastModifiedDateTime
 
 $gpConfigs |
@@ -51,7 +52,7 @@ Confirms that Scout endpoint policy is targeted only to the approved pilot devic
 $targets = @()
 
 foreach ($cfg in (Import-Csv .\artifacts\4.16\scout-intune-windows-policies.csv)) {
-  $assignments = Get-MgDeviceManagementGroupPolicyConfigurationAssignment `
+  $assignments = Get-MgBetaDeviceManagementGroupPolicyConfigurationAssignment `
     -GroupPolicyConfigurationId $cfg.Id -All
   foreach ($a in $assignments) {
     $targets += [pscustomobject]@{
@@ -184,7 +185,7 @@ $licenseReport |
 
 ### Script 5: Pull the subset of Scout-related activity visible to Purview audit
 
-Scout activity that flows through M365 (for example, Copilot admin surfaces or Frontier-related admin events) is visible through the unified audit log; local shell execution, tool output, automation instructions, and third-party inference are **not** captured by Purview and must be sourced from endpoint tooling (out of scope of this script).
+Microsoft Learn does not document Scout-specific audit operations. This script pulls the generic Microsoft 365 agent-management operations and keeps only records that mention Scout or Frontier, so an empty result is "no documented signal", not proof of no activity. Local shell execution, tool output, automation instructions, and third-party inference are **not** captured by Purview and must be sourced from endpoint tooling (out of scope of this script).
 
 ```powershell
 Connect-ExchangeOnline -ShowBanner:$false
@@ -247,5 +248,8 @@ Compress-Archive -Path .\artifacts\4.16\* `
 - Continue to [Verification & Testing](verification-testing.md) for gate, permission, tool-server, and boundary-coverage validation.
 - Reference [Troubleshooting](troubleshooting.md) for entitlement, endpoint-policy, attestation, tool-server, and boundary-related issues.
 
-*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview) · Last Verified 2026-09-24*
+*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview)*
+
+**Last Verified:** 2026-10-09
+
 - Back to [Control 4.16](../../../controls/pillar-4-operations/4.16-microsoft-scout-governance.md)

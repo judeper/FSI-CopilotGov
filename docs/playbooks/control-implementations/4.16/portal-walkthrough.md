@@ -24,10 +24,10 @@ Step-by-step admin workflow for governing Microsoft Scout while it is a Frontier
 | Microsoft 365 admin center | Users > Active users (license assignment) or Billing > Licenses | Reconciles Microsoft 365 Copilot license assignment for pilot users — an active Copilot license is a documented per-user prerequisite for Scout |
 | Microsoft Intune admin center | Devices > Configuration > Import ADMX | Imports the Microsoft-provided `microsoft-scout.admx` and `microsoft-scout.adml` templates so a Windows configuration policy can enable **Allow Microsoft Scout Frontier access** and the documented ADMX admin controls |
 | Microsoft Intune admin center | Devices > Configuration > Policies (Windows imported administrative template; macOS custom `.mobileconfig`) | Deploys the Scout endpoint policy and the documented ADMX admin controls that authorize Scout to run on managed endpoints and govern its runtime behavior |
-| Microsoft Intune admin center | Devices > Configuration profiles > Assignments | Restricts endpoint policy to the approved pilot device groups |
+| Microsoft Intune admin center | Devices > Configuration > Policies > select the Scout policy > Assignments | Restricts endpoint policy to the approved pilot device groups |
 | Microsoft Intune admin center | Apps > Windows / macOS apps | Deploys the Scout installer in system context (preferred) so end users do not need local Administrator rights to install |
 | Frontier organization sign-up (admin attestation) | Microsoft-provided Frontier organization sign-up form (linked from [Admin access overview for Microsoft Scout](https://learn.microsoft.com/microsoft-scout/admin-access-overview)) | Records the admin attestation and opt-in step required because Scout can route data outside Microsoft 365 to third-party inference paths |
-| GitHub | Copilot administration for the linked GitHub organization or enterprise | Governs per-user GitHub Copilot Business or Enterprise entitlement, which is required for Scout sign-in |
+| GitHub | Copilot administration for the linked GitHub organization or enterprise | Governs per-user GitHub Copilot Business or Enterprise entitlement, which is required for Scout sign-in; the organization or enterprise **GitHub Copilot app** policy must also be enabled (enterprise settings override organization settings) |
 | Microsoft Purview portal | Audit | Captures the subset of Scout-related activity that flows through M365 audit; not a complete evidence source for Scout |
 | Governance evidence repository | Workspace of record | Stores Frontier decisions, endpoint policy exports (including ADMX admin-control snapshots), admin-attestation records, M365 Copilot license and GitHub entitlement reconciliations, tool-server inventory, installation-privilege deployment records, and permission-mode decisions |
 
@@ -52,7 +52,7 @@ Complete Microsoft's Frontier organization sign-up (admin attestation) form for 
 
 ### Step 4: Reconcile Microsoft 365 Copilot license and GitHub Copilot entitlement
 
-Reconcile Microsoft 365 Copilot license assignment for pilot users against Control 1.9 records. In parallel, reconcile the list of users who hold GitHub Copilot Business or Enterprise entitlement (with linked GitHub accounts) against the approved pilot list. Restrict entitlement to the pilot population, and document the entitlement decisions, approvers, and reconciliation dates. Recognize that GitHub administration is a separate governance surface from the Microsoft 365 admin center.
+Reconcile Microsoft 365 Copilot license assignment for pilot users against Control 1.9 records. In parallel, reconcile the list of users who hold GitHub Copilot Business or Enterprise entitlement (with linked GitHub accounts) against the approved pilot list. A licensed seat alone is not sufficient: confirm the **GitHub Copilot app** policy is enabled for the organization or enterprise (enterprise settings override organization settings; for Scout builds that predate the dedicated app policy, the **Copilot in the CLI** policy applies). Restrict entitlement to the pilot population, and document the entitlement decisions, approvers, and reconciliation dates. Recognize that GitHub administration is a separate governance surface from the Microsoft 365 admin center.
 
 ### Step 5: Confirm the installation-privilege deployment pattern
 
@@ -93,5 +93,8 @@ Confirm which Scout activity is visible to existing Purview audit and supervisio
 - Use [Verification & Testing](verification-testing.md) to validate the three gates, permission posture, tool-server inventory, and audit-coverage assessment.
 - Keep [Troubleshooting](troubleshooting.md) available for entitlement, endpoint-policy, attestation, tool-server, and boundary-related issues.
 
-*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview) · Last Verified 2026-09-24*
+*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview)*
+
+**Last Verified:** 2026-10-09
+
 - Back to [Control 4.16](../../../controls/pillar-4-operations/4.16-microsoft-scout-governance.md)
