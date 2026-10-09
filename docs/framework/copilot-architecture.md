@@ -18,7 +18,7 @@ Understanding the Microsoft 365 Copilot architecture is essential for effective 
 Microsoft 365 Copilot is not a standalone product -- it acts as an **orchestrator** (the **Copilot orchestrator**) between the user, Microsoft Graph, the Semantic Index, Microsoft 365 Copilot Search, optional web grounding, and large language models (LLMs).
 
 !!! note "Terminology"
-    Microsoft Learn describes Microsoft 365 Copilot as acting as an **orchestrator** that coordinates prompt processing, grounding, and model calls; this document uses **"Copilot orchestrator"** for that layer. **"Microsoft 365 Brain"** is an informal term sometimes used for the same orchestration layer and is not canonical Microsoft product terminology. Verify against the [Microsoft 365 Copilot architecture](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-architecture) page. *(Verified on Microsoft Learn, 2026-06-12.)*
+    Microsoft Learn describes the **Copilot orchestrator** as the layer between the user's natural language input and the LLM that applies responsible AI and security checks, retrieves context from Microsoft Graph, and plans and runs the actions needed to respond; this document uses **"Copilot orchestrator"** for that layer. **"Microsoft 365 Brain"** is an informal term sometimes used for the same orchestration layer and is not canonical Microsoft product terminology. See [Overview of the Microsoft 365 Copilot orchestrator](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/orchestrator) for the term and [Microsoft Copilot architecture and how it works](https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-architecture) for the prompt, grounding, and LLM data flow (that page describes the flow but does not use the word "orchestrator").
 
 ```
 +------------------------------------------------------------------+
@@ -95,12 +95,12 @@ Microsoft 365 Copilot is not a standalone product -- it acts as an **orchestrato
 | **Microsoft Graph** | Provides access to user's Microsoft 365 content (files, emails, chats, meetings) | Access scoped to user's existing permissions |
 | **Semantic Index** | Pre-built search index of tenant content for fast retrieval | Indexes content the user can access; governance must address permission scope |
 | **Microsoft 365 Copilot Search** | Search module and admin-managed retrieval surface in the Microsoft 365 Copilot app, including Microsoft 365 and configured third-party data sources | Govern result sources, authoritative sites, connectors, and eligible users through Microsoft 365 admin settings |
-| **LLM (foundation models)** | Generates response based on grounded prompt. Default path uses Microsoft-hosted OpenAI models within Microsoft's managed Azure boundary; optional providers include Anthropic Claude (available across Microsoft 365 Copilot, Researcher, and Copilot in Microsoft 365 apps) and xAI Grok (preview, currently surfaced through Copilot Studio) where enabled. | Tenant prompts, responses, and Microsoft Graph data are not used to train foundation LLMs. **Microsoft-hosted OpenAI**: processed in Microsoft-managed Azure boundary under the Product Terms / DPA, with EU Data Boundary and in-country LLM processing commitments where applicable. **Anthropic Claude**: provided under the Microsoft Product Terms and DPA, but **out of scope for the EU Data Boundary and in-country LLM processing commitments**; on by default for most commercial-cloud customers (excluding EU/EFTA and UK). **xAI Grok (preview)**: hosted by xAI **outside Microsoft-managed environments and audit controls** under xAI's separate Terms of Service and Data Processing Addendum — Microsoft Product Terms, DPA, data residency commitments, audit and compliance requirements, SLAs, and the Customer Copyright Commitment do not apply. |
+| **LLM (foundation models)** | Generates response based on grounded prompt. Default path uses Microsoft-hosted OpenAI models within Microsoft's managed Azure boundary; optional providers include Anthropic Claude (available across Microsoft 365 Copilot, Researcher, and Copilot in Microsoft 365 apps) and SpaceXAI Grok models (preview; as an independent processor surfaced through Copilot Studio and Copilot Cowork, and as a Microsoft subprocessor in Copilot in Word, Excel, and PowerPoint for eligible Frontier-program customers) where enabled. | Tenant prompts, responses, and Microsoft Graph data are not used to train foundation LLMs. **Microsoft-hosted OpenAI**: processed in Microsoft-managed Azure boundary under the Product Terms / DPA, with EU Data Boundary and in-country LLM processing commitments where applicable. **Anthropic Claude**: provided under the Microsoft Product Terms and DPA, but **out of scope for the EU Data Boundary and in-country LLM processing commitments**; on by default for most commercial-cloud customers (excluding EU/EFTA and UK). The exception is **Anthropic models with Data Retention**, which are off by default, require explicit tenant-admin opt-in, and are governed by Anthropic's separate commercial terms and DPA rather than the Microsoft Product Terms and DPA. **SpaceXAI as an independent processor (Copilot Studio, Copilot Cowork)**: hosted by SpaceXAI **outside Microsoft-managed environments and audit controls** under the xAI Enterprise Terms of Service and Data Processing Addendum — Microsoft Product Terms, DPA, data residency commitments, audit and compliance requirements, SLAs, and the Customer Copyright Commitment do not apply. **SpaceXAI as a subprocessor (Frontier preview, not available in EU/EFTA or the UK)**: Microsoft Product Terms and DPA apply except as disclosed in the Exclusions section of the Learn article. |
 | **Responsible AI layer** | Pre- and post-processing safety filters | Content safety, harmful content blocking, citation generation |
 | **Web Search (Bing)** | Optional grounding from web content | May send contextual queries externally; controllable via admin settings |
 
 !!! note "Third-party model provider currency"
-    Provider scope and default-state claims above are time-sensitive. The Anthropic Claude posture (under Microsoft Product Terms/DPA; out of scope for the EU Data Boundary; on by default outside EU/EFTA/UK) and the xAI Grok posture (hosted outside Microsoft-managed environments; Product Terms, DPA, residency, and Customer Copyright Commitment do not apply) were verified against [Connect to Anthropic models](https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor) and [Connect to xAI's models](https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-models) on **2026-06-12**. Re-verify before relying on these statements, as availability and default state change over time.
+    Provider scope and default-state claims above are time-sensitive. The Anthropic Claude posture (under Microsoft Product Terms/DPA except Anthropic models with Data Retention; out of scope for the EU Data Boundary; on by default outside EU/EFTA/UK) and the SpaceXAI Grok posture (independent processor: hosted outside Microsoft-managed environments, with Product Terms, DPA, residency, and Customer Copyright Commitment not applying; subprocessor preview: Product Terms and DPA apply except as disclosed) were re-read against [Anthropic models in Microsoft Online Services](https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-subprocessor), [Connect to SpaceXAI models (as an independent processor)](https://learn.microsoft.com/en-us/microsoft-365/copilot/connect-to-ai-models), and [SpaceXAI as a subprocessor in Microsoft Online Services](https://learn.microsoft.com/en-us/microsoft-365/copilot/spacexai-subprocessor) on **2026-10-09**. Re-verify before relying on these statements, as availability and default state change over time.
 
 ---
 
@@ -534,7 +534,7 @@ Organizations should verify that Entra Agent ID configuration aligns with their 
 
 ## Work IQ
 
-**Work IQ** is Copilot's persistent organizational memory layer. It enables Copilot to prioritize and personalize assistance based on team context, organizational patterns, and accumulated interaction history within the tenant.
+**Work IQ** is the intelligence layer that personalizes Microsoft 365 Copilot for users and organizations. It combines data, context, and skills/tools layers so Copilot and agents can use work context, relationships, and patterns to prioritize and personalize assistance.
 
 ### What Work IQ Provides
 
@@ -558,7 +558,7 @@ Organizations should verify Work IQ configuration and scope as part of their Cop
 
 ## Copilot Cowork
 
-**Copilot Cowork** enables delegation of multi-step business tasks to Copilot. Unlike single-turn Copilot interactions, Cowork allows users to assign complex workflows that Copilot executes autonomously with periodic user monitoring and intervention points.
+**Copilot Cowork** enables delegation of multi-step business tasks to Copilot. Unlike single-turn Copilot interactions, Cowork allows users to assign multi-step tasks that Copilot carries out across Microsoft 365 on the user's behalf, showing each step in the session; Microsoft Learn states that users approve actions before they happen and that sensitive actions require explicit approval.
 
 ### How Copilot Cowork Works
 
@@ -599,7 +599,7 @@ For FSI environments, organizations should document which business functions are
 | **Semantic Index** | Co-located with tenant data | Follows tenant data residency |
 | **Microsoft 365 Copilot Search** | Microsoft 365 service boundary plus configured connector sources | Results inherit Microsoft 365 permissions; connector source data follows source-system residency |
 | **LLM processing** | Azure region (may differ from tenant region) | Processed in Azure OpenAI boundary for the default Microsoft-hosted path |
-| **Third-party model provider processing** | Provider-specific boundary | Anthropic Claude through Microsoft 365 Copilot Premium follows Microsoft Product Terms/DPA but has separate data-boundary commitments; xAI Grok preview follows xAI terms where enabled |
+| **Third-party model provider processing** | Provider-specific boundary | Anthropic Claude through Microsoft 365 Copilot Premium follows Microsoft Product Terms/DPA but has separate data-boundary commitments; SpaceXAI Grok as an independent processor (Copilot Studio, Copilot Cowork) follows xAI terms where enabled |
 | **Web search queries** | Bing service (global) | Separate from Microsoft 365 data boundary |
 | **Audit logs** | Per Microsoft 365 audit log residency | Stored in tenant's compliance boundary |
 
@@ -618,7 +618,7 @@ For FSI environments, organizations should document which business functions are
 | Graph Grounding | Permission-scoped but inherits permission problems | 1.2, 1.6, 2.2 |
 | Web Search | External data flow; query may contain sensitive context | 2.7 |
 | LLM Processing | Hallucination risk; no model training on tenant data | 3.5, 3.7 |
-| Third-party model providers | Provider-specific terms, data residency, and audit commitments for Anthropic Claude and xAI Grok preview | 1.10, 2.7 |
+| Third-party model providers | Provider-specific terms, data residency, and audit commitments for Anthropic Claude and SpaceXAI Grok preview | 1.10, 2.7 |
 | Copilot Pages and Notebooks | New content surfaces requiring classification, retention, and lifecycle controls | 2.11, 3.2 |
 | Plugins / Connectors | Extended data reach beyond Microsoft 365 | 2.13, 4.13 |
 | Audit Events | Copilot interactions logged for regulatory record-keeping | 3.1, 3.2 |
