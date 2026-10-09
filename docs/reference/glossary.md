@@ -114,6 +114,9 @@ Microsoft's AI-powered index that enhances Microsoft 365 search and Copilot grou
 ### SharePoint Advanced Management (SAM)
 An add-on for SharePoint that provides advanced governance capabilities including oversharing reports, data access governance reports, inactive site policies, and site lifecycle management. Important for pre-deployment Copilot readiness assessments.
 
+### SpaceXAI Grok
+A third-party foundation model provider (Grok models operated by SpaceXAI) available in preview. As an independent processor it is used with Copilot Studio and Copilot Cowork and is hosted outside Microsoft-managed environments under xAI's separate terms; as a Microsoft subprocessor (Frontier-program preview) it is supported in Copilot in Word, Excel, and PowerPoint under the Microsoft Product Terms and DPA, except as disclosed. Because provider terms and processing boundaries differ from the Microsoft-hosted default path, organizations should review enablement, data handling, and risk approvals before use.
+
 ### Viva Insights
 Part of the Microsoft Viva suite providing productivity and wellbeing insights. Includes a Copilot dashboard showing organizational Copilot adoption and usage patterns. Used for Copilot governance monitoring and license optimization.
 
@@ -124,7 +127,7 @@ Enterprise social networking service within Microsoft Viva (formerly Yammer). Co
 A workplace intelligence layer that continuously builds a permission-aware semantic understanding across Microsoft 365 and external systems, allowing Copilot and agents to prioritize and personalize assistance using work context. It is distinct from per-user Copilot memory.
 
 ### xAI Grok
-A third-party foundation model provider available in preview where Microsoft enables xAI Grok for Copilot scenarios. Because provider terms and processing boundaries differ from the Microsoft-hosted default path, organizations should review enablement, data handling, and risk approvals before use.
+Former name for [SpaceXAI Grok](#spacexai-grok); see that entry.
 
 ---
 
