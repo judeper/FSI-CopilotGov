@@ -37,8 +37,8 @@ Test cases and evidence collection for validating the three Scout admin gates (F
 ### Test 4b: GitHub Copilot Entitlement Matches the Approved Pilot
 
 - **Objective:** Confirm users entitled through GitHub Copilot Business or Enterprise (with linked GitHub accounts) match the approved pilot list.
-- **Expected Result:** Entitlement reconciliation from the GitHub administration surface matches the pilot list; users outside the pilot are not entitled.
-- **Evidence:** GitHub entitlement export, reconciled to the pilot list and dated.
+- **Expected Result:** Entitlement reconciliation from the GitHub administration surface matches the pilot list; users outside the pilot are not entitled; and the organization or enterprise **GitHub Copilot app** policy (or, for Scout builds that predate it, the **Copilot in the CLI** policy) is enabled only as intended, since a licensed seat alone does not grant Scout access.
+- **Evidence:** GitHub entitlement export and GitHub Copilot app policy setting, reconciled to the pilot list and dated.
 
 ### Test 4c: Installer Deployment Follows the Least-Privilege Pattern
 
@@ -132,7 +132,7 @@ Test cases and evidence collection for validating the three Scout admin gates (F
 
 ### Test 14: External Content Is Treated as Untrusted
 
-- **Objective:** Confirm the governance record acknowledges that Scout treats external content (web, files outside the workspace, or tool-server output) as untrusted, and that prompt-injection resistance is a platform responsibility rather than a customer-configurable control.
+- **Objective:** Confirm the governance record acknowledges that Scout tags external content (emails, web pages, and Teams messages) and treats it as data, not instructions, and that prompt-injection resistance is a platform responsibility rather than a customer-configurable control.
 - **Expected Result:** Documented acknowledgment and any complementary controls (for example, workspace scoping, browser-navigation restrictions) named.
 - **Evidence:** Untrusted-content acknowledgment.
 
@@ -162,5 +162,8 @@ Test cases and evidence collection for validating the three Scout admin gates (F
 - [PowerShell Setup](powershell-setup.md)
 - [Troubleshooting](troubleshooting.md)
 
-*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview) · Last Verified 2026-09-24*
+*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview)*
+
+**Last Verified:** 2026-10-09
+
 - Back to [Control 4.16](../../../controls/pillar-4-operations/4.16-microsoft-scout-governance.md)

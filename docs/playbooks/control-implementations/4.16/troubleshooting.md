@@ -7,7 +7,7 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 ### Issue 1: Scout Sign-In Fails Even After Installing the Application
 
 - **Symptoms:** User installs the Scout desktop app but cannot sign in, or the app reports no access. Microsoft states that sign-in failures do not always show a clear in-product indication of the cause.
-- **Resolution:** Verify all three admin gates and both per-user prerequisites independently: (a) the user's account is in Frontier scope in **Copilot > Settings > View all > Copilot Frontier** and the change has propagated (Microsoft cites up to about three hours); (b) the endpoint has the Scout endpoint policy applied — the imported Microsoft Scout ADMX/ADML with **Allow Microsoft Scout Frontier access** enabled on Windows, or the Microsoft-provided macOS `.mobileconfig` — and Microsoft's Frontier organization sign-up (admin attestation) is complete; (c) the user holds an **active Microsoft 365 Copilot license**; (d) the user holds a **GitHub Copilot Business or Enterprise** entitlement on a linked GitHub account. Installing the application alone grants nothing, and Microsoft directs troubleshooting to the admin gates and per-user prerequisites before investigating on the client.
+- **Resolution:** Verify all three admin gates and both per-user prerequisites independently: (a) the user's account is in Frontier scope in **Copilot > Settings > View all > Copilot Frontier** and the change has propagated (Microsoft cites up to about three hours); (b) the endpoint has the Scout endpoint policy applied — the imported Microsoft Scout ADMX/ADML with **Allow Microsoft Scout Frontier access** enabled on Windows, or the Microsoft-provided macOS `.mobileconfig` — and Microsoft's Frontier organization sign-up (admin attestation) is complete; (c) the user holds an **active Microsoft 365 Copilot license**; (d) the user holds a **GitHub Copilot Business or Enterprise** entitlement on a linked GitHub account, and the organization or enterprise **GitHub Copilot app** policy is enabled (enterprise settings override organization settings; for Scout builds that predate the dedicated app policy, the **Copilot in the CLI** policy applies) — a licensed seat alone is not sufficient, and a blocked policy surfaces as "GitHub Copilot access required" or an HTTP 403 "You are not authorized to use this Copilot feature" error. Installing the application alone grants nothing, and Microsoft directs troubleshooting to the admin gates and per-user prerequisites before investigating on the client.
 
 ### Issue 1b: End User Cannot Install Scout Because They Lack Local Administrator Rights
 
@@ -27,7 +27,7 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 ### Issue 3: Endpoint Policy Not Applying on Windows
 
 - **Symptoms:** The imported Microsoft Scout administrative-template policy (or one of its ADMX admin controls) is deployed in Intune but does not appear on a sampled Windows device, or Scout continues to be blocked or unblocked contrary to the intended state.
-- **Resolution:** Confirm the device is in scope of the assignment (Intune reporting), that policy sync has completed, and that the values under `HKLM\SOFTWARE\Policies\Scout` match the intended pilot posture for **Allow Microsoft Scout Frontier access** (`AllowScoutFrontierAccess`) and for the documented admin controls (`DisabledServers`, `DisabledPermissions`, `ForcePrompt`, `DisabledModels`, `DisabledProviders`, `DisableHeartbeat`, `DisableWorkflows`, `RestrictToWorkspace`, `BrowserEgressBlockedOrigins`, `PolicyVersion`). Re-verify the ADMX namespace and value names against current Microsoft documentation ([Set up Microsoft Scout with Intune](https://learn.microsoft.com/microsoft-scout/admin-intune-setup), [Manage admin controls in Intune for Microsoft Scout](https://learn.microsoft.com/microsoft-scout/manage-group-policy)) before treating output as evidence.
+- **Resolution:** Confirm the device is in scope of the assignment (Intune reporting), that policy sync has completed, and that the values under `HKLM\SOFTWARE\Policies\Scout` match the intended pilot posture for **Allow Microsoft Scout Frontier access** (`AllowScoutFrontierAccess`) and for the documented admin controls (`DisabledServers`, `DisabledPermissions`, `ForcePrompt`, `DisabledModels`, `DisabledProviders`, `DisableHeartbeat`, `DisableWorkflows`, `RestrictToWorkspace`, `BrowserEgressBlockedOrigins`, `PolicyVersion`). Re-verify the ADMX namespace and value names against current Microsoft documentation ([Set up Microsoft Scout with Intune](https://learn.microsoft.com/microsoft-scout/admin-intune-setup), [Manage admin controls in Intune for Microsoft Scout](https://learn.microsoft.com/microsoft-scout/manage-group-policy)) before treating output as evidence. If Scout reports "Unable to verify access" or places the user on a waitlist even though licensing is correct, the cause is often that Scout cannot read `AllowScoutFrontierAccess` through `reg.exe` — for example, `reg.exe` is blocked by AppLocker, WDAC, or EDR, or the non-admin user cannot read `HKLM\SOFTWARE\Policies\Scout`. Diagnose by running `reg query "HKLM\SOFTWARE\Policies\Scout" /v AllowScoutFrontierAccess` as the affected non-admin user.
 
 ### Issue 4: Endpoint Policy Not Applying on macOS
 
@@ -87,7 +87,7 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 ### Issue 11: Purview Audit Does Not Show Expected Scout Activity
 
 - **Symptoms:** Expected Scout activity does not appear in Purview unified-audit-log pulls.
-- **Resolution:** Recognize that Purview captures only the M365-sourced subset of Scout activity. Local shell execution, tool output, automation instructions, and third-party inference are outside M365 protections and are not captured by Purview. Source those categories from endpoint tooling, and document the coverage as **known unsupported evidence** rather than a Purview configuration bug.
+- **Resolution:** Recognize that Microsoft Learn does not document Scout-specific Purview audit operations, so at most the M365-sourced subset of Scout activity can be expected in Purview. Local shell execution, tool output, automation instructions, and third-party inference are outside M365 protections and are not captured by Purview. Source those categories from endpoint tooling, and document the coverage as **known unsupported evidence** rather than a Purview configuration bug.
 
 ### Issue 12: Session or Memory Data Retention Concern in OneDrive
 
@@ -107,7 +107,7 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 ### Issue 15: External Web Content Appears to Influence Scout Behavior Unexpectedly
 
 - **Symptoms:** Scout appears to take actions consistent with instructions embedded in retrieved web content or external tool output.
-- **Resolution:** Recognize that Scout tags external content as **untrusted**, but prompt-injection resistance is a Microsoft platform responsibility rather than a customer-configurable control. Report the behavior to Microsoft through Frontier preview feedback channels, restrict the browser or tool-server surface, and document the incident with local artifacts preserved.
+- **Resolution:** Recognize that Scout tags external content as external data (treated as data, not instructions), but prompt-injection resistance is a Microsoft platform responsibility rather than a customer-configurable control. Report the behavior to Microsoft through Frontier preview feedback channels, restrict the browser or tool-server surface, and document the incident with local artifacts preserved.
 
 ## Diagnostic Steps
 
@@ -139,5 +139,8 @@ Common issues and resolution steps for governing Microsoft Scout during its Fron
 - [PowerShell Setup](powershell-setup.md)
 - [Verification & Testing](verification-testing.md)
 
-*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview) · Last Verified 2026-09-24*
+*FSI Copilot Governance Framework — Control 4.16 (Microsoft Scout, Frontier preview)*
+
+**Last Verified:** 2026-10-09
+
 - Back to [Control 4.16](../../../controls/pillar-4-operations/4.16-microsoft-scout-governance.md)
