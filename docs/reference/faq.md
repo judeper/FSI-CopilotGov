@@ -65,7 +65,7 @@ FSI organizations should review whether web-sourced content meets their governan
 
 ### Can users access third-party AI models through Copilot?
 
-Microsoft has introduced support for third-party model providers including Anthropic Claude and xAI. Administrators can enable these models for specific users or groups via M365 Admin Center > Copilot > Settings > Other settings.
+Microsoft has introduced support for third-party model providers including Anthropic Claude and SpaceXAI Grok. Administrators can enable these models for specific users or groups via M365 Admin Center > Copilot > Settings > Other settings.
 
 FSI organizations should evaluate the data handling, residency, and regulatory implications before enabling third-party models, as they may introduce additional data processing outside Microsoft's standard compliance boundary. Organizations should verify that third-party model usage aligns with their existing vendor risk management and data governance policies.
 
