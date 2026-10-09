@@ -51,7 +51,8 @@ Review each enabled AI provider in Microsoft 365 Admin Center > Copilot > Settin
 
 - **Anthropic standard models:** record that Anthropic operates as a Microsoft subprocessor, but the models are outside the EU Data Boundary and applicable in-country processing commitments.
 - **Anthropic models with Data Retention:** treat this as a separate independent-processor path governed by Anthropic terms; document retention, approved users/groups, and explicit risk acceptance.
-- **SpaceXAI:** treat this as an independent-provider path outside Microsoft-managed environments and Microsoft contractual residency commitments; document the xAI terms review and approved Copilot Studio environments.
+- **SpaceXAI as an independent processor:** treat this as an independent-provider path outside Microsoft-managed environments and Microsoft contractual residency commitments; document the xAI terms review and approved Copilot Studio environments (and Copilot Cowork use, where enabled).
+- **SpaceXAI as a subprocessor (preview):** record whether the separate subprocessor setting is enabled; Microsoft Product Terms and DPA apply except as disclosed, but these models are excluded from in-country processing commitments when applicable.
 
 ### Step 5: Document Data Residency Compliance Position
 

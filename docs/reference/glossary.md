@@ -121,7 +121,7 @@ Part of the Microsoft Viva suite providing productivity and wellbeing insights. 
 Enterprise social networking service within Microsoft Viva (formerly Yammer). Copilot in Viva Engage assists with drafting posts and summarizing discussions.
 
 ### Work IQ
-A Copilot capability that provides persistent organizational memory, allowing Copilot to prioritize and personalize assistance based on team context and previous work.
+A workplace intelligence layer that continuously builds a permission-aware semantic understanding across Microsoft 365 and external systems, allowing Copilot and agents to prioritize and personalize assistance using work context. It is distinct from per-user Copilot memory.
 
 ### xAI Grok
 A third-party foundation model provider available in preview where Microsoft enables xAI Grok for Copilot scenarios. Because provider terms and processing boundaries differ from the Microsoft-hosted default path, organizations should review enablement, data handling, and risk approvals before use.

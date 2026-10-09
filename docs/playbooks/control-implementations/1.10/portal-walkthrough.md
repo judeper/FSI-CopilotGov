@@ -47,16 +47,17 @@ Using your organization's vendor risk assessment framework, complete the assessm
 **Portal:** Microsoft 365 Admin Center
 **Path:** Copilot > Settings > View all
 
-Review the provider paths separately and retain screenshots or exports showing the current setting and assigned users or groups. Use Microsoft Learn's current role names in evidence: Anthropic provider changes require **AI Administrator** or **Global Administrator**, while SpaceXAI provider changes require **Global Administrator**.
+Review the provider paths separately and retain screenshots or exports showing the current setting and assigned users or groups. Use Microsoft Learn's current role names in evidence: Anthropic provider changes require **AI Administrator** or **Global Administrator**, SpaceXAI subprocessor changes require **AI Administrator** or **Global Administrator**, while SpaceXAI independent-processor changes require **Global Administrator**.
 
 1. Open **AI providers operating as Microsoft subprocessors** and review Anthropic.
    - Record whether standard Anthropic models are enabled and who can access them.
    - Check separately for **Anthropic models with Data Retention**. These models require explicit opt-in and separate Anthropic terms because they operate outside the Microsoft subprocessor arrangement.
-2. Open **AI providers for other large language models** and review SpaceXAI.
+2. Open **AI providers for other large language models** and review SpaceXAI as an independent processor (used with Copilot Studio and Copilot Cowork).
    - Confirm the legal terms were reviewed before enablement.
    - Record the users or Entra security groups authorized to use the provider.
-3. For Copilot Studio use, confirm the corresponding external-model control is also enabled only in approved Power Platform environments.
-4. Reconcile each enabled provider and model category to the vendor inventory, data-flow map, and risk-acceptance record.
+3. Back under **AI providers operating as Microsoft subprocessors**, check separately whether **SpaceXAI** is enabled as a subprocessor (preview; Frontier-program customers outside the EU, EFTA, UK, government clouds, and sovereign clouds). It is a distinct setting from the independent-processor setting, is disabled by default, and is not carried over from earlier SpaceXAI settings; record the assigned users or groups and the documented exclusions (including in-country processing).
+4. For Copilot Studio use, confirm the corresponding external-model control is also enabled only in approved Power Platform environments.
+5. Reconcile each enabled provider and model category to the vendor inventory, data-flow map, and risk-acceptance record.
 
 Organizations should verify current terms and default states in Microsoft Learn before each approval because provider availability and model categories change over time.
 

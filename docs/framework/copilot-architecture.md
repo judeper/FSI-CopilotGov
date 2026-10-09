@@ -542,17 +542,17 @@ Organizations should verify that Entra Agent ID configuration aligns with their 
 |-----------|-------------|
 | **Organizational context** | Copilot learns team structures, project relationships, and collaboration patterns to deliver more relevant responses |
 | **Priority signals** | Work IQ surfaces priority indicators from emails, meetings, and tasks to help Copilot focus on what matters most |
-| **Persistent memory** | Unlike individual Copilot conversations that reset, Work IQ maintains organizational context across sessions |
+| **Workspaces** | Workspaces give agents a persistent space (SharePoint Embedded working storage) within the Microsoft 365 tenant boundary for intermediate data and outputs, supporting task progression, reuse of results, and handoff across agents and experiences |
 
 ### Governance Implications
 
 | Concern | Risk | Mitigation |
 |---------|------|------------|
-| **Data accumulation** | Work IQ builds a persistent organizational knowledge layer that may surface patterns not intended for broad discovery | Review Work IQ data retention settings and scope; align with organizational data governance policies |
-| **Cross-boundary context** | Organizational memory may surface context from teams or projects the user does not directly participate in | Verify that Work IQ respects existing permission boundaries and information barriers |
+| **Data accumulation** | Work IQ continuously builds a semantic understanding across Microsoft 365 and external systems, and agent workspaces hold intermediate data and outputs, which may surface patterns not intended for broad discovery | Review Work IQ scope, the data sources it can reach, and the content held in agent workspaces; align with organizational data governance policies |
+| **Cross-boundary context** | Work IQ may surface context from teams or projects the user does not directly participate in | Verify that Work IQ respects existing permission boundaries and information barriers |
 | **Behavioral inference** | Priority and collaboration signals could reveal work patterns or organizational dynamics | Evaluate Work IQ output against privacy and employee data protection expectations |
 
-Organizations should verify Work IQ configuration and scope as part of their Copilot governance posture review.
+Organizations should verify Work IQ configuration and scope as part of their Copilot governance posture review. See the [Work IQ overview](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/work-iq) on Microsoft Learn; per-user Copilot memory is a separate feature described in [Manage Copilot personalization and memory](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-personalization-memory).
 
 ---
 
@@ -626,7 +626,7 @@ For FSI environments, organizations should document which business functions are
 | Copilot Control System | Unified admin surface for all Copilot settings; configuration drift and SOX evidence | 4.1 |
 | Agent 365 | Centralized agent inventory, telemetry, and lifecycle governance across agent sources | 2.14, 4.13 |
 | Entra Agent ID | Unique agent identities for security tracking, Conditional Access, and compliance attribution | 2.14, 1.13 |
-| Work IQ | Persistent organizational memory; data accumulation and cross-boundary context risk | 3.10, 1.1 |
+| Work IQ | Organizational context and agent workspaces; data accumulation and cross-boundary context risk | 3.10, 1.1 |
 | Copilot Cowork | Multi-step autonomous task delegation; extended processing scope and reduced human oversight | 3.1, 3.5 |
 
 ### Microsoft Secure and Govern Blueprint
