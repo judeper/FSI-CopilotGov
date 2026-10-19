@@ -3132,8 +3132,8 @@
         "2026-21245": "v2:sha256:83c3a49116cc46a7fcb13251bac7b35ab63999b32dbe95f59351331faf41f712",
         "2026-21244": "v2:sha256:b07c6f5b5d101828b11a8c92abada468d9a304b61385edae2cc6c4d50369ab2a"
       },
-      "last_run": "2026-10-17T13:20:24.518487+00:00",
-      "last_checked": "2026-10-17"
+      "last_run": "2026-10-18T13:39:17.630339+00:00",
+      "last_checked": "2026-10-18"
     },
     "regulatory-finra": {
       "entries": {
@@ -6549,12 +6549,12 @@
     }
   },
   "regulatory_monitor": {
-    "consecutive_finra_degraded_runs": 0,
+    "consecutive_finra_degraded_runs": 1,
     "last_finra_discovery": {
-      "discovery_path": "RSS",
+      "discovery_path": "full crawl",
       "validator_dropped": 0,
-      "listing_cross_check": "listing cross-check ok",
-      "new_notices_fetched": 0
+      "listing_cross_check": "not run",
+      "failure_reason": "FINRA notices page request failed with status 429 for page 6"
     },
     "consecutive_finra_unverified_runs": 0
   }
