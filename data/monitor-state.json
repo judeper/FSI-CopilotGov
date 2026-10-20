@@ -3130,10 +3130,12 @@
         "2026-21247": "v2:sha256:5149e0b50a6ff43870df29bac72f31bf3d46da8498ac1b5b6f5fcdf899c5ad73",
         "2026-21246": "v2:sha256:cf7ae2855ae214c0ae43d7c8b16145660ede46bf7d8015ef9c822d7a1c387cbb",
         "2026-21245": "v2:sha256:83c3a49116cc46a7fcb13251bac7b35ab63999b32dbe95f59351331faf41f712",
-        "2026-21244": "v2:sha256:b07c6f5b5d101828b11a8c92abada468d9a304b61385edae2cc6c4d50369ab2a"
+        "2026-21244": "v2:sha256:b07c6f5b5d101828b11a8c92abada468d9a304b61385edae2cc6c4d50369ab2a",
+        "C1-2026-20360": "v2:sha256:def928869ae92011a9818031becb69b981337c4a05e97a0e56167be36c88b3d2",
+        "2026-21393": "v2:sha256:7de5568532f1a7c811c14eb4b51fe90d2c2e61e423a9551d66b83ec49f867e27"
       },
-      "last_run": "2026-10-18T13:39:17.630339+00:00",
-      "last_checked": "2026-10-18"
+      "last_run": "2026-10-20T14:32:57.284157+00:00",
+      "last_checked": "2026-10-20"
     },
     "regulatory-finra": {
       "entries": {
@@ -6545,16 +6547,16 @@
         "FINRA 26-18": "v2:sha256:128c4d02a7b73e3e659cbd8515c51fa3edf01fe8fbe3e475237dfc029110e2fc",
         "FINRA 26-17": "v2:sha256:1960113293fee3a3cdf9d10b9d142fb10d846ef08e89f9d619554ff90289f4eb"
       },
-      "last_run": "2026-10-17T13:20:25.525933+00:00"
+      "last_run": "2026-10-20T14:32:58.011756+00:00"
     }
   },
   "regulatory_monitor": {
-    "consecutive_finra_degraded_runs": 1,
+    "consecutive_finra_degraded_runs": 0,
     "last_finra_discovery": {
-      "discovery_path": "full crawl",
+      "discovery_path": "RSS",
       "validator_dropped": 0,
-      "listing_cross_check": "not run",
-      "failure_reason": "FINRA notices page request failed with status 429 for page 6"
+      "listing_cross_check": "listing cross-check ok",
+      "new_notices_fetched": 0
     },
     "consecutive_finra_unverified_runs": 0
   }
