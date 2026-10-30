@@ -3206,10 +3206,15 @@
         "2026-21481": "v2:sha256:93e40c294cdcc9fd08dbf10750bbc7be2757e4de4fc6981ab48f926b7cc03d13",
         "2026-21480": "v2:sha256:543a28265a5afb3bce213a6b6f2d254899c0e0e9d38076b0b2c5338964690355",
         "2026-21479": "v2:sha256:5044de009db363aa046ee0ecf034e1d04e1c25e0794acab86de6a85d9a7d6f74",
-        "2026-22027": "v2:sha256:eabd3e8dd32ca08f3147ca54d844ba5835c359a3309beae60dbaa2f9d9856152"
+        "2026-22027": "v2:sha256:eabd3e8dd32ca08f3147ca54d844ba5835c359a3309beae60dbaa2f9d9856152",
+        "2026-22205": "v2:sha256:b443bc84a6a6ae0cd239dd6a59e87f2434c5627385134f7736b41db59ae294c8",
+        "2026-22133": "v2:sha256:0288e446f6d7e2fbaff9ddb2e918564d5d28b053b6cf596963e33d8caf2c141a",
+        "2026-22132": "v2:sha256:2848b211e45027879bac238d8602b81af51d3d8f038f4546e901230a66f8cac4",
+        "2026-22131": "v2:sha256:00460a6e43b530958267a9102081b831957b39e7a215c383d7ec09850b1a8ab0",
+        "2026-22130": "v2:sha256:2d8900cbe41b6a9f758021338304d89f5bafede3144dcd692dbbc14b5f325519"
       },
-      "last_run": "2026-10-29T16:30:22.074306+00:00",
-      "last_checked": "2026-10-29"
+      "last_run": "2026-10-30T16:20:41.893853+00:00",
+      "last_checked": "2026-10-30"
     },
     "regulatory-finra": {
       "entries": {
@@ -6625,12 +6630,12 @@
     }
   },
   "regulatory_monitor": {
-    "consecutive_finra_degraded_runs": 1,
+    "consecutive_finra_degraded_runs": 2,
     "last_finra_discovery": {
       "discovery_path": "RSS+integrity-fallback",
       "validator_dropped": 1,
       "listing_cross_check": "not run",
-      "failure_reason": "FINRA authoritative notice body fetch failed for https://www.finra.org/rules-guidance/notices/26-18 (status=429, error=HTTP 429 rate limit persisted after 5 attempts (waited 72s))"
+      "failure_reason": "FINRA authoritative notice body fetch failed for https://www.finra.org/rules-guidance/notices/election-notice-20261020 (status=429, error=HTTP 429 rate limit persisted after 5 attempts (waited 73s))"
     },
     "consecutive_finra_unverified_runs": 0
   }
