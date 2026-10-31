@@ -3206,10 +3206,30 @@
         "2026-21481": "v2:sha256:93e40c294cdcc9fd08dbf10750bbc7be2757e4de4fc6981ab48f926b7cc03d13",
         "2026-21480": "v2:sha256:543a28265a5afb3bce213a6b6f2d254899c0e0e9d38076b0b2c5338964690355",
         "2026-21479": "v2:sha256:5044de009db363aa046ee0ecf034e1d04e1c25e0794acab86de6a85d9a7d6f74",
-        "2026-22027": "v2:sha256:eabd3e8dd32ca08f3147ca54d844ba5835c359a3309beae60dbaa2f9d9856152"
+        "2026-22027": "v2:sha256:eabd3e8dd32ca08f3147ca54d844ba5835c359a3309beae60dbaa2f9d9856152",
+        "2026-22346": "v2:sha256:63ee528090e53656b283072a11206c29c21d650d1ef65d95fa8295ebd358e7f2",
+        "2026-22333": "v2:sha256:9f10e70978f766e6fbcdee8c6f6bfa20d6a02c6e580c433dac19517c79fb5a1c",
+        "2026-22272": "v2:sha256:120e0dcf45a9e913208437855fdd82b1902dd19c3503fa606c7d125c352f4881",
+        "2026-22268": "v2:sha256:8ce5a249550bd8bfe6e0b425ce75515a29bd6fd68fc552d6118c2a123b7914c7",
+        "2026-22267": "v2:sha256:5d069bf3e64565e2f33e1dc0b6323b6e193d9e579f7089608de92316c7185fea",
+        "2026-22266": "v2:sha256:298d10f1a1d4c5dfc03769a18139922c42a679b4868c69736507fa5b7def2a2e",
+        "2026-22265": "v2:sha256:f9ba47474cebf3d6689a0066bd9031124faa76a2f37c1ef137dc0037701bb483",
+        "2026-22264": "v2:sha256:2309e1b93dcac83683f298145a1ac4171fc7231f6bed83877bfd2db7823616c6",
+        "2026-22263": "v2:sha256:69132c648e4c9d6a396bda7fcf9f7ebbf4e2bb5db1cd08869a38a4a01cc11610",
+        "2026-22262": "v2:sha256:b755ad59ee75729d366d3997c7907787b29eaf5af76fe9c375274c20517d989d",
+        "2026-22261": "v2:sha256:2895ba571061bfadf40e7a536e3ec7447d4ef6001f33acb76c33bce5a38793b0",
+        "2026-22260": "v2:sha256:46a1ef64d0d7de018d288605b9b7845d4d5e9e1172239bbb2e30b4f14064d64c",
+        "2026-22259": "v2:sha256:62d2ed3ef96be8bd2b3510d2c6e796125fc4d4d4b1e1aeb1694425c65c212cac",
+        "2026-22258": "v2:sha256:666b1c1163507e249a23ff0a4ed759409818cd622a39410121f62ac30b2ed4cf",
+        "2026-22250": "v2:sha256:bd18d1cdff2cd94828cd8928c37ca407350891c6744a1ef56c2a6917c986f67c",
+        "2026-22205": "v2:sha256:b443bc84a6a6ae0cd239dd6a59e87f2434c5627385134f7736b41db59ae294c8",
+        "2026-22133": "v2:sha256:0288e446f6d7e2fbaff9ddb2e918564d5d28b053b6cf596963e33d8caf2c141a",
+        "2026-22132": "v2:sha256:2848b211e45027879bac238d8602b81af51d3d8f038f4546e901230a66f8cac4",
+        "2026-22131": "v2:sha256:00460a6e43b530958267a9102081b831957b39e7a215c383d7ec09850b1a8ab0",
+        "2026-22130": "v2:sha256:2d8900cbe41b6a9f758021338304d89f5bafede3144dcd692dbbc14b5f325519"
       },
-      "last_run": "2026-10-29T16:30:22.074306+00:00",
-      "last_checked": "2026-10-29"
+      "last_run": "2026-10-31T15:32:00.602532+00:00",
+      "last_checked": "2026-10-31"
     },
     "regulatory-finra": {
       "entries": {
@@ -6625,12 +6645,12 @@
     }
   },
   "regulatory_monitor": {
-    "consecutive_finra_degraded_runs": 1,
+    "consecutive_finra_degraded_runs": 2,
     "last_finra_discovery": {
       "discovery_path": "RSS+integrity-fallback",
       "validator_dropped": 1,
       "listing_cross_check": "not run",
-      "failure_reason": "FINRA authoritative notice body fetch failed for https://www.finra.org/rules-guidance/notices/26-18 (status=429, error=HTTP 429 rate limit persisted after 5 attempts (waited 72s))"
+      "failure_reason": "FINRA authoritative notice body fetch failed for https://www.finra.org/rules-guidance/notices/election-notice-20261020 (status=429, error=HTTP 429 rate limit persisted after 5 attempts (waited 73s))"
     },
     "consecutive_finra_unverified_runs": 0
   }
